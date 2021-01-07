@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
@@ -43,5 +44,17 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
     @Override
     public RegistryVertexType<? extends RegistryVertex> getType() {
         return RegistryVertexType.RIFT_PLACEHOLDER;
+    }
+
+    public static CompoundTag toTag(RiftPlaceholder vertex) {
+        CompoundTag tag = new CompoundTag();
+        tag.putUuid("id", vertex.id);
+        return tag;
+    }
+
+    public static RiftPlaceholder fromTag(CompoundTag tag) {
+        RiftPlaceholder vertex = new RiftPlaceholder();
+        vertex.id = tag.getUuid("id");
+        return vertex;
     }
 }

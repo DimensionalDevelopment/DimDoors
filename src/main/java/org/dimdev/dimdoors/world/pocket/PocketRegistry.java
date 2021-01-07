@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.world.pocket;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.mojang.serialization.Codec;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -18,8 +19,6 @@ import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
 public class PocketRegistry extends PersistentState {
-    private final Codec<Map<Integer, Pocket>> pocketsCodec = Codec.unboundedMap(Codec.INT, Pocket.CODEC);
-
     private static final String DATA_NAME = "pocketlib_pockets";
 
     /*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
@@ -47,7 +46,9 @@ public class PocketRegistry extends PersistentState {
         this.gridSize = tag.getInt("gridSize");
         this.privatePocketSize = tag.getInt("privatePocketSize");
         this.publicPocketSize = tag.getInt("publicPocketSize");
-        this.pockets = NbtUtil.deserialize(tag.get("pockets"), this.pocketsCodec);
+
+        CompoundTag pocketsTag = tag.getCompound("pockets");
+        this.pockets = pocketsTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, a -> Pocket.fromTag(pocketsTag.getCompound(a))));
         this.nextID = tag.getInt("nextID");
     }
 
@@ -56,7 +57,10 @@ public class PocketRegistry extends PersistentState {
         tag.putInt("gridSize", this.gridSize);
         tag.putInt("privatePocketSize", this.privatePocketSize);
         tag.putInt("publicPocketSize", this.publicPocketSize);
-        tag.put("pockets", NbtUtil.serialize(this.pockets, this.pocketsCodec));
+
+        CompoundTag pocketsTag = new CompoundTag();
+        this.pockets.forEach((key, value) -> pocketsTag.put(key.toString(), value.toTag()));
+        tag.put("pockets", pocketsTag);
         tag.putInt("nextID", this.nextID);
         return tag;
     }

@@ -7,20 +7,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftData;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.util.RGBA;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
 public class Rift extends RegistryVertex {
-    public static final Codec<Rift> CODEC = RecordCodecBuilder.create(instance -> {
-        return instance.group(
-                DynamicSerializableUuid.CODEC.fieldOf("id").forGetter(a -> a.id),
-                Location.CODEC.fieldOf("location").forGetter(a -> a.location),
-                Codec.BOOL.fieldOf("isDetached").forGetter(a -> a.isDetached),
-                LinkProperties.CODEC.fieldOf("properties").forGetter(a -> a.properties)
-        ).apply(instance, Rift::new);
-    });
-
     private static final Logger LOGGER = LogManager.getLogger();
     public Location location;
     public boolean isDetached;
@@ -80,5 +75,23 @@ public class Rift extends RegistryVertex {
     @Override
     public RegistryVertexType<? extends RegistryVertex> getType() {
         return RegistryVertexType.RIFT;
+    }
+
+    public static CompoundTag toTag(Rift rift) {
+        CompoundTag tag = new CompoundTag();
+        tag.putUuid("id", rift.id);
+        tag.put("location", Location.toTag(rift.location));
+        tag.putBoolean("isDetached", rift.isDetached);
+        tag.put("properties", LinkProperties.toTag(rift.properties));
+        return tag;
+    }
+
+    public static Rift fromTag(CompoundTag tag) {
+        Rift rift = new Rift();
+        rift.id = tag.getUuid("id");
+        rift.location = Location.fromTag(tag.getCompound("location"));
+        rift.isDetached = tag.getBoolean("isDetached");
+        rift.properties = LinkProperties.fromTag(tag.getCompound("properties"));;
+        return rift;
     }
 }

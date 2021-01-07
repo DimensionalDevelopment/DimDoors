@@ -10,7 +10,9 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -39,20 +41,22 @@ public class VirtualLocation {
         this.depth = depth;
     }
 
-    public void fromTag(CompoundTag tag) {
-        VirtualLocation location = CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(false, System.err::println).getFirst();
-        this.x = location.x;
-        this.z = location.z;
-        this.depth = location.depth;
-        this.world = location.world;
+    public static CompoundTag toTag(VirtualLocation virtualLocation) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("world", virtualLocation.world.getValue().toString());
+        tag.putInt("x", virtualLocation.x);
+        tag.putInt("z", virtualLocation.z);
+        tag.putInt("depth", virtualLocation.depth);
+        return tag;
     }
 
-    public CompoundTag toTag(CompoundTag tag) {
-        CompoundTag encodedTag = (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, this).getOrThrow(false, System.err::println);
-        for (String key : encodedTag.getKeys()) {
-            tag.put(key, encodedTag.get(key));
-        }
-        return tag;
+    public static VirtualLocation fromTag(CompoundTag tag) {
+        return new VirtualLocation(
+                RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("world"))),
+                tag.getInt("x"),
+                tag.getInt("z"),
+                tag.getInt("depth")
+        );
     }
 
     public static VirtualLocation fromLocation(Location location) {

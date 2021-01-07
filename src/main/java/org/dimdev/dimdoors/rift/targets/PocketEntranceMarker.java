@@ -5,17 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
-    public static final Codec<PocketEntranceMarker> CODEC = RecordCodecBuilder.create(instance -> {
-        return instance.group(
-                Codec.FLOAT.fieldOf("weight").forGetter(target -> target.weight),
-                VirtualTarget.CODEC.fieldOf("ifDestination").forGetter(target -> target.ifDestination),
-                VirtualTarget.CODEC.fieldOf("otherwiseDestination").forGetter(target -> target.otherwiseDestination)
-        ).apply(instance, PocketEntranceMarker::new);
-    });
 
     protected float weight = 1;
     protected VirtualTarget ifDestination;
@@ -60,9 +54,26 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
         return new PocketEntranceMarkerBuilder().weight(this.weight).ifDestination(this.ifDestination).otherwiseDestination(this.otherwiseDestination);
     }
 
+
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
         return VirtualTargetType.POCKET_ENTRANCE;
+    }
+
+    public static CompoundTag toTag(PocketEntranceMarker target) {
+        CompoundTag tag = new CompoundTag();
+        tag.putFloat("weight", target.weight);
+        tag.put("ifDestination", VirtualTarget.toTag(target.ifDestination));
+        tag.put("otherwiseDestination", VirtualTarget.toTag(target.otherwiseDestination));
+        return tag;
+    }
+
+    public static PocketEntranceMarker fromTag(CompoundTag tag) {
+        PocketEntranceMarker target = new PocketEntranceMarker();
+        target.weight = tag.getFloat("weight");
+        target.ifDestination = VirtualTarget.fromTag(tag.getCompound("ifDestination"));
+        target.otherwiseDestination = VirtualTarget.fromTag(tag.getCompound("otherwiseDestination"));
+        return target;
     }
 
     public static class PocketEntranceMarkerBuilder {

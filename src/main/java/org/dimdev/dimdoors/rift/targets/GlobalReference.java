@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import net.minecraft.nbt.CompoundTag;
+
 import com.mojang.serialization.Codec;
 import org.dimdev.dimdoors.util.Location;
 
@@ -20,5 +22,15 @@ public class GlobalReference extends RiftReference {
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
         return VirtualTargetType.GLOBAL;
+    }
+
+    public static CompoundTag toTag(GlobalReference virtualTarget) {
+        CompoundTag tag = new CompoundTag();
+        tag.put("target", Location.toTag(virtualTarget.location));
+        return tag;
+    }
+
+    public static GlobalReference fromTag(CompoundTag nbt) {
+        return new GlobalReference(Location.fromTag(nbt.getCompound("target")));
     }
 }

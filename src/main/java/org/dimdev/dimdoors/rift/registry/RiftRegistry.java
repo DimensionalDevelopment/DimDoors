@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javafx.util.converter.DoubleStringConverter;
 import org.dimdev.dimdoors.util.GraphUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.NbtUtil;
@@ -57,10 +59,10 @@ public class RiftRegistry extends PersistentState {
 
         ListTag riftsNBT = (ListTag) nbt.get("rifts");
         for (Tag riftNBT : riftsNBT) {
-            Rift rift = NbtUtil.deserialize(riftNBT, Rift.CODEC);
-            this.graph.addVertex(rift);
-            this.uuidMap.put(rift.id, rift);
-            this.locationMap.put(rift.location, rift);
+//            Rift rift = NbtUtil.deserialize(riftNBT, Rift.CODEC);
+//            this.graph.addVertex(rift);
+//            this.uuidMap.put(rift.id, rift);
+//            this.locationMap.put(rift.location, rift);
         }
 
         ListTag pocketsNBT = (ListTag) nbt.get("pockets");
@@ -95,7 +97,7 @@ public class RiftRegistry extends PersistentState {
         ListTag riftsNBT = new ListTag();
         ListTag pocketsNBT = new ListTag();
         for (RegistryVertex vertex : this.graph.vertexSet()) {
-            CompoundTag vertexNBT = (CompoundTag) NbtUtil.serialize(vertex, RegistryVertex.CODEC);
+            CompoundTag vertexNBT = RegistryVertex.toTag(vertex);
             if (vertex instanceof Rift) {
                 riftsNBT.add(vertexNBT);
             } else if (vertex instanceof PocketEntrancePointer) {

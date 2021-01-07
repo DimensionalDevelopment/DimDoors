@@ -19,7 +19,6 @@ import net.minecraft.text.TranslatableText;
 //import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
-    public static final Codec<PrivatePocketExitTarget> CODEC = Codec.unit(PrivatePocketExitTarget::new);
     public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
 
     public PrivatePocketExitTarget() {

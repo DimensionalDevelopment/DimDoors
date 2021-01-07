@@ -1,11 +1,30 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.lang3.math.NumberUtils;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.Text;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import io.github.cottonmc.cotton.gui.widget.WBox;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
+import io.github.cottonmc.cotton.gui.widget.WTextField;
+import io.github.cottonmc.cotton.gui.widget.WToggleButton;
+import io.github.cottonmc.cotton.gui.widget.WWidget;
+import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import org.dimdev.dimdoors.util.Codecs;
 
 public class LinkProperties {
@@ -94,6 +113,26 @@ public class LinkProperties {
         return new LinkPropertiesBuilder().floatingWeight(this.floatingWeight).entranceWeight(this.entranceWeight).groups(this.groups).linksRemaining(this.linksRemaining).oneWay(this.oneWay);
     }
 
+    public static CompoundTag toTag(LinkProperties properties) {
+        net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+        tag.putFloat("floatingWeight", properties.floatingWeight);
+        tag.putFloat("entranceWeight", properties.entranceWeight);
+        tag.putIntArray("groups", new ArrayList<>(properties.groups));
+        tag.putInt("linksRemaining", properties.linksRemaining);
+        tag.putBoolean("oneWay", properties.oneWay);
+        return tag;
+    }
+
+    public static LinkProperties fromTag(CompoundTag tag) {
+        LinkProperties properties = new LinkProperties();
+        properties.floatingWeight = tag.getFloat("floatingWeight");
+        properties.entranceWeight = tag.getFloat("entranceWeight");
+        properties.groups = Arrays.stream(tag.getIntArray("groups")).boxed().collect(Collectors.toSet());
+        properties.linksRemaining = tag.getInt("linksRemaining");
+        properties.oneWay = tag.getBoolean("oneWay");
+        return properties;
+    }
+
     public static class LinkPropertiesBuilder {
         private float floatingWeight;
         private float entranceWeight;
@@ -136,5 +175,36 @@ public class LinkProperties {
         public String toString() {
             return "LinkProperties.LinkPropertiesBuilder(floatingWeight=" + this.floatingWeight + ", entranceWeight=" + this.entranceWeight + ", groups=" + this.groups + ", linksRemaining=" + this.linksRemaining + ", oneWay=" + this.oneWay + ")";
         }
+    }
+
+    public WWidget widget() {
+        WBox root = new WBox(Axis.VERTICAL);
+        root.add(new WLabel("Rift Data:"));
+
+        WBox tab = new WBox(Axis.HORIZONTAL);
+        tab.add(new WLabel("  "));
+
+        WBox main = new WBox(Axis.VERTICAL);
+
+        WBox box = new WBox(Axis.HORIZONTAL);
+        box.add(new WLabel("Floating Weight:"));
+
+        WTextField floatingWeightText = new WTextField().setChangedListener(a -> {
+            if(NumberUtils.isParsable(a)) floatingWeight = NumberUtils.toFloat(a);
+        });
+        floatingWeightText.setText(String.valueOf(floatingWeight));
+        box.add(floatingWeightText);
+
+        WToggleButton oneWayButton = new WToggleButton(Text.of("One Way:")).setOnToggle(oneWay -> this.oneWay = oneWay);
+        oneWayButton.setToggle(oneWay);
+
+        main.add(box);
+        main.add(oneWayButton);
+
+        tab.add(main);
+
+        root.add(tab);
+
+        return root;
     }
 }

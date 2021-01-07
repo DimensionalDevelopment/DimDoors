@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.util;
 
+import java.util.stream.IntStream;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -7,8 +9,12 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
@@ -83,5 +89,20 @@ public class Location {
 
     public ServerWorld getWorld() {
         return DimensionalDoorsInitializer.getServer().getWorld(this.world);
+    }
+
+    public static CompoundTag toTag(Location location) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("world", location.world.getValue().toString());
+        tag.putIntArray("pos", new int[]{ location.getX(), location.getY(), location.getZ()});
+        return tag;
+    }
+
+    public static Location fromTag(CompoundTag tag) {
+        int[] pos = tag.getIntArray("pos");
+        return new Location(
+                RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("world"))),
+                new BlockPos(pos[1], pos[2], pos[3])
+        );
     }
 }

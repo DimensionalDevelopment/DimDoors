@@ -10,9 +10,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -37,6 +40,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
     @Override
     public void tick() {
         if (this.world == null) {
+            DynamicRegistryManager
             return;
         }
 
@@ -77,7 +81,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
     }
 
     @Override
-    protected CompoundTag serialize(CompoundTag tag) {
+	public CompoundTag serialize(CompoundTag tag) {
         super.serialize(tag);
         tag.putBoolean("closing", this.closing);
         tag.putBoolean("stablized", this.stabilized);
@@ -87,7 +91,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
     }
 
     @Override
-    protected void deserialize(CompoundTag tag) {
+    public void deserialize(CompoundTag tag) {
         super.deserialize(tag);
         this.closing = tag.getBoolean("closing");
         this.stabilized = tag.getBoolean("stablized");

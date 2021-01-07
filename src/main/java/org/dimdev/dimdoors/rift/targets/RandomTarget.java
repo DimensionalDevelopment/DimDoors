@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +24,7 @@ import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
@@ -236,6 +239,33 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
         return VirtualTargetType.AVAILABLE_LINK;
+    }
+
+    public static CompoundTag toTag(RandomTarget target) {
+        CompoundTag tag = new CompoundTag();
+        tag.putFloat("newRiftWeight", target.newRiftWeight);
+        tag.putDouble("weightMaximum", target.weightMaximum);
+        tag.putDouble("coordFactor", target.coordFactor);
+        tag.putDouble("positiveDepthFactor", target.positiveDepthFactor);
+        tag.putDouble("negativeDepthFactor", target.negativeDepthFactor);
+        tag.putIntArray("acceptedGroups", new ArrayList<>(target.acceptedGroups));
+        tag.putBoolean("noLink", target.noLink);
+        tag.putBoolean("noLinkBack", target.noLinkBack);
+
+        return tag;
+    }
+
+    public static RandomTarget fromTag(CompoundTag tag) {
+        return new RandomTarget(
+            tag.getFloat("newRiftWeight"),
+            tag.getDouble("weightMaximum"),
+            tag.getDouble("coordFactor"),
+            tag.getDouble("positiveDepthFactor"),
+            tag.getDouble("negativeDepthFactor"),
+            Arrays.stream(tag.getIntArray("acceptedGroups")).boxed().collect(Collectors.toSet()),
+            tag.getBoolean("noLink"),
+            tag.getBoolean("noLinkBack")
+        );
     }
 
     public static class RandomTargetBuilder {

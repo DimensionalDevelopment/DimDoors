@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
@@ -24,12 +25,19 @@ public abstract class VirtualTarget implements Target {
     public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, SimpleRegistry<VirtualTargetType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_type")), Lifecycle.stable())).buildAndRegister();
     public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
-    public static Codec<VirtualTarget> CODEC = REGISTRY.dispatch(VirtualTarget::getType, VirtualTargetType::codec);
-
     protected Location location;
 
-    public static VirtualTarget readVirtualTargetNBT(CompoundTag nbt) {
-        return NbtUtil.deserialize(nbt, CODEC);
+    public static VirtualTarget fromTag(CompoundTag nbt) {
+        return Objects.requireNonNull(REGISTRY.get(new Identifier(nbt.getString("type")))).fromTag(nbt);
+    }
+
+    public static CompoundTag toTag(VirtualTarget virtualTarget) {
+        String type = REGISTRY.getId(virtualTarget.getType()).toString();
+
+        CompoundTag tag = virtualTarget.getType().toTag(virtualTarget);
+        tag.putString("type", type);
+
+        return tag;
     }
 
     public void register() {
@@ -70,28 +78,33 @@ public abstract class VirtualTarget implements Target {
     }
 
     public interface VirtualTargetType<T extends VirtualTarget> {
-        VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("available_link", RandomTarget.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<GlobalReference> GLOBAL = register("global", GlobalReference.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<LimboTarget> LIMBO = register("limbo", LimboTarget.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("public_pocket", PublicPocketTarget.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("pocket_entrance", PocketEntranceMarker.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("pocket_exit", PocketExitMarker.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketTarget.CODEC, PrivatePocketExitTarget.COLOR);
-        VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.CODEC, PrivatePocketExitTarget.COLOR);
-        VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC, VirtualTarget.COLOR);
-        VirtualTargetType<NoneTarget> NONE = register("none", NoneTarget.CODEC, COLOR);
+        VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("dimdoors:available_link", RandomTarget::fromTag, RandomTarget::toTag, VirtualTarget.COLOR);
+        VirtualTargetType<EscapeTarget> ESCAPE = register("dimdoors:escape", EscapeTarget::fromTag, EscapeTarget::toTag, VirtualTarget.COLOR);
+        VirtualTargetType<GlobalReference> GLOBAL = register("dimdoors:global", GlobalReference::fromTag, GlobalReference::toTag, VirtualTarget.COLOR);
+        VirtualTargetType<LimboTarget> LIMBO = register("dimdoors:limbo", a -> LimboTarget.INSTANCE, a -> new CompoundTag(), VirtualTarget.COLOR);
+        VirtualTargetType<LocalReference> LOCAL = register("dimdoors:local", LocalReference::fromTag, LocalReference::toTag, VirtualTarget.COLOR);
+        VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("dimdoors:public_pocket", PublicPocketTarget::fromTag, PublicPocketTarget::toTag, VirtualTarget.COLOR);
+        VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("dimdoors:pocket_entrance", PocketEntranceMarker::fromTag, PocketEntranceMarker::toTag, VirtualTarget.COLOR);
+        VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("dimdoors:pocket_exit", a -> new PocketExitMarker(), a -> new CompoundTag(), VirtualTarget.COLOR);
+        VirtualTargetType<PrivatePocketTarget> PRIVATE = register("dimdoors:private", a -> new PrivatePocketTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
+        VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("dimdoors:private_pocket_exit", a -> new PrivatePocketExitTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
+        VirtualTargetType<RelativeReference> RELATIVE = register("dimdoors:relative", RelativeReference::fromTag, RelativeReference::toTag, VirtualTarget.COLOR);
 
-        Codec<T> codec();
+        T fromTag(CompoundTag tag);
+        CompoundTag toTag(VirtualTarget virtualType);
 
         RGBA getColor();
 
-        static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Codec<T> codec, RGBA color) {
+        static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Function<CompoundTag, T> fromTag, Function<T, CompoundTag> toTag, RGBA color) {
             return Registry.register(REGISTRY, (String) id, new VirtualTargetType<T>() {
                 @Override
-                public Codec<T> codec() {
-                    return codec;
+                public T fromTag(CompoundTag tag) {
+                    return fromTag.apply(tag);
+                }
+
+                @Override
+                public CompoundTag toTag(VirtualTarget virtualType) {
+                    return toTag.apply((T) virtualType);
                 }
 
                 @Override
@@ -102,14 +115,4 @@ public abstract class VirtualTarget implements Target {
         }
     }
 
-    public static class NoneTarget extends VirtualTarget {
-        public static NoneTarget DUMMY = new NoneTarget();
-
-        public static Codec<NoneTarget> CODEC = Codec.unit(DUMMY);
-
-        @Override
-        public VirtualTargetType<? extends VirtualTarget> getType() {
-            return VirtualTargetType.NONE;
-        }
-    }
 }

@@ -1,15 +1,22 @@
 package org.dimdev.dimdoors.block.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.mojang.serialization.Codec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import io.github.cottonmc.cotton.gui.widget.WWidget;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.client.gui.RiftConfigurationToolGuiDescroption;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.rift.targets.EntityTarget;
+import org.dimdev.dimdoors.rift.targets.ItemTarget;
 import org.dimdev.dimdoors.rift.targets.MessageTarget;
 import org.dimdev.dimdoors.rift.targets.Target;
 import org.dimdev.dimdoors.rift.targets.Targets;
@@ -23,19 +30,29 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget {
-    private static final Codec<RiftData> CODEC = RiftData.CODEC;
     private static final Logger LOGGER = LogManager.getLogger();
     public static long showRiftCoreUntil = 0;
 
+    @NotNull
     protected RiftData data = new RiftData();
 
     protected boolean riftStateChanged; // not saved
@@ -50,8 +67,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         this.deserialize(nbt);
     }
 
-    protected void deserialize(CompoundTag nbt) {
-        this.data = NbtUtil.deserialize(nbt.get("data"), CODEC);
+    public void deserialize(CompoundTag nbt) {
+        this.data = RiftData.fromTag(nbt.getCompound("data"));
     }
 
     @Override
@@ -61,8 +78,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         return super.toTag(tag);
     }
 
-    protected CompoundTag serialize(CompoundTag tag) {
-        if (this.data != null) tag.put("data", NbtUtil.serialize(this.data, CODEC));
+    public CompoundTag serialize(CompoundTag tag) {
+        tag.put("data", RiftData.toTag(this.data));
         return tag;
     }
 
@@ -121,7 +138,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
         Location loc = new Location((ServerWorld) this.world, this.pos);
         RiftRegistry.instance().addRift(loc);
-        if (this.data.getDestination() != VirtualTarget.NoneTarget.DUMMY) this.data.getDestination().register();
+        if (this.data.getDestination() != null) this.data.getDestination().register();
         this.updateProperties();
         this.updateColor();
     }
@@ -159,7 +176,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
     }
 
     public Target getTarget() {
-        if (this.data.getDestination() == VirtualTarget.NoneTarget.DUMMY) {
+        if (this.data.getDestination() == null) {
             return new MessageTarget("rifts.unlinked1");
         } else {
             this.data.getDestination().setLocation(new Location((ServerWorld) this.world, this.pos));
@@ -191,12 +208,12 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
         if (this.data.isForcedColor()) return;
         if (!this.isRegistered()) {
             this.data.setColor(new RGBA(0, 0, 0, 1));
-        } else if (this.data.getDestination() == VirtualTarget.NoneTarget.DUMMY) {
+        } else if (this.data.getDestination() == null) {
             this.data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
         } else {
             this.data.getDestination().setLocation(new Location((ServerWorld) this.world, this.pos));
             RGBA newColor = this.data.getDestination().getColor();
-            if (this.data.getColor() == RGBA.NONE && newColor != RGBA.NONE || !Objects.equals(this.data.getColor(), newColor)) {
+            if (this.data.getColor() == null && newColor != null || !Objects.equals(this.data.getColor(), newColor)) {
                 this.data.setColor(newColor);
                 this.markDirty();
             }

@@ -1,25 +1,25 @@
 package org.dimdev.dimdoors.block.entity;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.text.LiteralText;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import io.github.cottonmc.cotton.gui.widget.WBox;
+import io.github.cottonmc.cotton.gui.widget.WToggleButton;
+import io.github.cottonmc.cotton.gui.widget.WWidget;
+import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.RGBA;
 
 public class RiftData {
-    public static Codec<RiftData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.DUMMY).forGetter(RiftData::getDestination),
-            LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(RiftData::getProperties),
-            Codec.BOOL.fieldOf("alwaysDelete").forGetter(RiftData::isAlwaysDelete),
-            Codec.BOOL.fieldOf("forcedColor").forGetter(RiftData::isForcedColor),
-            RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor)
-    ).apply(instance, RiftData::new));
-
-    private VirtualTarget destination = VirtualTarget.NoneTarget.DUMMY; // How the rift acts as a source
-    private LinkProperties properties = LinkProperties.NONE;
+    private VirtualTarget destination = null; // How the rift acts as a source
+    private LinkProperties properties = null;
     private boolean alwaysDelete;
     private boolean forcedColor;
-    private RGBA color = RGBA.NONE;
+    private RGBA color = null;
 
     public RiftData() {
     }
@@ -71,5 +71,38 @@ public class RiftData {
     public void setColor(RGBA color) {
         this.forcedColor = color != null;
         this.color = color;
+    }
+
+    public static CompoundTag toTag(RiftData data) {
+        CompoundTag tag = new CompoundTag();
+        if(data.destination != null) tag.put("destination", VirtualTarget.toTag(data.destination));
+        if(data.properties != null) tag.put("properties", LinkProperties.toTag(data.properties));
+        if(data.color != null) tag.put("color", RGBA.toTag(data.color));
+        tag.putBoolean("alwaysDelete", data.alwaysDelete);
+        tag.putBoolean("forcedColor", data.forcedColor);
+        return tag;
+    }
+
+    public static RiftData fromTag(CompoundTag tag) {
+        RiftData data = new RiftData();
+        data.destination = tag.contains("destination") ? VirtualTarget.fromTag(tag.getCompound("destination")) : null;
+        data.properties = tag.contains("properties") ? LinkProperties.fromTag(tag.getCompound("properties")) : null;
+        data.alwaysDelete = tag.getBoolean("alwaysDelete");
+        data.forcedColor = tag.getBoolean("forcedColor");
+        data.color = tag.contains("color") ? RGBA.fromTag(tag.getCompound("color")) : null;
+        return data;
+    }
+
+    public WWidget widget() {
+        WBox box = new WBox(Axis.VERTICAL);
+        WToggleButton alwaysDelete = new WToggleButton().setLabel(new LiteralText("Always Delete")).setOnToggle(this::setAlwaysDelete);
+        alwaysDelete.setToggle(this.alwaysDelete);
+        WToggleButton forcedColor = new WToggleButton().setLabel(new LiteralText("Forced Color")).setOnToggle(this::setForcedColor);
+        forcedColor.setToggle(this.forcedColor);
+
+        box.add(alwaysDelete);
+        box.add(forcedColor);
+
+        return box;
     }
 }

@@ -1,31 +1,28 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import java.util.stream.IntStream;
+
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Codecs;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 public final class Pocket {
-    public static final Codec<Pocket> CODEC = RecordCodecBuilder.create(instance -> {
-        return instance.group(
-                Codec.INT.fieldOf("id").forGetter(a -> a.id),
-                Codecs.BLOCK_BOX.fieldOf("box").forGetter(a -> a.box),
-                VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(a -> a.virtualLocation),
-                PocketColor.CODEC.fieldOf("dyeColor").forGetter(a -> a.dyeColor),
-                PocketColor.CODEC.optionalFieldOf("nextDyeColor", PocketColor.NONE).forGetter(a -> a.nextDyeColor),
-                Codec.INT.fieldOf("count").forGetter(a -> a.count)
-        ).apply(instance, Pocket::new);
-    });
     private static final int BLOCKS_PAINTED_PER_DYE = 1106;
 
     public final int id;
@@ -128,6 +125,29 @@ public final class Pocket {
     public Vector3i getSize() {
         Vec3i dimensions = this.box.getDimensions();
         return new Vector3i(dimensions.getX(), dimensions.getY(), dimensions.getZ());
+    }
+
+    public CompoundTag toTag() {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("id", id);
+        tag.putIntArray("box", IntStream.of(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ).toArray());
+        tag.put("virtualLocation", VirtualLocation.toTag(virtualLocation));
+        tag.putInt("dyeColor", dyeColor.getId());
+        tag.putInt("nextDyeColor", nextDyeColor.getId());
+        tag.putInt("count", count);
+        return tag;
+    }
+
+    public static Pocket fromTag(CompoundTag tag) {
+        int[] box = tag.getIntArray("box");
+        return new Pocket(
+                tag.getInt("id"),
+                new BlockBox(box[0], box[1], box[2], box[3], box[4], box[5]),
+                VirtualLocation.fromTag(tag.getCompound("virtualLocation")),
+                PocketColor.from(tag.getInt("dyeColor")),
+                PocketColor.from(tag.getInt("nextDyeColor")),
+                tag.getInt("count")
+        );
     }
 
     public enum PocketColor {

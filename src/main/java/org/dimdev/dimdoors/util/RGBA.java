@@ -4,12 +4,14 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> {
-    public static final RGBA NONE = new RGBA(-1, -1, -1, -1);
     public static Codec<RGBA> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.FLOAT.fieldOf("red").forGetter(RGBA::getRed),
             Codec.FLOAT.fieldOf("green").forGetter(RGBA::getGreen),
@@ -29,7 +31,7 @@ public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> 
         this.alpha = alpha;
     }
 
-    public float getRed() {
+	public float getRed() {
         return this.red;
     }
 
@@ -129,5 +131,23 @@ public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> 
                 Float.compare(this.red, o.red) +
                 Float.compare(this.green, o.green) +
                 Float.compare(this.blue, o.blue);
+    }
+
+    public static CompoundTag toTag(RGBA rgba) {
+        CompoundTag tag = new CompoundTag();
+        tag.putFloat("red", rgba.red);
+        tag.putFloat("green", rgba.green);
+        tag.putFloat("blue", rgba.blue);
+        tag.putFloat("alpha", rgba.alpha);
+        return tag;
+    }
+
+    public static RGBA fromTag(CompoundTag tag) {
+        return new RGBA(
+                tag.getFloat("red"),
+                tag.getFloat("green"),
+                tag.getFloat("blue"),
+                tag.getFloat("alpha")
+        );
     }
 }

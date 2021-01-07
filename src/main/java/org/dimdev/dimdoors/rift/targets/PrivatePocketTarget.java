@@ -19,11 +19,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundTag;
 
 public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
     private static final Logger LOGGER = LogManager.getLogger();
-
-    public static final Codec<PrivatePocketTarget> CODEC = Codec.unit(PrivatePocketTarget::new);
 
     public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
 
@@ -43,7 +42,6 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 
                 PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
                 this.processEntity(pocket, RiftRegistry.instance().getPocketEntrance(pocket).getBlockEntity(), entity, uuid, yawOffset);
-                return true;
             } else {
                 Location destLoc = RiftRegistry.instance().getPrivatePocketEntrance(uuid); // get the last used entrances
                 if (destLoc == null)
@@ -57,8 +55,8 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
                 }
 
                 this.processEntity(pocket, destLoc.getBlockEntity(), entity, uuid, yawOffset);
-                return true;
             }
+            return true;
         } else {
             return false;
         }

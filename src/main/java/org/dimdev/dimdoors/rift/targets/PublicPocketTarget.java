@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import net.minecraft.nbt.CompoundTag;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -9,11 +11,8 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 public class PublicPocketTarget extends RestoringTarget {
-    public final static Codec<PublicPocketTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.DUMMY).forGetter(RestoringTarget::getTarget)
-    ).apply(instance, PublicPocketTarget::new));
 
-    private VirtualTarget wrappedDestination;
+    private VirtualTarget wrappedDestination = null;
 
     private PublicPocketTarget(VirtualTarget wrappedDestination) {
         this.wrappedDestination = wrappedDestination;
@@ -47,5 +46,17 @@ public class PublicPocketTarget extends RestoringTarget {
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
         return VirtualTargetType.PUBLIC_POCKET;
+    }
+
+    public static CompoundTag toTag(PublicPocketTarget target) {
+        CompoundTag tag = new CompoundTag();
+        if(target.wrappedDestination != null) tag.put("wrappedDestination", VirtualTarget.toTag(target.wrappedDestination));
+        return tag;
+    }
+
+    public static PublicPocketTarget fromTag(CompoundTag tag) {
+        PublicPocketTarget target = new PublicPocketTarget();
+        if(tag.contains("wrappedDestination")) target.wrappedDestination = VirtualTarget.fromTag(tag.getCompound("wrappedDestination"));
+        return target;
     }
 }
