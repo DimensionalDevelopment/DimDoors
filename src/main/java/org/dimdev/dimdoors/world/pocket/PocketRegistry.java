@@ -64,7 +64,7 @@ public class PocketRegistry extends PersistentState {
     public static PocketRegistry getInstance(RegistryKey<World> key) {
         ServerWorld world = DimensionalDoorsInitializer.getWorld(key);
 
-        if (!(ModDimensions.isDimDoorsPocketDimension(world))) {
+        if (!(ModDimensions.isPocketDimension(world))) {
             throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
         }
 

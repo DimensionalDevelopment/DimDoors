@@ -58,7 +58,7 @@ public class VirtualLocation {
     public static VirtualLocation fromLocation(Location location) {
         VirtualLocation virtualLocation = null;
 
-        if (ModDimensions.isDimDoorsPocketDimension(location.world)) {
+        if (ModDimensions.isPocketDimension(location.world)) {
             Pocket pocket = PocketRegistry.getInstance(location.world).getPocketAt(location.pos);
             if (pocket != null) {
                 virtualLocation = pocket.virtualLocation; // TODO: pockets-relative coordinates

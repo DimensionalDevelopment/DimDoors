@@ -31,7 +31,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 
 	@Override
 	public boolean receiveEntity(Entity entity, float yawOffset) {
-		if (!ModDimensions.isDimDoorsPocketDimension(entity.world) && !(ModDimensions.isLimboDimension(entity.world))) {
+		if (!ModDimensions.isPocketDimension(entity.world) && !(ModDimensions.isLimboDimension(entity.world))) {
 			chat(entity, new TranslatableText("rifts.destinations.escape.not_in_pocket_dim"));
 			return false;
 		}

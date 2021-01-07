@@ -65,7 +65,7 @@ public class DetachedRiftBlock extends Block implements RiftProvider<DetachedRif
         if (!(blockEntity instanceof DetachedRiftBlockEntity)) return;
         DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) blockEntity;
 
-        boolean outsidePocket = !ModDimensions.isDimDoorsPocketDimension(world);
+        boolean outsidePocket = !ModDimensions.isPocketDimension(world);
         double speed = 0.1D;
 
         if (rift.closing) {
