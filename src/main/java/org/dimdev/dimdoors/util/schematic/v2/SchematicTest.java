@@ -26,22 +26,22 @@ import net.minecraft.util.math.Vec3i;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class SchematicTest {
-    public static void test() throws IOException {
-        SchematicMetadata meta = new SchematicMetadata("Dimdoors Test Schematic", "Dimensional Development", System.currentTimeMillis(), ImmutableList.of("dimdoors"));
-        BlockEntity be = new BlastFurnaceBlockEntity();
-        be.setPos(new BlockPos(0, 0, 0));
-        CompoundTag beTag = new CompoundTag();
-        be.toTag(beTag);
-        Entity e = new FireballEntity(EntityType.FIREBALL, DimensionalDoorsInitializer.getServer().getOverworld());
-        e.setPos(1, 1, 1);
-        CompoundTag eTag = new CompoundTag();
-        e.saveSelfToTag(eTag);
-        Schematic schematic = new Schematic(2, 2543, meta, (short) 5, (short) 5, (short) 5, Vec3i.ZERO, -1, ImmutableBiMap.of(Blocks.AIR.getDefaultState(), 0, Blocks.NETHERRACK.getDefaultState(), 1), ByteBuffer.wrap(new byte[]{1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0}), ImmutableList.of(beTag), ImmutableList.of(eTag));
-        DataResult<Tag> result = Schematic.CODEC.encodeStart(NbtOps.INSTANCE, schematic);
-        Path path = FabricLoader.getInstance().getConfigDir().resolve("schematic.schem");
-        if (!Files.exists(path)) {
-            Files.createFile(path);
-        }
-        NbtIo.writeCompressed((CompoundTag) result.getOrThrow(false, System.err::println), path.toFile());
-    }
+	public static void test() throws IOException {
+		SchematicMetadata meta = new SchematicMetadata("Dimdoors Test Schematic", "Dimensional Development", System.currentTimeMillis(), ImmutableList.of("dimdoors"));
+		BlockEntity be = new BlastFurnaceBlockEntity();
+		be.setPos(new BlockPos(0, 0, 0));
+		CompoundTag beTag = new CompoundTag();
+		be.toTag(beTag);
+		Entity e = new FireballEntity(EntityType.FIREBALL, DimensionalDoorsInitializer.getServer().getOverworld());
+		e.setPos(1, 1, 1);
+		CompoundTag eTag = new CompoundTag();
+		e.saveSelfToTag(eTag);
+		Schematic schematic = new Schematic(2, 2543, meta, (short) 5, (short) 5, (short) 5, Vec3i.ZERO, -1, ImmutableBiMap.of(Blocks.AIR.getDefaultState(), 0, Blocks.NETHERRACK.getDefaultState(), 1), ByteBuffer.wrap(new byte[]{1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0}), ImmutableList.of(beTag), ImmutableList.of(eTag));
+		DataResult<Tag> result = Schematic.CODEC.encodeStart(NbtOps.INSTANCE, schematic);
+		Path path = FabricLoader.getInstance().getConfigDir().resolve("schematic.schem");
+		if (!Files.exists(path)) {
+			Files.createFile(path);
+		}
+		NbtIo.writeCompressed((CompoundTag) result.getOrThrow(false, System.err::println), path.toFile());
+	}
 }

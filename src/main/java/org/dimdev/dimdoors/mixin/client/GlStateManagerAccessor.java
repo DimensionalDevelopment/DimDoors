@@ -12,8 +12,8 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 @Mixin(GlStateManager.class)
 public interface GlStateManagerAccessor {
-    @Invoker
-    static FloatBuffer invokeGetBuffer(float a, float b, float c, float d) {
-        throw new AssertionError(String.valueOf(a + b + c + d));
-    }
+	@Invoker
+	static FloatBuffer invokeGetBuffer(float a, float b, float c, float d) {
+		throw new AssertionError(String.valueOf(a + b + c + d));
+	}
 }

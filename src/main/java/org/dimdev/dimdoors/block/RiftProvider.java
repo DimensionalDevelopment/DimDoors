@@ -8,5 +8,5 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface RiftProvider<T extends RiftBlockEntity> extends BlockEntityProvider {
-    T getRift(World world, BlockPos pos, BlockState state);
+	T getRift(World world, BlockPos pos, BlockState state);
 }

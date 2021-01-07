@@ -12,7 +12,7 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 @Mixin(GenerationSettings.class)
 public interface GenerationSettingsAccessor {
-    @Mutable
-    @Accessor
-    void setFeatures(List<List<Supplier<ConfiguredFeature<?, ?>>>> features);
+	@Mutable
+	@Accessor
+	void setFeatures(List<List<Supplier<ConfiguredFeature<?, ?>>>> features);
 }

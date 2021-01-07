@@ -137,7 +137,7 @@ public class MonolithEntity extends MobEntity {
     @Override
     protected void mobTick() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
-        if (!(ModDimensions.isLimboDimension(this.world) || ModDimensions.isDimDoorsPocketDimension(this.world))) {
+        if (!(ModDimensions.isLimboDimension(this.world) || ModDimensions.isPocketDimension(this.world))) {
             this.remove();
             super.mobTick();
             return;

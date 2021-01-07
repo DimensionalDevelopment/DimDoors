@@ -19,69 +19,69 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public class RiftBladeItem extends SwordItem {
-    public static final String ID = "rift_blade";
+	public static final String ID = "rift_blade";
 
-    public RiftBladeItem(Settings settings) {
-        super(ToolMaterials.IRON, 3, -2.4F, settings);
+	public RiftBladeItem(Settings settings) {
+		super(ToolMaterials.IRON, 3, -2.4F, settings);
 
-    }
+	}
 
-    @Override
-    public boolean hasGlint(ItemStack itemStack) {
-        return true;
-    }
+	@Override
+	public boolean hasGlint(ItemStack itemStack) {
+		return true;
+	}
 
-    @Override
-    public boolean canRepair(ItemStack item, ItemStack repairingItem) {
-        return Objects.equals(ModItems.STABLE_FABRIC, repairingItem.getItem());
-    }
+	@Override
+	public boolean canRepair(ItemStack item, ItemStack repairingItem) {
+		return Objects.equals(ModItems.STABLE_FABRIC, repairingItem.getItem());
+	}
 
-    @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-        ItemStack stack = player.getStackInHand(hand);
-        HitResult hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
-        if (hit == null) {
-            hit = player.raycast(RaycastHelper.REACH_DISTANCE, 0, false);
-        }
+	@Override
+	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		ItemStack stack = player.getStackInHand(hand);
+		HitResult hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
+		if (hit == null) {
+			hit = player.raycast(RaycastHelper.REACH_DISTANCE, 0, false);
+		}
 
-        if (world.isClient) {
-            if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
-                return new TypedActionResult<>(ActionResult.SUCCESS, stack);
-            } else {
-                player.sendMessage(new TranslatableText(this.getTranslationKey() + ".rift_miss"), true);
-                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
-                return new TypedActionResult<>(ActionResult.FAIL, stack);
-            }
-        }
+		if (world.isClient) {
+			if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
+				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+			} else {
+				player.sendMessage(new TranslatableText(this.getTranslationKey() + ".rift_miss"), true);
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
+				return new TypedActionResult<>(ActionResult.FAIL, stack);
+			}
+		}
 
-        if (RaycastHelper.hitsLivingEntity(hit)) {
-            double damageMultiplier = (double) stack.getDamage() / (double) stack.getMaxDamage();
-            // TODO: gaussian, instead or random
-            double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
-            double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;
+		if (RaycastHelper.hitsLivingEntity(hit)) {
+			double damageMultiplier = (double) stack.getDamage() / (double) stack.getMaxDamage();
+			// TODO: gaussian, instead or random
+			double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
+			double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;
 
-            Vec3d playerVec = player.getPos();
-            Vec3d entityVec = hit.getPos();
-            Vec3d offsetDirection = playerVec.subtract(entityVec).normalize();
-            offsetDirection = offsetDirection.rotateY((float) (offsetRotationYaw * Math.PI) / 180);
+			Vec3d playerVec = player.getPos();
+			Vec3d entityVec = hit.getPos();
+			Vec3d offsetDirection = playerVec.subtract(entityVec).normalize();
+			offsetDirection = offsetDirection.rotateY((float) (offsetRotationYaw * Math.PI) / 180);
 
-            BlockPos teleportPosition = new BlockPos(entityVec.add(offsetDirection.multiply(offsetDistance)));
-            while (world.getBlockState(teleportPosition).getMaterial().blocksMovement())
-                teleportPosition = teleportPosition.up();
-            player.teleport(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
-            player.setYaw((float) (Math.random() * 2 * Math.PI));
+			BlockPos teleportPosition = new BlockPos(entityVec.add(offsetDirection.multiply(offsetDistance)));
+			while (world.getBlockState(teleportPosition).getMaterial().blocksMovement())
+				teleportPosition = teleportPosition.up();
+			player.teleport(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
+			player.setYaw((float) (Math.random() * 2 * Math.PI));
 
-            stack.damage(1, player, a -> {
-            });
-            return new TypedActionResult<>(ActionResult.SUCCESS, stack);
-        } else if (RaycastHelper.hitsRift(hit, world)) {
-            RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
-            rift.teleport(player);
+			stack.damage(1, player, a -> {
+			});
+			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+		} else if (RaycastHelper.hitsRift(hit, world)) {
+			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
+			rift.teleport(player);
 
-            stack.damage(1, player, a -> {
-            });
-            return new TypedActionResult<>(ActionResult.SUCCESS, stack);
-        }
-        return new TypedActionResult<>(ActionResult.FAIL, stack);
-    }
+			stack.damage(1, player, a -> {
+			});
+			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+		}
+		return new TypedActionResult<>(ActionResult.FAIL, stack);
+	}
 }

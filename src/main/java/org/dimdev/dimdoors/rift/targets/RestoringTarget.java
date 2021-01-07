@@ -5,66 +5,66 @@ import org.dimdev.dimdoors.util.RGBA;
 
 public abstract class RestoringTarget extends VirtualTarget {
 
-    public RestoringTarget() {
-    }
+	public RestoringTarget() {
+	}
 
-    @Override
-    public Target receiveOther() {
-        if (this.getTarget() != null) {
-            this.getTarget().location = this.location;
-            return this.getTarget();
-        }
+	@Override
+	public Target receiveOther() {
+		if (this.getTarget() != null) {
+			this.getTarget().location = this.location;
+			return this.getTarget();
+		}
 
-        Location linkTarget = this.makeLinkTarget();
-        if (linkTarget != null) {
-            this.setTarget(RiftReference.tryMakeLocal(this.location, linkTarget));
-            this.getTarget().setLocation(this.location);
-            this.getTarget().register();
+		Location linkTarget = this.makeLinkTarget();
+		if (linkTarget != null) {
+			this.setTarget(RiftReference.tryMakeLocal(this.location, linkTarget));
+			this.getTarget().setLocation(this.location);
+			this.getTarget().register();
 
-            return this.getTarget();
-        } else {
-            return null;
-        }
-    }
+			return this.getTarget();
+		} else {
+			return null;
+		}
+	}
 
-    @Override
-    public boolean shouldInvalidate(Location deletedRift) {
-        if (this.getTarget().shouldInvalidate(deletedRift)) {
-            this.getTarget().unregister();
-        }
-        return false;
-    }
+	@Override
+	public boolean shouldInvalidate(Location deletedRift) {
+		if (this.getTarget().shouldInvalidate(deletedRift)) {
+			this.getTarget().unregister();
+		}
+		return false;
+	}
 
-    @Override
-    public void setLocation(Location location) {
-        super.setLocation(location);
-        if (this.getTarget() != null) {
-            this.getTarget().setLocation(location);
-        }
-    }
+	@Override
+	public void setLocation(Location location) {
+		super.setLocation(location);
+		if (this.getTarget() != null) {
+			this.getTarget().setLocation(location);
+		}
+	}
 
-    @Override
-    public void unregister() {
-        if (this.getTarget() != null) this.getTarget().unregister();
-    }
+	@Override
+	public void unregister() {
+		if (this.getTarget() != null) this.getTarget().unregister();
+	}
 
-    protected abstract VirtualTarget getTarget();
+	protected abstract VirtualTarget getTarget();
 
-    protected abstract void setTarget(VirtualTarget target);
+	protected abstract void setTarget(VirtualTarget target);
 
-    @Override
-    public RGBA getColor() {
-        if (this.getTarget() != null) {
-            this.getTarget().location = this.location;
-            return this.getTarget().getColor();
-        } else {
-            return this.getUnlinkedColor(this.location);
-        }
-    }
+	@Override
+	public RGBA getColor() {
+		if (this.getTarget() != null) {
+			this.getTarget().location = this.location;
+			return this.getTarget().getColor();
+		} else {
+			return this.getUnlinkedColor(this.location);
+		}
+	}
 
-    protected RGBA getUnlinkedColor(Location location) {
-        return new RGBA(0, 1, 1, 1);
-    }
+	protected RGBA getUnlinkedColor(Location location) {
+		return new RGBA(0, 1, 1, 1);
+	}
 
-    public abstract Location makeLinkTarget();
+	public abstract Location makeLinkTarget();
 }

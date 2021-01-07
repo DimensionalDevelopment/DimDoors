@@ -7,6 +7,6 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(ChunkGenerator.class)
 public interface ChunkGeneratorAccessor {
-    @Accessor
-    long getWorldSeed();
+	@Accessor
+	long getWorldSeed();
 }

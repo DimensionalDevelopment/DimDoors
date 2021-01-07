@@ -38,7 +38,7 @@ public class PocketCommand {
     private static int pocket(CommandContext<ServerCommandSource> ctx, boolean setup) throws CommandSyntaxException {
         ServerPlayerEntity player = ctx.getSource().getPlayer();
 
-        if (!ModDimensions.isDimDoorsPocketDimension(player.world)) {
+        if (!ModDimensions.isPocketDimension(player.world)) {
             throw new CommandException(new TranslatableText("commands.generic.dimdoors.not_in_pocket"));
         }
 

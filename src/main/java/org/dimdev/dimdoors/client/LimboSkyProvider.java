@@ -3,17 +3,15 @@ package org.dimdev.dimdoors.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 
-@SuppressWarnings("ConstantConditions")
 public class LimboSkyProvider extends CustomSkyProvider {
     private static final Identifier MOON_RENDER_PATH = new Identifier("dimdoors:textures/other/limbo_moon.png");
     private static final Identifier SUN_RENDER_PATH = new Identifier("dimdoors:textures/other/limbo_sun.png");
@@ -24,20 +22,14 @@ public class LimboSkyProvider extends CustomSkyProvider {
     }
 
     @Override
-    protected void renderSkyBox(MatrixStack matrices, float tickDelta) {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
-        Vec3d color = MinecraftClient.getInstance().world.method_23777(MinecraftClient.getInstance().gameRenderer.getCamera().getBlockPos(), tickDelta);
-        BackgroundRenderer.setFogBlack();
-        RenderSystem.depthMask(false);
-        RenderSystem.enableFog();
-        RenderSystem.color3f((float) color.x, (float) color.y,   (float) color.z);
-        RenderSystem.disableFog();
+    protected void renderSkyBox(MatrixStack matrices) {
         RenderSystem.disableAlphaTest();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
         MinecraftClient.getInstance().getTextureManager().bindTexture(GREY_TEX);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
         for (int i = 0; i < 6; ++i) {
             matrices.push();
             this.multiply(matrices, i);

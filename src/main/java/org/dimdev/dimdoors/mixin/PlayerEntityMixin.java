@@ -13,14 +13,14 @@ import net.minecraft.world.World;
 
 @Mixin(value = PlayerEntity.class, priority = 900)
 public abstract class PlayerEntityMixin extends LivingEntity {
-    private PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
-        super(entityType, world);
-    }
+	private PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+		super(entityType, world);
+	}
 
-    @Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
-    public void handleLimboFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> cir) {
-        if (this.world.getBiome(this.getBlockPos()) == ModBiomes.LIMBO_BIOME) {
-            cir.setReturnValue(false);
-        }
-    }
+	@Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
+	public void handleLimboFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> cir) {
+		if (this.world.getBiome(this.getBlockPos()) == ModBiomes.LIMBO_BIOME) {
+			cir.setReturnValue(false);
+		}
+	}
 }

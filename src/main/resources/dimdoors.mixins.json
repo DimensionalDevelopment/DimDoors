@@ -9,12 +9,11 @@
     "DefaultBiomeFeaturesMixin",
     "DimensionTypeAccessor",
     "DirectionAccessor",
-    "EntityMixin",
     "GenerationSettingsAccessor",
     "ListTagAccessor",
-    "NoiseChunkGeneratorAccessor",
     "PlayerEntityMixin",
-    "RedstoneWireBlockAccessor"
+    "RedstoneWireBlockAccessor",
+    "RegistryKeyMixin"
   ],
   "client": [
     "client.GlStateManagerAccessor",

@@ -12,18 +12,22 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class EternalFluidBlock extends FluidBlock {
-    private static final EntityTarget TARGET = new EscapeTarget(true);
+	private static final EntityTarget TARGET = new EscapeTarget(true);
 
-    public EternalFluidBlock(Block.Settings settings) {
-        super(ModFluids.ETERNAL_FLUID, settings);
-    }
+	public EternalFluidBlock(Block.Settings settings) {
+		super(ModFluids.ETERNAL_FLUID, settings);
+	}
 
-    @Override
-    public void onEntityCollision(BlockState blockState, World world, BlockPos blockPos, Entity entity) {
-        try {
-            TARGET.receiveEntity(entity, entity.yaw);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
+	@Override
+	public void onEntityCollision(BlockState blockState, World world, BlockPos blockPos, Entity entity) {
+		if (world.isClient) {
+			return;
+		}
+
+		try {
+			TARGET.receiveEntity(entity, entity.yaw);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
 }

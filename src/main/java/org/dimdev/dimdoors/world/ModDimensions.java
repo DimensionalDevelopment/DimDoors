@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
 
@@ -45,12 +46,12 @@ public final class ModDimensions {
     public static ServerWorld PUBLIC_POCKET_DIMENSION;
     public static ServerWorld DUNGEON_POCKET_DIMENSION;
 
-    public static boolean isDimDoorsPocketDimension(World world) {
-        return isDimDoorsPocketDimension(world.getRegistryKey());
+    public static boolean isPocketDimension(World world) {
+        return isPocketDimension(world.getRegistryKey());
     }
 
-    public static boolean isDimDoorsPocketDimension(RegistryKey<World> type) {
-        return type == PERSONAL || type == PUBLIC || type == DUNGEON;
+    public static boolean isPocketDimension(RegistryKey<World> type) {
+        return Objects.equals(type, PERSONAL) || Objects.equals(type, PUBLIC) || Objects.equals(type, DUNGEON);
     }
 
     public static boolean isLimbo(StructureWorldAccess world) {
@@ -58,7 +59,7 @@ public final class ModDimensions {
     }
 
     public static boolean isLimboDimension(World world) {
-        return world != null && (world.getRegistryKey() == LIMBO || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION);
+        return world != null && (world.getRegistryKey().equals(LIMBO) || world.getDimension() == LIMBO_TYPE || world == LIMBO_DIMENSION);
     }
 
     public static void init() {

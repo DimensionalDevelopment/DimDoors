@@ -8,40 +8,40 @@ import net.minecraft.util.math.Direction;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {
-    public static final Class<EntityTarget> ENTITY = EntityTarget.class;
-    public static final Class<ItemTarget> ITEM = ItemTarget.class;
-    public static final Class<FluidTarget> FLUID = FluidTarget.class;
-    public static final Class<RedstoneTarget> REDSTONE = RedstoneTarget.class;
+	public static final Class<EntityTarget> ENTITY = EntityTarget.class;
+	public static final Class<ItemTarget> ITEM = ItemTarget.class;
+	public static final Class<FluidTarget> FLUID = FluidTarget.class;
+	public static final Class<RedstoneTarget> REDSTONE = RedstoneTarget.class;
 
-    public static void registerDefaultTargets() {
-        DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativeYaw) -> {
-            EntityUtils.chat(entity, new TranslatableText("rifts.unlinked2"));
-            return false;
-        });
-        DefaultTargets.registerDefaultTarget(ITEM, stack -> false);
+	public static void registerDefaultTargets() {
+		DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativeYaw) -> {
+			EntityUtils.chat(entity, new TranslatableText("rifts.unlinked2"));
+			return false;
+		});
+		DefaultTargets.registerDefaultTarget(ITEM, stack -> false);
 
-        DefaultTargets.registerDefaultTarget(FLUID, new FluidTarget() {
-            @Override
-            public boolean addFluidFlow(Direction relativeFacing, Fluid fluid, int level) {
-                return false;
-            }
+		DefaultTargets.registerDefaultTarget(FLUID, new FluidTarget() {
+			@Override
+			public boolean addFluidFlow(Direction relativeFacing, Fluid fluid, int level) {
+				return false;
+			}
 
-            @Override
-            public void subtractFluidFlow(Direction relativeFacing, Fluid fluid, int level) {
-                throw new RuntimeException("Subtracted fluid flow that was never accepted");
-            }
-        });
+			@Override
+			public void subtractFluidFlow(Direction relativeFacing, Fluid fluid, int level) {
+				throw new RuntimeException("Subtracted fluid flow that was never accepted");
+			}
+		});
 
-        DefaultTargets.registerDefaultTarget(REDSTONE, new RedstoneTarget() {
-            @Override
-            public boolean addRedstonePower(Direction relativeFacing, int strength) {
-                return false;
-            }
+		DefaultTargets.registerDefaultTarget(REDSTONE, new RedstoneTarget() {
+			@Override
+			public boolean addRedstonePower(Direction relativeFacing, int strength) {
+				return false;
+			}
 
-            @Override
-            public void subtractRedstonePower(Direction relativeFacing, int strength) {
-                throw new RuntimeException("Subtracted redstone that was never accepted");
-            }
-        });
-    }
+			@Override
+			public void subtractRedstonePower(Direction relativeFacing, int strength) {
+				throw new RuntimeException("Subtracted redstone that was never accepted");
+			}
+		});
+	}
 }
