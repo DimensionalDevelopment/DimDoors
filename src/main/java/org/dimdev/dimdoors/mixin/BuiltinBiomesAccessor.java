@@ -10,8 +10,8 @@ import net.minecraft.world.biome.BuiltinBiomes;
 
 @Mixin(BuiltinBiomes.class)
 public interface BuiltinBiomesAccessor {
-    @Accessor("BY_RAW_ID")
-    static Int2ObjectMap<RegistryKey<Biome>> getIdMap() {
-        throw new AssertionError();
-    }
+	@Accessor("BY_RAW_ID")
+	static Int2ObjectMap<RegistryKey<Biome>> getIdMap() {
+		throw new AssertionError();
+	}
 }

@@ -11,6 +11,6 @@ import net.minecraft.world.BlockView;
 
 @Mixin(RedstoneWireBlock.class)
 public interface RedstoneWireBlockAccessor {
-    @Invoker
-    WireConnection invokeGetRenderConnectionType(BlockView blockView, BlockPos blockPos, Direction direction);
+	@Invoker
+	WireConnection invokeGetRenderConnectionType(BlockView blockView, BlockPos blockPos, Direction direction);
 }

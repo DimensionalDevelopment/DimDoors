@@ -32,106 +32,106 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public class RiftSignatureItem extends Item {
-    public static final String ID = "rift_signature";
+	public static final String ID = "rift_signature";
 
-    public RiftSignatureItem(Settings settings) {
-        super(settings);
-    }
+	public RiftSignatureItem(Settings settings) {
+		super(settings);
+	}
 
-    @Override
-    public boolean hasGlint(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().contains("destination");
-    }
+	@Override
+	public boolean hasGlint(ItemStack stack) {
+		return stack.getTag() != null && stack.getTag().contains("destination");
+	}
 
-    @Override
-    public ActionResult useOnBlock(@NotNull ItemUsageContext itemUsageContext) {
-        PlayerEntity player = itemUsageContext.getPlayer();
-        World world = itemUsageContext.getWorld();
-        BlockPos pos = itemUsageContext.getBlockPos();
-        Hand hand = itemUsageContext.getHand();
-        Direction side = itemUsageContext.getSide();
+	@Override
+	public ActionResult useOnBlock(@NotNull ItemUsageContext itemUsageContext) {
+		PlayerEntity player = itemUsageContext.getPlayer();
+		World world = itemUsageContext.getWorld();
+		BlockPos pos = itemUsageContext.getBlockPos();
+		Hand hand = itemUsageContext.getHand();
+		Direction side = itemUsageContext.getSide();
 
-        ItemPlacementContext placementContext = new ItemPlacementContext(itemUsageContext);
+		ItemPlacementContext placementContext = new ItemPlacementContext(itemUsageContext);
 
-        ItemStack stack = player.getStackInHand(hand);
-        pos = world.getBlockState(pos).getBlock().canReplace(world.getBlockState(pos), placementContext) ? pos : pos.offset(side);
+		ItemStack stack = player.getStackInHand(hand);
+		pos = world.getBlockState(pos).getBlock().canReplace(world.getBlockState(pos), placementContext) ? pos : pos.offset(side);
 
-        // Fail if the player can't place a block there
-        if (!player.canPlaceOn(pos, side.getOpposite(), stack)) {
-            return ActionResult.FAIL;
-        }
+		// Fail if the player can't place a block there
+		if (!player.canPlaceOn(pos, side.getOpposite(), stack)) {
+			return ActionResult.FAIL;
+		}
 
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
-        }
+		if (world.isClient) {
+			return ActionResult.SUCCESS;
+		}
 
-        RotatedLocation target = getSource(stack);
+		RotatedLocation target = getSource(stack);
 
-        if (target == null) {
-            // The link signature has not been used. Store its current target as the first location.
-            setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.yaw, 0));
-            player.sendMessage(new TranslatableText(this.getTranslationKey() + ".stored"), true);
-            world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
-        } else {
-            // Place a rift at the saved point
-            if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
-                if (!target.getBlockState().getBlock().canMobSpawnInside()) {
-                    player.sendMessage(new TranslatableText("tools.target_became_block"), true);
-                    clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
-                    return ActionResult.FAIL;
-                }
-                World sourceWorld = DimensionalDoorsInitializer.getWorld(target.world);
-                sourceWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
-                DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
-                rift1.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerWorld) world, pos)));
-                rift1.register();
-            }
+		if (target == null) {
+			// The link signature has not been used. Store its current target as the first location.
+			setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.yaw, 0));
+			player.sendMessage(new TranslatableText(this.getTranslationKey() + ".stored"), true);
+			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+		} else {
+			// Place a rift at the saved point
+			if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
+				if (!target.getBlockState().getBlock().canMobSpawnInside()) {
+					player.sendMessage(new TranslatableText("tools.target_became_block"), true);
+					clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
+					return ActionResult.FAIL;
+				}
+				World sourceWorld = DimensionalDoorsInitializer.getWorld(target.world);
+				sourceWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
+				DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
+				rift1.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerWorld) world, pos)));
+				rift1.register();
+			}
 
-            // Place a rift at the target point
-            world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
-            DetachedRiftBlockEntity rift2 = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
-            rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerWorld) world, pos), target));
-            rift2.register();
+			// Place a rift at the target point
+			world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
+			DetachedRiftBlockEntity rift2 = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
+			rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerWorld) world, pos), target));
+			rift2.register();
 
-            stack.damage(1, player, a -> {
-            }); // TODO: calculate damage based on position?
+			stack.damage(1, player, a -> {
+			}); // TODO: calculate damage based on position?
 
-            clearSource(stack);
-            player.sendMessage(new TranslatableText(this.getTranslationKey() + ".created"), true);
-            // null = send sound to the player too, we have to do this because this code is not run client-side
-            world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
-        }
+			clearSource(stack);
+			player.sendMessage(new TranslatableText(this.getTranslationKey() + ".created"), true);
+			// null = send sound to the player too, we have to do this because this code is not run client-side
+			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+		}
 
-        return ActionResult.SUCCESS;
-    }
+		return ActionResult.SUCCESS;
+	}
 
-    public static void setSource(ItemStack itemStack, RotatedLocation destination) {
-        if (!itemStack.hasTag()) itemStack.setTag(new CompoundTag());
-        itemStack.getTag().put("destination", RotatedLocation.serialize(destination));
-    }
+	public static void setSource(ItemStack itemStack, RotatedLocation destination) {
+		if (!itemStack.hasTag()) itemStack.setTag(new CompoundTag());
+		itemStack.getTag().put("destination", RotatedLocation.serialize(destination));
+	}
 
-    public static void clearSource(ItemStack itemStack) {
-        if (itemStack.hasTag()) {
-            itemStack.getTag().remove("destination");
-        }
-    }
+	public static void clearSource(ItemStack itemStack) {
+		if (itemStack.hasTag()) {
+			itemStack.getTag().remove("destination");
+		}
+	}
 
-    public static RotatedLocation getSource(ItemStack itemStack) {
-        if (itemStack.hasTag() && itemStack.getTag().contains("destination")) {
-            return RotatedLocation.deserialize(itemStack.getTag().getCompound("destination"));
-        } else {
-            return null;
-        }
-    }
+	public static RotatedLocation getSource(ItemStack itemStack) {
+		if (itemStack.hasTag() && itemStack.getTag().contains("destination")) {
+			return RotatedLocation.deserialize(itemStack.getTag().getCompound("destination"));
+		} else {
+			return null;
+		}
+	}
 
-    @Override
-    @Environment(EnvType.CLIENT)
-    public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
-        RotatedLocation transform = getSource(itemStack);
-        if (transform != null) {
-            list.add(new TranslatableText(this.getTranslationKey() + ".bound.info", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId()));
-        } else {
-            list.add(new TranslatableText(this.getTranslationKey() + ".unbound.info"));
-        }
-    }
+	@Override
+	@Environment(EnvType.CLIENT)
+	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
+		RotatedLocation transform = getSource(itemStack);
+		if (transform != null) {
+			list.add(new TranslatableText(this.getTranslationKey() + ".bound.info", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId()));
+		} else {
+			list.add(new TranslatableText(this.getTranslationKey() + ".unbound.info"));
+		}
+	}
 }

@@ -10,8 +10,8 @@ import net.minecraft.world.dimension.DimensionType;
 
 @Mixin(DimensionType.class)
 public interface DimensionTypeAccessor {
-    @Invoker("<init>")
-    static DimensionType invokeInit(OptionalLong fixedTime, boolean hasSkylight, boolean hasCeiling, boolean ultrawarm, boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks, boolean hasRaids, int logicalHeight, Identifier infiniburn, Identifier skyProperties, float ambientLight) {
-        throw new AssertionError();
-    }
+	@Invoker("<init>")
+	static DimensionType invokeInit(OptionalLong fixedTime, boolean hasSkylight, boolean hasCeiling, boolean ultrawarm, boolean natural, double coordinateScale, boolean piglinSafe, boolean bedWorks, boolean respawnAnchorWorks, boolean hasRaids, int logicalHeight, Identifier infiniburn, Identifier skyProperties, float ambientLight) {
+		throw new AssertionError();
+	}
 }

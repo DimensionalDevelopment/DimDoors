@@ -15,68 +15,68 @@ import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.registry.Registry;
 
 public class SchematicBlockPalette {
-    public static final UnboundedMapCodec<BlockState, Integer> CODEC = Codec.unboundedMap(Entry.CODEC, Codec.INT);
+	public static final UnboundedMapCodec<BlockState, Integer> CODEC = Codec.unboundedMap(Entry.CODEC, Codec.INT);
 
-    private static <T extends Comparable<T>> BlockState process(Property<T> property, String value, BlockState state) {
-        return state.with(property, property.parse(value).orElseThrow(NullPointerException::new));
-    }
+	private static <T extends Comparable<T>> BlockState process(Property<T> property, String value, BlockState state) {
+		return state.with(property, property.parse(value).orElseThrow(NullPointerException::new));
+	}
 
-    public interface Entry {
-        Codec<BlockState> CODEC = Codec.STRING.comapFlatMap(Entry::to, Entry::from);
+	public interface Entry {
+		Codec<BlockState> CODEC = Codec.STRING.comapFlatMap(Entry::to, Entry::from);
 
-        static DataResult<BlockState> to(String string) {
-            if (!string.contains("[") && !string.contains("]")) {
-                BlockState state = Registry.BLOCK.get(new Identifier(string)).getDefaultState();
-                return DataResult.success(state);
-            } else {
-                Block block = Objects.requireNonNull(Registry.BLOCK.get(new Identifier(string.substring(0, string.indexOf("[")))));
-                BlockState state = block.getDefaultState();
+		static DataResult<BlockState> to(String string) {
+			if (!string.contains("[") && !string.contains("]")) {
+				BlockState state = Registry.BLOCK.get(new Identifier(string)).getDefaultState();
+				return DataResult.success(state);
+			} else {
+				Block block = Objects.requireNonNull(Registry.BLOCK.get(new Identifier(string.substring(0, string.indexOf("[")))));
+				BlockState state = block.getDefaultState();
 
-                System.out.println(state);
+				System.out.println(state);
 
-                String[] stateArray = string.substring(string.indexOf("[") + 1, string.length() - 1).split(",");
-                for (String stateString : stateArray) {
-                    Property<?> property = Objects.requireNonNull(block.getStateManager().getProperty(stateString.split("=")[0]));
-                    state = process(property, stateString.split("=")[1], state);
-                }
+				String[] stateArray = string.substring(string.indexOf("[") + 1, string.length() - 1).split(",");
+				for (String stateString : stateArray) {
+					Property<?> property = Objects.requireNonNull(block.getStateManager().getProperty(stateString.split("=")[0]));
+					state = process(property, stateString.split("=")[1], state);
+				}
 
-                System.out.println(state);
+				System.out.println(state);
 
-                return DataResult.success(state);
-            }
-        }
+				return DataResult.success(state);
+			}
+		}
 
-        static String from(BlockState state) {
-            StringBuilder builder = new StringBuilder();
-            builder.append(Objects.requireNonNull(Registry.BLOCK.getId(state.getBlock())));
-            // Ensures that [ and ] are only added when properties are present
-            boolean flag = true;
-            Iterator<Property<?>> iterator = state.getProperties().iterator();
-            while (iterator.hasNext()) {
-                if (flag) {
-                    builder.append("[");
-                    flag = false;
-                }
+		static String from(BlockState state) {
+			StringBuilder builder = new StringBuilder();
+			builder.append(Objects.requireNonNull(Registry.BLOCK.getId(state.getBlock())));
+			// Ensures that [ and ] are only added when properties are present
+			boolean flag = true;
+			Iterator<Property<?>> iterator = state.getProperties().iterator();
+			while (iterator.hasNext()) {
+				if (flag) {
+					builder.append("[");
+					flag = false;
+				}
 
-                Property<?> property = iterator.next();
-                builder.append(property.getName());
-                builder.append("=");
+				Property<?> property = iterator.next();
+				builder.append(property.getName());
+				builder.append("=");
 
-                if (state.get(property) instanceof Enum<?>) {
-                    // Enum might have override toString
-                    builder.append(((StringIdentifiable) state.get(property)).asString());
-                } else {
-                    builder.append(state.get(property).toString());
-                }
+				if (state.get(property) instanceof Enum<?>) {
+					// Enum might have override toString
+					builder.append(((StringIdentifiable) state.get(property)).asString());
+				} else {
+					builder.append(state.get(property).toString());
+				}
 
-                if (iterator.hasNext()) {
-                    builder.append(",");
-                }
-            }
-            if (!flag) {
-                builder.append("]");
-            }
-            return builder.toString();
-        }
-    }
+				if (iterator.hasNext()) {
+					builder.append(",");
+				}
+			}
+			if (!flag) {
+				builder.append("]");
+			}
+			return builder.toString();
+		}
+	}
 }

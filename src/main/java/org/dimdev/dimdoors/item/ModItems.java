@@ -125,42 +125,42 @@ public final class ModItems {
 
 
 	@RegistryObject("world_thread")
-	public static final Item WORLD_THREAD = create( new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WORLD_THREAD = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("rift_configuration_tool")
-	public static final Item RIFT_CONFIGURATION_TOOL = create( new RiftConfigurationToolItem());
+	public static final Item RIFT_CONFIGURATION_TOOL = create(new RiftConfigurationToolItem());
 
 	@RegistryObject("rift_blade")
 	public static final Item RIFT_BLADE = create(new RiftBladeItem(new Item.Settings().maxDamage(100).group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("rift_remover")
-	public static final Item RIFT_REMOVER = create( new RiftRemoverItem(new Item.Settings().maxCount(1).maxDamage(100).group(DIMENSIONAL_DOORS)));
+	public static final Item RIFT_REMOVER = create(new RiftRemoverItem(new Item.Settings().maxCount(1).maxDamage(100).group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("rift_signature")
-	public static final Item RIFT_SIGNATURE = create( new RiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(1).group(DIMENSIONAL_DOORS)));
+	public static final Item RIFT_SIGNATURE = create(new RiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(1).group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("stabilized_rift_signature")
-	public static final Item STABILIZED_RIFT_SIGNATURE = create( new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(DIMENSIONAL_DOORS)));
+	public static final Item STABILIZED_RIFT_SIGNATURE = create(new StabilizedRiftSignatureItem(new Item.Settings().maxCount(1).maxDamage(20).group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("rift_stabilizer")
-	public static final Item RIFT_STABILIZER = create( new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
+	public static final Item RIFT_STABILIZER = create(new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
 
 
 	@RegistryObject("world_thread_helmet")
-	public static final Item WORLD_THREAD_HELMET = create( new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.HEAD, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WORLD_THREAD_HELMET = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.HEAD, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("world_thread_chestplate")
-	public static final Item WORLD_THREAD_CHESTPLATE = create( new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.CHEST, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WORLD_THREAD_CHESTPLATE = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.CHEST, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("world_thread_leggings")
-	public static final Item WORLD_THREAD_LEGGINGS = create( new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.LEGS, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WORLD_THREAD_LEGGINGS = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.LEGS, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("world_thread_boots")
-	public static final Item WORLD_THREAD_BOOTS = create( new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.FEET, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WORLD_THREAD_BOOTS = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.FEET, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 
 	@RegistryObject("stable_fabric")
-	public static final Item STABLE_FABRIC = create( new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item STABLE_FABRIC = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("white_fabric")
 	public static final Item WHITE_FABRIC = create(ModBlocks.WHITE_FABRIC);
@@ -263,10 +263,10 @@ public final class ModItems {
 	public static final Item UNRAVELLED_FABRIC = create(ModBlocks.UNRAVELLED_FABRIC);
 
 	@RegistryObject("creepy_record")
-	public static final Item CREEPY_RECORD = create( new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item CREEPY_RECORD = create(new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("white_void_record")
-	public static final Item WHITE_VOID_RECORD = create( new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WHITE_VOID_RECORD = create(new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("marking_plate")
 	public static final Item MARKING_PLATE = create(ModBlocks.MARKING_PLATE);
@@ -275,7 +275,7 @@ public final class ModItems {
 	public static final Item ETERNAL_FLUID = create(ModBlocks.ETERNAL_FLUID);
 
 	@RegistryObject("eternal_fluid_bucket")
-	public static final Item ETERNAL_FLUID_BUCKET = create( new BucketItem(ModFluids.ETERNAL_FLUID, new Item.Settings().group(DIMENSIONAL_DOORS).recipeRemainder(Items.BUCKET).maxCount(1)));
+	public static final Item ETERNAL_FLUID_BUCKET = create(new BucketItem(ModFluids.ETERNAL_FLUID, new Item.Settings().group(DIMENSIONAL_DOORS).recipeRemainder(Items.BUCKET).maxCount(1)));
 
 	private static Item create(Block block) {
 		return create(new BlockItem(block, (new Item.Settings()).group(DIMENSIONAL_DOORS)));

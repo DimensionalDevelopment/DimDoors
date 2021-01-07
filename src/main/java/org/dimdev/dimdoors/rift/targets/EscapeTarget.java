@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import com.mojang.serialization.Codec;
@@ -16,7 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 import static org.dimdev.dimdoors.util.EntityUtils.chat;
@@ -65,18 +63,18 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 		}
 	}
 
-    @Override
-    public VirtualTargetType<? extends VirtualTarget> getType() {
-        return VirtualTargetType.ESCAPE;
-    }
+	@Override
+	public VirtualTargetType<? extends VirtualTarget> getType() {
+		return VirtualTargetType.ESCAPE;
+	}
 
-    public static CompoundTag toTag(EscapeTarget virtualTarget) {
-        CompoundTag tag = new CompoundTag();
-        tag.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);
-        return tag;
-    }
+	public static CompoundTag toTag(EscapeTarget virtualTarget) {
+		CompoundTag tag = new CompoundTag();
+		tag.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);
+		return tag;
+	}
 
-    public static EscapeTarget fromTag(CompoundTag nbt) {
-        return new EscapeTarget(nbt.getBoolean("canEscapeLimbo"));
-    }
+	public static EscapeTarget fromTag(CompoundTag nbt) {
+		return new EscapeTarget(nbt.getBoolean("canEscapeLimbo"));
+	}
 }

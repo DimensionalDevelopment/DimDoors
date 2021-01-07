@@ -7,8 +7,8 @@ import net.minecraft.util.math.Direction;
 
 @Mixin(Direction.class)
 public interface DirectionAccessor {
-    @Accessor("HORIZONTAL")
-    static Direction[] getHorizontal() {
-        throw new AssertionError();
-    }
+	@Accessor("HORIZONTAL")
+	static Direction[] getHorizontal() {
+		throw new AssertionError();
+	}
 }

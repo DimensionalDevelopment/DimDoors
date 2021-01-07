@@ -19,39 +19,39 @@ import net.minecraft.world.World;
 
 // TODO: Make this placeable on rifts
 public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
-    public DimensionalTrapdoorBlock(Block.Settings settings) {
-        super(settings);
-    }
+	public DimensionalTrapdoorBlock(Block.Settings settings) {
+		super(settings);
+	}
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (!world.isClient && state.get(TrapdoorBlock.OPEN)) {
-            this.getRift(world, pos, state).teleport(entity);
-        }
-    }
+	@Override
+	@SuppressWarnings("deprecation")
+	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+		if (!world.isClient && state.get(TrapdoorBlock.OPEN)) {
+			this.getRift(world, pos, state).teleport(entity);
+		}
+	}
 
 
-    @Override
-    public BlockEntity createBlockEntity(BlockView blockView) {
-        return new EntranceRiftBlockEntity();
-    }
+	@Override
+	public BlockEntity createBlockEntity(BlockView blockView) {
+		return new EntranceRiftBlockEntity();
+	}
 
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-        state = state.cycle(OPEN);
-        world.setBlockState(pos, state, 2);
+	@Override
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+		state = state.cycle(OPEN);
+		world.setBlockState(pos, state, 2);
 
-        if (state.get(WATERLOGGED)) {
-            world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-        }
+		if (state.get(WATERLOGGED)) {
+			world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		}
 
-        this.playToggleSound(player, world, pos, state.get(OPEN));
-        return ActionResult.SUCCESS;
-    }
+		this.playToggleSound(player, world, pos, state.get(OPEN));
+		return ActionResult.SUCCESS;
+	}
 
-    @Override
-    public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
-        return (EntranceRiftBlockEntity) world.getBlockEntity(pos);
-    }
+	@Override
+	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
+		return (EntranceRiftBlockEntity) world.getBlockEntity(pos);
+	}
 }

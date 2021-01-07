@@ -11,23 +11,23 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 public class SchematicStorage {
-    private final ResourceManager resourceManager;
-    private final Cache<Identifier, Schematic> cache = CacheBuilder.newBuilder().build();
+	private final ResourceManager resourceManager;
+	private final Cache<Identifier, Schematic> cache = CacheBuilder.newBuilder().build();
 
-    public SchematicStorage(ResourceManager resourceManager) {
-        this.resourceManager = resourceManager;
-    }
+	public SchematicStorage(ResourceManager resourceManager) {
+		this.resourceManager = resourceManager;
+	}
 
-    public Schematic get(Identifier id) {
-        try {
-            return this.cache.get(id, () -> {
-                        try (InputStream in = this.resourceManager.getResource(id).getInputStream()) {
-                            return Schematic.fromTag(NbtIo.readCompressed(in));
-                        }
-                    }
-            );
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	public Schematic get(Identifier id) {
+		try {
+			return this.cache.get(id, () -> {
+						try (InputStream in = this.resourceManager.getResource(id).getInputStream()) {
+							return Schematic.fromTag(NbtIo.readCompressed(in));
+						}
+					}
+			);
+		} catch (ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

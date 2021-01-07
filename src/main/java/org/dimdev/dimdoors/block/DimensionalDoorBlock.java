@@ -21,79 +21,79 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity>, ConditionalBlockEntityProvider {
-    public DimensionalDoorBlock(Settings settings) {
-        super(settings);
-    }
+	public DimensionalDoorBlock(Settings settings) {
+		super(settings);
+	}
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (world.isClient) {
-            return;
-        }
+	@Override
+	@SuppressWarnings("deprecation")
+	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+		if (world.isClient) {
+			return;
+		}
 
-        BlockState doorState = world.getBlockState(state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos);
+		BlockState doorState = world.getBlockState(state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos);
 
-        if (doorState.getBlock() == this && doorState.get(DoorBlock.OPEN)) { // '== this' to check if not half-broken
-            this.getRift(world, pos, state).teleport(entity);
-        }
-    }
+		if (doorState.getBlock() == this && doorState.get(DoorBlock.OPEN)) { // '== this' to check if not half-broken
+			this.getRift(world, pos, state).teleport(entity);
+		}
+	}
 
-    @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
-        state = state.cycle(OPEN);
-        world.setBlockState(pos, state, 10);
-        world.syncWorldEvent(player, state.get(OPEN) ? this.material == Material.METAL ? 1005 : 1006 : this.material == Material.METAL ? 1011 : 1012, pos, 0);
-        return ActionResult.SUCCESS;
-    }
+	@Override
+	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+		state = state.cycle(OPEN);
+		world.setBlockState(pos, state, 10);
+		world.syncWorldEvent(player, state.get(OPEN) ? this.material == Material.METAL ? 1005 : 1006 : this.material == Material.METAL ? 1011 : 1012, pos, 0);
+		return ActionResult.SUCCESS;
+	}
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public boolean canReplace(BlockState state, ItemPlacementContext context) {
-        return super.canReplace(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT;
-    }
+	@Override
+	@SuppressWarnings("deprecation")
+	public boolean canReplace(BlockState state, ItemPlacementContext context) {
+		return super.canReplace(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT;
+	}
 
-    @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new EntranceRiftBlockEntity();
-    }
+	@Override
+	public BlockEntity createBlockEntity(BlockView world) {
+		return new EntranceRiftBlockEntity();
+	}
 
-    @Override
-    public boolean hasBlockEntity(BlockState blockState) {
-        return blockState.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
-    }
+	@Override
+	public boolean hasBlockEntity(BlockState blockState) {
+		return blockState.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
+	}
 
-    @Override
-    public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState blockState, BlockEntity entity, ItemStack stack) {
-        if (entity instanceof EntranceRiftBlockEntity) {
-            world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
-            ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) entity).getData());
-        }
-    }
+	@Override
+	public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState blockState, BlockEntity entity, ItemStack stack) {
+		if (entity instanceof EntranceRiftBlockEntity) {
+			world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
+			((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) entity).getData());
+		}
+	}
 
-    @Override
-    public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
-        BlockEntity bottomEntity;
-        BlockEntity topEntity;
+	@Override
+	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
+		BlockEntity bottomEntity;
+		BlockEntity topEntity;
 
-        if (state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
-            bottomEntity = world.getBlockEntity(pos);
-            topEntity = world.getBlockEntity(pos.up());
-        } else {
-            bottomEntity = world.getBlockEntity(pos.down());
-            topEntity = world.getBlockEntity(pos);
-        }
+		if (state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+			bottomEntity = world.getBlockEntity(pos);
+			topEntity = world.getBlockEntity(pos.up());
+		} else {
+			bottomEntity = world.getBlockEntity(pos.down());
+			topEntity = world.getBlockEntity(pos);
+		}
 
-        // TODO: Also notify player in case of error, don't crash
-        if (bottomEntity instanceof EntranceRiftBlockEntity && topEntity instanceof EntranceRiftBlockEntity) {
-            LOGGER.warn("Dimensional door at " + pos + " in world " + world + " contained two rifts, please report this. Defaulting to bottom.");
-            return (EntranceRiftBlockEntity) bottomEntity;
-        } else if (bottomEntity instanceof EntranceRiftBlockEntity) {
-            return (EntranceRiftBlockEntity) bottomEntity;
-        } else if (topEntity instanceof EntranceRiftBlockEntity) {
-            return (EntranceRiftBlockEntity) topEntity;
-        } else {
-            throw new IllegalStateException("Dimensional door at " + pos + " in world " + world + " contained no rift.");
-        }
-    }
+		// TODO: Also notify player in case of error, don't crash
+		if (bottomEntity instanceof EntranceRiftBlockEntity && topEntity instanceof EntranceRiftBlockEntity) {
+			LOGGER.warn("Dimensional door at " + pos + " in world " + world + " contained two rifts, please report this. Defaulting to bottom.");
+			return (EntranceRiftBlockEntity) bottomEntity;
+		} else if (bottomEntity instanceof EntranceRiftBlockEntity) {
+			return (EntranceRiftBlockEntity) bottomEntity;
+		} else if (topEntity instanceof EntranceRiftBlockEntity) {
+			return (EntranceRiftBlockEntity) topEntity;
+		} else {
+			throw new IllegalStateException("Dimensional door at " + pos + " in world " + world + " contained no rift.");
+		}
+	}
 }

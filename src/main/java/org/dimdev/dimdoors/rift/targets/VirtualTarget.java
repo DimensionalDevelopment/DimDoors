@@ -3,10 +3,8 @@ package org.dimdev.dimdoors.rift.targets;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.RGBA;
 
 import net.minecraft.nbt.CompoundTag;
@@ -22,97 +20,98 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {
-    public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, SimpleRegistry<VirtualTargetType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_type")), Lifecycle.stable())).buildAndRegister();
-    public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
+	public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, SimpleRegistry<VirtualTargetType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_type")), Lifecycle.stable())).buildAndRegister();
+	public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
-    protected Location location;
+	protected Location location;
 
-    public static VirtualTarget fromTag(CompoundTag nbt) {
-        return Objects.requireNonNull(REGISTRY.get(new Identifier(nbt.getString("type")))).fromTag(nbt);
-    }
+	public static VirtualTarget fromTag(CompoundTag nbt) {
+		return Objects.requireNonNull(REGISTRY.get(new Identifier(nbt.getString("type")))).fromTag(nbt);
+	}
 
-    public static CompoundTag toTag(VirtualTarget virtualTarget) {
-        String type = REGISTRY.getId(virtualTarget.getType()).toString();
+	public static CompoundTag toTag(VirtualTarget virtualTarget) {
+		String type = REGISTRY.getId(virtualTarget.getType()).toString();
 
-        CompoundTag tag = virtualTarget.getType().toTag(virtualTarget);
-        tag.putString("type", type);
+		CompoundTag tag = virtualTarget.getType().toTag(virtualTarget);
+		tag.putString("type", type);
 
-        return tag;
-    }
+		return tag;
+	}
 
-    public void register() {
-    }
+	public void register() {
+	}
 
-    public void unregister() {
-    }
+	public void unregister() {
+	}
 
-    public abstract VirtualTargetType<? extends VirtualTarget> getType();
+	public abstract VirtualTargetType<? extends VirtualTarget> getType();
 
-    public boolean shouldInvalidate(Location riftDeleted) {
-        return false;
-    }
+	public boolean shouldInvalidate(Location riftDeleted) {
+		return false;
+	}
 
-    public RGBA getColor() {
-        return this.getType().getColor();
-    }
+	public RGBA getColor() {
+		return this.getType().getColor();
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || this.getClass() != o.getClass()) return false;
-        VirtualTarget that = (VirtualTarget) o;
-        return Objects.equals(this.location, that.location);
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || this.getClass() != o.getClass()) return false;
+		VirtualTarget that = (VirtualTarget) o;
+		return Objects.equals(this.location, that.location);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.location);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.location);
+	}
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
+	public void setLocation(Location location) {
+		this.location = location;
+	}
 
-    public boolean isDummy() {
-        return false;
-    }
+	public boolean isDummy() {
+		return false;
+	}
 
-    public interface VirtualTargetType<T extends VirtualTarget> {
-        VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("dimdoors:available_link", RandomTarget::fromTag, RandomTarget::toTag, VirtualTarget.COLOR);
-        VirtualTargetType<EscapeTarget> ESCAPE = register("dimdoors:escape", EscapeTarget::fromTag, EscapeTarget::toTag, VirtualTarget.COLOR);
-        VirtualTargetType<GlobalReference> GLOBAL = register("dimdoors:global", GlobalReference::fromTag, GlobalReference::toTag, VirtualTarget.COLOR);
-        VirtualTargetType<LimboTarget> LIMBO = register("dimdoors:limbo", a -> LimboTarget.INSTANCE, a -> new CompoundTag(), VirtualTarget.COLOR);
-        VirtualTargetType<LocalReference> LOCAL = register("dimdoors:local", LocalReference::fromTag, LocalReference::toTag, VirtualTarget.COLOR);
-        VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("dimdoors:public_pocket", PublicPocketTarget::fromTag, PublicPocketTarget::toTag, VirtualTarget.COLOR);
-        VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("dimdoors:pocket_entrance", PocketEntranceMarker::fromTag, PocketEntranceMarker::toTag, VirtualTarget.COLOR);
-        VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("dimdoors:pocket_exit", a -> new PocketExitMarker(), a -> new CompoundTag(), VirtualTarget.COLOR);
-        VirtualTargetType<PrivatePocketTarget> PRIVATE = register("dimdoors:private", a -> new PrivatePocketTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
-        VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("dimdoors:private_pocket_exit", a -> new PrivatePocketExitTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
-        VirtualTargetType<RelativeReference> RELATIVE = register("dimdoors:relative", RelativeReference::fromTag, RelativeReference::toTag, VirtualTarget.COLOR);
+	public interface VirtualTargetType<T extends VirtualTarget> {
+		VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("dimdoors:available_link", RandomTarget::fromTag, RandomTarget::toTag, VirtualTarget.COLOR);
+		VirtualTargetType<EscapeTarget> ESCAPE = register("dimdoors:escape", EscapeTarget::fromTag, EscapeTarget::toTag, VirtualTarget.COLOR);
+		VirtualTargetType<GlobalReference> GLOBAL = register("dimdoors:global", GlobalReference::fromTag, GlobalReference::toTag, VirtualTarget.COLOR);
+		VirtualTargetType<LimboTarget> LIMBO = register("dimdoors:limbo", a -> LimboTarget.INSTANCE, a -> new CompoundTag(), VirtualTarget.COLOR);
+		VirtualTargetType<LocalReference> LOCAL = register("dimdoors:local", LocalReference::fromTag, LocalReference::toTag, VirtualTarget.COLOR);
+		VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("dimdoors:public_pocket", PublicPocketTarget::fromTag, PublicPocketTarget::toTag, VirtualTarget.COLOR);
+		VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("dimdoors:pocket_entrance", PocketEntranceMarker::fromTag, PocketEntranceMarker::toTag, VirtualTarget.COLOR);
+		VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("dimdoors:pocket_exit", a -> new PocketExitMarker(), a -> new CompoundTag(), VirtualTarget.COLOR);
+		VirtualTargetType<PrivatePocketTarget> PRIVATE = register("dimdoors:private", a -> new PrivatePocketTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
+		VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("dimdoors:private_pocket_exit", a -> new PrivatePocketExitTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
+		VirtualTargetType<RelativeReference> RELATIVE = register("dimdoors:relative", RelativeReference::fromTag, RelativeReference::toTag, VirtualTarget.COLOR);
 
-        T fromTag(CompoundTag tag);
-        CompoundTag toTag(VirtualTarget virtualType);
+		T fromTag(CompoundTag tag);
 
-        RGBA getColor();
+		CompoundTag toTag(VirtualTarget virtualType);
 
-        static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Function<CompoundTag, T> fromTag, Function<T, CompoundTag> toTag, RGBA color) {
-            return Registry.register(REGISTRY, (String) id, new VirtualTargetType<T>() {
-                @Override
-                public T fromTag(CompoundTag tag) {
-                    return fromTag.apply(tag);
-                }
+		RGBA getColor();
 
-                @Override
-                public CompoundTag toTag(VirtualTarget virtualType) {
-                    return toTag.apply((T) virtualType);
-                }
+		static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Function<CompoundTag, T> fromTag, Function<T, CompoundTag> toTag, RGBA color) {
+			return Registry.register(REGISTRY, (String) id, new VirtualTargetType<T>() {
+				@Override
+				public T fromTag(CompoundTag tag) {
+					return fromTag.apply(tag);
+				}
 
-                @Override
-                public RGBA getColor() {
-                    return color;
-                }
-            });
-        }
-    }
+				@Override
+				public CompoundTag toTag(VirtualTarget virtualType) {
+					return toTag.apply((T) virtualType);
+				}
+
+				@Override
+				public RGBA getColor() {
+					return color;
+				}
+			});
+		}
+	}
 
 }

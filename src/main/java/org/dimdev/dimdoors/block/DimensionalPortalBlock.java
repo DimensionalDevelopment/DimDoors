@@ -15,33 +15,33 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 public class DimensionalPortalBlock extends Block implements RiftProvider<EntranceRiftBlockEntity> {
-    public DimensionalPortalBlock(Settings settings) {
-        super(settings);
-    }
+	public DimensionalPortalBlock(Settings settings) {
+		super(settings);
+	}
 
-    @Override
-    public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
-        return (EntranceRiftBlockEntity) this.createBlockEntity(world);
-    }
+	@Override
+	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
+		return (EntranceRiftBlockEntity) this.createBlockEntity(world);
+	}
 
-    @Override
-    public BlockEntity createBlockEntity(BlockView world) {
-        return new EntranceRiftBlockEntity();
-    }
+	@Override
+	public BlockEntity createBlockEntity(BlockView world) {
+		return new EntranceRiftBlockEntity();
+	}
 
-    @Override
-    public BlockRenderType getRenderType(BlockState state) {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
-    }
+	@Override
+	public BlockRenderType getRenderType(BlockState state) {
+		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
 
-    @Override
-    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-        if (world.isClient) {
-            return;
-        }
-        if (ModDimensions.isLimboDimension(entity.getEntityWorld())) {
-            TeleportUtil.teleport(entity, DimensionalDoorsInitializer.getWorld(World.OVERWORLD), entity.getPos().subtract(0, entity.getPos().y, 0).add(0, 384, 0), 0);
-        }
-        super.onEntityCollision(state, world, pos, entity);
-    }
+	@Override
+	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
+		if (world.isClient) {
+			return;
+		}
+		if (ModDimensions.isLimboDimension(entity.getEntityWorld())) {
+			TeleportUtil.teleport(entity, DimensionalDoorsInitializer.getWorld(World.OVERWORLD), entity.getPos().subtract(0, entity.getPos().y, 0).add(0, 384, 0), 0);
+		}
+		super.onEntityCollision(state, world, pos, entity);
+	}
 }

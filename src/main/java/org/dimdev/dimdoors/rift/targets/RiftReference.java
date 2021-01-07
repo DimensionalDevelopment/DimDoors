@@ -18,64 +18,64 @@ import net.minecraft.util.math.Vec3i;
  * (see shouldInvalidate)
  */
 public abstract class RiftReference extends VirtualTarget {
-    public RiftReference() {
-    }
+	public RiftReference() {
+	}
 
-    // Helper methods to create a certain type of reference, defaulting to
-    // a global destination if not possible
-    public static RiftReference tryMakeLocal(Location from, Location to) {
-        if (from.world != to.world) {
-            return new GlobalReference(to);
-        } else {
-            return new LocalReference(to.pos);
-        }
-    }
+	// Helper methods to create a certain type of reference, defaulting to
+	// a global destination if not possible
+	public static RiftReference tryMakeLocal(Location from, Location to) {
+		if (from.world != to.world) {
+			return new GlobalReference(to);
+		} else {
+			return new LocalReference(to.pos);
+		}
+	}
 
-    public static RiftReference tryMakeRelative(Location from, Location to) {
-        if (from.world != to.world) {
-            return new GlobalReference(to);
-        } else {
-            return new RelativeReference(new Vec3i(to.getX() - from.getX(), to.getY() - from.getY(), to.getZ() - from.getZ()));
-        }
-    }
+	public static RiftReference tryMakeRelative(Location from, Location to) {
+		if (from.world != to.world) {
+			return new GlobalReference(to);
+		} else {
+			return new RelativeReference(new Vec3i(to.getX() - from.getX(), to.getY() - from.getY(), to.getZ() - from.getZ()));
+		}
+	}
 
-    public abstract Location getReferencedLocation();
+	public abstract Location getReferencedLocation();
 
-    @Override
-    public Target receiveOther() {
-        return (Target) this.getReferencedLocation().getBlockEntity();
-    }
+	@Override
+	public Target receiveOther() {
+		return (Target) this.getReferencedLocation().getBlockEntity();
+	}
 
-    @Override
-    public void register() {
-        RiftRegistry.instance().addLink(this.location, this.getReferencedLocation());
-    }
+	@Override
+	public void register() {
+		RiftRegistry.instance().addLink(this.location, this.getReferencedLocation());
+	}
 
-    @Override
-    public void unregister() {
-        RiftRegistry.instance().removeLink(this.location, this.getReferencedLocation());
-    }
+	@Override
+	public void unregister() {
+		RiftRegistry.instance().removeLink(this.location, this.getReferencedLocation());
+	}
 
-    @Override
-    public boolean shouldInvalidate(Location deletedRift) {
-        // A rift we may have asked the registry to notify us about was deleted
-        return deletedRift.equals(this.getReferencedLocation());
-    }
+	@Override
+	public boolean shouldInvalidate(Location deletedRift) {
+		// A rift we may have asked the registry to notify us about was deleted
+		return deletedRift.equals(this.getReferencedLocation());
+	}
 
-    @Override
-    public void setLocation(Location location) {
-        this.location = location;
-    }
+	@Override
+	public void setLocation(Location location) {
+		this.location = location;
+	}
 
-    @Override
-    public RGBA getColor() {
-        Location target = this.getReferencedLocation();
-        if (target != null && RiftRegistry.instance().isRiftAt(target)) {
-            Set<Location> otherRiftTargets = RiftRegistry.instance().getTargets(target);
-            if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(this.location)) {
-                return new RGBA(0, 1, 0, 1);
-            }
-        }
-        return new RGBA(1, 0, 0, 1);
-    }
+	@Override
+	public RGBA getColor() {
+		Location target = this.getReferencedLocation();
+		if (target != null && RiftRegistry.instance().isRiftAt(target)) {
+			Set<Location> otherRiftTargets = RiftRegistry.instance().getTargets(target);
+			if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(this.location)) {
+				return new RGBA(0, 1, 0, 1);
+			}
+		}
+		return new RGBA(1, 0, 0, 1);
+	}
 }

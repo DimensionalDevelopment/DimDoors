@@ -10,8 +10,8 @@ import net.minecraft.nbt.Tag;
 
 @Mixin(ListTag.class)
 public interface ListTagAccessor {
-    @Invoker("<init>")
-    static ListTag of(List<Tag> list, byte type) {
-        throw new AssertionError();
-    }
+	@Invoker("<init>")
+	static ListTag of(List<Tag> list, byte type) {
+		throw new AssertionError();
+	}
 }
