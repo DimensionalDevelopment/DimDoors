@@ -1,5 +1,9 @@
 package org.dimdev.dimdoors.block;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -13,6 +17,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 public final class ModBlocks {
+    private static final Map<String, Block> BLOCKS = Maps.newLinkedHashMap();
     public static final Block GOLD_DOOR = register("dimdoors:gold_door", new DoorBlock(FabricBlockSettings.of(Material.METAL, MaterialColor.GOLD).nonOpaque()));
     public static final Block QUARTZ_DOOR = register("dimdoors:quartz_door", new DoorBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.QUARTZ).nonOpaque()));
     public static final Block OAK_DIMENSIONAL_DOOR = register("dimdoors:oak_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).nonOpaque().lightLevel(state -> ((DimensionalDoorBlock) state.getBlock()).hasBlockEntity(state) ? 10 : 0)));
@@ -64,10 +69,11 @@ public final class ModBlocks {
     public static final Block MARKING_PLATE = register("dimdoors:marking_plate", new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).nonOpaque()));
 
     private static Block register(String string, Block block) {
-        return Registry.register(Registry.BLOCK, string, block);
+        BLOCKS.put(string, block);
+        return block;
     }
 
-    public static Block registerAncientFabric(String id, DyeColor color) {
+    private static Block registerAncientFabric(String id, DyeColor color) {
         return register(id, new Block(FabricBlockSettings.of(Material.STONE, color).strength(-1.0F, 3600000.0F).dropsNothing()));
     }
 
@@ -76,7 +82,10 @@ public final class ModBlocks {
     }
 
     public static void init() {
-        // just loads the class
+        BLOCKS.forEach((str, block) -> {
+            Registry.register(Registry.BLOCK, str, block);
+        });
+        BLOCKS.clear();
     }
 
     @Environment(EnvType.CLIENT)
