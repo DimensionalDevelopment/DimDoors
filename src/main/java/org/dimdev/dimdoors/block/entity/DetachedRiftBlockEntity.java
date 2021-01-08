@@ -38,7 +38,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 	@Override
 	public void tick() {
 		if (this.world == null) {
-			DynamicRegistryManager
+//			DynamicRegistryManager
 			return;
 		}
 

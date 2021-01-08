@@ -12,6 +12,7 @@ repositories {
     mavenCentral()
     maven { url = 'https://www.cursemaven.com' }
     maven { url = 'https://jitpack.io' }
+	maven { url = 'https://server.bbkr.space/artifactory/libs-release' }
 }
 
 dependencies {
@@ -39,6 +40,7 @@ dependencies {
     modRuntime("io.github.prospector:modmenu:1.14.6+build.31") {
         exclude module: "fabric-api"
     }
+	modImplementation include("io.github.cottonmc:LibGui:3.3.2+1.16.4")
 }
 
 version "4.0.0+alpha.4"

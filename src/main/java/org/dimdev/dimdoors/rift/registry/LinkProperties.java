@@ -15,7 +15,6 @@ import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.WToggleButton;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.dimdev.dimdoors.util.Codecs;
 
 import net.minecraft.nbt.CompoundTag;
@@ -184,7 +183,10 @@ public class LinkProperties {
 		box.add(new WLabel("Floating Weight:"));
 
 		WTextField floatingWeightText = new WTextField().setChangedListener(a -> {
-			if (NumberUtils.isParsable(a)) this.floatingWeight = NumberUtils.toFloat(a);
+			try {
+				this.floatingWeight = Float.parseFloat(a);
+			} catch (NumberFormatException ignored) {
+			}
 		});
 		floatingWeightText.setText(String.valueOf(this.floatingWeight));
 		box.add(floatingWeightText);

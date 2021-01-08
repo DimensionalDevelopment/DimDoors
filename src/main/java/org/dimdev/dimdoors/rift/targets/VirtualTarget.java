@@ -94,6 +94,7 @@ public abstract class VirtualTarget implements Target {
 
 		RGBA getColor();
 
+		@SuppressWarnings("unchecked")
 		static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Function<CompoundTag, T> fromTag, Function<T, CompoundTag> toTag, RGBA color) {
 			return Registry.register(REGISTRY, (String) id, new VirtualTargetType<T>() {
 				@Override
