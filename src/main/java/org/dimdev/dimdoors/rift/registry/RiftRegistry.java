@@ -311,7 +311,6 @@ public class RiftRegistry extends PersistentState {
 					PocketEntrancePointer pointer = new PocketEntrancePointer(pocket.world, pocket.id);
 					pointer.world = pocket.world;
 					this.graph.addVertex(pointer);
-					this.pocketEntranceMap.put(pocket, pointer);
 					this.uuidMap.put(pointer.id, pointer);
 					return pointer;
 				}),
