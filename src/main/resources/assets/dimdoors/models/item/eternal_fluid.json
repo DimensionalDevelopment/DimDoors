@@ -1,4 +1,4 @@
 {
   "parent": "dimdoors:block/fullbright",
-  "textures": { "all": "dimdoors:block/black_fabric" }
+  "textures": { "all": "dimdoors:block/eternal_fluid_flow" }
 }
