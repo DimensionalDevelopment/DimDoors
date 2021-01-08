@@ -10,8 +10,8 @@ import net.minecraft.text.TranslatableText;
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
 
 	protected float weight = 1;
-	protected VirtualTarget ifDestination;
-	protected VirtualTarget otherwiseDestination;
+	protected VirtualTarget ifDestination = NoneTarget.INSTANCE;
+	protected VirtualTarget otherwiseDestination = NoneTarget.INSTANCE;
 
 	public PocketEntranceMarker() {
 	}
