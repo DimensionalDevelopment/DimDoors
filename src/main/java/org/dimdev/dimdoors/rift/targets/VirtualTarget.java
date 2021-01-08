@@ -30,7 +30,8 @@ public abstract class VirtualTarget implements Target {
 	}
 
 	public static CompoundTag toTag(VirtualTarget virtualTarget) {
-		String type = REGISTRY.getId(virtualTarget.getType()).toString();
+		Identifier id = REGISTRY.getId(virtualTarget.getType());
+		String type = id.toString();
 
 		CompoundTag tag = virtualTarget.getType().toTag(virtualTarget);
 		tag.putString("type", type);
@@ -87,12 +88,16 @@ public abstract class VirtualTarget implements Target {
 		VirtualTargetType<PrivatePocketTarget> PRIVATE = register("dimdoors:private", a -> new PrivatePocketTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
 		VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("dimdoors:private_pocket_exit", a -> new PrivatePocketExitTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
 		VirtualTargetType<RelativeReference> RELATIVE = register("dimdoors:relative", RelativeReference::fromTag, RelativeReference::toTag, VirtualTarget.COLOR);
+		VirtualTargetType<NoneTarget> NONE = register("dimdoors:none", tag -> NoneTarget.INSTANCE, i -> new CompoundTag(), COLOR);
 
 		T fromTag(CompoundTag tag);
 
 		CompoundTag toTag(VirtualTarget virtualType);
 
 		RGBA getColor();
+
+		static void register() {
+		}
 
 		@SuppressWarnings("unchecked")
 		static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Function<CompoundTag, T> fromTag, Function<T, CompoundTag> toTag, RGBA color) {
@@ -115,4 +120,30 @@ public abstract class VirtualTarget implements Target {
 		}
 	}
 
+	public static class NoneTarget extends VirtualTarget {
+		public static final NoneTarget INSTANCE = new NoneTarget();
+
+		private NoneTarget() {
+		}
+
+		@Override
+		public VirtualTargetType<? extends VirtualTarget> getType() {
+			return VirtualTargetType.NONE;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			return o == INSTANCE;
+		}
+
+		@Override
+		public int hashCode() {
+			return System.identityHashCode(INSTANCE);
+		}
+
+		@Override
+		public String toString() {
+			return "[none]";
+		}
+	}
 }

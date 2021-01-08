@@ -76,8 +76,8 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 
 	public static class PocketEntranceMarkerBuilder {
 		private float weight;
-		private VirtualTarget ifDestination;
-		private VirtualTarget otherwiseDestination;
+		private VirtualTarget ifDestination = NoneTarget.INSTANCE;
+		private VirtualTarget otherwiseDestination = NoneTarget.INSTANCE;
 
 		PocketEntranceMarkerBuilder() {
 		}

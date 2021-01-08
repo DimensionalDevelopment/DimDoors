@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -107,5 +108,15 @@ public class VirtualLocation {
 
 	public int getDepth() {
 		return this.depth;
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("world", this.world)
+				.add("x", this.x)
+				.add("z", this.z)
+				.add("depth", this.depth)
+				.toString();
 	}
 }
