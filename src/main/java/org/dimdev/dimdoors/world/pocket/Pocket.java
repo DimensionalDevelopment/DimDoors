@@ -41,6 +41,7 @@ public final class Pocket {
 		this.id = id;
 		this.world = world;
 		this.box = new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 0, (z + 1) * 16);
+		this.virtualLocation = new VirtualLocation(world, x, z, 0);
 	}
 
 	boolean isInBounds(BlockPos pos) {

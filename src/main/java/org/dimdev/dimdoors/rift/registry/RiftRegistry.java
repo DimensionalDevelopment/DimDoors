@@ -289,21 +289,34 @@ public class RiftRegistry extends PersistentState {
 	}
 
 	public Location getPocketEntrance(Pocket pocket) {
-		return this.getPocketEntrances(pocket).stream().findFirst().orElse(null);
+		Set<Location> entrances =  this.getPocketEntrances(pocket);
+		return entrances.stream()
+				.findFirst()
+				.orElse(null);
 	}
 
 	public void addPocketEntrance(Pocket pocket, Location location) {
 		LOGGER.debug("Adding pocket entrance for pocket " + pocket.id + " in dimension " + pocket.world + " at " + location);
-		PocketEntrancePointer pointer = this.pocketEntranceMap.get(pocket);
-		if (pointer == null) {
-			pointer = new PocketEntrancePointer(pocket.world, pocket.id);
-			pointer.world = pocket.world;
-			this.graph.addVertex(pointer);
-			this.pocketEntranceMap.put(pocket, pointer);
-			this.uuidMap.put(pointer.id, pointer);
-		}
-		Rift rift = this.getRift(location);
-		this.addEdge(pointer, rift);
+
+//		PocketEntrancePointer pointer = this.pocketEntranceMap.get(pocket);
+//		if (pointer == null) {
+//			pointer = new PocketEntrancePointer(pocket.world, pocket.id);
+//			pointer.world = pocket.world;
+//			this.graph.addVertex(pointer);
+//			this.pocketEntranceMap.put(pocket, pointer);
+//			this.uuidMap.put(pointer.id, pointer);
+//		}
+		this.addEdge(
+				this.pocketEntranceMap.computeIfAbsent(pocket, p -> {
+					PocketEntrancePointer pointer = new PocketEntrancePointer(pocket.world, pocket.id);
+					pointer.world = pocket.world;
+					this.graph.addVertex(pointer);
+					this.pocketEntranceMap.put(pocket, pointer);
+					this.uuidMap.put(pointer.id, pointer);
+					return pointer;
+				}),
+				this.getRift(location)
+		);
 	}
 
 	public Location getPrivatePocketEntrance(UUID playerUUID) {

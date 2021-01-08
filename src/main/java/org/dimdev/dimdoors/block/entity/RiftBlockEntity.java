@@ -161,6 +161,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		if (this.data.getDestination() == null) {
 			return new MessageTarget("rifts.unlinked1");
 		} else {
+			//noinspection ConstantConditions
 			this.data.getDestination().setLocation(new Location((ServerWorld) this.world, this.pos));
 			return this.data.getDestination();
 		}
