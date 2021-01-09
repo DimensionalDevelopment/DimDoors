@@ -36,4 +36,27 @@ public final class TeleportUtil {
 	public static void teleport(ServerPlayerEntity player, RotatedLocation location) {
 		teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, (int) location.yaw);
 	}
+
+	public static void teleportUntargeted(Entity entity, World world) {
+		double actualScale = entity.world.getDimension().getCoordinateScale() / world.getDimension().getCoordinateScale();
+		teleport(
+				entity,
+				world,
+				entity.getPos().multiply(actualScale, 1, actualScale),
+				entity.yaw
+		);
+	}
+
+	public static void teleportUntargeted(Entity entity, World world, double y) {
+		double actualScale = entity.world.getDimension().getCoordinateScale() / world.getDimension().getCoordinateScale();
+		teleport(
+				entity,
+				world,
+				entity.getPos()
+						.subtract(0, entity.getPos().getY(), 0)
+						.add(0, y, 0)
+						.multiply(actualScale, 1, actualScale),
+				entity.yaw
+		);
+	}
 }

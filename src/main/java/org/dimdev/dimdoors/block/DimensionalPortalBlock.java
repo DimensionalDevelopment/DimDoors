@@ -21,7 +21,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 	@Override
 	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
-		return (EntranceRiftBlockEntity) this.createBlockEntity(world);
+		return (EntranceRiftBlockEntity) world.getBlockEntity(pos);
 	}
 
 	@Override

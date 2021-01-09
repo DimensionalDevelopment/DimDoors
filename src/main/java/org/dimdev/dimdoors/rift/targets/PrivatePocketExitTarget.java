@@ -7,6 +7,7 @@ import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketRegistry;
@@ -40,7 +41,6 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 				} else {
 					EntityUtils.chat(entity, new TranslatableText("rifts.destinations.private_pocket_exit.rift_has_closed"));
 				}
-				//FabricDimensions.teleport(entity, entity.getServer().getWorld(ModDimensions.LIMBO));
 				return false;
 			} else {
 				((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, yawOffset);

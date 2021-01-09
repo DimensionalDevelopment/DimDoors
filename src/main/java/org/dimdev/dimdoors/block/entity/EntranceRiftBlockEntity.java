@@ -1,9 +1,13 @@
 package org.dimdev.dimdoors.block.entity;
 
+import java.util.Optional;
+
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
@@ -44,7 +48,24 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	public Direction getOrientation() {
-		return Direction.NORTH;
+		//noinspection ConstantConditions
+		return Optional.of(this.world.getBlockState(this.pos))
+				.filter(state -> state.contains(HorizontalFacingBlock.FACING))
+				.map(state -> state.get(HorizontalFacingBlock.FACING))
+				.orElse(Direction.NORTH);
+//		BlockState state = this.world.getBlockState(this.pos);
+//		if (state.contains(HorizontalFacingBlock.FACING)) {
+//			return state.get(HorizontalFacingBlock.FACING);
+//		}
+//		return Direction.NORTH;
+	}
+
+	/**
+	 * Specifies if the portal should be rendered two blocks tall
+	 */
+	public boolean isTall() {
+		//noinspection ConstantConditions
+		return this.world.getBlockState(this.pos).getBlock() instanceof DoorBlock;
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -29,9 +30,12 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<EntranceRiftBlockEntity> {
     private static final Random RANDOM = new Random(31100L);
+    private final ModelPart warpModel;
 
     public EntranceRiftBlockEntityRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
         super(blockEntityRenderDispatcher);
+		this.warpModel = new ModelPart(1024, 1024, 0, 0);
+		this.warpModel.addCuboid(0, 0, 0, 16, 16, 0);
     }
 
     @Override
@@ -43,7 +47,7 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         }
         Direction orientation = blockEntity.getOrientation();
         Vector3f vec = orientation.getOpposite().getUnitVector();
-        this.renderVertices(blockEntity, matrices, vertexConsumers, orientation, vec, layers);
+        this.renderVertices(blockEntity, matrices, vertexConsumers, orientation, vec, layers, light, overlay);
 
 //        Vec3d offset = new Vec3d(vec);
 //        DimensionalPortalRenderer.renderDimensionalPortal(
@@ -61,16 +65,15 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         matrices.pop();
     }
 
-    private void renderVertices(EntranceRiftBlockEntity entrance, MatrixStack matrices, VertexConsumerProvider vertexConsumers, Direction orientation, Vector3f vec, List<RenderLayer> layers) {
+    private void renderVertices(EntranceRiftBlockEntity entrance, MatrixStack matrices, VertexConsumerProvider vertexConsumers, Direction orientation, Vector3f vec, List<RenderLayer> layers, int light, int overlay) {
         vec.scale((float) (orientation == Direction.NORTH || orientation == Direction.WEST || orientation == Direction.UP ? 0.01 : 0.01 - 1));
         double squaredDistance = entrance.getPos().getSquaredDistance(this.dispatcher.camera.getPos(), true);
         int offset = this.getOffset(squaredDistance);
         float u = 0.75F;
-        Matrix4f matrix4f = matrices.peek().getModel();
-        this.drawAllVertices(entrance, u, 0.15F, matrix4f, vertexConsumers.getBuffer(layers.get(0)));
+        this.drawAllVertices(entrance, u, 0.15F, matrices, vertexConsumers.getBuffer(layers.get(0)), light, overlay);
 
         for (int i = 1; i < offset; ++i) {
-            this.drawAllVertices(entrance, u, 2.0F / (float) (18 - i), matrix4f, vertexConsumers.getBuffer(layers.get(i)));
+            this.drawAllVertices(entrance, u, 2.0F / (float) (18 - i), matrices, vertexConsumers.getBuffer(layers.get(i)), light, overlay);
         }
     }
 
@@ -94,49 +97,57 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
         }
     }
 
-    private void drawAllVertices(EntranceRiftBlockEntity blockEntity, float u, float v, Matrix4f matrix4f, VertexConsumer vertexConsumer) {
-        float r = MathHelper.clamp((RANDOM.nextFloat() * 0.3F + 0.1F) * v, 0, 1);
-        float g = MathHelper.clamp((RANDOM.nextFloat() * 0.4F + 0.1F) * v, 0, 1);
-        float b = MathHelper.clamp((RANDOM.nextFloat() * 0.5F + 0.6F) * v, 0, 1);
-        BlockState state = blockEntity.getCachedState();
-        if (state.getBlock() instanceof DoorBlock) {
-            Direction doorDir = state.get(HorizontalFacingBlock.FACING);
-            switch (doorDir) {
-                case NORTH:
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
-                    break;
-                case SOUTH:
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
-                    break;
-                case EAST:
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
-                    break;
-                case WEST:
-                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
-                    break;
-                default:
-                    throw new AssertionError();
-            }
-        } else {
-            // South
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
-            // North
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
-            // East
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F + 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
-            // West
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
-            // Down
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, r, g, b);
-            // Up
-            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F + 1.0F, 1.0F + 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b);
-        }
+    private void drawAllVertices(EntranceRiftBlockEntity blockEntity, float u, float v, MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay) {
+    	float r = MathHelper.clamp((RANDOM.nextFloat() * 0.3F + 0.1F) * v, 0, 1);
+		float g = MathHelper.clamp((RANDOM.nextFloat() * 0.4F + 0.1F) * v, 0, 1);
+		float b = MathHelper.clamp((RANDOM.nextFloat() * 0.5F + 0.6F) * v, 0, 1);
+		this.warpModel.render(matrices, vertexConsumer, light, overlay, r, g, b, 1);
+		if (blockEntity.isTall()) {
+			matrices.push();
+			matrices.translate(0, 1, 0);
+			this.warpModel.render(matrices, vertexConsumer, light, overlay, r, g, b, 1);
+			matrices.pop();
+		}
+//        Matrix4f matrix4f = matrices.peek().getModel();
+//        BlockState state = blockEntity.getCachedState();
+//        if (state.getBlock() instanceof DoorBlock) {
+//            Direction doorDir = state.get(HorizontalFacingBlock.FACING);
+//            switch (doorDir) {
+//                case NORTH:
+//                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+//                    break;
+//                case SOUTH:
+//                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+//                    break;
+//                case EAST:
+//                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 1.0F, 0.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+//                    break;
+//                case WEST:
+//                    this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+//                    break;
+//                default:
+//                    throw new AssertionError();
+//            }
+//        } else {
+//            // South
+//            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 1.0F + 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, r, g, b);
+//            // North
+//            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F + 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, r, g, b);
+//            // East
+//            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 1.0F, 1.0F, 1.0F + 1.0F, 0.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+//            // West
+//            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 0.0F, 0.0F, 1.0F + 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, r, g, b);
+//            // Down
+//            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F, 1.0F, r, g, b);
+//            // Up
+//            this.drawVertices(blockEntity, matrix4f, vertexConsumer, 0.0F, 1.0F, 1.0F + 1.0F, 1.0F + 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, r, g, b);
+//        }
     }
 
-    private void drawVertices(EntranceRiftBlockEntity endPortalBlockEntity, Matrix4f matrix4f, VertexConsumer vertexConsumer, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, float red, float green, float blue) {
-        vertexConsumer.vertex(matrix4f, x1, y1, z1).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x2, y1, z2).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x2, y2, z3).color(red, green, blue, 1.0F).next();
-        vertexConsumer.vertex(matrix4f, x1, y2, z4).color(red, green, blue, 1.0F).next();
-    }
+//    private void drawVertices(EntranceRiftBlockEntity endPortalBlockEntity, Matrix4f matrix4f, VertexConsumer vertexConsumer, float x1, float x2, float y1, float y2, float z1, float z2, float z3, float z4, float red, float green, float blue) {
+//        vertexConsumer.vertex(matrix4f, x1, y1, z1).color(red, green, blue, 1.0F).next();
+//        vertexConsumer.vertex(matrix4f, x2, y1, z2).color(red, green, blue, 1.0F).next();
+//        vertexConsumer.vertex(matrix4f, x2, y2, z3).color(red, green, blue, 1.0F).next();
+//        vertexConsumer.vertex(matrix4f, x1, y2, z4).color(red, green, blue, 1.0F).next();
+//    }
 }
