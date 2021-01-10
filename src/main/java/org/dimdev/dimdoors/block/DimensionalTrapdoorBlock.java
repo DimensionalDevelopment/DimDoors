@@ -31,7 +31,6 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
 		}
 	}
 
-
 	@Override
 	public BlockEntity createBlockEntity(BlockView blockView) {
 		return new EntranceRiftBlockEntity();
