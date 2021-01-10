@@ -44,6 +44,12 @@ public enum DefaultTransformation implements Transformer {
 			matrices.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
 			matrices.translate(0, 0, -0.19F);
 		}
+	},
+	TRAPDOOR {
+		@Override
+		public void transform(MatrixStack matrices) {
+			matrices.multiply(Vector3f.NEGATIVE_Z.getDegreesQuaternion(90.0F));
+		}
 	};
 
 	private static final DefaultTransformation[] VALUES = values();

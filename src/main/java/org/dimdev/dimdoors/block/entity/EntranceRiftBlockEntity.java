@@ -64,8 +64,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	 * Specifies if the portal should be rendered two blocks tall
 	 */
 	public boolean isTall() {
-		//noinspection ConstantConditions
-		return this.world.getBlockState(this.pos).getBlock() instanceof DoorBlock;
+		return this.getCachedState().getBlock() instanceof DoorBlock;
 	}
 
 	@Override
