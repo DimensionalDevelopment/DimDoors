@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.util.schematic;
 
-import java.lang.reflect.Method;
+import org.dimdev.dimdoors.mixin.RedstoneWireBlockAccessor;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -35,12 +35,6 @@ public class SchematicRedstoneFixer {
 	}
 
 	private static WireConnection getRenderConnectionType(BlockView world, BlockPos pos, Direction direction) {
-		try {
-			Method m = RedstoneWireBlock.class.getDeclaredMethod("getRenderConnectionType", BlockView.class, BlockPos.class, Direction.class);
-			m.setAccessible(true);
-			return (WireConnection) m.invoke(Blocks.REDSTONE_WIRE, world, pos, direction);
-		} catch (ReflectiveOperationException e) {
-			throw new AssertionError(e);
-		}
+		return ((RedstoneWireBlockAccessor) Blocks.REDSTONE_WIRE).invokeGetRenderConnectionType(world, pos, direction);
 	}
 }
