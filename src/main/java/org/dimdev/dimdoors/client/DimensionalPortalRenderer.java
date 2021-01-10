@@ -24,6 +24,7 @@ import net.fabricmc.api.Environment;
 public final class DimensionalPortalRenderer {
 	private static final Random RANDOM = new Random(31100L);
 	private static final ModelPart MODEL;
+	private static final ModelPart TALL_MODEL;
 	private static final EntityRenderDispatcher ENTITY_RENDER_DISPATCHER;
 	private static final List<RenderLayer> RENDER_LAYERS = ImmutableList.copyOf(IntStream.range(0, 16).mapToObj(MyRenderLayer::getPortal).collect(Collectors.toList()));
 
@@ -49,13 +50,8 @@ public final class DimensionalPortalRenderer {
 		float g = MathHelper.clamp((RANDOM.nextFloat() * 0.4F + 0.1F) * v, 0, 1);
 		float b = MathHelper.clamp((RANDOM.nextFloat() * 0.5F + 0.6F) * v, 0, 1);
 
-		MODEL.render(matrices, vertexConsumer, light, overlay, r, g, b, 1);
-		if (tall) {
-			matrices.push();
-			transformer.setupTallTransform(matrices);
-			MODEL.render(matrices, vertexConsumer, light, overlay, r, g, b, 1);
-			matrices.pop();
-		}
+		ModelPart model = tall ? TALL_MODEL : MODEL;
+		model.render(matrices, vertexConsumer, light, overlay, r, g, b, 1);
 	}
 
 	private static int getOffset(double d) {
@@ -80,7 +76,9 @@ public final class DimensionalPortalRenderer {
 
 	static {
 		MODEL = new ModelPart(1024, 1024, 0, 0);
+		TALL_MODEL = new ModelPart(1024, 1024, 0, 0);
 		MODEL.addCuboid(0, 0, 0, 16, 16, 0);
+		TALL_MODEL.addCuboid(0, 0, 0, 16, 32, 0);
 		ENTITY_RENDER_DISPATCHER = MinecraftClient.getInstance().getEntityRenderDispatcher();
 	}
 }
