@@ -46,6 +46,15 @@ dependencies {
 version "4.0.0+alpha.4"
 archivesBaseName = "dimensional-doors"
 
+sourceSets {
+	main {
+		java {
+			srcDir 'src/main/schematics'
+			srcDir 'src/main/registry'
+		}
+	}
+}
+
 processResources {
     filesMatching("fabric.mod.json") {
         expand "version": project.version
