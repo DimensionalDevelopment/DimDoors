@@ -16,11 +16,18 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.client.util.Category;
+import org.dimdev.dimdoors.client.util.Expose;
+import org.dimdev.dimdoors.client.util.GetStrategy;
+import org.dimdev.dimdoors.client.util.Getter;
+import org.dimdev.dimdoors.client.util.Title;
 import org.dimdev.dimdoors.util.Codecs;
 import org.dimdev.dimdoors.world.limbo.LimboDecay;
 
 import net.fabricmc.loader.api.FabricLoader;
 
+@Title("dimdoors.config.title")
+@GetStrategy(suffix = "Config")
 public final class ModConfig {
     public static ModConfig INSTANCE;
     private static final Path CONFIG_PATH;
@@ -29,12 +36,26 @@ public final class ModConfig {
     private static final String DEFAULT;
     private static final ModConfig FALLBACK;
     private static final Logger LOGGER;
+    @Category
+	@Getter
     private final General general;
+	@Category
+	@Getter
     private final Pockets pockets;
+	@Category
+	@Getter
     private final World world;
+	@Category
+	@Getter
     private final Dungeons dungeons;
+	@Category
+	@Getter
     private final Monoliths monoliths;
+	@Category
+	@Getter
     private final Limbo limbo;
+	@Category
+	@Getter
     private final Graphics graphics;
 
     private ModConfig(General general, Pockets pockets, World world, Dungeons dungeons, Monoliths monoliths, Limbo limbo, Graphics graphics) {
@@ -88,14 +109,23 @@ public final class ModConfig {
                 Codec.DOUBLE.fieldOf("endermanAggressiveChance").forGetter((general) -> general.endermanAggressiveChance)
         ).apply(instance, General::create));
 
+        @Expose
         public boolean closeDoorBehind = false;
+		@Expose
         public double teleportOffset = 0.5;
+		@Expose
         public boolean riftBoundingBoxInCreative;
+		@Expose
         public double riftCloseSpeed = 0.005;
+		@Expose
         public double riftGrowthSpeed = 1;
+		@Expose
         public int depthSpreadFactor = 20;
+		@Expose
         public boolean useEnderPearlsInCrafting = false;
+		@Expose
         public double endermanSpawnChance = 0.001;
+		@Expose
         public double endermanAggressiveChance = 0.5;
 
         public static General create(boolean closeDoorBehind, double teleportOffset, boolean riftBoundingBoxInCreative, double riftCloseSpeed, double riftGrowthSpeed, int depthSpreadFactor, boolean useEnderPearlsInCrafting, double endermanSpawnChance, double endermanAggressiveChance) {
@@ -122,11 +152,17 @@ public final class ModConfig {
                 Codec.BOOL.fieldOf("loadAllSchematics").forGetter((pockets) -> pockets.loadAllSchematics),
                 Codec.INT.fieldOf("cachedSchematics").forGetter((pockets) -> pockets.cachedSchematics)
         ).apply(instance, Pockets::create));
+		@Expose
         public int pocketGridSize = 32;
+		@Expose
         public int maxPocketSize = 15;
+		@Expose
         public int privatePocketSize = 2;
+		@Expose
         public int publicPocketSize = 1;
+		@Expose
         public boolean loadAllSchematics = false;
+		@Expose
         public int cachedSchematics = 10;
 
         public static Pockets create(int pocketGridSize, int maxPocketSize, int privatePocketSize, int publicPocketSize, boolean loadAllSchematics, int cachedSchematics) {
@@ -148,9 +184,13 @@ public final class ModConfig {
                 Codecs.INT_SET.fieldOf("clusterDimBlacklist").forGetter((world) -> world.clusterDimBlacklist),
                 Codecs.INT_SET.fieldOf("gatewayDimBlacklist").forGetter((world) -> world.gatewayDimBlacklist)
         ).apply(instance, World::create));
+		@Expose
         public double clusterGenChance = 0.0002;
+		@Expose
         public int gatewayGenChance = 200;
+		@Expose
         public Set<Integer> clusterDimBlacklist = new LinkedHashSet<>();
+		@Expose
         public Set<Integer> gatewayDimBlacklist = new LinkedHashSet<>();
 
         public static World create(double clusterGenChance, int gatewayGenChance, Set<Integer> clusterDimBlacklist, Set<Integer> gatewayDimBlacklist) {
@@ -167,6 +207,7 @@ public final class ModConfig {
         public static final Codec<Dungeons> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("maxDungeonDepth").forGetter((dungeons) -> dungeons.maxDungeonDepth)
         ).apply(instance, Dungeons::create));
+		@Expose
         public int maxDungeonDepth = 50;
 
         public static Dungeons create(int maxDungeonDepth) {
@@ -181,7 +222,9 @@ public final class ModConfig {
                 Codec.BOOL.fieldOf("dangerousLimboMonoliths").forGetter((monoliths) -> monoliths.dangerousLimboMonoliths),
                 Codec.BOOL.fieldOf("monolithTeleportation").forGetter((monoliths) -> monoliths.monolithTeleportation)
         ).apply(instance, Monoliths::create));
+		@Expose
         public boolean dangerousLimboMonoliths = false;
+		@Expose
         public boolean monolithTeleportation = true;
 
         public static Monoliths create(boolean dangerousLimboMonoliths, boolean monolithTeleportation) {
@@ -198,8 +241,11 @@ public final class ModConfig {
                 Codec.BOOL.fieldOf("hardcoreLimbo").forGetter((limbo) -> limbo.hardcoreLimbo),
                 Codec.DOUBLE.fieldOf("decaySpreadChance").forGetter((limbo) -> limbo.decaySpreadChance)
         ).apply(instance, Limbo::create));
+		@Expose
         public boolean universalLimbo = false;
+		@Expose
         public boolean hardcoreLimbo = false;
+		@Expose
         public double decaySpreadChance = 0.5;
 
         public static Limbo create(boolean universalLimbo, boolean hardcoreLimbo, double decaySpreadChance) {
@@ -218,9 +264,13 @@ public final class ModConfig {
                 Codec.DOUBLE.fieldOf("riftSize").forGetter((graphics) -> graphics.riftSize),
                 Codec.DOUBLE.fieldOf("riftJitter").forGetter((graphics) -> graphics.riftJitter)
         ).apply(instance, Graphics::create));
+		@Expose
         public boolean showRiftCore = false;
+		@Expose
         public int highlightRiftCoreFor = 15000;
+		@Expose
         public double riftSize = 1;
+		@Expose
         public double riftJitter = 1;
 
         public static Graphics create(boolean showRiftCore, int highlightRiftCoreFor, double riftSize, double riftJitter) {
