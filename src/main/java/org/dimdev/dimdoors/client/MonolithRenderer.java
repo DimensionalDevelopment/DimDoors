@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.client;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
@@ -12,7 +13,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 
 public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, MonolithModel> {
-    private static final List<Identifier> MONOLITH_TEXTURES = Lists.newArrayList(
+    public static final List<Identifier> MONOLITH_TEXTURES = ImmutableList.of(
             new Identifier("dimdoors:textures/mob/monolith/monolith0.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith1.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith2.png"),

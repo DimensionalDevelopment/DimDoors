@@ -8,6 +8,7 @@ import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -33,6 +34,7 @@ import net.minecraft.world.WorldAccess;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 public class MonolithEntity extends MobEntity {
     public final EntityDimensions DIMENSIONS = EntityDimensions.fixed(3f, 6f);
@@ -231,25 +233,25 @@ public class MonolithEntity extends MobEntity {
         return EYE_HEIGHT;
     }
 
-    @Environment(EnvType.CLIENT)
-    public static void spawnParticles(PacketContext context, PacketByteBuf data) {
-        PlayerEntity player = context.getPlayer();
-        int aggro = data.readInt();
+    public static void spawnParticles(PacketByteBuf data, MinecraftClient client) {
+		PlayerEntity player = MinecraftClient.getInstance().player;
+		int aggro = data.readInt();
 
-        context.getTaskQueue().execute(() -> {
-            if (aggro < 120) {
-                return;
-            }
-            int count = 10 * aggro / MAX_AGGRO;
-            for (int i = 1; i < count; ++i) {
-                player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,
-                        player.getY() + random.nextDouble() * player.getHeight() - 0.75D,
-                        player.getZ() + (random.nextDouble() - 0.5D) * player.getWidth(),
-                        (random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
-                        (random.nextDouble() - 0.5D) * 2.0D);
-            }
-        });
-    }
+		client.execute(() -> {
+			if (aggro < 120) {
+				return;
+			}
+			int count = 10 * aggro / MAX_AGGRO;
+			for (int i = 1; i < count; ++i) {
+				//noinspection ConstantConditions
+				player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,
+						player.getY() + random.nextDouble() * player.getHeight() - 0.75D,
+						player.getZ() + (random.nextDouble() - 0.5D) * player.getWidth(),
+						(random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
+						(random.nextDouble() - 0.5D) * 2.0D);
+			}
+		});
+	}
 
     public float getAggroProgress() {
         return (float) this.aggro / MAX_AGGRO;

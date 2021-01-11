@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.rift.targets.Targets;
@@ -71,6 +72,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModCommands.init();
 		ModFluids.init();
         ModSoundEvents.init();
+		ModParticleTypes.init();
 
         ModConfig.deserialize();
 
