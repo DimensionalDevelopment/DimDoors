@@ -15,32 +15,37 @@ repositories {
 	maven { url = 'https://server.bbkr.space/artifactory/libs-release' }
 }
 
+def includeCompile(str) {
+	project.dependencies {
+		modImplementation(str) {
+			exclude module: "fabric-api"
+		}
+		include(str)
+	}
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation 'com.flowpowered:flow-math:1.0.3'
-    include 'com.flowpowered:flow-math:1.0.3'
-    implementation 'org.jgrapht:jgrapht-core:1.1.0'
-    include 'org.jgrapht:jgrapht-core:1.1.0'
-    implementation 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
-    include 'com.github.DimensionalDevelopment:poly2tri.java:0.1.1'
-    modApi("com.github.Waterpicker:OpenWorlds:c5a1ced") {
-        exclude module: "fabric-api"
-    }
-    include 'com.github.Waterpicker:OpenWorlds:c5a1ced'
-    modImplementation("io.github.boogiemonster1o1:libcbe:${libcbe_version}")
-    include("io.github.boogiemonster1o1:libcbe:${libcbe_version}") // Includes LibCBE as a Jar-in-Jar embedded dependency
-//    modImplementation("curse.maven:worldedit:3039223") // For saving schematics
-//    modImplementation("curse.maven:wecui:2995033") // Cos why not
+	includeCompile("com.flowpowered:flow-math:1.0.3")
+	includeCompile("org.jgrapht:jgrapht-core:1.1.0")
+	includeCompile("com.github.DimensionalDevelopment:poly2tri.java:0.1.1")
+	includeCompile("com.github.Waterpicker:OpenWorlds:c5a1ced")
+	includeCompile("io.github.boogiemonster1o1:libcbe:1.1.0")
+	includeCompile("io.github.cottonmc:LibGui:3.3.2+1.16.4")
+	includeCompile("me.shedaniel.cloth:config-2:4.8.3")
+
+	// TODO: Add project id
+    // modImplementation("curse.maven:worldedit:3039223") // For saving schematics
+    // modImplementation("curse.maven:wecui:2995033") // Cos why not
     modCompileOnly("io.github.prospector:modmenu:1.14.6+build.31") {
         exclude module: "fabric-api"
     }
     modRuntime("io.github.prospector:modmenu:1.14.6+build.31") {
         exclude module: "fabric-api"
     }
-	modImplementation include("io.github.cottonmc:LibGui:3.3.2+1.16.4")
 }
 
 version "4.0.0+alpha.4"
@@ -51,6 +56,7 @@ sourceSets {
 		java {
 			srcDir 'src/main/schematics'
 			srcDir 'src/main/registry'
+			srcDir 'src/main/config'
 		}
 	}
 }
