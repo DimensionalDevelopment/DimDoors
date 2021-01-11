@@ -5,6 +5,7 @@ import org.dimdev.dimdoors.client.MonolithRenderer;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
@@ -31,7 +32,6 @@ public class MonolithParticle extends Particle {
 		this.maxAge = 30;
 		this.model = new MonolithModel();
 		this.layer = RenderLayer.getEntitySolid(MonolithRenderer.MONOLITH_TEXTURES.get(14));
-		layer.endDrawing();
 	}
 
 	@Override
