@@ -20,6 +20,8 @@ import org.dimdev.dimdoors.client.util.Category;
 import org.dimdev.dimdoors.client.util.Expose;
 import org.dimdev.dimdoors.client.util.GetStrategy;
 import org.dimdev.dimdoors.client.util.Getter;
+import org.dimdev.dimdoors.client.util.IntSet;
+import org.dimdev.dimdoors.client.util.RequiresRestart;
 import org.dimdev.dimdoors.client.util.Title;
 import org.dimdev.dimdoors.util.Codecs;
 import org.dimdev.dimdoors.world.limbo.LimboDecay;
@@ -121,6 +123,7 @@ public final class ModConfig {
         public double riftGrowthSpeed = 1;
 		@Expose
         public int depthSpreadFactor = 20;
+		@RequiresRestart
 		@Expose
         public boolean useEnderPearlsInCrafting = false;
 		@Expose
@@ -160,8 +163,10 @@ public final class ModConfig {
         public int privatePocketSize = 2;
 		@Expose
         public int publicPocketSize = 1;
+		@RequiresRestart
 		@Expose
         public boolean loadAllSchematics = false;
+		@RequiresRestart
 		@Expose
         public int cachedSchematics = 10;
 
@@ -184,12 +189,18 @@ public final class ModConfig {
                 Codecs.INT_SET.fieldOf("clusterDimBlacklist").forGetter((world) -> world.clusterDimBlacklist),
                 Codecs.INT_SET.fieldOf("gatewayDimBlacklist").forGetter((world) -> world.gatewayDimBlacklist)
         ).apply(instance, World::create));
+        @RequiresRestart
 		@Expose
         public double clusterGenChance = 0.0002;
+        @RequiresRestart
 		@Expose
         public int gatewayGenChance = 200;
+        @IntSet
+        @RequiresRestart
 		@Expose
         public Set<Integer> clusterDimBlacklist = new LinkedHashSet<>();
+        @IntSet
+        @RequiresRestart
 		@Expose
         public Set<Integer> gatewayDimBlacklist = new LinkedHashSet<>();
 
