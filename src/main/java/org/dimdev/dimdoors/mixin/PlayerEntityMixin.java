@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
 import org.dimdev.dimdoors.entity.stat.ModStats;
-import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.spongepowered.asm.mixin.Mixin;

@@ -44,10 +44,10 @@ public final class ModBiomes {
 
     private static BiomeEffects createEffect(boolean white) {
         BiomeEffects.Builder builder = new BiomeEffects.Builder()
-                .waterColor(white ? 0xFFFFFF : 0x000000)
-                .waterFogColor(white ? 0xFFFFFF : 0x000000)
-                .fogColor(white ? 0xFFFFFF : 0x000000)
-                .skyColor(white ? 0xFFFFFF : 0x000000)
+                .waterColor(0x3f76e4)
+                .waterFogColor(0x50533)
+                .fogColor(white ? 0xFFFFFF : 0xc0d8ff)
+                .skyColor(white ? 0xFFFFFF : 0x111111)
                 .grassColorModifier(BiomeEffects.GrassColorModifier.NONE);
         if (white) {
             builder.loopSound(ModSoundEvents.WHITE_VOID);
