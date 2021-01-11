@@ -22,6 +22,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
 	public void checkDeath(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
-		TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 384);
+		if (ci.isCancelled()) {
+			TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 384);
+		}
 	}
 }
