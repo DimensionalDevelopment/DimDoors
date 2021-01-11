@@ -294,6 +294,14 @@ public final class ModConfig {
         }
     }
 
+    public static void serialize() {
+		try {
+			Files.write(CONFIG_PATH, GSON.toJson(CODEC.encodeStart(JsonOps.INSTANCE, INSTANCE).getOrThrow(false, System.err::println)).getBytes(StandardCharsets.UTF_8));
+		} catch (IOException e) {
+			LOGGER.error("An Unexpected error occured when serializing the Config", e);
+		}
+	}
+
     public static int deserialize() {
         LimboDecay.init();
         try {
@@ -313,8 +321,7 @@ public final class ModConfig {
             ).getOrThrow(false, System.err::println).getFirst();
             return 1;
         } catch (IOException e) {
-            LOGGER.error("An Unexpected error occured when deserializing the Config. Using default values for now.");
-            e.printStackTrace();
+            LOGGER.error("An Unexpected error occured when deserializing the Config. Using default values", e);
             INSTANCE = FALLBACK;
             return -1;
         }
