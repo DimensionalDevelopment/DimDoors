@@ -6,6 +6,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
@@ -65,6 +66,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModBiomes.init();
         ModDimensions.init();
         ModEntityTypes.init();
+		ModStats.init();
         ModBlockEntityTypes.init();
         ModCommands.init();
 		ModFluids.init();

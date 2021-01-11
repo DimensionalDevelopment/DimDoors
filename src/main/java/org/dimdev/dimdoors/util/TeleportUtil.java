@@ -1,11 +1,14 @@
 package org.dimdev.dimdoors.util;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
@@ -35,6 +38,19 @@ public final class TeleportUtil {
 
 	public static void teleport(ServerPlayerEntity player, RotatedLocation location) {
 		teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, (int) location.yaw);
+	}
+
+	public static void teleportRandom(Entity entity, World world, double y) {
+		double scale = ThreadLocalRandom.current().nextGaussian() * ThreadLocalRandom.current().nextInt(90);
+		teleport(
+				entity,
+				world,
+				entity.getPos()
+						.subtract(0, entity.getY(), 0)
+						.add(0, y, 0)
+						.multiply(scale, 1, scale),
+				entity.yaw
+		);
 	}
 
 	public static void teleportUntargeted(Entity entity, World world) {

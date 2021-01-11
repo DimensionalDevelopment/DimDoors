@@ -16,7 +16,7 @@ import net.minecraft.util.registry.SimpleRegistry;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 /**
- * A target that is not an actual object in the game such as a block or a tile
+ * A target that is not an actual object in the game such as a block or a block
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {

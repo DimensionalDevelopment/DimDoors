@@ -13,7 +13,6 @@ public enum DefaultTransformation implements Transformer {
 	DIMENSIONAL_PORTAL {
 		@Override
 		public void transform(MatrixStack matrices) {
-			// TODO
 			matrices.translate(0, 0, 0.5F);
 		}
 	},
@@ -43,12 +42,6 @@ public enum DefaultTransformation implements Transformer {
 			// TODO
 			matrices.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
 			matrices.translate(0, 0, -0.19F);
-		}
-	},
-	TRAPDOOR {
-		@Override
-		public void transform(MatrixStack matrices) {
-			matrices.multiply(Vector3f.NEGATIVE_Z.getDegreesQuaternion(90.0F));
 		}
 	};
 

@@ -24,6 +24,10 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
 public class ScreenGenerator {
 	public static Screen create(Screen parent, Object config, Runnable saveAction) {
 		Class<?> configClass = config.getClass();
@@ -34,6 +38,7 @@ public class ScreenGenerator {
 		ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
 		configBuilder.setTitle(new TranslatableText(configClass.getAnnotation(Title.class).value()));
 		configBuilder.setSavingRunnable(saveAction);
+		configBuilder.setParentScreen(parent);
 		GetStrategy strategy = configClass.getAnnotation(GetStrategy.class);
 		for (Field field : configClass.getDeclaredFields()) {
 			if (!field.isAnnotationPresent(Category.class)
