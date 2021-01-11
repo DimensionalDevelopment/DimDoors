@@ -56,7 +56,26 @@ public final class ModBiomes {
     }
 
     static {
-        Biome.Builder voidBiomeBuilder = new Biome.Builder().category(Biome.Category.NONE).depth(0).downfall(0).generationSettings(new GenerationSettings.Builder().surfaceBuilder(SurfaceBuilder.DEFAULT.withConfig(new TernarySurfaceConfig(Blocks.AIR.getDefaultState(), Blocks.AIR.getDefaultState(), Blocks.VOID_AIR.getDefaultState()))).build()).precipitation(Biome.Precipitation.NONE).scale(0).spawnSettings(new SpawnSettings.Builder().build()).temperature(0.8f).temperatureModifier(Biome.TemperatureModifier.NONE);
+        Biome.Builder voidBiomeBuilder = new Biome.Builder()
+				.category(Biome.Category.NONE)
+				.depth(0)
+				.downfall(0)
+				.generationSettings(new GenerationSettings.Builder().surfaceBuilder(
+										SurfaceBuilder.DEFAULT.withConfig(
+												new TernarySurfaceConfig(
+														Blocks.AIR.getDefaultState(),
+														Blocks.AIR.getDefaultState(),
+														Blocks.VOID_AIR.getDefaultState()
+												)
+										)
+						)
+						.build()
+				)
+				.precipitation(Biome.Precipitation.NONE)
+				.scale(0)
+				.spawnSettings(new SpawnSettings.Builder().build())
+				.temperature(0.8f)
+				.temperatureModifier(Biome.TemperatureModifier.NONE);
         PERSONAL_WHITE_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:white_void"));
         PUBLIC_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:black_void"));
         DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:dangerous_black_void"));
@@ -77,18 +96,41 @@ public final class ModBiomes {
                         .loopSound(ModSoundEvents.CREEPY)
                         .skyColor(0x404040)
                         .grassColor(0)
-                        .build())
+                        .build()
+				)
                 .generationSettings(new GenerationSettings.Builder()
-                        .feature(GenerationStep.Feature.SURFACE_STRUCTURES, ModFeatures.LIMBO_GATEWAY_CONFIGURED_FEATURE)
-                        .feature(GenerationStep.Feature.LAKES, ModFeatures.ETERNAL_FLUID_LAKE)
-                        .surfaceBuilder(SurfaceBuilder.NETHER.withConfig(new TernarySurfaceConfig(ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.UNRAVELLED_FABRIC.getDefaultState(), ModBlocks.ETERNAL_FLUID.getDefaultState())))
-                        .build())
+						.feature(
+								GenerationStep.Feature.SURFACE_STRUCTURES,
+								ModFeatures.LIMBO_GATEWAY_CONFIGURED_FEATURE
+						)
+                        .feature(
+                        		GenerationStep.Feature.LAKES,
+								ModFeatures.ETERNAL_FLUID_LAKE)
+                        .surfaceBuilder(
+                        		SurfaceBuilder.NETHER.withConfig(
+                        				new TernarySurfaceConfig(
+                        						ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
+												ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
+												ModBlocks.ETERNAL_FLUID.getDefaultState()
+										)
+								))
+                        .build()
+				)
                 .precipitation(Biome.Precipitation.NONE)
                 .scale(2F)
                 .spawnSettings(new SpawnSettings.Builder()
-                        .creatureSpawnProbability(0.02f)
-                        .spawn(SpawnGroup.MONSTER, new SpawnSettings.SpawnEntry(ModEntityTypes.MONOLITH, 1, 1, 1))
-                        .build())
+						.creatureSpawnProbability(0.02f)
+						.spawn(
+								SpawnGroup.MONSTER,
+								new SpawnSettings.SpawnEntry(
+										ModEntityTypes.MONOLITH,
+										1,
+										1,
+										1
+								)
+						)
+                        .build()
+				)
                 .temperature(0.2f)
                 .temperatureModifier(Biome.TemperatureModifier.NONE)
                 .build();
