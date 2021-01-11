@@ -6,8 +6,8 @@ import java.util.OptionalLong;
 
 import com.google.common.collect.ImmutableMap;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.mixin.ChunkGeneratorSettingsAccessor;
-import org.dimdev.dimdoors.mixin.DimensionTypeAccessor;
+import org.dimdev.dimdoors.mixin.accessor.ChunkGeneratorSettingsAccessor;
+import org.dimdev.dimdoors.mixin.accessor.DimensionTypeAccessor;
 import org.dimdev.dimdoors.world.limbo.LimboChunkGenerator;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 

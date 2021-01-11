@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.mixin.GenerationSettingsAccessor;
+import org.dimdev.dimdoors.mixin.accessor.GenerationSettingsAccessor;
 import org.dimdev.dimdoors.world.feature.decorator.EternalFluidLakeDecorator;
 import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.SandstonePillarsV2Gateway;
@@ -22,7 +22,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.decorator.ChanceDecoratorConfig;
 import net.minecraft.world.gen.decorator.Decorator;
-import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;

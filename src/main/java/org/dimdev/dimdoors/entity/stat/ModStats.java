@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.entity.stat;
 
-import org.dimdev.dimdoors.mixin.StatsAccessor;
+import org.dimdev.dimdoors.mixin.accessor.StatsAccessor;
 
 import net.minecraft.stat.StatFormatter;
 import net.minecraft.util.Identifier;

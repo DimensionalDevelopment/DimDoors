@@ -3,24 +3,25 @@
   "package": "org.dimdev.dimdoors.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BuiltinBiomesAccessor",
-    "ChunkGeneratorAccessor",
-    "ChunkGeneratorSettingsAccessor",
     "DefaultBiomeFeaturesMixin",
-    "DefaultParticleTypeAccessor",
-    "DimensionTypeAccessor",
-    "DirectionAccessor",
-    "GenerationSettingsAccessor",
-    "ListTagAccessor",
     "PlayerEntityMixin",
-    "RedstoneWireBlockAccessor",
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
-    "StatsAccessor"
+    "accessor.BuiltinBiomesAccessor",
+    "accessor.ChunkGeneratorAccessor",
+    "accessor.ChunkGeneratorSettingsAccessor",
+    "accessor.DefaultParticleTypeAccessor",
+    "accessor.DimensionTypeAccessor",
+    "accessor.DirectionAccessor",
+    "accessor.GenerationSettingsAccessor",
+    "accessor.ListTagAccessor",
+    "accessor.RedstoneWireBlockAccessor",
+    "accessor.StatsAccessor"
   ],
   "client": [
-    "client.GlStateManagerAccessor",
-    "client.InGameHudMixin"
+    "client.InGameHudMixin",
+    "client.ClientPlayNetworkHandlerMixin",
+    "client.accessor.GlStateManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

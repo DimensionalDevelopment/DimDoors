@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.mixin.client;
+package org.dimdev.dimdoors.mixin.client.accessor;
 
 import java.nio.FloatBuffer;
 

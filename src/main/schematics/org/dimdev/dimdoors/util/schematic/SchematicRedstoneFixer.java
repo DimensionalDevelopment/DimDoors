@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.util.schematic;
 
-import org.dimdev.dimdoors.mixin.RedstoneWireBlockAccessor;
+import org.dimdev.dimdoors.mixin.accessor.RedstoneWireBlockAccessor;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

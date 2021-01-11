@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.dimdev.dimdoors.mixin.BuiltinBiomesAccessor;
+import org.dimdev.dimdoors.mixin.accessor.BuiltinBiomesAccessor;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;

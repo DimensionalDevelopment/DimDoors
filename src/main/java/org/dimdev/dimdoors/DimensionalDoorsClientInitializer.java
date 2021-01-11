@@ -30,6 +30,6 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
         ModBlocks.initClient();
 		ModParticleTypes.initClient();
 
-		ClientPlayNetworking.registerReceiver(DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, (client, networkHandler, buf, sender) -> MonolithEntity.spawnParticles(buf, client));
+		ClientPlayNetworking.registerGlobalReceiver(DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, (client, networkHandler, buf, sender) -> MonolithEntity.spawnParticles(buf, client));
     }
 }

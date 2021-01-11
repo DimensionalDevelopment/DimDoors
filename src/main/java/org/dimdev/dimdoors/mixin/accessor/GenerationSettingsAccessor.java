@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.mixin;
+package org.dimdev.dimdoors.mixin.accessor;
 
 import java.util.List;
 import java.util.function.Supplier;

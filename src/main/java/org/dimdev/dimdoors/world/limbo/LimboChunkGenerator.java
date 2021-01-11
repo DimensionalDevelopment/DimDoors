@@ -11,7 +11,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.mixin.ChunkGeneratorAccessor;
+import org.dimdev.dimdoors.mixin.accessor.ChunkGeneratorAccessor;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;

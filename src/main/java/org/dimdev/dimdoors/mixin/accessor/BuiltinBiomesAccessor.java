@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.mixin;
+package org.dimdev.dimdoors.mixin.accessor;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.spongepowered.asm.mixin.Mixin;

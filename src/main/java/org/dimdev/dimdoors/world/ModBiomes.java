@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world;
 
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.mixin.BuiltinBiomesAccessor;
+import org.dimdev.dimdoors.mixin.accessor.BuiltinBiomesAccessor;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 

@@ -6,7 +6,7 @@ import java.util.Objects;
 import com.google.common.collect.ImmutableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.mixin.ListTagAccessor;
+import org.dimdev.dimdoors.mixin.accessor.ListTagAccessor;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
