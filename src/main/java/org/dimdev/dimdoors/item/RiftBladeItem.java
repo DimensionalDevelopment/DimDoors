@@ -78,8 +78,7 @@ public class RiftBladeItem extends SwordItem {
 			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
 			rift.teleport(player);
 
-			stack.damage(1, player, a -> {
-			});
+			stack.damage(1, player, a -> a.sendToolBreakStatus(hand));
 			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 		}
 		return new TypedActionResult<>(ActionResult.FAIL, stack);

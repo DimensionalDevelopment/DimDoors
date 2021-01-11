@@ -57,8 +57,7 @@ public class RiftRemoverItem extends Item {
 			if (!Objects.requireNonNull(rift).closing) {
 				rift.setClosing(true);
 				world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
-				stack.damage(10, player, a -> {
-				});
+				stack.damage(10, player, a -> a.sendToolBreakStatus(hand));
 				player.sendMessage(new TranslatableText(this.getTranslationKey() + ".closing"), true);
 				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 			} else {
