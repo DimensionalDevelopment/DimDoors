@@ -1,4 +1,7 @@
 # Dimensional Doors
+[![CF Dl Count](http://cf.way2muchnoise.eu/full_dimensionaldoors_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/dimensionaldoors)
+[![MC Versions](http://cf.way2muchnoise.eu/versions/Minecraft_dimensionaldoors_all.svg)](https://www.curseforge.com/minecraft/mc-mods/dimensionaldoors)
+[![Last Commit](https://img.shields.io/github/last-commit/DimensionalDevelopment/DimDoors.svg)](https://github.com/DimensionalDevelopment/DimDoors/commits/1.16-fabric)
 [![Build Status](https://api.travis-ci.org/DimensionalDevelopment/DimDoors.svg)](https://travis-ci.org/DimensionalDevelopment/DimDoors/builds)
 
 ## Overview
