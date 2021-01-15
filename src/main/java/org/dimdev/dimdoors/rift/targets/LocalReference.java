@@ -38,7 +38,7 @@ public class LocalReference extends RiftReference {
 	public static LocalReference fromTag(CompoundTag tag) {
 		int[] pos = tag.getIntArray("target");
 		return new LocalReference(
-				new BlockPos(pos[1], pos[2], pos[3])
+				new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}
 }

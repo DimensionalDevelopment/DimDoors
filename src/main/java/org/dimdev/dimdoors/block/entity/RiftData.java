@@ -82,7 +82,7 @@ public class RiftData {
 
 	public static RiftData fromTag(CompoundTag tag) {
 		RiftData data = new RiftData();
-		data.destination = tag.contains("destination") ? VirtualTarget.fromTag(tag.getCompound("destination")) : null;
+		data.destination = tag.contains("destination") ? VirtualTarget.fromTag(tag.getCompound("destination")) : VirtualTarget.NoneTarget.INSTANCE;
 		data.properties = tag.contains("properties") ? LinkProperties.fromTag(tag.getCompound("properties")) : null;
 		data.alwaysDelete = tag.getBoolean("alwaysDelete");
 		data.forcedColor = tag.getBoolean("forcedColor");

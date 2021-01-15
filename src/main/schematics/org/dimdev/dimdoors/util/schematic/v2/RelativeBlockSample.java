@@ -59,19 +59,6 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			}
 		}
 		for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
-			if (blockEntityTag.contains("Pos") && (!blockEntityTag.contains("x") && !blockEntityTag.contains("y") && !blockEntityTag.contains("z"))) {
-				IntArrayTag pos = Objects.requireNonNull((IntArrayTag) blockEntityTag.get("Pos"));
-				blockEntityTag.putInt("x", pos.get(0).getInt());
-				blockEntityTag.putInt("y", pos.get(1).getInt());
-				blockEntityTag.putInt("z", pos.get(2).getInt());
-			} else if (!blockEntityTag.contains("Pos") && (blockEntityTag.contains("x") && blockEntityTag.contains("y") && blockEntityTag.contains("z"))) {
-				blockEntityTag.putIntArray("Pos", ImmutableList.of(
-						blockEntityTag.getInt("x"),
-						blockEntityTag.getInt("y"),
-						blockEntityTag.getInt("z")
-						)
-				);
-			}
 			int[] arr = blockEntityTag.getIntArray("Pos");
 			BlockPos position = new BlockPos(arr[0], arr[1], arr[2]);
 			this.blockEntityContainer.put(position, blockEntityTag);
@@ -114,14 +101,11 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		this.blockContainer.forEach((pos, state) -> this.world.setBlockState(origin.add(pos), state, 0b0000011));
 		for (Map.Entry<BlockPos, CompoundTag> entry : this.blockEntityContainer.entrySet()) {
 			BlockPos pos = entry.getKey();
-			BlockPos actualPos = origin.add(pos);
-			CompoundTag tag = entry.getValue();
-			tag.putInt("x", actualPos.getX());
-			tag.putInt("y", actualPos.getY());
-			tag.putInt("z", actualPos.getZ());
-			BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(pos), tag);
+			BlockPos actualPos = origin.add(entry.getKey());
+
+			BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(pos), entry.getValue());
 			if (blockEntity != null) {
-				this.world.toServerWorld().setBlockEntity(blockEntity.getPos(), blockEntity);
+				this.world.toServerWorld().setBlockEntity(actualPos, blockEntity);
 			}
 		}
 		for (Map.Entry<CompoundTag, Vec3d> entry : this.entityContainer.entrySet()) {

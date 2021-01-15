@@ -27,7 +27,7 @@ public class PublicPocketTarget extends RestoringTarget {
 
 	@Override
 	protected void setTarget(VirtualTarget target) {
-
+		this.wrappedDestination = target;
 	}
 
 	@Override

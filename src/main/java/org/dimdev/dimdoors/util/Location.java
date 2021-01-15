@@ -99,7 +99,7 @@ public class Location {
 		int[] pos = tag.getIntArray("pos");
 		return new Location(
 				RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("world"))),
-				new BlockPos(pos[1], pos[2], pos[3])
+				new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}
 }

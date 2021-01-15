@@ -85,13 +85,13 @@ public class SchematicV2Handler {
     public PocketTemplateV2 getRandomPublicPocket() {
         Collection<PocketTemplateV2> publicPockets = this.templateMap.get("public");
         int index = RANDOM.nextInt(publicPockets.size());
-        return Lists.newArrayList(publicPockets).get(index);
+        return Lists.newArrayList(publicPockets).get(0);
     }
 
     public PocketTemplateV2 getRandomPrivatePocket() {
         Collection<PocketTemplateV2> publicPockets = this.templateMap.get("private");
         int index = RANDOM.nextInt(publicPockets.size());
-        return Lists.newArrayList(publicPockets).get(index);
+        return Lists.newArrayList(publicPockets).get(0);
     }
 
     public static SchematicV2Handler getInstance() {

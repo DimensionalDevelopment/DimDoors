@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.targets.LimboTarget;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
@@ -69,4 +70,6 @@ public interface DefaultDungeonDestinations { // TODO: lower weights?
             .weightMaximum(300) // Link further away
             .newRiftWeight(1)
             .build();
+
+    VirtualTarget LIMBO = LimboTarget.INSTANCE;
 }

@@ -42,7 +42,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
 	@Override
 	public boolean receiveEntity(Entity entity, float yawOffset) {
-		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getVector()).multiply(ModConfig.INSTANCE.getGeneralConfig().teleportOffset + 0.5));
+		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(ModConfig.INSTANCE.getGeneralConfig().teleportOffset + 0.5));
 		TeleportUtil.teleport(entity, this.world, targetPos, yawOffset);
 		return true;
 	}
@@ -53,11 +53,6 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				.filter(state -> state.contains(HorizontalFacingBlock.FACING))
 				.map(state -> state.get(HorizontalFacingBlock.FACING))
 				.orElse(Direction.NORTH);
-//		BlockState state = this.world.getBlockState(this.pos);
-//		if (state.contains(HorizontalFacingBlock.FACING)) {
-//			return state.get(HorizontalFacingBlock.FACING);
-//		}
-//		return Direction.NORTH;
 	}
 
 	/**

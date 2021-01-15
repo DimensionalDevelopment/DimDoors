@@ -69,8 +69,8 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 	public static PocketEntranceMarker fromTag(CompoundTag tag) {
 		PocketEntranceMarker target = new PocketEntranceMarker();
 		target.weight = tag.getFloat("weight");
-		target.ifDestination = VirtualTarget.fromTag(tag.getCompound("ifDestination"));
-		target.otherwiseDestination = VirtualTarget.fromTag(tag.getCompound("otherwiseDestination"));
+		target.ifDestination = tag.contains("ifDestination") ? VirtualTarget.fromTag(tag.getCompound("ifDestination")) : NoneTarget.INSTANCE;
+		target.otherwiseDestination = tag.contains("otherwiseDestination") ? VirtualTarget.fromTag(tag.getCompound("otherwiseDestination")) : NoneTarget.INSTANCE;
 		return target;
 	}
 

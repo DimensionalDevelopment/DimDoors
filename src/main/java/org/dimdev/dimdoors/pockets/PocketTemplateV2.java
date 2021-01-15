@@ -22,6 +22,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 
 public class PocketTemplateV2 {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -42,16 +43,16 @@ public class PocketTemplateV2 {
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
 
         List<RiftBlockEntity> rifts = new ArrayList<>();
+        BlockPos origin = pocket.getOrigin();
         for (CompoundTag blockEntityTag : this.schematic.getBlockEntities()) {
-            BlockPos pos = new BlockPos(
-                    pocket.box.minX + blockEntityTag.getInt("x"),
-                    pocket.box.minY + blockEntityTag.getInt("y"),
-                    pocket.box.minZ + blockEntityTag.getInt("z")
-            );
-            BlockEntity tile = world.getBlockEntity(pos);
+            int[] pos = blockEntityTag.getIntArray("Pos");
+
+            BlockPos actualBlock = origin.add(pos[0], pos[1], pos[2]);
+
+            BlockEntity tile = world.getBlockEntity(actualBlock);
 
             if (tile instanceof RiftBlockEntity) {
-                LOGGER.debug("Rift found in schematic at " + pos);
+                LOGGER.debug("Rift found in schematic at " + actualBlock);
                 RiftBlockEntity rift = (RiftBlockEntity) tile;
                 rift.getDestination().setLocation(new Location((ServerWorld) Objects.requireNonNull(rift.getWorld()), rift.getPos()));
                 rifts.add(rift);

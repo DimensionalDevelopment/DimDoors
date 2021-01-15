@@ -1,14 +1,21 @@
 package org.dimdev.dimdoors.pockets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Location;
@@ -23,13 +30,21 @@ import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
+
+import com.mojang.datafixers.types.Func;
+import com.mojang.serialization.Lifecycle;
 
 /**
  * @author Robijnvogel
  */
 public class PocketTemplate {
     private static final Logger LOGGER = LogManager.getLogger();
+    public static final HashMap<String, Consumer<EntranceRiftBlockEntity>> placeholderMap;
     private final String group;
     private final String id;
     private final String type;
@@ -87,40 +102,16 @@ public class PocketTemplate {
 
                 CompoundTag newNBT = new CompoundTag();
                 EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
-                switch (tileEntityNBT.getString("placeholder")) {
-                    case "deeper_depth_door":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.DEEPER_DUNGEON_DESTINATION);
-                        newNBT = rift.toTag(newNBT);
-                        break;
-                    case "less_deep_depth_door":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.SHALLOWER_DUNGEON_DESTINATION);
-                        newNBT = rift.toTag(newNBT);
-                        break;
-                    case "overworld_door":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.OVERWORLD_DESTINATION);
-                        newNBT = rift.toTag(newNBT);
-                        break;
-                    case "entrance_door":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.TWO_WAY_POCKET_ENTRANCE);
-                        newNBT = rift.toTag(newNBT);
-                        break;
-                    case "gateway_portal":
-                        rift.setPos(new BlockPos(x, y, z));
-                        rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.GATEWAY_DESTINATION);
-                        newNBT = rift.toTag(newNBT);
-                        break;
-                    default:
-                        throw new RuntimeException("Unknown tile entity placeholder: " + tileEntityNBT.getString("placeholder"));
-                }
+
+                String placeholder = tileEntityNBT.getString("placeholder");
+
+                if(placeholderMap.containsKey(placeholder)) {
+                    rift.setPos(new BlockPos(x, y, z));
+                    placeholderMap.get(placeholder).accept(rift);
+                    newNBT = rift.toTag(newNBT);
+                } else
+                    throw new RuntimeException("Unknown tile entity placeholder: " + tileEntityNBT.getString("placeholder"));
+
                 // TODO: allow overriding some placeholder properties by copying other properties (not placeholder and x/y/z) to the new nbt
                 tileEntities.add(newNBT);
             } else {
@@ -248,5 +239,31 @@ public class PocketTemplate {
 
     public void setSchematicBytecode(byte[] schematicBytecode) {
         this.schematicBytecode = schematicBytecode;
+    }
+
+    static {
+        placeholderMap = new HashMap<>();
+
+        placeholderMap.put("deeper_depth_door",
+            rift -> {
+                rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                rift.setDestination(DefaultDungeonDestinations.DEEPER_DUNGEON_DESTINATION);
+            });
+        placeholderMap.put("less_deep_depth_door",
+            rift -> {
+                rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                rift.setDestination(DefaultDungeonDestinations.SHALLOWER_DUNGEON_DESTINATION);
+            });
+        placeholderMap.put("overworld_door",
+            rift -> {
+                rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                rift.setDestination(DefaultDungeonDestinations.OVERWORLD_DESTINATION);
+            });
+        placeholderMap.put("entrance_door",
+            rift -> {
+                rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                rift.setDestination(DefaultDungeonDestinations.TWO_WAY_POCKET_ENTRANCE);
+            });
+        placeholderMap.put("limbo", rift -> rift.setDestination(DefaultDungeonDestinations.LIMBO));
     }
 }

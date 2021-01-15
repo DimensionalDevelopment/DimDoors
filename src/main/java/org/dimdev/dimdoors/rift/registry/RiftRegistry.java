@@ -40,15 +40,13 @@ public class RiftRegistry extends PersistentState {
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
 	protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
-	private final World overworld;
 
-	public RiftRegistry(World overworld) {
+	public RiftRegistry() {
 		super(DATA_NAME);
-		this.overworld = overworld;
 	}
 
 	public static RiftRegistry instance() {
-		return getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(() -> new RiftRegistry(getWorld(OVERWORLD)), DATA_NAME);
+		return getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(RiftRegistry::new, DATA_NAME);
 	}
 
 	@Override
@@ -57,10 +55,10 @@ public class RiftRegistry extends PersistentState {
 
 		ListTag riftsNBT = (ListTag) nbt.get("rifts");
 		for (Tag riftNBT : riftsNBT) {
-//            Rift rift = NbtUtil.deserialize(riftNBT, Rift.CODEC);
-//            this.graph.addVertex(rift);
-//            this.uuidMap.put(rift.id, rift);
-//            this.locationMap.put(rift.location, rift);
+            Rift rift = Rift.fromTag((CompoundTag) riftNBT);
+            this.graph.addVertex(rift);
+            this.uuidMap.put(rift.id, rift);
+            this.locationMap.put(rift.location, rift);
 		}
 
 		ListTag pocketsNBT = (ListTag) nbt.get("pockets");
