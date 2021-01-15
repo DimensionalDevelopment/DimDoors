@@ -38,9 +38,10 @@ public final class Pocket {
 	}
 
 	public Pocket(int id, RegistryKey<World> world, int x, int z) {
+		int gridSize = PocketRegistry.getInstance(world).getGridSize() * 16;
 		this.id = id;
 		this.world = world;
-		this.box = new BlockBox(x * 16, 0, z * 16, (x + 1) * 16, 0, (z + 1) * 16);
+		this.box = new BlockBox(x * gridSize, 0, z * gridSize, (x + 1) * gridSize, 0, (z + 1) * gridSize);
 		this.virtualLocation = new VirtualLocation(world, x, z, 0);
 	}
 

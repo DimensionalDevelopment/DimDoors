@@ -94,7 +94,6 @@ public class TemplateUtils {
             VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketEntranceMarker) {
                 if (rift == selectedEntrance) {
-                    PocketRegistry.getInstance(world.getRegistryKey()).markDirty();
                     rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
                     rift.register();
                     RiftRegistry.instance().addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));

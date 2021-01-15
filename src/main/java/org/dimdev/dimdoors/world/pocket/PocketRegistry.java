@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import dev.onyxstudios.cca.api.v3.component.Component;
+import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.math.GridUtil;
@@ -13,34 +15,28 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
-public class PocketRegistry extends PersistentState {
-	private static final String DATA_NAME = "pocketlib_pockets";
+public class PocketRegistry implements Component {
 
-	/*package-private*/ int gridSize; // Determines how much pockets in their dimension are spaced
-	/*package-private*/ int privatePocketSize;
-	/*package-private*/ int publicPocketSize;
-	/*package-private*/ Map<Integer, Pocket> pockets;
-	/*package-private*/ int nextID;
+	int gridSize; // Determines how much pockets in their dimension are spaced
+	int privatePocketSize;
+	int publicPocketSize;
+	Map<Integer, Pocket> pockets;
+	int nextID;
 
 	private ServerWorld world;
 
 	public PocketRegistry() {
-		super(DATA_NAME);
+		super();
 		this.gridSize = ModConfig.INSTANCE.getPocketsConfig().pocketGridSize;
 
 		this.nextID = 0;
 		this.pockets = new HashMap<>();
 	}
 
-	public PocketRegistry(String s) {
-		super(s);
-	}
-
 	@Override
-	public void fromTag(CompoundTag tag) {
+	public void readFromNbt(CompoundTag tag) {
 		this.gridSize = tag.getInt("gridSize");
 		this.privatePocketSize = tag.getInt("privatePocketSize");
 		this.publicPocketSize = tag.getInt("publicPocketSize");
@@ -51,7 +47,7 @@ public class PocketRegistry extends PersistentState {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public void writeToNbt(CompoundTag tag) {
 		tag.putInt("gridSize", this.gridSize);
 		tag.putInt("privatePocketSize", this.privatePocketSize);
 		tag.putInt("publicPocketSize", this.publicPocketSize);
@@ -60,7 +56,6 @@ public class PocketRegistry extends PersistentState {
 		this.pockets.forEach((key, value) -> pocketsTag.put(key.toString(), value.toTag()));
 		tag.put("pockets", pocketsTag);
 		tag.putInt("nextID", this.nextID);
-		return tag;
 	}
 
 	public static PocketRegistry getInstance(RegistryKey<World> key) {
@@ -70,7 +65,7 @@ public class PocketRegistry extends PersistentState {
 			throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
 		}
 
-		PocketRegistry instance = world.getPersistentStateManager().getOrCreate(PocketRegistry::new, DATA_NAME);
+		PocketRegistry instance = DimensionalDoorsComponents.POCKET_REGISTRY_COMPONENT_KEY.get(world);
 
 		instance.world = world;
 		for (Pocket pocket : instance.pockets.values()) {
@@ -102,13 +97,11 @@ public class PocketRegistry extends PersistentState {
 		Pocket pocket = new Pocket(id, this.world.getRegistryKey(), pos.x, pos.z);
 		this.pockets.put(id, pocket);
 		if (id >= this.nextID) this.nextID = id + 1;
-		this.markDirty();
 		return pocket;
 	}
 
 	public void removePocket(int id) {
 		this.pockets.remove(id);
-		this.markDirty();
 	}
 
 	/**

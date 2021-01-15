@@ -21,14 +21,6 @@ public class RiftData {
 	public RiftData() {
 	}
 
-	private RiftData(VirtualTarget destination, LinkProperties properties, boolean alwaysDelete, boolean forcedColor, RGBA color) {
-		this.destination = destination;
-		this.properties = properties;
-		this.alwaysDelete = alwaysDelete;
-		this.forcedColor = forcedColor;
-		this.color = color;
-	}
-
 	public VirtualTarget getDestination() {
 		return this.destination;
 	}

@@ -13,6 +13,10 @@ repositories {
     maven { url = 'https://www.cursemaven.com' }
     maven { url = 'https://jitpack.io' }
 	maven { url = 'https://server.bbkr.space/artifactory/libs-release' }
+	maven {
+		name = "Ladysnake Libs"
+		url = "https://dl.bintray.com/ladysnake/libs"
+	}
 }
 
 def includeCompile(str) {
@@ -36,6 +40,7 @@ dependencies {
 	includeCompile("io.github.boogiemonster1o1:libcbe:1.1.0")
 	includeCompile("io.github.cottonmc:LibGui:3.3.2+1.16.4")
 	includeCompile("me.shedaniel.cloth:config-2:4.8.3")
+	includeCompile("io.github.onyxstudios:Cardinal-Components-API:2.7.10")
 
 	// TODO: Add project id
     // modImplementation("curse.maven:worldedit:3039223") // For saving schematics

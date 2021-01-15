@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import dev.onyxstudios.cca.api.v3.component.ComponentV3;
+import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.util.GraphUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.NbtUtil;
@@ -26,9 +29,10 @@ import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
 import static net.minecraft.world.World.OVERWORLD;
+import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getServer;
 import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getWorld;
 
-public class RiftRegistry extends PersistentState {
+public class RiftRegistry implements ComponentV3 {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String DATA_NAME = "rifts";
 
@@ -41,16 +45,12 @@ public class RiftRegistry extends PersistentState {
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
 	protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
 
-	public RiftRegistry() {
-		super(DATA_NAME);
-	}
-
 	public static RiftRegistry instance() {
-		return getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(RiftRegistry::new, DATA_NAME);
+		return DimensionalDoorsComponents.RIFT_REGISTRY_COMPONENT_KEY.get(getServer().getScoreboard());
 	}
 
 	@Override
-	public void fromTag(CompoundTag nbt) {
+	public void readFromNbt(CompoundTag nbt) {
 		// Read rifts in this dimension
 
 		ListTag riftsNBT = (ListTag) nbt.get("rifts");
@@ -86,9 +86,7 @@ public class RiftRegistry extends PersistentState {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		if (this == null) {
-		}
+	public void writeToNbt(CompoundTag tag) {
 		// Write rifts in this dimension
 		ListTag riftsNBT = new ListTag();
 		ListTag pocketsNBT = new ListTag();
@@ -121,7 +119,6 @@ public class RiftRegistry extends PersistentState {
 		tag.put("lastPrivatePocketEntrances", this.writePlayerRiftPointers(this.lastPrivatePocketEntrances));
 		tag.put("lastPrivatePocketExits", this.writePlayerRiftPointers(this.lastPrivatePocketExits));
 		tag.put("overworldRifts", this.writePlayerRiftPointers(this.overworldRifts));
-		return tag;
 	}
 
 	private Map<UUID, PlayerRiftPointer> readPlayerRiftPointers(ListTag tag) {
@@ -220,9 +217,8 @@ public class RiftRegistry extends PersistentState {
 
 	private void addEdge(RegistryVertex from, RegistryVertex to) {
 		this.graph.addEdge(from, to);
-		if (from instanceof PlayerRiftPointer) {
-			this.markDirty();
-		} else if (from instanceof Rift) {
+
+		if (from instanceof Rift) {
 			((Rift) from).markDirty();
 		}
 		if (to instanceof Rift) {
@@ -232,10 +228,6 @@ public class RiftRegistry extends PersistentState {
 
 	private void removeEdge(RegistryVertex from, RegistryVertex to) {
 		this.graph.removeEdge(from, to);
-
-		if (from instanceof PlayerRiftPointer) {
-			this.markDirty();
-		}
 	}
 
 	public void addLink(Location locationFrom, Location locationTo) {

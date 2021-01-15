@@ -29,6 +29,9 @@
     ],
     "modmenu": [
       "org.dimdev.dimdoors.client.config.ModMenuImpl"
+    ],
+    "cardinal-components": [
+      "org.dimdev.dimdoors.DimensionalDoorsComponents"
     ]
   },
   "mixins": [
@@ -37,5 +40,11 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric": "*"
+  },
+  "custom": {
+    "cardinal-components": [
+      "dimdoors:rift_registry",
+      "dimdoors:pocket_registry"
+    ]
   }
 }
