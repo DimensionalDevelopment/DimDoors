@@ -17,11 +17,11 @@ import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 import org.dimdev.dimdoors.world.pocket.Pocket;
-import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -96,7 +96,7 @@ public class TemplateUtils {
                 if (rift == selectedEntrance) {
                     rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
                     rift.register();
-                    RiftRegistry.instance().addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
+                    DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
                 } else {
                     rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
                 }

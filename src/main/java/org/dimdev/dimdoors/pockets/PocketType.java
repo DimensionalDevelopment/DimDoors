@@ -18,7 +18,6 @@ public final class PocketType {
         this.group = group;
         this.entries = entries;
     }
-
     public String getGroup() {
         return this.group;
     }
@@ -31,6 +30,7 @@ public final class PocketType {
     public String toString() {
         return "PocketType{" +
                 "group='" + this.group + '\'' +
+
                 ", entries=" + this.entries +
                 '}';
     }

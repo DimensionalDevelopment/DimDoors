@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
@@ -39,18 +40,18 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 				pocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
 
 				PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
-				BlockEntity be = RiftRegistry.instance().getPocketEntrance(pocket).getBlockEntity();
+				BlockEntity be = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).getBlockEntity();
 				this.processEntity(pocket, be, entity, uuid, yawOffset);
 			} else {
-				Location destLoc = RiftRegistry.instance().getPrivatePocketEntrance(uuid); // get the last used entrances
+				Location destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketEntrance(uuid); // get the last used entrances
 				if (destLoc == null)
-					destLoc = RiftRegistry.instance().getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
+					destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
 				if (destLoc == null) { // if the pocket entrances is gone, then create a new private pocket
 					LOGGER.info("All entrances are gone, creating a new private pocket!");
 					pocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
 
 					PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
-					destLoc = RiftRegistry.instance().getPocketEntrance(pocket);
+					destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
 				}
 
 				this.processEntity(pocket, destLoc.getBlockEntity(), entity, uuid, yawOffset);
@@ -73,7 +74,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 			}
 		} else {
 			((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
-			RiftRegistry.instance().setLastPrivatePocketExit(uuid, this.location);
+			DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, this.location);
 		}
 	}
 

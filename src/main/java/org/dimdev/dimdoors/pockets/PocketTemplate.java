@@ -18,10 +18,10 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.world.pocket.Pocket;
-import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -129,7 +129,7 @@ public class PocketTemplate {
 
     public void place(Pocket pocket, boolean setup) {
         pocket.setSize(this.size * 16, this.size * 16, this.size * 16);
-        int gridSize = PocketRegistry.getInstance(pocket.world).getGridSize();
+        int gridSize = DimensionalRegistry.getPocketDirectory(pocket.world).getGridSize();
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;
@@ -154,7 +154,7 @@ public class PocketTemplate {
     }
 
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
-        int gridSize = PocketRegistry.getInstance(pocket.world).getGridSize();
+        int gridSize = DimensionalRegistry.getPocketDirectory(pocket.world).getGridSize();
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         int xBase = pocket.box.minX;
         int yBase = pocket.box.minY;

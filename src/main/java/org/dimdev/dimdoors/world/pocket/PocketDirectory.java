@@ -8,46 +8,49 @@ import dev.onyxstudios.cca.api.v3.component.Component;
 import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.math.GridUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-
-public class PocketRegistry implements Component {
-
+import net.minecraft.world.level.LevelProperties;
+public class PocketDirectory {
 	int gridSize; // Determines how much pockets in their dimension are spaced
 	int privatePocketSize;
 	int publicPocketSize;
 	Map<Integer, Pocket> pockets;
 	int nextID;
+	RegistryKey<World> worldKey;
 
-	private ServerWorld world;
-
-	public PocketRegistry() {
-		super();
+	public PocketDirectory(RegistryKey<World> worldKey) {
 		this.gridSize = ModConfig.INSTANCE.getPocketsConfig().pocketGridSize;
-
+		this.worldKey = worldKey;
 		this.nextID = 0;
 		this.pockets = new HashMap<>();
 	}
 
-	@Override
-	public void readFromNbt(CompoundTag tag) {
-		this.gridSize = tag.getInt("gridSize");
-		this.privatePocketSize = tag.getInt("privatePocketSize");
-		this.publicPocketSize = tag.getInt("publicPocketSize");
+	public static PocketDirectory readFromNbt(String id, CompoundTag tag) {
+		PocketDirectory directory = new PocketDirectory(RegistryKey.of(Registry.DIMENSION, new Identifier(id)));
+
+		directory.gridSize = tag.getInt("gridSize");
+		directory.privatePocketSize = tag.getInt("privatePocketSize");
+		directory.publicPocketSize = tag.getInt("publicPocketSize");
 
 		CompoundTag pocketsTag = tag.getCompound("pockets");
-		this.pockets = pocketsTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, a -> Pocket.fromTag(pocketsTag.getCompound(a))));
-		this.nextID = tag.getInt("nextID");
+		directory.pockets = pocketsTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, a -> Pocket.fromTag(pocketsTag.getCompound(a))));
+		directory.nextID = tag.getInt("nextID");
+
+		return directory;
 	}
 
-	@Override
-	public void writeToNbt(CompoundTag tag) {
+	public CompoundTag writeToNbt() {
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("gridSize", this.gridSize);
 		tag.putInt("privatePocketSize", this.privatePocketSize);
 		tag.putInt("publicPocketSize", this.publicPocketSize);
@@ -56,23 +59,8 @@ public class PocketRegistry implements Component {
 		this.pockets.forEach((key, value) -> pocketsTag.put(key.toString(), value.toTag()));
 		tag.put("pockets", pocketsTag);
 		tag.putInt("nextID", this.nextID);
-	}
 
-	public static PocketRegistry getInstance(RegistryKey<World> key) {
-		ServerWorld world = DimensionalDoorsInitializer.getWorld(key);
-
-		if (!(ModDimensions.isPocketDimension(world))) {
-			throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
-		}
-
-		PocketRegistry instance = DimensionalDoorsComponents.POCKET_REGISTRY_COMPONENT_KEY.get(world);
-
-		instance.world = world;
-		for (Pocket pocket : instance.pockets.values()) {
-			pocket.world = key;
-		}
-
-		return instance;
+		return tag;
 	}
 
 	/**
@@ -94,7 +82,7 @@ public class PocketRegistry implements Component {
 	public Pocket newPocket(int id) {
 		if (this.pockets.get(id) != null) return null;
 		GridUtil.GridPos pos = this.idToGridPos(id);
-		Pocket pocket = new Pocket(id, this.world.getRegistryKey(), pos.x, pos.z);
+		Pocket pocket = new Pocket(id, worldKey, pos.x, pos.z);
 		this.pockets.put(id, pocket);
 		if (id >= this.nextID) this.nextID = id + 1;
 		return pocket;
@@ -172,3 +160,5 @@ public class PocketRegistry implements Component {
 		return this.nextID;
 	}
 }
+
+

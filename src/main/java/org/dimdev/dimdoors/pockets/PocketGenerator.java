@@ -8,9 +8,9 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
-import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.server.world.ServerWorld;
@@ -21,7 +21,7 @@ public final class PocketGenerator {
     private static Pocket prepareAndPlacePocket(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
         LOGGER.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
 
-        Pocket pocket = PocketRegistry.getInstance(world.getRegistryKey()).newPocket();
+        Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
         pocketTemplate.place(pocket, setup);
         pocket.virtualLocation = virtualLocation;
         return pocket;
@@ -30,7 +30,7 @@ public final class PocketGenerator {
     private static Pocket prepareAndPlaceV2Pocket(ServerWorld world, PocketTemplateV2 pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
         LOGGER.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
 
-        Pocket pocket = PocketRegistry.getInstance(world.getRegistryKey()).newPocket();
+        Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
         pocketTemplate.place(pocket);
         pocket.virtualLocation = virtualLocation;
         return pocket;

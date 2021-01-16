@@ -13,6 +13,7 @@ import org.dimdev.dimdoors.rift.targets.MessageTarget;
 import org.dimdev.dimdoors.rift.targets.Target;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
@@ -110,7 +111,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	public boolean isRegistered() {
-		return !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance().isRiftAt(new Location((ServerWorld) this.world, this.pos));
+		return !PocketTemplate.isReplacingPlaceholders() && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerWorld) this.world, this.pos));
 	}
 
 	public void register() {
@@ -119,34 +120,34 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		}
 
 		Location loc = new Location((ServerWorld) this.world, this.pos);
-		RiftRegistry.instance().addRift(loc);
-		if (this.data.getDestination() != null) this.data.getDestination().register();
+		DimensionalRegistry.getRiftRegistry().addRift(loc);
+		if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) this.data.getDestination().register();
 		this.updateProperties();
 		this.updateColor();
 	}
 
 	public void updateProperties() {
 		if (this.isRegistered())
-			RiftRegistry.instance().setProperties(new Location((ServerWorld) this.world, this.pos), this.data.getProperties());
+			DimensionalRegistry.getRiftRegistry().setProperties(new Location((ServerWorld) this.world, this.pos), this.data.getProperties());
 		this.markDirty();
 	}
 
 	public void unregister() {
 		if (this.isRegistered()) {
-			RiftRegistry.instance().removeRift(new Location((ServerWorld) this.world, this.pos));
+			DimensionalRegistry.getRiftRegistry().removeRift(new Location((ServerWorld) this.world, this.pos));
 		}
 	}
 
 	public void updateType() {
 		if (!this.isRegistered()) return;
-		Rift rift = RiftRegistry.instance().getRift(new Location((ServerWorld) this.world, this.pos));
+		Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location((ServerWorld) this.world, this.pos));
 		rift.isDetached = this.isDetached();
 		rift.markDirty();
 	}
 
 	public void handleTargetGone(Location location) {
 		if (this.data.getDestination().shouldInvalidate(location)) {
-			this.data.setDestination(null);
+			this.data.setDestination(VirtualTarget.NoneTarget.INSTANCE);
 			this.markDirty();
 		}
 
@@ -158,7 +159,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	public Target getTarget() {
-		if (this.data.getDestination() == null) {
+		if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
 			return new MessageTarget("rifts.unlinked1");
 		} else {
 			//noinspection ConstantConditions
@@ -167,7 +168,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		}
 	}
 
-	public boolean teleport(Entity entity) {
+	public boolean
+	teleport(Entity entity) {
 		this.riftStateChanged = false;
 
 		// Attempt a teleport
@@ -191,7 +193,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		if (this.data.isForcedColor()) return;
 		if (!this.isRegistered()) {
 			this.data.setColor(new RGBA(0, 0, 0, 1));
-		} else if (this.data.getDestination() == null) {
+		} else if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
 			this.data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
 		} else {
 			this.data.getDestination().setLocation(new Location((ServerWorld) this.world, this.pos));

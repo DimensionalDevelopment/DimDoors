@@ -4,6 +4,8 @@ import java.util.stream.IntStream;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
+
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
@@ -38,7 +40,7 @@ public final class Pocket {
 	}
 
 	public Pocket(int id, RegistryKey<World> world, int x, int z) {
-		int gridSize = PocketRegistry.getInstance(world).getGridSize() * 16;
+		int gridSize = DimensionalRegistry.getPocketDirectory(world).getGridSize() * 16;
 		this.id = id;
 		this.world = world;
 		this.box = new BlockBox(x * gridSize, 0, z * gridSize, (x + 1) * gridSize, 0, (z + 1) * gridSize);

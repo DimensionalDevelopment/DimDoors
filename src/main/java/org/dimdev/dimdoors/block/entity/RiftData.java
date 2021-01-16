@@ -12,7 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 
 public class RiftData {
-	private VirtualTarget destination = null; // How the rift acts as a source
+	private VirtualTarget destination = VirtualTarget.NoneTarget.INSTANCE; // How the rift acts as a source
 	private LinkProperties properties = null;
 	private boolean alwaysDelete;
 	private boolean forcedColor;
@@ -64,7 +64,7 @@ public class RiftData {
 
 	public static CompoundTag toTag(RiftData data) {
 		CompoundTag tag = new CompoundTag();
-		if (data.destination != null) tag.put("destination", VirtualTarget.toTag(data.destination));
+		if (data.destination != VirtualTarget.NoneTarget.INSTANCE) tag.put("destination", VirtualTarget.toTag(data.destination));
 		if (data.properties != null) tag.put("properties", LinkProperties.toTag(data.properties));
 		if (data.color != null) tag.put("color", RGBA.toTag(data.color));
 		tag.putBoolean("alwaysDelete", data.alwaysDelete);

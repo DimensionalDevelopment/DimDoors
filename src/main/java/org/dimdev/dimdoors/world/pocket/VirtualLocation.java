@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.ModDimensions;
 
@@ -63,7 +64,7 @@ public class VirtualLocation {
 		VirtualLocation virtualLocation = null;
 
 		if (ModDimensions.isPocketDimension(location.world)) {
-			Pocket pocket = PocketRegistry.getInstance(location.world).getPocketAt(location.pos);
+			Pocket pocket = DimensionalRegistry.getPocketDirectory(location.world).getPocketAt(location.pos);
 			if (pocket != null) {
 				virtualLocation = pocket.virtualLocation; // TODO: pockets-relative coordinates
 			} else {

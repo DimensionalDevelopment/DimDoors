@@ -12,6 +12,7 @@ import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.rift.targets.EntityTarget;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -61,8 +62,8 @@ public class PocketCommand {
             Pocket pocket = PocketGenerator.generatePocketFromTemplate(player.getServerWorld(), template, null, setup);
 
             // Teleport the player there
-            if (RiftRegistry.instance().getPocketEntrance(pocket) != null) {
-                EntityTarget entrance = (EntityTarget) player.world.getBlockEntity(RiftRegistry.instance().getPocketEntrance(pocket).pos);
+            if (DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket) != null) {
+                EntityTarget entrance = (EntityTarget) player.world.getBlockEntity(DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).pos);
                 if (entrance != null) {
                     entrance.receiveEntity(player, 0);
                 }

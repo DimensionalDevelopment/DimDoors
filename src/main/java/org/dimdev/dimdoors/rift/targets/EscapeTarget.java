@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -43,7 +44,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 
 		UUID uuid = entity.getUuid();
 		if (uuid != null) {
-			Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
+			Location destLoc = DimensionalRegistry.getRiftRegistry().getOverworldRift(uuid);
 			if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || this.canEscapeLimbo) {
 				Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
 				TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), 0);

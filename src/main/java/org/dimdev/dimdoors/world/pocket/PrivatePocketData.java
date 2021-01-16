@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -82,7 +83,7 @@ public class PrivatePocketData extends PersistentState {
 	public Pocket getPrivatePocket(UUID playerUUID) {
 		PocketInfo pocket = this.privatePocketMap.get(playerUUID);
 		if (pocket == null) return null;
-		return PocketRegistry.getInstance(pocket.world).getPocket(pocket.id);
+		return DimensionalRegistry.getPocketDirectory(pocket.world).getPocket(pocket.id);
 	}
 
 	public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {

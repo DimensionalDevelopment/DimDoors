@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 
 import net.minecraft.nbt.CompoundTag;
@@ -61,8 +62,8 @@ public class Rift extends RegistryVertex {
 
 	public void markDirty() {
 		((RiftBlockEntity) this.location.getBlockEntity()).updateColor();
-		for (Location location : RiftRegistry.instance().getSources(this.location)) {
-			RiftRegistry.instance().getRift(location).targetChanged(this);
+		for (Location location : DimensionalRegistry.getRiftRegistry().getSources(this.location)) {
+			DimensionalRegistry.getRiftRegistry().getRift(location).targetChanged(this);
 		}
 	}
 
@@ -76,7 +77,7 @@ public class Rift extends RegistryVertex {
 		tag.putUuid("id", rift.id);
 		tag.put("location", Location.toTag(rift.location));
 		tag.putBoolean("isDetached", rift.isDetached);
-		tag.put("properties", LinkProperties.toTag(rift.properties));
+		if(rift.properties != null) tag.put("properties", LinkProperties.toTag(rift.properties));
 		return tag;
 	}
 
@@ -85,7 +86,7 @@ public class Rift extends RegistryVertex {
 		rift.id = tag.getUuid("id");
 		rift.location = Location.fromTag(tag.getCompound("location"));
 		rift.isDetached = tag.getBoolean("isDetached");
-		rift.properties = LinkProperties.fromTag(tag.getCompound("properties"));
+		if(tag.contains("properties")) rift.properties = LinkProperties.fromTag(tag.getCompound("properties"));
 		return rift;
 	}
 }

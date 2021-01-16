@@ -43,8 +43,7 @@
   },
   "custom": {
     "cardinal-components": [
-      "dimdoors:rift_registry",
-      "dimdoors:pocket_registry"
+      "dimdoors:dimensional_registry"
     ]
   }
 }

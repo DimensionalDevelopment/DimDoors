@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.util.GraphUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
-import org.dimdev.dimdoors.world.pocket.PocketRegistry;
+import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -25,14 +25,16 @@ import org.jgrapht.graph.DefaultEdge;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
+import net.minecraft.world.level.LevelProperties;
 
 import static net.minecraft.world.World.OVERWORLD;
 import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getServer;
 import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getWorld;
 
-public class RiftRegistry implements ComponentV3 {
+public class RiftRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String DATA_NAME = "rifts";
 
@@ -45,48 +47,46 @@ public class RiftRegistry implements ComponentV3 {
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
 	protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
 
-	public static RiftRegistry instance() {
-		return DimensionalDoorsComponents.RIFT_REGISTRY_COMPONENT_KEY.get(getServer().getScoreboard());
-	}
-
-	@Override
-	public void readFromNbt(CompoundTag nbt) {
+	public static RiftRegistry fromTag(Map<RegistryKey<World>, PocketDirectory> pocketRegistry, CompoundTag nbt) {
 		// Read rifts in this dimension
+
+		RiftRegistry riftRegistry = new RiftRegistry();
 
 		ListTag riftsNBT = (ListTag) nbt.get("rifts");
 		for (Tag riftNBT : riftsNBT) {
             Rift rift = Rift.fromTag((CompoundTag) riftNBT);
-            this.graph.addVertex(rift);
-            this.uuidMap.put(rift.id, rift);
-            this.locationMap.put(rift.location, rift);
+			riftRegistry.graph.addVertex(rift);
+			riftRegistry.uuidMap.put(rift.id, rift);
+			riftRegistry.locationMap.put(rift.location, rift);
 		}
 
 		ListTag pocketsNBT = (ListTag) nbt.get("pockets");
 		for (Tag pocketNBT : pocketsNBT) {
-			PocketEntrancePointer pocket = NbtUtil.deserialize(pocketNBT, PocketEntrancePointer.CODEC);
-			this.graph.addVertex(pocket);
-			this.uuidMap.put(pocket.id, pocket);
-			this.pocketEntranceMap.put(PocketRegistry.getInstance(pocket.world).getPocket(pocket.pocketId), pocket);
+			PocketEntrancePointer pocket = PocketEntrancePointer.fromTag((CompoundTag) pocketNBT);
+			riftRegistry.graph.addVertex(pocket);
+			riftRegistry.uuidMap.put(pocket.id, pocket);
+			riftRegistry.pocketEntranceMap.put(pocketRegistry.get(pocket.world).getPocket(pocket.pocketId), pocket);
 		}
 
 		// Read the connections between links that have a source or destination in this dimension
 		ListTag linksNBT = (ListTag) nbt.get("links");
 		for (Tag linkNBT : linksNBT) {
-			RegistryVertex from = this.uuidMap.get(((CompoundTag) linkNBT).getUuid("from"));
-			RegistryVertex to = this.uuidMap.get(((CompoundTag) linkNBT).getUuid("to"));
+			RegistryVertex from = riftRegistry.uuidMap.get(((CompoundTag) linkNBT).getUuid("from"));
+			RegistryVertex to = riftRegistry.uuidMap.get(((CompoundTag) linkNBT).getUuid("to"));
 			if (from != null && to != null) {
-				this.graph.addEdge(from, to);
+				riftRegistry.graph.addEdge(from, to);
 				// We need a system for detecting links that are incomplete after processing them in the other subregistry too
 			}
 		}
 
-		this.lastPrivatePocketEntrances = this.readPlayerRiftPointers((ListTag) nbt.get("lastPrivatePocketEntrances"));
-		this.lastPrivatePocketExits = this.readPlayerRiftPointers((ListTag) nbt.get("lastPrivatePocketExits"));
-		this.overworldRifts = this.readPlayerRiftPointers((ListTag) nbt.get("overworldRifts"));
+		riftRegistry.lastPrivatePocketEntrances = riftRegistry.readPlayerRiftPointers((ListTag) nbt.get("lastPrivatePocketEntrances"));
+		riftRegistry.lastPrivatePocketExits = riftRegistry.readPlayerRiftPointers((ListTag) nbt.get("lastPrivatePocketExits"));
+		riftRegistry.overworldRifts = riftRegistry.readPlayerRiftPointers((ListTag) nbt.get("overworldRifts"));
+		return riftRegistry;
 	}
 
-	@Override
-	public void writeToNbt(CompoundTag tag) {
+	public CompoundTag toTag() {
+		CompoundTag tag = new CompoundTag();
 		// Write rifts in this dimension
 		ListTag riftsNBT = new ListTag();
 		ListTag pocketsNBT = new ListTag();
@@ -119,6 +119,8 @@ public class RiftRegistry implements ComponentV3 {
 		tag.put("lastPrivatePocketEntrances", this.writePlayerRiftPointers(this.lastPrivatePocketEntrances));
 		tag.put("lastPrivatePocketExits", this.writePlayerRiftPointers(this.lastPrivatePocketExits));
 		tag.put("overworldRifts", this.writePlayerRiftPointers(this.overworldRifts));
+
+		return tag;
 	}
 
 	private Map<UUID, PlayerRiftPointer> readPlayerRiftPointers(ListTag tag) {

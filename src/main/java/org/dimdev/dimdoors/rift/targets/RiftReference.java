@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.rift.targets;
 import java.util.Set;
 
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
 
@@ -48,12 +49,12 @@ public abstract class RiftReference extends VirtualTarget {
 
 	@Override
 	public void register() {
-		RiftRegistry.instance().addLink(this.location, this.getReferencedLocation());
+		DimensionalRegistry.getRiftRegistry().addLink(this.location, this.getReferencedLocation());
 	}
 
 	@Override
 	public void unregister() {
-		RiftRegistry.instance().removeLink(this.location, this.getReferencedLocation());
+		DimensionalRegistry.getRiftRegistry().removeLink(this.location, this.getReferencedLocation());
 	}
 
 	@Override
@@ -70,8 +71,8 @@ public abstract class RiftReference extends VirtualTarget {
 	@Override
 	public RGBA getColor() {
 		Location target = this.getReferencedLocation();
-		if (target != null && RiftRegistry.instance().isRiftAt(target)) {
-			Set<Location> otherRiftTargets = RiftRegistry.instance().getTargets(target);
+		if (target != null && DimensionalRegistry.getRiftRegistry().isRiftAt(target)) {
+			Set<Location> otherRiftTargets = DimensionalRegistry.getRiftRegistry().getTargets(target);
 			if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(this.location)) {
 				return new RGBA(0, 1, 0, 1);
 			}
