@@ -1,5 +1,6 @@
 plugins {
     id 'fabric-loom' version '0.5-SNAPSHOT'
+	id 'maven-publish'
 }
 
 apply plugin: "java"
@@ -20,11 +21,26 @@ repositories {
 }
 
 def includeCompile(str) {
+	def dep
 	project.dependencies {
-		modImplementation(str) {
+		dep = modImplementation(str) {
 			exclude module: "fabric-api"
 		}
 		include(str)
+	}
+	project.publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom.withXml {
+					def depsNode = asNode().appendNode("dependencies")
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", dep.group)
+					depNode.appendNode("artifactId", dep.name)
+					depNode.appendNode("version", dep.version)
+					depNode.appendNode("scope", "compile")
+				}
+			}
+		}
 	}
 }
 

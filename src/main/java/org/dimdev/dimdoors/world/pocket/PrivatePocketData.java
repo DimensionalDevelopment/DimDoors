@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.util.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
