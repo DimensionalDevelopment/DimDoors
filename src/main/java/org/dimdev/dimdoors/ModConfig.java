@@ -18,8 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.client.util.Category;
 import org.dimdev.dimdoors.client.util.Expose;
-import org.dimdev.dimdoors.client.util.GetStrategy;
-import org.dimdev.dimdoors.client.util.Getter;
+import org.dimdev.dimdoors.client.util.Private;
 import org.dimdev.dimdoors.client.util.IntSet;
 import org.dimdev.dimdoors.client.util.RequiresRestart;
 import org.dimdev.dimdoors.client.util.Title;
@@ -29,7 +28,6 @@ import org.dimdev.dimdoors.world.limbo.LimboDecay;
 import net.fabricmc.loader.api.FabricLoader;
 
 @Title("dimdoors.config.title")
-@GetStrategy(suffix = "Config")
 public final class ModConfig {
     public static ModConfig INSTANCE;
     private static final Path CONFIG_PATH;
@@ -39,25 +37,25 @@ public final class ModConfig {
     private static final ModConfig FALLBACK;
     private static final Logger LOGGER;
     @Category
-	@Getter
+	@Private
     private final General general;
 	@Category
-	@Getter
+	@Private
     private final Pockets pockets;
 	@Category
-	@Getter
+	@Private
     private final World world;
 	@Category
-	@Getter
+	@Private
     private final Dungeons dungeons;
 	@Category
-	@Getter
+	@Private
     private final Monoliths monoliths;
 	@Category
-	@Getter
+	@Private
     private final Limbo limbo;
 	@Category
-	@Getter
+	@Private
     private final Graphics graphics;
 
     private ModConfig(General general, Pockets pockets, World world, Dungeons dungeons, Monoliths monoliths, Limbo limbo, Graphics graphics) {
