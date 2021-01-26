@@ -15,7 +15,8 @@
   ],
   "contact": {
     "homepage": "https://dimdoors.org/",
-    "sources": "https://github.com/DimensionalDevelopment/DimDoors"
+    "sources": "https://github.com/DimensionalDevelopment/DimDoors",
+    "issues": "https://github.com/DimensionalDevelopment/DimDoors/issues"
   },
   "license": "MIT",
   "icon": "assets/dimdoors/icon.png",
@@ -31,7 +32,7 @@
       "org.dimdev.dimdoors.client.config.ModMenuImpl"
     ],
     "cardinal-components": [
-      "org.dimdev.dimdoors.DimensionalDoorsComponents"
+      "org.dimdev.dimdoors.world.level.DimensionalDoorsComponents"
     ]
   },
   "mixins": [

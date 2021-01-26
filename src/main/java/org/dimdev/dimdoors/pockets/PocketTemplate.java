@@ -3,22 +3,18 @@ package org.dimdev.dimdoors.pockets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.util.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.world.pocket.Pocket;
@@ -30,14 +26,7 @@ import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
-
-import com.mojang.datafixers.types.Func;
-import com.mojang.serialization.Lifecycle;
 
 /**
  * @author Robijnvogel

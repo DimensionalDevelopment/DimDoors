@@ -32,14 +32,12 @@ public class ScreenGenerator {
 	public static Screen create(Screen parent, Object config, Runnable saveAction) {
 		Class<?> configClass = config.getClass();
 		Preconditions.checkArgument(configClass.isAnnotationPresent(Title.class));
-		Preconditions.checkArgument(configClass.isAnnotationPresent(GetStrategy.class));
 		Preconditions.checkNotNull(saveAction);
 		ConfigBuilder configBuilder = ConfigBuilder.create();
 		ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
 		configBuilder.setTitle(new TranslatableText(configClass.getAnnotation(Title.class).value()));
 		configBuilder.setSavingRunnable(saveAction);
 		configBuilder.setParentScreen(parent);
-		GetStrategy strategy = configClass.getAnnotation(GetStrategy.class);
 		for (Field field : configClass.getDeclaredFields()) {
 			if (!field.isAnnotationPresent(Category.class)
 					|| Modifier.isStatic(field.getModifiers())
@@ -48,17 +46,13 @@ public class ScreenGenerator {
 			}
 
 			ConfigCategory category = configBuilder.getOrCreateCategory(new TranslatableText(configClass.getName().toLowerCase() + ":" + field.getName()));
-			Method getter;
-			try {
-				getter = configClass.getMethod(getGetter(field.getName(), strategy));
-			} catch (NoSuchMethodException e) {
-				throw new AssertionError(e);
-			}
-			getter.setAccessible(true);
 			Object value;
 			try {
-				value = getter.invoke(config);
-			} catch (IllegalAccessException | InvocationTargetException e) {
+				if (field.isAnnotationPresent(Private.class)) {
+					field.setAccessible(true);
+				}
+				value = field.get(config);
+			} catch (IllegalAccessException e) {
 				throw new AssertionError(e);
 			}
 
@@ -73,7 +67,8 @@ public class ScreenGenerator {
 				Optional<Text[]> tooltipSupplier = Optional.of(Optional.of(innerField)
 						.filter(f -> f.isAnnotationPresent(Tooltips.class))
 						.map(f -> f.getAnnotation(Tooltips.class))
-						.map(f -> Arrays.stream(f.value()))
+						.map(Tooltips::value)
+						.map(Arrays::stream)
 						.orElse(Stream.empty())
 						.map(tooltip -> {
 							if (tooltip.absolute()) return new LiteralText(tooltip.value());
@@ -141,10 +136,5 @@ public class ScreenGenerator {
 			}
 		}
 		return configBuilder.build();
-	}
-
-	private static String getGetter(String fieldName, GetStrategy strategy) {
-		String actualFieldName = strategy.modifier() == GetStrategy.FieldNameModifier.CAPITALIZE_FIRST ? "" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1) : fieldName;
-		return strategy.prefix() + actualFieldName + strategy.suffix();
 	}
 }

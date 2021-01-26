@@ -4,22 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import dev.onyxstudios.cca.api.v3.component.Component;
-import org.dimdev.dimdoors.DimensionalDoorsComponents;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.util.DimensionalRegistry;
 import org.dimdev.dimdoors.util.math.GridUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.level.LevelProperties;
+
 public class PocketDirectory {
 	int gridSize; // Determines how much pockets in their dimension are spaced
 	int privatePocketSize;

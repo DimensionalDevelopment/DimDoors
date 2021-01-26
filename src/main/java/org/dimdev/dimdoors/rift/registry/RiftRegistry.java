@@ -11,11 +11,8 @@ import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentV3;
-import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.util.GraphUtils;
 import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
@@ -26,13 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-import net.minecraft.world.level.LevelProperties;
-
-import static net.minecraft.world.World.OVERWORLD;
-import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getServer;
-import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getWorld;
 
 public class RiftRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();

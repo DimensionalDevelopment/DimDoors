@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 
-import org.dimdev.dimdoors.util.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
