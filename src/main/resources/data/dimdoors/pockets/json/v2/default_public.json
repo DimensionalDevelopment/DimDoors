@@ -2,68 +2,82 @@
   "group": "public",
   "pockets": [
     {
-      "virtual_type": "dimdoors:schematic",
-      "properties": {
-        "id": "public_pocket_0",
-        "size": 0,
-        "weight": 20
-      }
-    },
-    {
-      "virtual_type": "dimdoors:schematic",
-      "properties": {
-        "id": "public_pocket_1",
-        "size": 1,
-        "weight": 17
-      }
-    },
-    {
-      "virtual_type": "dimdoors:schematic",
-      "properties": {
-        "id": "public_pocket_2",
-        "size": 2,
-        "weight": 14
-      }
-    },
-    {
-      "virtual_type": "dimdoors:schematic",
-      "properties": {
-        "id": "public_pocket_3",
-        "size": 3,
-        "weight": 11
-      }
-    },
-    {
-      "virtual_type": "dimdoors:schematic",
-      "properties": {
-        "id": "public_pocket_4",
-        "size": 4,
-        "weight": 8
-      }
-    },
-    {
-      "virtual_type": "dimdoors:schematic",
-      "properties": {
-        "id": "public_pocket_5",
-        "size": 5,
-        "weight": 5
-      }
-    },
-    {
-      "virtual_type": "dimdoors:schematic",
-      "properties": {
-        "id": "public_pocket_6",
-        "size": 6,
-        "weight": 3
-      }
-    },
-    {
-      "virtual_type": "dimdoors:schematic",
-      "properties": {
-        "id": "public_pocket_7",
-        "size": 7,
-        "weight": 1
-      }
+      "virtual_type": "depth_dependent",
+      "id": "public_pocket",
+      "pockets": [
+        {
+          "regex": "0",
+          "pocket": {
+            "virtual_type": "schematic",
+            "id": "public_pocket_0",
+            "size": 0,
+            "weight": 20
+          }
+        },
+        {
+          "regex": "1",
+          "pocket": {
+            "virtual_type": "schematic",
+            "id": "public_pocket_1",
+            "size": 1,
+            "weight": 17
+          }
+        },
+        {
+          "regex": "2",
+          "pocket": {
+            "virtual_type": "schematic",
+            "id": "public_pocket_2",
+            "size": 2,
+            "weight": 14
+          }
+        },
+        {
+          "regex": "3",
+          "pocket": {
+            "virtual_type": "schematic",
+            "id": "public_pocket_3",
+            "size": 3,
+            "weight": 11
+          }
+        },
+        {
+          "regex": "4",
+          "pocket": {
+            "virtual_type": "schematic",
+            "id": "public_pocket_4",
+            "size": 4,
+            "weight": 8
+          }
+        },
+        {
+          "regex": "5",
+          "pocket": {
+            "virtual_type": "schematic",
+            "id": "public_pocket_5",
+            "size": 5,
+            "weight": 5
+          }
+        },
+        {
+          "regex": "6",
+          "pocket": {
+            "virtual_type": "schematic",
+            "id": "public_pocket_6",
+            "size": 6,
+            "weight": 3
+          }
+        },
+        {
+          "regex": "[0-9]+",
+          "pocket": {
+            "virtual_type": "schematic",
+            "id": "public_pocket_7",
+            "size": 7,
+            "weight": 1
+          }
+        }
+      ]
     }
   ]
 }

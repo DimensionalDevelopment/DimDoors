@@ -28,13 +28,11 @@ public class PocketTemplateV2 {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final boolean replacingPlaceholders = false;
     private final Schematic schematic;
-    private final String group;
     private final int size;
     private final String id;
 
-    public PocketTemplateV2(Schematic schematic, String group, int size, String id) {
+    public PocketTemplateV2(Schematic schematic, int size, String id) {
         this.schematic = schematic;
-        this.group = group;
         this.size = size;
         this.id = id;
     }
@@ -82,10 +80,6 @@ public class PocketTemplateV2 {
 
     public static boolean isReplacingPlaceholders() {
         return replacingPlaceholders;
-    }
-
-    public String getGroup() {
-        return this.group;
     }
 
     public Schematic getSchematic() {

@@ -15,6 +15,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 public class VirtualSchematicPocket extends VirtualPocket{
 	private static final Logger LOGGER = LogManager.getLogger();
+	public static final String KEY = "schematic";
 
 	public static final Codec<VirtualSchematicPocket> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.INT.fieldOf("size").forGetter(VirtualSchematicPocket::getSize),
@@ -24,13 +25,15 @@ public class VirtualSchematicPocket extends VirtualPocket{
 
 	private final int size;
 	private final String name;
-	private Identifier templateID;
+	private final Identifier templateID;
 	private final int weight;
 
 	VirtualSchematicPocket(int size, String name, int weight) {
 		this.size = size;
 		this.name = name;
 		this.weight = weight;
+
+		this.templateID = new Identifier("dimdoors", name);
 	}
 
 	public int getSize() {
@@ -45,13 +48,14 @@ public class VirtualSchematicPocket extends VirtualPocket{
 		return templateID;
 	}
 
-	public void setTemplateID(Identifier templateID) {
-		this.templateID = templateID;
-	}
-
 	@Override
 	public int getWeight(PocketGenerationParameters parameters){
 		return this.weight;
+	}
+
+	@Override
+	public void init(String group) {
+		SchematicV2Handler.getInstance().loadSchematic(templateID, group, size, name);
 	}
 
 	@Override
@@ -84,5 +88,10 @@ public class VirtualSchematicPocket extends VirtualPocket{
 	@Override
 	public VirtualPocketType<? extends VirtualPocket> getType() {
 		return VirtualPocketType.SCHEMATIC;
+	}
+
+	@Override
+	public String getKey() {
+		return KEY;
 	}
 }
