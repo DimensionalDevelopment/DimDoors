@@ -6,7 +6,7 @@
       "id": "public_pocket",
       "pockets": [
         {
-          "regex": "0",
+          "regex": "6",
           "pocket": {
             "virtual_type": "schematic",
             "id": "public_pocket_0",
@@ -15,7 +15,7 @@
           }
         },
         {
-          "regex": "1",
+          "regex": "7",
           "pocket": {
             "virtual_type": "schematic",
             "id": "public_pocket_1",
@@ -24,7 +24,7 @@
           }
         },
         {
-          "regex": "2",
+          "regex": "8",
           "pocket": {
             "virtual_type": "schematic",
             "id": "public_pocket_2",
@@ -33,7 +33,7 @@
           }
         },
         {
-          "regex": "3",
+          "regex": "9",
           "pocket": {
             "virtual_type": "schematic",
             "id": "public_pocket_3",
@@ -42,7 +42,7 @@
           }
         },
         {
-          "regex": "4",
+          "regex": "10",
           "pocket": {
             "virtual_type": "schematic",
             "id": "public_pocket_4",
@@ -51,7 +51,7 @@
           }
         },
         {
-          "regex": "5",
+          "regex": "11",
           "pocket": {
             "virtual_type": "schematic",
             "id": "public_pocket_5",
@@ -60,7 +60,7 @@
           }
         },
         {
-          "regex": "6",
+          "regex": "12",
           "pocket": {
             "virtual_type": "schematic",
             "id": "public_pocket_6",
