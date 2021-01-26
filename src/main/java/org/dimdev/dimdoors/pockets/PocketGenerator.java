@@ -27,38 +27,14 @@ public final class PocketGenerator {
         return pocket;
     }
 
-    private static Pocket prepareAndPlaceV2Pocket(ServerWorld world, PocketTemplateV2 pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
-        LOGGER.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
-
-        Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
-        pocketTemplate.place(pocket);
-        pocket.virtualLocation = virtualLocation;
-        return pocket;
-    }
-
     public static Pocket generatePocketFromTemplate(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
         Pocket pocket = prepareAndPlacePocket(world, pocketTemplate, virtualLocation, setup);
         if (setup) pocketTemplate.setup(pocket, null, null);
         return pocket;
     }
 
-    public static Pocket generateV2PocketFromTemplate(ServerWorld world, PocketTemplateV2 pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
-        Pocket pocket = prepareAndPlaceV2Pocket(world, pocketTemplate, virtualLocation, setup);
-        if (setup) {
-            pocketTemplate.setup(pocket, null, null);
-        }
-        return pocket;
-    }
-
-
     public static Pocket generatePocketFromTemplate(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         Pocket pocket = prepareAndPlacePocket(world, pocketTemplate, virtualLocation, true);
-        pocketTemplate.setup(pocket, linkTo, linkProperties);
-        return pocket;
-    }
-
-    public static Pocket generateV2PocketFromTemplate(ServerWorld world, PocketTemplateV2 pocketTemplate, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-        Pocket pocket = prepareAndPlaceV2Pocket(world, pocketTemplate, virtualLocation, true);
         pocketTemplate.setup(pocket, linkTo, linkProperties);
         return pocket;
     }
@@ -69,8 +45,7 @@ public final class PocketGenerator {
     }
 
     public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
-        PocketTemplateV2 pocketTemplate = SchematicV2Handler.getInstance().getRandomPrivatePocket();
-        return generateV2PocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), pocketTemplate, virtualLocation, true);
+		return generateRandomPocketFromGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), "private", virtualLocation, null, null);
     }
 
     // TODO: size of public pockets should increase with depth
@@ -80,9 +55,16 @@ public final class PocketGenerator {
     }
 
     public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-        PocketTemplateV2 pocketTemplate = SchematicV2Handler.getInstance().getRandomPublicPocket();
-        return generateV2PocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, linkTo, linkProperties);
+        return generateRandomPocketFromGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), "public", virtualLocation, linkTo, linkProperties);
     }
+
+    public static Pocket generateRandomPocketFromGroupV2(ServerWorld world, String group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    	return generatePocketV2(world, SchematicV2Handler.getInstance().getRandomPocketFromGroup(group), virtualLocation, linkTo, linkProperties);
+	}
+
+	public static Pocket generatePocketV2(ServerWorld world, VirtualPocket virtualPocket, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    	return virtualPocket.prepareAndPlacePocket(world, virtualLocation, linkTo, linkProperties);
+	}
 
     /**
      * Create a dungeon pockets at a certain depth.

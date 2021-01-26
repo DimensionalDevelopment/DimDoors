@@ -6,15 +6,15 @@ import java.util.Objects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-public final class PocketType {
-    public static final Codec<PocketType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("group").forGetter(PocketType::getGroup),
-            PocketEntry.CODEC.listOf().fieldOf("pockets").forGetter(PocketType::getEntries)
-    ).apply(instance, PocketType::new));
+public final class PocketGroup {
+    public static final Codec<PocketGroup> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.STRING.fieldOf("group").forGetter(PocketGroup::getGroup),
+            VirtualPocket.CODEC.listOf().fieldOf("pockets").forGetter(PocketGroup::getEntries)
+    ).apply(instance, PocketGroup::new));
     private final String group;
-    private final List<PocketEntry> entries;
+    private final List<VirtualPocket> entries;
 
-    public PocketType(String group, List<PocketEntry> entries) {
+    public PocketGroup(String group, List<VirtualPocket> entries) {
         this.group = group;
         this.entries = entries;
     }
@@ -22,7 +22,7 @@ public final class PocketType {
         return this.group;
     }
 
-    public List<PocketEntry> getEntries() {
+    public List<VirtualPocket> getEntries() {
         return this.entries;
     }
 
@@ -39,7 +39,7 @@ public final class PocketType {
     public boolean equals(Object o) {
         if (super.equals(o)) return true;
         if (o == null || this.getClass() != o.getClass()) return false;
-        PocketType that = (PocketType) o;
+        PocketGroup that = (PocketGroup) o;
         return Objects.equals(this.group, that.group) &&
                 Objects.equals(this.entries, that.entries);
     }
@@ -49,6 +49,7 @@ public final class PocketType {
         return Objects.hash(this.group, this.entries);
     }
 
+    /*
     public static final class PocketEntry {
         public static final Codec<PocketEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.INT.fieldOf("size").forGetter(PocketEntry::getSize),
@@ -101,4 +102,5 @@ public final class PocketType {
                     '}';
         }
     }
+     */
 }
