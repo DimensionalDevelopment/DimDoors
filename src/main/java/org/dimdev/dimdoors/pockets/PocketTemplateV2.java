@@ -32,7 +32,7 @@ public class PocketTemplateV2 {
     private final int size;
     private final String id;
 
-    public PocketTemplateV2(Schematic schematic, String group, int size, String id, float weight) {
+    public PocketTemplateV2(Schematic schematic, String group, int size, String id) {
         this.schematic = schematic;
         this.group = group;
         this.size = size;

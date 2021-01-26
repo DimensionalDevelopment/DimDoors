@@ -10,11 +10,17 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
+/*
+
+ */
+
 // maybe PocketEntry is a better name? Only realised after I named this that the previous PocketEntry would be redundant.
-public abstract class VirtualPocket {
+public abstract class VirtualPocket implements Weighted<PocketGenerationParameters> {
 	public static final Registry<VirtualPocketType<? extends VirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends VirtualPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
 	public static final Codec<VirtualPocket> CODEC = new Codec<VirtualPocket>() {
 		@Override
@@ -30,12 +36,10 @@ public abstract class VirtualPocket {
 	};
 
 
-	public abstract Pocket prepareAndPlacePocket(ServerWorld world, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties);
+	public abstract Pocket prepareAndPlacePocket(PocketGenerationParameters parameters);
 	public abstract String toString();
 	// TODO: are equals() and hashCode() necessary?
 	public abstract VirtualPocketType<? extends VirtualPocket> getType();
-	public abstract int getWeight();
-
 
 	public interface VirtualPocketType<T extends VirtualPocket> {
 		VirtualPocketType<VirtualSchematicPocket> SCHEMATIC = register("dimdoors:schematic", VirtualSchematicPocket.CODEC);

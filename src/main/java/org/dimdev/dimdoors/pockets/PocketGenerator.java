@@ -8,6 +8,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
@@ -59,11 +60,12 @@ public final class PocketGenerator {
     }
 
     public static Pocket generateRandomPocketFromGroupV2(ServerWorld world, String group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-    	return generatePocketV2(world, SchematicV2Handler.getInstance().getRandomPocketFromGroup(group), virtualLocation, linkTo, linkProperties);
+    	PocketGenerationParameters parameters = new PocketGenerationParameters(world, group, virtualLocation, linkTo, linkProperties);
+    	return generatePocketV2(SchematicV2Handler.getInstance().getRandomPocketFromGroup(group, parameters), parameters);
 	}
 
-	public static Pocket generatePocketV2(ServerWorld world, VirtualPocket virtualPocket, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-    	return virtualPocket.prepareAndPlacePocket(world, virtualLocation, linkTo, linkProperties);
+	public static Pocket generatePocketV2(VirtualPocket virtualPocket, PocketGenerationParameters parameters) {
+    	return virtualPocket.prepareAndPlacePocket(parameters);
 	}
 
     /**

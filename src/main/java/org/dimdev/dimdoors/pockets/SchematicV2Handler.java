@@ -16,7 +16,8 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.util.WeightedSet;
+import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 
 import net.minecraft.nbt.CompoundTag;
@@ -27,7 +28,7 @@ public class SchematicV2Handler {
     private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
     private static final SchematicV2Handler INSTANCE = new SchematicV2Handler();
     private final Map<Identifier, PocketTemplateV2> templates = Maps.newHashMap();
-    private final Map<String, WeightedSet<VirtualPocket>> templateMap = Maps.newHashMap(); //TODO: un-ugly-fy
+    private final Map<String, WeightedList<VirtualPocket, PocketGenerationParameters>> templateMap = Maps.newHashMap(); //TODO: un-ugly-fy
     private final List<PocketGroup> pocketTypes = Lists.newArrayList();
     private static final Random RANDOM = new Random(new Random().nextLong());
     private boolean loaded = false;
@@ -70,17 +71,17 @@ public class SchematicV2Handler {
      */
     private void loadResourceSchematics(PocketGroup type) throws URISyntaxException, IOException {
         String group = type.getGroup();
-        WeightedSet<VirtualPocket> weightedPockets = new WeightedSet<>();
+        WeightedList<VirtualPocket, PocketGenerationParameters> weightedPockets = new WeightedList<>();
         templateMap.put(group, weightedPockets);
         Path basePath = Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/schematic/v2/%s/", group)).toURI());
         for (VirtualPocket virtualPocket : type.getEntries()) {
-			weightedPockets.add(virtualPocket, virtualPocket.getWeight());
+			weightedPockets.add(virtualPocket);
         	if (virtualPocket instanceof VirtualSchematicPocket) {
         		VirtualSchematicPocket schemPocket = (VirtualSchematicPocket) virtualPocket;
 				Path schemPath = basePath.resolve(schemPocket.getName() + ".schem");
 				CompoundTag schemTag = NbtIo.readCompressed(Files.newInputStream(schemPath));
 				Schematic schematic = Schematic.fromTag(schemTag);
-				PocketTemplateV2 template = new PocketTemplateV2(schematic, group, schemPocket.getSize(), schemPocket.getName(), schemPocket.getWeight());
+				PocketTemplateV2 template = new PocketTemplateV2(schematic, group, schemPocket.getSize(), schemPocket.getName());
 				Identifier templateID = new Identifier("dimdoors", schemPocket.getName());
 				templates.put(templateID, template);
 				schemPocket.setTemplateID(templateID);
@@ -88,16 +89,16 @@ public class SchematicV2Handler {
         }
     }
 
-    public VirtualPocket getRandomPublicPocket() {
-		return getRandomPocketFromGroup("public");
+    public VirtualPocket getRandomPublicPocket(PocketGenerationParameters parameters) {
+		return getRandomPocketFromGroup("public", parameters);
     }
 
-    public VirtualPocket getRandomPrivatePocket() {
-        return getRandomPocketFromGroup("private");
+    public VirtualPocket getRandomPrivatePocket(PocketGenerationParameters parameters) {
+        return getRandomPocketFromGroup("private", parameters);
     }
 
-	public VirtualPocket getRandomPocketFromGroup(String group) {
-		return templateMap.get(group).getRandomWeighted();
+	public VirtualPocket getRandomPocketFromGroup(String group, PocketGenerationParameters parameters) {
+		return templateMap.get(group).getRandomWeighted(parameters);
 	}
 
     public static SchematicV2Handler getInstance() {
