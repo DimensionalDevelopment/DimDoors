@@ -14,7 +14,6 @@ import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 
-// TODO: possibly rename to PocketHandler (and rename subclasses accordingly)
 // TODO: do something about getting correct Pocket sizes
 public abstract class VirtualPocket implements Weighted<PocketGenerationParameters> {
 	public static final Registry<VirtualPocketType<? extends VirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends VirtualPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
@@ -44,7 +43,7 @@ public abstract class VirtualPocket implements Weighted<PocketGenerationParamete
 
 	public interface VirtualPocketType<T extends VirtualPocket> {
 		VirtualPocketType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator.CODEC);
-		
+
 		VirtualPocketType<DepthDependentSelector> DEPTH_DEPENDENT = register(new Identifier("dimdoors", DepthDependentSelector.KEY), DepthDependentSelector.CODEC);
 
 

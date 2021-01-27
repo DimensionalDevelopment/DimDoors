@@ -28,8 +28,8 @@ public class SchematicV2Handler {
     private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
     private static final SchematicV2Handler INSTANCE = new SchematicV2Handler();
     private final Map<Identifier, PocketTemplateV2> templates = Maps.newHashMap();
-    private final Map<String, WeightedList<VirtualPocket, PocketGenerationParameters>> templateMap = Maps.newHashMap(); //TODO: un-ugly-fy
-    private final List<PocketGroup> pocketTypes = Lists.newArrayList();
+    private final Map<String, WeightedList<VirtualPocket, PocketGenerationParameters>> weightedPocketGroups = Maps.newHashMap(); //TODO: un-ugly-fy
+    private final List<PocketGroup> pocketGroups = Lists.newArrayList();
     private boolean loaded = false;
 
     private SchematicV2Handler() {
@@ -55,10 +55,10 @@ public class SchematicV2Handler {
                 JsonObject json = GSON.fromJson(String.join("", result), JsonObject.class);
                 PocketGroup type = PocketGroup.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, System.err::println).getFirst();
 
-                this.pocketTypes.add(type);
+                this.pocketGroups.add(type);
 
 				WeightedList<VirtualPocket, PocketGenerationParameters> weightedPockets = new WeightedList<>();
-				templateMap.put(type.getGroup(), weightedPockets);
+				weightedPocketGroups.put(type.getGroup(), weightedPockets);
 
                 for (VirtualPocket virtualPocket : type.getEntries()) {
 					virtualPocket.init(type.getGroup());
@@ -95,7 +95,7 @@ public class SchematicV2Handler {
     }
 
 	public VirtualPocket getRandomPocketFromGroup(String group, PocketGenerationParameters parameters) {
-		return templateMap.get(group).getRandomWeighted(parameters);
+		return weightedPocketGroups.get(group).getRandomWeighted(parameters);
 	}
 
     public static SchematicV2Handler getInstance() {
@@ -106,7 +106,7 @@ public class SchematicV2Handler {
         return this.templates;
     }
 
-    public List<PocketGroup> getPocketTypes() {
-        return this.pocketTypes;
+    public List<PocketGroup> getPocketGroups() {
+        return this.pocketGroups;
     }
 }
