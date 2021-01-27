@@ -1,15 +1,16 @@
-package org.dimdev.dimdoors.pockets;
+package org.dimdev.dimdoors.pockets.selection;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Pair;
+import org.dimdev.dimdoors.pockets.VirtualPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class VirtualDepthDependentPocket extends VirtualPocket{
+public class DepthDependentSelector extends VirtualPocket {
 	public static final String KEY = "depth_dependent";
 
 	private static final Codec<Pair<String, VirtualPocket>> PAIR_CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -17,17 +18,17 @@ public class VirtualDepthDependentPocket extends VirtualPocket{
 			VirtualPocket.CODEC.fieldOf("pocket").forGetter(Pair::getRight)
 	).apply(instance, Pair::new));
 
-	public static final Codec<VirtualDepthDependentPocket> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.STRING.fieldOf("id").forGetter(VirtualDepthDependentPocket::getName),
-			PAIR_CODEC.listOf().fieldOf("pockets").forGetter(VirtualDepthDependentPocket::getPocketList)
-	).apply(instance, VirtualDepthDependentPocket::new));
+	public static final Codec<DepthDependentSelector> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.STRING.fieldOf("id").forGetter(DepthDependentSelector::getName),
+			PAIR_CODEC.listOf().fieldOf("pockets").forGetter(DepthDependentSelector::getPocketList)
+	).apply(instance, DepthDependentSelector::new));
 
 
 
 	private final String name;
 	private final List<Pair<String, VirtualPocket>> pocketList;
 
-	public VirtualDepthDependentPocket(String name, List<Pair<String, VirtualPocket>> pocketList) {
+	public DepthDependentSelector(String name, List<Pair<String, VirtualPocket>> pocketList) {
 		this.name = name;
 		this.pocketList = pocketList;
 	}

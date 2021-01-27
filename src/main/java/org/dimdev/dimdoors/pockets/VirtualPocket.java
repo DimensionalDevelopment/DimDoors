@@ -7,6 +7,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+import org.dimdev.dimdoors.pockets.generator.SchematicGenerator;
+import org.dimdev.dimdoors.pockets.selection.DepthDependentSelector;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.Pocket;
@@ -41,8 +43,9 @@ public abstract class VirtualPocket implements Weighted<PocketGenerationParamete
 	public abstract String getKey();
 
 	public interface VirtualPocketType<T extends VirtualPocket> {
-		VirtualPocketType<VirtualSchematicPocket> SCHEMATIC = register(new Identifier("dimdoors", VirtualSchematicPocket.KEY), VirtualSchematicPocket.CODEC);
-		VirtualPocketType<VirtualDepthDependentPocket> DEPTH_DEPENDENT = register(new Identifier("dimdoors", VirtualDepthDependentPocket.KEY), VirtualDepthDependentPocket.CODEC);
+		VirtualPocketType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator.CODEC);
+		
+		VirtualPocketType<DepthDependentSelector> DEPTH_DEPENDENT = register(new Identifier("dimdoors", DepthDependentSelector.KEY), DepthDependentSelector.CODEC);
 
 
 

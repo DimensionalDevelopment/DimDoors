@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.pockets;
+package org.dimdev.dimdoors.pockets.generator;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -6,6 +6,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.pockets.PocketTemplateV2;
+import org.dimdev.dimdoors.pockets.SchematicV2Handler;
+import org.dimdev.dimdoors.pockets.VirtualPocket;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
@@ -13,22 +16,22 @@ import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
-public class VirtualSchematicPocket extends VirtualPocket{
+public class SchematicGenerator extends VirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "schematic";
 
-	public static final Codec<VirtualSchematicPocket> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.INT.fieldOf("size").forGetter(VirtualSchematicPocket::getSize),
-			Codec.STRING.fieldOf("id").forGetter(VirtualSchematicPocket::getName),
-			Codec.INT.optionalFieldOf("weight", 5).forGetter(virtualSchematicPocket -> virtualSchematicPocket.getWeight(null))
-	).apply(instance, VirtualSchematicPocket::new));
+	public static final Codec<SchematicGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.INT.fieldOf("size").forGetter(SchematicGenerator::getSize),
+			Codec.STRING.fieldOf("id").forGetter(SchematicGenerator::getName),
+			Codec.INT.optionalFieldOf("weight", 5).forGetter(schematicGenerator -> schematicGenerator.getWeight(null))
+	).apply(instance, SchematicGenerator::new));
 
 	private final int size;
 	private final String name;
 	private final Identifier templateID;
 	private final int weight;
 
-	VirtualSchematicPocket(int size, String name, int weight) {
+	SchematicGenerator(int size, String name, int weight) {
 		this.size = size;
 		this.name = name;
 		this.weight = weight;
