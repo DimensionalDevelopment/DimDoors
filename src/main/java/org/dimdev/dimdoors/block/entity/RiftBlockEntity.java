@@ -46,6 +46,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	// NBT
 	@Override
 	public void fromTag(BlockState state, CompoundTag nbt) {
+		super.fromTag(state, nbt);
 		this.deserialize(nbt);
 	}
 
@@ -55,9 +56,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
-		this.serialize(tag);
-
-		return super.toTag(tag);
+		super.toTag(tag);
+		return this.serialize(tag);
 	}
 
 	public CompoundTag serialize(CompoundTag tag) {

@@ -64,18 +64,19 @@ public class SchematicGenerator extends VirtualPocket {
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		ServerWorld world = parameters.getWorld();
-		VirtualLocation virtualLocation = parameters.getVirtualLocation();
+		VirtualLocation sourceVirtualLocation = parameters.getSourceVirtualLocation();
 		VirtualTarget linkTo = parameters.getLinkTo();
 		LinkProperties linkProperties = parameters.getLinkProperties();
 
 		PocketTemplateV2 template = SchematicV2Handler.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
-		LOGGER.info("Generating pocket from template " + template.getId() + " at virtual location " + virtualLocation);
 
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
+		LOGGER.info("Generating pocket from template " + template.getId() + " at location " + pocket.getOrigin());
+
 		template.place(pocket);
 		template.setup(pocket, linkTo, linkProperties);
-		pocket.virtualLocation = virtualLocation;
+		pocket.virtualLocation = sourceVirtualLocation; //TODO: this makes very little sense
 		return pocket;
 	}
 

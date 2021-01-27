@@ -8,14 +8,14 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 public class PocketGenerationParameters {
 	private final ServerWorld world;
 	private final String group;
-	private final VirtualLocation virtualLocation;
+	private final VirtualLocation sourceVirtualLocation;
 	private final VirtualTarget linkTo;
 	private final LinkProperties linkProperties;
 
-	public PocketGenerationParameters(ServerWorld world, String group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+	public PocketGenerationParameters(ServerWorld world, String group, VirtualLocation sourceVirtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
 		this.world = world;
 		this.group = group;
-		this.virtualLocation = virtualLocation;
+		this.sourceVirtualLocation = sourceVirtualLocation;
 		this.linkTo = linkTo;
 		this.linkProperties = linkProperties;
 	}
@@ -28,8 +28,8 @@ public class PocketGenerationParameters {
 		return group;
 	}
 
-	public VirtualLocation getVirtualLocation() {
-		return virtualLocation;
+	public VirtualLocation getSourceVirtualLocation() {
+		return sourceVirtualLocation;
 	}
 
 	public VirtualTarget getLinkTo() {

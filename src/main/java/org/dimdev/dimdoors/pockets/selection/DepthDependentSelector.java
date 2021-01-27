@@ -74,7 +74,7 @@ public class DepthDependentSelector extends VirtualPocket {
 
 	private VirtualPocket getNextPocket(PocketGenerationParameters parameters) {
 		for (Pair<String, VirtualPocket> pair : pocketList) {
-			if (Pattern.compile(pair.getLeft()).matcher(String.valueOf(parameters.getVirtualLocation().getDepth())).matches()) {
+			if (Pattern.compile(pair.getLeft()).matcher(String.valueOf(parameters.getSourceVirtualLocation().getDepth())).matches()) {
 				return pair.getRight();
 			}
 		}
