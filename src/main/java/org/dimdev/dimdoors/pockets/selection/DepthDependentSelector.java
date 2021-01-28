@@ -53,7 +53,7 @@ public class DepthDependentSelector extends VirtualPocket {
 		pocketList = Maps.newLinkedHashMap();
 		for (int i = 0; i < regexPockets.size(); i++) {
 			CompoundTag pocket = regexPockets.getCompound(i);
-			pocketList.put(pocket.getString("regex"), VirtualPocket.deserialize(pocket.getCompound("pocket")));
+			pocketList.putIfAbsent(pocket.getString("regex"), VirtualPocket.deserialize(pocket.getCompound("pocket")));
 		}
 		return this;
 	}
