@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.Objects;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -49,7 +49,7 @@ public class RiftBladeItem extends SwordItem {
 				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 			} else {
 				player.sendMessage(new TranslatableText(this.getTranslationKey() + ".rift_miss"), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().highlightRiftCoreFor;
 				return new TypedActionResult<>(ActionResult.FAIL, stack);
 			}
 		}

@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.item;
 import java.util.List;
 import java.util.Objects;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -47,7 +47,7 @@ public class RiftRemoverItem extends Item {
 		if (world.isClient) {
 			if (!RaycastHelper.hitsDetachedRift(hit, world)) {
 				player.sendMessage(new TranslatableText("tools.rift_miss"), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().highlightRiftCoreFor;
 			}
 			return new TypedActionResult<>(ActionResult.FAIL, stack);
 		}

@@ -32,7 +32,8 @@ public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, Monol
             new Identifier("dimdoors:textures/mob/monolith/monolith15.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith16.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith17.png"),
-            new Identifier("dimdoors:textures/mob/monolith/monolith18.png"));
+            new Identifier("dimdoors:textures/mob/monolith/monolith18.png")
+	);
 
     public MonolithRenderer(EntityRenderDispatcher dispatcher, EntityRendererRegistry.Context context) {
         super(dispatcher, new MonolithModel(), 0);

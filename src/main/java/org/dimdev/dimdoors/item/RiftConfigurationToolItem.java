@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 import net.minecraft.client.item.TooltipContext;
@@ -39,7 +39,7 @@ public class RiftConfigurationToolItem extends Item {
 		if (world.isClient) {
 			if (!RaycastHelper.hitsRift(hit, world)) {
 				player.sendMessage(new TranslatableText("tools.rift_miss"), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().highlightRiftCoreFor;
 			}
 			return new TypedActionResult<>(ActionResult.FAIL, stack);
 		}

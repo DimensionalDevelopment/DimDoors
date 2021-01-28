@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.function.Consumer;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -44,7 +44,7 @@ public class DimensionalDoorItem extends TallBlockItem {
 
 			if (context.getWorld().isClient) {
 				context.getPlayer().sendMessage(new TranslatableText("rifts.entrances.rift_too_close"), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.INSTANCE.getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().highlightRiftCoreFor;
 			}
 
 			return ActionResult.FAIL;

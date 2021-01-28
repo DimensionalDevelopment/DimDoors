@@ -1,6 +1,6 @@
 plugins {
-    id 'fabric-loom' version '0.5-SNAPSHOT'
-	id 'maven-publish'
+    id "fabric-loom" version "0.5-SNAPSHOT"
+	id "maven-publish"
 }
 
 apply plugin: "java"
@@ -9,24 +9,66 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    maven { url = 'https://maven.fabricmc.net/' }
-    mavenCentral()
-    maven { url = 'https://www.cursemaven.com' }
-    maven { url = 'https://jitpack.io' }
-	maven { url = 'https://server.bbkr.space/artifactory/libs-release' }
+	mavenCentral()
+
+	maven {
+		name = "Fabric maven"
+		url = "https://maven.fabricmc.net/"
+	}
+
+	maven {
+		name = "Tehnut maven"
+		url "https://maven.tehnut.info"
+		content {
+			includeGroup "mcp.mobius.waila"
+		}
+	}
+
+	maven {
+		url = "https://www.cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
+
+    maven {
+		url = "https://jitpack.io"
+		content {
+			includeGroup "com.github.DimensionalDevelopment"
+			includeGroup "com.github.Waterpicker"
+		}
+	}
+
+	maven {
+		url = "https://server.bbkr.space/artifactory/libs-release"
+		content {
+			includeGroup "io.github.cottonmc"
+		}
+	}
+
 	maven {
 		name = "Ladysnake Libs"
 		url = "https://dl.bintray.com/ladysnake/libs"
 	}
+
+	maven {
+		name = "Tehnut maven"
+		url "https://maven.tehnut.info"
+		content {
+			includeGroup "mcp.mobius.waila"
+		}
+	}
 }
 
-def includeCompile(str) {
-	def dep
+def includeCompile(group, artifact, version) {
 	project.dependencies {
-		dep = modImplementation(str) {
+		modCompileOnly("$group:$artifact:$version") {
 			exclude module: "fabric-api"
 		}
-		include(str)
+		modRuntime("$group:$artifact:$version") {
+			exclude module: "fabric-api"
+		}
+		include("$group:$artifact:$version")
 	}
 	project.publishing {
 		publications {
@@ -34,9 +76,9 @@ def includeCompile(str) {
 				pom.withXml {
 					def depsNode = asNode().appendNode("dependencies")
 					def depNode = depsNode.appendNode("dependency")
-					depNode.appendNode("groupId", dep.group)
-					depNode.appendNode("artifactId", dep.name)
-					depNode.appendNode("version", dep.version)
+					depNode.appendNode("groupId", group)
+					depNode.appendNode("artifactId", artifact)
+					depNode.appendNode("version", version)
 					depNode.appendNode("scope", "compile")
 				}
 			}
@@ -45,22 +87,25 @@ def includeCompile(str) {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	includeCompile("com.flowpowered:flow-math:1.0.3")
-	includeCompile("org.jgrapht:jgrapht-core:1.1.0")
-	includeCompile("com.github.DimensionalDevelopment:poly2tri.java:0.1.1")
-	includeCompile("com.github.Waterpicker:OpenWorlds:c5a1ced")
-	includeCompile("io.github.boogiemonster1o1:libcbe:1.1.0")
-	includeCompile("io.github.cottonmc:LibGui:3.3.2+1.16.4")
-	includeCompile("me.shedaniel.cloth:config-2:4.8.3")
-	includeCompile("io.github.onyxstudios:Cardinal-Components-API:2.7.10")
+    minecraft "com.mojang:minecraft:1.16.5"
+    mappings "net.fabricmc:yarn:1.16.5+build.3:v2"
+    modImplementation "net.fabricmc:fabric-loader:0.11.0"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.0+1.16"
+	includeCompile("com.flowpowered", "flow-math", "1.0.3")
+	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
+	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
+	includeCompile("com.github.Waterpicker", "OpenWorlds", "c5a1ced")
+	includeCompile("io.github.boogiemonster1o1", "libcbe", "1.1.0")
+	includeCompile("io.github.cottonmc", "LibGui", "3.3.2+1.16.4")
+	includeCompile("me.shedaniel.cloth", "config-2", "4.8.3")
+	includeCompile("io.github.onyxstudios", "Cardinal-Components-API", "2.7.10")
+	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
 
-	// TODO: Add project id
-    // modImplementation("curse.maven:worldedit:3039223") // For saving schematics
-    // modImplementation("curse.maven:wecui:2995033") // Cos why not
+	modRuntime "curse.maven:Worldedit-225608:3039223" // For saving schematics
+	modRuntime "curse.maven:wecui-402098:3169571" // Cos why not
+
+	modCompileOnly "curse.maven:Hwyla-253449:3033613"
+	modRuntime "curse.maven:Hwyla-253449:3033613"
     modCompileOnly("io.github.prospector:modmenu:1.14.6+build.31") {
         exclude module: "fabric-api"
     }
@@ -69,15 +114,15 @@ dependencies {
     }
 }
 
-version "4.0.0+alpha.4"
-archivesBaseName = "dimensional-doors"
+version "4.0.0+alpha.5"
+archivesBaseName = "DimensionalDoors"
 
 sourceSets {
 	main {
 		java {
-			srcDir 'src/main/schematics'
-			srcDir 'src/main/registry'
-			srcDir 'src/main/config'
+			srcDir "src/main/schematics"
+			srcDir "src/main/registry"
+			srcDir "src/main/config"
 		}
 	}
 }

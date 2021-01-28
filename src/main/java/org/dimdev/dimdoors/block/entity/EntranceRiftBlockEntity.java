@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
@@ -42,7 +42,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
 	@Override
 	public boolean receiveEntity(Entity entity, float yawOffset) {
-		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(ModConfig.INSTANCE.getGeneralConfig().teleportOffset + 0.5));
+		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.CONFIG.getGeneralConfig().teleportOffset + 0.5));
 		TeleportUtil.teleport(entity, this.world, targetPos, yawOffset);
 		return true;
 	}

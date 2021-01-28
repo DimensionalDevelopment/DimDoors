@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.client;
 import java.util.Objects;
 
 import com.flowpowered.math.TrigMath;
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.tesseract.Tesseract;
@@ -15,7 +15,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,7 +33,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
 
     @Override
     public void render(DetachedRiftBlockEntity rift, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcs, int breakProgress, int alpha) {
-    	if (ModConfig.INSTANCE.getGraphicsConfig().showRiftCore) {
+    	if (DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().showRiftCore) {
             this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
             long timeLeft = RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis();
@@ -49,7 +48,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
         matrices.push();
         matrices.translate(0.5, 0.5, 0.5);
-        RiftCrackRenderer.drawCrack(matrices.peek().getModel(), vc, 0, CURVE, ModConfig.INSTANCE.getGraphicsConfig().riftSize * rift.size, 0xF1234568L * rift.getPos().hashCode());
+        RiftCrackRenderer.drawCrack(matrices.peek().getModel(), vc, 0, CURVE, DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().riftSize * rift.size, 0xF1234568L * rift.getPos().hashCode());
         matrices.pop();
     }
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.mixin.accessor.GenerationSettingsAccessor;
 import org.dimdev.dimdoors.world.feature.decorator.EternalFluidLakeDecorator;
@@ -70,7 +70,7 @@ public final class ModFeatures {
     }
 
     static {
-        int gatewayChance = FabricLoader.getInstance().isDevelopmentEnvironment() ? 20 : ModConfig.INSTANCE.getWorldConfig().gatewayGenChance;
+        int gatewayChance = FabricLoader.getInstance().isDevelopmentEnvironment() ? 20 : DimensionalDoorsInitializer.CONFIG.getWorldConfig().gatewayGenChance;
         SANDSTONE_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicV2GatewayFeatureConfig(SchematicV2Gateway.ID_SCHEMATIC_MAP.inverse().get(SANDSTONE_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
         TWO_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicV2GatewayFeatureConfig(SchematicV2Gateway.ID_SCHEMATIC_MAP.inverse().get(TWO_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
         LIMBO_GATEWAY_CONFIGURED_FEATURE = LIMBO_GATEWAY_FEATURE.configure(DefaultFeatureConfig.INSTANCE).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));

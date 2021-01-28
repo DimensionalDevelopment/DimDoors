@@ -5,7 +5,6 @@ import java.util.Random;
 
 import io.netty.buffer.Unpooled;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -96,7 +95,7 @@ public class MonolithAggroGoal extends Goal {
             }
 
             // Teleport the target player if various conditions are met
-            if (this.mob.getAggro() >= MAX_AGGRO && ModConfig.INSTANCE.getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
+            if (this.mob.getAggro() >= MAX_AGGRO && DimensionalDoorsInitializer.CONFIG.getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
                 this.mob.setAggro(0);
                 //Location destination = LimboDimension.getLimboSkySpawn(player);
                 //TeleportUtil.teleport(player, destination, 0, 0);

@@ -2,6 +2,7 @@ package org.dimdev.dimdoors;
 
 import java.io.IOException;
 
+import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -33,8 +34,10 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
+	public static ConfigHolder<ModConfig> CONFIG_MANAGER;
+	public static ModConfig CONFIG;
 
-    private static MinecraftServer server;
+	private static MinecraftServer server;
 
     @NotNull
     public static MinecraftServer getServer() {
@@ -73,8 +76,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		ModFluids.init();
         ModSoundEvents.init();
 		ModParticleTypes.init();
-
-        ModConfig.deserialize();
+        ModConfig.init();
 
         Targets.registerDefaultTargets();
 		VirtualTarget.VirtualTargetType.register();
