@@ -3,21 +3,50 @@ package org.dimdev.dimdoors.pockets;
 import java.util.List;
 import java.util.Objects;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.common.collect.Lists;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 public final class PocketGroup {
+	/*
     public static final Codec<PocketGroup> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("group").forGetter(PocketGroup::getGroup),
             VirtualPocket.CODEC.listOf().fieldOf("pockets").forGetter(PocketGroup::getEntries)
     ).apply(instance, PocketGroup::new));
-    private final String group;
-    private final List<VirtualPocket> entries;
+	 */
+
+    private String group;
+    private List<VirtualPocket> entries;
+
+    public PocketGroup() {
+	}
 
     public PocketGroup(String group, List<VirtualPocket> entries) {
         this.group = group;
         this.entries = entries;
     }
+
+    public PocketGroup fromTag(CompoundTag tag) {
+    	this.group = tag.getString("group");
+
+		ListTag pockets = tag.getList("pockets", 10);
+		this.entries = Lists.newArrayList();
+		for (int i = 0; i < pockets.size(); i++) {
+			CompoundTag pocket = pockets.getCompound(i);
+			entries.add(VirtualPocket.deserialize(pocket));
+		}
+		return this;
+	}
+
+	public CompoundTag toTag(CompoundTag tag) {
+    	tag.putString("group", this.group);
+
+		ListTag pockets = new ListTag();
+		entries.forEach(pocket -> pockets.add(pocket.toTag(new CompoundTag())));
+		tag.put("pockets", pockets);
+		return tag;
+	}
+
     public String getGroup() {
         return this.group;
     }

@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -20,18 +19,22 @@ public class SchematicGenerator extends VirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "schematic";
 
+	/*
 	public static final Codec<SchematicGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.INT.fieldOf("size").forGetter(SchematicGenerator::getSize),
 			Codec.STRING.fieldOf("id").forGetter(SchematicGenerator::getName),
 			Codec.INT.optionalFieldOf("weight", 5).forGetter(schematicGenerator -> schematicGenerator.getWeight(null))
 	).apply(instance, SchematicGenerator::new));
+	*/
 
-	private final int size;
-	private final String name;
-	private final Identifier templateID;
-	private final int weight;
+	private int size;
+	private String name;
+	private Identifier templateID;
+	private int weight;
 
-	SchematicGenerator(int size, String name, int weight) {
+	public SchematicGenerator() {}
+
+	public SchematicGenerator(int size, String name, int weight) {
 		this.size = size;
 		this.name = name;
 		this.weight = weight;
@@ -54,6 +57,26 @@ public class SchematicGenerator extends VirtualPocket {
 	@Override
 	public int getWeight(PocketGenerationParameters parameters){
 		return this.weight;
+	}
+
+	@Override
+	public VirtualPocket fromTag(CompoundTag tag) {
+		this.name = tag.getString("id");
+		this.size = tag.getInt("size");
+		this.weight = tag.contains("weight") ? tag.getInt("weight") : 5;
+
+		this.templateID = new Identifier("dimdoors", name);
+		return this;
+	}
+
+	@Override
+	public CompoundTag toTag(CompoundTag tag) {
+		super.toTag(tag);
+
+		tag.putString("id", this.name);
+		tag.putInt("size", this.size);
+		tag.putInt("weight", this.weight);
+		return tag;
 	}
 
 	@Override

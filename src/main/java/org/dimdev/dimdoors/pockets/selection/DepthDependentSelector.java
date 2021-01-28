@@ -1,18 +1,19 @@
 package org.dimdev.dimdoors.pockets.selection;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.Pair;
+import com.google.common.collect.Maps;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import org.dimdev.dimdoors.pockets.VirtualPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class DepthDependentSelector extends VirtualPocket {
 	public static final String KEY = "depth_dependent";
-
+	/*
 	private static final Codec<Pair<String, VirtualPocket>> PAIR_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("regex").forGetter(Pair::getLeft),
 			VirtualPocket.CODEC.fieldOf("pocket").forGetter(Pair::getRight)
@@ -22,13 +23,17 @@ public class DepthDependentSelector extends VirtualPocket {
 			Codec.STRING.fieldOf("id").forGetter(DepthDependentSelector::getName),
 			PAIR_CODEC.listOf().fieldOf("pockets").forGetter(DepthDependentSelector::getPocketList)
 	).apply(instance, DepthDependentSelector::new));
+	 */
 
 
 
-	private final String name;
-	private final List<Pair<String, VirtualPocket>> pocketList;
+	private String name;
+	private LinkedHashMap<String, VirtualPocket> pocketList;
 
-	public DepthDependentSelector(String name, List<Pair<String, VirtualPocket>> pocketList) {
+	public DepthDependentSelector() {
+
+	}
+	public DepthDependentSelector(String name, LinkedHashMap<String, VirtualPocket> pocketList) {
 		this.name = name;
 		this.pocketList = pocketList;
 	}
@@ -37,13 +42,42 @@ public class DepthDependentSelector extends VirtualPocket {
 		return name;
 	}
 
-	public List<Pair<String, VirtualPocket>> getPocketList() {
+	public LinkedHashMap<String, VirtualPocket> getPocketList() {
 		return pocketList;
 	}
 
 	@Override
+	public VirtualPocket fromTag(CompoundTag tag) {
+		this.name = tag.getString("id");
+		ListTag regexPockets = tag.getList("pockets", 10);
+		pocketList = Maps.newLinkedHashMap();
+		for (int i = 0; i < regexPockets.size(); i++) {
+			CompoundTag pocket = regexPockets.getCompound(i);
+			pocketList.put(pocket.getString("regex"), VirtualPocket.deserialize(pocket.getCompound("pocket")));
+		}
+		return this;
+	}
+
+	@Override
+	public CompoundTag toTag(CompoundTag tag) {
+		super.toTag(tag);
+
+		tag.putString("id", this.name);
+
+		ListTag regexPockets = new ListTag();
+		pocketList.forEach((regex, pocket) -> {
+			CompoundTag compound = new CompoundTag();
+			compound.putString("regex", regex);
+			compound.put("pocket", pocket.toTag(new CompoundTag()));
+			regexPockets.add(compound);
+		});
+		tag.put("pockets", regexPockets);
+		return tag;
+	}
+
+	@Override
 	public void init(String group) {
-		pocketList.forEach(pair -> pair.getRight().init(group));
+		pocketList.forEach((regex, pocket) -> pocket.init(group));
 	}
 
 	@Override
@@ -73,11 +107,11 @@ public class DepthDependentSelector extends VirtualPocket {
 	}
 
 	private VirtualPocket getNextPocket(PocketGenerationParameters parameters) {
-		for (Pair<String, VirtualPocket> pair : pocketList) {
-			if (Pattern.compile(pair.getLeft()).matcher(String.valueOf(parameters.getSourceVirtualLocation().getDepth())).matches()) {
-				return pair.getRight();
+		for (Map.Entry<String, VirtualPocket> entry : pocketList.entrySet()) {
+			if (Pattern.compile(entry.getKey()).matcher(String.valueOf(parameters.getSourceVirtualLocation().getDepth())).matches()) {
+				return entry.getValue();
 			}
 		}
-		return pocketList.get(0).getRight();
+		return pocketList.values().stream().findFirst().get();
 	}
 }

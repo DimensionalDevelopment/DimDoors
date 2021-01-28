@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.pockets;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -13,10 +13,13 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
+import java.util.function.Supplier;
+
 
 // TODO: do something about getting correct Pocket sizes
 public abstract class VirtualPocket implements Weighted<PocketGenerationParameters> {
 	public static final Registry<VirtualPocketType<? extends VirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends VirtualPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
+	/*
 	public static final Codec<VirtualPocket> CODEC = new Codec<VirtualPocket>() {
 		@Override
 		public <T> DataResult<Pair<VirtualPocket, T>> decode(DynamicOps<T> dynamicOps, T input) {
@@ -29,6 +32,22 @@ public abstract class VirtualPocket implements Weighted<PocketGenerationParamete
 			return null; // TODO: write encode function
 		}
 	};
+	 */
+
+	public static VirtualPocket deserialize(CompoundTag tag) {
+		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: return some NONE VirtualPocket if type cannot be found or deserialization fails.
+		return REGISTRY.get(id).fromTag(tag);
+	}
+
+	public static CompoundTag serialize(VirtualPocket virtualPocket) {
+		return virtualPocket.toTag(new CompoundTag());
+	}
+
+	public abstract VirtualPocket fromTag(CompoundTag tag);
+
+	public CompoundTag toTag(CompoundTag tag) {
+		return this.getType().toTag(tag);
+	}
 
 	public abstract void init(String group);
 
@@ -41,20 +60,33 @@ public abstract class VirtualPocket implements Weighted<PocketGenerationParamete
 
 	public abstract String getKey();
 
+
 	public interface VirtualPocketType<T extends VirtualPocket> {
-		VirtualPocketType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator.CODEC);
+		VirtualPocketType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator::new);
 
-		VirtualPocketType<DepthDependentSelector> DEPTH_DEPENDENT = register(new Identifier("dimdoors", DepthDependentSelector.KEY), DepthDependentSelector.CODEC);
+		VirtualPocketType<DepthDependentSelector> DEPTH_DEPENDENT = register(new Identifier("dimdoors", DepthDependentSelector.KEY), DepthDependentSelector::new);
 
 
+		VirtualPocket fromTag(CompoundTag tag);
 
-		Codec<T> getCodec();
+		CompoundTag toTag(CompoundTag tag);
 
 		static void register() {
 		}
 
-		static <T extends VirtualPocket> VirtualPocketType<T> register(Identifier id, Codec<T> codec) {
-			return Registry.register(REGISTRY, id, () -> codec);
+		static <U extends VirtualPocket> VirtualPocketType<U> register(Identifier id, Supplier<U> constructor) {
+			return Registry.register(REGISTRY, id, new VirtualPocketType<U>() {
+				@Override
+				public VirtualPocket fromTag(CompoundTag tag) {
+					return constructor.get().fromTag(tag);
+				}
+
+				@Override
+				public CompoundTag toTag(CompoundTag tag) {
+					tag.putString("type", id.toString());
+					return tag;
+				}
+			});
 		}
 	}
 }

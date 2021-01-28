@@ -11,17 +11,14 @@ import java.util.*;
 import com.google.common.collect.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.mojang.serialization.JsonOps;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.nbt.*;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
 
 public class SchematicV2Handler {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -43,17 +40,18 @@ public class SchematicV2Handler {
         long startTime = System.currentTimeMillis();
         Set<String> names = ImmutableSet.of("default_private", "default_public");
         for (String name : names) {
-            try (BufferedReader reader = Files.newBufferedReader(Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/json/v2/%s.json", name)).toURI()))) {
-                List<String> result = new ArrayList<>();
-                while (true) {
-                    String line = reader.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    result.add(line);
-                }
-                JsonObject json = GSON.fromJson(String.join("", result), JsonObject.class);
-                PocketGroup type = PocketGroup.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, System.err::println).getFirst();
+			try (BufferedReader reader = Files.newBufferedReader(Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/json/v2/%s.json", name)).toURI()))) {
+				List<String> result = new ArrayList<>();
+				while (true) {
+					String line = reader.readLine();
+					if (line == null) {
+						break;
+					}
+					result.add(line);
+				}
+
+				CompoundTag groupTag = StringNbtReader.parse(String.join("", result));
+				PocketGroup type = new PocketGroup().fromTag(groupTag);
 
                 this.pocketGroups.add(type);
 
@@ -64,7 +62,7 @@ public class SchematicV2Handler {
 					virtualPocket.init(type.getGroup());
                 	weightedPockets.add(virtualPocket);
 				}
-            } catch (IOException | URISyntaxException e) {
+            } catch (IOException | URISyntaxException | CommandSyntaxException e) {
                 e.printStackTrace();
             }
         }
