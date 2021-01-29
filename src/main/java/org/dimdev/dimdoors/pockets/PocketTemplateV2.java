@@ -73,7 +73,7 @@ public class PocketTemplateV2 {
     public void place(Pocket pocket) {
         pocket.setSize(this.size * 16, this.size * 16, this.size * 16);
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
-        BlockPos origin = new BlockPos(pocket.box.minX, pocket.box.minY, pocket.box.minZ);
+        BlockPos origin = new BlockPos(pocket.box.minX, pocket.box.minY, pocket.box.minZ); // TODO: redundant, do pocket.origin() instead?
         LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
         SchematicPlacer.place(this.schematic, world, origin);
     }

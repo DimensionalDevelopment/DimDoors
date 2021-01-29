@@ -55,6 +55,10 @@ public final class Pocket {
 		return new BlockPos(this.box.minX, this.box.minY, this.box.minZ);
 	}
 
+	public void offsetOrigin(Vec3i vec) {
+		this.box = box.offset(vec.getX(), vec.getY(), vec.getZ());
+	}
+
 	public boolean addDye(Entity entity, DyeColor dyeColor) {
 		PocketColor color = PocketColor.from(dyeColor);
 

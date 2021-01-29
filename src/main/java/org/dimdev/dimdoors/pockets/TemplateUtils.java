@@ -72,7 +72,7 @@ public class TemplateUtils {
         table.supplyInventory(inventory, ctx);
     }
 
-    static void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
+    static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         HashMap<RiftBlockEntity, Float> entranceWeights = new HashMap<>();
 
