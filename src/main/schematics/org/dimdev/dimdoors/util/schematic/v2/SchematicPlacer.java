@@ -31,8 +31,8 @@ public final class SchematicPlacer {
 				LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}
-		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic, world);
-		blockSample.place(origin);
+		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
+		blockSample.place(origin, world, false);
 	}
 
 	public static int[][][] getBlockData(Schematic schematic) {
@@ -49,6 +49,19 @@ public final class SchematicPlacer {
 			}
 		}
 		return blockData;
+	}
+
+	public static int[][] getBiomeData(Schematic schematic) {
+		int width = schematic.getWidth();
+		int length = schematic.getLength();
+		byte[] biomeDataArray = schematic.getBiomeData().array();
+		int[][] biomeData = new int[width][length];
+		for (int x = 0; x < width; x++) {
+			for (int z = 0; z < length; z++) {
+				biomeData[x][z] = biomeDataArray[x + z * width];
+			}
+		}
+		return biomeData;
 	}
 
 	private static void placeEntities(int originX, int originY, int originZ, Schematic schematic, StructureWorldAccess world) {

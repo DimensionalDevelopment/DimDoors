@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.util.schematic.v2;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -12,6 +13,8 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -22,25 +25,26 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.biome.Biome;
 
 public class Schematic {
 	private static final Consumer<String> PRINT_TO_STDERR = System.err::println;
-	public static final Codec<Schematic> CODEC = RecordCodecBuilder.create((instance) -> {
-		return instance.group(
-				Codec.INT.fieldOf("Version").forGetter(Schematic::getVersion),
-				Codec.INT.optionalFieldOf("Data Version", SharedConstants.getGameVersion().getWorldVersion()).forGetter(Schematic::getDataVersion),
-				SchematicMetadata.CODEC.optionalFieldOf("Metadata", SchematicMetadata.EMPTY).forGetter(Schematic::getMetadata),
-				Codec.SHORT.fieldOf("Width").forGetter(Schematic::getWidth),
-				Codec.SHORT.fieldOf("Height").forGetter(Schematic::getHeight),
-				Codec.SHORT.fieldOf("Length").forGetter(Schematic::getLength),
-				Vec3i.CODEC.fieldOf("Offset").forGetter(Schematic::getOffset),
-				Codec.INT.fieldOf("PaletteMax").forGetter(Schematic::getPaletteMax),
-				SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
-				Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
-				Codec.list(CompoundTag.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
-				Codec.list(CompoundTag.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities)
-		).apply(instance, Schematic::new);
-	});
+	public static final Codec<Schematic> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+			Codec.INT.fieldOf("Version").forGetter(Schematic::getVersion),
+			Codec.INT.optionalFieldOf("Data Version", SharedConstants.getGameVersion().getWorldVersion()).forGetter(Schematic::getDataVersion),
+			SchematicMetadata.CODEC.optionalFieldOf("Metadata", SchematicMetadata.EMPTY).forGetter(Schematic::getMetadata),
+			Codec.SHORT.fieldOf("Width").forGetter(Schematic::getWidth),
+			Codec.SHORT.fieldOf("Height").forGetter(Schematic::getHeight),
+			Codec.SHORT.fieldOf("Length").forGetter(Schematic::getLength),
+			Vec3i.CODEC.fieldOf("Offset").forGetter(Schematic::getOffset),
+			Codec.INT.fieldOf("PaletteMax").forGetter(Schematic::getPaletteMax),
+			SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
+			Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
+			Codec.list(CompoundTag.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
+			Codec.list(CompoundTag.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities),
+			SchematicBiomePalette.CODEC.optionalFieldOf("BiomePalette", Collections.emptyMap()).forGetter(Schematic::getBiomePalette),
+			Codec.BYTE_BUFFER.optionalFieldOf("BiomeData", ByteBuffer.wrap(new byte[0])).forGetter(Schematic::getBlockData)
+	).apply(instance, Schematic::new));
 
 	private final int version;
 	private final int dataVersion;
@@ -54,8 +58,11 @@ public class Schematic {
 	private final ByteBuffer blockData;
 	private List<CompoundTag> blockEntities;
 	private List<CompoundTag> entities;
+	private final BiMap<Biome, Integer> biomePalette;
+	private final ByteBuffer biomeData;
+	private RelativeBlockSample cachedBlockSample = null;
 
-	public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, ByteBuffer blockData, List<CompoundTag> blockEntities, List<CompoundTag> entities) {
+	public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, ByteBuffer blockData, List<CompoundTag> blockEntities, List<CompoundTag> entities, Map<Biome, Integer> biomePalette, ByteBuffer biomeData) {
 		this.version = version;
 		this.dataVersion = dataVersion;
 		this.metadata = metadata;
@@ -68,6 +75,8 @@ public class Schematic {
 		this.blockData = blockData;
 		this.blockEntities = blockEntities;
 		this.entities = entities;
+		this.biomePalette = HashBiMap.create(biomePalette);
+		this.biomeData = biomeData;
 	}
 
 	public int getVersion() {
@@ -114,6 +123,14 @@ public class Schematic {
 		return this.blockEntities;
 	}
 
+	public BiMap<Biome, Integer> getBiomePalette() {
+		return this.biomePalette;
+	}
+
+	public ByteBuffer getBiomeData() {
+		return this.biomeData;
+	}
+
 	public void setBlockEntities(List<CompoundTag> blockEntities) {
 		this.blockEntities = blockEntities.stream().map(SchematicPlacer::fixEntityId).collect(Collectors.toList());
 	}
@@ -135,11 +152,10 @@ public class Schematic {
 	}
 
 	public static RelativeBlockSample getBlockSample(Schematic schem) {
-		return new RelativeBlockSample(schem);
-	}
-
-	public static RelativeBlockSample getBlockSample(Schematic schem, StructureWorldAccess world) {
-		return getBlockSample(schem).setWorld(world);
+		if (schem.cachedBlockSample == null) {
+			return (schem.cachedBlockSample = new RelativeBlockSample(schem));
+		}
+		return schem.cachedBlockSample;
 	}
 
 	public static Schematic fromTag(CompoundTag tag) {
@@ -156,5 +172,13 @@ public class Schematic {
 
 	public static JsonObject toJson(Schematic schem) {
 		return (JsonObject) CODEC.encodeStart(JsonOps.INSTANCE, schem).getOrThrow(false, PRINT_TO_STDERR);
+	}
+
+	public static <T> Schematic fromDynamic(Dynamic<T> dynamic) {
+		return CODEC.parse(dynamic).getOrThrow(false, PRINT_TO_STDERR);
+	}
+
+	public static <T> T toDynamic(Schematic schem, DynamicOps<T> ops) {
+		return CODEC.encodeStart(ops, schem).getOrThrow(false, PRINT_TO_STDERR);
 	}
 }
