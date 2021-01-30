@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.pockets.generator;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
@@ -27,6 +30,7 @@ import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ChunkGenerator extends VirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -108,30 +113,74 @@ public class ChunkGenerator extends VirtualPocket {
 			}
 		}
 		ChunkRegion protoRegion = new ChunkRegionHack(genWorld, protoChunks);
-
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.populateNoise(genWorld, genWorld.getStructureAccessor(), protoChunk);
+			genWorldChunkGenerator.setStructureStarts(genWorld.getRegistryManager(), genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk, genWorld.getStructureManager(), genWorld.getSeed());
+			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_STARTS);
 		}
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.buildSurface(protoRegion, protoChunk);
+			genWorldChunkGenerator.addStructureReferences(protoRegion, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk);
+			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_REFERENCES);
 		}
 		for (Chunk protoChunk : protoChunks) {
 			genWorldChunkGenerator.populateBiomes(BuiltinRegistries.BIOME, protoChunk);
+			((ProtoChunk) protoChunk).setStatus(ChunkStatus.BIOMES);
+		}
+		for (Chunk protoChunk : protoChunks) {
+			genWorldChunkGenerator.populateNoise(genWorld, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk);
+			((ProtoChunk) protoChunk).setStatus(ChunkStatus.NOISE);
+		}
+		for (Chunk protoChunk : protoChunks) {
+			genWorldChunkGenerator.buildSurface(protoRegion, protoChunk);
+			((ProtoChunk) protoChunk).setStatus(ChunkStatus.SURFACE);
 		}
 		for (GenerationStep.Carver carver : GenerationStep.Carver.values()) {
 			for (Chunk protoChunk : protoChunks) {
 				genWorldChunkGenerator.carve(genWorld.getSeed(), genWorld.getBiomeAccess(), protoChunk, carver);
+				ProtoChunk pChunk = ((ProtoChunk) protoChunk);
+				if (pChunk.getStatus() == ChunkStatus.SURFACE) pChunk.setStatus(ChunkStatus.CARVERS);
+				else pChunk.setStatus(ChunkStatus.LIQUID_CARVERS);
 			}
 		}
-		genWorldChunkGenerator.generateFeatures(protoRegion, genWorld.getStructureAccessor());
+		for (Chunk protoChunk : protoChunks) {
+			ChunkRegion tempRegion = new ChunkRegionHack(genWorld, ChunkPos.stream(protoChunk.getPos(), 10).map(chunkPos -> protoRegion.getChunk(chunkPos.x, chunkPos.z)).collect(Collectors.toList()));
+			genWorldChunkGenerator.generateFeatures(tempRegion, genWorld.getStructureAccessor().forRegion(tempRegion));
+			((ProtoChunk) protoChunk).setStatus(ChunkStatus.FEATURES);
+		}
+		for (Chunk protoChunk : protoChunks) { // likely only necessary for spawn step since we copy over anyways
+			((ServerLightingProvider) genWorld.getLightingProvider()).light(protoChunk, false);
+			((ProtoChunk) protoChunk).setStatus(ChunkStatus.LIGHT);
+		}
+		for (Chunk protoChunk : protoChunks) { // TODO: does this even work?
+			ChunkRegion tempRegion = new ChunkRegionHack(genWorld, ChunkPos.stream(protoChunk.getPos(), 5).map(chunkPos -> protoRegion.getChunk(chunkPos.x, chunkPos.z)).collect(Collectors.toList()));
+			genWorldChunkGenerator.populateEntities(tempRegion);
+			((ProtoChunk) protoChunk).setStatus(ChunkStatus.SPAWN);
+		}
+
 
 		BlockPos firstCorner = pocket.getOrigin();
 		BlockPos secondCorner = new BlockPos(firstCorner.getX() + size.getX() - 1, Math.min(firstCorner.getY() + size.getY() - 1, world.getHeight() - virtualYOffset - 1), firstCorner.getZ() + size.getZ() - 1); // subtracting 1 here since it should be 0 inclusive and size exclusive
 
 		BlockPos pocketOriginChunkOffset = new ChunkPos(pocket.getOrigin()).getStartPos().subtract(firstCorner);
 		for (BlockPos blockPos : BlockPos.iterate(firstCorner, secondCorner)) {
-			world.setBlockState(blockPos, protoRegion.getBlockState(blockPos.add(pocketOriginChunkOffset).add(0, virtualYOffset, 0)));
-		} // TODO: BlockEntities/ Entities/ Biomes/ Structure Data
+			BlockPos sourcePos = blockPos.add(pocketOriginChunkOffset).add(0, virtualYOffset, 0);
+			BlockState blockState = protoRegion.getBlockState(sourcePos);
+			if (!blockState.isAir()) {
+				world.setBlockState(blockPos, protoRegion.getBlockState(blockPos.add(pocketOriginChunkOffset).add(0, virtualYOffset, 0)));
+			}
+		}
+		Box realBox = new Box(firstCorner, secondCorner);
+		for (Chunk protoChunk : protoChunks) {
+			for(BlockPos virtualBlockPos : protoChunk.getBlockEntityPositions()) {
+				BlockPos realBlockPos = virtualBlockPos.subtract(pocketOriginChunkOffset).add(0, -virtualYOffset, 0);
+				if (realBox.contains(realBlockPos.getX(), realBlockPos.getY(), realBlockPos.getZ())) {
+					world.setBlockEntity(realBlockPos, protoChunk.getBlockEntity(virtualBlockPos)); // TODO: ensure this works, likely bugged
+				}
+			}
+		}
+		Box virtualBox = realBox.offset(pocketOriginChunkOffset.add(0, virtualYOffset, 0));
+		for (Entity entity : protoRegion.getOtherEntities(null, virtualBox)) { // TODO: does this even work?
+			TeleportUtil.teleport(entity, world, entity.getPos().add(-pocketOriginChunkOffset.getX(), -pocketOriginChunkOffset.getY() - virtualYOffset, -pocketOriginChunkOffset.getZ()), entity.yaw);
+		} // TODO: Entities?/ Biomes/ Structure Data
 
 		world.setBlockState(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pocket.getOrigin()), ModBlocks.DETACHED_RIFT.getDefaultState());
 
@@ -177,5 +226,7 @@ public class ChunkGenerator extends VirtualPocket {
 			Chunk chunk = super.getChunk(chunkX, chunkZ, leastStatus, false);
 			return chunk == null ? new ProtoChunk(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA) : chunk;
 		}
+
+		//TODO: Override getSeed()
 	}
 }
