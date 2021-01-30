@@ -1,7 +1,10 @@
 package org.dimdev.dimdoors.pockets.generator;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
@@ -12,10 +15,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.ProtoChunk;
-import net.minecraft.world.chunk.UpgradeData;
+import net.minecraft.world.chunk.*;
 import net.minecraft.world.gen.GenerationStep;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -109,7 +109,9 @@ public class ChunkGenerator extends VirtualPocket {
 		ArrayList<Chunk> protoChunks = new ArrayList<>();
 		for (int z = 0; z < ChunkSizeZ; z++) {
 			for (int x = 0; x < ChunkSizeX; x++) {
-				protoChunks.add(new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA));
+				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA);
+				protoChunk.setLightingProvider(genWorld.getLightingProvider());
+				protoChunks.add(protoChunk);
 			}
 		}
 		ChunkRegion protoRegion = new ChunkRegionHack(genWorld, protoChunks);
@@ -222,11 +224,33 @@ public class ChunkGenerator extends VirtualPocket {
 			super(world, chunks);
 		}
 
+		@Override
 		public Chunk getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
 			Chunk chunk = super.getChunk(chunkX, chunkZ, leastStatus, false);
-			return chunk == null ? new ProtoChunk(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA) : chunk;
+			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA) : chunk;
 		}
 
-		//TODO: Override getSeed()
+		// TODO: Override getSeed()
+	}
+
+	private static class ProtoChunkHack extends ProtoChunk { // exists solely to make some calls in the non utilized chunks faster
+		public ProtoChunkHack(ChunkPos pos, UpgradeData upgradeData) {
+			super(pos, upgradeData);
+		}
+
+		@Override
+		public BlockState setBlockState(BlockPos pos, BlockState state, boolean moved) {
+			return Blocks.VOID_AIR.getDefaultState();
+		}
+
+		@Override
+		public BlockState getBlockState(BlockPos pos) {
+			return Blocks.VOID_AIR.getDefaultState();
+		}
+
+		@Override
+		public FluidState getFluidState(BlockPos pos) {
+			return Fluids.EMPTY.getDefaultState();
+		}
 	}
 }
