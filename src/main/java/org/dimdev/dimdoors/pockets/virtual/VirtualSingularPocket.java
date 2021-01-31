@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.pockets;
+package org.dimdev.dimdoors.pockets.virtual;
 
 import com.mojang.serialization.*;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
@@ -7,9 +7,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-import org.dimdev.dimdoors.pockets.generator.ChunkGenerator;
-import org.dimdev.dimdoors.pockets.generator.SchematicGenerator;
-import org.dimdev.dimdoors.pockets.selection.DepthDependentSelector;
+import org.dimdev.dimdoors.pockets.virtual.generator.ChunkGenerator;
+import org.dimdev.dimdoors.pockets.virtual.generator.SchematicGenerator;
+import org.dimdev.dimdoors.pockets.virtual.selection.DepthDependentSelector;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.Pocket;
@@ -18,8 +18,8 @@ import java.util.function.Supplier;
 
 
 // TODO: do something about getting correct Pocket sizes
-public abstract class VirtualPocket implements Weighted<PocketGenerationParameters> {
-	public static final Registry<VirtualPocketType<? extends VirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends VirtualPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
+public abstract class VirtualSingularPocket implements VirtualPocket {
+	public static final Registry<VirtualSingularPocketType<? extends VirtualSingularPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualSingularPocketType<? extends VirtualSingularPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
 	/*
 	public static final Codec<VirtualPocket> CODEC = new Codec<VirtualPocket>() {
 		@Override
@@ -35,51 +35,49 @@ public abstract class VirtualPocket implements Weighted<PocketGenerationParamete
 	};
 	 */
 
-	public static VirtualPocket deserialize(CompoundTag tag) {
+	public static VirtualSingularPocket deserialize(CompoundTag tag) {
 		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: return some NONE VirtualPocket if type cannot be found or deserialization fails.
 		return REGISTRY.get(id).fromTag(tag);
 	}
 
-	public static CompoundTag serialize(VirtualPocket virtualPocket) {
-		return virtualPocket.toTag(new CompoundTag());
+	public static CompoundTag serialize(VirtualSingularPocket virtualSingularPocket) {
+		return virtualSingularPocket.toTag(new CompoundTag());
 	}
 
-	public abstract VirtualPocket fromTag(CompoundTag tag);
+	public abstract VirtualSingularPocket fromTag(CompoundTag tag);
 
 	public CompoundTag toTag(CompoundTag tag) {
 		return this.getType().toTag(tag);
 	}
-
-	public abstract void init(String group);
 
 	public abstract Pocket prepareAndPlacePocket(PocketGenerationParameters parameters);
 
 	public abstract String toString();
 	// TODO: are equals() and hashCode() necessary?
 
-	public abstract VirtualPocketType<? extends VirtualPocket> getType();
+	public abstract VirtualSingularPocketType<? extends VirtualSingularPocket> getType();
 
 	public abstract String getKey();
 
 
-	public interface VirtualPocketType<T extends VirtualPocket> {
-		VirtualPocketType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator::new);
-		VirtualPocketType<ChunkGenerator> CHUNK = register(new Identifier("dimdoors", ChunkGenerator.KEY), ChunkGenerator::new);
+	public interface VirtualSingularPocketType<T extends VirtualSingularPocket> {
+		VirtualSingularPocketType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator::new);
+		VirtualSingularPocketType<ChunkGenerator> CHUNK = register(new Identifier("dimdoors", ChunkGenerator.KEY), ChunkGenerator::new);
 
-		VirtualPocketType<DepthDependentSelector> DEPTH_DEPENDENT = register(new Identifier("dimdoors", DepthDependentSelector.KEY), DepthDependentSelector::new);
+		VirtualSingularPocketType<DepthDependentSelector> DEPTH_DEPENDENT = register(new Identifier("dimdoors", DepthDependentSelector.KEY), DepthDependentSelector::new);
 
 
-		VirtualPocket fromTag(CompoundTag tag);
+		VirtualSingularPocket fromTag(CompoundTag tag);
 
 		CompoundTag toTag(CompoundTag tag);
 
 		static void register() {
 		}
 
-		static <U extends VirtualPocket> VirtualPocketType<U> register(Identifier id, Supplier<U> constructor) {
-			return Registry.register(REGISTRY, id, new VirtualPocketType<U>() {
+		static <U extends VirtualSingularPocket> VirtualSingularPocketType<U> register(Identifier id, Supplier<U> constructor) {
+			return Registry.register(REGISTRY, id, new VirtualSingularPocketType<U>() {
 				@Override
-				public VirtualPocket fromTag(CompoundTag tag) {
+				public VirtualSingularPocket fromTag(CompoundTag tag) {
 					return constructor.get().fromTag(tag);
 				}
 

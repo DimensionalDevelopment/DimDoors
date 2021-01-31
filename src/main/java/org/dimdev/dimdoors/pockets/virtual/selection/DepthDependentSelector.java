@@ -1,9 +1,12 @@
-package org.dimdev.dimdoors.pockets.selection;
+package org.dimdev.dimdoors.pockets.virtual.selection;
 
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import org.dimdev.dimdoors.pockets.VirtualPocket;
+import net.minecraft.nbt.Tag;
+import org.dimdev.dimdoors.pockets.PocketGroup;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
@@ -11,7 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class DepthDependentSelector extends VirtualPocket {
+public class DepthDependentSelector extends VirtualSingularPocket {
 	public static final String KEY = "depth_dependent";
 	/*
 	private static final Codec<Pair<String, VirtualPocket>> PAIR_CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -47,13 +50,15 @@ public class DepthDependentSelector extends VirtualPocket {
 	}
 
 	@Override
-	public VirtualPocket fromTag(CompoundTag tag) {
+	public VirtualSingularPocket fromTag(CompoundTag tag) {
 		this.name = tag.getString("id");
 		ListTag regexPockets = tag.getList("pockets", 10);
 		pocketList = Maps.newLinkedHashMap();
 		for (int i = 0; i < regexPockets.size(); i++) {
 			CompoundTag pocket = regexPockets.getCompound(i);
-			pocketList.putIfAbsent(pocket.getString("regex"), VirtualPocket.deserialize(pocket.getCompound("pocket")));
+			String regex = pocket.getString("regex");
+			if (pocketList.containsKey(regex)) continue;
+			pocketList.put(pocket.getString("regex"), VirtualPocket.deserialize(pocket.get("pocket")));
 		}
 		return this;
 	}
@@ -68,7 +73,7 @@ public class DepthDependentSelector extends VirtualPocket {
 		pocketList.forEach((regex, pocket) -> {
 			CompoundTag compound = new CompoundTag();
 			compound.putString("regex", regex);
-			compound.put("pocket", pocket.toTag(new CompoundTag()));
+			compound.put("pocket", VirtualPocket.serialize(pocket));
 			regexPockets.add(compound);
 		});
 		tag.put("pockets", regexPockets);
@@ -76,7 +81,7 @@ public class DepthDependentSelector extends VirtualPocket {
 	}
 
 	@Override
-	public void init(String group) {
+	public void init(PocketGroup group) {
 		pocketList.forEach((regex, pocket) -> pocket.init(group));
 	}
 
@@ -92,8 +97,8 @@ public class DepthDependentSelector extends VirtualPocket {
 	}
 
 	@Override
-	public VirtualPocketType<? extends VirtualPocket> getType() {
-		return VirtualPocketType.DEPTH_DEPENDENT;
+	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
+		return VirtualSingularPocketType.DEPTH_DEPENDENT;
 	}
 
 	@Override
@@ -112,6 +117,6 @@ public class DepthDependentSelector extends VirtualPocket {
 				return entry.getValue();
 			}
 		}
-		return pocketList.values().stream().findFirst().get();
+		return pocketList.values().stream().findFirst().get(); // TODO: orElse() with some NONE VirtualPocket
 	}
 }

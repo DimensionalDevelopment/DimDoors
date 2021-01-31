@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.pockets;
 
-import java.util.List;
 import java.util.Objects;
 
-import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocketList;
 
 public final class PocketGroup {
 	/*
@@ -16,34 +15,25 @@ public final class PocketGroup {
 	 */
 
     private String group;
-    private List<VirtualPocket> entries;
+    private VirtualPocketList pocketList;
 
     public PocketGroup() {
 	}
 
-    public PocketGroup(String group, List<VirtualPocket> entries) {
+    public PocketGroup(String group, VirtualPocketList pocketList) {
         this.group = group;
-        this.entries = entries;
+        this.pocketList = pocketList;
     }
 
     public PocketGroup fromTag(CompoundTag tag) {
     	this.group = tag.getString("group");
-
-		ListTag pockets = tag.getList("pockets", 10);
-		this.entries = Lists.newArrayList();
-		for (int i = 0; i < pockets.size(); i++) {
-			CompoundTag pocket = pockets.getCompound(i);
-			entries.add(VirtualPocket.deserialize(pocket));
-		}
+		this.pocketList = VirtualPocketList.deserialize(tag.getList("pockets", 10));
 		return this;
 	}
 
 	public CompoundTag toTag(CompoundTag tag) {
     	tag.putString("group", this.group);
-
-		ListTag pockets = new ListTag();
-		entries.forEach(pocket -> pockets.add(pocket.toTag(new CompoundTag())));
-		tag.put("pockets", pockets);
+		tag.put("pockets", pocketList.toTag(new ListTag()));
 		return tag;
 	}
 
@@ -51,8 +41,8 @@ public final class PocketGroup {
         return this.group;
     }
 
-    public List<VirtualPocket> getEntries() {
-        return this.entries;
+    public VirtualPocketList getPocketList() {
+        return this.pocketList;
     }
 
     @Override
@@ -60,7 +50,7 @@ public final class PocketGroup {
         return "PocketType{" +
                 "group='" + this.group + '\'' +
 
-                ", entries=" + this.entries +
+                ", entries=" + this.pocketList +
                 '}';
     }
 
@@ -70,11 +60,15 @@ public final class PocketGroup {
         if (o == null || this.getClass() != o.getClass()) return false;
         PocketGroup that = (PocketGroup) o;
         return Objects.equals(this.group, that.group) &&
-                Objects.equals(this.entries, that.entries);
+                Objects.equals(this.pocketList, that.pocketList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.group, this.entries);
+        return Objects.hash(this.group, this.pocketList);
     }
+
+    public void init() {
+    	pocketList.init(this);
+	}
 }

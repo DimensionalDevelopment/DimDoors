@@ -9,24 +9,20 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import com.google.common.collect.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 
 public class SchematicV2Handler {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
     private static final SchematicV2Handler INSTANCE = new SchematicV2Handler();
     private final Map<Identifier, PocketTemplateV2> templates = Maps.newHashMap();
-    private final Map<String, WeightedList<VirtualPocket, PocketGenerationParameters>> weightedPocketGroups = Maps.newHashMap(); //TODO: un-ugly-fy
-    private final List<PocketGroup> pocketGroups = Lists.newArrayList();
+    private final Map<String, PocketGroup> pocketGroups = Maps.newHashMap();
     private boolean loaded = false;
 
     private SchematicV2Handler() {
@@ -52,16 +48,9 @@ public class SchematicV2Handler {
 
 				CompoundTag groupTag = StringNbtReader.parse(String.join("", result));
 				PocketGroup type = new PocketGroup().fromTag(groupTag);
+				type.init();
+                this.pocketGroups.put(type.getGroup(), type);
 
-                this.pocketGroups.add(type);
-
-				WeightedList<VirtualPocket, PocketGenerationParameters> weightedPockets = new WeightedList<>();
-				weightedPocketGroups.put(type.getGroup(), weightedPockets);
-
-                for (VirtualPocket virtualPocket : type.getEntries()) {
-					virtualPocket.init(type.getGroup());
-                	weightedPockets.add(virtualPocket);
-				}
             } catch (IOException | URISyntaxException | CommandSyntaxException e) {
                 e.printStackTrace();
             }
@@ -84,16 +73,8 @@ public class SchematicV2Handler {
 		}
 	}
 
-    public VirtualPocket getRandomPublicPocket(PocketGenerationParameters parameters) {
-		return getRandomPocketFromGroup("public", parameters);
-    }
-
-    public VirtualPocket getRandomPrivatePocket(PocketGenerationParameters parameters) {
-        return getRandomPocketFromGroup("private", parameters);
-    }
-
 	public VirtualPocket getRandomPocketFromGroup(String group, PocketGenerationParameters parameters) {
-		return weightedPocketGroups.get(group).getRandomWeighted(parameters);
+    	return pocketGroups.get(group).getPocketList().getNextRandomWeighted(parameters);
 	}
 
     public static SchematicV2Handler getInstance() {
@@ -104,7 +85,7 @@ public class SchematicV2Handler {
         return this.templates;
     }
 
-    public List<PocketGroup> getPocketGroups() {
+    public Map<String, PocketGroup> getPocketGroups() {
         return this.pocketGroups;
     }
 }

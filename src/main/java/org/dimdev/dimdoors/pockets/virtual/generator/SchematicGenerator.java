@@ -1,13 +1,14 @@
-package org.dimdev.dimdoors.pockets.generator;
+package org.dimdev.dimdoors.pockets.virtual.generator;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.pockets.PocketGroup;
 import org.dimdev.dimdoors.pockets.PocketTemplateV2;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
-import org.dimdev.dimdoors.pockets.VirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
@@ -15,7 +16,7 @@ import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
-public class SchematicGenerator extends VirtualPocket {
+public class SchematicGenerator extends VirtualSingularPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "schematic";
 
@@ -60,7 +61,7 @@ public class SchematicGenerator extends VirtualPocket {
 	}
 
 	@Override
-	public VirtualPocket fromTag(CompoundTag tag) {
+	public VirtualSingularPocket fromTag(CompoundTag tag) {
 		this.name = tag.getString("id");
 		this.size = tag.getInt("size");
 		this.weight = tag.contains("weight") ? tag.getInt("weight") : 5;
@@ -80,8 +81,8 @@ public class SchematicGenerator extends VirtualPocket {
 	}
 
 	@Override
-	public void init(String group) {
-		SchematicV2Handler.getInstance().loadSchematic(templateID, group, size, name);
+	public void init(PocketGroup group) {
+		SchematicV2Handler.getInstance().loadSchematic(templateID, group.getGroup(), size, name);
 	}
 
 	@Override
@@ -113,8 +114,8 @@ public class SchematicGenerator extends VirtualPocket {
 	}
 
 	@Override
-	public VirtualPocketType<? extends VirtualPocket> getType() {
-		return VirtualPocketType.SCHEMATIC;
+	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
+		return VirtualSingularPocketType.SCHEMATIC;
 	}
 
 	@Override

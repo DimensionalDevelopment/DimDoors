@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.pockets.generator;
+package org.dimdev.dimdoors.pockets.virtual.generator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -23,8 +23,9 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.pockets.PocketGroup;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
-import org.dimdev.dimdoors.pockets.VirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ChunkGenerator extends VirtualPocket {
+public class ChunkGenerator extends VirtualSingularPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "chunk";
 
@@ -56,7 +57,7 @@ public class ChunkGenerator extends VirtualPocket {
 	}
 
 	@Override
-	public VirtualPocket fromTag(CompoundTag tag) {
+	public VirtualSingularPocket fromTag(CompoundTag tag) {
 		this.dimensionID = new Identifier(tag.getString("dimension_id"));
 
 		int[] temp = tag.getIntArray("size");
@@ -83,8 +84,7 @@ public class ChunkGenerator extends VirtualPocket {
 	}
 
 	@Override
-	public void init(String group) {
-
+	public void init(PocketGroup group) {
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class ChunkGenerator extends VirtualPocket {
 			}
 		}
 		ChunkRegion protoRegion = new ChunkRegionHack(genWorld, protoChunks);
-		for (Chunk protoChunk : protoChunks) {
+		for (Chunk protoChunk : protoChunks) { // TODO: check wether structures are even activated
 			genWorldChunkGenerator.setStructureStarts(genWorld.getRegistryManager(), genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk, genWorld.getStructureManager(), genWorld.getSeed());
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_STARTS);
 		}
@@ -205,8 +205,8 @@ public class ChunkGenerator extends VirtualPocket {
 	}
 
 	@Override
-	public VirtualPocketType<? extends VirtualPocket> getType() {
-		return VirtualPocketType.CHUNK;
+	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
+		return VirtualSingularPocketType.CHUNK;
 	}
 
 	@Override
