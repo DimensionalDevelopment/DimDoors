@@ -231,6 +231,13 @@ public class SchematicConverter {
 
 		CONVERSIONS.put("minecraft:stonebrick", "minecraft:stone_bricks");
 		CONVERSIONS.put("minecraft:log[axis=z,variant=jungle]", "minecraft:jungle_log[axis=z]");
-		CONVERSIONS.put("minecraft:unlit_redstone_torch", "minecraft:redstone_torch[lit=false]");
+		//CONVERSIONS.put("minecraft:unlit_redstone_torch", "minecraft:redstone_torch[lit=false]");
+
+		for (boolean lit : new boolean[]{false, true}) {
+			CONVERSIONS.put("minecraft:" + (lit ? "" : "unlit_") + "redstone_torch", "minecraft:redstone_torch[lit=" + (lit ? "true" : "false") + "]");
+			for (String facing : new String[] {"north", "south", "east", "west"}) {
+				CONVERSIONS.put("minecraft:" + (lit ? "" : "unlit_") + "redstone_torch[facing=" + facing + "]", "minecraft:redstone_wall_torch[facing=" + facing + ",lit=" + (lit ? "true" : "false") + "]");
+			}
+		}
 	}
 }

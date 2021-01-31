@@ -455,9 +455,6 @@ public class Schematic implements BlockView {
 									if (setAir || !state.getBlock().equals(Blocks.AIR)) {
 										section.setBlockState(lx, ly, lz, state);
 
-//                                        BlockPos pos = new BlockPos(originX + x, originY + y, originZ + z);
-//                                        serverWorld.getChunkManager().markForUpdate(pos);
-//                                        serverWorld.getLightingProvider().checkBlock(pos);
 										if (y > 255) {
 											System.out.println();
 										}
