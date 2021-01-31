@@ -104,8 +104,8 @@ dependencies {
 	modRuntime "curse.maven:Worldedit-225608:3039223" // For saving schematics
 	modRuntime "curse.maven:wecui-402098:3169571" // Cos why not
 
-	modCompileOnly "curse.maven:Hwyla-253449:3033613"
-	modRuntime "curse.maven:Hwyla-253449:3033613"
+//	modCompileOnly "curse.maven:Hwyla-253449:3033613" TODO
+//	modRuntime "curse.maven:Hwyla-253449:3033613"
     modCompileOnly("io.github.prospector:modmenu:1.14.6+build.31") {
         exclude module: "fabric-api"
     }
