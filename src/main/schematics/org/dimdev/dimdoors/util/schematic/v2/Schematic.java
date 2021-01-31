@@ -5,9 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
@@ -24,7 +26,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 
 public class Schematic {
@@ -178,7 +179,71 @@ public class Schematic {
 		return CODEC.parse(dynamic).getOrThrow(false, PRINT_TO_STDERR);
 	}
 
-	public static <T> T toDynamic(Schematic schem, DynamicOps<T> ops) {
-		return CODEC.encodeStart(ops, schem).getOrThrow(false, PRINT_TO_STDERR);
+	public static <T> Dynamic<T> toDynamic(Schematic schem, DynamicOps<T> ops) {
+		return new Dynamic<>(ops,CODEC.encodeStart(ops, schem).getOrThrow(false, PRINT_TO_STDERR));
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("version", this.version)
+				.add("dataVersion", this.dataVersion)
+				.add("metadata", this.metadata)
+				.add("width", this.width)
+				.add("height", this.height)
+				.add("length", this.length)
+				.add("offset", this.offset)
+				.add("paletteMax", this.paletteMax)
+				.add("blockPalette", this.blockPalette)
+				.add("blockData", this.blockData)
+				.add("blockEntities", this.blockEntities)
+				.add("entities", this.entities)
+				.add("biomePalette", this.biomePalette)
+				.add("biomeData", this.biomeData)
+				.add("cachedBlockSample", this.cachedBlockSample)
+				.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || this.getClass() != o.getClass()) return false;
+		Schematic schematic = (Schematic) o;
+		return this.version == schematic.version &&
+				this.dataVersion == schematic.dataVersion &&
+				this.width == schematic.width &&
+				this.height == schematic.height &&
+				this.length == schematic.length &&
+				this.paletteMax == schematic.paletteMax &&
+				Objects.equals(this.metadata, schematic.metadata)
+				&& Objects.equals(this.offset, schematic.offset)
+				&& Objects.equals(this.blockPalette, schematic.blockPalette)
+				&& Objects.equals(this.blockData, schematic.blockData)
+				&& Objects.equals(this.blockEntities, schematic.blockEntities)
+				&& Objects.equals(this.entities, schematic.entities)
+				&& Objects.equals(this.biomePalette, schematic.biomePalette)
+				&& Objects.equals(this.biomeData, schematic.biomeData)
+				&& Objects.equals(this.cachedBlockSample, schematic.cachedBlockSample);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(
+				this.version,
+				this.dataVersion,
+				this.metadata,
+				this.width,
+				this.height,
+				this.length,
+				this.offset,
+				this.paletteMax,
+				this.blockPalette,
+				this.blockData,
+				this.blockEntities,
+				this.entities,
+				this.biomePalette,
+				this.biomeData,
+				this.cachedBlockSample
+		);
 	}
 }
