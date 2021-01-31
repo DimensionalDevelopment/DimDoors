@@ -6,8 +6,6 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
-import java.util.List;
-
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationParameters> implements VirtualPocket {
 
 	public static VirtualPocketList deserialize(ListTag tag) {
@@ -24,16 +22,15 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 	}
 
 	public VirtualPocketList fromTag(ListTag tag) { // Keep in mind, this would add onto the list instead of overwriting it if called multiple times.
-		List<VirtualPocket> list = this.getList();
 		for (net.minecraft.nbt.Tag value : tag) {
-			list.add(VirtualPocket.deserialize(value));
+			this.add(VirtualPocket.deserialize(value));
 		}
 		return this;
 	}
 
 	public ListTag toTag(ListTag tag) {
 		int pointer = tag.size() - 1;
-		for(VirtualPocket virtualPocket : this.getList()) {
+		for(VirtualPocket virtualPocket : this) {
 			tag.set(pointer, VirtualPocket.serialize(virtualPocket));
 		}
 		return tag;
@@ -45,7 +42,7 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 
 	@Override
 	public void init(PocketGroup group) {
-		getList().forEach(pocket -> pocket.init(group));
+		this.forEach(pocket -> pocket.init(group));
 	}
 
 	@Override
