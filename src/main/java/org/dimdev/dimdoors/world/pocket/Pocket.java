@@ -123,7 +123,7 @@ public final class Pocket {
 		int outerVolume = pocket.box.getBlockCountX() * pocket.box.getBlockCountY() * pocket.box.getBlockCountZ();
 		int innerVolume = (pocket.box.getBlockCountX() - 5) * (pocket.box.getBlockCountY() - 5) * (pocket.box.getBlockCountZ() - 5);
 
-		return Math.min((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
+		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}
 
 	public void setSize(int x, int y, int z) {
