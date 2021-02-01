@@ -25,6 +25,7 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.pockets.PocketGroup;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
+import org.dimdev.dimdoors.pockets.virtual.VirtualGeneratorPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
@@ -42,7 +43,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ChunkGenerator extends VirtualSingularPocket {
+public class ChunkGenerator extends VirtualGeneratorPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "chunk";
 
@@ -57,7 +58,7 @@ public class ChunkGenerator extends VirtualSingularPocket {
 	}
 
 	@Override
-	public VirtualSingularPocket fromTag(CompoundTag tag) {
+	public VirtualGeneratorPocket fromTag(CompoundTag tag) {
 		this.dimensionID = new Identifier(tag.getString("dimension_id"));
 
 		int[] temp = tag.getIntArray("size");
@@ -189,10 +190,9 @@ public class ChunkGenerator extends VirtualSingularPocket {
 		DetachedRiftBlockEntity rift = ModBlockEntityTypes.DETACHED_RIFT.instantiate();
 		world.setBlockEntity(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pocket.getOrigin()), rift);
 
-
 		rift.setDestination(new PocketEntranceMarker());
-		rift.getDestination().setLocation(new Location((ServerWorld) Objects.requireNonNull(rift.getWorld()), rift.getPos()));
-		TemplateUtils.registerRifts(Collections.singletonList(rift), linkTo, linkProperties, pocket);
+		applyModifiers(pocket, parameters);
+		setup(pocket, parameters, false);
 
 		pocket.virtualLocation = sourceVirtualLocation;
 

@@ -59,7 +59,7 @@ public class TemplateUtils {
         }
     }
 
-    static void setupLootTable(ServerWorld world, BlockEntity tile, Inventory inventory, Logger logger) {
+    public static void setupLootTable(ServerWorld world, BlockEntity tile, Inventory inventory, Logger logger) {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");

@@ -1,10 +1,16 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.ChunkPos;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 
@@ -21,6 +27,7 @@ import net.minecraft.world.World;
 public final class Pocket {
 	private static final int BLOCKS_PAINTED_PER_DYE = 1106;
 
+	// TODO: please someone make all these private and add a getter & setter where needed
 	public final int id;
 	public BlockBox box;
 	public VirtualLocation virtualLocation;
@@ -208,5 +215,18 @@ public final class Pocket {
 
 			return NONE;
 		}
+	}
+
+	public Map<BlockPos, BlockEntity> getBlockEntities() {
+		ServerWorld serverWorld = DimensionalDoorsInitializer.getWorld(this.world);
+		Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
+		ChunkPos.stream(new ChunkPos(new BlockPos(box.minX, box.minY, box.minZ)), new ChunkPos(new BlockPos(box.maxX, box.maxY, box.maxZ))).forEach(chunkPos -> serverWorld.getChunk(chunkPos.x, chunkPos.z).getBlockEntities().forEach((blockPos, blockEntity) -> {
+			if (this.box.contains(blockPos)) blockEntities.put(blockPos, blockEntity);
+		}));
+		return blockEntities;
+	}
+
+	public BlockBox getBox() {
+		return box;
 	}
 }

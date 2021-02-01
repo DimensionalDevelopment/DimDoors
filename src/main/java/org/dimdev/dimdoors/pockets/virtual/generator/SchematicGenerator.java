@@ -8,15 +8,13 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketGroup;
 import org.dimdev.dimdoors.pockets.PocketTemplateV2;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
+import org.dimdev.dimdoors.pockets.virtual.VirtualGeneratorPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
-public class SchematicGenerator extends VirtualSingularPocket {
+public class SchematicGenerator extends VirtualGeneratorPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "schematic";
 
@@ -61,7 +59,9 @@ public class SchematicGenerator extends VirtualSingularPocket {
 	}
 
 	@Override
-	public VirtualSingularPocket fromTag(CompoundTag tag) {
+	public VirtualGeneratorPocket fromTag(CompoundTag tag) {
+		super.fromTag(tag);
+
 		this.name = tag.getString("id");
 		this.size = tag.getInt("size");
 		this.weight = tag.contains("weight") ? tag.getInt("weight") : 5;
@@ -88,9 +88,6 @@ public class SchematicGenerator extends VirtualSingularPocket {
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		ServerWorld world = parameters.getWorld();
-		VirtualLocation sourceVirtualLocation = parameters.getSourceVirtualLocation();
-		VirtualTarget linkTo = parameters.getLinkTo();
-		LinkProperties linkProperties = parameters.getLinkProperties();
 
 		PocketTemplateV2 template = SchematicV2Handler.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
@@ -99,8 +96,8 @@ public class SchematicGenerator extends VirtualSingularPocket {
 		LOGGER.info("Generating pocket from template " + template.getId() + " at location " + pocket.getOrigin());
 
 		template.place(pocket);
-		template.setup(pocket, linkTo, linkProperties);
-		pocket.virtualLocation = sourceVirtualLocation; //TODO: this makes very little sense
+		applyModifiers(pocket, parameters);
+		setup(pocket, parameters, true);
 		return pocket;
 	}
 
