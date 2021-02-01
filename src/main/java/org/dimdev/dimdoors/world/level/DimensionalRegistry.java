@@ -15,18 +15,20 @@ import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
+import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getServer;
 
 public class DimensionalRegistry implements ComponentV3 {
 	public Map<RegistryKey<World>, PocketDirectory> pocketRegistry = new HashMap<>();
 	RiftRegistry riftRegistry = new RiftRegistry();
+	PrivateRegistry privateRegistry = new PrivateRegistry();
 
 	@Override
 	public void readFromNbt(CompoundTag tag) {
 		CompoundTag pocketRegistryTag = tag.getCompound("pocketRegistry");
 		pocketRegistry = pocketRegistryTag.getKeys().stream().collect(Collectors.toMap(a -> RegistryKey.of(Registry.DIMENSION, new Identifier(a)), a -> PocketDirectory.readFromNbt(a, pocketRegistryTag.getCompound(a))));
-
 		riftRegistry = RiftRegistry.fromTag(pocketRegistry, tag.getCompound("riftRegistry"));
+		privateRegistry.fromTag(tag);
 	}
 
 	@Override
@@ -36,6 +38,7 @@ public class DimensionalRegistry implements ComponentV3 {
 
 		tag.put("pocketRegistry", pocketRegistryTag);
 		tag.put("riftRegistry", riftRegistry.toTag());
+		privateRegistry.toTag(tag);
 	}
 
 	public static DimensionalRegistry instance() {
@@ -44,6 +47,10 @@ public class DimensionalRegistry implements ComponentV3 {
 
 	public static RiftRegistry getRiftRegistry() {
 		return instance().riftRegistry;
+	}
+
+	public static PrivateRegistry getPrivateRegistry() {
+		return instance().privateRegistry;
 	}
 
 	public static PocketDirectory getPocketDirectory(RegistryKey<World> key) {

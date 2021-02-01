@@ -47,7 +47,7 @@ public final class PocketGenerator {
     }
 
     public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
-		return generateRandomPocketFromGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), "private", virtualLocation, null, null);
+		return generateRandomPocketFromGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), "private", virtualLocation, null, null);
     }
 
     // TODO: size of public pockets should increase with depth

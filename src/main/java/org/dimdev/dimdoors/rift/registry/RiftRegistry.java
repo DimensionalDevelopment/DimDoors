@@ -13,9 +13,10 @@ import org.apache.logging.log4j.Logger;
 
 import org.dimdev.dimdoors.util.GraphUtils;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
-import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
+import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -308,7 +309,7 @@ public class RiftRegistry {
 		if (entrance != null) return entrance.location;
 
 		// If there was no last used private entrance, get the first player's private pocket entrance
-		return this.getPocketEntrance(PrivatePocketData.instance().getPrivatePocket(playerUUID));
+		return this.getPocketEntrance(DimensionalRegistry.getPrivateRegistry().getPrivatePocket(playerUUID));
 	}
 
 	private void setPlayerRiftPointer(UUID playerUUID, Location rift, Map<UUID, PlayerRiftPointer> map) {

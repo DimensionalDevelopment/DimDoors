@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -18,6 +19,9 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 public final class ModBlocks {
 	private static final Map<String, Block> BLOCKS = Maps.newLinkedHashMap();
+	private static final Map<DyeColor, Block> FABRIC_BLOCKS = new HashMap<>();
+	private static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
+
 	public static final Block GOLD_DOOR = register("dimdoors:gold_door", new DoorBlock(FabricBlockSettings.of(Material.METAL, MaterialColor.GOLD).nonOpaque()));
 	public static final Block QUARTZ_DOOR = register("dimdoors:quartz_door", new DoorBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.QUARTZ).nonOpaque()));
 	public static final Block OAK_DIMENSIONAL_DOOR = register("dimdoors:oak_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).nonOpaque().lightLevel(state -> ((DimensionalDoorBlock) state.getBlock()).hasBlockEntity(state) ? 10 : 0)));
@@ -74,11 +78,15 @@ public final class ModBlocks {
 	}
 
 	private static Block registerAncientFabric(String id, DyeColor color) {
-		return register(id, new Block(FabricBlockSettings.of(Material.STONE, color).strength(-1.0F, 3600000.0F).dropsNothing()));
+		Block block = new AncientFabricBlock(color);
+		ANCIENT_FABRIC_BLOCKS.put(color, block);
+		return register(id, block);
 	}
 
 	private static Block registerFabric(String id, DyeColor color) {
-		return register(id, new FabricBlock(color));
+		Block block = new FabricBlock(color);
+		FABRIC_BLOCKS.put(color, block);
+		return register(id, block);
 	}
 
 	public static void init() {
@@ -91,6 +99,14 @@ public final class ModBlocks {
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.OAK_DIMENSIONAL_TRAPDOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DOOR);
+	}
+
+	public static Block ancientFabricFromDye(DyeColor color) {
+		return ANCIENT_FABRIC_BLOCKS.get(color);
+	}
+
+	public static Block fabricFromDye(DyeColor color) {
+		return FABRIC_BLOCKS.get(color);
 	}
 
 	private static class DoorBlock extends net.minecraft.block.DoorBlock {

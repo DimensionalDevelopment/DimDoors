@@ -10,6 +10,8 @@ import java.util.*;
 
 import com.google.common.collect.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.JsonOps;
+
 import net.minecraft.nbt.*;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -36,21 +38,12 @@ public class SchematicV2Handler {
         long startTime = System.currentTimeMillis();
         Set<String> names = ImmutableSet.of("default_private", "default_public");
         for (String name : names) {
-			try (BufferedReader reader = Files.newBufferedReader(Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/json/v2/%s.json", name)).toURI()))) {
-				List<String> result = new ArrayList<>();
-				while (true) {
-					String line = reader.readLine();
-					if (line == null) {
-						break;
-					}
-					result.add(line);
-				}
-
+			try {
+				List<String> result = Files.readAllLines(Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/json/v2/%s.json", name)).toURI()));
 				CompoundTag groupTag = StringNbtReader.parse(String.join("", result));
 				PocketGroup type = new PocketGroup().fromTag(groupTag);
 				type.init();
                 this.pocketGroups.put(type.getGroup(), type);
-
             } catch (IOException | URISyntaxException | CommandSyntaxException e) {
                 e.printStackTrace();
             }

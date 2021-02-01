@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -7,25 +9,32 @@ import java.util.stream.IntStream;
 import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.ChunkPos;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.AncientFabricBlock;
+import org.dimdev.dimdoors.block.FabricBlock;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 public final class Pocket {
-	private static final int BLOCKS_PAINTED_PER_DYE = 1106;
+	private static final int BLOCKS_PAINTED_PER_DYE = 1000000;
 
 	// TODO: please someone make all these private and add a getter & setter where needed
 	public final int id;
@@ -37,13 +46,14 @@ public final class Pocket {
 
 	public RegistryKey<World> world;
 
-	private Pocket(int id, BlockBox box, VirtualLocation virtualLocation, PocketColor dyeColor, PocketColor nextDyeColor, int count) {
+	private Pocket(int id, BlockBox box, VirtualLocation virtualLocation, PocketColor dyeColor, PocketColor nextDyeColor, int count, RegistryKey<World> world) {
 		this.id = id;
 		this.box = box;
 		this.virtualLocation = virtualLocation;
 		this.dyeColor = dyeColor;
 		this.nextDyeColor = nextDyeColor;
 		this.count = count;
+		this.world = world;
 	}
 
 	public Pocket(int id, RegistryKey<World> world, int x, int z) {
@@ -76,8 +86,9 @@ public final class Pocket {
 			return false;
 		}
 
-		if (this.nextDyeColor != null && this.nextDyeColor == color) {
-			if (this.count + 1 > amountOfDyeRequiredToColor(this)) {
+		if (this.nextDyeColor != PocketColor.NONE && this.nextDyeColor == color) {
+			if (this.count + 1 > maxDye) {
+				repaint(dyeColor);
 				this.dyeColor = color;
 				this.nextDyeColor = PocketColor.NONE;
 				this.count = 0;
@@ -94,37 +105,25 @@ public final class Pocket {
 		return true;
 	}
 
-//    private void repaint(DyeColor dyeColor) {
-//        BlockPos origin = getOrigin();
-//        World world = WorldUtils.getWorld(dim);
-//        BlockState innerWall = ModBlocks.getDefaultState()..withProperty(..., dyeColor); // <-- forgot the exact name of the color property
-//        BlockState outerWall = ModBlocks.ETERNAL_FABRIC.getDefaultState().withProperty(..., dyeColor);
-//
-//        for (int x = origin.getX(); x < origin.getX() + size; x++) {
-//            for (int y = origin.getY(); y < origin.getY() + size; y++) {
-//                for (int z = origin.getZ(); z < origin.getZ() + size; z++) {
-//                    int layer = Collections.min(Arrays.asList(x, y, z, size - 1 - x, size - 1 - y, size - 1 - z));
-//                    if (layer == 0) {
-//                        if (world.getBlockState(x, y, z).getBlock() == ModBlocks.ETERNAL_FABRIC) {
-//                            world.setBlockState(x, y, z, outerWall);
-//                        }
-//                    } else if (layer < 5) {
-//                        if (world.getBlockState(x, y, z).getBlock() == ModBlocks.FABRIC) {
-//                            world.setBlockState(x, y, z, innerWall);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        return schematic;
-//    }
+    private void repaint(DyeColor dyeColor) {
+        ServerWorld serverWorld = DimensionalDoorsInitializer.getWorld(world);
+        BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).getDefaultState();
+        BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).getDefaultState();
+
+		BlockPos.stream(box).forEach(pos -> {
+			if (serverWorld.getBlockState(pos).getBlock() instanceof AncientFabricBlock) {
+				serverWorld.setBlockState(pos, outerWall);
+			} else if (serverWorld.getBlockState(pos).getBlock() instanceof FabricBlock) {
+				serverWorld.setBlockState(pos, innerWall);
+			}
+		});
+    }
 
 	private static int amountOfDyeRequiredToColor(Pocket pocket) {
 		int outerVolume = pocket.box.getBlockCountX() * pocket.box.getBlockCountY() * pocket.box.getBlockCountZ();
 		int innerVolume = (pocket.box.getBlockCountX() - 5) * (pocket.box.getBlockCountY() - 5) * (pocket.box.getBlockCountZ() - 5);
 
-		return (outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE;
+		return Math.min((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}
 
 	public void setSize(int x, int y, int z) {
@@ -144,6 +143,7 @@ public final class Pocket {
 		tag.putInt("dyeColor", this.dyeColor.getId());
 		tag.putInt("nextDyeColor", this.nextDyeColor.getId());
 		tag.putInt("count", this.count);
+		tag.putString("world", world.getValue().toString());
 		return tag;
 	}
 
@@ -155,7 +155,8 @@ public final class Pocket {
 				VirtualLocation.fromTag(tag.getCompound("virtualLocation")),
 				PocketColor.from(tag.getInt("dyeColor")),
 				PocketColor.from(tag.getInt("nextDyeColor")),
-				tag.getInt("count")
+				tag.getInt("count"),
+				RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("world")))
 		);
 	}
 
