@@ -39,7 +39,8 @@ public interface Modifier {
 	void apply(Pocket pocket, PocketGenerationParameters parameters);
 
 	interface ModifierType<T extends Modifier> {
-
+		public static ModifierType<ShellModifier> SHELL_MODIFIER_TYPE = register(new Identifier("dimdoors:shell"), ShellModifier::new);
+		public static ModifierType<DimensionalDoorModifier> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(new Identifier("dimdoors:dimensional_door"), DimensionalDoorModifier::new);
 
 		Modifier fromTag(CompoundTag tag);
 
