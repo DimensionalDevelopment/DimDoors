@@ -230,4 +230,16 @@ public final class Pocket {
 	public BlockBox getBox() {
 		return box;
 	}
+
+	public Map<String, Double> toVariableMap(Map<String, Double> stringDoubleMap) {
+		stringDoubleMap.put("originX", (double) this.box.minX);
+		stringDoubleMap.put("originY", (double) this.box.minY);
+		stringDoubleMap.put("originZ", (double) this.box.minZ);
+		stringDoubleMap.put("width", (double) this.box.getDimensions().getX());
+		stringDoubleMap.put("height", (double) this.box.getDimensions().getY());
+		stringDoubleMap.put("length", (double) this.box.getDimensions().getZ());
+		stringDoubleMap.put("depth", (double) this.virtualLocation.getDepth());
+		stringDoubleMap.put("id", (double) this.id); // don't really know why you would need this but it's there if needed
+		return stringDoubleMap;
+	}
 }
