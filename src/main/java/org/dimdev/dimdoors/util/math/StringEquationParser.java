@@ -17,24 +17,6 @@ public class StringEquationParser {
 			return Optional.of(parse(toParse.substring(1, toParse.length() - 1)));
 		});
 
-		//+, -
-		Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> sumOperations = new HashMap<>();
-		sumOperations.put("+", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) + second.apply(stringDoubleMap));
-		sumOperations.put("-", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) - second.apply(stringDoubleMap));
-		parseRules.add(new SplitterParser(sumOperations));
-
-		//*, /, %
-		Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> dotOperations = new HashMap<>();
-		dotOperations.put("*", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) * second.apply(stringDoubleMap));
-		dotOperations.put("/", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) / second.apply(stringDoubleMap));
-		dotOperations.put("%", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) % second.apply(stringDoubleMap));
-		parseRules.add(new SplitterParser(dotOperations));
-
-		//x^y
-		Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> exponentOperations = new HashMap<>();
-		exponentOperations.put("^", (stringDoubleMap, first, second) -> Math.pow(first.apply(stringDoubleMap), second.apply(stringDoubleMap)));
-		parseRules.add(new SplitterParser(exponentOperations));
-
 		// try to parse as Double
 		parseRules.add(toParse -> {
 			try {
@@ -45,7 +27,52 @@ public class StringEquationParser {
 			}
 		});
 
-		//variable replacer
+		// +, -
+		Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> sumOperations = new HashMap<>();
+		sumOperations.put("+", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) + second.apply(stringDoubleMap));
+		sumOperations.put("-", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) - second.apply(stringDoubleMap));
+		parseRules.add(new SplitterParser(sumOperations));
+
+		// *, /, %
+		Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> dotOperations = new HashMap<>();
+		dotOperations.put("*", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) * second.apply(stringDoubleMap));
+		dotOperations.put("/", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) / second.apply(stringDoubleMap));
+		dotOperations.put("%", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) % second.apply(stringDoubleMap));
+		parseRules.add(new SplitterParser(dotOperations));
+
+		// x^y
+		Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> exponentOperations = new HashMap<>();
+		exponentOperations.put("^", (stringDoubleMap, first, second) -> Math.pow(first.apply(stringDoubleMap), second.apply(stringDoubleMap)));
+		parseRules.add(new SplitterParser(exponentOperations));
+
+		// H with H(0) = 1: https://en.wikipedia.org/wiki/Heaviside_step_function
+		parseRules.add(new FunctionParser("H", 1, 1, ((stringDoubleMap, equations) -> equations[0].apply(stringDoubleMap) >= 0 ? 1d : 0d)));
+
+		// floor
+		parseRules.add(new FunctionParser("floor", 1, 1, ((stringDoubleMap, equations) -> Math.floor(equations[0].apply(stringDoubleMap)))));
+
+		// ceil
+		parseRules.add(new FunctionParser("ceil", 1, 1, ((stringDoubleMap, equations) -> Math.ceil(equations[0].apply(stringDoubleMap)))));
+
+		// max
+		parseRules.add(new FunctionParser("max", 2, -1, ((stringDoubleMap, equations) -> {
+			Double max = equations[0].apply(stringDoubleMap);
+			for (int i = 1; i < equations.length; i++) {
+				max = Math.max(max, equations[i].apply(stringDoubleMap));
+			}
+			return max;
+		})));
+
+		// min
+		parseRules.add(new FunctionParser("min", 2, -1, ((stringDoubleMap, equations) -> {
+			Double min = equations[0].apply(stringDoubleMap);
+			for (int i = 1; i < equations.length; i++) {
+				min = Math.min(min, equations[i].apply(stringDoubleMap));
+			}
+			return min;
+		})));
+
+		// variable replacer
 		parseRules.add(new VariableReplacer());
 	}
 
@@ -108,18 +135,27 @@ public class StringEquationParser {
 
 	private static class FunctionParser implements EquationParser {
 		private final String functionString;
-		private final BiFunction<Map<String, Double>, Equation, Double> function;
+		private final int minArguments;
+		private final int maxArguments;
+		private final BiFunction<Map<String, Double>, Equation[], Double> function;
 
-		public FunctionParser(String functionString, BiFunction<Map<String, Double>, Equation, Double> function) {
+		public FunctionParser(String functionString, int minArguments, int maxArguments, BiFunction<Map<String, Double>, Equation[], Double> function) {
 			this.functionString = functionString + "(";
+			this.minArguments = minArguments;
+			this.maxArguments = maxArguments;
 			this.function = function;
 		}
 
 		@Override
 		public Optional<Equation> tryParse(String toParse) throws EquationParseException {
 			if (!toParse.startsWith(functionString) || !toParse.endsWith(")")) return Optional.empty();
-			final Equation equation = parse(toParse.substring(functionString.length(), toParse.length()-1));
-			return Optional.of(stringDoubleMap -> function.apply(stringDoubleMap, equation));
+			String[] arguments = toParse.substring(functionString.length(), toParse.length()-1).split(",");
+			if (minArguments > arguments.length || (maxArguments < arguments.length && maxArguments != -1)) return Optional.empty();
+			final Equation[] argumentEquations = new Equation[arguments.length];
+			for (int i = 0; i < arguments.length; i++) {
+				argumentEquations[i] = parse(arguments[i]);
+			}
+			return Optional.of(stringDoubleMap -> function.apply(stringDoubleMap, argumentEquations));
 		}
 	}
 
