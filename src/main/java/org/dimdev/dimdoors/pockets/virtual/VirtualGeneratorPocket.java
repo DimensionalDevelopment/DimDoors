@@ -44,7 +44,7 @@ public abstract class VirtualGeneratorPocket extends VirtualSingularPocket {
 	}
 
 	public VirtualGeneratorPocket fromTag(CompoundTag tag) {
-		this.weight = tag.contains("weight") ? tag.getString("weight") : "5";
+		this.weight = tag.contains("weight") ? tag.getString("weight") : defaultWeightEquation;
 		try {
 			this.weightEquation = StringEquationParser.parse(weight);
 		} catch (StringEquationParser.EquationParseException e) {
@@ -53,7 +53,7 @@ public abstract class VirtualGeneratorPocket extends VirtualSingularPocket {
 				this.weightEquation = StringEquationParser.parse(defaultWeightEquation);
 			} catch (StringEquationParser.EquationParseException equationParseException) {
 				LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
-				this.weightEquation = stringDoubleMap -> 5d;
+				this.weightEquation = stringDoubleMap -> fallbackWeight;
 			}
 		}
 

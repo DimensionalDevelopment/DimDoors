@@ -103,7 +103,7 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 
 	@Override
 	public String getKey() {
-		return null;
+		return KEY;
 	}
 
 	@Override

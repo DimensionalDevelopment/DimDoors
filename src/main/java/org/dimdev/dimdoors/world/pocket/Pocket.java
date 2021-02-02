@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.world.pocket;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -26,7 +24,6 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
@@ -60,7 +57,7 @@ public final class Pocket {
 		int gridSize = DimensionalRegistry.getPocketDirectory(world).getGridSize() * 16;
 		this.id = id;
 		this.world = world;
-		this.box = new BlockBox(x * gridSize, 0, z * gridSize, (x + 1) * gridSize, 0, (z + 1) * gridSize);
+		this.box = BlockBox.create(x * gridSize, 0, z * gridSize, (x + 1) * gridSize, 0, (z + 1) * gridSize);
 		this.virtualLocation = new VirtualLocation(world, x, z, 0);
 	}
 
@@ -73,7 +70,11 @@ public final class Pocket {
 	}
 
 	public void offsetOrigin(Vec3i vec) {
-		this.box = box.offset(vec.getX(), vec.getY(), vec.getZ());
+		offsetOrigin(vec.getX(), vec.getY(), vec.getZ());
+	}
+
+	public void offsetOrigin(int x, int y, int z) {
+		this.box = box.offset(x, y, z);
 	}
 
 	public boolean addDye(Entity entity, DyeColor dyeColor) {
@@ -126,8 +127,12 @@ public final class Pocket {
 		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}
 
+	public void setSize(Vec3i size) {
+		setSize(size.getX(), size.getY(), size.getZ());
+	}
+
 	public void setSize(int x, int y, int z) {
-		this.box = new BlockBox(this.box.minX, this.box.minY, this.box.minZ, this.box.minX + x, this.box.minY + y, this.box.minZ + z);
+		this.box = BlockBox.create(this.box.minX, this.box.minY, this.box.minZ, this.box.minX + x - 1, this.box.minY + y - 1, this.box.minZ + z - 1);
 	}
 
 	public Vector3i getSize() {
@@ -241,5 +246,10 @@ public final class Pocket {
 		stringDoubleMap.put("depth", (double) this.virtualLocation.getDepth());
 		stringDoubleMap.put("id", (double) this.id); // don't really know why you would need this but it's there if needed
 		return stringDoubleMap;
+	}
+
+	public void expand(int amount) {
+		if (amount == 0) return;
+		this.box = BlockBox.create(box.minX - amount, box.minY - amount, box.minZ - amount, box.maxX + amount, box.maxY + amount, box.maxZ + amount);
 	}
 }

@@ -13,6 +13,7 @@ import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
+import org.dimdev.dimdoors.pockets.virtual.modifier.Modifier;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -81,6 +82,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		VirtualTarget.VirtualTargetType.register();
 
 		VirtualSingularPocket.VirtualSingularPocketType.register();
+
+		Modifier.ModifierType.register();
 
         SchematicV2Handler.getInstance().load();
         SchematicHandler.INSTANCE.loadSchematics();

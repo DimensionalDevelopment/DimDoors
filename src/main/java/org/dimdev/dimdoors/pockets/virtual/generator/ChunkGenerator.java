@@ -51,6 +51,8 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 
 	@Override
 	public VirtualGeneratorPocket fromTag(CompoundTag tag) {
+		super.fromTag(tag);
+
 		this.dimensionID = new Identifier(tag.getString("dimension_id"));
 
 		int[] temp = tag.getIntArray("size");
@@ -69,7 +71,9 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 
 		tag.putString("dimension_id", dimensionID.toString());
 		tag.putIntArray("size", new int[]{this.size.getX(), this.size.getY(), this.size.getZ()});
-		tag.putIntArray("offset", new int[]{this.offset.getX(), this.offset.getY(), this.offset.getZ()});
+		if (!(offset.getX() == 0 && offset.getY() == 0 && offset.getZ() == 0)) {
+			tag.putIntArray("offset", new int[]{this.offset.getX(), this.offset.getY(), this.offset.getZ()});
+		}
 		tag.putInt("virtual_y_offset", this.virtualYOffset);
 		return tag;
 	}
@@ -87,7 +91,7 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 		int ChunkSizeZ = ((this.size.getZ() >> 4) + (this.size.getZ() % 16 == 0 ? 0 : 1));
 
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
-		pocket.setSize(size.getX(), size.getY(), size.getZ());
+		pocket.setSize(size);
 		pocket.offsetOrigin(offset);
 
 		LOGGER.info("Generating chunk pocket at location " + pocket.getOrigin());

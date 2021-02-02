@@ -4,44 +4,40 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.util.NbtType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.schematic.v2.Schematic;
+import org.dimdev.dimdoors.util.schematic.v2.SchematicBlockPalette;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 public class ShellModifier implements Modifier{
-	private List<Layer> layers = new ArrayList<>();
+	private static final Logger LOGGER = LogManager.getLogger();
+	public static final String KEY = "shell";
 
-	private int total = 0;
-
-	private void calculate() {
-		total = layers.stream().mapToInt(Layer::getThickness).sum();
-		double half = total * 0.5;
-
-		Box box = new Box(0,0,0,0,0,0).offset(half, half, half);
-
-		layers.forEach(layer -> layer.adjust(box));
-	}
+	private final List<Layer> layers = new ArrayList<>();
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
-		ListTag layersTag = new ListTag();
+		Modifier.super.toTag(tag);
 
+		ListTag layersTag = new ListTag();
 		for (Layer layer : layers) {
 			layersTag.add(layer.toTag());
 		}
-
 		tag.put("layers", layersTag);
 
 		return tag;
@@ -49,15 +45,15 @@ public class ShellModifier implements Modifier{
 
 	@Override
 	public Modifier fromTag(CompoundTag tag) {
-		layers.clear();
-
 		for (Tag layerTag : tag.getList("layers", NbtType.COMPOUND)) {
 			CompoundTag compoundTag = (CompoundTag) layerTag;
-			Layer layer = Layer.fromTag(compoundTag);
-			layers.add(layer);
+			try {
+				Layer layer = Layer.fromTag(compoundTag);
+				layers.add(layer);
+			} catch (CommandSyntaxException e) {
+				LOGGER.error("could not parse Layer: " + compoundTag.toString(), e);
+			}
 		}
-
-		calculate();
 
 		return this;
 	}
@@ -69,69 +65,70 @@ public class ShellModifier implements Modifier{
 
 	@Override
 	public String getKey() {
-		return "shell";
+		return KEY;
 	}
 
 	@Override
 	public void apply(Pocket pocket, PocketGenerationParameters parameters) {
-		for (int x = 0; x < total; x++) {
-			for (int y = 0; y < total; y++) {
-				for (int z = 0; z < total; z++) {
-					parameters.getWorld().setBlockState(pocket.getOrigin().add(x,y,z), getBlockState(x,y,z));
-				}
-			}
-		}
-
-		pocket.setSize(total, total, total);
+		layers.forEach(layer -> drawLayer(layer, pocket, parameters.getWorld()));
 	}
 
-	private BlockState getBlockState(int x, int y, int z) {
-		return layers.stream().filter(layer -> layer.contains(x, y, z)).findFirst().map(Layer::getBlock).orElse(Blocks.AIR).getDefaultState();
+	private void drawLayer(Layer layer, Pocket pocket, ServerWorld world) {
+		int thickness = layer.getThickness();
+		final BlockState blockState = layer.getBlockState();
+		BlockBox pocketBox = pocket.getBox();
+
+		// x-planes
+		BlockPos.stream(BlockBox.create(pocketBox.maxX + 1, pocketBox.minY - thickness, pocketBox.minZ - thickness, pocketBox.maxX + thickness, pocketBox.maxY + thickness, pocketBox.maxZ + thickness))
+				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
+		BlockPos.stream(BlockBox.create(pocketBox.minX - 1, pocketBox.minY - thickness, pocketBox.minZ - thickness, pocketBox.minX - thickness, pocketBox.maxY + thickness, pocketBox.maxZ + thickness))
+				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
+
+		// y-planes
+		BlockPos.stream(BlockBox.create(pocketBox.minX, pocketBox.maxY + 1, pocketBox.minZ - thickness, pocketBox.maxX, pocketBox.maxY + thickness, pocketBox.maxZ + thickness))
+				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
+		BlockPos.stream(BlockBox.create(pocketBox.minX, pocketBox.minY - 1, pocketBox.minZ - thickness, pocketBox.maxX, pocketBox.minY - thickness, pocketBox.maxZ + thickness))
+				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
+
+		// z-planes
+		BlockPos.stream(BlockBox.create(pocketBox.minX, pocketBox.minY, pocketBox.minZ - 1, pocketBox.maxX, pocketBox.maxY, pocketBox.minZ - thickness))
+				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
+		BlockPos.stream(BlockBox.create(pocketBox.minX, pocketBox.minY, pocketBox.maxZ + 1, pocketBox.maxX, pocketBox.maxY, pocketBox.maxZ + thickness))
+				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
+
+		pocket.expand(thickness);
 	}
 
 	public static class Layer {
-		private final Identifier material;
-		private final int thickness;
+		private final String blockStateString;
+		private final int thickness; // TODO: maybe this could even be an equation?
+		private final BlockState blockState;
 
-		private Box box;
-
-		public Layer(Identifier material, int thickness) {
-			this.material = material;
+		public Layer(String blockStateString, int thickness) {
+			this.blockStateString = blockStateString;
 			this.thickness = thickness;
+
+			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow(false, LOGGER::error);
 		}
 
-		public Identifier getMaterial() {
-			return material;
+		public BlockState getBlockState() {
+			return blockState;
 		}
 
 		public int getThickness() {
 			return thickness;
 		}
 
-		public boolean contains(int x, int y, int z) {
-			return box.contains(x, y, z);
-		}
-
-		public Block getBlock() {
-			return Registry.BLOCK.get(material);
-		}
-
-		public void adjust(Box box) {
-			double half = thickness * 0.5d;
-			this.box = box.expand(thickness);
-		}
-
 		public CompoundTag toTag() {
 			CompoundTag tag = new CompoundTag();
-			tag.putString("material", material.toString());
+			tag.putString("block_state", blockStateString);
 			tag.putInt("thickness", thickness);
 			return tag;
 		}
 
-		public static Layer fromTag(CompoundTag tag) {
-			return new Layer(Identifier.tryParse(tag.getString("material")), tag.getInt("thickness"));
+		public static Layer fromTag(CompoundTag tag) throws CommandSyntaxException {
+			return new Layer(tag.getString("block_state"), tag.getInt("thickness"));
 		}
-
 	}
 }
 

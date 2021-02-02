@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class StringEquationParser {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -88,7 +87,9 @@ public class StringEquationParser {
 	}
 
 
-	public interface Equation extends Function<Map<String, Double>, Double> { }
+	public interface Equation {
+		double apply(Map<String, Double> variableMap);
+	}
 
 	private interface EquationParser {
 		Optional<Equation> tryParse(String toParse) throws EquationParseException;

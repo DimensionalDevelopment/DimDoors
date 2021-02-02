@@ -110,7 +110,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	public boolean isRegistered() {
-		return !PocketTemplate.isReplacingPlaceholders() && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerWorld) this.world, this.pos));
+		return !PocketTemplate.isReplacingPlaceholders() && this.world != null && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerWorld) this.world, this.pos));
 	}
 
 	public void register() {
