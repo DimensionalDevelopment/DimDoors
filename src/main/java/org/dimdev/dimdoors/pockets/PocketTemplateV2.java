@@ -14,12 +14,10 @@ public class PocketTemplateV2 {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final boolean replacingPlaceholders = false;
     private final Schematic schematic;
-    private final int size;
     private final String id;
 
-    public PocketTemplateV2(Schematic schematic, int size, String id) {
+    public PocketTemplateV2(Schematic schematic, String id) {
         this.schematic = schematic;
-        this.size = size;
         this.id = id;
     }
 

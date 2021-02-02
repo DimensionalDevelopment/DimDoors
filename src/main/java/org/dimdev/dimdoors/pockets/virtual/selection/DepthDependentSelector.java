@@ -107,7 +107,7 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 	}
 
 	@Override
-	public int getWeight(PocketGenerationParameters parameters) {
+	public double getWeight(PocketGenerationParameters parameters) {
 		return getNextPocket(parameters).getWeight(parameters);
 	}
 

@@ -52,9 +52,6 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 
 	public abstract Pocket prepareAndPlacePocket(PocketGenerationParameters parameters);
 
-	public abstract String toString();
-	// TODO: are equals() and hashCode() necessary?
-
 	public abstract VirtualSingularPocketType<? extends VirtualSingularPocket> getType();
 
 	public abstract String getKey();

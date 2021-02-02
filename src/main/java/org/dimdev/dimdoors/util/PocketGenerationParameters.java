@@ -5,6 +5,8 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
+import java.util.Map;
+
 public class PocketGenerationParameters {
 	private final ServerWorld world;
 	private final String group;
@@ -38,5 +40,10 @@ public class PocketGenerationParameters {
 
 	public LinkProperties getLinkProperties() {
 		return linkProperties;
+	}
+
+	public Map<String, Double> toVariableMap(Map<String, Double> stringDoubleMap) {
+		stringDoubleMap.put("depth", (double) this.sourceVirtualLocation.getDepth());
+		return stringDoubleMap;
 	}
 }

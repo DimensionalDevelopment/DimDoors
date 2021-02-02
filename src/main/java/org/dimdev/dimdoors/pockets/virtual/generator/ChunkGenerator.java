@@ -24,13 +24,9 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.pockets.PocketGroup;
-import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.virtual.VirtualGeneratorPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
-import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
@@ -38,9 +34,7 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ChunkGenerator extends VirtualGeneratorPocket {
@@ -51,10 +45,8 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 	private Vec3i size;
 	private Vec3i offset;
 	private int virtualYOffset;
-	private int weight;
 
 	public ChunkGenerator() {
-
 	}
 
 	@Override
@@ -68,7 +60,6 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 		this.offset = new Vec3i(temp[0], temp[1], temp[2]);
 
 		this.virtualYOffset = tag.contains("virtual_y_offset") ? tag.getInt("virtual_y_offset") : 0;
-		this.weight = tag.contains("weight") ? tag.getInt("weight") : 5;
 		return this;
 	}
 
@@ -80,7 +71,6 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 		tag.putIntArray("size", new int[]{this.size.getX(), this.size.getY(), this.size.getZ()});
 		tag.putIntArray("offset", new int[]{this.offset.getX(), this.offset.getY(), this.offset.getZ()});
 		tag.putInt("virtual_y_offset", this.virtualYOffset);
-		tag.putInt("weight", this.weight);
 		return tag;
 	}
 
@@ -92,8 +82,6 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		ServerWorld world = parameters.getWorld();
 		VirtualLocation sourceVirtualLocation = parameters.getSourceVirtualLocation();
-		VirtualTarget linkTo = parameters.getLinkTo();
-		LinkProperties linkProperties = parameters.getLinkProperties();
 
 		int ChunkSizeX = ((this.size.getX() >> 4) + (this.size.getX() % 16 == 0 ? 0 : 1));
 		int ChunkSizeZ = ((this.size.getZ() >> 4) + (this.size.getZ() % 16 == 0 ? 0 : 1));
@@ -200,11 +188,6 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 	}
 
 	@Override
-	public String toString() {
-		return null;
-	}
-
-	@Override
 	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
 		return VirtualSingularPocketType.CHUNK;
 	}
@@ -212,11 +195,6 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 	@Override
 	public String getKey() {
 		return KEY;
-	}
-
-	@Override
-	public int getWeight(PocketGenerationParameters parameters) {
-		return this.weight;
 	}
 
 	private static class ChunkRegionHack extends ChunkRegion { // Please someone tell me if there is a better way

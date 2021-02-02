@@ -46,7 +46,7 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 	}
 
 	@Override
-	public int getWeight(PocketGenerationParameters parameters) {
+	public double getWeight(PocketGenerationParameters parameters) {
 		return peekNextRandomWeighted(parameters).getWeight(parameters);
 	}
 }

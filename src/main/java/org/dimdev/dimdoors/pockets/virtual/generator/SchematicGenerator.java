@@ -26,27 +26,20 @@ public class SchematicGenerator extends VirtualGeneratorPocket {
 	).apply(instance, SchematicGenerator::new));
 	*/
 
-	private int size;
-	private String name;
+	private String id;
 	private Identifier templateID;
-	private int weight;
 
 	public SchematicGenerator() {}
 
-	public SchematicGenerator(int size, String name, int weight) {
-		this.size = size;
-		this.name = name;
-		this.weight = weight;
+	public SchematicGenerator(String id, String weight) {
+		super(weight);
+		this.id = id;
 
-		this.templateID = new Identifier("dimdoors", name);
+		this.templateID = new Identifier("dimdoors", id);
 	}
 
-	public int getSize() {
-		return this.size;
-	}
-
-	public String getName() {
-		return this.name;
+	public String getId() {
+		return this.id;
 	}
 
 	public Identifier getTemplateID() {
@@ -54,19 +47,12 @@ public class SchematicGenerator extends VirtualGeneratorPocket {
 	}
 
 	@Override
-	public int getWeight(PocketGenerationParameters parameters){
-		return this.weight;
-	}
-
-	@Override
 	public VirtualGeneratorPocket fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 
-		this.name = tag.getString("id");
-		this.size = tag.getInt("size");
-		this.weight = tag.contains("weight") ? tag.getInt("weight") : 5;
+		this.id = tag.getString("id");
 
-		this.templateID = new Identifier("dimdoors", name);
+		this.templateID = new Identifier("dimdoors", id);
 		return this;
 	}
 
@@ -74,15 +60,13 @@ public class SchematicGenerator extends VirtualGeneratorPocket {
 	public CompoundTag toTag(CompoundTag tag) {
 		super.toTag(tag);
 
-		tag.putString("id", this.name);
-		tag.putInt("size", this.size);
-		tag.putInt("weight", this.weight);
+		tag.putString("id", this.id);
 		return tag;
 	}
 
 	@Override
 	public void init(PocketGroup group) {
-		SchematicV2Handler.getInstance().loadSchematic(templateID, group.getGroup(), size, name);
+		SchematicV2Handler.getInstance().loadSchematic(templateID, group.getGroup(), id);
 	}
 
 	@Override
@@ -99,15 +83,6 @@ public class SchematicGenerator extends VirtualGeneratorPocket {
 		applyModifiers(pocket, parameters);
 		setup(pocket, parameters, true);
 		return pocket;
-	}
-
-	@Override
-	public String toString() {
-		return "PocketEntry{" +
-				"size=" + this.size +
-				", name='" + this.name + '\'' +
-				", weight=" + this.weight +
-				'}';
 	}
 
 	@Override

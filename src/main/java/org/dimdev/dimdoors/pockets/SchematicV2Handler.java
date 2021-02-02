@@ -52,14 +52,14 @@ public class SchematicV2Handler {
         LOGGER.info("Loaded schematics in {} seconds", System.currentTimeMillis() - startTime);
     }
 
-    public void loadSchematic(Identifier templateID, String group, int size, String id) {
+    public void loadSchematic(Identifier templateID, String group, String id) {
     	try {
 			if (templates.containsKey(templateID)) return;
 			Path basePath = Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/schematic/v2/%s/", group)).toURI());
 			Path schemPath = basePath.resolve(id + ".schem");
 			CompoundTag schemTag = NbtIo.readCompressed(Files.newInputStream(schemPath));
 			Schematic schematic = Schematic.fromTag(schemTag);
-			PocketTemplateV2 template = new PocketTemplateV2(schematic, size, id);
+			PocketTemplateV2 template = new PocketTemplateV2(schematic, id);
 			templates.put(templateID, template);
 		} catch (URISyntaxException | IOException e) {
 			LOGGER.error("Could not load schematic!", e);

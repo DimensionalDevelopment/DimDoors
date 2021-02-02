@@ -20,8 +20,8 @@ public class WeightedList<T extends Weighted<P>, P> extends ArrayList<T> {
 
 	private T getNextRandomWeighted(P parameters, boolean peek) {
 		if (!peeked) {
-			int totalWeight = stream().mapToInt(weighted -> weighted.getWeight(parameters)).sum();
-			int cursor = random.nextInt(totalWeight);
+			double totalWeight = stream().mapToDouble(weighted -> weighted.getWeight(parameters)).sum();
+			double cursor = random.nextDouble() * totalWeight;
 			for (T weighted : this) {
 				cursor -= weighted.getWeight(parameters);
 				if (cursor <= 0) {
