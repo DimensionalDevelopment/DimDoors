@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.pockets.virtual.generator;
+package org.dimdev.dimdoors.pockets.generator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -23,9 +23,6 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.pockets.PocketGroup;
-import org.dimdev.dimdoors.pockets.virtual.VirtualGeneratorPocket;
-import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.TeleportUtil;
@@ -37,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChunkGenerator extends VirtualGeneratorPocket {
+public class ChunkGenerator extends PocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "chunk";
 
@@ -50,7 +47,7 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 	}
 
 	@Override
-	public VirtualGeneratorPocket fromTag(CompoundTag tag) {
+	public PocketGenerator fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 
 		this.dimensionID = new Identifier(tag.getString("dimension_id"));
@@ -76,10 +73,6 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 		}
 		tag.putInt("virtual_y_offset", this.virtualYOffset);
 		return tag;
-	}
-
-	@Override
-	public void init(PocketGroup group) {
 	}
 
 	@Override
@@ -183,17 +176,14 @@ public class ChunkGenerator extends VirtualGeneratorPocket {
 		world.setBlockEntity(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pocket.getOrigin()), rift);
 
 		rift.setDestination(new PocketEntranceMarker());
-		applyModifiers(pocket, parameters);
-		setup(pocket, parameters, false);
-
 		pocket.virtualLocation = sourceVirtualLocation;
 
 		return pocket;
 	}
 
 	@Override
-	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
-		return VirtualSingularPocketType.CHUNK;
+	public PocketGeneratorType<? extends PocketGenerator> getType() {
+		return PocketGeneratorType.CHUNK;
 	}
 
 	@Override

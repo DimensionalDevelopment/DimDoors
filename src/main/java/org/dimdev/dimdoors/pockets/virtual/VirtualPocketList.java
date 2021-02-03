@@ -6,6 +6,7 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
+// TODO: add weight tha
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationParameters> implements VirtualPocket {
 
 	public static VirtualPocketList deserialize(ListTag tag) {
@@ -38,11 +39,6 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		return getNextRandomWeighted(parameters).prepareAndPlacePocket(parameters);
-	}
-
-	@Override
-	public void init(PocketGroup group) {
-		this.forEach(pocket -> pocket.init(group));
 	}
 
 	@Override

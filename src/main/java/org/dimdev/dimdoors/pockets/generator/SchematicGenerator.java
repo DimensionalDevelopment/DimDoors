@@ -1,20 +1,17 @@
-package org.dimdev.dimdoors.pockets.virtual.generator;
+package org.dimdev.dimdoors.pockets.generator;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.pockets.PocketGroup;
 import org.dimdev.dimdoors.pockets.PocketTemplateV2;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
-import org.dimdev.dimdoors.pockets.virtual.VirtualGeneratorPocket;
-import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
-public class SchematicGenerator extends VirtualGeneratorPocket {
+public class SchematicGenerator extends PocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "schematic";
 
@@ -31,8 +28,7 @@ public class SchematicGenerator extends VirtualGeneratorPocket {
 
 	public SchematicGenerator() {}
 
-	public SchematicGenerator(String id, String weight) {
-		super(weight);
+	public SchematicGenerator(String id) {
 		this.id = id;
 
 		this.templateID = new Identifier("dimdoors", id);
@@ -47,12 +43,14 @@ public class SchematicGenerator extends VirtualGeneratorPocket {
 	}
 
 	@Override
-	public VirtualGeneratorPocket fromTag(CompoundTag tag) {
+	public PocketGenerator fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 
 		this.id = tag.getString("id");
-
 		this.templateID = new Identifier("dimdoors", id);
+
+		SchematicV2Handler.getInstance().loadSchematic(templateID, id);
+
 		return this;
 	}
 
@@ -62,11 +60,6 @@ public class SchematicGenerator extends VirtualGeneratorPocket {
 
 		tag.putString("id", this.id);
 		return tag;
-	}
-
-	@Override
-	public void init(PocketGroup group) {
-		SchematicV2Handler.getInstance().loadSchematic(templateID, group.getGroup(), id);
 	}
 
 	@Override
@@ -80,14 +73,13 @@ public class SchematicGenerator extends VirtualGeneratorPocket {
 		LOGGER.info("Generating pocket from template " + template.getId() + " at location " + pocket.getOrigin());
 
 		template.place(pocket);
-		applyModifiers(pocket, parameters);
-		setup(pocket, parameters, true);
+
 		return pocket;
 	}
 
 	@Override
-	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
-		return VirtualSingularPocketType.SCHEMATIC;
+	public PocketGeneratorType<? extends PocketGenerator> getType() {
+		return PocketGeneratorType.SCHEMATIC;
 	}
 
 	@Override

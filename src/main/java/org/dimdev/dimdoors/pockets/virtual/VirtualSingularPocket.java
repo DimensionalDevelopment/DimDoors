@@ -7,12 +7,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-import org.dimdev.dimdoors.pockets.virtual.generator.ChunkGenerator;
-import org.dimdev.dimdoors.pockets.virtual.generator.SchematicGenerator;
-import org.dimdev.dimdoors.pockets.virtual.generator.VoidGenerator;
+import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
 import org.dimdev.dimdoors.pockets.virtual.selection.DepthDependentSelector;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 import java.util.function.Supplier;
@@ -59,11 +56,9 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 
 
 	public interface VirtualSingularPocketType<T extends VirtualSingularPocket> {
-		VirtualSingularPocketType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator::new);
-		VirtualSingularPocketType<ChunkGenerator> CHUNK = register(new Identifier("dimdoors", ChunkGenerator.KEY), ChunkGenerator::new);
-		VirtualSingularPocketType<VoidGenerator> VOID = register(new Identifier("dimdoors", VoidGenerator.KEY), VoidGenerator::new);
+		VirtualSingularPocketType<IdReference> ID_REFERENCE = register(new Identifier("dimdoors", IdReference.KEY), IdReference::new);
 
-		VirtualSingularPocketType<DepthDependentSelector> DEPTH_DEPENDENT = register(new Identifier("dimdoors", DepthDependentSelector.KEY), DepthDependentSelector::new);
+		VirtualSingularPocketType<DepthDependentSelector> DEPTH_DEPENDENT_SELECTOR = register(new Identifier("dimdoors", DepthDependentSelector.KEY), DepthDependentSelector::new);
 
 
 		VirtualSingularPocket fromTag(CompoundTag tag);

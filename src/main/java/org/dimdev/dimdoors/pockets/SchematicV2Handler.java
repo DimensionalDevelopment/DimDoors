@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
@@ -23,8 +25,9 @@ import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 public class SchematicV2Handler {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final SchematicV2Handler INSTANCE = new SchematicV2Handler();
-    private final Map<Identifier, PocketTemplateV2> templates = Maps.newHashMap();
+    private final Map<String, PocketGenerator> pocketGeneratorMap = Maps.newHashMap();
     private final Map<String, PocketGroup> pocketGroups = Maps.newHashMap();
+	private final Map<Identifier, PocketTemplateV2> templates = Maps.newHashMap();
     private boolean loaded = false;
 
     private SchematicV2Handler() {
@@ -36,27 +39,77 @@ public class SchematicV2Handler {
         }
         this.loaded = true;
         long startTime = System.currentTimeMillis();
-        Set<String> names = ImmutableSet.of("default_private", "default_public");
-        for (String name : names) {
-			try {
-				List<String> result = Files.readAllLines(Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/json/v2/%s.json", name)).toURI()));
-				CompoundTag groupTag = StringNbtReader.parse(String.join("", result));
-				PocketGroup type = new PocketGroup().fromTag(groupTag);
-				type.init();
-                this.pocketGroups.put(type.getGroup(), type);
-            } catch (IOException | URISyntaxException | CommandSyntaxException e) {
-                e.printStackTrace();
-            }
-        }
 
-        LOGGER.info("Loaded schematics in {} seconds", System.currentTimeMillis() - startTime);
+		try {
+			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/generators").toURI());
+			loadPockets(path, new String[0]);
+			LOGGER.info("Loaded pockets in {} seconds", System.currentTimeMillis() - startTime);
+		} catch (URISyntaxException e) {
+			LOGGER.error(e);
+		}
+
+		startTime = System.currentTimeMillis();
+		try {
+			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/groups").toURI());
+			loadPocketGroups(path, new String[0]);
+			LOGGER.info("Loaded pockets in {} seconds", System.currentTimeMillis() - startTime);
+		} catch (URISyntaxException e) {
+			LOGGER.error(e);
+		}
     }
 
-    public void loadSchematic(Identifier templateID, String group, String id) {
+    private void loadPocketGroups(Path path, String[] idParts) {
+		if (Files.isDirectory(path)) {
+			try {
+				for (Path directoryPath : Files.newDirectoryStream(path)) {
+					String[] directoryIdParts = Arrays.copyOf(idParts, idParts.length + 1);
+					String fileName = directoryPath.getFileName().toString();
+					if (Files.isRegularFile(directoryPath)) fileName = fileName.substring(0, fileName.lastIndexOf('.')); // cut extension
+					directoryIdParts[directoryIdParts.length - 1] = fileName;
+					loadPocketGroups(directoryPath, directoryIdParts);
+				}
+			} catch (IOException e) {
+				LOGGER.error("could not load pockets in path " + path.toString(), e);
+			}
+		} else if(Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) && path.getFileName().toString().endsWith(".nbt")) {
+			String id = String.join(".", idParts);
+			try {
+				PocketGroup group = new PocketGroup(id).fromTag(Objects.requireNonNull(NbtIo.read(path.toFile())));
+				pocketGroups.put(id, group);
+			} catch (IOException e) {
+				LOGGER.error("Could not load pocket group from path " + path.toString());
+			}
+		}
+	}
+
+    private void loadPockets(Path path, String[] idParts) {
+		if (Files.isDirectory(path)) {
+			try {
+				for (Path directoryPath : Files.newDirectoryStream(path)) {
+					String[] directoryIdParts = Arrays.copyOf(idParts, idParts.length + 1);
+					String fileName = directoryPath.getFileName().toString();
+					if (Files.isRegularFile(directoryPath)) fileName = fileName.substring(0, fileName.lastIndexOf('.')); // cut extension
+					directoryIdParts[directoryIdParts.length - 1] = fileName;
+					loadPockets(directoryPath, directoryIdParts);
+				}
+			} catch (IOException e) {
+				LOGGER.error("could not load pockets in path " + path.toString(), e);
+			}
+		} else if(Files.isRegularFile(path) && path.getFileName().toString().endsWith(".nbt")) {
+			String id = String.join(".", idParts);
+			try {
+				PocketGenerator gen =  PocketGenerator.deserialize(Objects.requireNonNull(NbtIo.read(path.toFile())));
+				if (gen != null) pocketGeneratorMap.put(id, gen);
+			} catch (IOException e) {
+				LOGGER.error("Could not load pocket from path " + path.toString());
+			}
+		}
+	}
+
+    public void loadSchematic(Identifier templateID, String id) {
     	try {
 			if (templates.containsKey(templateID)) return;
-			Path basePath = Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/schematic/v2/%s/", group)).toURI());
-			Path schemPath = basePath.resolve(id + ".schem");
+			Path schemPath = Paths.get(SchematicV2Handler.class.getResource(String.format("/data/dimdoors/pockets/schematic/%s.schem", id.replaceAll("\\.", "/"))).toURI());
 			CompoundTag schemTag = NbtIo.readCompressed(Files.newInputStream(schemPath));
 			Schematic schematic = Schematic.fromTag(schemTag);
 			PocketTemplateV2 template = new PocketTemplateV2(schematic, id);
@@ -81,4 +134,8 @@ public class SchematicV2Handler {
     public Map<String, PocketGroup> getPocketGroups() {
         return this.pocketGroups;
     }
+
+    public PocketGenerator getGenerator(String id) {
+    	return pocketGeneratorMap.get(id);
+	}
 }

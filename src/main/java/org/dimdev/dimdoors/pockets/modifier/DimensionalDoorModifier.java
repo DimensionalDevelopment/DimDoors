@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.pockets.virtual.modifier;
+package org.dimdev.dimdoors.pockets.modifier;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -1,11 +1,8 @@
-package org.dimdev.dimdoors.pockets.virtual.generator;
+package org.dimdev.dimdoors.pockets.generator;
 
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.pockets.PocketGroup;
-import org.dimdev.dimdoors.pockets.virtual.VirtualGeneratorPocket;
-import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.StringEquationParser;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
@@ -14,7 +11,7 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VoidGenerator extends VirtualGeneratorPocket {
+public class VoidGenerator extends PocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "void";
 	private String width;
@@ -31,24 +28,18 @@ public class VoidGenerator extends VirtualGeneratorPocket {
 	private StringEquationParser.Equation offsetZEquation;
 
 	@Override
-	public void init(PocketGroup group) { }
-
-	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.getWorld().getRegistryKey()).newPocket();
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		pocket.setSize((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
 		pocket.offsetOrigin((int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap));
 
-		applyModifiers(pocket, parameters);
-		setup(pocket, parameters, false);
-
 		return pocket;
 	}
 
 	@Override
-	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
-		return VirtualSingularPocketType.VOID;
+	public PocketGeneratorType<? extends PocketGenerator> getType() {
+		return PocketGeneratorType.VOID;
 	}
 
 	@Override
@@ -57,7 +48,7 @@ public class VoidGenerator extends VirtualGeneratorPocket {
 	}
 
 	@Override
-	public VirtualGeneratorPocket fromTag(CompoundTag tag) {
+	public PocketGenerator fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 
 		try {

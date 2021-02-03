@@ -3,8 +3,6 @@ package org.dimdev.dimdoors.pockets.virtual.selection;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import org.dimdev.dimdoors.pockets.PocketGroup;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
@@ -81,11 +79,6 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 	}
 
 	@Override
-	public void init(PocketGroup group) {
-		pocketList.forEach((regex, pocket) -> pocket.init(group));
-	}
-
-	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		return getNextPocket(parameters).prepareAndPlacePocket(parameters);
 	}
@@ -98,7 +91,7 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 
 	@Override
 	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
-		return VirtualSingularPocketType.DEPTH_DEPENDENT;
+		return VirtualSingularPocketType.DEPTH_DEPENDENT_SELECTOR;
 	}
 
 	@Override

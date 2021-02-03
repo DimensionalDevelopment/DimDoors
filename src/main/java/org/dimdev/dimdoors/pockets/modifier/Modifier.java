@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.pockets.virtual.modifier;
+package org.dimdev.dimdoors.pockets.modifier;
 
 import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;

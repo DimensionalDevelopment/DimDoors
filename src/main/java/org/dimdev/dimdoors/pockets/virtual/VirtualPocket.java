@@ -26,6 +26,4 @@ public interface VirtualPocket extends Weighted<PocketGenerationParameters> {
 
 
 	Pocket prepareAndPlacePocket(PocketGenerationParameters parameters);
-
-	void init(PocketGroup group);
 }
