@@ -1,16 +1,17 @@
 package org.dimdev.dimdoors.pockets;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 import com.google.common.collect.*;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
 import net.minecraft.nbt.*;
@@ -24,6 +25,7 @@ import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 
 public class SchematicV2Handler {
     private static final Logger LOGGER = LogManager.getLogger();
+	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
     private static final SchematicV2Handler INSTANCE = new SchematicV2Handler();
     private final Map<String, PocketGenerator> pocketGeneratorMap = Maps.newHashMap();
     private final Map<String, PocketGroup> pocketGroups = Maps.newHashMap();
@@ -42,7 +44,7 @@ public class SchematicV2Handler {
 
 		try {
 			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/generators").toURI());
-			loadPockets(path, new String[0]);
+			loadCompound(path, new String[0], this::loadPocketGenerator);
 			LOGGER.info("Loaded pockets in {} seconds", System.currentTimeMillis() - startTime);
 		} catch (URISyntaxException e) {
 			LOGGER.error(e);
@@ -51,14 +53,14 @@ public class SchematicV2Handler {
 		startTime = System.currentTimeMillis();
 		try {
 			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/groups").toURI());
-			loadPocketGroups(path, new String[0]);
-			LOGGER.info("Loaded pockets in {} seconds", System.currentTimeMillis() - startTime);
+			loadCompound(path, new String[0], this::loadPocketGroup);
+			LOGGER.info("Loaded pocket groups in {} seconds", System.currentTimeMillis() - startTime);
 		} catch (URISyntaxException e) {
 			LOGGER.error(e);
 		}
     }
 
-    private void loadPocketGroups(Path path, String[] idParts) {
+    private void loadCompound(Path path, String[] idParts, BiConsumer<String, CompoundTag> loader) {
 		if (Files.isDirectory(path)) {
 			try {
 				for (Path directoryPath : Files.newDirectoryStream(path)) {
@@ -66,44 +68,31 @@ public class SchematicV2Handler {
 					String fileName = directoryPath.getFileName().toString();
 					if (Files.isRegularFile(directoryPath)) fileName = fileName.substring(0, fileName.lastIndexOf('.')); // cut extension
 					directoryIdParts[directoryIdParts.length - 1] = fileName;
-					loadPocketGroups(directoryPath, directoryIdParts);
+					loadCompound(directoryPath, directoryIdParts, loader);
 				}
 			} catch (IOException e) {
-				LOGGER.error("could not load pockets in path " + path.toString(), e);
+				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
 			}
-		} else if(Files.isRegularFile(path, LinkOption.NOFOLLOW_LINKS) && path.getFileName().toString().endsWith(".nbt")) {
+		} else if(Files.isRegularFile(path) && path.getFileName().toString().endsWith(".json")) {
 			String id = String.join(".", idParts);
 			try {
-				PocketGroup group = new PocketGroup(id).fromTag(Objects.requireNonNull(NbtIo.read(path.toFile())));
-				pocketGroups.put(id, group);
+				JsonObject json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonObject.class);
+				CompoundTag tag = CompoundTag.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, LOGGER::error).getFirst();
+				loader.accept(id, tag);
 			} catch (IOException e) {
-				LOGGER.error("Could not load pocket group from path " + path.toString());
+				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
 			}
 		}
 	}
 
-    private void loadPockets(Path path, String[] idParts) {
-		if (Files.isDirectory(path)) {
-			try {
-				for (Path directoryPath : Files.newDirectoryStream(path)) {
-					String[] directoryIdParts = Arrays.copyOf(idParts, idParts.length + 1);
-					String fileName = directoryPath.getFileName().toString();
-					if (Files.isRegularFile(directoryPath)) fileName = fileName.substring(0, fileName.lastIndexOf('.')); // cut extension
-					directoryIdParts[directoryIdParts.length - 1] = fileName;
-					loadPockets(directoryPath, directoryIdParts);
-				}
-			} catch (IOException e) {
-				LOGGER.error("could not load pockets in path " + path.toString(), e);
-			}
-		} else if(Files.isRegularFile(path) && path.getFileName().toString().endsWith(".nbt")) {
-			String id = String.join(".", idParts);
-			try {
-				PocketGenerator gen =  PocketGenerator.deserialize(Objects.requireNonNull(NbtIo.read(path.toFile())));
-				if (gen != null) pocketGeneratorMap.put(id, gen);
-			} catch (IOException e) {
-				LOGGER.error("Could not load pocket from path " + path.toString());
-			}
-		}
+	private void loadPocketGroup(String id, CompoundTag tag) {
+		PocketGroup group = new PocketGroup(id).fromTag(tag);
+		pocketGroups.put(id, group);
+	}
+
+	private void loadPocketGenerator(String id, CompoundTag tag) {
+		PocketGenerator gen =  PocketGenerator.deserialize(tag);
+		if (gen != null) pocketGeneratorMap.put(id, gen);
 	}
 
     public void loadSchematic(Identifier templateID, String id) {

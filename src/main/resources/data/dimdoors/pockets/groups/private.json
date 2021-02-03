@@ -1,0 +1,36 @@
+{
+  "pockets": [
+    {
+      "id": "private.default_0",
+      "type": "dimdoors:id"
+    },
+    {
+      "id": "private.default_1",
+      "type": "dimdoors:id"
+    },
+    {
+      "id": "private.default_2",
+      "type": "dimdoors:id"
+    },
+    {
+      "id": "private.default_3",
+      "type": "dimdoors:id"
+    },
+    {
+      "id": "private.default_4",
+      "type": "dimdoors:id"
+    },
+    {
+      "id": "private.default_5",
+      "type": "dimdoors:id"
+    },
+    {
+      "id": "private.default_6",
+      "type": "dimdoors:id"
+    },
+    {
+      "id": "private.default_7",
+      "type": "dimdoors:id"
+    }
+  ]
+}
