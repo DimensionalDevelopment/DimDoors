@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class SchematicConverter {
 	public static Map<String, String> CONVERSIONS = new HashMap<>();
+	private static String[] COLORS = new String[]{"white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue", "brown", "green", "red", "black"};
 
 	public static String updateId(String id) {
 
@@ -239,5 +240,16 @@ public class SchematicConverter {
 				CONVERSIONS.put("minecraft:" + (lit ? "" : "unlit_") + "redstone_torch[facing=" + facing + "]", "minecraft:redstone_wall_torch[facing=" + facing + ",lit=" + (lit ? "true" : "false") + "]");
 			}
 		}
+
+		for (String color : COLORS) {
+			CONVERSIONS.put("minecraft:wool[color=" + color + "]", "minecraft:" + color + "_wool");
+		}
+
+		CONVERSIONS.put("minecraft:stonebrick[variant=cracked_stonebrick]", "minecraft:cracked_stone_bricks");
+		CONVERSIONS.put("minecraft:stonebrick[variant=chiseled_stonebrick]", "minecraft:chiseled_stone_bricks");
+		CONVERSIONS.put("minecraft:monster_egg[variant=stone_brick]", "minecraft:infested_chiseled_stone_bricks");
+		CONVERSIONS.put("minecraft:nether_brick", "minecraft:nether_bricks");
+		CONVERSIONS.put("minecraft:noteblock", "minecraft:note_block");
+		CONVERSIONS.put("minecraft:quartz_ore", "minecraft:nether_quartz_ore");
 	}
 }

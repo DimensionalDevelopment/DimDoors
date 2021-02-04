@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -184,7 +185,7 @@ public class Schematic implements BlockView {
 		}
 
 
-		SchematicRedstoneFixer.fixRedstone(schematic);
+		SchematicBlockConnectionFixer.fixBlocks(schematic);
 		return schematic;
 	}
 
@@ -261,7 +262,7 @@ public class Schematic implements BlockView {
 
 		for (Entry<String, String> entry : propertyAndBlockStringsMap.entrySet()) {
 			Property<?> property = stateManager.getProperty(entry.getKey());
-
+			if (property == null) LOGGER.info("Missing property " + entry.getKey() + " in: " + block + "[" + propertyAndBlockStringsMap.entrySet().stream().map(mapEntry -> mapEntry.getKey() + "=" + mapEntry.getValue()).collect(Collectors.joining(",")) + "]");
 			if (property != null) {
 				Comparable<?> value = null;
 				for (Comparable<?> object : property.getValues()) {

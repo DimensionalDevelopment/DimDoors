@@ -107,7 +107,6 @@ public class SchematicV2Handler {
 
 	private void loadPocketGroup(String id, Tag tag) {
 		VirtualPocket group = VirtualPocket.deserialize(tag);
-		LOGGER.info(VirtualPocket.serialize(group).toString());
 		pocketGroups.put(id, group);
 	}
 
