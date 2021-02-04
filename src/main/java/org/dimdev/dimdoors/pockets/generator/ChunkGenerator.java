@@ -80,8 +80,8 @@ public class ChunkGenerator extends PocketGenerator {
 		ServerWorld world = parameters.getWorld();
 		VirtualLocation sourceVirtualLocation = parameters.getSourceVirtualLocation();
 
-		int ChunkSizeX = ((this.size.getX() >> 4) + (this.size.getX() % 16 == 0 ? 0 : 1));
-		int ChunkSizeZ = ((this.size.getZ() >> 4) + (this.size.getZ() % 16 == 0 ? 0 : 1));
+		int chunkSizeX = ((this.size.getX() >> 4) + (this.size.getX() % 16 == 0 ? 0 : 1));
+		int chunkSizeZ = ((this.size.getZ() >> 4) + (this.size.getZ() % 16 == 0 ? 0 : 1));
 
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
 		pocket.setSize(size);
@@ -93,8 +93,8 @@ public class ChunkGenerator extends PocketGenerator {
 		net.minecraft.world.gen.chunk.ChunkGenerator genWorldChunkGenerator = genWorld.getChunkManager().getChunkGenerator();
 
 		ArrayList<Chunk> protoChunks = new ArrayList<>();
-		for (int z = 0; z < ChunkSizeZ; z++) {
-			for (int x = 0; x < ChunkSizeX; x++) {
+		for (int z = 0; z < chunkSizeZ; z++) {
+			for (int x = 0; x < chunkSizeX; x++) {
 				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA);
 				protoChunk.setLightingProvider(genWorld.getLightingProvider());
 				protoChunks.add(protoChunk);

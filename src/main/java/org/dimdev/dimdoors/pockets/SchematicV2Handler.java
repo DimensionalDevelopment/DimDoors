@@ -42,7 +42,7 @@ public class SchematicV2Handler {
 
 		try {
 			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/generators").toURI());
-			loadCompound(path, new String[0], this::loadPocketGenerator);
+			loadJson(path, new String[0], this::loadPocketGenerator);
 			LOGGER.info("Loaded pockets in {} seconds", System.currentTimeMillis() - startTime);
 		} catch (URISyntaxException e) {
 			LOGGER.error(e);
@@ -51,14 +51,14 @@ public class SchematicV2Handler {
 		startTime = System.currentTimeMillis();
 		try {
 			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/groups").toURI());
-			loadCompound(path, new String[0], this::loadPocketGroup);
+			loadJson(path, new String[0], this::loadPocketGroup);
 			LOGGER.info("Loaded pocket groups in {} seconds", System.currentTimeMillis() - startTime);
 		} catch (URISyntaxException e) {
 			LOGGER.error(e);
 		}
     }
 
-    private void loadCompound(Path path, String[] idParts, BiConsumer<String, Tag> loader) {
+    private void loadJson(Path path, String[] idParts, BiConsumer<String, Tag> loader) {
 		if (Files.isDirectory(path)) {
 			try {
 				for (Path directoryPath : Files.newDirectoryStream(path)) {
@@ -66,7 +66,7 @@ public class SchematicV2Handler {
 					String fileName = directoryPath.getFileName().toString();
 					if (Files.isRegularFile(directoryPath)) fileName = fileName.substring(0, fileName.lastIndexOf('.')); // cut extension
 					directoryIdParts[directoryIdParts.length - 1] = fileName;
-					loadCompound(directoryPath, directoryIdParts, loader);
+					loadJson(directoryPath, directoryIdParts, loader);
 				}
 			} catch (IOException e) {
 				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
@@ -75,27 +75,10 @@ public class SchematicV2Handler {
 			String id = String.join(".", idParts);
 			try {
 				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
-				loader.accept(id, jsonToTag(json));
+				loader.accept(id, JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
 			} catch (IOException e) {
 				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
 			}
-		}
-	}
-
-	private Tag jsonToTag(JsonElement json) {
-    	if (json.isJsonArray()) {
-			ListTag listTag = new ListTag();
-			for (JsonElement jsonElement : (JsonArray) json) {
-				Tag tag = jsonToTag(jsonElement);
-				if (tag != null) listTag.add(jsonToTag(jsonElement));
-			}
-			return listTag;
-		}
-    	else if (json.isJsonObject()) {
-    		return CompoundTag.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, LOGGER::error).getFirst();
-		} else {
-    		LOGGER.error("JsonElement was not JsonObject or JsonArray!");
-    		return null;
 		}
 	}
 

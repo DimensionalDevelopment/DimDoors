@@ -51,7 +51,7 @@ public final class ModDimensions {
     }
 
     public static boolean isPersonalPocketDimension(World world) {
-        return isPocketDimension(world.getRegistryKey());
+		return world != null && world == PERSONAL_POCKET_DIMENSION;
     }
 
     public static boolean isPocketDimension(RegistryKey<World> type) {
