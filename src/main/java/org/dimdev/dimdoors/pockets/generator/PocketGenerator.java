@@ -21,7 +21,8 @@ import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
-import org.dimdev.dimdoors.util.math.StringEquationParser;
+import org.dimdev.dimdoors.util.math.Equation;
+import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	private final List<Modifier> modifierList = new ArrayList<>();
 
 	private String weight;
-	private StringEquationParser.Equation weightEquation;
+	private Equation weightEquation;
 
 	public PocketGenerator() { }
 
@@ -64,12 +65,12 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 
 	private void parseWeight() {
 		try {
-			this.weightEquation = StringEquationParser.parse(weight);
-		} catch (StringEquationParser.EquationParseException e) {
+			this.weightEquation = Equation.parse(weight);
+		} catch (EquationParseException e) {
 			LOGGER.error("Could not parse weight equation \"" + weight + "\", defaulting to default weight equation \"" + defaultWeightEquation + "\"", e);
 			try {
-				this.weightEquation = StringEquationParser.parse(defaultWeightEquation);
-			} catch (StringEquationParser.EquationParseException equationParseException) {
+				this.weightEquation = Equation.parse(defaultWeightEquation);
+			} catch (EquationParseException equationParseException) {
 				LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
 				this.weightEquation = stringDoubleMap -> fallbackWeight;
 			}

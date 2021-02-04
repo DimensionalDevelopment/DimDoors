@@ -24,7 +24,8 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.StringEquationParser;
+import org.dimdev.dimdoors.util.math.Equation;
+import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 public class DimensionalDoorModifier implements Modifier {
@@ -38,9 +39,9 @@ public class DimensionalDoorModifier implements Modifier {
 	private String x;
 	private String y;
 	private String z;
-	private StringEquationParser.Equation xEquation;
-	private StringEquationParser.Equation yEquation;
-	private StringEquationParser.Equation zEquation;
+	private Equation xEquation;
+	private Equation yEquation;
+	private Equation zEquation;
 
 
 	@Override
@@ -65,10 +66,10 @@ public class DimensionalDoorModifier implements Modifier {
 			y = tag.getString("y");
 			z = tag.getString("z");
 
-			xEquation = StringEquationParser.parse(x);
-			yEquation = StringEquationParser.parse(y);
-			zEquation = StringEquationParser.parse(z);
-		} catch (StringEquationParser.EquationParseException e) {
+			xEquation = Equation.parse(x);
+			yEquation = Equation.parse(y);
+			zEquation = Equation.parse(z);
+		} catch (EquationParseException e) {
 			LOGGER.error(e);
 		}
 		return this;

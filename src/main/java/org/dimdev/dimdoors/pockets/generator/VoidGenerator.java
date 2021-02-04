@@ -4,7 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.StringEquationParser;
+import org.dimdev.dimdoors.util.math.Equation;
+import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
@@ -15,17 +16,17 @@ public class VoidGenerator extends PocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "void";
 	private String width;
-	private StringEquationParser.Equation heightEquation;
+	private Equation heightEquation;
 	private String height;
-	private StringEquationParser.Equation widthEquation;
+	private Equation widthEquation;
 	private String length;
-	private StringEquationParser.Equation lengthEquation;
+	private Equation lengthEquation;
 	private String offsetX;
-	private StringEquationParser.Equation offsetXEquation;
+	private Equation offsetXEquation;
 	private String offsetY;
-	private StringEquationParser.Equation offsetYEquation;
+	private Equation offsetYEquation;
 	private String offsetZ;
-	private StringEquationParser.Equation offsetZEquation;
+	private Equation offsetZEquation;
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
@@ -53,19 +54,19 @@ public class VoidGenerator extends PocketGenerator {
 
 		try {
 			width = tag.getString("width");
-			widthEquation = StringEquationParser.parse(width);
+			widthEquation = Equation.parse(width);
 			height = tag.getString("height");
-			heightEquation = StringEquationParser.parse(height);
+			heightEquation = Equation.parse(height);
 			length = tag.getString("length");
-			lengthEquation = StringEquationParser.parse(length);
+			lengthEquation = Equation.parse(length);
 
 			offsetX = tag.contains("offset_x") ? tag.getString("offset_x") : "0";
-			offsetXEquation = StringEquationParser.parse(offsetX);
+			offsetXEquation = Equation.parse(offsetX);
 			offsetY = tag.contains("offset_y") ? tag.getString("offset_y") : "0";
-			offsetYEquation = StringEquationParser.parse(offsetY);
+			offsetYEquation = Equation.parse(offsetY);
 			offsetZ = tag.contains("offset_z") ? tag.getString("offset_z") : "0";
-			offsetZEquation = StringEquationParser.parse(offsetZ);
-		} catch (StringEquationParser.EquationParseException e) {
+			offsetZEquation = Equation.parse(offsetZ);
+		} catch (EquationParseException e) {
 			LOGGER.error(e);
 		}
 

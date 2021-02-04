@@ -10,7 +10,8 @@ import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.StringEquationParser;
+import org.dimdev.dimdoors.util.math.Equation;
+import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 import java.util.List;
@@ -21,19 +22,19 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	private static final int fallbackWeight = 5; // TODO: make config
 
 	private String weight;
-	private StringEquationParser.Equation weightEquation;
+	private Equation weightEquation;
 	private Boolean setupLoot;
 	private final List<Modifier> modifierList = Lists.newArrayList();
 
 
 	private void parseWeight() {
 		try {
-			this.weightEquation = StringEquationParser.parse(weight);
-		} catch (StringEquationParser.EquationParseException e) {
+			this.weightEquation = Equation.parse(weight);
+		} catch (EquationParseException e) {
 			LOGGER.error("Could not parse weight equation \"" + weight + "\", defaulting to default weight equation \"" + defaultWeightEquation + "\"", e);
 			try {
-				this.weightEquation = StringEquationParser.parse(defaultWeightEquation);
-			} catch (StringEquationParser.EquationParseException equationParseException) {
+				this.weightEquation = Equation.parse(defaultWeightEquation);
+			} catch (EquationParseException equationParseException) {
 				LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
 				this.weightEquation = stringDoubleMap -> fallbackWeight;
 			}
