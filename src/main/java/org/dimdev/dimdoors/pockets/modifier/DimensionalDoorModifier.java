@@ -24,6 +24,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftData;
+import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
@@ -40,6 +41,7 @@ public class DimensionalDoorModifier implements Modifier {
 	private Direction facing;
 	private String doorTypeString;
 	private DimensionalDoorBlock doorType;
+	private String doorDataReference;
 	private CompoundTag doorData;
 
 	private String x;
@@ -67,7 +69,8 @@ public class DimensionalDoorModifier implements Modifier {
 		}
 		doorType = (DimensionalDoorBlock) doorBlock;
 
-		if (tag.contains("door_data")) doorData = tag.getCompound("door_data");
+		if (tag.getType("door_data") == NbtType.STRING) doorData = (CompoundTag) SchematicV2Handler.getInstance().readNbtFromJson(tag.getString("door_data"));
+		else if (tag.getType("door_data") == NbtType.COMPOUND) doorData = tag.getCompound("door_data");
 
 		try {
 			x = tag.getString("x");
@@ -129,7 +132,4 @@ public class DimensionalDoorModifier implements Modifier {
 		}
 		world.setBlockEntity(pos, rift);
 	}
-
-	// TODO: move this to utility class
-
 }

@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import com.google.common.collect.*;
 import com.google.gson.*;
@@ -35,7 +36,7 @@ public class SchematicV2Handler {
 
     public void load() {
         if (this.loaded) {
-            throw new UnsupportedOperationException("Attempted to load schematics twice!");
+            throw new UnsupportedOperationException("Attempted to load pockets twice!");
         }
         this.loaded = true;
         long startTime = System.currentTimeMillis();
@@ -57,6 +58,28 @@ public class SchematicV2Handler {
 			LOGGER.error(e);
 		}
     }
+
+    public Tag readNbtFromJson(String id) {
+		try {
+			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/json/" + id.replaceAll("\\.", "/") + ".json").toURI());
+			if (!Files.isRegularFile(path)) return null;
+			try {
+				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
+				return JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json);
+			} catch (IOException e) {
+				LOGGER.error(e);
+			}
+		} catch (URISyntaxException e) {
+			LOGGER.error(e);
+		}
+		return null;
+	}
+
+    public <T> T readNbtSerializableFromJson(String id, Function<Tag, T> reader) {
+    	Tag tag = readNbtFromJson(id);
+    	if (tag == null) return null;
+    	return reader.apply(tag);
+	}
 
     private void loadJson(Path path, String[] idParts, BiConsumer<String, Tag> loader) {
 		if (Files.isDirectory(path)) {
