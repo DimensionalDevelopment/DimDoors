@@ -30,12 +30,12 @@ public class IdReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	public PocketGenerator peekReferencedPocket(PocketGenerationParameters parameters) {
-		return getReferencedPocket(parameters);
+	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationParameters parameters) {
+		return getReferencedPocketGenerator(parameters);
 	}
 
 	@Override
-	public PocketGenerator getReferencedPocket(PocketGenerationParameters parameters) {
+	public PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters) {
 		return SchematicV2Handler.getInstance().getGenerator(id);
 	}
 

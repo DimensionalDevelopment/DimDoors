@@ -9,18 +9,16 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 import com.google.common.collect.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
 
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 
 public class SchematicV2Handler {
@@ -28,7 +26,7 @@ public class SchematicV2Handler {
 	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
     private static final SchematicV2Handler INSTANCE = new SchematicV2Handler();
     private final Map<String, PocketGenerator> pocketGeneratorMap = Maps.newHashMap();
-    private final Map<String, PocketGroup> pocketGroups = Maps.newHashMap();
+    private final Map<String, VirtualPocket> pocketGroups = Maps.newHashMap();
 	private final Map<Identifier, PocketTemplateV2> templates = Maps.newHashMap();
     private boolean loaded = false;
 
@@ -60,7 +58,7 @@ public class SchematicV2Handler {
 		}
     }
 
-    private void loadCompound(Path path, String[] idParts, BiConsumer<String, CompoundTag> loader) {
+    private void loadCompound(Path path, String[] idParts, BiConsumer<String, Tag> loader) {
 		if (Files.isDirectory(path)) {
 			try {
 				for (Path directoryPath : Files.newDirectoryStream(path)) {
@@ -76,22 +74,43 @@ public class SchematicV2Handler {
 		} else if(Files.isRegularFile(path) && path.getFileName().toString().endsWith(".json")) {
 			String id = String.join(".", idParts);
 			try {
-				JsonObject json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonObject.class);
-				CompoundTag tag = CompoundTag.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, LOGGER::error).getFirst();
-				loader.accept(id, tag);
+				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
+				loader.accept(id, jsonToTag(json));
 			} catch (IOException e) {
 				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
 			}
 		}
 	}
 
-	private void loadPocketGroup(String id, CompoundTag tag) {
-		PocketGroup group = new PocketGroup(id).fromTag(tag);
+	private Tag jsonToTag(JsonElement json) {
+    	if (json.isJsonArray()) {
+			ListTag listTag = new ListTag();
+			for (JsonElement jsonElement : (JsonArray) json) {
+				Tag tag = jsonToTag(jsonElement);
+				if (tag != null) listTag.add(jsonToTag(jsonElement));
+			}
+			return listTag;
+		}
+    	else if (json.isJsonObject()) {
+    		return CompoundTag.CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, LOGGER::error).getFirst();
+		} else {
+    		LOGGER.error("JsonElement was not JsonObject or JsonArray!");
+    		return null;
+		}
+	}
+
+	private void loadPocketGroup(String id, Tag tag) {
+		VirtualPocket group = VirtualPocket.deserialize(tag);
+		LOGGER.info(VirtualPocket.serialize(group).toString());
 		pocketGroups.put(id, group);
 	}
 
-	private void loadPocketGenerator(String id, CompoundTag tag) {
-		PocketGenerator gen =  PocketGenerator.deserialize(tag);
+	private void loadPocketGenerator(String id, Tag tag) {
+    	if (tag == null || tag.getType() != NbtType.COMPOUND) {
+    		LOGGER.error("Could not load PocketGenerator " + id + " since the json does not represent a CompoundTag!");
+    		return;
+		}
+		PocketGenerator gen =  PocketGenerator.deserialize((CompoundTag) tag);
 		if (gen != null) pocketGeneratorMap.put(id, gen);
 	}
 
@@ -108,8 +127,8 @@ public class SchematicV2Handler {
 		}
 	}
 
-	public VirtualPocket getRandomPocketFromGroup(String group, PocketGenerationParameters parameters) {
-    	return pocketGroups.get(group).getPocketList().getNextRandomWeighted(parameters);
+	public VirtualPocket getGroup(String group) {
+    	return pocketGroups.get(group);
 	}
 
     public static SchematicV2Handler getInstance() {
@@ -120,7 +139,7 @@ public class SchematicV2Handler {
         return this.templates;
     }
 
-    public Map<String, PocketGroup> getPocketGroups() {
+    public Map<String, VirtualPocket> getPocketGroups() {
         return this.pocketGroups;
     }
 

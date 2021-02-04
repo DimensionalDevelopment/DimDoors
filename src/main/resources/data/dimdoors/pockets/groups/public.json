@@ -1,8 +1,4 @@
 {
-  "pockets": [
-    {
-      "id": "public.default",
-      "type": "dimdoors:id"
-    }
-  ]
+  "id": "public.default",
+  "type": "dimdoors:id"
 }

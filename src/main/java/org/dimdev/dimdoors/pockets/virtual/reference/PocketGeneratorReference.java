@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
@@ -79,7 +78,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 
 	@Override
 	public double getWeight(PocketGenerationParameters parameters) {
-		return weightEquation != null ? this.weightEquation.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocket(parameters).getWeight(parameters);
+		return weightEquation != null ? this.weightEquation.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocketGenerator(parameters).getWeight(parameters);
 	}
 
 	public void applyModifiers(Pocket pocket, PocketGenerationParameters parameters) {
@@ -90,7 +89,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
-		PocketGenerator generator = getReferencedPocket(parameters);
+		PocketGenerator generator = getReferencedPocketGenerator(parameters);
 		Pocket pocket = generator.prepareAndPlacePocket(parameters);
 		generator.applyModifiers(pocket, parameters);
 		this.applyModifiers(pocket, parameters);
@@ -98,7 +97,17 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		return pocket;
 	}
 
-	public abstract PocketGenerator peekReferencedPocket(PocketGenerationParameters parameters);
+	@Override
+	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+		return this;
+	}
 
-	public abstract PocketGenerator getReferencedPocket(PocketGenerationParameters parameters);
+	@Override
+	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+		return this;
+	}
+
+	public abstract PocketGenerator peekReferencedPocketGenerator(PocketGenerationParameters parameters);
+
+	public abstract PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters);
 }

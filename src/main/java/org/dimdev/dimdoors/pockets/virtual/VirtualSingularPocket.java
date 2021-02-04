@@ -48,8 +48,6 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 		return this.getType().toTag(tag);
 	}
 
-	public abstract Pocket prepareAndPlacePocket(PocketGenerationParameters parameters);
-
 	public abstract VirtualSingularPocketType<? extends VirtualSingularPocket> getType();
 
 	public abstract String getKey();

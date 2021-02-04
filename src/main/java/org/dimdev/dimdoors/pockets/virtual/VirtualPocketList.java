@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
 import net.minecraft.nbt.ListTag;
-import org.dimdev.dimdoors.pockets.PocketGroup;
+import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.world.pocket.Pocket;
@@ -30,15 +30,23 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 	}
 
 	public ListTag toTag(ListTag tag) {
-		int pointer = tag.size() - 1;
 		for(VirtualPocket virtualPocket : this) {
-			tag.set(pointer, VirtualPocket.serialize(virtualPocket));
+			tag.add(VirtualPocket.serialize(virtualPocket));
 		}
 		return tag;
 	}
 
+	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
-		return getNextRandomWeighted(parameters).prepareAndPlacePocket(parameters);
+		return getNextPocketGeneratorReference(parameters).prepareAndPlacePocket(parameters);
+	}
+
+	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+		return getNextRandomWeighted(parameters).getNextPocketGeneratorReference(parameters);
+	}
+
+	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+		return peekNextRandomWeighted(parameters).peekNextPocketGeneratorReference(parameters);
 	}
 
 	@Override

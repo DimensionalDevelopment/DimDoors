@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
+import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
@@ -32,8 +33,8 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 	private LinkedHashMap<String, VirtualPocket> pocketList;
 
 	public DepthDependentSelector() {
-
 	}
+
 	public DepthDependentSelector(String name, LinkedHashMap<String, VirtualPocket> pocketList) {
 		this.name = name;
 		this.pocketList = pocketList;
@@ -83,10 +84,14 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 		return getNextPocket(parameters).prepareAndPlacePocket(parameters);
 	}
 
-	// TODO: write method
 	@Override
-	public String toString() {
-		return null;
+	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+		return getNextPocket(parameters).getNextPocketGeneratorReference(parameters);
+	}
+
+	@Override
+	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+		return getNextPocket(parameters).peekNextPocketGeneratorReference(parameters);
 	}
 
 	@Override
