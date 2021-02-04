@@ -19,6 +19,7 @@ public final class ModSoundEvents {
 	public static final SoundEvent RIFT_START = register("dimdoors:rift_start");
 	public static final SoundEvent TEARING = register("dimdoors:tearing");
 	public static final SoundEvent WHITE_VOID = register("dimdoors:white_void");
+	public static final SoundEvent BLOOP = register("dimdoors:bloop");
 
 	private static SoundEvent register(String id) {
 		return Registry.register(Registry.SOUND_EVENT, id, new SoundEvent(new Identifier(id)));
