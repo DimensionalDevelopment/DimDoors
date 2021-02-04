@@ -4,10 +4,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -20,10 +23,12 @@ import org.dimdev.dimdoors.block.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.TagEquations;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.Pocket;
@@ -35,6 +40,7 @@ public class DimensionalDoorModifier implements Modifier {
 	private Direction facing;
 	private String doorTypeString;
 	private DimensionalDoorBlock doorType;
+	private CompoundTag doorData;
 
 	private String x;
 	private String y;
@@ -61,6 +67,8 @@ public class DimensionalDoorModifier implements Modifier {
 		}
 		doorType = (DimensionalDoorBlock) doorBlock;
 
+		if (tag.contains("door_data")) doorData = tag.getCompound("door_data");
+
 		try {
 			x = tag.getString("x");
 			y = tag.getString("y");
@@ -81,6 +89,7 @@ public class DimensionalDoorModifier implements Modifier {
 
 		tag.putString("facing", facing.asString());
 		tag.putString("door_type", doorTypeString);
+		if (doorData != null) tag.put("door_data", doorData);
 		tag.putString("x", x);
 		tag.putString("y", y);
 		tag.putString("z", z);
@@ -109,10 +118,18 @@ public class DimensionalDoorModifier implements Modifier {
 		world.setBlockState(pos, lower);
 		world.setBlockState(pos.up(), doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).with(DimensionalDoorBlock.FACING, facing));
 
-		// TODO: make the rifts be built more dynamically
 		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
-		rift.setDestination(PocketEntranceMarker.builder().ifDestination(new PocketExitMarker()).weight(1f).build());
-		rift.setProperties(LinkProperties.builder().entranceWeight(1f).groups(Collections.singleton(1)).floatingWeight(1f).linksRemaining(1).oneWay(false).build());
+
+		if (doorData == null) {
+			rift.setDestination(PocketEntranceMarker.builder().ifDestination(new PocketExitMarker()).weight(1f).build());
+			rift.setProperties(LinkProperties.builder().entranceWeight(1f).groups(Collections.singleton(1)).floatingWeight(1f).linksRemaining(1).oneWay(false).build());
+		} else {
+			CompoundTag solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
+			rift.setData(RiftData.fromTag(solvedDoorData));
+		}
 		world.setBlockEntity(pos, rift);
 	}
+
+	// TODO: move this to utility class
+
 }
