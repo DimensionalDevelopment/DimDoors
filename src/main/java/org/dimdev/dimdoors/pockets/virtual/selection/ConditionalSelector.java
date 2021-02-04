@@ -3,18 +3,22 @@ package org.dimdev.dimdoors.pockets.virtual.selection;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-public class DepthDependentSelector extends VirtualSingularPocket {
-	public static final String KEY = "depth_dependent";
+public class ConditionalSelector extends VirtualSingularPocket {
+	private static final Logger LOGGER = LogManager.getLogger();
+	public static final String KEY = "conditional";
 	/*
 	private static final Codec<Pair<String, VirtualPocket>> PAIR_CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("regex").forGetter(Pair::getLeft),
@@ -29,35 +33,33 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 
 
 
-	private String name;
-	private LinkedHashMap<String, VirtualPocket> pocketList;
+	private LinkedHashMap<String, VirtualPocket> pocketMap = Maps.newLinkedHashMap();
+	private LinkedHashMap<String, Equation> equationMap = Maps.newLinkedHashMap();
 
-	public DepthDependentSelector() {
+	public ConditionalSelector() {
 	}
 
-	public DepthDependentSelector(String name, LinkedHashMap<String, VirtualPocket> pocketList) {
-		this.name = name;
-		this.pocketList = pocketList;
+	public ConditionalSelector(LinkedHashMap<String, VirtualPocket> pocketMap) {
+		this.pocketMap = pocketMap;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public LinkedHashMap<String, VirtualPocket> getPocketList() {
-		return pocketList;
+	public LinkedHashMap<String, VirtualPocket> getPocketMap() {
+		return pocketMap;
 	}
 
 	@Override
 	public VirtualSingularPocket fromTag(CompoundTag tag) {
-		this.name = tag.getString("id");
-		ListTag regexPockets = tag.getList("pockets", 10);
-		pocketList = Maps.newLinkedHashMap();
-		for (int i = 0; i < regexPockets.size(); i++) {
-			CompoundTag pocket = regexPockets.getCompound(i);
-			String regex = pocket.getString("regex");
-			if (pocketList.containsKey(regex)) continue;
-			pocketList.put(pocket.getString("regex"), VirtualPocket.deserialize(pocket.get("pocket")));
+		ListTag conditionalPockets = tag.getList("pockets", 10);
+		for (int i = 0; i < conditionalPockets.size(); i++) {
+			CompoundTag pocket = conditionalPockets.getCompound(i);
+			String condition = pocket.getString("condition");
+			if (pocketMap.containsKey(condition)) continue;
+			try {
+				equationMap.put(condition, Equation.parse(condition));
+				pocketMap.put(condition, VirtualPocket.deserialize(pocket.get("pocket")));
+			} catch (Equation.EquationParseException e) {
+				LOGGER.error("Could not parse pocket condition equation!", e);
+			}
 		}
 		return this;
 	}
@@ -66,16 +68,14 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 	public CompoundTag toTag(CompoundTag tag) {
 		super.toTag(tag);
 
-		tag.putString("id", this.name);
-
-		ListTag regexPockets = new ListTag();
-		pocketList.forEach((regex, pocket) -> {
+		ListTag conditionalPockets = new ListTag();
+		pocketMap.forEach((condition, pocket) -> {
 			CompoundTag compound = new CompoundTag();
-			compound.putString("regex", regex);
+			compound.putString("condition", condition);
 			compound.put("pocket", VirtualPocket.serialize(pocket));
-			regexPockets.add(compound);
+			conditionalPockets.add(compound);
 		});
-		tag.put("pockets", regexPockets);
+		tag.put("pockets", conditionalPockets);
 		return tag;
 	}
 
@@ -110,11 +110,11 @@ public class DepthDependentSelector extends VirtualSingularPocket {
 	}
 
 	private VirtualPocket getNextPocket(PocketGenerationParameters parameters) {
-		for (Map.Entry<String, VirtualPocket> entry : pocketList.entrySet()) {
-			if (Pattern.compile(entry.getKey()).matcher(String.valueOf(parameters.getSourceVirtualLocation().getDepth())).matches()) {
+		for (Map.Entry<String, VirtualPocket> entry : pocketMap.entrySet()) {
+			if (equationMap.get(entry.getKey()).asBoolean(parameters.toVariableMap(new HashMap<>()))) {
 				return entry.getValue();
 			}
 		}
-		return pocketList.values().stream().findFirst().get(); // TODO: orElse() with some NONE VirtualPocket
+		return pocketMap.values().stream().findFirst().get(); // TODO: orElse() with some NONE VirtualPocket
 	}
 }

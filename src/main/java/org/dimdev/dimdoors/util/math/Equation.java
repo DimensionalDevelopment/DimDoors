@@ -7,11 +7,25 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 public interface Equation {
+	double FALSE = 0d;
+	double TRUE = 1d;
 
 	double apply(Map<String, Double> variableMap);
 
+	default boolean asBoolean(Map<String, Double> variableMap) {
+		return toBoolean(apply(variableMap));
+	}
+
 	static Equation parse(String equationString) throws EquationParseException {
 		return StringEquationParser.INSTANCE.parse(equationString);
+	}
+
+	static double toDouble(boolean value) {
+		return value ? TRUE : FALSE;
+	}
+
+	static boolean toBoolean(double value) {
+		return value != FALSE;
 	}
 
 	class StringEquationParser {
@@ -35,6 +49,26 @@ public interface Equation {
 					return Optional.empty();
 				}
 			});
+
+			// some logic first
+			// ||
+			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> or = new HashMap<>();
+			or.put("||", (stringDoubleMap, first, second) -> toDouble(first.asBoolean(stringDoubleMap) || second.asBoolean(stringDoubleMap)));
+			parseRules.add(new SplitterParser(or));
+
+			// &&
+			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> and = new HashMap<>();
+			and.put("&&", (stringDoubleMap, first, second) -> toDouble(first.asBoolean(stringDoubleMap) || second.asBoolean(stringDoubleMap)));
+			parseRules.add(new SplitterParser(and));
+
+			// ==, <=, >=, <, >
+			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> comparators = new HashMap<>();
+			comparators.put("==", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) == second.apply(stringDoubleMap)));
+			comparators.put("<=", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) <= second.apply(stringDoubleMap)));
+			comparators.put(">=", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) >= second.apply(stringDoubleMap)));
+			comparators.put("<", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) < second.apply(stringDoubleMap)));
+			comparators.put(">", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) > second.apply(stringDoubleMap)));
+			parseRules.add(new SplitterParser(comparators));
 
 			// +, -
 			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> sumOperations = new HashMap<>();
