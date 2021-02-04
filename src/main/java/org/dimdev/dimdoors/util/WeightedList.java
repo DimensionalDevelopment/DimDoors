@@ -22,6 +22,11 @@ public class WeightedList<T extends Weighted<P>, P> extends ArrayList<T> {
 		if (!peeked) {
 			double totalWeight = stream().mapToDouble(weighted -> weighted.getWeight(parameters)).sum();
 			double cursor = random.nextDouble() * totalWeight;
+			if (cursor == 0) {
+				for (T weighted : this) {
+					if (weighted.getWeight(parameters) != 0) return weighted;
+				}
+			}
 			for (T weighted : this) {
 				cursor -= weighted.getWeight(parameters);
 				if (cursor <= 0) {
@@ -30,7 +35,7 @@ public class WeightedList<T extends Weighted<P>, P> extends ArrayList<T> {
 						peeked = true;
 					}
 					return weighted; // should never return an entry with weight 0, unless there are only weight 0 entries
-				} // TODO: fix bug, if first entry has weight 0 and random.nextInt(totalWeight) is 0, then it will return first entry
+				}
 			}
 			if (peek) {
 				peekedRandom = null;

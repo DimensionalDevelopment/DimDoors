@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.BlockState;
@@ -14,6 +16,7 @@ import net.fabricmc.fabric.api.util.NbtType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.schematic.v2.SchematicBlockPalette;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
@@ -67,7 +70,7 @@ public class ShellModifier implements Modifier{
 	}
 
 	private void drawLayer(Layer layer, Pocket pocket, ServerWorld world) {
-		int thickness = layer.getThickness();
+		int thickness = layer.getThickness(pocket.toVariableMap(new HashMap<>()));
 		final BlockState blockState = layer.getBlockState();
 		BlockBox pocketBox = pocket.getBox();
 
@@ -94,12 +97,19 @@ public class ShellModifier implements Modifier{
 
 	public static class Layer {
 		private final String blockStateString;
-		private final int thickness; // TODO: maybe this could even be an equation?
+		private final String thickness;
+		private Equation thicknessEquation;
 		private final BlockState blockState;
 
-		public Layer(String blockStateString, int thickness) {
+		public Layer(String blockStateString, String thickness) {
 			this.blockStateString = blockStateString;
 			this.thickness = thickness;
+			try {
+				this.thicknessEquation = Equation.parse(thickness);
+			} catch (Equation.EquationParseException e) {
+				LOGGER.error("Could not parse layer thickness equation");
+				this.thicknessEquation = variableMap -> 1d;
+			}
 
 			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow(false, LOGGER::error);
 		}
@@ -108,19 +118,19 @@ public class ShellModifier implements Modifier{
 			return blockState;
 		}
 
-		public int getThickness() {
-			return thickness;
+		public int getThickness(Map<String, Double> variableMap) {
+			return (int) thicknessEquation.apply(variableMap);
 		}
 
 		public CompoundTag toTag() {
 			CompoundTag tag = new CompoundTag();
 			tag.putString("block_state", blockStateString);
-			tag.putInt("thickness", thickness);
+			tag.putString("thickness", thickness);
 			return tag;
 		}
 
 		public static Layer fromTag(CompoundTag tag) throws CommandSyntaxException {
-			return new Layer(tag.getString("block_state"), tag.getInt("thickness"));
+			return new Layer(tag.getString("block_state"), tag.getString("thickness"));
 		}
 	}
 }

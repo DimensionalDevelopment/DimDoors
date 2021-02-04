@@ -7,11 +7,11 @@
       "layers": [
         {
           "block_state": "dimdoors:black_fabric",
-          "thickness": 4
+          "thickness": "4"
         },
         {
           "block_state": "dimdoors:black_ancient_fabric",
-          "thickness": 1
+          "thickness": "1"
         }
       ],
       "type": "dimdoors:shell"

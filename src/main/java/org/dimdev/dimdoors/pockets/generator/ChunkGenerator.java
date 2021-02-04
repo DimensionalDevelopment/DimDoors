@@ -39,9 +39,9 @@ public class ChunkGenerator extends PocketGenerator {
 	public static final String KEY = "chunk";
 
 	private Identifier dimensionID;
-	private Vec3i size;
-	private Vec3i offset;
-	private int virtualYOffset;
+	private Vec3i size; // TODO: equation-ify
+	private Vec3i offset; // TODO: equation-ify
+	private int virtualYOffset; // TODO: equation-ify
 
 	public ChunkGenerator() {
 	}
