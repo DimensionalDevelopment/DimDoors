@@ -39,9 +39,18 @@ public class RiftBladeItem extends SwordItem {
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
-		HitResult hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
+		HitResult hit = RaycastHelper.raycast(player,16,0.0F, LivingEntity.class::isInstance);
+
+		if(hit == null) {
+			hit = RaycastHelper.raycast(player, 16, 1.0F, LivingEntity.class::isInstance);
+		}
+
+		if(hit == null) {
+			hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
+		}
+
 		if (hit == null) {
-			hit = player.raycast(RaycastHelper.REACH_DISTANCE, 0, false);
+			hit = player.raycast(16, 0, false);
 		}
 
 		if (world.isClient) {
