@@ -1,10 +1,8 @@
 package org.dimdev.dimdoors.util.schematic;
 
 import net.minecraft.block.*;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.block.enums.StairShape;
 import org.dimdev.dimdoors.mixin.accessor.RedstoneWireBlockAccessor;
 
 import net.minecraft.block.enums.WireConnection;
@@ -12,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 
+// TODO: probably need to fix tall_grass -> upper, lower
 public class SchematicBlockConnectionFixer {
 	public static void fixBlocks(Schematic schematic) {
 		for (int x = 0; x < schematic.sizeX; x++) {
@@ -27,11 +26,54 @@ public class SchematicBlockConnectionFixer {
 							schematic.setBlockState(x, y, z, getFencePlacementState(schematic, new BlockPos(x, y, z), (FenceBlock) block, state));
 						} else if (block instanceof PaneBlock) {
 							schematic.setBlockState(x, y, z, getPanePlacementState(schematic, new BlockPos(x, y, z), (PaneBlock) block, state));
+						} else if (block instanceof DoorBlock && state.get(DoorBlock.HALF).equals(DoubleBlockHalf.UPPER)) {
+							schematic.setBlockState(x, y, z, getUpperDoorHalfPlacementState(schematic, new BlockPos(x, y, z), (DoorBlock) block, state));
+						} else if (block instanceof StairsBlock) {
+							schematic.setBlockState(x, y, z, state.with(StairsBlock.SHAPE, getStairShape(state, schematic, new BlockPos(x, y, z))));
 						}
 					}
 				}
 			}
 		}
+	}
+
+	public static StairShape getStairShape(BlockState state, BlockView world, BlockPos pos) {
+		Direction direction = (Direction)state.get(StairsBlock.FACING);
+		BlockState blockState = world.getBlockState(pos.offset(direction));
+		if (StairsBlock.isStairs(blockState) && state.get(StairsBlock.HALF) == blockState.get(StairsBlock.HALF)) {
+			Direction direction2 = (Direction)blockState.get(StairsBlock.FACING);
+			if (direction2.getAxis() != ((Direction)state.get(StairsBlock.FACING)).getAxis() && method_10678(state, world, pos, direction2.getOpposite())) {
+				if (direction2 == direction.rotateYCounterclockwise()) {
+					return StairShape.OUTER_LEFT;
+				}
+
+				return StairShape.OUTER_RIGHT;
+			}
+		}
+
+		BlockState blockState2 = world.getBlockState(pos.offset(direction.getOpposite()));
+		if (StairsBlock.isStairs(blockState2) && state.get(StairsBlock.HALF) == blockState2.get(StairsBlock.HALF)) {
+			Direction direction3 = (Direction)blockState2.get(StairsBlock.FACING);
+			if (direction3.getAxis() != ((Direction)state.get(StairsBlock.FACING)).getAxis() && method_10678(state, world, pos, direction3)) {
+				if (direction3 == direction.rotateYCounterclockwise()) {
+					return StairShape.INNER_LEFT;
+				}
+
+				return StairShape.INNER_RIGHT;
+			}
+		}
+
+		return StairShape.STRAIGHT;
+	}
+
+	private static boolean method_10678(BlockState state, BlockView world, BlockPos pos, Direction dir) {
+		BlockState blockState = world.getBlockState(pos.offset(dir));
+		return !StairsBlock.isStairs(blockState) || blockState.get(StairsBlock.FACING) != state.get(StairsBlock.FACING) || blockState.get(StairsBlock.HALF) != state.get(StairsBlock.HALF);
+	}
+
+	public static BlockState getUpperDoorHalfPlacementState(BlockView world, BlockPos pos, DoorBlock block, BlockState state) {
+		BlockState lower = world.getBlockState(pos.down());
+		return state.with(DoorBlock.FACING, lower.get(DoorBlock.FACING)).with(DoorBlock.HINGE, lower.get(DoorBlock.HINGE)).with(DoorBlock.OPEN, lower.get(DoorBlock.OPEN)).with(DoorBlock.POWERED, lower.get(DoorBlock.POWERED));
 	}
 
 	public static BlockState getPanePlacementState(BlockView world, BlockPos pos, PaneBlock block, BlockState state) {
