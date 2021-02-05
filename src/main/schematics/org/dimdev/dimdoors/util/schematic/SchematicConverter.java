@@ -294,18 +294,12 @@ public class SchematicConverter {
 		CONVERSIONS.put("minecraft:web", "minecraft:cobweb");
 
 
-		for (int i = 1; i < 8; i++) {
+		for (int i = 1; i < 16; i++) {
 			CONVERSIONS.put("minecraft:lava[level=" + i + "]", "minecraft:flowing_lava[level=" + i + "]");
 		}
-		for (int i = 8; i < 16; i++) {
-			CONVERSIONS.put("minecraft:lava[level=" + i + "]", "minecraft:flowing_lava[level=" + i + ",falling=true]");
-		}
 
-		for (int i = 1; i < 8; i++) {
+		for (int i = 1; i < 16; i++) {
 			CONVERSIONS.put("minecraft:water[level=" + i + "]", "minecraft:flowing_water[level=" + i + "]");
-		}
-		for (int i = 8; i < 16; i++) {
-			CONVERSIONS.put("minecraft:water[level=" + i + "]", "minecraft:flowing_water[level=" + i + ",falling=true]");
 		}
 
 		CONVERSIONS.put("minecraft:tallgrass[type=tall_grass]", "minecraft:tall_grass");

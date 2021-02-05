@@ -12,7 +12,7 @@
     "facing=south,half=lower,hinge=left,open=true": { "model": "dimdoors:block/gold_door_bottom_rh", "y": 180 },
     "facing=west,half=lower,hinge=left,open=true":  { "model": "dimdoors:block/gold_door_bottom_rh", "y": 270 },
     "facing=north,half=lower,hinge=left,open=true": { "model": "dimdoors:block/gold_door_bottom_rh" },
-    "facing=east,half=lower,hinge=right,open=true":  { "model": "dimdoors:block/blocks/gold_door_bottom", "y": 270 },
+    "facing=east,half=lower,hinge=right,open=true":  { "model": "dimdoors:block/gold_door_bottom", "y": 270 },
     "facing=south,half=lower,hinge=right,open=true": { "model": "dimdoors:block/gold_door_bottom" },
     "facing=west,half=lower,hinge=right,open=true":  { "model": "dimdoors:block/gold_door_bottom", "y": 90 },
     "facing=north,half=lower,hinge=right,open=true": { "model": "dimdoors:block/gold_door_bottom", "y": 180 },
