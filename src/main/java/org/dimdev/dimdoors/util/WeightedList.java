@@ -7,7 +7,10 @@ public class WeightedList<T extends Weighted<P>, P> extends ArrayList<T> {
 	private T peekedRandom;
 	private boolean peeked = false;
 
-	public WeightedList() {
+	public WeightedList() { }
+
+	public WeightedList(Collection<? extends T> c) {
+		super(c);
 	}
 
 	public T getNextRandomWeighted(P parameters) {

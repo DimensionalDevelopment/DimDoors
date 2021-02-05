@@ -8,6 +8,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
+import org.dimdev.dimdoors.pockets.virtual.reference.TagReference;
 import org.dimdev.dimdoors.pockets.virtual.selection.ConditionalSelector;
 
 import java.util.function.Supplier;
@@ -53,6 +54,7 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 
 	public interface VirtualSingularPocketType<T extends VirtualSingularPocket> {
 		VirtualSingularPocketType<IdReference> ID_REFERENCE = register(new Identifier("dimdoors", IdReference.KEY), IdReference::new);
+		VirtualSingularPocketType<TagReference> TAG_REFERENCE = register(new Identifier("dimdoors", TagReference.KEY), TagReference::new);
 
 		VirtualSingularPocketType<ConditionalSelector> DEPTH_DEPENDENT_SELECTOR = register(new Identifier("dimdoors", ConditionalSelector.KEY), ConditionalSelector::new);
 

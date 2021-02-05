@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.*;
 import com.google.gson.*;
@@ -20,6 +21,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 
 public class SchematicV2Handler {
@@ -130,6 +133,10 @@ public class SchematicV2Handler {
 		} catch (URISyntaxException | IOException e) {
 			LOGGER.error("Could not load schematic!", e);
 		}
+	}
+
+	public WeightedList<PocketGenerator, PocketGenerationParameters> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
+    	return new WeightedList<>(pocketGeneratorMap.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
 
 	public VirtualPocket getGroup(String group) {

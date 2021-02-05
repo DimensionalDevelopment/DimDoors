@@ -2,11 +2,13 @@ package org.dimdev.dimdoors.pockets.generator;
 
 import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -41,6 +43,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 
 	private String weight;
 	private Equation weightEquation;
+
+	private final List<String> tags = new ArrayList<>();
 
 	public PocketGenerator() { }
 
@@ -87,6 +91,13 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 				modifierList.add(Modifier.deserialize(modifiersTag.getCompound(i)));
 			}
 		}
+
+		if (tag.contains("tags")) {
+			ListTag listTag = tag.getList("tags", NbtType.STRING);
+			for (int i = 0; i < listTag.size(); i++) {
+				tags.add(listTag.getString(i));
+			}
+		}
 		return this;
 	}
 
@@ -100,6 +111,16 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 			modifiersTag.add(modifier.toTag(new CompoundTag()));
 		}
 		if (modifiersTag.size() > 0) tag.put("modifiers", modifiersTag);
+
+		if (tags.size() > 0) {
+			ListTag listTag = new ListTag();
+			for (String tagString : tags) {
+				listTag.add(StringTag.of(tagString));
+			}
+			tag.put("tags", listTag);
+		}
+
+
 		return tag;
 	}
 
@@ -144,6 +165,22 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		});
 		TemplateUtils.registerRifts(rifts, parameters.getLinkTo(), parameters.getLinkProperties(), pocket);
 		pocket.virtualLocation = parameters.getSourceVirtualLocation(); //TODO: this makes very little sense
+	}
+
+	// why would you want to check for exact tags, but still need a blackList? Good question, but there is probably some use case for it.
+	public boolean checkTags(List<String> required, List<String> blackList, boolean exact) {
+		if (exact && required.size() != tags.size()) return false;
+		if (required != null) {
+			for (String req : required) {
+				if (!tags.contains(req)) return false;
+			}
+		}
+		if (blackList != null) {
+			for (String black : blackList) {
+				if (tags.contains(black)) return false;
+			}
+		}
+		return true;
 	}
 
 	public interface PocketGeneratorType<T extends PocketGenerator> {
