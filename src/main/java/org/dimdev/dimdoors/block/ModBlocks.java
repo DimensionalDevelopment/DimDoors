@@ -27,7 +27,7 @@ public final class ModBlocks {
 	public static final Block OAK_DIMENSIONAL_TRAPDOOR = register("dimdoors:wood_dimensional_trapdoor", new DimensionalTrapdoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).nonOpaque()));
 
 	public static final Block DIMENSIONAL_PORTAL = register("dimdoors:dimensional_portal", new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).nonOpaque().dropsNothing().lightLevel(10)));
-	public static final Block DETACHED_RIFT = register("dimdoors:detached_rift", new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).nonOpaque()));
+	public static final Block DETACHED_RIFT = register("dimdoors:detached_rift", new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).noCollision().nonOpaque()));
 
 	public static final Block WHITE_FABRIC = registerFabric("dimdoors:white_fabric", DyeColor.WHITE);
 	public static final Block ORANGE_FABRIC = registerFabric("dimdoors:orange_fabric", DyeColor.ORANGE);

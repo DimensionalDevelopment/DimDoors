@@ -14,9 +14,11 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public class RiftBladeItem extends SwordItem {
@@ -84,9 +86,13 @@ public class RiftBladeItem extends SwordItem {
 			stack.damage(1, player, a -> {
 			});
 			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
-		} else if (RaycastHelper.hitsRift(hit, world)) {
-			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
-			rift.teleport(player);
+		} else if (RaycastHelper.hitsDetachedRift(hit, world)) {
+			BlockHitResult blockHitResult = (BlockHitResult) hit;
+			BlockPos pos = blockHitResult.getBlockPos();
+			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
+
+			world.setBlockState(pos, ModBlocks.DIMENSIONAL_PORTAL.getDefaultState().with(DimensionalPortalBlock.FACING, blockHitResult.getSide()));
+			((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
 			stack.damage(1, player, a -> a.sendToolBreakStatus(hand));
 			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
