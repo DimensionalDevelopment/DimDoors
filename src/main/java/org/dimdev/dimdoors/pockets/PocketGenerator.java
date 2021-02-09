@@ -69,6 +69,10 @@ public final class PocketGenerator {
     	return pocketGeneratorReference.prepareAndPlacePocket(parameters);
 	}
 
+	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), "dungeon", virtualLocation, linkTo, linkProperties);
+	}
+
     /**
      * Create a dungeon pockets at a certain depth.
      *

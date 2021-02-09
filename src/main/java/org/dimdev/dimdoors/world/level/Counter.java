@@ -1,12 +1,10 @@
 package org.dimdev.dimdoors.world.level;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 import dev.onyxstudios.cca.api.v3.item.ItemComponent;
 
-public class Counter extends ItemComponent implements ComponentV3 {
+public class Counter extends ItemComponent {
 	public Counter(ItemStack stack) {
 		super(stack, DimensionalDoorsComponents.COUNTER_COMPONENT_KEY);
 
