@@ -8,8 +8,12 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketTemplateV2;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SchematicGenerator extends PocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -26,7 +30,16 @@ public class SchematicGenerator extends PocketGenerator {
 	private String id;
 	private Identifier templateID;
 
-	public SchematicGenerator() {}
+	private Equation lengthEquation;
+	private String offsetX;
+	private Equation offsetXEquation;
+	private String offsetY;
+	private Equation offsetYEquation;
+	private String offsetZ;
+	private Equation offsetZEquation;
+
+	public SchematicGenerator() {
+	}
 
 	public SchematicGenerator(String id) {
 		this.id = id;
@@ -51,6 +64,17 @@ public class SchematicGenerator extends PocketGenerator {
 
 		SchematicV2Handler.getInstance().loadSchematic(templateID, id);
 
+		try {
+			offsetX = tag.contains("offset_x") ? tag.getString("offset_x") : "0";
+			offsetXEquation = Equation.parse(offsetX);
+			offsetY = tag.contains("offset_y") ? tag.getString("offset_y") : "0";
+			offsetYEquation = Equation.parse(offsetY);
+			offsetZ = tag.contains("offset_z") ? tag.getString("offset_z") : "0";
+			offsetZEquation = Equation.parse(offsetZ);
+		} catch (Equation.EquationParseException e) {
+			LOGGER.error(e);
+		}
+
 		return this;
 	}
 
@@ -59,12 +83,18 @@ public class SchematicGenerator extends PocketGenerator {
 		super.toTag(tag);
 
 		tag.putString("id", this.id);
+
+		if (!offsetX.equals("0")) tag.putString("offset_x", offsetX);
+		if (!offsetY.equals("0")) tag.putString("offset_y", offsetY);
+		if (!offsetZ.equals("0")) tag.putString("offset_z", offsetZ);
+
 		return tag;
 	}
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		ServerWorld world = parameters.getWorld();
+		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 
 		PocketTemplateV2 template = SchematicV2Handler.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
@@ -72,7 +102,7 @@ public class SchematicGenerator extends PocketGenerator {
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
 		LOGGER.info("Generating pocket from template " + template.getId() + " at location " + pocket.getOrigin());
 
-		template.place(pocket);
+		template.place(pocket, (int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap));
 
 		return pocket;
 	}
