@@ -6,8 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
+import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.Equation;
@@ -82,9 +84,9 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		return weightEquation != null ? this.weightEquation.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocketGenerator(parameters).getWeight(parameters);
 	}
 
-	public void applyModifiers(Pocket pocket, PocketGenerationParameters parameters) {
+	public void applyModifiers(PocketGenerationParameters parameters, RiftManager manager) {
 		for (Modifier modifier : modifierList) {
-			modifier.apply(pocket, parameters);
+			modifier.apply(parameters, manager);
 		}
 	}
 
@@ -92,8 +94,12 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		PocketGenerator generator = getReferencedPocketGenerator(parameters);
 		Pocket pocket = generator.prepareAndPlacePocket(parameters);
-		generator.applyModifiers(pocket, parameters);
-		this.applyModifiers(pocket, parameters);
+
+		RiftManager manager = new RiftManager(pocket);
+
+		generator.apply(parameters, manager);
+
+		this.applyModifiers(parameters, manager);
 		generator.setup(pocket, parameters, setupLoot != null ? setupLoot : true);
 		return pocket;
 	}

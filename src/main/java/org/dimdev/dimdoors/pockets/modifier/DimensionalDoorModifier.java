@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.pockets.modifier;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.Block;
@@ -21,9 +22,11 @@ import org.dimdev.dimdoors.block.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
@@ -109,9 +112,9 @@ public class DimensionalDoorModifier implements Modifier {
 	}
 
 	@Override
-	public void apply(Pocket pocket, PocketGenerationParameters parameters) {
-		Map<String, Double> variableMap = pocket.toVariableMap(new HashMap<>());
-		BlockPos pocketOrigin = pocket.getOrigin();
+	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
+		BlockPos pocketOrigin = manager.getPocket().getOrigin();
 		BlockPos pos = new BlockPos(xEquation.apply(variableMap) + pocketOrigin.getX(), yEquation.apply(variableMap) + pocketOrigin.getY(), zEquation.apply(variableMap) + pocketOrigin.getZ());
 
 		ServerWorld world = parameters.getWorld();
@@ -122,12 +125,14 @@ public class DimensionalDoorModifier implements Modifier {
 		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
 
 		if (doorData == null) {
-			rift.setDestination(PocketEntranceMarker.builder().ifDestination(new PocketExitMarker()).weight(1f).build());
-			rift.setProperties(LinkProperties.builder().entranceWeight(1f).groups(Collections.singleton(1)).floatingWeight(1f).linksRemaining(1).oneWay(false).build());
+			rift.setDestination(new IdMarker(manager.nextId()));
 		} else {
 			CompoundTag solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
 			rift.setData(RiftData.fromTag(solvedDoorData));
 		}
+
+		manager.add(rift);
+
 		world.setBlockEntity(pos, rift);
 	}
 }

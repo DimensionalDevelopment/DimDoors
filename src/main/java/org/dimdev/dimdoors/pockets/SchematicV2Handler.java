@@ -17,6 +17,8 @@ import com.mojang.serialization.JsonOps;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.*;
 import net.minecraft.util.Identifier;
+
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -98,7 +100,7 @@ public class SchematicV2Handler {
 				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
 			}
 		} else if(Files.isRegularFile(path) && path.getFileName().toString().endsWith(".json")) {
-			String id = String.join(".", idParts);
+			String id = String.join("", idParts);
 			try {
 				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
 				loader.accept(id, JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
@@ -119,6 +121,7 @@ public class SchematicV2Handler {
     		return;
 		}
 		PocketGenerator gen =  PocketGenerator.deserialize((CompoundTag) tag);
+    	LOGGER.info(id + ": "  + gen.toTag(new CompoundTag()));
 		if (gen != null) pocketGeneratorMap.put(id, gen);
 	}
 

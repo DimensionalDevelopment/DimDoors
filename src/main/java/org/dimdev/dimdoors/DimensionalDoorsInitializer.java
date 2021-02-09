@@ -19,7 +19,6 @@ import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.util.schematic.v2.SchematicTest;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
@@ -58,13 +57,6 @@ public class DimensionalDoorsInitializer implements ModInitializer {
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             server = minecraftServer;
-            if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-                try {
-                    SchematicTest.test();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         });
 
         ModBlocks.init();

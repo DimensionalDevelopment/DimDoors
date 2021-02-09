@@ -7,9 +7,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 public interface Modifier {
@@ -36,11 +39,12 @@ public interface Modifier {
 
 	String getKey();
 
-	void apply(Pocket pocket, PocketGenerationParameters parameters);
+	void apply(PocketGenerationParameters parameters, RiftManager manager);
 
 	interface ModifierType<T extends Modifier> {
 		ModifierType<ShellModifier> SHELL_MODIFIER_TYPE = register(new Identifier("dimdoors", ShellModifier.KEY), ShellModifier::new);
 		ModifierType<DimensionalDoorModifier> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(new Identifier("dimdoors", DimensionalDoorModifier.KEY), DimensionalDoorModifier::new);
+		ModifierType<PocketEntranceModifier> PUBLIC_MODIFIER_TYPE = register(new Identifier("dimdoors", PocketEntranceModifier.KEY), PocketEntranceModifier::new);
 
 		Modifier fromTag(CompoundTag tag);
 

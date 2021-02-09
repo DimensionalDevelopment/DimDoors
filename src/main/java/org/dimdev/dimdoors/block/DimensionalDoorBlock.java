@@ -17,6 +17,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -95,5 +97,10 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 		} else {
 			throw new IllegalStateException("Dimensional door at " + pos + " in world " + world + " contained no rift.");
 		}
+	}
+
+	@Override
+	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
+		return VoxelShapes.fullCube();
 	}
 }

@@ -20,6 +20,8 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
+import org.dimdev.dimdoors.pockets.modifier.RiftManager;
+import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
@@ -30,8 +32,10 @@ import org.dimdev.dimdoors.world.pocket.Pocket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationParameters> {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -135,9 +139,9 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		return this.weightEquation.apply(parameters.toVariableMap(new HashMap<>()));
 	}
 
-	public void applyModifiers(Pocket pocket, PocketGenerationParameters parameters) {
+	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
 		for (Modifier modifier : modifierList) {
-			modifier.apply(pocket, parameters);
+			modifier.apply(parameters, manager);
 		}
 	}
 

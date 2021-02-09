@@ -15,6 +15,8 @@ import net.minecraft.util.math.BlockPos;
 import net.fabricmc.fabric.api.util.NbtType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.schematic.v2.SchematicBlockPalette;
@@ -65,8 +67,8 @@ public class ShellModifier implements Modifier{
 	}
 
 	@Override
-	public void apply(Pocket pocket, PocketGenerationParameters parameters) {
-		layers.forEach(layer -> drawLayer(layer, pocket, parameters.getWorld()));
+	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+		layers.forEach(layer -> drawLayer(layer, manager.getPocket(), parameters.getWorld()));
 	}
 
 	private void drawLayer(Layer layer, Pocket pocket, ServerWorld world) {

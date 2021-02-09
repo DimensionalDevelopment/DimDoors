@@ -11,10 +11,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MaterialColor;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -78,5 +81,14 @@ public class DetachedRiftBlock extends Block implements RiftProvider<DetachedRif
 	@Override
 	public BlockRenderType getRenderType(BlockState state) {
 		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	}
+
+	@Override
+	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
+		return VoxelShapes.fullCube();
+	}
+
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
+		return VoxelShapes.fullCube();
 	}
 }

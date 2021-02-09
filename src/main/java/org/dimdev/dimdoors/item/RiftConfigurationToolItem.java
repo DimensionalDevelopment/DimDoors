@@ -2,11 +2,15 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,6 +24,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.rift.targets.IdMarker;
+import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.world.level.Counter;
 
 import static net.fabricmc.api.EnvType.CLIENT;
 
@@ -38,21 +45,37 @@ public class RiftConfigurationToolItem extends Item {
 
 		if (world.isClient) {
 			if (!RaycastHelper.hitsRift(hit, world)) {
-				player.sendMessage(new TranslatableText("tools.rift_miss"), true);
+				EntityUtils.chat(player, new TranslatableText("tools.rift_miss"));
 				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().highlightRiftCoreFor;
 			}
 			return new TypedActionResult<>(ActionResult.FAIL, stack);
+		} else {
+			Counter counter = Counter.get(stack);
+
+			if (RaycastHelper.hitsRift(hit, world)) {
+				RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
+
+				if (rift.getDestination() instanceof IdMarker) {
+					EntityUtils.chat(player, Text.of("Id: " + ((IdMarker) rift.getDestination()).getId()));
+				} else {
+					int id = counter.increment();
+					EntityUtils.chat(player, Text.of("Rift stripped of data and set to target id: : " + id));
+
+					rift.setDestination(new IdMarker(id));
+				}
+
+				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+			} else {
+				if(player.isSneaking()) {
+					counter.clear();
+					EntityUtils.chat(player, Text.of("Counter has been reset."));
+				} else {
+					EntityUtils.chat(player, Text.of("Current Count: " + counter.count()));
+				}
+			}
 		}
 
-		if (RaycastHelper.hitsRift(hit, world)) {
-			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
-
-			System.out.println(rift);
-
-			//TODO: implement this tool's functionality
-			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
-		}
-		return new TypedActionResult<>(ActionResult.FAIL, stack);
+		return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 	}
 
 	@Override

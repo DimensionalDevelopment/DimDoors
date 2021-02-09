@@ -20,6 +20,8 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -69,5 +71,10 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
 		builder.add(FACING);
+	}
+
+	@Override
+	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
+		return VoxelShapes.fullCube();
 	}
 }
