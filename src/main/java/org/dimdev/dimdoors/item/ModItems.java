@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
@@ -18,6 +19,7 @@ import org.dimdev.dimdoors.util.registry.RegistryObject;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
@@ -26,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -145,6 +148,11 @@ public final class ModItems {
 	@RegistryObject("rift_stabilizer")
 	public static final Item RIFT_STABILIZER = create(new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
 
+	@RegistryObject("dimensional_eraser")
+	public static final Item DIMENSIONAL_ERASER = create(new DimensionalEraser(new Item.Settings().maxDamage(100).group(DIMENSIONAL_DOORS)));
+
+	@RegistryObject("monolith_spawner")
+	public static final Item MONOLITH_SPAWNER = new SpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, new Item.Settings().group(ItemGroup.MISC));
 
 	@RegistryObject("world_thread_helmet")
 	public static final Item WORLD_THREAD_HELMET = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.HEAD, new Item.Settings().group(DIMENSIONAL_DOORS)));
@@ -266,7 +274,7 @@ public final class ModItems {
 	public static final Item CREEPY_RECORD = create(new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("white_void_record")
-	public static final Item WHITE_VOID_RECORD = create(new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WHITE_VOID_RECORD = create(new MusicDiscItem(10, ModSoundEvents.WHITE_VOID, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("marking_plate")
 	public static final Item MARKING_PLATE = create(ModBlocks.MARKING_PLATE);

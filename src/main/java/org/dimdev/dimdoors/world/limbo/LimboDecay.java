@@ -19,7 +19,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -168,7 +168,7 @@ public final class LimboDecay {
 	public static void applySpreadDecay(World world, BlockPos pos) {
 		//Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
 		//full spread decay checks, which can also shift its performance impact on the game.
-		if (random.nextDouble() < ModConfig.INSTANCE.getLimboConfig().decaySpreadChance) {
+		if (random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getLimboConfig().decaySpreadChance) {
 			//Apply decay to the blocks above, below, and on all four sides.
 			//World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
 			boolean flag = decayBlock(world, pos.up());

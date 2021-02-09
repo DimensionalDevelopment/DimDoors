@@ -12,5 +12,6 @@
     "rift_end": { "sounds" : [ "dimdoors:rift_end" ] },
     "rift_start": { "sounds" : [ "dimdoors:rift_start" ] },
     "tearing": { "sounds" : [ "dimdoors:tearing"] },
-    "white_void": { "sounds" : [ "dimdoors:white_void"] }
+    "white_void": { "sounds" : [ "dimdoors:white_void"] },
+    "bloop": { "sounds" :  [ "dimdoors:bloop"]}
 }

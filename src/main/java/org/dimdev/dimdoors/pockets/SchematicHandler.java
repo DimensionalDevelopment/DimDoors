@@ -31,7 +31,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
@@ -221,7 +220,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         for (JsonElement pocketElement : pockets) {
             JsonObject pocket = pocketElement.getAsJsonObject();
             int size = pocket.get("size").getAsInt();
-            if (!ModConfig.INSTANCE.getPocketsConfig().loadAllSchematics && size > ModConfig.INSTANCE.getPocketsConfig().maxPocketSize)
+            if (!DimensionalDoorsInitializer.CONFIG.getPocketsConfig().loadAllSchematics && size > DimensionalDoorsInitializer.CONFIG.getPocketsConfig().maxPocketSize)
                 continue;
             String id = pocket.get("id").getAsString();
             String type = pocket.has("type") ? pocket.get("type").getAsString() : null;
@@ -320,11 +319,11 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     public PocketTemplate getPersonalPocketTemplate() {
-        return this.getRandomTemplate("private", -1, ModConfig.INSTANCE.getPocketsConfig().privatePocketSize, true);
+        return this.getRandomTemplate("private", -1, DimensionalDoorsInitializer.CONFIG.getPocketsConfig().privatePocketSize, true);
     }
 
     public PocketTemplate getPublicPocketTemplate() {
-        return this.getRandomTemplate("public", -1, ModConfig.INSTANCE.getPocketsConfig().publicPocketSize, true);
+        return this.getRandomTemplate("public", -1, DimensionalDoorsInitializer.CONFIG.getPocketsConfig().publicPocketSize, true);
     }
 
     public static void saveSchematic(Schematic schematic, String id) {
@@ -392,7 +391,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     public boolean isUsedOftenEnough(PocketTemplate template) {
-        int maxNrOfCachedSchematics = ModConfig.INSTANCE.getPocketsConfig().cachedSchematics;
+        int maxNrOfCachedSchematics = DimensionalDoorsInitializer.CONFIG.getPocketsConfig().cachedSchematics;
         int usageRank = this.usageMap.get(template);
         return usageRank < maxNrOfCachedSchematics;
     }
@@ -421,9 +420,9 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         this.usageList.set(insertionIndex, new SimpleEntry(template, newUsage));
         this.usageMap.put(template, insertionIndex);
 
-        if (insertionIndex < ModConfig.INSTANCE.getPocketsConfig().cachedSchematics) { //if the schematic of this template is supposed to get cached
-            if (this.usageList.size() > ModConfig.INSTANCE.getPocketsConfig().cachedSchematics) { //if there are more used templates than there are schematics allowed to be cached
-                this.usageList.get(ModConfig.INSTANCE.getPocketsConfig().cachedSchematics).getKey().setSchematic(null); //make sure that the number of cached schematics is limited
+        if (insertionIndex < DimensionalDoorsInitializer.CONFIG.getPocketsConfig().cachedSchematics) { //if the schematic of this template is supposed to get cached
+            if (this.usageList.size() > DimensionalDoorsInitializer.CONFIG.getPocketsConfig().cachedSchematics) { //if there are more used templates than there are schematics allowed to be cached
+                this.usageList.get(DimensionalDoorsInitializer.CONFIG.getPocketsConfig().cachedSchematics).getKey().setSchematic(null); //make sure that the number of cached schematics is limited
             }
         }
     }

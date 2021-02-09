@@ -15,12 +15,11 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
     private final ModelPart body;
 
     public MonolithModel() {
-        this.textureWidth = 256;
-        this.textureHeight = 256;
-
-        this.body = new ModelPart(this);
-        this.body.setPivot(0.0F, 0.0F, 0.0F);
-        this.body.setTextureOffset(0, 0).addCuboid(-24.0F, -108.0F, -6.0F, 48.0F, 108.0F, 12.0F, 0.0F, false);
+        textureWidth = 102;
+        textureHeight = 51;
+        body = new ModelPart(this);
+        body.setPivot(0.0F, 24.0F, 0.0F);
+        body.setTextureOffset(1, 1).addCuboid(-23.5F, -23.5F, 0.0F, 49.0F, 49.0F, 1.0F, 0.0F, false);
     }
 
     @Override

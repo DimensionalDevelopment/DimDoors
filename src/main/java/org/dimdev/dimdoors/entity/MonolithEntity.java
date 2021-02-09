@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.entity;
 
 import java.util.Random;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -33,8 +33,6 @@ import net.minecraft.world.WorldAccess;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 public class MonolithEntity extends MobEntity {
     public final EntityDimensions DIMENSIONS = EntityDimensions.fixed(3f, 6f);
@@ -79,7 +77,7 @@ public class MonolithEntity extends MobEntity {
     }
 
     public boolean isDangerous() {
-        return ModConfig.INSTANCE.getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || ModConfig.INSTANCE.getMonolithsConfig().dangerousLimboMonoliths);
+        return DimensionalDoorsInitializer.CONFIG.getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || DimensionalDoorsInitializer.CONFIG.getMonolithsConfig().dangerousLimboMonoliths);
     }
 
     @Override

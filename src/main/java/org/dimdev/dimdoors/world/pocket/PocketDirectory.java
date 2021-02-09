@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.util.math.GridUtil;
 
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +23,7 @@ public class PocketDirectory {
 	RegistryKey<World> worldKey;
 
 	public PocketDirectory(RegistryKey<World> worldKey) {
-		this.gridSize = ModConfig.INSTANCE.getPocketsConfig().pocketGridSize;
+		this.gridSize = DimensionalDoorsInitializer.CONFIG.getPocketsConfig().pocketGridSize;
 		this.worldKey = worldKey;
 		this.nextID = 0;
 		this.pockets = new HashMap<>();

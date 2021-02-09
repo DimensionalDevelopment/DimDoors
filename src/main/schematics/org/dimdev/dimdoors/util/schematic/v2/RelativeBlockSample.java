@@ -2,17 +2,14 @@ package org.dimdev.dimdoors.util.schematic.v2;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import io.github.boogiemonster1o1.libcbe.api.ConditionalBlockEntityProvider;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -21,7 +18,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.BlockPos;
@@ -29,23 +25,29 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ModifiableWorld;
 import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
 public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	public final Schematic schematic;
 	private final int[][][] blockData;
+	private final int[][] biomeData;
 	private final BiMap<BlockState, Integer> blockPalette;
+	private final BiMap<Biome, Integer> biomePalette;
 	private final Map<BlockPos, BlockState> blockContainer;
+	private final Map<BlockPos, Biome> biomeContainer;
 	private final Map<BlockPos, CompoundTag> blockEntityContainer;
 	private final BiMap<CompoundTag, Vec3d> entityContainer;
-	private StructureWorldAccess world;
 
 	public RelativeBlockSample(Schematic schematic) {
 		this.schematic = schematic;
 		this.blockData = SchematicPlacer.getBlockData(schematic);
+		this.biomeData = SchematicPlacer.getBiomeData(schematic);
 		this.blockPalette = ImmutableBiMap.copyOf(schematic.getBlockPalette());
+		this.biomePalette = ImmutableBiMap.copyOf(schematic.getBiomePalette());
 		this.blockContainer = Maps.newHashMap();
+		this.biomeContainer = Maps.newHashMap();
 		this.blockEntityContainer = Maps.newHashMap();
 		int width = schematic.getWidth();
 		int height = schematic.getHeight();
@@ -54,8 +56,12 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			for (int y = 0; y < height; y++) {
 				for (int z = 0; z < length; z++) {
 					this.setBlockState(new BlockPos(x, y, z), this.blockPalette.inverse().get(this.blockData[x][y][z]), 2);
-					this.blockContainer.put(new BlockPos(x, y, z), this.blockPalette.inverse().get(this.blockData[x][y][z]));
 				}
+			}
+		}
+		for (int x = 0; x < width; x++) {
+			for (int z = 0; z < length; z++) {
+				this.biomeContainer.put(new BlockPos(x, 0, z), this.biomePalette.inverse().get(this.biomeData[x][z]));
 			}
 		}
 		for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
@@ -73,15 +79,12 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 	@Override
 	public @Nullable BlockEntity getBlockEntity(BlockPos pos) {
-		Block block = this.getBlockState(pos).getBlock();
-		if (block.hasBlockEntity()) {
-			if (block instanceof ConditionalBlockEntityProvider && ((ConditionalBlockEntityProvider) block).hasBlockEntity(this.getBlockState(pos)) && ((ConditionalBlockEntityProvider) block).hasBlockEntity(pos, this)) {
-				return ((ConditionalBlockEntityProvider) block).createBlockEntity(this.world);
-			} else {
-				return ((BlockEntityProvider) block).createBlockEntity(this.world);
-			}
-		}
-		return null;
+		return Optional.of(this.getBlockState(pos))
+				.map(BlockState::getBlock)
+				.filter(BlockEntityProvider.class::isInstance)
+				.map(BlockEntityProvider.class::cast)
+				.map(bep -> bep.createBlockEntity(this))
+				.orElse(null);
 	}
 
 	@Override
@@ -94,18 +97,15 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		return this.blockContainer.get(pos).getFluidState();
 	}
 
-	public void place(BlockPos origin) {
-		if (this.world == null) {
-			throw new UnsupportedOperationException("Can not place in a null world!");
-		}
-		this.blockContainer.forEach((pos, state) -> this.world.setBlockState(origin.add(pos), state, 0b0000011));
+	public void place(BlockPos origin, StructureWorldAccess world, boolean biomes) {
+		this.blockContainer.forEach((pos, state) -> world.setBlockState(origin.add(pos), state, 0b0000011));
 		for (Map.Entry<BlockPos, CompoundTag> entry : this.blockEntityContainer.entrySet()) {
 			BlockPos pos = entry.getKey();
 			BlockPos actualPos = origin.add(entry.getKey());
 
 			BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(pos), entry.getValue());
 			if (blockEntity != null) {
-				this.world.toServerWorld().setBlockEntity(actualPos, blockEntity);
+				world.toServerWorld().setBlockEntity(actualPos, blockEntity);
 			}
 		}
 		for (Map.Entry<CompoundTag, Vec3d> entry : this.entityContainer.entrySet()) {
@@ -116,8 +116,8 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 			doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
 			tag.put("Pos", doubles);
-			Entity entity = EntityType.getEntityFromTag(tag, this.world.toServerWorld()).orElseThrow(NoSuchElementException::new);
-			this.world.spawnEntity(entity);
+			Entity entity = EntityType.getEntityFromTag(tag, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
+			world.spawnEntity(entity);
 		}
 	}
 
@@ -135,15 +135,6 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 	public Map<BlockPos, CompoundTag> getBlockEntityContainer() {
 		return this.blockEntityContainer;
-	}
-
-	public StructureWorldAccess getWorld() {
-		return this.world;
-	}
-
-	public RelativeBlockSample setWorld(StructureWorldAccess world) {
-		this.world = world;
-		return this;
 	}
 
 	@Override

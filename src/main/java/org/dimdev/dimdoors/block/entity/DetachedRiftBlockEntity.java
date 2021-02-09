@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Random;
 
-import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
@@ -13,7 +13,6 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
-import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -47,10 +46,10 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 			return;
 		}
 
-		if (!this.world.isClient() && random.nextDouble() < ModConfig.INSTANCE.getGeneralConfig().endermanSpawnChance) {
+		if (!this.world.isClient() && random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanSpawnChance) {
 			EndermanEntity enderman = EntityType.ENDERMAN.spawn((ServerWorld) this.world, null, null, null, this.pos, SpawnReason.STRUCTURE, false, false);
 
-			if (random.nextDouble() < ModConfig.INSTANCE.getGeneralConfig().endermanAggressiveChance) {
+			if (random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanAggressiveChance) {
 				if (enderman != null) {
 					enderman.setTarget(this.world.getClosestPlayer(enderman, 50));
 				}
@@ -59,12 +58,12 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 
 		if (this.closing) {
 			if (this.size > 0) {
-				this.size -= ModConfig.INSTANCE.getGeneralConfig().riftCloseSpeed;
+				this.size -= DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftCloseSpeed;
 			} else {
 				this.world.removeBlock(this.pos, false);
 			}
 		} else if (!this.stabilized) {
-			this.size += ModConfig.INSTANCE.getGeneralConfig().riftGrowthSpeed / (this.size + 1);
+			this.size += DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftGrowthSpeed / (this.size + 1);
 		}
 	}
 
