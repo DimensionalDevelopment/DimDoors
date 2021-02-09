@@ -17,7 +17,7 @@
       "type": "dimdoors:shell"
     },
     {
-      "door_type": "dimdoors:iron_dimensional_door",
+      "door_type": "dimdoors:quartz_dimensional_door",
       "x": "width/2",
       "facing": "north",
       "y": "5",
