@@ -42,8 +42,8 @@ public class DimensionalDoorModifier implements Modifier {
 	private Direction facing;
 	private String doorTypeString;
 	private DimensionalDoorBlock doorType;
-	private String doorDataReference;
 	private CompoundTag doorData;
+	private String doorDataReference;
 
 	private String x;
 	private String y;
@@ -70,7 +70,10 @@ public class DimensionalDoorModifier implements Modifier {
 		}
 		doorType = (DimensionalDoorBlock) doorBlock;
 
-		if (tag.getType("door_data") == NbtType.STRING) doorData = (CompoundTag) SchematicV2Handler.getInstance().readNbtFromJson(tag.getString("door_data"));
+		if (tag.getType("door_data") == NbtType.STRING) {
+			doorDataReference = tag.getString("door_data");
+			doorData = (CompoundTag) SchematicV2Handler.getInstance().readNbtFromJson(doorDataReference);
+		}
 		else if (tag.getType("door_data") == NbtType.COMPOUND) doorData = tag.getCompound("door_data");
 
 		try {
@@ -93,7 +96,8 @@ public class DimensionalDoorModifier implements Modifier {
 
 		tag.putString("facing", facing.asString());
 		tag.putString("door_type", doorTypeString);
-		if (doorData != null) tag.put("door_data", doorData);
+		if (doorDataReference != null) tag.putString("door_data", doorDataReference);
+		else if (doorData != null) tag.put("door_data", doorData);
 		tag.putString("x", x);
 		tag.putString("y", y);
 		tag.putString("z", z);
