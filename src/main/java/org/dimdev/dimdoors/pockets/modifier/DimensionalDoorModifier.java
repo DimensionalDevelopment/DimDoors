@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.Block;
@@ -22,18 +20,13 @@ import org.dimdev.dimdoors.block.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
-import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
-import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.TagEquations;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
-import org.dimdev.dimdoors.world.pocket.Pocket;
 
 public class DimensionalDoorModifier implements Modifier {
 	private static final Logger LOGGER = LogManager.getLogger();

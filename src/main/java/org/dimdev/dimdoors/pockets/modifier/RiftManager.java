@@ -59,7 +59,7 @@ public class RiftManager {
 		return maxId + 1;
 	}
 
-	public boolean available(int id) {
+	public boolean available(int id) { // TODO: remove? method is likely redundant
 		return !map.containsKey(id);
 	}
 }

@@ -86,12 +86,14 @@ public class SchematicV2Handler {
     	return reader.apply(tag);
 	}
 
+	// TODO: fix, some weird "/" stuff
     private void loadJson(Path path, String[] idParts, BiConsumer<String, Tag> loader) {
 		if (Files.isDirectory(path)) {
 			try {
 				for (Path directoryPath : Files.newDirectoryStream(path)) {
 					String[] directoryIdParts = Arrays.copyOf(idParts, idParts.length + 1);
 					String fileName = directoryPath.getFileName().toString();
+					if (fileName.endsWith("/")) fileName = fileName.substring(0, fileName.length()-1); // https://bugs.openjdk.java.net/browse/JDK-8153248
 					if (Files.isRegularFile(directoryPath)) fileName = fileName.substring(0, fileName.lastIndexOf('.')); // cut extension
 					directoryIdParts[directoryIdParts.length - 1] = fileName;
 					loadJson(directoryPath, directoryIdParts, loader);
@@ -100,7 +102,7 @@ public class SchematicV2Handler {
 				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
 			}
 		} else if(Files.isRegularFile(path) && path.getFileName().toString().endsWith(".json")) {
-			String id = String.join("", idParts);
+			String id = String.join("/", idParts);
 			try {
 				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
 				loader.accept(id, JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
