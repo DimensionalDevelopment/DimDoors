@@ -23,7 +23,7 @@
       "y": "5",
       "z": "4",
       "type": "dimdoors:door",
-      "door_data": {
+      "rift_data": {
         "destination": {
           "type": "dimdoors:id_marker",
           "id": 0
