@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -74,5 +75,9 @@ public class RiftManager {
 				map.remove(id);
 			}
 		}
+	}
+
+	public Optional<RiftBlockEntity> get(int id) {
+		return Optional.ofNullable(map.get(id));
 	}
 }

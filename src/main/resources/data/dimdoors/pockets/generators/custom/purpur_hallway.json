@@ -18,8 +18,23 @@
     },
     {
       "type": "dimdoors:rift_data",
-      "ids": [1,2,3,4,5,6,7],
+      "ids": [4],
       "rift_data": "rift_data/public_entrance"
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 1,
+      "point_b": 7
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 2,
+      "point_b": 6
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 3,
+      "point_b": 5
     }
   ],
   "offset_x": "1",
