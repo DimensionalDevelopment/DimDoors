@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -21,7 +23,7 @@ public class RiftManager {
 		map = pocket.getBlockEntities().values().stream()
 				.filter(RiftBlockEntity.class::isInstance).map(RiftBlockEntity.class::cast)
 				.filter(a -> a.getData().getDestination() instanceof IdMarker)
-				.filter(a -> ((IdMarker) a.getData().getDestination()).getId() < 0)
+				.filter(a -> ((IdMarker) a.getData().getDestination()).getId() >= 0)
 				.collect(Collectors.toMap(rift -> ((IdMarker) rift.getData().getDestination()).getId(), rift -> rift));
 		maxId = map.keySet().stream()
 				.mapToInt(a -> a)
@@ -67,7 +69,7 @@ public class RiftManager {
 	}
 
 	public void foreachConsume(BiPredicate<Integer, RiftBlockEntity> consumer) {
-		for(int id : map.keySet()) {
+		for(int id : new HashSet<>(map.keySet())) {
 			if(consumer.test(id, map.get(id))) {
 				map.remove(id);
 			}

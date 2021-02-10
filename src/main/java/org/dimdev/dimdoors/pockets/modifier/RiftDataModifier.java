@@ -27,7 +27,6 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.TagEquations;
 
 public class RiftDataModifier implements Modifier {
-	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "rift_data";
 
 	private CompoundTag doorData;
@@ -39,12 +38,10 @@ public class RiftDataModifier implements Modifier {
 		if (tag.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = tag.getString("rift_data");
 			doorData = (CompoundTag) SchematicV2Handler.getInstance().readNbtFromJson(doorDataReference);
-			LOGGER.info("Print Door bullshit: " + "\n" + doorData);
 		}
 		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
 
 		ids = stream(tag.getByteArray("ids")).boxed().collect(Collectors.toList());
-		LOGGER.info("Checking bullshit 2 Electric Bugaloo: " + tag);
 		return this;
 	}
 
@@ -93,9 +90,6 @@ public class RiftDataModifier implements Modifier {
 			CompoundTag solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
 			RiftData data = RiftData.fromTag(solvedDoorData);
 
-			LOGGER.info("Dealing spefific bullshit.");
-			LOGGER.info(RiftData.toTag(data));
-			LOGGER.info(solvedDoorData);
 			riftBlockEntityConsumer = rift -> rift.setData(data);
 		}
 

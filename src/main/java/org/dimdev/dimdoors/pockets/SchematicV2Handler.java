@@ -67,7 +67,9 @@ public class SchematicV2Handler {
     public Tag readNbtFromJson(String id) {
 		try {
 			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/json/" + id + ".json").toURI());
-			if (!Files.isRegularFile(path)) return null;
+			if (!Files.isRegularFile(path)) {
+				return null;
+			}
 			try {
 				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
 				return JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json);
@@ -123,7 +125,6 @@ public class SchematicV2Handler {
     		return;
 		}
 		PocketGenerator gen =  PocketGenerator.deserialize((CompoundTag) tag);
-    	LOGGER.info(id + ": "  + gen.toTag(new CompoundTag()));
 		if (gen != null) pocketGeneratorMap.put(id, gen);
 	}
 
