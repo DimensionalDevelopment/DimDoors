@@ -105,7 +105,13 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			BlockPos pos = entry.getKey();
 			BlockPos actualPos = origin.add(entry.getKey());
 
-			BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(pos), entry.getValue());
+			CompoundTag tag = entry.getValue();
+			if(tag.contains("Id")) {
+				tag.put("id", tag.get("Id")); // boogers
+				tag.remove("Id");
+			}
+
+			BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(pos), tag);
 			if (blockEntity != null) {
 				world.toServerWorld().setBlockEntity(actualPos, blockEntity);
 			}
