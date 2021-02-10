@@ -3,6 +3,9 @@ package org.dimdev.dimdoors.item;
 import java.util.Objects;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.DimensionalPortalBlock;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 import net.minecraft.entity.LivingEntity;

@@ -60,6 +60,7 @@
   "item.dimdoors.stabilized_rift_signature.stored": "Location stored",
   "item.dimdoors.stabilized_rift_signature.created": "Rift created",
   "item.dimdoors.rift_configuration_tool": "Rift Configuration Tool",
+  "item.dimdoors.rift_configuration_tool.info": "TODO",
   "item.dimdoors.rift_remover": "Rift Remover",
   "item.dimdoors.rift_remover.closing": "The rift will close soon",
   "item.dimdoors.rift_remover.already_closing": "This rift is already closing",

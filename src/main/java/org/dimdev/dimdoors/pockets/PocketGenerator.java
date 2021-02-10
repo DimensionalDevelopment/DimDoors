@@ -5,8 +5,11 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
@@ -26,38 +29,14 @@ public final class PocketGenerator {
         return pocket;
     }
 
-    private static Pocket prepareAndPlaceV2Pocket(ServerWorld world, PocketTemplateV2 pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
-        LOGGER.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
-
-        Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
-        pocketTemplate.place(pocket);
-        pocket.virtualLocation = virtualLocation;
-        return pocket;
-    }
-
     public static Pocket generatePocketFromTemplate(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
         Pocket pocket = prepareAndPlacePocket(world, pocketTemplate, virtualLocation, setup);
         if (setup) pocketTemplate.setup(pocket, null, null);
         return pocket;
     }
 
-    public static Pocket generateV2PocketFromTemplate(ServerWorld world, PocketTemplateV2 pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
-        Pocket pocket = prepareAndPlaceV2Pocket(world, pocketTemplate, virtualLocation, setup);
-        if (setup) {
-            pocketTemplate.setup(pocket, null, null);
-        }
-        return pocket;
-    }
-
-
     public static Pocket generatePocketFromTemplate(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
         Pocket pocket = prepareAndPlacePocket(world, pocketTemplate, virtualLocation, true);
-        pocketTemplate.setup(pocket, linkTo, linkProperties);
-        return pocket;
-    }
-
-    public static Pocket generateV2PocketFromTemplate(ServerWorld world, PocketTemplateV2 pocketTemplate, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-        Pocket pocket = prepareAndPlaceV2Pocket(world, pocketTemplate, virtualLocation, true);
         pocketTemplate.setup(pocket, linkTo, linkProperties);
         return pocket;
     }
@@ -68,8 +47,7 @@ public final class PocketGenerator {
     }
 
     public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
-        PocketTemplateV2 pocketTemplate = SchematicV2Handler.getInstance().getRandomPrivatePocket();
-        return generateV2PocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), pocketTemplate, virtualLocation, true);
+		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), "private", virtualLocation, null, null);
     }
 
     // TODO: size of public pockets should increase with depth
@@ -79,9 +57,21 @@ public final class PocketGenerator {
     }
 
     public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-        PocketTemplateV2 pocketTemplate = SchematicV2Handler.getInstance().getRandomPublicPocket();
-        return generateV2PocketFromTemplate(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), pocketTemplate, virtualLocation, linkTo, linkProperties);
+        return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), "public", virtualLocation, linkTo, linkProperties);
     }
+
+    public static Pocket generateFromPocketGroupV2(ServerWorld world, String group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    	PocketGenerationParameters parameters = new PocketGenerationParameters(world, group, virtualLocation, linkTo, linkProperties);
+    	return generatePocketV2(SchematicV2Handler.getInstance().getGroup(group).getNextPocketGeneratorReference(parameters), parameters);
+	}
+
+	public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationParameters parameters) {
+    	return pocketGeneratorReference.prepareAndPlacePocket(parameters);
+	}
+
+	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), "dungeon", virtualLocation, linkTo, linkProperties);
+	}
 
     /**
      * Create a dungeon pockets at a certain depth.

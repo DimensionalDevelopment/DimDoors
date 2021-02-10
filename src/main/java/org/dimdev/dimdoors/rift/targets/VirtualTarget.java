@@ -88,6 +88,7 @@ public abstract class VirtualTarget implements Target {
 		VirtualTargetType<PrivatePocketTarget> PRIVATE = register("dimdoors:private", a -> new PrivatePocketTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
 		VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("dimdoors:private_pocket_exit", a -> new PrivatePocketExitTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
 		VirtualTargetType<RelativeReference> RELATIVE = register("dimdoors:relative", RelativeReference::fromTag, RelativeReference::toTag, VirtualTarget.COLOR);
+		VirtualTargetType<IdMarker> ID_MARKER = register("dimdoors:id_marker", IdMarker::fromTag, IdMarker::toTag, VirtualTarget.COLOR);
 		VirtualTargetType<NoneTarget> NONE = register("dimdoors:none", tag -> NoneTarget.INSTANCE, i -> new CompoundTag(), COLOR);
 
 		T fromTag(CompoundTag tag);

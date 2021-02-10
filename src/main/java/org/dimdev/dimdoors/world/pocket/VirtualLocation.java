@@ -76,8 +76,7 @@ public class VirtualLocation {
 		if (virtualLocation == null) {
 			return new VirtualLocation(OVERWORLD, location.getX(), location.getZ(), 5);
 		}
-
-		return virtualLocation;
+		return new VirtualLocation(location.getWorldId(), location.getX(), location.getZ(), virtualLocation.getDepth());
 	}
 
 	public Location projectToWorld(boolean acceptLimbo) {

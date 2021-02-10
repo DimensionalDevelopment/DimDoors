@@ -26,7 +26,7 @@ public class GlobalReference extends RiftReference {
 
 	public static CompoundTag toTag(GlobalReference virtualTarget) {
 		CompoundTag tag = new CompoundTag();
-		tag.put("target", Location.toTag(virtualTarget.location));
+		tag.put("target", Location.toTag(virtualTarget.getReferencedLocation()));
 		return tag;
 	}
 
