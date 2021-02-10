@@ -102,7 +102,9 @@ public class SchematicGenerator extends PocketGenerator {
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
 		LOGGER.info("Generating pocket from template " + template.getId() + " at location " + pocket.getOrigin());
 
-		template.place(pocket, (int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap));
+		pocket.offsetOrigin((int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap));
+
+		template.place(pocket);
 
 		return pocket;
 	}

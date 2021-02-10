@@ -57,16 +57,12 @@ public class PocketTemplateV2 {
     }
      */
 
-	public void place(Pocket pocket, int xOffset, int yOffset, int zOffset) {
-		place(pocket, new Vec3i(xOffset, yOffset, zOffset));
-	}
-
-    public void place(Pocket pocket, Vec3i offset) {
+    public void place(Pocket pocket) {
         pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
-        SchematicPlacer.place(this.schematic, world, origin.add(offset));
+        SchematicPlacer.place(this.schematic, world, origin);
     }
 
     public static boolean isReplacingPlaceholders() {
