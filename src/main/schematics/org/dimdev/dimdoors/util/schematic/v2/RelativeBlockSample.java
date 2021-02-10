@@ -59,9 +59,11 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				}
 			}
 		}
-		for (int x = 0; x < width; x++) {
-			for (int z = 0; z < length; z++) {
-				this.biomeContainer.put(new BlockPos(x, 0, z), this.biomePalette.inverse().get(this.biomeData[x][z]));
+		if (hasBiomes()) {
+			for (int x = 0; x < width; x++) {
+				for (int z = 0; z < length; z++) {
+					this.biomeContainer.put(new BlockPos(x, 0, z), this.biomePalette.inverse().get(this.biomeData[x][z]));
+				}
 			}
 		}
 		for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
@@ -151,5 +153,9 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	@Override
 	public boolean breakBlock(BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
 		return this.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+	}
+
+	public boolean hasBiomes() {
+		return biomeData.length != 0;
 	}
 }
