@@ -88,9 +88,8 @@ public class RiftDataModifier implements Modifier {
 			riftBlockEntityConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
 		} else {
 			CompoundTag solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
-			RiftData data = RiftData.fromTag(solvedDoorData);
 
-			riftBlockEntityConsumer = rift -> rift.setData(data);
+			riftBlockEntityConsumer = rift -> rift.setData(RiftData.fromTag(solvedDoorData));
 		}
 
 		manager.foreachConsume((id, rift) -> {
