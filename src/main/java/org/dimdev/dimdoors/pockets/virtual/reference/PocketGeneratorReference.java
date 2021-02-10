@@ -97,7 +97,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 
 		RiftManager manager = new RiftManager(pocket);
 
-		generator.apply(parameters, manager);
+		generator.applyModifiers(parameters, manager);
 
 		this.applyModifiers(parameters, manager);
 		generator.setup(pocket, parameters, setupLoot != null ? setupLoot : true);

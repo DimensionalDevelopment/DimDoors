@@ -1,7 +1,10 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -43,8 +46,8 @@ public class RiftManager {
 		return false;
 	}
 
-	public boolean consume(int id, Function<RiftBlockEntity, Boolean> consumer) {
-		if (map.containsKey(id) && consumer.apply(map.get(id))) {
+	public boolean consume(int id, Predicate<RiftBlockEntity> consumer) {
+		if (map.containsKey(id) && consumer.test(map.get(id))) {
 			map.remove(id);
 			return true;
 		}
@@ -61,5 +64,13 @@ public class RiftManager {
 
 	public boolean available(int id) { // TODO: remove? method is likely redundant
 		return !map.containsKey(id);
+	}
+
+	public void foreachConsume(BiPredicate<Integer, RiftBlockEntity> consumer) {
+		for(int id : map.keySet()) {
+			if(consumer.test(id, map.get(id))) {
+				map.remove(id);
+			}
+		}
 	}
 }

@@ -27,6 +27,7 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
 import java.util.ArrayList;
@@ -139,7 +140,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		return this.weightEquation.apply(parameters.toVariableMap(new HashMap<>()));
 	}
 
-	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+	public void applyModifiers(PocketGenerationParameters parameters, RiftManager manager) {
 		for (Modifier modifier : modifierList) {
 			modifier.apply(parameters, manager);
 		}
@@ -168,6 +169,10 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 			}
 		});
 		TemplateUtils.registerRifts(rifts, parameters.getLinkTo(), parameters.getLinkProperties(), pocket);
+
+		System.out.println("Printing Bullshit.");
+		DimensionalRegistry.getRiftRegistry().getPocketEntrances(pocket).forEach(System.out::println);
+
 		pocket.virtualLocation = parameters.getSourceVirtualLocation(); //TODO: this makes very little sense
 	}
 

@@ -9,6 +9,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
@@ -45,7 +46,7 @@ public interface Modifier {
 		ModifierType<ShellModifier> SHELL_MODIFIER_TYPE = register(new Identifier("dimdoors", ShellModifier.KEY), ShellModifier::new);
 		ModifierType<DimensionalDoorModifier> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(new Identifier("dimdoors", DimensionalDoorModifier.KEY), DimensionalDoorModifier::new);
 		ModifierType<PocketEntranceModifier> PUBLIC_MODIFIER_TYPE = register(new Identifier("dimdoors", PocketEntranceModifier.KEY), PocketEntranceModifier::new);
-
+		ModifierType<RiftDataModifier> RIFT_DATA_MODIFIER_TYPE = register(new Identifier("dimdoors", RiftDataModifier.KEY), RiftDataModifier::new);
 		Modifier fromTag(CompoundTag tag);
 
 		CompoundTag toTag(CompoundTag tag);
