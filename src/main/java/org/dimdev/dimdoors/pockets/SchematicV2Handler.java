@@ -66,7 +66,7 @@ public class SchematicV2Handler {
 
     public Tag readNbtFromJson(String id) {
 		try {
-			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/json/" + id.replaceAll("\\.", "/") + ".json").toURI());
+			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/json/" + id + ".json").toURI());
 			if (!Files.isRegularFile(path)) return null;
 			try {
 				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
