@@ -27,23 +27,23 @@ public class PocketGenerationParameters {
 	}
 
 	public ServerWorld getWorld() {
-		return world;
+		return this.world;
 	}
 
 	public String getGroup() {
-		return group;
+		return this.group;
 	}
 
 	public VirtualLocation getSourceVirtualLocation() {
-		return sourceVirtualLocation;
+		return this.sourceVirtualLocation;
 	}
 
 	public VirtualTarget getLinkTo() {
-		return linkTo;
+		return this.linkTo;
 	}
 
 	public LinkProperties getLinkProperties() {
-		return linkProperties;
+		return this.linkProperties;
 	}
 
 	public Map<String, Double> toVariableMap(Map<String, Double> stringDoubleMap) {

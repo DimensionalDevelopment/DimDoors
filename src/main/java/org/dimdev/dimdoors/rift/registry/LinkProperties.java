@@ -21,29 +21,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
 
 public class LinkProperties {
-	public static Codec<LinkProperties> CODEC = RecordCodecBuilder.create(instance -> {
-		return instance.group(
-				Codec.FLOAT
-						.fieldOf("floatingWeight")
-						.forGetter(
-								properties ->
-										properties.
-												floatingWeight),
-				Codec.FLOAT
-						.fieldOf("entranceWeight")
-						.forGetter(properties -> properties.entranceWeight),
-				Codecs.INT_SET
-						.fieldOf("groups")
-						.forGetter(properties -> properties.groups),
-				Codec.INT
-						.fieldOf("linksRemaining")
-						.forGetter(properties -> properties.linksRemaining),
-				Codec.BOOL
-						.fieldOf("oneWay")
-						.forGetter(properties -> properties.oneWay)
-		).apply(instance, LinkProperties::new);
-	});
-
 	public static final LinkProperties NONE = new LinkProperties();
 
 	public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type

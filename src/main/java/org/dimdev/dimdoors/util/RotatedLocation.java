@@ -11,15 +11,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 public class RotatedLocation extends Location {
-	static Codec<RotatedLocation> CODEC = RecordCodecBuilder.create(instance -> {
-		return instance.group(
-				World.CODEC.fieldOf("world").forGetter(location -> location.world),
-				BlockPos.CODEC.fieldOf("pos").forGetter(location -> location.pos),
-				Codec.FLOAT.fieldOf("yaw").forGetter(a -> a.yaw),
-				Codec.FLOAT.fieldOf("pitch").forGetter(a -> a.pitch)
-		).apply(instance, RotatedLocation::new);
-	});
-
 	public final float yaw;
 	public final float pitch;
 

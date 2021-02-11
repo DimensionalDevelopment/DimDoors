@@ -11,12 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import net.minecraft.nbt.CompoundTag;
 
 public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> {
-	public static final Codec<RGBA> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.FLOAT.fieldOf("red").forGetter(RGBA::getRed),
-			Codec.FLOAT.fieldOf("green").forGetter(RGBA::getGreen),
-			Codec.FLOAT.fieldOf("blue").forGetter(RGBA::getBlue),
-			Codec.FLOAT.fieldOf("alpha").forGetter(RGBA::getAlpha)
-	).apply(instance, RGBA::new));
 	public static final RGBA NONE = new RGBA(0, 0, 0, 0);
 
 	private final float red;

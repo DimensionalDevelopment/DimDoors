@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
+@SuppressWarnings("deprecation")
 public final class TeleportUtil {
 	public static void teleport(Entity entity, World world, BlockPos pos, float yaw) {
 		if (world.isClient) {
