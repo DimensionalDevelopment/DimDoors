@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.mixin;
 
 import org.dimdev.dimdoors.entity.stat.ModStats;
+import org.dimdev.dimdoors.mixin.accessor.EntityAccessor;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +29,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	}
 
 	@Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
-	public void handleLimboFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> cir) {
+	public void handleLimboFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
 		if (this.world.getBiome(this.getBlockPos()) == ModBiomes.LIMBO_BIOME) {
 			cir.setReturnValue(false);
 		}
@@ -42,7 +43,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	@Unique
 	protected void doOnDeathStuff(DamageSource source, CallbackInfo ci) {
 		if (ModDimensions.isPocketDimension(this.world)) {
-			this.removed = false;
+			((EntityAccessor) this).setRemovalReason(null);
 			this.dead = false;
 			this.setHealth(this.getMaxHealth());
 			this.incrementStat(ModStats.DEATHS_IN_POCKETS);

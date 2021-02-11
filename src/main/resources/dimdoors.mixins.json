@@ -12,13 +12,14 @@
     "accessor.ChunkGeneratorSettingsAccessor",
     "accessor.DefaultParticleTypeAccessor",
     "accessor.DirectionAccessor",
+    "accessor.EntityAccessor",
     "accessor.GenerationSettingsAccessor",
     "accessor.RedstoneWireBlockAccessor",
     "accessor.StatsAccessor"
   ],
   "client": [
-    "client.InGameHudMixin",
     "client.ClientPlayNetworkHandlerMixin",
+    "client.InGameHudMixin",
     "client.accessor.GlStateManagerAccessor"
   ],
   "injectors": {
