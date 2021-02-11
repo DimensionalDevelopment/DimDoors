@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.world.pocket;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -11,6 +13,7 @@ import net.minecraft.structure.StructureManager;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldAccess;
@@ -52,10 +55,6 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void populateNoise(WorldAccess world, StructureAccessor accessor, Chunk chunk) {
-	}
-
-	@Override
 	public void setStructureStarts(DynamicRegistryManager dynamicRegistryManager, StructureAccessor structureAccessor, Chunk chunk, StructureManager structureManager, long worldSeed) {
 	}
 
@@ -64,12 +63,17 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public int getHeight(int x, int z, Heightmap.Type heightmapType) {
+	public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
+		return CompletableFuture.supplyAsync(() -> chunk);
+	}
+
+	@Override
+	public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world) {
 		return 0;
 	}
 
 	@Override
-	public BlockView getColumnSample(int x, int z) {
-		return new VerticalBlockSample(new BlockState[0]);
+	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
+		return new VerticalBlockSample(0, new BlockState[0]);
 	}
 }
