@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.block;
 
-import io.github.boogiemonster1o1.libcbe.api.ConditionalBlockEntityProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DoorBlock;
@@ -22,7 +22,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity>, ConditionalBlockEntityProvider {
+public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
 	public DimensionalDoorBlock(Settings settings) {
 		super(settings);
 	}
@@ -55,14 +55,13 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 		return super.canReplace(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT;
 	}
 
+	@Nullable
 	@Override
-	public BlockEntity createBlockEntity(BlockView world) {
-		return new EntranceRiftBlockEntity();
-	}
-
-	@Override
-	public boolean hasBlockEntity(BlockState blockState) {
-		return blockState.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		if (state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+			return null;
+		}
+		return new EntranceRiftBlockEntity(pos, state);
 	}
 
 	@Override

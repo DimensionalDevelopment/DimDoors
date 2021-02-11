@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.block.entity;
 
-import java.util.function.Supplier;
-
-import com.google.common.collect.Sets;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
@@ -15,6 +12,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class ModBlockEntityTypes {
 	public static final BlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = register(
@@ -27,8 +25,8 @@ public class ModBlockEntityTypes {
 			EntranceRiftBlockEntity::new,
 			ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR, ModBlocks.DIMENSIONAL_PORTAL);
 
-	private static <E extends BlockEntity> BlockEntityType<E> register(String id, Supplier<E> supplier, Block... blocks) {
-		return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, BlockEntityType.Builder.create(supplier, blocks).build(null));
+	private static <E extends BlockEntity> BlockEntityType<E> register(String id, FabricBlockEntityTypeBuilder.Factory<E> factory, Block... blocks) {
+		return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(factory, blocks).build());
 	}
 
 	public static void init() {
@@ -37,7 +35,7 @@ public class ModBlockEntityTypes {
 
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
-		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.ENTRANCE_RIFT, EntranceRiftBlockEntityRenderer::new);
-		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntityRenderer::new);
+		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.ENTRANCE_RIFT, ctx -> new EntranceRiftBlockEntityRenderer());
+		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.DETACHED_RIFT, ctx -> new DetachedRiftBlockEntityRenderer());
 	}
 }

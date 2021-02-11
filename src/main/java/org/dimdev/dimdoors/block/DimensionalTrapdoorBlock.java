@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.block;
 
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,7 +19,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-
 // TODO: Make this placeable on rifts
 public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
 	public DimensionalTrapdoorBlock(Block.Settings settings) {
@@ -33,9 +33,10 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
 		}
 	}
 
+	@Nullable
 	@Override
-	public BlockEntity createBlockEntity(BlockView blockView) {
-		return new EntranceRiftBlockEntity();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new EntranceRiftBlockEntity(pos, state);
 	}
 
 	@Override

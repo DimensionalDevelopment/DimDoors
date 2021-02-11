@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
@@ -34,7 +35,7 @@ public class FabricBlock extends Block {
 		if (world.canPlayerModifyAt(player, pos) &&
 				player.canPlaceOn(pos, hit.getSide(), heldStack) &&
 				heldBlock.getDefaultState().isFullCube(world, pos) &&
-				!heldBlock.hasBlockEntity() &&
+				!(heldBlock instanceof BlockEntityProvider) &&
 				heldBlock != this &&
 				!player.isSneaking() &&
 				!(heldBlock instanceof FabricBlock)

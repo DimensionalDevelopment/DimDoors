@@ -21,16 +21,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
-public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<DetachedRiftBlockEntity> {
+public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<DetachedRiftBlockEntity> {
     public static final Identifier TESSERACT_PATH = new Identifier("dimdoors:textures/other/tesseract.png");
     private final RGBA color = new RGBA(1, 0.5f, 1, 1);
 
     private static final Tesseract TESSERACT = new Tesseract();
     private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(0);
-
-    public DetachedRiftBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
-    }
 
     @Override
     public void render(DetachedRiftBlockEntity rift, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcs, int breakProgress, int alpha) {

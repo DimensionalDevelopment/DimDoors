@@ -6,18 +6,20 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable {
+public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	private static final Random random = new Random();
 
 	public boolean closing = false;
@@ -30,40 +32,47 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 	@Environment(EnvType.CLIENT)
 	public double renderAngle;
 
-	public DetachedRiftBlockEntity() {
-		super(ModBlockEntityTypes.DETACHED_RIFT);
+	public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
+		super(ModBlockEntityTypes.DETACHED_RIFT, pos, state);
 	}
 
-	@Override
-	public void tick() {
-		if (this.world == null) {
-//			DynamicRegistryManager
+	public static void tick(World world, BlockPos pos, BlockState state, DetachedRiftBlockEntity blockEntity) {
+		if (world == null) {
 			return;
 		}
 
-		if (this.world.getBlockState(this.pos).getBlock() != ModBlocks.DETACHED_RIFT) {
-			this.markInvalid();
+		if (state.getBlock() != ModBlocks.DETACHED_RIFT) {
+			blockEntity.markRemoved();
 			return;
 		}
 
-		if (!this.world.isClient() && random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanSpawnChance) {
-			EndermanEntity enderman = EntityType.ENDERMAN.spawn((ServerWorld) this.world, null, null, null, this.pos, SpawnReason.STRUCTURE, false, false);
+		if (!world.isClient() && random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanSpawnChance) {
+			EndermanEntity enderman = EntityType.ENDERMAN.spawn(
+					(ServerWorld) world,
+					null,
+					null,
+					null,
+					pos,
+					SpawnReason.STRUCTURE,
+					false,
+					false
+			);
 
 			if (random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanAggressiveChance) {
 				if (enderman != null) {
-					enderman.setTarget(this.world.getClosestPlayer(enderman, 50));
+					enderman.setTarget(world.getClosestPlayer(enderman, 50));
 				}
 			}
 		}
 
-		if (this.closing) {
-			if (this.size > 0) {
-				this.size -= DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftCloseSpeed;
+		if (blockEntity.closing) {
+			if (blockEntity.size > 0) {
+				blockEntity.size -= DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftCloseSpeed;
 			} else {
-				this.world.removeBlock(this.pos, false);
+				world.removeBlock(pos, false);
 			}
-		} else if (!this.stabilized) {
-			this.size += DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftGrowthSpeed / (this.size + 1);
+		} else if (!blockEntity.stabilized) {
+			blockEntity.size += DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
 		}
 	}
 

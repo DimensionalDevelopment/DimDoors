@@ -1,18 +1,14 @@
 package org.dimdev.dimdoors.block;
 
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.util.TeleportUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.DoorBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
@@ -37,9 +33,10 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 		return (EntranceRiftBlockEntity) world.getBlockEntity(pos);
 	}
 
+	@Nullable
 	@Override
-	public BlockEntity createBlockEntity(BlockView world) {
-		return new EntranceRiftBlockEntity();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new EntranceRiftBlockEntity(pos, state);
 	}
 
 	@Override

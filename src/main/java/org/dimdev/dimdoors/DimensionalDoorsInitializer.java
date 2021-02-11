@@ -82,16 +82,12 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
         Targets.registerDefaultTargets();
 		VirtualTarget.VirtualTargetType.register();
-
 		VirtualSingularPocket.VirtualSingularPocketType.register();
-
 		Modifier.ModifierType.register();
-
 		PocketGenerator.PocketGeneratorType.register();
 
         SchematicV2Handler.getInstance().load();
         SchematicHandler.INSTANCE.loadSchematics();
-
 
 		AttackBlockCallback.EVENT.register(RiftConfigurationToolItem::onAttackBlockCallback);
 

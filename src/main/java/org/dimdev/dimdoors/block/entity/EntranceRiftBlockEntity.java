@@ -10,17 +10,18 @@ import net.minecraft.block.DoorBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
-	public EntranceRiftBlockEntity() {
-		super(ModBlockEntityTypes.ENTRANCE_RIFT);
+	public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
+		super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
 	}
 
 	@Override
-	public void fromTag(BlockState state, CompoundTag nbt) {
-		super.fromTag(state, nbt);
+	public void fromTag(CompoundTag nbt) {
+		super.fromTag(nbt);
 	}
 
 	@Override

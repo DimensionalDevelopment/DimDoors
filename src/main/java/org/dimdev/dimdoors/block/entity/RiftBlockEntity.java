@@ -26,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
@@ -37,16 +38,15 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	@NotNull
 	protected RiftData data = new RiftData();
 
-	protected boolean riftStateChanged; // not saved
+	protected boolean riftStateChanged;
 
-	public RiftBlockEntity(BlockEntityType<? extends RiftBlockEntity> type) {
-		super(type);
+	public RiftBlockEntity(BlockEntityType<? extends RiftBlockEntity> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
-	// NBT
 	@Override
-	public void fromTag(BlockState state, CompoundTag nbt) {
-		super.fromTag(state, nbt);
+	public void fromTag(CompoundTag nbt) {
+		super.fromTag(nbt);
 		this.deserialize(nbt);
 	}
 
