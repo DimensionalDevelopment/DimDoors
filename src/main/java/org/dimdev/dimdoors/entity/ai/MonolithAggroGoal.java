@@ -61,15 +61,15 @@ public class MonolithAggroGoal extends Goal {
             return;
         }
 
-        if (this.target != null && (this.target.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && this.target.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && this.target.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && this.target.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
+        if (this.target != null && (this.target.getInventory().armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && this.target.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && this.target.getInventory().armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && this.target.getInventory().armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
             Random random = new Random();
             int i = random.nextInt(64);
             if (this.target instanceof ServerPlayerEntity) {
                 if (i < 6) {
-                    this.target.inventory.armor.get(0).damage(i, random, (ServerPlayerEntity) this.target);
-                    this.target.inventory.armor.get(1).damage(i, random, (ServerPlayerEntity) this.target);
-                    this.target.inventory.armor.get(2).damage(i, random, (ServerPlayerEntity) this.target);
-                    this.target.inventory.armor.get(3).damage(i, random, (ServerPlayerEntity) this.target);
+                    this.target.getInventory().armor.get(0).damage(i, random, (ServerPlayerEntity) this.target);
+                    this.target.getInventory().armor.get(1).damage(i, random, (ServerPlayerEntity) this.target);
+                    this.target.getInventory().armor.get(2).damage(i, random, (ServerPlayerEntity) this.target);
+                    this.target.getInventory().armor.get(3).damage(i, random, (ServerPlayerEntity) this.target);
                 }
             }
             return;
