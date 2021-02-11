@@ -378,19 +378,15 @@ public class Schematic implements BlockView {
 		this.setBlocks(world, xBase, yBase, zBase);
 
 		// Set BlockEntity data
-		for (CompoundTag BlockEntityNBT : this.tileEntities) {
-			Vec3i schematicPos = new BlockPos(BlockEntityNBT.getInt("x"), BlockEntityNBT.getInt("y"), BlockEntityNBT.getInt("z"));
+		for (CompoundTag blockEntityTag : this.tileEntities) {
+			Vec3i schematicPos = new BlockPos(blockEntityTag.getInt("x"), blockEntityTag.getInt("y"), blockEntityTag.getInt("z"));
 			BlockPos pos = new BlockPos(xBase, yBase, zBase).add(schematicPos);
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity != null) {
-				String id = BlockEntityNBT.getString("id");
+				String id = blockEntityTag.getString("id");
 				String blockBlockEntityId = BlockEntityType.getId(blockEntity.getType()).toString();
 				if (id.equals(blockBlockEntityId)) {
-					blockEntity.fromTag(world.getBlockState(pos), BlockEntityNBT);
-					blockEntity.setPos(pos);
-
-					// Correct the position
-					blockEntity.setLocation((World) world, pos);
+					blockEntity.fromTag(blockEntityTag);
 					blockEntity.markDirty();
 				} else {
 					System.err.println("Schematic contained BlockEntity " + id + " at " + pos + " but the BlockEntity of that block (" + world.getBlockState(pos) + ") must be " + blockBlockEntityId);
@@ -516,5 +512,15 @@ public class Schematic implements BlockView {
 	@Override
 	public FluidState getFluidState(BlockPos blockPos) {
 		return null;
+	}
+
+	@Override
+	public int getHeight() {
+		return this.sizeY;
+	}
+
+	@Override
+	public int getBottomY() {
+		return 0;
 	}
 }

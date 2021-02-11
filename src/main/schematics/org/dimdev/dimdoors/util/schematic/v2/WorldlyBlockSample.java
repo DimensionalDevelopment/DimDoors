@@ -64,7 +64,12 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 	}
 
 	@Override
-	public BlockPos getTopPosition(Heightmap.Type type, BlockPos pos) {
-		return this.world.getTopPosition(type, pos);
+	public int getHeight() {
+		return this.relativeBlockSample.getHeight();
+	}
+
+	@Override
+	public int getBottomY() {
+		return this.relativeBlockSample.getBottomY();
 	}
 }

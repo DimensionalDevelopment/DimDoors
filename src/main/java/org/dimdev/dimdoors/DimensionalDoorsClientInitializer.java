@@ -38,7 +38,7 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
 			PlayerInventorySlotUpdateS2CPacket packet = new PlayerInventorySlotUpdateS2CPacket();
 			try {
 				packet.read(packetByteBuf);
-				minecraftClient.player.inventory.setStack(packet.getSlot(), packet.getStack());
+				minecraftClient.player.getInventory().setStack(packet.getSlot(), packet.getStack());
 				// TODO: remove commented out debug code
 				//LOGGER.info("Synced slot " + packet.getSlot() + " with item stack " + packet.getStack().toTag(new CompoundTag()));
 			} catch (IOException e) {

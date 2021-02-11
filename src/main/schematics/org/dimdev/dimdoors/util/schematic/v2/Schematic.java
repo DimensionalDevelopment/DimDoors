@@ -26,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.biome.Biome;
 
 public class Schematic {
@@ -43,7 +44,7 @@ public class Schematic {
 			Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
 			Codec.list(CompoundTag.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
 			Codec.list(CompoundTag.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities),
-			SchematicBiomePalette.CODEC.optionalFieldOf("BiomePalette", Collections.emptyMap()).forGetter(Schematic::getBiomePalette),
+			Codec.unboundedMap(BuiltinRegistries.BIOME, Codec.INT).optionalFieldOf("BiomePalette", Collections.emptyMap()).forGetter(Schematic::getBiomePalette),
 			Codec.BYTE_BUFFER.optionalFieldOf("BiomeData", ByteBuffer.wrap(new byte[0])).forGetter(Schematic::getBlockData)
 	).apply(instance, Schematic::new));
 

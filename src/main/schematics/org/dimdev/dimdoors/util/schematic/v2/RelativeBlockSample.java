@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -81,12 +82,13 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 	@Override
 	public @Nullable BlockEntity getBlockEntity(BlockPos pos) {
-		return Optional.of(this.getBlockState(pos))
-				.map(BlockState::getBlock)
-				.filter(BlockEntityProvider.class::isInstance)
-				.map(BlockEntityProvider.class::cast)
-				.map(bep -> bep.createBlockEntity(this))
-				.orElse(null);
+		BlockState blockState = this.getBlockState(pos);
+
+		if (blockState.getBlock() instanceof BlockEntityProvider) {
+			return ((BlockEntityProvider) blockState.getBlock()).createBlockEntity(pos, blockState);
+		}
+
+		return null;
 	}
 
 	@Override
@@ -111,9 +113,9 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				tag.remove("Id");
 			}
 
-			BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(pos), tag);
+			BlockEntity blockEntity = BlockEntity.createFromTag(actualPos, this.getBlockState(pos), tag);
 			if (blockEntity != null) {
-				world.toServerWorld().setBlockEntity(actualPos, blockEntity);
+				world.toServerWorld().addBlockEntity(blockEntity);
 			}
 		}
 		for (Map.Entry<CompoundTag, Vec3d> entry : this.entityContainer.entrySet()) {
@@ -162,6 +164,16 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	}
 
 	public boolean hasBiomes() {
-		return biomeData.length != 0;
+		return this.biomeData.length != 0;
+	}
+
+	@Override
+	public int getHeight() {
+		return this.schematic.getHeight();
+	}
+
+	@Override
+	public int getBottomY() {
+		return 0;
 	}
 }
