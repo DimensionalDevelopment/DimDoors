@@ -62,7 +62,7 @@ public abstract class EternalFluid extends FlowableFluid {
 
 	@Override
 	public BlockState toBlockState(FluidState fluidState) {
-		return ModBlocks.ETERNAL_FLUID.getDefaultState().with(FluidBlock.LEVEL, method_15741(fluidState));
+		return ModBlocks.ETERNAL_FLUID.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(fluidState));
 	}
 
 	@Override
