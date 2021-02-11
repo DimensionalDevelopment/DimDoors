@@ -11,14 +11,13 @@ public abstract class RestoringTarget extends VirtualTarget {
 	@Override
 	public Target receiveOther() {
 		if (this.getTarget() != null) {
-			this.getTarget().location = this.location;
 			return this.getTarget();
 		}
 
 		Location linkTarget = this.makeLinkTarget();
 		if (linkTarget != null) {
 			this.setTarget(RiftReference.tryMakeLocal(this.location, linkTarget));
-			this.getTarget().setLocation(this.location);
+			this.getTarget().setLocation(linkTarget);
 			this.getTarget().register();
 
 			return this.getTarget();

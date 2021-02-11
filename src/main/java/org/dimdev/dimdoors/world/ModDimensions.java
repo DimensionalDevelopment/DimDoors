@@ -50,9 +50,11 @@ public final class ModDimensions {
         return isPocketDimension(world.getRegistryKey());
     }
 
-    public static boolean isPocketDimension(RegistryKey<World> type) {
-        System.out.println("Type: " + type);
+    public static boolean isPersonalPocketDimension(World world) {
+		return world != null && world == PERSONAL_POCKET_DIMENSION;
+    }
 
+    public static boolean isPocketDimension(RegistryKey<World> type) {
         return Objects.equals(type, PERSONAL) || Objects.equals(type, PUBLIC) || Objects.equals(type, DUNGEON);
     }
 

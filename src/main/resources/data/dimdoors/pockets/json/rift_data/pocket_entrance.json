@@ -1,0 +1,9 @@
+{
+  "destination": {
+    "ifDestination": {
+      "type": "dimdoors:pocket_exit"
+    },
+    "weight": 1.0,
+    "type": "dimdoors:pocket_entrance"
+  }
+}

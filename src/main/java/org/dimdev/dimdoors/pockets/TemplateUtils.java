@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
@@ -59,7 +61,7 @@ public class TemplateUtils {
         }
     }
 
-    static void setupLootTable(ServerWorld world, BlockEntity tile, Inventory inventory, Logger logger) {
+    public static void setupLootTable(ServerWorld world, BlockEntity tile, Inventory inventory, Logger logger) {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");
@@ -68,11 +70,11 @@ public class TemplateUtils {
             logger.debug("Now populating dispenser.");
             table = world.getServer().getLootManager().getTable(new Identifier("dimdoors:dispenser_projectiles"));
         }
-        LootContext ctx = new LootContext.Builder(world).random(world.random).build(LootContextTypes.CHEST);
+        LootContext ctx = new LootContext.Builder(world).random(world.random).parameter(LootContextParameters.ORIGIN, Vec3d.of(tile.getPos())).build(LootContextTypes.CHEST);
         table.supplyInventory(inventory, ctx);
     }
 
-    static void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
+    static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
         HashMap<RiftBlockEntity, Float> entranceWeights = new HashMap<>();
 

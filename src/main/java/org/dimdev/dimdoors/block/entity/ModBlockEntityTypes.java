@@ -27,8 +27,8 @@ public class ModBlockEntityTypes {
 			EntranceRiftBlockEntity::new,
 			ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR, ModBlocks.DIMENSIONAL_PORTAL);
 
-	private static <E extends BlockEntity> BlockEntityType<E> register(String id, Supplier<? extends E> supplier, Block... blocks) {
-		return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, Sets.newHashSet(blocks), null));
+	private static <E extends BlockEntity> BlockEntityType<E> register(String id, Supplier<E> supplier, Block... blocks) {
+		return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, BlockEntityType.Builder.create(supplier, blocks).build(null));
 	}
 
 	public static void init() {

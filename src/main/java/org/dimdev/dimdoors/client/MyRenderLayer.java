@@ -92,4 +92,9 @@ public class MyRenderLayer extends RenderLayer {
 						.build(false)
 		);
     }
+
+	public static RenderLayer getMonolith(Identifier texture) {
+		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, false, false)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).diffuseLighting(RenderPhase.ENABLE_DIFFUSE_LIGHTING).alpha(RenderPhase.ONE_TENTH_ALPHA).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
+		return RenderLayer.of("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, multiPhaseParameters);
+	}
 }

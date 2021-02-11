@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -140,18 +143,26 @@ public class Schematic implements BlockView {
 			}
 
 			Block block = Registry.BLOCK.get(new Identifier(id));
+			Fluid fluid = Registry.FLUID.get(new Identifier(id));
 
-			if (block == Blocks.AIR && !"minecraft:air".equals(id)) {
+			BlockState blockstate;
+			if (block == Blocks.AIR && fluid == Fluids.EMPTY && !"minecraft:air".equals(id)) {
 				System.err.println("Missing ID: " + blockStateString);
 			}
-
-			BlockState blockstate = block.getDefaultState();
-
-			if (!state.isEmpty()) {
-				String[] properties = state.split(",");
-				blockstate = getBlockStateWithProperties(block, properties);
+			if (fluid != Fluids.EMPTY) {
+				blockstate = fluid.getDefaultState().getBlockState();
+				if (!state.isEmpty()) {
+					String[] properties = state.split(",");
+					blockstate = getBlockStateWithProperties(blockstate.getBlock(), properties);
+				}
 			}
-
+			else {
+				blockstate = block.getDefaultState();
+				if (!state.isEmpty()) {
+					String[] properties = state.split(",");
+					blockstate = getBlockStateWithProperties(block, properties);
+				}
+			}
 			schematic.palette.add(blockstate); //@todo, can we assume that a schematic file always has all palette integers used from 0 to pallettemax-1?
 		}
 
@@ -184,7 +195,7 @@ public class Schematic implements BlockView {
 		}
 
 
-		SchematicRedstoneFixer.fixRedstone(schematic);
+		SchematicBlockConnectionFixer.fixBlocks(schematic);
 		return schematic;
 	}
 
@@ -261,7 +272,7 @@ public class Schematic implements BlockView {
 
 		for (Entry<String, String> entry : propertyAndBlockStringsMap.entrySet()) {
 			Property<?> property = stateManager.getProperty(entry.getKey());
-
+			if (property == null) LOGGER.info("Missing property " + entry.getKey() + " in: " + chosenState + "[" + propertyAndBlockStringsMap.entrySet().stream().map(mapEntry -> mapEntry.getKey() + "=" + mapEntry.getValue()).collect(Collectors.joining(",")) + "]");
 			if (property != null) {
 				Comparable<?> value = null;
 				for (Comparable<?> object : property.getValues()) {
@@ -409,7 +420,6 @@ public class Schematic implements BlockView {
 		if (x < 0 || x >= this.sizeX || y < 0 || y >= this.sizeY || z < 0 || z >= this.sizeZ) {
 			return Blocks.AIR.getDefaultState();
 		}
-
 		return this.palette.get(this.blockData[x][y][z]);
 	}
 
@@ -455,9 +465,6 @@ public class Schematic implements BlockView {
 									if (setAir || !state.getBlock().equals(Blocks.AIR)) {
 										section.setBlockState(lx, ly, lz, state);
 
-//                                        BlockPos pos = new BlockPos(originX + x, originY + y, originZ + z);
-//                                        serverWorld.getChunkManager().markForUpdate(pos);
-//                                        serverWorld.getLightingProvider().checkBlock(pos);
 										if (y > 255) {
 											System.out.println();
 										}

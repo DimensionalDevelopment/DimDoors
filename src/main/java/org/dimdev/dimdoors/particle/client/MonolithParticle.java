@@ -31,7 +31,7 @@ public class MonolithParticle extends Particle {
 		super(world, x, y, z);
 		this.maxAge = 30;
 		this.model = new MonolithModel();
-		this.layer = RenderLayer.getEntitySolid(MonolithRenderer.MONOLITH_TEXTURES.get(14));
+		this.layer = MonolithRenderer.MONOLITH_TEXTURES.get(14);
 	}
 
 	@Override

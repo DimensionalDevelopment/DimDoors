@@ -13,6 +13,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
@@ -52,5 +54,10 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
 	@Override
 	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
 		return (EntranceRiftBlockEntity) world.getBlockEntity(pos);
+	}
+
+	@Override
+	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
+		return VoxelShapes.fullCube();
 	}
 }

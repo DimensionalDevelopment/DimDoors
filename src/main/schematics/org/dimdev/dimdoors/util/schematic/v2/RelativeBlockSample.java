@@ -59,9 +59,11 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				}
 			}
 		}
-		for (int x = 0; x < width; x++) {
-			for (int z = 0; z < length; z++) {
-				this.biomeContainer.put(new BlockPos(x, 0, z), this.biomePalette.inverse().get(this.biomeData[x][z]));
+		if (hasBiomes()) {
+			for (int x = 0; x < width; x++) {
+				for (int z = 0; z < length; z++) {
+					this.biomeContainer.put(new BlockPos(x, 0, z), this.biomePalette.inverse().get(this.biomeData[x][z]));
+				}
 			}
 		}
 		for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
@@ -103,7 +105,13 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			BlockPos pos = entry.getKey();
 			BlockPos actualPos = origin.add(entry.getKey());
 
-			BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(pos), entry.getValue());
+			CompoundTag tag = entry.getValue();
+			if(tag.contains("Id")) {
+				tag.put("id", tag.get("Id")); // boogers
+				tag.remove("Id");
+			}
+
+			BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(pos), tag);
 			if (blockEntity != null) {
 				world.toServerWorld().setBlockEntity(actualPos, blockEntity);
 			}
@@ -151,5 +159,9 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	@Override
 	public boolean breakBlock(BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
 		return this.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+	}
+
+	public boolean hasBiomes() {
+		return biomeData.length != 0;
 	}
 }

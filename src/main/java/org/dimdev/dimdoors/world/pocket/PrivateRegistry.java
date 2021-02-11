@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+
+import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 
@@ -17,7 +19,7 @@ import net.minecraft.world.World;
 
 import static net.minecraft.world.World.OVERWORLD;
 
-public class PrivatePocketData extends PersistentState {
+public class PrivateRegistry {
 	protected static class PocketInfo {
 		public final RegistryKey<World> world;
 		public final int id;
@@ -46,19 +48,9 @@ public class PrivatePocketData extends PersistentState {
 
 	protected BiMap<UUID, PocketInfo> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
 
-	public PrivatePocketData(String name) {
-		super(name);
+	public PrivateRegistry() {
 	}
 
-	public PrivatePocketData() {
-		super(DATA_NAME);
-	}
-
-	public static PrivatePocketData instance() {
-		return DimensionalDoorsInitializer.getWorld(OVERWORLD).getPersistentStateManager().getOrCreate(PrivatePocketData::new, DATA_NAME);
-	}
-
-	@Override
 	public void fromTag(CompoundTag nbt) {
 		CompoundTag tag = nbt.getCompound("privatePocketMap");
 
@@ -69,7 +61,6 @@ public class PrivatePocketData extends PersistentState {
 		this.privatePocketMap = bm;
 	}
 
-	@Override
 	public CompoundTag toTag(CompoundTag nbt) {
 		CompoundTag tag = new CompoundTag();
 		for (Map.Entry<UUID, PocketInfo> entry : this.privatePocketMap.entrySet()) {
@@ -88,7 +79,6 @@ public class PrivatePocketData extends PersistentState {
 
 	public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {
 		this.privatePocketMap.put(playerUUID, new PocketInfo(pocket.world, pocket.id));
-		this.markDirty();
 	}
 
 	public UUID getPrivatePocketOwner(Pocket pocket) {

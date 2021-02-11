@@ -3,8 +3,12 @@ package org.dimdev.dimdoors.item;
 import java.util.Objects;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.DimensionalPortalBlock;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
@@ -13,9 +17,11 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public class RiftBladeItem extends SwordItem {
@@ -39,9 +45,18 @@ public class RiftBladeItem extends SwordItem {
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
-		HitResult hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
+		HitResult hit = RaycastHelper.raycast(player,16,0.0F, LivingEntity.class::isInstance);
+
+		if(hit == null) {
+			hit = RaycastHelper.raycast(player, 16, 1.0F, LivingEntity.class::isInstance);
+		}
+
+		if(hit == null) {
+			hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
+		}
+
 		if (hit == null) {
-			hit = player.raycast(RaycastHelper.REACH_DISTANCE, 0, false);
+			hit = player.raycast(16, 0, false);
 		}
 
 		if (world.isClient) {
@@ -74,9 +89,13 @@ public class RiftBladeItem extends SwordItem {
 			stack.damage(1, player, a -> {
 			});
 			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
-		} else if (RaycastHelper.hitsRift(hit, world)) {
-			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
-			rift.teleport(player);
+		} else if (RaycastHelper.hitsDetachedRift(hit, world)) {
+			BlockHitResult blockHitResult = (BlockHitResult) hit;
+			BlockPos pos = blockHitResult.getBlockPos();
+			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
+
+			world.setBlockState(pos, ModBlocks.DIMENSIONAL_PORTAL.getDefaultState().with(DimensionalPortalBlock.FACING, blockHitResult.getSide()));
+			((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
 			stack.damage(1, player, a -> a.sendToolBreakStatus(hand));
 			return new TypedActionResult<>(ActionResult.SUCCESS, stack);

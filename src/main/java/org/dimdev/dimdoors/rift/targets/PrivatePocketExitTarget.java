@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.util.RGBA;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
-import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
+import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
@@ -30,8 +30,8 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 		UUID uuid = EntityUtils.getOwner(entity).getUuid();
 		if (uuid != null) {
 			destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketExit(uuid);
-			Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
-			if (ModDimensions.isPocketDimension(this.location.getWorld()) && pocket != null && DimensionalRegistry.getPocketDirectory(pocket.world).getPocketAt(this.location.pos).equals(pocket)) {
+			Pocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
+			if (ModDimensions.isPersonalPocketDimension(this.location.getWorld()) && pocket != null && DimensionalRegistry.getPocketDirectory(pocket.world).getPocketAt(this.location.pos).equals(pocket)) {
 				DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
 			}
 			if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {

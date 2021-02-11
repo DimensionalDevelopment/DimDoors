@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
 import org.dimdev.dimdoors.world.pocket.Pocket;
-import org.dimdev.dimdoors.world.pocket.PrivatePocketData;
+import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -33,12 +33,12 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 		UUID uuid = EntityUtils.getOwner(entity).getUuid();
 		VirtualLocation virtualLocation = VirtualLocation.fromLocation(this.location);
 		if (uuid != null) {
-			Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
+			Pocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
 			if (pocket == null) { // generate the private pocket and get its entrances
 				// set to where the pocket was first created
 				pocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
 
-				PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
+				DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
 				BlockEntity be = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).getBlockEntity();
 				this.processEntity(pocket, be, entity, uuid, yawOffset);
 			} else {
@@ -49,7 +49,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 					LOGGER.info("All entrances are gone, creating a new private pocket!");
 					pocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
 
-					PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
+					DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
 					destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
 				}
 
@@ -66,8 +66,11 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 			Item item = ((ItemEntity) entity).getStack().getItem();
 
 			if (item instanceof DyeItem) {
-				pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getColor());
-				entity.remove();
+				if(pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getColor())) {
+					entity.remove();
+				} else {
+					((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
+				}
 			} else {
 				((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
 			}
