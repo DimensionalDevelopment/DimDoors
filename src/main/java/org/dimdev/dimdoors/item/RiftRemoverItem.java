@@ -38,7 +38,6 @@ public class RiftRemoverItem extends Item {
 		list.add(new TranslatableText(this.getTranslationKey() + ".info"));
 	}
 
-
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);

@@ -19,7 +19,6 @@ import org.dimdev.dimdoors.util.registry.RegistryObject;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
@@ -149,7 +148,7 @@ public final class ModItems {
 	public static final Item RIFT_STABILIZER = create(new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("dimensional_eraser")
-	public static final Item DIMENSIONAL_ERASER = create(new DimensionalEraser(new Item.Settings().maxDamage(100).group(DIMENSIONAL_DOORS)));
+	public static final Item DIMENSIONAL_ERASER = create(new DimensionalEraserItem(new Item.Settings().maxDamage(100).group(DIMENSIONAL_DOORS)));
 
 	@RegistryObject("monolith_spawner")
 	public static final Item MONOLITH_SPAWNER = new SpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, new Item.Settings().group(ItemGroup.MISC));

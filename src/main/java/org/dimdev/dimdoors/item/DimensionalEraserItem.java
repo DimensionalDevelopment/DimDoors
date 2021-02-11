@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.item;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,8 +19,8 @@ import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
-public class DimensionalEraser extends Item {
-	public DimensionalEraser(Settings settings) {
+public class DimensionalEraserItem extends Item {
+	public DimensionalEraserItem(Settings settings) {
 		super(settings);
 	}
 
@@ -30,7 +31,7 @@ public class DimensionalEraser extends Item {
 		HitResult hit = RaycastHelper.raycast(player, RaycastHelper.REACH_DISTANCE, 1.0F, a -> !(a instanceof PlayerEntity));
 
 		if (hit != null && hit.getType() == HitResult.Type.ENTITY) {
-			((EntityHitResult) hit).getEntity().remove();
+			((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);
 			player.playSound(ModSoundEvents.BLOOP, 1.0f, 1.0f);
 			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 		}

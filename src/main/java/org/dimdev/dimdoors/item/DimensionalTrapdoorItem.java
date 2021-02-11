@@ -21,7 +21,6 @@ public class DimensionalTrapdoorItem extends BlockItem {
 		this.setupFunction = setupFunction;
 	}
 
-
 	@Override
 	public ActionResult place(ItemPlacementContext context) {
 		World world = context.getWorld();
