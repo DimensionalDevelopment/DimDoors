@@ -18,6 +18,11 @@ repositories {
 	}
 
 	maven {
+		name = "Haven's Maven"
+		url = "https://hephaestus.dev/release"
+	}
+
+	maven {
 		url = "https://www.cursemaven.com"
 		content {
 			includeGroup "curse.maven"
@@ -86,8 +91,9 @@ dependencies {
 	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "d487eaa")
 	includeCompile("io.github.cottonmc", "LibGui", "3.3.2+1.16.4")
 	includeCompile("me.shedaniel.cloth", "config-2", "5.0.0")
-	includeCompile("io.github.onyxstudios", "Cardinal-Components-API", "3.0.0-nightly.1.17-20w45a")
+	includeCompile("io.github.onyxstudios", "Cardinal-Components-API", "3.0.0-nightly.20w48a")
 	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
+	includeCompile("dev.hephaestus", "seedy-behavior", "1.0.1")
 
 	modCompileOnly("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
 		exclude module: "fabric-api"
