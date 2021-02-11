@@ -138,7 +138,7 @@ public class MonolithEntity extends MobEntity {
     protected void mobTick() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
         if (!(ModDimensions.isLimboDimension(this.world) || ModDimensions.isPocketDimension(this.world))) {
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
             super.mobTick();
             return;
         }
@@ -155,7 +155,7 @@ public class MonolithEntity extends MobEntity {
             return;
         }
 
-        if ((player.inventory.armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && player.inventory.armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && player.inventory.armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && player.inventory.armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
+        if ((player.getInventory().armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && player.getInventory().armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && player.getInventory().armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && player.getInventory().armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
             return;
         }
 
