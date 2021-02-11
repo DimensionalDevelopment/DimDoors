@@ -14,15 +14,13 @@ import java.io.IOException;
 
 // TODO: replace ClientPlayPackListener
 public class HitBlockS2CPacket implements Packet<ClientPlayPacketListener> {
-	public static Identifier ID = new Identifier("dimdoors:hit_block");
+	public static final Identifier ID = new Identifier("dimdoors:hit_block");
 
 	private Hand hand;
 	private BlockPos pos;
 	private Direction direction;
 
-
 	public HitBlockS2CPacket() {
-
 	}
 
 	@Environment(EnvType.CLIENT)

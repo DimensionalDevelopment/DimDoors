@@ -10,9 +10,8 @@ import net.minecraft.util.Identifier;
 
 import java.io.IOException;
 
-// TODO: replace ClientPlayPackListener
 public class PlayerInventorySlotUpdateS2CPacket implements Packet<ClientPlayPacketListener> {
-	public static Identifier ID = new Identifier("dimdoors:player_inventory_slot_update");
+	public static final Identifier ID = new Identifier("dimdoors:player_inventory_slot_update");
 
 	private int slot;
 	private ItemStack stack;
