@@ -12,10 +12,10 @@ import org.dimdev.dimdoors.rift.targets.MessageTarget;
 import org.dimdev.dimdoors.rift.targets.Target;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.jetbrains.annotations.NotNull;
 

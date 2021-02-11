@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -75,10 +76,40 @@ public final class DimensionalPortalRenderer {
 	}
 
 	static {
-		MODEL = new ModelPart(1024, 1024, 0, 0);
-		TALL_MODEL = new ModelPart(1024, 1024, 0, 0);
-		MODEL.addCuboid(0, 0, 0, 16, 16, 0);
-		TALL_MODEL.addCuboid(0, 0, 0, 16, 32, 0);
+		ModelPart.Cuboid small = new ModelPart.Cuboid(
+				0,
+				0,
+				0,
+				0,
+				0,
+				16,
+				16,
+				0,
+				0,
+				0,
+				0,
+				false,
+				1024,
+				1024
+		);
+		MODEL = new ModelPart(Collections.singletonList(small), Collections.emptyMap());
+		ModelPart.Cuboid big = new ModelPart.Cuboid(
+				0,
+				0,
+				0,
+				0,
+				0,
+				16,
+				32,
+				0,
+				0,
+				0,
+				0,
+				false,
+				1024,
+				1024
+		);
+		TALL_MODEL = new ModelPart(Collections.singletonList(big), Collections.emptyMap());
 		ENTITY_RENDER_DISPATCHER = MinecraftClient.getInstance().getEntityRenderDispatcher();
 	}
 }

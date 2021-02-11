@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.client;
 
+import java.util.Collections;
+
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
 import net.minecraft.client.model.ModelPart;
@@ -15,11 +17,8 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
     private final ModelPart body;
 
     public MonolithModel() {
-        textureWidth = 102;
-        textureHeight = 51;
-        body = new ModelPart(this);
-        body.setPivot(0.0F, 24.0F, 0.0F);
-        body.setTextureOffset(1, 1).addCuboid(-23.5F, -23.5F, 0.0F, 49.0F, 49.0F, 1.0F, 0.0F, false);
+        ModelPart.Cuboid bodyCuboid = new ModelPart.Cuboid(0, 0, -23.5F, -23.5F, 0, 49.0F, 4.90F, 1.0F, 0, 0, 0, false, 102, 51);
+		this.body = new ModelPart(Collections.singletonList(bodyCuboid), Collections.emptyMap());
     }
 
     @Override

@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.client;
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3f;
 
 public enum DefaultTransformation implements Transformer {
 	NONE {
@@ -32,7 +32,7 @@ public enum DefaultTransformation implements Transformer {
 		@Override
 		public void transform(MatrixStack matrices) {
 			// TODO
-			matrices.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
+			matrices.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
 			matrices.translate(0, 0, -0.81F);
 		}
 	},
@@ -40,7 +40,7 @@ public enum DefaultTransformation implements Transformer {
 		@Override
 		public void transform(MatrixStack matrices) {
 			// TODO
-			matrices.multiply(Vector3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
+			matrices.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
 			matrices.translate(0, 0, -0.19F);
 		}
 	};

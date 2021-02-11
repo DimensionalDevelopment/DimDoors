@@ -13,6 +13,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.util.Identifier;
@@ -43,8 +44,8 @@ public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, Monol
             new Identifier("dimdoors:textures/mob/monolith/monolith18.png")
 	).map(MyRenderLayer::getMonolith).collect(Collectors.toList());
 
-    public MonolithRenderer(EntityRenderDispatcher dispatcher, EntityRendererRegistry.Context context) {
-        super(dispatcher, new MonolithModel(), 0);
+    public MonolithRenderer(EntityRendererFactory.Context ctx) {
+        super(ctx, new MonolithModel(), 0);
     }
 
     @Nullable

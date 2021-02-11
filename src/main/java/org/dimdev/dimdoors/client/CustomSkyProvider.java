@@ -7,11 +7,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Vec3i;
 
 import net.fabricmc.api.EnvType;
@@ -39,12 +40,12 @@ public class CustomSkyProvider implements SkyRenderer {
 
         matrices.push();
 
-        matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
+        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(-90.0F));
         Matrix4f matrix4f2 = matrices.peek().getModel();
 
         float s = 30.0F;
         client.getTextureManager().bindTexture(this.sun);
-        bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE);
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         bufferBuilder.vertex(matrix4f2, -s, 100.0F, -s).texture(0.0F, 0.0F).next();
         bufferBuilder.vertex(matrix4f2, s, 100.0F, -s).texture(1.0F, 0.0F).next();
         bufferBuilder.vertex(matrix4f2, s, 100.0F, s).texture(1.0F, 1.0F).next();
@@ -53,7 +54,7 @@ public class CustomSkyProvider implements SkyRenderer {
         BufferRenderer.draw(bufferBuilder);
 
         client.getTextureManager().bindTexture(this.moon);
-        bufferBuilder.begin(7, VertexFormats.POSITION_TEXTURE);
+        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         bufferBuilder.vertex(matrix4f2, -s, -100.0F, s).texture(0f, 0f).next();
         bufferBuilder.vertex(matrix4f2, s, -100.0F, s).texture(1f, 0f).next();
         bufferBuilder.vertex(matrix4f2, s, -100.0F, -s).texture(1f, 1f).next();
@@ -83,7 +84,7 @@ public class CustomSkyProvider implements SkyRenderer {
             matrices.push();
             this.multiply(matrices, i);
             Matrix4f matrix4f = matrices.peek().getModel();
-            bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
+            bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
             bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, -100.0F).color(this.color.getX(), this.color.getY(), this.color.getZ(), 255).next();
             bufferBuilder.vertex(matrix4f, -100.0F, -100.0F, 100.0F).color(this.color.getX(), this.color.getY(), this.color.getZ(), 255).next();
             bufferBuilder.vertex(matrix4f, 100.0F, -100.0F, 100.0F).color(this.color.getX(), this.color.getY(), this.color.getZ(), 255).next();
@@ -100,23 +101,23 @@ public class CustomSkyProvider implements SkyRenderer {
 
     protected void multiply(MatrixStack matrices, int i) {
         if (i == 1) {
-            matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90.0F));
+            matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
         }
 
         if (i == 2) {
-            matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
+            matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(-90.0F));
         }
 
         if (i == 3) {
-            matrices.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(180.0F));
+            matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180.0F));
         }
 
         if (i == 4) {
-            matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(90.0F));
+            matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(90.0F));
         }
 
         if (i == 5) {
-            matrices.multiply(Vector3f.POSITIVE_Z.getDegreesQuaternion(-90.0F));
+            matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(-90.0F));
         }
     }
 }

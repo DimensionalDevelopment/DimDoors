@@ -23,13 +23,13 @@ public class MyRenderLayer extends RenderLayer {
     private static final Identifier KEYHOLE_LIGHT = new Identifier("dimdoors:textures/other/keyhole_light.png");
     private static final Random RANDOM = new Random(31100L);
 
-    public MyRenderLayer(String string, VertexFormat vertexFormat, int i, int j, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
-        super(string, vertexFormat, i, j, bl, bl2, runnable, runnable2);
+    public MyRenderLayer(String string, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int j, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
+        super(string, vertexFormat, drawMode, j, bl, bl2, runnable, runnable2);
     }
 
     public static RenderLayer CRACK = RenderLayer.of("crack",
 			VertexFormats.POSITION_COLOR,
-			GL11.GL_TRIANGLES,
+			VertexFormat.DrawMode.QUADS,
 			256,
 			MultiPhaseParameters.builder()
 					.cull(DISABLE_CULLING)
@@ -50,7 +50,7 @@ public class MyRenderLayer extends RenderLayer {
 
     public static RenderLayer TESSERACT = RenderLayer.of("tesseract",
 			VertexFormats.POSITION_COLOR_TEXTURE,
-			GL11.GL_QUADS,
+			VertexFormat.DrawMode.QUADS,
 			256,
 			MultiPhaseParameters.builder()
 					.cull(DISABLE_CULLING)
@@ -80,7 +80,7 @@ public class MyRenderLayer extends RenderLayer {
         return of(
         		"dimensional_portal",
 				VertexFormats.POSITION_COLOR,
-				GL11.GL_QUADS,
+				VertexFormat.DrawMode.QUADS,
 				256,
 				false,
 				true,
@@ -95,6 +95,6 @@ public class MyRenderLayer extends RenderLayer {
 
 	public static RenderLayer getMonolith(Identifier texture) {
 		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, false, false)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).diffuseLighting(RenderPhase.ENABLE_DIFFUSE_LIGHTING).alpha(RenderPhase.ONE_TENTH_ALPHA).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
-		return RenderLayer.of("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, 7, 256, true, true, multiPhaseParameters);
+		return RenderLayer.of("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, multiPhaseParameters);
 	}
 }
