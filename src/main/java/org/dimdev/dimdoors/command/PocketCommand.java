@@ -54,7 +54,7 @@ public class PocketCommand {
         return 1;
     }
 
-    public static void pocket(String group, String name, boolean setup, ServerPlayerEntity player) {
+    private static void pocket(String group, String name, boolean setup, ServerPlayerEntity player) {
         try {
             PocketTemplate template = SchematicHandler.INSTANCE.getTemplate(group, name);
 
