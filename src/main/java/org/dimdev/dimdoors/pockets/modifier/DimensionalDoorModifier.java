@@ -119,7 +119,7 @@ public class DimensionalDoorModifier implements Modifier {
 		world.setBlockState(pos, lower);
 		world.setBlockState(pos.up(), doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).with(DimensionalDoorBlock.FACING, facing));
 
-		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
+		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate(pos, lower);
 
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));
@@ -130,6 +130,6 @@ public class DimensionalDoorModifier implements Modifier {
 
 		manager.add(rift);
 
-		world.setBlockEntity(pos, rift);
+		world.addBlockEntity(rift);
 	}
 }

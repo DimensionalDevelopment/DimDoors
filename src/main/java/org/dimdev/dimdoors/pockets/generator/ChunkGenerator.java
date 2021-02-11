@@ -161,7 +161,7 @@ public class ChunkGenerator extends PocketGenerator {
 			for(BlockPos virtualBlockPos : protoChunk.getBlockEntityPositions()) {
 				BlockPos realBlockPos = virtualBlockPos.subtract(pocketOriginChunkOffset).add(0, -virtualYOffset, 0);
 				if (realBox.contains(realBlockPos.getX(), realBlockPos.getY(), realBlockPos.getZ())) {
-					world.setBlockEntity(realBlockPos, protoChunk.getBlockEntity(virtualBlockPos)); // TODO: ensure this works, likely bugged
+					world.addBlockEntity(protoChunk.getBlockEntity(virtualBlockPos)); // TODO: ensure this works, likely bugged
 				}
 			}
 		}
@@ -172,8 +172,8 @@ public class ChunkGenerator extends PocketGenerator {
 
 		world.setBlockState(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pocket.getOrigin()), ModBlocks.DETACHED_RIFT.getDefaultState());
 
-		DetachedRiftBlockEntity rift = ModBlockEntityTypes.DETACHED_RIFT.instantiate();
-		world.setBlockEntity(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pocket.getOrigin()), rift);
+		DetachedRiftBlockEntity rift = ModBlockEntityTypes.DETACHED_RIFT.instantiate(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pocket.getOrigin()), ModBlocks.DETACHED_RIFT.getDefaultState());
+		world.addBlockEntity(rift);
 
 		rift.setDestination(new PocketEntranceMarker());
 		pocket.virtualLocation = sourceVirtualLocation;

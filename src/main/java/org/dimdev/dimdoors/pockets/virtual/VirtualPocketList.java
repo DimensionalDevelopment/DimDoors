@@ -17,7 +17,6 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 		return virtualPocketList.toTag(new ListTag());
 	}
 
-
 	public VirtualPocketList() {
 		super();
 	}

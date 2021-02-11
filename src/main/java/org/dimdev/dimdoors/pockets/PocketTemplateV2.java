@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.pockets;
 
-import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;

@@ -28,7 +28,6 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	private Boolean setupLoot;
 	private final List<Modifier> modifierList = Lists.newArrayList();
 
-
 	private void parseWeight() {
 		try {
 			this.weightEquation = Equation.parse(weight);

@@ -19,19 +19,6 @@ import java.util.Map;
 public class ConditionalSelector extends VirtualSingularPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "conditional";
-	/*
-	private static final Codec<Pair<String, VirtualPocket>> PAIR_CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.STRING.fieldOf("regex").forGetter(Pair::getLeft),
-			VirtualPocket.CODEC.fieldOf("pocket").forGetter(Pair::getRight)
-	).apply(instance, Pair::new));
-
-	public static final Codec<DepthDependentSelector> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.STRING.fieldOf("id").forGetter(DepthDependentSelector::getName),
-			PAIR_CODEC.listOf().fieldOf("pockets").forGetter(DepthDependentSelector::getPocketList)
-	).apply(instance, DepthDependentSelector::new));
-	 */
-
-
 
 	private LinkedHashMap<String, VirtualPocket> pocketMap = Maps.newLinkedHashMap();
 	private LinkedHashMap<String, Equation> equationMap = Maps.newLinkedHashMap();
