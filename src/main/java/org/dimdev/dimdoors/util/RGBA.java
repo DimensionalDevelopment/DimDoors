@@ -4,8 +4,6 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.nbt.CompoundTag;

@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import org.dimdev.dimdoors.pockets.PocketGenerator;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
@@ -34,7 +34,7 @@ public class PublicPocketTarget extends RestoringTarget {
 	public Location makeLinkTarget() {
 		VirtualLocation riftVirtualLocation = VirtualLocation.fromLocation(this.location);
 		VirtualLocation newVirtualLocation;
-		int depth = riftVirtualLocation.getDepth()+1;
+		int depth = riftVirtualLocation.getDepth() + 1;
 		newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
 		Pocket pocket = PocketGenerator.generatePublicPocketV2(newVirtualLocation, new GlobalReference(this.location), null);
 

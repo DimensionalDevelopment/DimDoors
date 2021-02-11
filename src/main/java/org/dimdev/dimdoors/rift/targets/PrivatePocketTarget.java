@@ -5,12 +5,11 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
-import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -66,7 +65,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 			Item item = ((ItemEntity) entity).getStack().getItem();
 
 			if (item instanceof DyeItem) {
-				if(pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getColor())) {
+				if (pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getColor())) {
 					entity.remove();
 				} else {
 					((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);

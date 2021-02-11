@@ -1,10 +1,14 @@
 package org.dimdev.dimdoors.util.math;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.*;
-import java.util.function.BiFunction;
 
 public interface Equation {
 	double FALSE = 0d;
@@ -13,7 +17,7 @@ public interface Equation {
 	double apply(Map<String, Double> variableMap);
 
 	default boolean asBoolean(Map<String, Double> variableMap) {
-		return toBoolean(apply(variableMap));
+		return toBoolean(this.apply(variableMap));
 	}
 
 	static Equation parse(String equationString) throws EquationParseException {
@@ -138,7 +142,8 @@ public interface Equation {
 			public Optional<Equation> tryParse(String toParse) {
 				if (!toParse.matches("[a-zA-Z_][a-zA-Z0-9_]*")) return Optional.empty();
 				return Optional.of(stringDoubleMap -> {
-					if (stringDoubleMap != null && stringDoubleMap.containsKey(toParse)) return stringDoubleMap.get(toParse);
+					if (stringDoubleMap != null && stringDoubleMap.containsKey(toParse))
+						return stringDoubleMap.get(toParse);
 					LOGGER.error("Variable \"" + toParse + "\" was not passed to equation! Returning 0 as fallback.");
 					return 0d;
 				});
@@ -155,15 +160,15 @@ public interface Equation {
 			@Override
 			public Optional<Equation> tryParse(String toParse) throws EquationParseException {
 				int depth = 0;
-				for (int i = toParse.length() - 1; i >= 1 ; i--) {
+				for (int i = toParse.length() - 1; i >= 1; i--) {
 					String substring = toParse.substring(i);
 					if (substring.startsWith(")")) depth++;
 					else if (substring.startsWith("(")) depth--;
-					for(String symbol : operations.keySet()) {
+					for (String symbol : this.operations.keySet()) {
 						if (substring.startsWith(symbol) && depth == 0) {
-							final TriFunction<Map<String, Double>, Equation, Equation, Double> operation = operations.get(symbol);
-							final Equation first = Equation.parse(toParse.substring(0,i));
-							final Equation second = Equation.parse(toParse.substring(i+1));
+							final TriFunction<Map<String, Double>, Equation, Equation, Double> operation = this.operations.get(symbol);
+							final Equation first = Equation.parse(toParse.substring(0, i));
+							final Equation second = Equation.parse(toParse.substring(i + 1));
 							return Optional.of(stringDoubleMap -> operation.apply(stringDoubleMap, first, second));
 						}
 					}
@@ -187,17 +192,17 @@ public interface Equation {
 
 			@Override
 			public Optional<Equation> tryParse(String toParse) throws EquationParseException {
-				if (!toParse.startsWith(functionString) || !toParse.endsWith(")")) return Optional.empty();
-				String[] arguments = toParse.substring(functionString.length(), toParse.length()-1).split(",");
-				if (minArguments > arguments.length || (maxArguments < arguments.length && maxArguments != -1)) return Optional.empty();
+				if (!toParse.startsWith(this.functionString) || !toParse.endsWith(")")) return Optional.empty();
+				String[] arguments = toParse.substring(this.functionString.length(), toParse.length() - 1).split(",");
+				if (this.minArguments > arguments.length || (this.maxArguments < arguments.length && this.maxArguments != -1))
+					return Optional.empty();
 				final Equation[] argumentEquations = new Equation[arguments.length];
 				for (int i = 0; i < arguments.length; i++) {
 					argumentEquations[i] = Equation.parse(arguments[i]);
 				}
-				return Optional.of(stringDoubleMap -> function.apply(stringDoubleMap, argumentEquations));
+				return Optional.of(stringDoubleMap -> this.function.apply(stringDoubleMap, argumentEquations));
 			}
 		}
-
 
 
 		private interface TriFunction<T, U, V, R> {

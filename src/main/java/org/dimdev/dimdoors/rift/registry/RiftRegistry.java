@@ -10,13 +10,11 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.dimdev.dimdoors.util.GraphUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
-import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -46,7 +44,7 @@ public class RiftRegistry {
 
 		ListTag riftsNBT = (ListTag) nbt.get("rifts");
 		for (Tag riftNBT : riftsNBT) {
-            Rift rift = Rift.fromTag((CompoundTag) riftNBT);
+			Rift rift = Rift.fromTag((CompoundTag) riftNBT);
 			riftRegistry.graph.addVertex(rift);
 			riftRegistry.uuidMap.put(rift.id, rift);
 			riftRegistry.locationMap.put(rift.location, rift);
@@ -273,7 +271,7 @@ public class RiftRegistry {
 	}
 
 	public Location getPocketEntrance(Pocket pocket) {
-		Set<Location> entrances =  this.getPocketEntrances(pocket);
+		Set<Location> entrances = this.getPocketEntrances(pocket);
 		return entrances.stream()
 				.findFirst()
 				.orElse(null);

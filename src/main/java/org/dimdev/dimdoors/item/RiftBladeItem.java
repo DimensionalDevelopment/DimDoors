@@ -21,7 +21,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 public class RiftBladeItem extends SwordItem {
@@ -45,13 +44,13 @@ public class RiftBladeItem extends SwordItem {
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
-		HitResult hit = RaycastHelper.raycast(player,16,0.0F, LivingEntity.class::isInstance);
+		HitResult hit = RaycastHelper.raycast(player, 16, 0.0F, LivingEntity.class::isInstance);
 
-		if(hit == null) {
+		if (hit == null) {
 			hit = RaycastHelper.raycast(player, 16, 1.0F, LivingEntity.class::isInstance);
 		}
 
-		if(hit == null) {
+		if (hit == null) {
 			hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
 		}
 

@@ -1,23 +1,17 @@
 package org.dimdev.dimdoors.item;
 
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 public class DimensionalEraserItem extends Item {
 	public DimensionalEraserItem(Settings settings) {
