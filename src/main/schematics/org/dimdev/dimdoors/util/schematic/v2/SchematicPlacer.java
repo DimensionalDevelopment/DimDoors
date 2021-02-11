@@ -2,17 +2,17 @@ package org.dimdev.dimdoors.util.schematic.v2;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
-import com.google.common.collect.ImmutableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.mixin.accessor.ListTagAccessor;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
@@ -100,14 +100,8 @@ public final class SchematicPlacer {
 		double y = listTag.getDouble(1);
 		double z = listTag.getDouble(2);
 		tag.remove("Pos");
-		tag.put("Pos", ListTagAccessor.of(
-				ImmutableList.of(
-						DoubleTag.of(x + originX),
-						DoubleTag.of(y + originY),
-						DoubleTag.of(z + originZ)
-				),
-				(byte) 6
-				)
-		);
+		tag.put("Pos", NbtOps.INSTANCE.createList(Stream.of(DoubleTag.of(x + originX),
+				DoubleTag.of(y + originY),
+				DoubleTag.of(z + originZ))));
 	}
 }

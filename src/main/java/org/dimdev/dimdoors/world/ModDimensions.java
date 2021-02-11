@@ -119,7 +119,9 @@ public final class ModDimensions {
                 -10,
                 5,
                 8,
-                false
+                false,
+				true,
+				true
         );
     }
 }
