@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom" version "0.5-SNAPSHOT"
+	id "fabric-loom" version "0.6-SNAPSHOT"
 	id "maven-publish"
 }
 
@@ -10,18 +10,11 @@ targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()
+	jcenter()
 
 	maven {
 		name = "Fabric maven"
 		url = "https://maven.fabricmc.net/"
-	}
-
-	maven {
-		name = "Tehnut maven"
-		url "https://maven.tehnut.info"
-		content {
-			includeGroup "mcp.mobius.waila"
-		}
 	}
 
 	maven {
@@ -31,12 +24,8 @@ repositories {
 		}
 	}
 
-    maven {
+	maven {
 		url = "https://jitpack.io"
-		content {
-			includeGroup "com.github.DimensionalDevelopment"
-			includeGroup "com.github.Waterpicker"
-		}
 	}
 
 	maven {
@@ -87,31 +76,25 @@ def includeCompile(group, artifact, version) {
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:1.16.5"
-    mappings "net.fabricmc:yarn:1.16.5+build.3:v2"
-    modImplementation "net.fabricmc:fabric-loader:0.11.0"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.0+1.16"
+	minecraft "com.mojang:minecraft:21w06a"
+	mappings "net.fabricmc:yarn:21w06a+build.3:v2"
+	modImplementation "net.fabricmc:fabric-loader:0.11.1"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.2+1.17"
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
-	includeCompile("com.github.Waterpicker", "OpenWorlds", "c5a1ced")
-	includeCompile("io.github.boogiemonster1o1", "libcbe", "1.1.0")
+	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "d487eaa")
 	includeCompile("io.github.cottonmc", "LibGui", "3.3.2+1.16.4")
-	includeCompile("me.shedaniel.cloth", "config-2", "4.8.3")
-	includeCompile("io.github.onyxstudios", "Cardinal-Components-API", "2.7.10")
+	includeCompile("me.shedaniel.cloth", "config-2", "5.0.0")
+	includeCompile("io.github.onyxstudios", "Cardinal-Components-API", "3.0.0-nightly.1.17-20w45a")
 	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
 
-	modRuntime "curse.maven:Worldedit-225608:3039223" // For saving schematics
-	modRuntime "curse.maven:wecui-402098:3169571" // Cos why not
-
-//	modCompileOnly "curse.maven:Hwyla-253449:3033613" TODO
-//	modRuntime "curse.maven:Hwyla-253449:3033613"
-    modCompileOnly("io.github.prospector:modmenu:1.14.6+build.31") {
-        exclude module: "fabric-api"
-    }
-    modRuntime("io.github.prospector:modmenu:1.14.6+build.31") {
-        exclude module: "fabric-api"
-    }
+	modCompileOnly("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
+		exclude module: "fabric-api"
+	}
+	modRuntime("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
+		exclude module: "fabric-api"
+	}
 }
 
 version "4.0.0+alpha.5"
@@ -128,13 +111,13 @@ sourceSets {
 }
 
 processResources {
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
 
-    inputs.property "version", project.version
+	inputs.property "version", project.version
 }
 
 artifacts {
-    archives jar
+	archives jar
 }
