@@ -43,8 +43,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class DimensionalDoorsInitializer implements ModInitializer {
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
 	public static ConfigHolder<ModConfig> CONFIG_MANAGER;
-	public static ModConfig CONFIG;
-
 	private static Map<UUID, ServerPlayNetworkHandler> UUID_SERVER_PLAY_NETWORK_HANDLER_MAP = new HashMap<>();
 	private static MinecraftServer server;
 
@@ -60,7 +58,11 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         return getServer().getWorld(key);
     }
 
-    @Override
+	public static ModConfig getConfig() {
+		return CONFIG_MANAGER.get();
+	}
+
+	@Override
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             server = minecraftServer;

@@ -46,24 +46,49 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity implements Tickable
 			return;
 		}
 
+<<<<<<< HEAD
 		if (!this.world.isClient() && random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanSpawnChance) {
 			EndermanEntity enderman = EntityType.ENDERMAN.spawn((ServerWorld) this.world, null, null, null, this.pos, SpawnReason.STRUCTURE, false, false);
+=======
+		if (!world.isClient() && random.nextDouble() < DimensionalDoorsInitializer.getConfig().getGeneralConfig().endermanSpawnChance) {
+			EndermanEntity enderman = EntityType.ENDERMAN.spawn(
+					(ServerWorld) world,
+					null,
+					null,
+					null,
+					pos,
+					SpawnReason.STRUCTURE,
+					false,
+					false
+			);
+>>>>>>> 47abdac... Fix NPE in prod
 
-			if (random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanAggressiveChance) {
+			if (random.nextDouble() < DimensionalDoorsInitializer.getConfig().getGeneralConfig().endermanAggressiveChance) {
 				if (enderman != null) {
 					enderman.setTarget(this.world.getClosestPlayer(enderman, 50));
 				}
 			}
 		}
 
+<<<<<<< HEAD
 		if (this.closing) {
 			if (this.size > 0) {
 				this.size -= DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftCloseSpeed;
+=======
+		if (blockEntity.closing) {
+			if (blockEntity.size > 0) {
+				blockEntity.size -= DimensionalDoorsInitializer.getConfig().getGeneralConfig().riftCloseSpeed;
+>>>>>>> 47abdac... Fix NPE in prod
 			} else {
 				this.world.removeBlock(this.pos, false);
 			}
+<<<<<<< HEAD
 		} else if (!this.stabilized) {
 			this.size += DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftGrowthSpeed / (this.size + 1);
+=======
+		} else if (!blockEntity.stabilized) {
+			blockEntity.size += DimensionalDoorsInitializer.getConfig().getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
+>>>>>>> 47abdac... Fix NPE in prod
 		}
 	}
 

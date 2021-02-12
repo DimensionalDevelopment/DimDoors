@@ -64,7 +64,7 @@ public class RiftBladeItem extends SwordItem {
 				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 			} else {
 				player.sendMessage(new TranslatableText(this.getTranslationKey() + ".rift_miss"), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 				return new TypedActionResult<>(ActionResult.FAIL, stack);
 			}
 		}

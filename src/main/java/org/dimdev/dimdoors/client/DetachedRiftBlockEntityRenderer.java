@@ -34,7 +34,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
 
     @Override
     public void render(DetachedRiftBlockEntity rift, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcs, int breakProgress, int alpha) {
-    	if (DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().showRiftCore) {
+    	if (DimensionalDoorsInitializer.getConfig().getGraphicsConfig().showRiftCore) {
             this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
             long timeLeft = RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis();
@@ -49,7 +49,7 @@ public class DetachedRiftBlockEntityRenderer extends BlockEntityRenderer<Detache
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
         matrices.push();
         matrices.translate(0.5, 0.5, 0.5);
-        RiftCrackRenderer.drawCrack(matrices.peek().getModel(), vc, 0, CURVE, DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
+        RiftCrackRenderer.drawCrack(matrices.peek().getModel(), vc, 0, CURVE, DimensionalDoorsInitializer.getConfig().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
         matrices.pop();
     }
 

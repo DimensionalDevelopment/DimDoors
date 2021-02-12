@@ -23,7 +23,7 @@ public class PocketDirectory {
 	RegistryKey<World> worldKey;
 
 	public PocketDirectory(RegistryKey<World> worldKey) {
-		this.gridSize = DimensionalDoorsInitializer.CONFIG.getPocketsConfig().pocketGridSize;
+		this.gridSize = DimensionalDoorsInitializer.getConfig().getPocketsConfig().pocketGridSize;
 		this.worldKey = worldKey;
 		this.nextID = 0;
 		this.pockets = new HashMap<>();

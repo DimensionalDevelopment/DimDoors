@@ -95,7 +95,7 @@ public class MonolithAggroGoal extends Goal {
             }
 
             // Teleport the target player if various conditions are met
-            if (this.mob.getAggro() >= MAX_AGGRO && DimensionalDoorsInitializer.CONFIG.getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
+            if (this.mob.getAggro() >= MAX_AGGRO && DimensionalDoorsInitializer.getConfig().getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
                 this.mob.setAggro(0);
                 //Location destination = LimboDimension.getLimboSkySpawn(player);
                 //TeleportUtil.teleport(player, destination, 0, 0);

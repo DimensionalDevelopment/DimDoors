@@ -47,7 +47,7 @@ public class RiftRemoverItem extends Item {
 		if (world.isClient) {
 			if (!RaycastHelper.hitsDetachedRift(hit, world)) {
 				player.sendMessage(new TranslatableText("tools.rift_miss"), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.CONFIG.getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 			}
 			return new TypedActionResult<>(ActionResult.FAIL, stack);
 		}
