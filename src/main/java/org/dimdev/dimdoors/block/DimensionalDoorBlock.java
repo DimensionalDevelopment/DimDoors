@@ -58,7 +58,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 	@Nullable
 	@Override
 	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		if (state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+		if (state.get(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
 			return null;
 		}
 		return new EntranceRiftBlockEntity(pos, state);

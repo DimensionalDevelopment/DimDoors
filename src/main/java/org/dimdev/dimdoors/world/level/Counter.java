@@ -18,6 +18,10 @@ public class Counter implements Component {
 		return this.counter;
 	}
 
+	public int count() {
+		return this.counter;
+	}
+
 	public static <T> Counter get(T provider) {
 		return DimensionalDoorsComponents.COUNTER_COMPONENT_KEY.get(provider);
 	}

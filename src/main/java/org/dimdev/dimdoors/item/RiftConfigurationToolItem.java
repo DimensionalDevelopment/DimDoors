@@ -121,7 +121,7 @@ public class RiftConfigurationToolItem extends Item {
 					EntityUtils.chat(player, Text.of("Rift stripped of data and set to invalid id: -1"));
 				}
 			} else if (Counter.get(stack).count() != -1) {
-				Counter.get(stack).set(-1);
+//				Counter.get(stack).set(-1); TODO
 				((RiftConfigurationToolItem) stack.getItem()).sync(stack, player, hand);
 
 				EntityUtils.chat(player, Text.of("Counter has been reset."));
@@ -141,7 +141,7 @@ public class RiftConfigurationToolItem extends Item {
 	@Override
 	public ItemStack getDefaultStack() {
 		ItemStack defaultStack = super.getDefaultStack();
-		Counter.get(defaultStack).set(-1);
+//		Counter.get(defaultStack).set(-1); TODO
 		return defaultStack;
 	}
 

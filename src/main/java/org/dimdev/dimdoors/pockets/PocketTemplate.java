@@ -90,16 +90,15 @@ public class PocketTemplate {
                 BlockState state = schematic.palette.get(schematic.blockData[x][y][z]);
 
                 CompoundTag newNBT = new CompoundTag();
-                EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
+                EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate(new BlockPos(x, y, z), state);
 
                 String placeholder = tileEntityNBT.getString("placeholder");
 
                 if(placeholderMap.containsKey(placeholder)) {
-                    rift.setPos(new BlockPos(x, y, z));
                     placeholderMap.get(placeholder).accept(rift);
                     newNBT = rift.toTag(newNBT);
                 } else
-                    throw new RuntimeException("Unknown tile entity placeholder: " + tileEntityNBT.getString("placeholder"));
+                    throw new RuntimeException("Unknown block entity placeholder: " + tileEntityNBT.getString("placeholder"));
 
                 // TODO: allow overriding some placeholder properties by copying other properties (not placeholder and x/y/z) to the new nbt
                 tileEntities.add(newNBT);

@@ -88,7 +88,7 @@ dependencies {
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
-	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "d487eaa")
+	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "c57e3ef")
 	includeCompile("io.github.cottonmc", "LibGui", "3.3.2+1.16.4")
 	includeCompile("me.shedaniel.cloth", "config-2", "5.0.0")
 	includeCompile("io.github.onyxstudios", "Cardinal-Components-API", "3.0.0-nightly.20w48a")
