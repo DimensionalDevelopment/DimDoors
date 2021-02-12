@@ -120,12 +120,4 @@ public final class ModConfig implements ConfigData {
 		public double riftSize = 1;
 		public double riftJitter = 1;
 	}
-<<<<<<< HEAD
-
-	public static void init() {
-		DimensionalDoorsInitializer.CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
-		DimensionalDoorsInitializer.CONFIG = DimensionalDoorsInitializer.CONFIG_MANAGER.getConfig();
-	}
-=======
->>>>>>> ffd8991... Fix another NPE in prod
 }
