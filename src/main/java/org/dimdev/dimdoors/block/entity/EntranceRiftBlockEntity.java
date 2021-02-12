@@ -43,7 +43,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
 	@Override
 	public boolean receiveEntity(Entity entity, float yawOffset) {
-		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.CONFIG.getGeneralConfig().teleportOffset + 0.5));
+		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.getConfig().getGeneralConfig().teleportOffset + 0.5));
 		TeleportUtil.teleport(entity, this.world, targetPos, yawOffset);
 		return true;
 	}

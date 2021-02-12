@@ -46,7 +46,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 			return;
 		}
 
-		if (!world.isClient() && random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanSpawnChance) {
+		if (!world.isClient() && random.nextDouble() < DimensionalDoorsInitializer.getConfig().getGeneralConfig().endermanSpawnChance) {
 			EndermanEntity enderman = EntityType.ENDERMAN.spawn(
 					(ServerWorld) world,
 					null,
@@ -58,7 +58,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 					false
 			);
 
-			if (random.nextDouble() < DimensionalDoorsInitializer.CONFIG.getGeneralConfig().endermanAggressiveChance) {
+			if (random.nextDouble() < DimensionalDoorsInitializer.getConfig().getGeneralConfig().endermanAggressiveChance) {
 				if (enderman != null) {
 					enderman.setTarget(world.getClosestPlayer(enderman, 50));
 				}
@@ -67,12 +67,12 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
 		if (blockEntity.closing) {
 			if (blockEntity.size > 0) {
-				blockEntity.size -= DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftCloseSpeed;
+				blockEntity.size -= DimensionalDoorsInitializer.getConfig().getGeneralConfig().riftCloseSpeed;
 			} else {
 				world.removeBlock(pos, false);
 			}
 		} else if (!blockEntity.stabilized) {
-			blockEntity.size += DimensionalDoorsInitializer.CONFIG.getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
+			blockEntity.size += DimensionalDoorsInitializer.getConfig().getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
 		}
 	}
 
