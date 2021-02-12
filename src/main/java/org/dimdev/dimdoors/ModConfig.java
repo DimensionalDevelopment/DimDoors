@@ -123,6 +123,5 @@ public final class ModConfig implements ConfigData {
 
 	public static void init() {
 		DimensionalDoorsInitializer.CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
-		DimensionalDoorsInitializer.CONFIG = DimensionalDoorsInitializer.CONFIG_MANAGER.getConfig();
 	}
 }
