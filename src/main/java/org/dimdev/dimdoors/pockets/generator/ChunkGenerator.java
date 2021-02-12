@@ -9,11 +9,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.*;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.*;
 import net.minecraft.world.gen.GenerationStep;
@@ -32,6 +34,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class ChunkGenerator extends PocketGenerator {
@@ -95,7 +98,7 @@ public class ChunkGenerator extends PocketGenerator {
 		ArrayList<Chunk> protoChunks = new ArrayList<>();
 		for (int z = 0; z < chunkSizeZ; z++) {
 			for (int x = 0; x < chunkSizeX; x++) {
-				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA);
+				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA, world);
 				protoChunk.setLightingProvider(genWorld.getLightingProvider());
 				protoChunks.add(protoChunk);
 			}
@@ -114,7 +117,11 @@ public class ChunkGenerator extends PocketGenerator {
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.BIOMES);
 		}
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.populateNoise(genWorld, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk);
+			try {
+				genWorldChunkGenerator.populateNoise(Util.getMainWorkerExecutor(), genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk).get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.NOISE);
 		}
 		for (Chunk protoChunk : protoChunks) {
@@ -199,15 +206,15 @@ public class ChunkGenerator extends PocketGenerator {
 		@Override
 		public Chunk getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
 			Chunk chunk = super.getChunk(chunkX, chunkZ, leastStatus, false);
-			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA) : chunk;
+			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA, this) : chunk;
 		}
 
 		// TODO: Override getSeed()
 	}
 
 	private static class ProtoChunkHack extends ProtoChunk { // exists solely to make some calls in the non utilized chunks faster
-		public ProtoChunkHack(ChunkPos pos, UpgradeData upgradeData) {
-			super(pos, upgradeData);
+		public ProtoChunkHack(ChunkPos pos, UpgradeData upgradeData, HeightLimitView world) {
+			super(pos, upgradeData, world);
 		}
 
 		@Override

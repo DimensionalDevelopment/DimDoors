@@ -66,7 +66,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 
 			if (item instanceof DyeItem) {
 				if (pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getColor())) {
-					entity.remove();
+					entity.remove(Entity.RemovalReason.DISCARDED);
 				} else {
 					((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
 				}

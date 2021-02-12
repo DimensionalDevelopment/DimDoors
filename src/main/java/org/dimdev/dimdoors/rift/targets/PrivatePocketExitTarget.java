@@ -52,9 +52,9 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 	@Override
 	public void register() {
 		super.register();
-		PocketDirectory privatePocketRegistry = DimensionalRegistry.instance().getPocketDirectory(this.location.world);
+		PocketDirectory privatePocketRegistry = DimensionalRegistry.getPocketDirectory(this.location.world);
 		Pocket pocket = privatePocketRegistry.getPocketAt(this.location.pos);
-		DimensionalRegistry.instance().getRiftRegistry().addPocketEntrance(pocket, this.location);
+		DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, this.location);
 	}
 
 	@Override
