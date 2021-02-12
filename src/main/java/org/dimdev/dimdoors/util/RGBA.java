@@ -128,6 +128,16 @@ public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> 
 				Float.compare(this.blue, o.blue);
 	}
 
+	public int toIntNoAlpha() {
+		int red = (int) (this.red * 255);
+		int blue = (int) (this.blue * 255);
+		int green = (int) (this.green * 255);
+		int color = red << 16;
+		color |= blue << 8;
+		color |= green;
+		return color;
+	}
+
 	public static CompoundTag toTag(RGBA rgba) {
 		CompoundTag tag = new CompoundTag();
 		tag.putFloat("red", rgba.red);

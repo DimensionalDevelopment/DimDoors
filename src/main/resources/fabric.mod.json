@@ -46,6 +46,10 @@
     "cardinal-components": [
       "dimdoors:dimensional_registry",
       "dimdoors:counter"
-    ]
+    ],
+    "waila:plugins": {
+      "id": "dimdoors:wthit_plugin",
+      "initializer": "org.dimdev.dimdoors.client.wthit.WthitPlugin"
+    }
   }
 }

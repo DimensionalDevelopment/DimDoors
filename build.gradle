@@ -101,6 +101,8 @@ dependencies {
 	modRuntime("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
 		exclude module: "fabric-api"
 	}
+	modCompileOnly 'com.github.badasintended:wthit:3.0.0'
+	modRuntime 'com.github.badasintended:wthit:3.0.0'
 }
 
 version "4.0.0+alpha.5"

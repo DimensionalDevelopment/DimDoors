@@ -9,12 +9,15 @@
     "settings": {
       "bedrock_floor_position": 0,
       "bedrock_roof_position": -1,
+      "noise_caves_enabled": true,
+      "aquifers_enabled": false,
       "disable_mob_generation": false,
       "sea_level": 32,
       "structures": {
         "structures": {}
       },
       "noise": {
+        "min_y": 0,
         "density_factor": 1,
         "density_offset": -0.26875,
         "simplex_surface_noise": true,
@@ -23,7 +26,7 @@
         "amplified": true,
         "size_horizontal": 1,
         "size_vertical": 4,
-        "height": 178,
+        "height": 176,
         "sampling": {
           "xz_scale": 1,
           "y_scale": 3,
