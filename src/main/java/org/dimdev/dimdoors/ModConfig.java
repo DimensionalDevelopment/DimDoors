@@ -120,8 +120,4 @@ public final class ModConfig implements ConfigData {
 		public double riftSize = 1;
 		public double riftJitter = 1;
 	}
-
-	public static void init() {
-		DimensionalDoorsInitializer.CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
-	}
 }

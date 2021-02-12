@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+
+import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -42,7 +45,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
-	public static ConfigHolder<ModConfig> CONFIG_MANAGER;
+	public static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
 	private static Map<UUID, ServerPlayNetworkHandler> UUID_SERVER_PLAY_NETWORK_HANDLER_MAP = new HashMap<>();
 	private static MinecraftServer server;
 
@@ -80,7 +83,6 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		ModFluids.init();
         ModSoundEvents.init();
 		ModParticleTypes.init();
-        ModConfig.init();
 
         Targets.registerDefaultTargets();
 		VirtualTarget.VirtualTargetType.register();
