@@ -72,6 +72,10 @@ public abstract class VirtualTarget implements Target {
 		this.location = location;
 	}
 
+	public Location getLocation() {
+		return this.location;
+	}
+
 	public boolean isDummy() {
 		return false;
 	}
