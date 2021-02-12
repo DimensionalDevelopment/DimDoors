@@ -47,4 +47,9 @@ public class TwoPillarsV2Gateway extends SchematicV2Gateway {
 	public Set<RegistryKey<Biome>> getBiomes() {
 		return BuiltinBiomesAccessor.getIdMap().int2ObjectEntrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
 	}
+
+	@Override
+	public boolean test(StructureWorldAccess structureWorldAccess, BlockPos blockPos) {
+		return true;
+	}
 }

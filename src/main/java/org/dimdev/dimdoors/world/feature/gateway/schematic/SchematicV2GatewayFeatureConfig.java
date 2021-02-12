@@ -6,11 +6,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.gen.feature.FeatureConfig;
 
 public class SchematicV2GatewayFeatureConfig implements FeatureConfig {
-    public static final Codec<SchematicV2GatewayFeatureConfig> CODEC = RecordCodecBuilder.create((instance) -> {
-        return instance.group(
-                Codec.STRING.fieldOf("gatewayId").forGetter(SchematicV2GatewayFeatureConfig::getGatewayId)
-        ).apply(instance, SchematicV2GatewayFeatureConfig::new);
-    });
+    public static final Codec<SchematicV2GatewayFeatureConfig> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+			Codec.STRING.fieldOf("gatewayId").forGetter(SchematicV2GatewayFeatureConfig::getGatewayId)
+	).apply(instance, SchematicV2GatewayFeatureConfig::new));
 
     private final SchematicV2Gateway gateway;
     private final String gatewayId;
