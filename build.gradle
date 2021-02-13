@@ -1,6 +1,7 @@
 plugins {
     id "fabric-loom" version "0.5-SNAPSHOT"
 	id "maven-publish"
+	id 'com.matthewprenger.cursegradle' version "1.4.0"
 }
 
 apply plugin: "java"
@@ -49,14 +50,6 @@ repositories {
 	maven {
 		name = "Ladysnake Libs"
 		url = "https://dl.bintray.com/ladysnake/libs"
-	}
-
-	maven {
-		name = "Tehnut maven"
-		url "https://maven.tehnut.info"
-		content {
-			includeGroup "mcp.mobius.waila"
-		}
 	}
 }
 
@@ -114,8 +107,15 @@ dependencies {
     }
 }
 
-version "4.0.0+alpha.5"
+version = computeVersion(project.mod_version)
 archivesBaseName = "DimensionalDoors"
+
+static def computeVersion(String version) {
+	if (version.contains("alpha")) {
+		return version + "." + Calendar.getInstance().getTime().format("dd.MM.yyyy")
+	}
+	return version
+}
 
 sourceSets {
 	main {
@@ -137,4 +137,25 @@ processResources {
 
 artifacts {
     archives jar
+}
+
+curseforge {
+	if (project.hasProperty('curse_api_key')) {
+		apiKey = project.getProperty('curse_api_key')
+	}
+	project {
+		id = '284876'
+		changelog = 'This is a test release. Please back up your worlds before loading this mod. A changelog can be found at https://github.com/DimensionalDevelopment/DimDoors/commits/1.17'
+		releaseType = 'alpha'
+		addGameVersion '1.17'
+		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
+			displayName = "[${project.minecraft_version}] Dimensional Doors ${version}"
+		}
+		afterEvaluate {
+			uploadTask.dependsOn("remapJar")
+		}
+	}
+	options {
+		forgeGradleIntegration = false
+	}
 }
