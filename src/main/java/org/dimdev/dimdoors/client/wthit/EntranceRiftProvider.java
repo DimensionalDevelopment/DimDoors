@@ -31,5 +31,6 @@ public enum EntranceRiftProvider implements IComponentProvider {
 			colorText.append(actualColorText);
 			tooltip.add(new TranslatableText("dimdoors.color", colorText));
 		}
+		tooltip.add(new LiteralText("Foo"));
 	}
 }
