@@ -100,7 +100,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		generator.applyModifiers(parameters, manager);
 
 		this.applyModifiers(parameters, manager);
-		generator.setup(pocket, parameters, setupLoot != null ? setupLoot : true);
+		generator.setup(pocket, parameters, setupLoot != null ? setupLoot : (generator.getSetupLoot()) != null ? generator.getSetupLoot() : true);
 		return pocket;
 	}
 
