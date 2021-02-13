@@ -9,3 +9,5 @@ pluginManagement {
         mavenCentral()
     }
 }
+
+rootProject.name = 'DimensionalDoors'
