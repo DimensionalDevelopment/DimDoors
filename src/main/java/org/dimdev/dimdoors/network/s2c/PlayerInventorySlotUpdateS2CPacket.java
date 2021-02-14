@@ -3,19 +3,20 @@ package org.dimdev.dimdoors.network.s2c;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.network.ClientPacketHandler;
+import org.dimdev.dimdoors.network.SimplePacket;
 
 import java.io.IOException;
 
-public class PlayerInventorySlotUpdateS2CPacket implements Packet<ClientPlayPacketListener> {
+public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPacketHandler> {
 	public static final Identifier ID = new Identifier("dimdoors:player_inventory_slot_update");
 
 	private int slot;
 	private ItemStack stack;
 
+	@Environment(EnvType.CLIENT)
 	public PlayerInventorySlotUpdateS2CPacket() {
 		this.stack = ItemStack.EMPTY;
 	}
@@ -26,29 +27,21 @@ public class PlayerInventorySlotUpdateS2CPacket implements Packet<ClientPlayPack
 	}
 
 	@Override
-	public void read(PacketByteBuf buf) throws IOException {
+	public SimplePacket<ClientPacketHandler> read(PacketByteBuf buf) throws IOException {
 		slot = buf.readInt();
 		stack = buf.readItemStack();
+		return this;
 	}
 
 	@Override
-	public void write(PacketByteBuf buf) throws IOException {
+	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
 		buf.writeInt(slot);
 		buf.writeItemStack(stack);
+		return buf;
 	}
 
 	@Override
-	public void apply(ClientPlayPacketListener listener) {
-		// TODO: write method
-	}
-
-	@Environment(EnvType.CLIENT)
-	public int getSlot() {
-		return slot;
-	}
-
-	@Environment(EnvType.CLIENT)
-	public ItemStack getStack() {
-		return stack;
+	public void apply(ClientPacketHandler listener) {
+		listener.onPlayerInventorySlotUpdate(slot, stack);
 	}
 }
