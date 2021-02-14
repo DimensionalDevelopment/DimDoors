@@ -1,4 +1,18 @@
-{
-  "id": "custom/purpur_hallway",
-  "type": "dimdoors:id"
-}
+[
+  {
+    "id": "custom/purpur_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/waiting_room",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/mob_prison",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/rising_hand",
+    "type": "dimdoors:id"
+  }
+]
