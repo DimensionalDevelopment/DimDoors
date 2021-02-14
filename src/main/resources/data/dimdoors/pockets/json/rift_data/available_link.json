@@ -1,0 +1,13 @@
+{
+  "destination": {
+    "type": "dimdoors:available_link",
+    "newRiftWeight": 1,
+    "weightMaximum": 100,
+    "coordFactor": 1,
+    "positiveDepthFactor": 80,
+    "negativeDepthFactor": 10000,
+    "acceptedGroups": [0],
+    "noLink": false,
+    "noLinkBack": false
+  }
+}
