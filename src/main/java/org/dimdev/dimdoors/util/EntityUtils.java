@@ -43,6 +43,6 @@ public final class EntityUtils {
 	}
 
 	public static void chat(Entity entity, Text text) {
-		chat(entity, text, false);
+		chat(entity, text, true);
 	}
 }

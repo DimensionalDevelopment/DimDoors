@@ -14,5 +14,75 @@
   {
     "id": "custom/rising_hand",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/honey_parkour",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/stone_brick_bridge",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/upwards_pillar",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/party",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/monolith_cage",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/returning_eye",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/silverfish_bridge",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/upwards_t_treasure",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/broken_pillars",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/buggy_top_entry",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/collapsed_single_tunnel",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/crumbled_hall",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/door_totem_ruins",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/exit_cube",
+    "type": "dimdoors:id",
+    "weight": 2
+  },
+  {
+    "id": "custom/exit_ruins_with_hidden_door",
+    "type": "dimdoors:id",
+    "weight": 2
+  },
+  {
+    "id": "custom/trap_rib_tunnel",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/river_road_twin_bridges",
+    "type": "dimdoors:id"
   }
 ]
