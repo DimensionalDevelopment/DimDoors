@@ -14,16 +14,15 @@ public class Counter implements Component {
 	}
 
 	public int increment() {
-		this.counter++;
-		return this.counter;
+		return this.counter++;
 	}
 
 	public int count() {
 		return this.counter;
 	}
 
-	public void set(int value) {
-		this.counter = value;
+	public void reset() {
+		this.counter = 0;
 	}
 
 	public static <T> Counter get(T provider) {
