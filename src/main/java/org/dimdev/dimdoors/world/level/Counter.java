@@ -1,32 +1,28 @@
 package org.dimdev.dimdoors.world.level;
 
+import dev.onyxstudios.cca.api.v3.component.Component;
+
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
-import dev.onyxstudios.cca.api.v3.item.ItemComponent;
+public class Counter implements Component {
+	private final ItemStack stack;
+	private int counter;
 
-public class Counter extends ItemComponent {
 	public Counter(ItemStack stack) {
-		super(stack, DimensionalDoorsComponents.COUNTER_COMPONENT_KEY);
-		if (!this.hasTag("counter"))
-			this.putInt("counter", 0);
-	}
-
-	public int count() {
-		return getInt("counter");
-	}
-
-	public void set(int value) {
-		this.putInt("counter", omitZero(value));
+		this.stack = stack;
 	}
 
 	public int increment() {
-		int count = count() + 1;
-		this.putInt("counter", count);
-		return count;
+		return this.counter++;
 	}
 
-	public void set(int value) {
-		this.counter = value;
+	public int count() {
+		return this.counter;
+	}
+
+	public void reset() {
+		this.counter = 0;
 	}
 
 	public static <T> Counter get(T provider) {
@@ -34,21 +30,12 @@ public class Counter extends ItemComponent {
 	}
 
 	@Override
-	protected void putInt(String key, int value) {
-		super.putInt(key, omitZero(value));
+	public void readFromNbt(CompoundTag tag) {
+		this.counter = tag.getInt("counter");
 	}
-
 
 	@Override
-	protected int getInt(String key) {
-		return withZero(super.getInt(key));
-	}
-
-	private int omitZero(int value) {
-		return value >= 0 ? value + 1 : value;
-	}
-
-	private int withZero(int value) {
-		return value > 0 ? value - 1 : value;
+	public void writeToNbt(CompoundTag tag) {
+		tag.putInt("counter", this.counter);
 	}
 }

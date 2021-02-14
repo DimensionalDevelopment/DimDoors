@@ -79,8 +79,11 @@ public class RiftConfigurationToolItem extends ModItem {
 	@Override
 	public TypedActionResult<Boolean> onAttackBlock(World world, PlayerEntity player, Hand hand, BlockPos pos, Direction direction) {
 		if (world.isClient) {
-			if (player.isSneaking() && Counter.get(player.getStackInHand(hand)).count() != -1 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
-				return TypedActionResult.success(true);
+			if (player.isSneaking()) {
+				if (Counter.get(player.getStackInHand(hand)).count() != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
+					return TypedActionResult.success(true);
+				}
+				return TypedActionResult.fail(false);
 			}
 		} else {
 			ItemStack stack = player.getStackInHand(hand);
@@ -93,8 +96,8 @@ public class RiftConfigurationToolItem extends ModItem {
 						EntityUtils.chat(player, Text.of("Rift stripped of data and set to invalid id: -1"));
 						return TypedActionResult.success(false);
 					}
-				} else if (Counter.get(stack).count() != -1) {
-					Counter.get(stack).set(-1);
+				} else if (Counter.get(stack).count() != 0) {
+					Counter.get(stack).reset();
 					sync(stack, player, hand);
 
 					EntityUtils.chat(player, Text.of("Counter has been reset."));
@@ -111,13 +114,6 @@ public class RiftConfigurationToolItem extends ModItem {
 		if (I18n.hasTranslation(this.getTranslationKey() + ".info")) {
 			list.add(new TranslatableText(this.getTranslationKey() + ".info"));
 		}
-	}
-
-	@Override
-	public ItemStack getDefaultStack() {
-		ItemStack defaultStack = super.getDefaultStack();
-		Counter.get(defaultStack).set(-1);
-		return defaultStack;
 	}
 
 	// TODO: put in ServerPacketHandler
