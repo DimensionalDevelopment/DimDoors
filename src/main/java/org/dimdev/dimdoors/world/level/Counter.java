@@ -25,6 +25,10 @@ public class Counter extends ItemComponent {
 		return count;
 	}
 
+	public void set(int value) {
+		this.counter = value;
+	}
+
 	public static <T> Counter get(T provider) {
 		return DimensionalDoorsComponents.COUNTER_COMPONENT_KEY.get(provider);
 	}
