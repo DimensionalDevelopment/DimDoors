@@ -94,7 +94,7 @@ public class RiftConfigurationToolItem extends ModItem {
 						return TypedActionResult.success(false);
 					}
 				} else if (Counter.get(stack).count() != -1) {
-//				Counter.get(stack).set(-1); TODO
+					Counter.get(stack).set(-1);
 					sync(stack, player, hand);
 
 					EntityUtils.chat(player, Text.of("Counter has been reset."));
@@ -116,7 +116,7 @@ public class RiftConfigurationToolItem extends ModItem {
 	@Override
 	public ItemStack getDefaultStack() {
 		ItemStack defaultStack = super.getDefaultStack();
-//		Counter.get(defaultStack).set(-1); TODO
+		Counter.get(defaultStack).set(-1);
 		return defaultStack;
 	}
 

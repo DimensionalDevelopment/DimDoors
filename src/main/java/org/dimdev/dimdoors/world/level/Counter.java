@@ -22,6 +22,10 @@ public class Counter implements Component {
 		return this.counter;
 	}
 
+	public void set(int value) {
+		this.counter = value;
+	}
+
 	public static <T> Counter get(T provider) {
 		return DimensionalDoorsComponents.COUNTER_COMPONENT_KEY.get(provider);
 	}
