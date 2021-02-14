@@ -13,7 +13,6 @@ import org.dimdev.dimdoors.pockets.virtual.selection.ConditionalSelector;
 
 import java.util.function.Supplier;
 
-
 // TODO: do something about getting correct Pocket sizes
 public abstract class VirtualSingularPocket implements VirtualPocket {
 	public static final Registry<VirtualSingularPocketType<? extends VirtualSingularPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualSingularPocketType<? extends VirtualSingularPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
@@ -51,13 +50,10 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 
 	public abstract String getKey();
 
-
 	public interface VirtualSingularPocketType<T extends VirtualSingularPocket> {
 		VirtualSingularPocketType<IdReference> ID_REFERENCE = register(new Identifier("dimdoors", IdReference.KEY), IdReference::new);
 		VirtualSingularPocketType<TagReference> TAG_REFERENCE = register(new Identifier("dimdoors", TagReference.KEY), TagReference::new);
-
 		VirtualSingularPocketType<ConditionalSelector> DEPTH_DEPENDENT_SELECTOR = register(new Identifier("dimdoors", ConditionalSelector.KEY), ConditionalSelector::new);
-
 
 		VirtualSingularPocket fromTag(CompoundTag tag);
 
@@ -66,11 +62,11 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 		static void register() {
 		}
 
-		static <U extends VirtualSingularPocket> VirtualSingularPocketType<U> register(Identifier id, Supplier<U> constructor) {
+		static <U extends VirtualSingularPocket> VirtualSingularPocketType<U> register(Identifier id, Supplier<U> factory) {
 			return Registry.register(REGISTRY, id, new VirtualSingularPocketType<U>() {
 				@Override
 				public VirtualSingularPocket fromTag(CompoundTag tag) {
-					return constructor.get().fromTag(tag);
+					return factory.get().fromTag(tag);
 				}
 
 				@Override
