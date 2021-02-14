@@ -1,0 +1,16 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "v2/custom/silverfish_bridge",
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "rift_data/pocket_entrance"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [1],
+      "rift_data": "rift_data/available_link"
+    }
+  ]
+}

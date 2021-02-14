@@ -1,0 +1,17 @@
+{
+  "type": "dimdoors:schematic",
+  "setup_loot": true,
+  "id": "v2/custom/broken_pillars",
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "rift_data/pocket_entrance"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [1],
+      "rift_data": "rift_data/available_link"
+    }
+  ]
+}
