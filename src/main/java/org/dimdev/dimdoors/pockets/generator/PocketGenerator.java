@@ -41,6 +41,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 
 	private String weight;
 	private Equation weightEquation;
+	private Boolean setupLoot;
 
 	private final List<String> tags = new ArrayList<>();
 
@@ -83,6 +84,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		this.weight = tag.contains("weight") ? tag.getString("weight") : defaultWeightEquation;
 		parseWeight();
 
+		if (tag.contains("setup_loot")) setupLoot = tag.getBoolean("setup_loot");
+
 		if (tag.contains("modifiers")) {
 			ListTag modifiersTag = tag.getList("modifiers", 10);
 			for (int i = 0; i < modifiersTag.size(); i++) {
@@ -103,6 +106,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		this.getType().toTag(tag);
 
 		if (!weight.equals("5")) tag.putString("weight", weight);
+
+		if (setupLoot != null) tag.putBoolean("setup_loot", setupLoot);
 
 		ListTag modifiersTag = new ListTag();
 		for (Modifier modifier : modifierList) {
@@ -131,6 +136,10 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	@Override
 	public double getWeight(PocketGenerationParameters parameters) {
 		return this.weightEquation.apply(parameters.toVariableMap(new HashMap<>()));
+	}
+
+	public Boolean getSetupLoot() {
+		return setupLoot;
 	}
 
 	public void applyModifiers(PocketGenerationParameters parameters, RiftManager manager) {

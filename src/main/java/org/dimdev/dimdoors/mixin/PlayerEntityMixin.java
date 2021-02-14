@@ -34,12 +34,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 			cir.setReturnValue(false);
 		}
 	}
-
+	/*
 	@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
 	public void checkDeath(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
 	}
-
+	*/
 	@Unique
 	protected void doOnDeathStuff(DamageSource source, CallbackInfo ci) {
 		if (ModDimensions.isPocketDimension(this.world)) {

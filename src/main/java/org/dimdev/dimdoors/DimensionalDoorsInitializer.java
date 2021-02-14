@@ -7,8 +7,7 @@ import java.util.UUID;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -18,8 +17,8 @@ import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.item.RiftConfigurationToolItem;
-import org.dimdev.dimdoors.network.c2s.HitBlockS2CPacket;
+import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
@@ -46,7 +45,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class DimensionalDoorsInitializer implements ModInitializer {
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
 	public static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
-	private static Map<UUID, ServerPlayNetworkHandler> UUID_SERVER_PLAY_NETWORK_HANDLER_MAP = new HashMap<>();
+	private static Map<UUID, ServerPacketHandler> UUID_SERVER_PACKET_HANDLER_MAP = new HashMap<>();
 	private static MinecraftServer server;
 
     @NotNull
@@ -93,8 +92,18 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         SchematicV2Handler.getInstance().load();
         SchematicHandler.INSTANCE.loadSchematics();
 
-		AttackBlockCallback.EVENT.register(RiftConfigurationToolItem::onAttackBlockCallback);
-
-		ServerPlayNetworking.registerGlobalReceiver(HitBlockS2CPacket.ID, RiftConfigurationToolItem::receiveHitBlock);
+		registerListeners();
     }
+
+    private void registerListeners() {
+		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+			UUID_SERVER_PACKET_HANDLER_MAP.put(handler.player.getUuid(), new ServerPacketHandler(handler, server));
+		});
+
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			UUID_SERVER_PACKET_HANDLER_MAP.remove(handler.player.getUuid()).unregister();
+		});
+
+		AttackBlockCallback.EVENT.register(new AttackBlockCallbackListener());
+	}
 }
