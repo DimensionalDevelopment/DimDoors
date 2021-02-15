@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:quartz"
+    }
+  },
+  "result": {
+    "item": "dimdoors:quartz_door",
+    "count": 1
+  }
+}
