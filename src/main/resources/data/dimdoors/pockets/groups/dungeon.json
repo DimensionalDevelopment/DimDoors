@@ -84,5 +84,9 @@
   {
     "id": "custom/river_road_twin_bridges",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/white_fabric_maze",
+    "type": "dimdoors:id"
   }
 ]
