@@ -8,7 +8,7 @@
     },
     "settings": {
       "bedrock_floor_position": 0,
-      "bedrock_roof_position": -1,
+      "bedrock_roof_position": -2147483648,
       "noise_caves_enabled": true,
       "aquifers_enabled": false,
       "disable_mob_generation": false,
