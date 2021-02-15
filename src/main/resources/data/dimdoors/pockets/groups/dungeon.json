@@ -108,5 +108,9 @@
   {
     "id": "custom/chain_crossing",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/smile_6",
+    "type": "dimdoors:id"
   }
 ]
