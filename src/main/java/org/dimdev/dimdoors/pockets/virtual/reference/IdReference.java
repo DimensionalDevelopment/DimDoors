@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import net.minecraft.nbt.CompoundTag;
+
+import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
@@ -49,4 +51,14 @@ public class IdReference extends PocketGeneratorReference {
 		return KEY;
 	}
 
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("id", id)
+				.add("weight", weight)
+				.add("weightEquation", weightEquation)
+				.add("setupLoot", setupLoot)
+				.add("modifierList", modifierList)
+				.toString();
+	}
 }

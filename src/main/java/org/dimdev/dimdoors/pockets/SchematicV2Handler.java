@@ -101,7 +101,8 @@ public class SchematicV2Handler {
 					loadJson(directoryPath, directoryIdParts, loader);
 				}
 			} catch (IOException e) {
-				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
+				LOGGER.error("Could not load pocket data in path {}", path.toAbsolutePath());
+				LOGGER.error("Stacktrace: ", e);
 			}
 		} else if(Files.isRegularFile(path) && path.getFileName().toString().endsWith(".json")) {
 			String id = String.join("/", idParts);
@@ -109,7 +110,12 @@ public class SchematicV2Handler {
 				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
 				loader.accept(id, JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
 			} catch (IOException e) {
-				LOGGER.error("could not load pocket data in path " + path.toString() + " due to malformed json.", e);
+				LOGGER.error("Could not load pocket data in path {}", path.toAbsolutePath());
+				LOGGER.error("Stacktrace: ", e);
+			} catch (RuntimeException e) {
+				LOGGER.error("Error parsing schematic json");
+				LOGGER.error("Erroring path: {}", path.toAbsolutePath());
+				throw e;
 			}
 		}
 	}

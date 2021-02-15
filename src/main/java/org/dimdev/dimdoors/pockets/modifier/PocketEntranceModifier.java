@@ -6,6 +6,7 @@ import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
+import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.PocketEntrancePointer;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
@@ -40,6 +41,12 @@ public class PocketEntranceModifier implements Modifier {
 		return tag;
 	}
 
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("id", id)
+				.toString();
+	}
 
 	@Override
 	public ModifierType<? extends Modifier> getType() {
