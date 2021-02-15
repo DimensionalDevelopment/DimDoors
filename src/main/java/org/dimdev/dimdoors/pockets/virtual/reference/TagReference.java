@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+
+import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
@@ -93,5 +95,19 @@ public class TagReference extends PocketGeneratorReference{
 	public PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters) {
 		if (pockets == null) pockets = SchematicV2Handler.getInstance().getPocketsMatchingTags(required, blackList, exact);
 		return pockets.getNextRandomWeighted(parameters);
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("weight", weight)
+				.add("weightEquation", weightEquation)
+				.add("setupLoot", setupLoot)
+				.add("modifierList", modifierList)
+				.add("required", required)
+				.add("blackList", blackList)
+				.add("exact", exact)
+				.add("pockets", pockets)
+				.toString();
 	}
 }

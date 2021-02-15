@@ -5,6 +5,7 @@ import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 
+import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.LocalReference;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
@@ -53,6 +54,14 @@ public class RelativeReferenceModifier implements Modifier {
 			manager.consume(point_a, rift -> addLink(rift, link1));
 			manager.consume(point_b, rift -> addLink(rift, link2));
 		}
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("point_a", point_a)
+				.add("point_b", point_b)
+				.toString();
 	}
 
 	private boolean addLink(RiftBlockEntity rift, RiftReference link) {

@@ -11,6 +11,8 @@ import java.util.stream.IntStream;
 import net.minecraft.nbt.CompoundTag;
 
 import net.fabricmc.fabric.api.util.NbtType;
+
+import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
@@ -68,6 +70,15 @@ public class RiftDataModifier implements Modifier {
 	@Override
 	public String getKey() {
 		return KEY;
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("doorData", doorData)
+				.add("doorDataReference", doorDataReference)
+				.add("ids", ids)
+				.toString();
 	}
 
 	@Override

@@ -1,12 +1,11 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
+import java.util.List;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
@@ -16,17 +15,18 @@ import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
-import java.util.List;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final String defaultWeightEquation = "5"; // TODO: make config
 	private static final int fallbackWeight = 5; // TODO: make config
 
-	private String weight;
-	private Equation weightEquation;
-	private Boolean setupLoot;
-	private final List<Modifier> modifierList = Lists.newArrayList();
+	protected String weight;
+	protected Equation weightEquation;
+	protected Boolean setupLoot;
+	protected final List<Modifier> modifierList = Lists.newArrayList();
 
 
 	private void parseWeight() {
@@ -81,7 +81,12 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 
 	@Override
 	public double getWeight(PocketGenerationParameters parameters) {
-		return weightEquation != null ? this.weightEquation.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocketGenerator(parameters).getWeight(parameters);
+		try {
+			return weightEquation != null ? this.weightEquation.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocketGenerator(parameters).getWeight(parameters);
+		} catch (RuntimeException e) {
+			LOGGER.error(this.toString());
+			throw new AssertionError(e);
+		}
 	}
 
 	public void applyModifiers(PocketGenerationParameters parameters, RiftManager manager) {
@@ -117,4 +122,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	public abstract PocketGenerator peekReferencedPocketGenerator(PocketGenerationParameters parameters);
 
 	public abstract PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters);
+
+	@Override
+	public abstract String toString();
 }
