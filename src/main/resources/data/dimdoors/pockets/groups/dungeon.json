@@ -88,5 +88,25 @@
   {
     "id": "custom/white_fabric_maze",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/decaying_chain_tunnel",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/cage_monolithless",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/chain_t",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/line_walker",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/chain_crossing",
+    "type": "dimdoors:id"
   }
 ]
