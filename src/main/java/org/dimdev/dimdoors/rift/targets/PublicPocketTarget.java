@@ -9,13 +9,11 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import net.minecraft.nbt.CompoundTag;
 
 public class PublicPocketTarget extends RestoringTarget {
-
 	private VirtualTarget wrappedDestination = null;
 
 	private PublicPocketTarget(VirtualTarget wrappedDestination) {
 		this.wrappedDestination = wrappedDestination;
 	}
-
 
 	public PublicPocketTarget() {
 	}

@@ -84,7 +84,11 @@ dependencies {
 	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "c57e3ef")
 	includeCompile("io.github.cottonmc", "LibGui", "3.3.2+1.16.4")
 	includeCompile("me.shedaniel.cloth", "config-2", "5.0.0")
-	includeCompile("io.github.onyxstudios", "Cardinal-Components-API", "3.0.0-nightly.20w48a")
+	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-base", "3.0.0-nightly.21w06a")
+	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-item", "3.0.0-nightly.21w06a")
+	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-level", "3.0.0-nightly.21w06a")
+	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-util", "3.0.0-nightly.21w06a")
+	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-world", "3.0.0-nightly.21w06a")
 	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
 	includeCompile("dev.hephaestus", "seedy-behavior", "1.0.1")
 
@@ -103,7 +107,7 @@ archivesBaseName = "DimensionalDoors"
 
 static def computeVersion(String version) {
 	if (version.contains("alpha")) {
-		return version + "." + Calendar.getInstance().getTime().format("dd.MM.yyyy")
+		return version + "-" + Calendar.getInstance().getTime().format("dd.MM.yyyy")
 	}
 	return version
 }
@@ -136,7 +140,7 @@ curseforge {
 	}
 	project {
 		id = '284876'
-		changelog = 'This is a test release. Please back up your worlds before loading this mod. A changelog can be found at https://github.com/DimensionalDevelopment/DimDoors/commits/1.17'
+		changelog = 'FOR TESTING ONLY. A changelog can be found at https://github.com/DimensionalDevelopment/DimDoors/commits/1.17'
 		releaseType = 'alpha'
 		addGameVersion '1.17'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
