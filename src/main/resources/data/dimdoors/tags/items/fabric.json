@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "dimdoors:white_fabric",
+    "dimdoors:orange_fabric",
+    "dimdoors:magenta_fabric",
+    "dimdoors:light_blue_fabric",
+    "dimdoors:yellow_fabric",
+    "dimdoors:lime_fabric",
+    "dimdoors:pink_fabric",
+    "dimdoors:gray_fabric",
+    "dimdoors:light_gray_fabric",
+    "dimdoors:cyan_fabric",
+    "dimdoors:purple_fabric",
+    "dimdoors:blue_fabric",
+    "dimdoors:brown_fabric",
+    "dimdoors:green_fabric",
+    "dimdoors:red_fabric",
+    "dimdoors:black_fabric"
+  ]
+}

@@ -71,8 +71,6 @@ public final class ModConfig implements ConfigData {
 		public double riftCloseSpeed = 0.005;
 		public double riftGrowthSpeed = 1;
 		public int depthSpreadFactor = 20;
-		@RequiresRestart
-		public boolean useEnderPearlsInCrafting = false;
 		public double endermanSpawnChance = 0.001;
 		public double endermanAggressiveChance = 0.5;
 	}
