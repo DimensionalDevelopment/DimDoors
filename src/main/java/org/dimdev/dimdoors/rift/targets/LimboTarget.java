@@ -17,7 +17,7 @@ public class LimboTarget extends VirtualTarget implements EntityTarget {
 
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, entity.getPos(), relativeAngle);
+		TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, entity.getPos(), relativeAngle, relativeVelocity);
 		return true;
 	}
 
