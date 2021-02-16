@@ -2,7 +2,10 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
+import net.minecraft.block.Block;
+import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
@@ -12,6 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	public EntranceRiftBlockEntity() {
@@ -41,9 +45,37 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, float yawOffset) {
+	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
+		BlockState state = this.getWorld().getBlockState(this.getPos());
+		Block block = state.getBlock();
 		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.getConfig().getGeneralConfig().teleportOffset + 0.5));
-		TeleportUtil.teleport(entity, this.world, targetPos, yawOffset);
+
+		if (block instanceof CoordinateTransformerBlock) {
+			CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
+
+			System.out.println("{yaw: " + relativeAngle.getYaw() + "; pitch: " + relativeAngle.getPitch() + "; roll: " + relativeAngle.getRoll() + "}");
+
+			if (transformer.isExitFlipped()) {
+				TransformationMatrix3d flipper = TransformationMatrix3d.builder().rotateY(Math.PI).build();
+
+				relativePos = flipper.transform(relativePos);
+				relativeAngle = flipper.transform(relativeAngle);
+				relativeVelocity = flipper.transform(relativeVelocity);
+			}
+
+			System.out.println("{yaw: " + relativeAngle.getYaw() + "; pitch: " + relativeAngle.getPitch() + "; roll: " + relativeAngle.getRoll() + "}");
+
+			relativePos = relativePos.add(new Vec3d(0, 0, 1).multiply(0.6)); // TODO: skip this for Immersive Portals
+
+			TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getPos());
+			TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getPos());
+			targetPos = transformer.transformOut(transformationBuilder, relativePos);
+			relativeAngle = transformer.rotateOut(rotatorBuilder, relativeAngle);
+			relativeVelocity = transformer.rotateOut(rotatorBuilder, relativeVelocity);
+		}
+
+		TeleportUtil.teleport(entity, this.world, targetPos, relativeAngle);
+		entity.setVelocity(relativeVelocity);
 		return true;
 	}
 
@@ -53,6 +85,10 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				.filter(state -> state.contains(HorizontalFacingBlock.FACING))
 				.map(state -> state.get(HorizontalFacingBlock.FACING))
 				.orElse(Direction.NORTH);
+	}
+
+	public boolean hasOrientation() {
+		return this.world != null && this.world.getBlockState(this.pos).contains(HorizontalFacingBlock.FACING);
 	}
 
 	/**

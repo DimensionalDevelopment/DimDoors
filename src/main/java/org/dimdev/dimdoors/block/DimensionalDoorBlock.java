@@ -1,8 +1,12 @@
 package org.dimdev.dimdoors.block;
 
 import io.github.boogiemonster1o1.libcbe.api.ConditionalBlockEntityProvider;
+import net.minecraft.util.math.Vec3d;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.util.math.MathUtil;
+import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DoorBlock;
@@ -22,17 +26,26 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity>, ConditionalBlockEntityProvider {
+public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity>, ConditionalBlockEntityProvider, CoordinateTransformerBlock {
 	public DimensionalDoorBlock(Settings settings) {
 		super(settings);
 	}
 
 	@Override
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation") // TODO: change from onEntityCollision to some method for checking if player crossed portal plane
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		if (world.isClient) {
 			return;
 		}
+
+
+
+		// TODO: replace with dimdoor cooldown?
+		if (entity.hasNetherPortalCooldown()) {
+			entity.resetNetherPortalCooldown();
+			return;
+		}
+		entity.resetNetherPortalCooldown();
 
 		BlockState doorState = world.getBlockState(state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos);
 
@@ -55,6 +68,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 		return super.canReplace(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT;
 	}
 
+	@Nullable
 	@Override
 	public BlockEntity createBlockEntity(BlockView world) {
 		return new EntranceRiftBlockEntity();
@@ -102,5 +116,23 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 	@Override
 	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
 		return VoxelShapes.fullCube();
+	}
+
+	@Override
+	public TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder(BlockState state, BlockPos pos) {
+		return TransformationMatrix3d.builder()
+				.inverseTranslate(Vec3d.ofCenter(pos).add(Vec3d.of(state.get(DoorBlock.FACING).getVector()).multiply(-0.5)))
+				.inverseRotate(MathUtil.directionEulerAngle(state.get(DoorBlock.FACING).getOpposite()));
+	}
+
+	@Override
+	public TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder(BlockState state, BlockPos pos) {
+		return TransformationMatrix3d.builder()
+				.inverseRotate(MathUtil.directionEulerAngle(state.get(DoorBlock.FACING).getOpposite()));
+	}
+
+	@Override
+	public boolean isExitFlipped() {
+		return true;
 	}
 }

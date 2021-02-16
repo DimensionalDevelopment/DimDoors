@@ -159,3 +159,7 @@ curseforge {
 		forgeGradleIntegration = false
 	}
 }
+
+test {
+	useJUnitPlatform()
+}

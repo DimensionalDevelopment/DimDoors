@@ -32,15 +32,11 @@ public class SchematicBlockPalette {
 				Block block = Objects.requireNonNull(Registry.BLOCK.get(new Identifier(string.substring(0, string.indexOf("[")))));
 				BlockState state = block.getDefaultState();
 
-				System.out.println(state);
-
 				String[] stateArray = string.substring(string.indexOf("[") + 1, string.length() - 1).split(",");
 				for (String stateString : stateArray) {
 					Property<?> property = Objects.requireNonNull(block.getStateManager().getProperty(stateString.split("=")[0]));
 					state = process(property, stateString.split("=")[1], state);
 				}
-
-				System.out.println(state);
 
 				return DataResult.success(state);
 			}
