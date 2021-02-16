@@ -45,6 +45,10 @@ repositories {
 		name = "Ladysnake Libs"
 		url = "https://dl.bintray.com/ladysnake/libs"
 	}
+
+	maven {
+		url = "https://maven.shedaniel.me/"
+	}
 }
 
 def includeCompile(group, artifact, version) {
@@ -71,6 +75,17 @@ def includeCompile(group, artifact, version) {
 			}
 		}
 	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir "src/main/schematics"
+			srcDir "src/main/registry"
+			srcDir "src/main/config"
+		}
+	}
+	datagen
 }
 
 dependencies {
@@ -101,6 +116,10 @@ dependencies {
 	modCompileOnly 'com.github.badasintended:wthit:3.0.0'
 	modRuntime 'com.github.badasintended:wthit:3.0.0'
 
+	datagenImplementation sourceSets.main.output
+	datagenImplementation sourceSets.main.compileClasspath
+	datagenImplementation "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
+
 	testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 }
 
@@ -112,16 +131,6 @@ static def computeVersion(String version) {
 		return version + "-" + Calendar.getInstance().getTime().format("dd.MM.yyyy")
 	}
 	return version
-}
-
-sourceSets {
-	main {
-		java {
-			srcDir "src/main/schematics"
-			srcDir "src/main/registry"
-			srcDir "src/main/config"
-		}
-	}
 }
 
 processResources {
