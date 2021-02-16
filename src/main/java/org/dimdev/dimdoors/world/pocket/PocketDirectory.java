@@ -2,8 +2,11 @@ package org.dimdev.dimdoors.world.pocket;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import net.minecraft.util.math.Vec3i;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.util.math.GridUtil;
 
@@ -13,19 +16,29 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
+import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PocketDirectory {
 	int gridSize; // Determines how much pockets in their dimension are spaced
 	int privatePocketSize;
 	int publicPocketSize;
-	Map<Integer, Pocket> pockets;
-	int nextID;
+	Map<Integer, AbstractPocket<?>> pockets;
+	private SortedMap<Integer, Integer> nextIDMap;
 	RegistryKey<World> worldKey;
 
 	public PocketDirectory(RegistryKey<World> worldKey) {
 		this.gridSize = DimensionalDoorsInitializer.getConfig().getPocketsConfig().pocketGridSize;
 		this.worldKey = worldKey;
-		this.nextID = 0;
+		this.nextIDMap = new TreeMap<>();
+		this.pockets = new HashMap<>();
+	}
+
+	public PocketDirectory(RegistryKey<World> worldKey, int gridSize) { // for testing
+		this.gridSize = gridSize;
+		this.worldKey = worldKey;
+		this.nextIDMap = new TreeMap<>();
 		this.pockets = new HashMap<>();
 	}
 
@@ -37,8 +50,9 @@ public class PocketDirectory {
 		directory.publicPocketSize = tag.getInt("publicPocketSize");
 
 		CompoundTag pocketsTag = tag.getCompound("pockets");
-		directory.pockets = pocketsTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, a -> Pocket.fromTag(pocketsTag.getCompound(a))));
-		directory.nextID = tag.getInt("nextID");
+		directory.pockets = pocketsTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, a -> AbstractPocket.deserialize(pocketsTag.getCompound(a))));
+		CompoundTag nextIdMapTag = tag.getCompound("next_id_map");
+		directory.nextIDMap.putAll(nextIdMapTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapTag::getInt)));
 
 		return directory;
 	}
@@ -50,9 +64,12 @@ public class PocketDirectory {
 		tag.putInt("publicPocketSize", this.publicPocketSize);
 
 		CompoundTag pocketsTag = new CompoundTag();
-		this.pockets.forEach((key, value) -> pocketsTag.put(key.toString(), value.toTag()));
+		this.pockets.forEach((key, value) -> pocketsTag.put(key.toString(), value.toTag(new CompoundTag())));
 		tag.put("pockets", pocketsTag);
-		tag.putInt("nextID", this.nextID);
+
+		CompoundTag nextIdMapTag = new CompoundTag();
+		this.nextIDMap.forEach((key, value) -> nextIdMapTag.putInt(key.toString(), value));
+		tag.put("next_id_map", nextIdMapTag);
 
 		return tag;
 	}
@@ -62,45 +79,83 @@ public class PocketDirectory {
 	 *
 	 * @return The newly created pockets
 	 */
-	public Pocket newPocket() {
-		Pocket pocket = null;
-		while (pocket == null) pocket = this.newPocket(this.nextID++);
+	public <T extends Pocket> T newPocket(Pocket.PocketBuilder<?, T> builder) {
+		Vec3i size = builder.getExpectedSize();
+		int longest = Math.max(size.getX(), size.getZ());
+		longest = ((longest - 1) / gridSize) >> 4 + 1;
+
+		int base3Size = 1;
+		while (longest > base3Size) {
+			base3Size *= 3;
+		}
+
+		int squaredSize = base3Size * base3Size;
+
+		int cursor = nextIDMap.headMap(base3Size+1).values().stream().mapToInt(num -> num).max().orElse(0);
+		cursor = cursor - Math.floorMod(cursor, squaredSize);
+
+		Pocket pocketAt = getPocket(cursor);
+		while (pocketAt != null) {
+			size = pocketAt.getSize();
+			longest = Math.max(size.getX(), size.getZ());
+			longest = ((longest - 1) / gridSize) >> 4 + 1;
+
+			int pocketBase3Size = 1;
+			while (longest > pocketBase3Size) {
+				pocketBase3Size *= 3;
+			}
+
+			System.out.println(Math.max(squaredSize, pocketBase3Size * pocketBase3Size));
+			cursor += Math.max(squaredSize, pocketBase3Size * pocketBase3Size);
+			pocketAt = getPocket(cursor);
+		}
+
+		T pocket = builder
+				.id(cursor)
+				.world(worldKey)
+				.offsetOrigin(idToPos(cursor))
+				.build();
+
+		nextIDMap.put(base3Size, cursor + squaredSize);
+		addPocket(pocket);
+
+		IdReferencePocket.IdReferencePocketBuilder idReferenceBuilder = IdReferencePocket.builder();
+		for (int i = 1; i < squaredSize; i++) {
+			addPocket(idReferenceBuilder
+					.id(cursor + i)
+					.world(worldKey)
+					.referencedId(cursor)
+					.build());
+		}
+
 		return pocket;
 	}
 
-	/**
-	 * Create a new pockets with a specific ID.
-	 *
-	 * @return The newly created Pocket, or null if that ID is already taken.
-	 */
-	public Pocket newPocket(int id) {
-		if (this.pockets.get(id) != null) return null;
-		GridUtil.GridPos pos = this.idToGridPos(id);
-		Pocket pocket = new Pocket(id, worldKey, pos.x, pos.z);
-		this.pockets.put(id, pocket);
-		if (id >= this.nextID) this.nextID = id + 1;
-		return pocket;
+	private void addPocket(AbstractPocket<?> pocket) {
+		pockets.put(pocket.getId(), pocket);
 	}
 
+	// TODO: rework this method to remove references as well
 	public void removePocket(int id) {
 		this.pockets.remove(id);
 	}
 
 	/**
-	 * Gets the pocket with a certain ID, or null if there is no pocket with that ID.
+	 * Gets the pocket that occupies the GridPos which a certain ID represents, or null if there is no pocket at that GridPos.
 	 *
-	 * @return The pocket with that ID, or null if there was no pocket with that ID.
+	 * @return The pocket which occupies the GridPos represented by that ID, or null if there was no pocket occupying that GridPos.
 	 */
 	public Pocket getPocket(int id) {
-		return this.pockets.get(id);
+		AbstractPocket<?> pocket = this.pockets.get(id);
+		return pocket == null ? null : pocket.getReferencedPocket();
 	}
 
 	public GridUtil.GridPos idToGridPos(int id) {
-		return GridUtil.numToPos(id);
+		return GridUtil.idToGridPos(id);
 	}
 
 	public int gridPosToID(GridUtil.GridPos pos) {
-		return GridUtil.posToNum(pos);
+		return GridUtil.gridPosToID(pos);
 	}
 
 	/**
@@ -146,12 +201,8 @@ public class PocketDirectory {
 		return this.publicPocketSize;
 	}
 
-	public Map<Integer, Pocket> getPockets() {
+	public Map<Integer, AbstractPocket<?>> getPockets() {
 		return this.pockets;
-	}
-
-	public int getNextID() {
-		return this.nextID;
 	}
 }
 

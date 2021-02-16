@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.pockets;
 
 import java.util.Random;
 
+import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -11,7 +12,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.server.world.ServerWorld;
@@ -22,7 +23,7 @@ public final class PocketGenerator {
     private static Pocket prepareAndPlacePocket(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
         LOGGER.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
 
-        Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
+        Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(Pocket.builder().expand(new Vec3i(1, 1, 1)));
         pocketTemplate.place(pocket, setup);
         pocket.virtualLocation = virtualLocation;
         return pocket;

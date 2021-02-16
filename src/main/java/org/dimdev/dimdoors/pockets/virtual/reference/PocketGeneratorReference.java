@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -95,10 +95,21 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		}
 	}
 
+	public void applyModifiers(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+		for (Modifier modifier : modifierList) {
+			modifier.apply(parameters, builder);
+		}
+	}
+
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		PocketGenerator generator = getReferencedPocketGenerator(parameters);
-		Pocket pocket = generator.prepareAndPlacePocket(parameters);
+
+		Pocket.PocketBuilder<?, ?> builder = generator.pocketBuilder(parameters);
+		generator.applyModifiers(parameters, builder);
+		this.applyModifiers(parameters, builder);
+
+		Pocket pocket = generator.prepareAndPlacePocket(parameters, builder);
 
 		RiftManager manager = new RiftManager(pocket);
 

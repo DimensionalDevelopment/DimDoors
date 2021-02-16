@@ -12,7 +12,6 @@ import org.dimdev.dimdoors.util.RGBA;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
-import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
@@ -33,7 +32,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 		if (uuid != null) {
 			destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketExit(uuid);
 			Pocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
-			if (ModDimensions.isPersonalPocketDimension(this.location.getWorld()) && pocket != null && DimensionalRegistry.getPocketDirectory(pocket.world).getPocketAt(this.location.pos).equals(pocket)) {
+			if (ModDimensions.isPersonalPocketDimension(this.location.getWorld()) && pocket != null && DimensionalRegistry.getPocketDirectory(pocket.getWorld()).getPocketAt(this.location.pos).equals(pocket)) {
 				DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
 			}
 			if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {
@@ -55,9 +54,9 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 	@Override
 	public void register() {
 		super.register();
-		PocketDirectory privatePocketRegistry = DimensionalRegistry.instance().getPocketDirectory(this.location.world);
+		PocketDirectory privatePocketRegistry = DimensionalRegistry.getPocketDirectory(this.location.world);
 		Pocket pocket = privatePocketRegistry.getPocketAt(this.location.pos);
-		DimensionalRegistry.instance().getRiftRegistry().addPocketEntrance(pocket, this.location);
+		DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, this.location);
 	}
 
 	@Override

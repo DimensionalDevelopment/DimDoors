@@ -10,7 +10,6 @@ import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.MonolithEntity;
@@ -22,7 +21,7 @@ import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.math.MathUtil;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -75,7 +74,7 @@ public class TemplateUtils {
     }
 
     static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
-        ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
+        ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
         HashMap<RiftBlockEntity, Float> entranceWeights = new HashMap<>();
 
         for (RiftBlockEntity rift : rifts) { // Find an entrance

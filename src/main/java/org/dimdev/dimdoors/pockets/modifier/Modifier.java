@@ -8,12 +8,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
 public interface Modifier {
@@ -40,6 +37,8 @@ public interface Modifier {
 	String getKey();
 
 	void apply(PocketGenerationParameters parameters, RiftManager manager);
+
+	void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	interface ModifierType<T extends Modifier> {
 		ModifierType<ShellModifier> SHELL_MODIFIER_TYPE = register(new Identifier("dimdoors", ShellModifier.KEY), ShellModifier::new);

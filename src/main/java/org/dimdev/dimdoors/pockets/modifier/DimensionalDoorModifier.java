@@ -29,6 +29,7 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.TagEquations;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class DimensionalDoorModifier implements Modifier {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -150,5 +151,10 @@ public class DimensionalDoorModifier implements Modifier {
 		manager.add(rift);
 
 		world.setBlockEntity(pos, rift);
+	}
+
+	@Override
+	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+
 	}
 }

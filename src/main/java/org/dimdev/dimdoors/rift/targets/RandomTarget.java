@@ -174,7 +174,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 				Pocket pocket = PocketGenerator.generateDungeonPocketV2(virtualLocation, new GlobalReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
 				// Link the rift if necessary and teleport the entity
-				if (!this.noLink) linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
+				if (!this.noLink)
+					linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
 				return (Target) DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).getBlockEntity();
 			}
 		} else {

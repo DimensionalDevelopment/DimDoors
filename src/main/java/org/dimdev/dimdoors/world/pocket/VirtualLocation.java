@@ -16,6 +16,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import static net.minecraft.world.World.OVERWORLD;
 

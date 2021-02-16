@@ -14,14 +14,14 @@ import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.schematic.v2.SchematicBlockPalette;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class ShellModifier implements Modifier {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -70,6 +70,16 @@ public class ShellModifier implements Modifier {
 	@Override
 	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
 		layers.forEach(layer -> drawLayer(layer, manager.getPocket(), parameters.getWorld()));
+	}
+
+	@Override
+	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
+		for (Layer layer : layers) {
+			int thickness = layer.getThickness(variableMap);
+			builder.expandExpected(new Vec3i(2 * thickness, 2 * thickness, 2 * thickness));
+			builder.offsetOrigin(new Vec3i(thickness, thickness, thickness));
+		}
 	}
 
 	private void drawLayer(Layer layer, Pocket pocket, ServerWorld world) {

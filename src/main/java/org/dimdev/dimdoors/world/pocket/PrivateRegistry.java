@@ -6,18 +6,14 @@ import java.util.UUID;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentV3;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
-
-import static net.minecraft.world.World.OVERWORLD;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PrivateRegistry {
 	protected static class PocketInfo {
@@ -78,10 +74,10 @@ public class PrivateRegistry {
 	}
 
 	public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {
-		this.privatePocketMap.put(playerUUID, new PocketInfo(pocket.world, pocket.id));
+		this.privatePocketMap.put(playerUUID, new PocketInfo(pocket.getWorld(), pocket.getId()));
 	}
 
 	public UUID getPrivatePocketOwner(Pocket pocket) {
-		return this.privatePocketMap.inverse().get(new PocketInfo(pocket.world, pocket.id));
+		return this.privatePocketMap.inverse().get(new PocketInfo(pocket.getWorld(), pocket.getId()));
 	}
 }
