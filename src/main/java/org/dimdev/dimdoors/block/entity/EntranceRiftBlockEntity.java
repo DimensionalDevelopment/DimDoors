@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.block.entity;
 import java.util.Optional;
 
 import net.minecraft.block.Block;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
@@ -76,6 +78,11 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
 		TeleportUtil.teleport(entity, this.world, targetPos, relativeAngle);
 		entity.setVelocity(relativeVelocity);
+		if (entity instanceof ServerPlayerEntity) {
+			ServerPlayerEntity player = (ServerPlayerEntity) entity;
+			player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player));
+		}
+
 		return true;
 	}
 
