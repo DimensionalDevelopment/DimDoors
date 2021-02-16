@@ -18,7 +18,7 @@ public class DatagenInitializer {
 		DataGeneratorHandler handler = DataGeneratorHandler.create(Paths.get("./generated"));
 		RecipeData recipes = handler.getRecipes();
 		for (Map.Entry<DyeColor, Block> entry : ModBlocks.FABRIC_BLOCKS.entrySet()) {
-			// TODO
+			// TODO: add recipes for fabric
 		}
 	}
 }
