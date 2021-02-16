@@ -1,0 +1,24 @@
+{
+  "type": "dimdoors:schematic",
+  "setup_loot": true,
+  "id": "v2/custom/smile_6",
+  "modifiers": [
+    {
+      "layers": [
+        {
+          "block_state": "dimdoors:yellow_ancient_fabric",
+          "thickness": "1"
+        }
+      ],
+      "type": "dimdoors:shell"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "rift_data/pocket_entrance"
+    }
+  ],
+  "offset_x": "1",
+  "offset_y": "1",
+  "offset_z": "1"
+}

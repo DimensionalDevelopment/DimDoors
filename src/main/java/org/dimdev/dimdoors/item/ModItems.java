@@ -95,13 +95,21 @@ public final class ModItems {
 			}
 	));
 
-//    public static final Item UNSTABLE_DIMENSIONAL_DOOR = register( new DimensionalDoorItem(
-//            ModBlocks.IRON_DIMENSIONAL_DOOR,
-//            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-//            rift -> {
-//                 TODO
-//            }
-//    ));
+	// TODO
+	@RegistryObject("unstable_dimensional_door")
+    public static final Item UNSTABLE_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
+            ModBlocks.IRON_DIMENSIONAL_DOOR,
+            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
+            rift -> rift.setDestination(RandomTarget.builder()
+					.acceptedGroups(Collections.singleton(0))
+					.coordFactor(1)
+					.negativeDepthFactor(80)
+					.positiveDepthFactor(Double.MAX_VALUE)
+					.weightMaximum(100)
+					.noLink(false)
+					.noLinkBack(false)
+					.newRiftWeight(0.5F).build())
+    ));
 
 	@RegistryObject("oak_dimensional_door")
 	public static final Item OAK_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(

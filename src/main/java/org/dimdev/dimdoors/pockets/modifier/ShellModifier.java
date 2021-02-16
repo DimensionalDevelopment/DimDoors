@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.MoreObjects;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.*;
@@ -22,7 +23,7 @@ import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.schematic.v2.SchematicBlockPalette;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 
-public class ShellModifier implements Modifier{
+public class ShellModifier implements Modifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "shell";
 
@@ -97,6 +98,13 @@ public class ShellModifier implements Modifier{
 		pocket.expand(thickness);
 	}
 
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("layers", layers)
+				.toString();
+	}
+
 	public static class Layer {
 		private final String blockStateString;
 		private final String thickness;
@@ -136,4 +144,3 @@ public class ShellModifier implements Modifier{
 		}
 	}
 }
-

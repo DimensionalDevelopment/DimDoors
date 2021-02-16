@@ -14,6 +14,8 @@ import net.minecraft.util.math.BlockPos;
 
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+
+import com.google.common.base.MoreObjects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.DimensionalDoorBlock;
@@ -96,6 +98,23 @@ public class DimensionalDoorModifier implements Modifier {
 		tag.putString("z", z);
 
 		return tag;
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("facing", facing)
+				.add("doorTypeString", doorTypeString)
+				.add("doorType", doorType)
+				.add("doorData", doorData)
+				.add("doorDataReference", doorDataReference)
+				.add("x", x)
+				.add("y", y)
+				.add("z", z)
+				.add("xEquation", xEquation)
+				.add("yEquation", yEquation)
+				.add("zEquation", zEquation)
+				.toString();
 	}
 
 	@Override

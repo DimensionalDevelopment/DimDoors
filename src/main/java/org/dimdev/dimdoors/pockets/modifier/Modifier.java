@@ -19,7 +19,6 @@ import java.util.function.Supplier;
 public interface Modifier {
 	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<ModifierType<? extends Modifier>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "modifier_type")), Lifecycle.stable())).buildAndRegister();
 
-
 	static Modifier deserialize(CompoundTag tag) {
 		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: return some NONE Modifier if type cannot be found or deserialization fails.
 		return REGISTRY.get(id).fromTag(tag);

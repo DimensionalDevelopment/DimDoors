@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#X#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:iron_door"
+    },
+    "X": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "result": {
+    "item": "dimdoors:iron_dimensional_door",
+    "count": 1
+  }
+}

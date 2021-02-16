@@ -39,9 +39,9 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	private static final int fallbackWeight = 5; // TODO: make config
 	private final List<Modifier> modifierList = new ArrayList<>();
 
-	private String weight;
-	private Equation weightEquation;
-	private Boolean setupLoot;
+	protected String weight;
+	protected Equation weightEquation;
+	protected Boolean setupLoot;
 
 	private final List<String> tags = new ArrayList<>();
 
