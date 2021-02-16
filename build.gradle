@@ -100,6 +100,7 @@ dependencies {
 	}
 	modCompileOnly 'com.github.badasintended:wthit:3.0.0'
 	modRuntime 'com.github.badasintended:wthit:3.0.0'
+	datagenImplementation sourceSets.main.output
 }
 
 version = computeVersion(project.mod_version)
@@ -120,6 +121,7 @@ sourceSets {
 			srcDir "src/main/config"
 		}
 	}
+	datagen
 }
 
 processResources {
