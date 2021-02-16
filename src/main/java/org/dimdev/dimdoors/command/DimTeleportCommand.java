@@ -34,7 +34,7 @@ public class DimTeleportCommand {
     }
 
     private static int teleport(Entity entity, ServerWorld dimension, Vec3d pos) {
-		TeleportUtil.teleport(entity, dimension, pos, MathUtil.entityEulerAngle(entity));
+		TeleportUtil.teleport(entity, dimension, pos, MathUtil.entityEulerAngle(entity), entity.getVelocity());
         return Command.SINGLE_SUCCESS;
     }
 }

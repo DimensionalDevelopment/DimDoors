@@ -56,8 +56,6 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		if (block instanceof CoordinateTransformerBlock) {
 			CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
 
-			System.out.println("{yaw: " + relativeAngle.getYaw() + "; pitch: " + relativeAngle.getPitch() + "; roll: " + relativeAngle.getRoll() + "}");
-
 			if (transformer.isExitFlipped()) {
 				TransformationMatrix3d flipper = TransformationMatrix3d.builder().rotateY(Math.PI).build();
 
@@ -65,8 +63,6 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				relativeAngle = flipper.transform(relativeAngle);
 				relativeVelocity = flipper.transform(relativeVelocity);
 			}
-
-			System.out.println("{yaw: " + relativeAngle.getYaw() + "; pitch: " + relativeAngle.getPitch() + "; roll: " + relativeAngle.getRoll() + "}");
 
 			relativePos = relativePos.add(new Vec3d(0, 0, 1).multiply(0.6)); // TODO: skip this for Immersive Portals
 
@@ -77,8 +73,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 			relativeVelocity = transformer.rotateOut(rotatorBuilder, relativeVelocity);
 		}
 
-		TeleportUtil.teleport(entity, this.world, targetPos, relativeAngle);
-		entity.setVelocity(relativeVelocity);
+		entity = TeleportUtil.teleport(entity, this.world, targetPos, relativeAngle, relativeVelocity);
 		if (entity instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity) entity;
 			player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player));

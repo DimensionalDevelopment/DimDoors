@@ -18,49 +18,48 @@ import org.dimdev.dimdoors.util.math.MathUtil;
 
 @SuppressWarnings("deprecation")
 public final class TeleportUtil {
-	public static void teleport(Entity entity, World world, BlockPos pos, float yaw) {
+	public static  <E extends Entity> E teleport(E entity, World world, BlockPos pos, float yaw) {
 		if (world.isClient) {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
 
-		teleport(entity, world, Vec3d.ofBottomCenter(pos), yaw);
+		return teleport(entity, world, Vec3d.ofBottomCenter(pos), yaw);
 	}
 
-	public static void teleport(Entity entity, World world, Vec3d pos, float yaw) {
+	public static  <E extends Entity> E teleport(E entity, World world, Vec3d pos, float yaw) {
 		if (world.isClient) {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
 
-		FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), yaw, entity.getPitch(1.0F)));
+		return FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), yaw, entity.getPitch(1.0F)));
 	}
 
-	public static void teleport(Entity entity, World world, Vec3d pos, EulerAngle angle) {
+	public static  <E extends Entity> E teleport(E entity, World world, Vec3d pos, EulerAngle angle, Vec3d velocity) {
 		if (world.isClient) {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
 
-		FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), angle.getYaw(), angle.getPitch()));
+		return FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, velocity, angle.getYaw(), angle.getPitch()));
 	}
 
-	public static void teleport(Entity entity, World world, BlockPos pos, EulerAngle angle) {
+	public static  <E extends Entity> E teleport(E entity, World world, BlockPos pos, EulerAngle angle, Vec3d velocity) {
 		if (world.isClient) {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
 
-		teleport(entity, world, Vec3d.ofBottomCenter(pos), angle);
+		return teleport(entity, world, Vec3d.ofBottomCenter(pos), angle, velocity);
 	}
 
-	public static void teleport(ServerPlayerEntity player, Location location) {
-		teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, 0);
+	public static ServerPlayerEntity teleport(ServerPlayerEntity player, Location location) {
+		return teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, 0);
 	}
 
-	public static void teleport(ServerPlayerEntity player, RotatedLocation location) {
-		teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, (int) location.yaw);
+	public static ServerPlayerEntity teleport(ServerPlayerEntity player, RotatedLocation location) {
+		return teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, (int) location.yaw);
 	}
-
-	public static void teleportRandom(Entity entity, World world, double y) {
+	public static  <E extends Entity> E teleportRandom(E entity, World world, double y) {
 		double scale = ThreadLocalRandom.current().nextGaussian() * ThreadLocalRandom.current().nextInt(90);
-		teleport(
+		return teleport(
 				entity,
 				world,
 				entity.getPos()
@@ -71,9 +70,9 @@ public final class TeleportUtil {
 		);
 	}
 
-	public static void teleportUntargeted(Entity entity, World world) {
+	public static  <E extends Entity> E teleportUntargeted(E entity, World world) {
 		double actualScale = entity.world.getDimension().getCoordinateScale() / world.getDimension().getCoordinateScale();
-		teleport(
+		return teleport(
 				entity,
 				world,
 				entity.getPos().multiply(actualScale, 1, actualScale),
@@ -81,9 +80,9 @@ public final class TeleportUtil {
 		);
 	}
 
-	public static void teleportUntargeted(Entity entity, World world, double y) {
+	public static  <E extends Entity> E teleportUntargeted(E entity, World world, double y) {
 		double actualScale = entity.world.getDimension().getCoordinateScale() / world.getDimension().getCoordinateScale();
-		teleport(
+		return teleport(
 				entity,
 				world,
 				entity.getPos()
