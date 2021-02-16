@@ -173,10 +173,11 @@ public class ChunkGenerator extends PocketGenerator {
 			}
 		}
 		Box virtualBox = realBox.offset(pocketOriginChunkOffset.add(0, virtualYOffset, 0));
+		/*
 		for (Entity entity : protoRegion.getOtherEntities(null, virtualBox)) { // TODO: does this even work?
 			TeleportUtil.teleport(entity, world, entity.getPos().add(-pocketOriginChunkOffset.getX(), -pocketOriginChunkOffset.getY() - virtualYOffset, -pocketOriginChunkOffset.getZ()), entity.yaw);
 		} // TODO: Entities?/ Biomes/ Structure Data
-
+		*/
 		world.setBlockState(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pocket.getOrigin()), ModBlocks.DETACHED_RIFT.getDefaultState());
 
 		DetachedRiftBlockEntity rift = ModBlockEntityTypes.DETACHED_RIFT.instantiate(world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, pocket.getOrigin()), ModBlocks.DETACHED_RIFT.getDefaultState());

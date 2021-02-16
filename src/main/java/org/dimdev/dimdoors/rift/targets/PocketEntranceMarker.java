@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
 import org.dimdev.dimdoors.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
@@ -27,7 +29,7 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, float yawOffset) {
+	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
 		EntityUtils.chat(entity, new TranslatableText("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug."));
 		return false;
 	}

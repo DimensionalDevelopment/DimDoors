@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.util;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.minecraft.entity.Entity;
@@ -13,6 +14,7 @@ import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import org.dimdev.dimdoors.util.math.MathUtil;
 
 @SuppressWarnings("deprecation")
 public final class TeleportUtil {
@@ -30,6 +32,22 @@ public final class TeleportUtil {
 		}
 
 		FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), yaw, entity.getPitch(1.0F)));
+	}
+
+	public static void teleport(Entity entity, World world, Vec3d pos, EulerAngle angle) {
+		if (world.isClient) {
+			throw new UnsupportedOperationException("Only supported on ServerWorld");
+		}
+
+		FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), angle.getYaw(), angle.getPitch()));
+	}
+
+	public static void teleport(Entity entity, World world, BlockPos pos, EulerAngle angle) {
+		if (world.isClient) {
+			throw new UnsupportedOperationException("Only supported on ServerWorld");
+		}
+
+		teleport(entity, world, Vec3d.ofBottomCenter(pos), angle);
 	}
 
 	public static void teleport(ServerPlayerEntity player, Location location) {

@@ -10,10 +10,6 @@ public class SchematicConverter {
 	private static final String[] BRICK_VARIANTS = new String[]{"stone_brick", "nether_brick"};
 
 	public static String updateId(String id) {
-
-		if (id.equals("minecraft:redstone_torch[facing=north]")) {
-			System.out.println();
-		}
 		id = CONVERSIONS.getOrDefault(id, id);
 		return id;
 	}

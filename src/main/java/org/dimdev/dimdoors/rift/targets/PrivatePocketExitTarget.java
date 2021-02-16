@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
 
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
@@ -23,7 +25,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, float yawOffset) {
+	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
 		Location destLoc;
 		// TODO: make this recursive
 		UUID uuid = EntityUtils.getOwner(entity).getUuid();
@@ -41,7 +43,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 				}
 				return false;
 			} else {
-				((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, yawOffset);
+				((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
 				return true;
 			}
 		} else {

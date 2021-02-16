@@ -19,8 +19,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 public final class ModBlocks {
 	private static final Map<String, Block> BLOCKS = Maps.newLinkedHashMap();
-	private static final Map<DyeColor, Block> FABRIC_BLOCKS = new HashMap<>();
-	private static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
+	public static final Map<DyeColor, Block> FABRIC_BLOCKS = new HashMap<>();
+	public static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
 
 	public static final Block GOLD_DOOR = register("dimdoors:gold_door", new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).nonOpaque()));
 	public static final Block QUARTZ_DOOR = register("dimdoors:quartz_door", new DoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).nonOpaque()));

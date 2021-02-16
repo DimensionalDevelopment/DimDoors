@@ -2,8 +2,12 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Objects;
 
+import net.minecraft.block.Block;
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
@@ -15,6 +19,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.jetbrains.annotations.NotNull;
@@ -173,9 +178,23 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
 		// Attempt a teleport
 		try {
+			Vec3d relativePos = new Vec3d(0, 0, 0);
+			EulerAngle relativeAngle = new EulerAngle(entity.pitch, entity.yaw, 0);
+			Vec3d relativeVelocity = entity.getVelocity();
 			EntityTarget target = this.getTarget().as(Targets.ENTITY);
 
-			if (target.receiveEntity(entity, entity.yaw)) {
+			BlockState state = this.getWorld().getBlockState(this.getPos());
+			Block block = state.getBlock();
+			if (block instanceof CoordinateTransformerBlock) {
+				CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
+				TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getPos());
+				TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getPos());
+				relativePos = transformer.transformTo(transformationBuilder, entity.getPos());
+				relativeAngle = transformer.rotateTo(rotatorBuilder, relativeAngle);
+				relativeVelocity = transformer.rotateTo(rotatorBuilder, relativeVelocity);
+			}
+
+			if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity)) {
 				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos()));
 				EntityUtils.chat(entity, new LiteralText("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
 				return true;
