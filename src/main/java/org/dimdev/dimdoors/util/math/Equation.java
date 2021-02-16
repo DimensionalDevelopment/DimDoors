@@ -1,12 +1,9 @@
 package org.dimdev.dimdoors.util.math;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 
+import net.minecraft.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,42 +52,40 @@ public interface Equation {
 			});
 
 			// some logic first
+			//   ?  :
+			parseRules.add(new SplitterParser()
+					.add((variableMap, equations) -> equations[0].asBoolean(variableMap) ? equations[1].apply((variableMap)) : equations[2].apply(variableMap), "?", ":"));
+
 			// ||
-			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> or = new HashMap<>();
-			or.put("||", (stringDoubleMap, first, second) -> toDouble(first.asBoolean(stringDoubleMap) || second.asBoolean(stringDoubleMap)));
-			parseRules.add(new SplitterParser(or));
+			parseRules.add(new SplitterParser()
+					.add((variableMap, equations) -> toDouble(equations[0].asBoolean(variableMap) || equations[1].asBoolean((variableMap))), "||"));
 
 			// &&
-			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> and = new HashMap<>();
-			and.put("&&", (stringDoubleMap, first, second) -> toDouble(first.asBoolean(stringDoubleMap) && second.asBoolean(stringDoubleMap)));
-			parseRules.add(new SplitterParser(and));
+			parseRules.add(new SplitterParser()
+					.add((variableMap, equations) -> toDouble(equations[0].asBoolean(variableMap) && equations[1].asBoolean((variableMap))), "&&"));
 
 			// ==, <=, >=, <, >
-			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> comparators = new HashMap<>();
-			comparators.put("==", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) == second.apply(stringDoubleMap)));
-			comparators.put("<=", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) <= second.apply(stringDoubleMap)));
-			comparators.put(">=", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) >= second.apply(stringDoubleMap)));
-			comparators.put("<", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) < second.apply(stringDoubleMap)));
-			comparators.put(">", (stringDoubleMap, first, second) -> toDouble(first.apply(stringDoubleMap) > second.apply(stringDoubleMap)));
-			parseRules.add(new SplitterParser(comparators));
+			parseRules.add(new SplitterParser()
+					.add((variableMap, equations) -> toDouble(equations[0].apply(variableMap) == equations[1].apply((variableMap))), "==")
+					.add((variableMap, equations) -> toDouble(equations[0].apply(variableMap) <= equations[1].apply((variableMap))), "<=")
+					.add((variableMap, equations) -> toDouble(equations[0].apply(variableMap) >= equations[1].apply((variableMap))), ">=")
+					.add((variableMap, equations) -> toDouble(equations[0].apply(variableMap) < equations[1].apply((variableMap))), "<")
+					.add((variableMap, equations) -> toDouble(equations[0].apply(variableMap) > equations[1].apply((variableMap))), ">"));
 
 			// +, -
-			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> sumOperations = new HashMap<>();
-			sumOperations.put("+", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) + second.apply(stringDoubleMap));
-			sumOperations.put("-", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) - second.apply(stringDoubleMap));
-			parseRules.add(new SplitterParser(sumOperations));
+			parseRules.add(new SplitterParser()
+					.add((variableMap, equations) -> equations[0].apply(variableMap) + equations[1].apply((variableMap)), "+")
+					.add((variableMap, equations) -> equations[0].apply(variableMap) - equations[1].apply((variableMap)), "-"));
 
 			// *, /, %
-			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> dotOperations = new HashMap<>();
-			dotOperations.put("*", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) * second.apply(stringDoubleMap));
-			dotOperations.put("/", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) / second.apply(stringDoubleMap));
-			dotOperations.put("%", (stringDoubleMap, first, second) -> first.apply(stringDoubleMap) % second.apply(stringDoubleMap));
-			parseRules.add(new SplitterParser(dotOperations));
+			parseRules.add(new SplitterParser()
+					.add((variableMap, equations) -> equations[0].apply(variableMap) * equations[1].apply((variableMap)), "*")
+					.add((variableMap, equations) -> equations[0].apply(variableMap) / equations[1].apply((variableMap)), "/")
+					.add((variableMap, equations) -> equations[0].apply(variableMap) % equations[1].apply((variableMap)), "%"));
 
 			// x^y
-			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> exponentOperations = new HashMap<>();
-			exponentOperations.put("^", (stringDoubleMap, first, second) -> Math.pow(first.apply(stringDoubleMap), second.apply(stringDoubleMap)));
-			parseRules.add(new SplitterParser(exponentOperations));
+			parseRules.add(new SplitterParser()
+					.add((variableMap, equations) -> Math.pow(equations[0].apply(variableMap), equations[1].apply(variableMap)), "^"));
 
 			// H with H(0) = 1: https://en.wikipedia.org/wiki/Heaviside_step_function
 			parseRules.add(new FunctionParser("H", 1, 1, ((stringDoubleMap, equations) -> equations[0].apply(stringDoubleMap) >= 0 ? 1d : 0d)));
@@ -151,10 +146,17 @@ public interface Equation {
 		}
 
 		private static class SplitterParser implements EquationParser {
-			private final Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> operations;
+			private final Map<String, Pair<String[], BiFunction<Map<String, Double>, Equation[], Double>>> operations;
 
-			public SplitterParser(Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> operations) {
-				this.operations = operations;
+			public SplitterParser() {
+				this.operations = new HashMap<>();
+			}
+
+			public SplitterParser add(BiFunction<Map<String, Double>, Equation[], Double> function, String... symbols) {
+				List<String> symbolList = Arrays.asList(symbols);
+				Collections.reverse(symbolList);
+				operations.put(symbolList.get(0), new Pair<>(symbolList.toArray(new String[0]), function));
+				return this;
 			}
 
 			@Override
@@ -164,12 +166,41 @@ public interface Equation {
 					String substring = toParse.substring(i);
 					if (substring.startsWith(")")) depth++;
 					else if (substring.startsWith("(")) depth--;
-					for (String symbol : this.operations.keySet()) {
-						if (substring.startsWith(symbol) && depth == 0) {
-							final TriFunction<Map<String, Double>, Equation, Equation, Double> operation = this.operations.get(symbol);
-							final Equation first = Equation.parse(toParse.substring(0, i));
-							final Equation second = Equation.parse(toParse.substring(i + 1));
-							return Optional.of(stringDoubleMap -> operation.apply(stringDoubleMap, first, second));
+					for (String currentSymbol : this.operations.keySet()) {
+						if (depth == 0 && substring.startsWith(currentSymbol)) {
+							final Pair<String[], BiFunction<Map<String, Double>, Equation[], Double>> operation = this.operations.get(currentSymbol);
+							final String[] symbols = operation.getLeft();
+							List<Pair<Integer, Integer>> partIndices = new ArrayList<>(symbols.length + 1);
+							partIndices.add(new Pair<>(i + currentSymbol.length(), toParse.length()));
+
+							int symbolPointer = 1;
+							if (symbolPointer < symbols.length) currentSymbol = symbols[symbolPointer];
+							int endIndex = i;
+							int innerDepth = 0;
+							for (int j = i - 1; j >= 1 && symbolPointer < symbols.length; j--) {
+								String innerSubstring = toParse.substring(j);
+
+								if (innerSubstring.startsWith(")")) innerDepth++;
+								else if (innerSubstring.startsWith("(")) innerDepth--;
+								if (innerDepth == 0 && innerSubstring.startsWith(currentSymbol)) {
+
+									partIndices.add(new Pair<>(j + currentSymbol.length(), endIndex));
+
+									endIndex = j;
+									symbolPointer++;
+									if (symbolPointer < symbols.length) currentSymbol = symbols[symbolPointer];
+								}
+							}
+							if (symbolPointer < symbols.length) continue;
+							partIndices.add(new Pair<>(0, endIndex));
+
+							Equation[] equations = new Equation[partIndices.size()];
+							for (int j = 0; j < partIndices.size(); j++) {
+								Pair<Integer, Integer> pair = partIndices.get(j);
+								equations[partIndices.size() - j - 1] = Equation.parse(toParse.substring(pair.getLeft(), pair.getRight()));
+							}
+
+							return Optional.of(stringDoubleMap -> operation.getRight().apply(stringDoubleMap, equations));
 						}
 					}
 				}

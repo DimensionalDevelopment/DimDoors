@@ -122,7 +122,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d velocity) {
 		if (this.world instanceof ServerWorld)
-			TeleportUtil.teleport(entity, this.world, this.pos, relativeAngle);
+			TeleportUtil.teleport(entity, this.world, this.pos, relativeAngle, velocity);
 		return true;
 	}
 
