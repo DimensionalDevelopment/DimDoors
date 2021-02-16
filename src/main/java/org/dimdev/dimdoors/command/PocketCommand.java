@@ -5,6 +5,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
 import org.dimdev.dimdoors.command.arguments.GroupArugmentType;
 import org.dimdev.dimdoors.command.arguments.NameArugmentType;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -64,7 +66,7 @@ public class PocketCommand {
             if (DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket) != null) {
                 EntityTarget entrance = (EntityTarget) player.world.getBlockEntity(DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).pos);
                 if (entrance != null) {
-                    entrance.receiveEntity(player, 0);
+                    entrance.receiveEntity(player, Vec3d.ZERO, new EulerAngle(0, 0, 0), player.getVelocity());
                 }
             } else {
                 Vector3i size = pocket.getSize().add(1, 1, 1).mul(15).div(2);

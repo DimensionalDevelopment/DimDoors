@@ -16,7 +16,7 @@ public class RiftData {
 	private LinkProperties properties = null;
 	private boolean alwaysDelete;
 	private boolean forcedColor;
-	private RGBA color = null;
+	private RGBA color = RGBA.NONE;
 
 	public RiftData() {
 	}
@@ -78,7 +78,7 @@ public class RiftData {
 		data.properties = tag.contains("properties") ? LinkProperties.fromTag(tag.getCompound("properties")) : null;
 		data.alwaysDelete = tag.getBoolean("alwaysDelete");
 		data.forcedColor = tag.getBoolean("forcedColor");
-		data.color = tag.contains("color") ? RGBA.fromTag(tag.getCompound("color")) : null;
+		data.color = tag.contains("color") ? RGBA.fromTag(tag.getCompound("color")) : RGBA.NONE;
 		return data;
 	}
 

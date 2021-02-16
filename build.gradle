@@ -96,6 +96,8 @@ dependencies {
 	}
 	modCompileOnly 'com.github.badasintended:wthit:3.0.0'
 	modRuntime 'com.github.badasintended:wthit:3.0.0'
+
+	testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 }
 
 version = computeVersion(project.mod_version)
@@ -149,4 +151,8 @@ curseforge {
 	options {
 		forgeGradleIntegration = false
 	}
+}
+
+test {
+	useJUnitPlatform()
 }

@@ -12,6 +12,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
+import org.dimdev.dimdoors.util.math.MathUtil;
 
 public class DimTeleportCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -33,7 +34,7 @@ public class DimTeleportCommand {
     }
 
     private static int teleport(Entity entity, ServerWorld dimension, Vec3d pos) {
-		TeleportUtil.teleport(entity, dimension, pos, 0);
+		TeleportUtil.teleport(entity, dimension, pos, MathUtil.entityEulerAngle(entity));
         return Command.SINGLE_SUCCESS;
     }
 }

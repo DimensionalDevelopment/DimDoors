@@ -14,7 +14,7 @@ public final class Targets {
 	public static final Class<RedstoneTarget> REDSTONE = RedstoneTarget.class;
 
 	public static void registerDefaultTargets() {
-		DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativeYaw) -> {
+		DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativePos, relativeRotation, relativeVelocity) -> {
 			EntityUtils.chat(entity, new TranslatableText("rifts.unlinked2"));
 			return false;
 		});

@@ -62,7 +62,7 @@ public interface Equation {
 
 			// &&
 			Map<String, TriFunction<Map<String, Double>, Equation, Equation, Double>> and = new HashMap<>();
-			and.put("&&", (stringDoubleMap, first, second) -> toDouble(first.asBoolean(stringDoubleMap) || second.asBoolean(stringDoubleMap)));
+			and.put("&&", (stringDoubleMap, first, second) -> toDouble(first.asBoolean(stringDoubleMap) && second.asBoolean(stringDoubleMap)));
 			parseRules.add(new SplitterParser(and));
 
 			// ==, <=, >=, <, >

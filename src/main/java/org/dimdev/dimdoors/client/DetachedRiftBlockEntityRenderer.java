@@ -21,7 +21,7 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<DetachedRiftBlockEntity> {
     public static final Identifier TESSERACT_PATH = new Identifier("dimdoors:textures/other/tesseract.png");
-    private final RGBA color = new RGBA(1, 0.5f, 1, 1);
+    private static final RGBA DEFAULT_COLOR = new RGBA(1, 0.5f, 1, 1);
 
     private static final Tesseract TESSERACT = new Tesseract();
     private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(0);
@@ -51,7 +51,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
         double radian = this.nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
         RGBA color = rift.getColor();
         if (Objects.equals(color, RGBA.NONE)) {
-            color = this.color;
+            color = DEFAULT_COLOR;
         }
 
         matrices.push();

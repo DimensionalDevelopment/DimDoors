@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
 
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -27,7 +29,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, float yawOffset) {
+	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
 		// TODO: make this recursive
 		UUID uuid = EntityUtils.getOwner(entity).getUuid();
 		VirtualLocation virtualLocation = VirtualLocation.fromLocation(this.location);
@@ -39,7 +41,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 
 				DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
 				BlockEntity be = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).getBlockEntity();
-				this.processEntity(pocket, be, entity, uuid, yawOffset);
+				this.processEntity(pocket, be, entity, uuid, relativePos, relativeAngle, relativeVelocity);
 			} else {
 				Location destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketEntrance(uuid); // get the last used entrances
 				if (destLoc == null)
@@ -52,7 +54,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 					destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
 				}
 
-				this.processEntity(pocket, destLoc.getBlockEntity(), entity, uuid, yawOffset);
+				this.processEntity(pocket, destLoc.getBlockEntity(), entity, uuid, relativePos, relativeAngle, relativeVelocity);
 			}
 			return true;
 		} else {
@@ -60,7 +62,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 		}
 	}
 
-	private void processEntity(Pocket pocket, BlockEntity blockEntity, Entity entity, UUID uuid, float relativeYaw) {
+	private void processEntity(Pocket pocket, BlockEntity blockEntity, Entity entity, UUID uuid, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
 		if (entity instanceof ItemEntity) {
 			Item item = ((ItemEntity) entity).getStack().getItem();
 
@@ -68,13 +70,13 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 				if (pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getColor())) {
 					entity.remove(Entity.RemovalReason.DISCARDED);
 				} else {
-					((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
+					((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
 				}
 			} else {
-				((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
+				((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
 			}
 		} else {
-			((EntityTarget) blockEntity).receiveEntity(entity, relativeYaw);
+			((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
 			DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, this.location);
 		}
 	}
