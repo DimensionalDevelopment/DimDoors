@@ -11,6 +11,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -26,7 +27,7 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -127,7 +128,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		return tag;
 	}
 
-	public abstract Pocket prepareAndPlacePocket(PocketGenerationParameters parameters);
+	public abstract Pocket prepareAndPlacePocket(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	public abstract PocketGeneratorType<? extends PocketGenerator> getType();
 
@@ -148,8 +149,14 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		}
 	}
 
+	public void applyModifiers(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+		for (Modifier modifier : modifierList) {
+			modifier.apply(parameters, builder);
+		}
+	}
+
 	public void setup(Pocket pocket, PocketGenerationParameters parameters, boolean setupLootTables) {
-		ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
+		ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
 		List<RiftBlockEntity> rifts = new ArrayList<>();
 
 		pocket.getBlockEntities().forEach((blockPos, blockEntity) -> {
@@ -190,6 +197,13 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		}
 		return true;
 	}
+
+	public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationParameters parameters) { // TODO: PocketBuilder from json
+		return Pocket.builder()
+				.expand(getSize(parameters));
+	}
+
+	public abstract Vec3i getSize(PocketGenerationParameters parameters);
 
 	public interface PocketGeneratorType<T extends PocketGenerator> {
 		PocketGeneratorType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator::new);

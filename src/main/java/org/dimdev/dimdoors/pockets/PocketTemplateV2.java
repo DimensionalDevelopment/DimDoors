@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -58,7 +58,7 @@ public class PocketTemplateV2 {
 
     public void place(Pocket pocket) {
         pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
-        ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.world);
+        ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
         SchematicPlacer.place(this.schematic, world, origin);

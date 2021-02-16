@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
+import net.minecraft.util.math.Vec3i;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -31,6 +32,9 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
+import org.dimdev.dimdoors.world.pocket.PocketDirectory;
+import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.server.MinecraftServer;
@@ -88,11 +92,14 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		VirtualSingularPocket.VirtualSingularPocketType.register();
 		Modifier.ModifierType.register();
 		PocketGenerator.PocketGeneratorType.register();
+		AbstractPocket.AbstractPocketType.register();
 
         SchematicV2Handler.getInstance().load();
         SchematicHandler.INSTANCE.loadSchematics();
 
 		registerListeners();
+
+		//newPocketTest();
     }
 
     private void registerListeners() {
@@ -106,4 +113,40 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
 		AttackBlockCallback.EVENT.register(new AttackBlockCallbackListener());
 	}
+
+	/*
+	void newPocketTest() {
+		PocketDirectory directory = new PocketDirectory(ModDimensions.DUNGEON, 512);
+
+		Pocket.PocketBuilder<?, ?> builder = Pocket.builder().expand(new Vec3i(1, 1, 1));
+
+
+		System.out.println(0 + ", " + directory.newPocket(builder).getId());
+		System.out.println(1 + ", " + directory.newPocket(builder).getId());
+		System.out.println(2 + ", " + directory.newPocket(builder).getId());
+		System.out.println(3 + ", " + directory.newPocket(builder).getId());
+		System.out.println(4 + ", " + directory.newPocket(builder).getId());
+		System.out.println(5 + ", " + directory.newPocket(builder).getId());
+		System.out.println(6 + ", " + directory.newPocket(builder).getId());
+
+
+
+		builder = Pocket.builder().expand(new Vec3i(directory.getGridSize() + 1, directory.getGridSize() + 1, directory.getGridSize() + 1));
+		System.out.println(9 + ", " + directory.newPocket(builder).getId());
+		System.out.println(18 + ", " + directory.newPocket(builder).getId());
+
+		builder = Pocket.builder().expand(new Vec3i(3 * directory.getGridSize() + 1, 3 * directory.getGridSize() + 1, 3 * directory.getGridSize() + 1));
+		System.out.println(81 + ", " + directory.newPocket(builder).getId());
+
+
+
+		builder = Pocket.builder().expand(new Vec3i(directory.getGridSize() + 1, directory.getGridSize() + 1, directory.getGridSize() + 1));
+		System.out.println(27 + ", " + directory.newPocket(builder).getId());
+
+		builder = Pocket.builder().expand(new Vec3i(1, 1, 1));
+		System.out.println(7 + ", " + directory.newPocket(builder).getId());
+		System.out.println(8 + ", " + directory.newPocket(builder).getId());
+		System.out.println(36 + ", " + directory.newPocket(builder).getId());
+	}
+	*/
 }

@@ -3,14 +3,16 @@ package org.dimdev.dimdoors.pockets.generator;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.PocketTemplateV2;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.Equation;
+import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +32,6 @@ public class SchematicGenerator extends PocketGenerator {
 	private String id;
 	private Identifier templateID;
 
-	private Equation lengthEquation;
 	private String offsetX;
 	private Equation offsetXEquation;
 	private String offsetY;
@@ -92,19 +93,21 @@ public class SchematicGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
+	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
 		ServerWorld world = parameters.getWorld();
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 
 		PocketTemplateV2 template = SchematicV2Handler.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 
-		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
+		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
 		LOGGER.info("Generating pocket from template " + template.getId() + " at location " + pocket.getOrigin());
 
 		pocket.offsetOrigin((int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap));
 
 		template.place(pocket);
+
+		pocket.virtualLocation = parameters.getSourceVirtualLocation(); // TODO: this makes very little sense
 
 		return pocket;
 	}
@@ -117,5 +120,13 @@ public class SchematicGenerator extends PocketGenerator {
 	@Override
 	public String getKey() {
 		return KEY;
+	}
+
+	@Override
+	public Vec3i getSize(PocketGenerationParameters parameters) {
+		PocketTemplateV2 template = SchematicV2Handler.getInstance().getTemplates().get(templateID);
+		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
+		Schematic schem = template.getSchematic();
+		return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());
 	}
 }

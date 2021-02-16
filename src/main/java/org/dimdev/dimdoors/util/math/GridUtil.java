@@ -1,15 +1,19 @@
 package org.dimdev.dimdoors.util.math;
 
+import java.util.Arrays;
+import java.util.Vector;
+
 public final class GridUtil {
 	public static final class GridPos {
-		public final int x;
-		public final int z;
+		public int x;
+		public int z;
 
 		public GridPos(int x, int z) {
 			this.x = x;
 			this.z = z;
 		}
 
+		@Override
 		public boolean equals(Object o) {
 			if (o == this) return true;
 			if (!(o instanceof GridPos)) return false;
@@ -18,6 +22,7 @@ public final class GridUtil {
 			return this.z == other.z;
 		}
 
+		@Override
 		public int hashCode() {
 			int PRIME = 59;
 			int result = 1;
@@ -26,41 +31,57 @@ public final class GridUtil {
 			return result;
 		}
 
+		@Override
 		public String toString() {
 			return "GridUtils.GridPos(x=" + this.x + ", z=" + this.z + ")";
 		}
 	}
 
+
 	/**
-	 * Calculates the grid position for a certain element number in the grid.
+	 * Calculates the grid position for a certain element id in the grid.
 	 *
-	 * @param num The element's number in the grid
+	 * @param id The element's id in the grid
 	 * @return The location on the grid
 	 */
-	public static GridPos numToPos(int num) { // TODO: alternate the sign on every number to have negative coords too
-		// Grows by adding two sides to a square, keeping both x and z positive
-		int layer = (int) Math.sqrt(num); // The layer of the square, the innermost being layer 0
-		int layerNumber = num - layer * layer; // The number of the spot on that layer
-		//                           | First Side   |  Second Side                     |
-		int x = layerNumber <= layer ? layer : layer - (layerNumber - layer);
-		int z = Math.min(layerNumber, layer);
+	public static GridPos idToGridPos(int id) {
+		GridPos out = id > 8 ? idToGridPos(id / 9) : new GridPos(0, 0);
+		int x = out.x * 3;
+		int z = out.z * 3;
 
-		return new GridPos(x, z);
+		long minor = id % 9;
+		x += (minor + 1) % 3 - 1;
+		z += (minor / 3 + 1) % 3 - 1;
+
+		out.x = x;
+		out.z = z;
+		return out;
 	}
 
+
 	/**
-	 * Calculates the element number
+	 * Calculates the element id
 	 *
 	 * @param pos The location on the grid
-	 * @return The location on the grid
+	 * @return The id of the location on the grid
 	 */
-	public static int posToNum(GridPos pos) {
-		int x = pos.x;
-		int z = pos.z;
-		if (x >= z) { // First side
-			return x * x + z; // (number of points in the square x * x) + (z points on the top layer)
-		} else { // Second side
-			return (z + 1) * z + z - x; // (number of points in the rectangle (z + 1) * z) + (z - x points on the top layer)
+	public static int gridPosToID(GridPos pos) {
+		return convToID(new Vector<>(Arrays.asList(pos.x, pos.z)));
+	}
+
+	private static int convToID(Vector<Integer> vector) {
+		int x = vector.get(0);
+		int z = vector.get(1);
+
+		int id = Math.floorMod(x, 3) + (Math.floorMod(z, 3) * 3);
+
+		x = Math.floorDiv(x + 1, 3);
+		z = Math.floorDiv(z + 1, 3);
+		if (x != 0 || z != 0) {
+			vector.set(0, x);
+			vector.set(1, z);
+			id += 9 * convToID(vector);
 		}
+		return id;
 	}
 }

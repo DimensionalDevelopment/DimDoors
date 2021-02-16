@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import org.dimdev.dimdoors.command.arguments.GroupArugmentType;
 import org.dimdev.dimdoors.command.arguments.NameArugmentType;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -17,7 +18,7 @@ import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.server.command.CommandManager;
@@ -69,7 +70,8 @@ public class PocketCommand {
                     entrance.receiveEntity(player, Vec3d.ZERO, new EulerAngle(0, 0, 0), player.getVelocity());
                 }
             } else {
-                Vector3i size = pocket.getSize().add(1, 1, 1).mul(15).div(2);
+            	Vec3i sizeVec3i = pocket.getSize();
+				Vector3i size = Vector3i.from(sizeVec3i.getX(), sizeVec3i.getY(), sizeVec3i.getZ()).add(1, 1, 1).mul(15).div(2);
                 TeleportUtil.teleport(player, new Location(player.getServerWorld(), pocket.getOrigin().add(size.getX(), size.getY(), size.getZ())));
             }
         } catch (Exception e) {

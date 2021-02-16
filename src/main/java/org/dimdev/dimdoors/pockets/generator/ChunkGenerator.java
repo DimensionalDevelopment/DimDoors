@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.pockets.generator;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
@@ -27,9 +26,8 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import java.util.ArrayList;
@@ -79,14 +77,14 @@ public class ChunkGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
+	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
 		ServerWorld world = parameters.getWorld();
 		VirtualLocation sourceVirtualLocation = parameters.getSourceVirtualLocation();
 
 		int chunkSizeX = ((this.size.getX() >> 4) + (this.size.getX() % 16 == 0 ? 0 : 1));
 		int chunkSizeZ = ((this.size.getZ() >> 4) + (this.size.getZ() % 16 == 0 ? 0 : 1));
 
-		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket();
+		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
 		pocket.setSize(size);
 		pocket.offsetOrigin(offset);
 
@@ -197,6 +195,11 @@ public class ChunkGenerator extends PocketGenerator {
 	@Override
 	public String getKey() {
 		return KEY;
+	}
+
+	@Override
+	public Vec3i getSize(PocketGenerationParameters parameters) {
+		return size;
 	}
 
 	private static class ChunkRegionHack extends ChunkRegion { // Please someone tell me if there is a better way
