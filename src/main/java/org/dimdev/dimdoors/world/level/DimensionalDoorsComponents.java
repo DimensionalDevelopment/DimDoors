@@ -22,6 +22,6 @@ public class DimensionalDoorsComponents implements LevelComponentInitializer, It
 
 	@Override
 	public void registerItemComponentFactories(ItemComponentFactoryRegistry registry) {
-		registry.registerFor(ModItems.RIFT_CONFIGURATION_TOOL, COUNTER_COMPONENT_KEY, Counter::new);
+		registry.register(ModItems.RIFT_CONFIGURATION_TOOL, COUNTER_COMPONENT_KEY, Counter::new);
 	}
 }
