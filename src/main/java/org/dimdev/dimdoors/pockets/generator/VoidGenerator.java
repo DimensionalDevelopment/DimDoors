@@ -22,19 +22,12 @@ public class VoidGenerator extends PocketGenerator {
 	private Equation widthEquation;
 	private String length;
 	private Equation lengthEquation;
-	private String offsetX;
-	private Equation offsetXEquation;
-	private String offsetY;
-	private Equation offsetYEquation;
-	private String offsetZ;
-	private Equation offsetZEquation;
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.getWorld().getRegistryKey()).newPocket(builder);
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		pocket.setSize((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
-		pocket.offsetOrigin((int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap));
 
 		return pocket;
 	}
@@ -67,12 +60,6 @@ public class VoidGenerator extends PocketGenerator {
 			length = tag.getString("length");
 			lengthEquation = Equation.parse(length);
 
-			offsetX = tag.contains("offset_x") ? tag.getString("offset_x") : "0";
-			offsetXEquation = Equation.parse(offsetX);
-			offsetY = tag.contains("offset_y") ? tag.getString("offset_y") : "0";
-			offsetYEquation = Equation.parse(offsetY);
-			offsetZ = tag.contains("offset_z") ? tag.getString("offset_z") : "0";
-			offsetZEquation = Equation.parse(offsetZ);
 		} catch (EquationParseException e) {
 			LOGGER.error(e);
 		}
@@ -87,10 +74,6 @@ public class VoidGenerator extends PocketGenerator {
 		tag.putString("width", width);
 		tag.putString("height", height);
 		tag.putString("length", length);
-
-		if (!offsetX.equals("0")) tag.putString("offset_x", offsetX);
-		if (!offsetY.equals("0")) tag.putString("offset_y", offsetY);
-		if (!offsetZ.equals("0")) tag.putString("offset_z", offsetZ);
 
 		return tag;
 	}

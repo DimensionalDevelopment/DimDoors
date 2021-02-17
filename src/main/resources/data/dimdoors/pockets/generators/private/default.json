@@ -39,8 +39,5 @@
       "id": 0
     }
   ],
-  "offset_x": "5",
-  "offset_y": "5",
-  "offset_z": "5",
   "height": "5 + 16 * min(15, private_size)"
 }
