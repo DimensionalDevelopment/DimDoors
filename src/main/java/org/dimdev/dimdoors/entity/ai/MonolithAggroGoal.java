@@ -18,6 +18,8 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+
 import static net.minecraft.predicate.entity.EntityPredicates.EXCEPT_SPECTATOR;
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
@@ -91,14 +93,13 @@ public class MonolithAggroGoal extends Goal {
 
                 PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
                 data.writeInt(this.mob.getAggro());
-                ServerSidePacketRegistry.INSTANCE.sendToPlayer(this.target, DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, data);
+				ServerPlayNetworking.send((ServerPlayerEntity) this.target, DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, data);
             }
 
             // Teleport the target player if various conditions are met
             if (this.mob.getAggro() >= MAX_AGGRO && DimensionalDoorsInitializer.getConfig().getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
                 this.mob.setAggro(0);
-                //Location destination = LimboDimension.getLimboSkySpawn(player);
-                //TeleportUtil.teleport(player, destination, 0, 0);
+				this.target.teleport(this.target.getX(), this.target.getY() + 256, this.target.getZ());
                 this.target.world.playSound(null, new BlockPos(this.target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
             }
         }
