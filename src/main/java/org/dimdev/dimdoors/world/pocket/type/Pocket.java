@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import com.flowpowered.math.vector.Vector3i;
 import com.mojang.serialization.Codec;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -28,8 +27,9 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-public final class Pocket extends AbstractPocket<Pocket> {
+public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
 	public static String KEY = "pocket";
 
 	private static final int BLOCKS_PAINTED_PER_DYE = 1000000;
@@ -157,6 +157,16 @@ public final class Pocket extends AbstractPocket<Pocket> {
 		return this;
 	}
 
+	@Override
+	public void setBox(BlockBox box) {
+		this.box = box;
+	}
+
+	@Override
+	public void setVirtualLocation(VirtualLocation virtualLocation) {
+		this.virtualLocation = virtualLocation;
+	}
+
 	public enum PocketColor {
 		WHITE(0, DyeColor.WHITE),
 		ORANGE(1, DyeColor.ORANGE),
@@ -255,7 +265,9 @@ public final class Pocket extends AbstractPocket<Pocket> {
 	}
 
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
-	public static class PocketBuilder<P extends PocketBuilder<P, T>, T extends Pocket> extends AbstractPocketBuilder<P, T> {
+	public static class PocketBuilder<P extends PocketBuilder<P, T>, T extends IPocket<T>> extends AbstractPocketBuilder<P, T> {
+		private final Map<Class<? extends PocketAddon.PocketBuilderAddon>, PocketAddon.PocketBuilderAddon> addons = new HashMap<>();
+
 		private Vec3i origin = new Vec3i(0, 0, 0);
 		private Vec3i size = new Vec3i(0, 0, 0);
 		private Vec3i expected = new Vec3i(0, 0, 0);
@@ -266,6 +278,18 @@ public final class Pocket extends AbstractPocket<Pocket> {
 			super(type);
 		}
 
+		public <C extends PocketAddon.PocketBuilderAddon<X>, X extends PocketAddon<X>> boolean hasAddon(Class<C> addonClass) {
+			return addons.containsKey(addonClass);
+		}
+
+		protected <C extends PocketAddon.PocketBuilderAddon<X>, X extends PocketAddon<X>> void addAddon(Class<C> addonClass, C addon) {
+			addons.put(addonClass, addon);
+		}
+
+		public <C extends PocketAddon.PocketBuilderAddon<X>, X extends PocketAddon<X>> C getAddon(Class<C> addonClass) {
+			return (C) addons.get(addonClass);
+		}
+
 		@Override
 		public Vec3i getExpectedSize() {
 			return expected;
@@ -274,9 +298,9 @@ public final class Pocket extends AbstractPocket<Pocket> {
 		public T build() {
 			T instance = super.build();
 
-			instance.box = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ());
-			instance.virtualLocation = virtualLocation;
-			instance.dyeColor = dyeColor;
+			instance.setBox(BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ()));
+			instance.setVirtualLocation(virtualLocation);
+			//instance.dyeColor = dyeColor;
 
 			return instance;
 		}
@@ -306,5 +330,13 @@ public final class Pocket extends AbstractPocket<Pocket> {
 			this.dyeColor = dyeColor;
 			return (P) this;
 		}
+	}
+
+	public interface IPocketBuilder<P extends PocketBuilder<P, T>, T extends IPocket<T>> {
+		<C extends PocketAddon.PocketBuilderAddon<V>, V extends PocketAddon<V>> boolean hasAddon(Class<C> addonClass);
+
+		<C extends PocketAddon.PocketBuilderAddon<V>, V extends PocketAddon<V>> void addAddon(Class<C> addonClass, C addon);
+
+		<C extends PocketAddon.PocketBuilderAddon<V>, V extends PocketAddon<V>> C getAddon(Class<C> addonClass);
 	}
 }

@@ -13,10 +13,10 @@ import net.minecraft.world.World;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public abstract class AbstractPocket<V extends AbstractPocket<V>> {
+public abstract class AbstractPocket<V extends AbstractPocket<V>> implements IAbstractPocket<V> {
 	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "abstract_pocket_type")), Lifecycle.stable())).buildAndRegister();
 
-	protected int id;
+	protected Integer id;
 	protected RegistryKey<World> world;
 
 	public AbstractPocket(int id, RegistryKey<World> world) {
@@ -69,7 +69,19 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 		return world;
 	}
 
-	public interface AbstractPocketType<T extends AbstractPocket<?>> {
+	@Override
+	public void setID(int id) { // sneakily checking for world, just always set world first when initializing and everything will be fine.
+		if (this.id != null) throw new UnsupportedOperationException("Cannot change the id of a pocket that has already been initialized.");
+		this.id = id;
+	}
+
+	@Override
+	public void setWorld(RegistryKey<World> world) {
+		if (this.world != null) throw new UnsupportedOperationException("Cannot change the world of a pocket that has already been initialized.");
+		this.world = world;
+	}
+
+	public interface AbstractPocketType<T extends IAbstractPocket<?>> {
 		AbstractPocketType<IdReferencePocket> ID_REFERENCE = register(new Identifier("dimdoors", IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder);
 
 		AbstractPocketType<Pocket> POCKET = register(new Identifier("dimdoors", Pocket.KEY), Pocket::new, Pocket::builder);
@@ -112,7 +124,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 		}
 	}
 
-	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket<?>> {
+	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends IAbstractPocket<?>> {
 		private final AbstractPocketType<T> type;
 
 		private int id;
@@ -130,8 +142,8 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 		public T build() {
 			T instance = type.instance();
 
-			instance.id = id;
-			instance.world = world;
+			instance.setID(id);
+			instance.setWorld(world);
 
 			return instance;
 		}

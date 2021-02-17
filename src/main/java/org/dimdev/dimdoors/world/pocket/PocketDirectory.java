@@ -35,13 +35,6 @@ public class PocketDirectory {
 		this.pockets = new HashMap<>();
 	}
 
-	public PocketDirectory(RegistryKey<World> worldKey, int gridSize) { // for testing
-		this.gridSize = gridSize;
-		this.worldKey = worldKey;
-		this.nextIDMap = new TreeMap<>();
-		this.pockets = new HashMap<>();
-	}
-
 	public static PocketDirectory readFromNbt(String id, CompoundTag tag) {
 		PocketDirectory directory = new PocketDirectory(RegistryKey.of(Registry.DIMENSION, new Identifier(id)));
 
