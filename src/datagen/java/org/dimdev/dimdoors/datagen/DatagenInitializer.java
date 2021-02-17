@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.datagen;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collections;
 
@@ -26,7 +25,8 @@ public class DatagenInitializer implements PreLaunchEntrypoint {
 			ModBlocks.init();
 			ModItems.init();
 			DataGenerator dataGenerator = new DataGenerator(Paths.get("./generated"), Collections.emptyList());
-			dataGenerator.install(new FabricRecipeHandler(dataGenerator));
+			dataGenerator.install(new FabricRecipeProvider(dataGenerator));
+			dataGenerator.install(new AdvancementProvider(dataGenerator));
 			dataGenerator.install(RECIPE_CONSUMER = new RecipeConsumer(dataGenerator));
 			dataGenerator.run();
 		} catch (Exception e) {

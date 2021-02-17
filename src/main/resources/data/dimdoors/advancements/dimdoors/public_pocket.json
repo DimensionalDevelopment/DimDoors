@@ -1,0 +1,31 @@
+{
+  "parent": "dimdoors:dimdoors/root",
+  "display": {
+    "icon": {
+      "item": "dimdoors:iron_dimensional_door"
+    },
+    "title": {
+      "translate": "dimdoors.advancement.public_pocket"
+    },
+    "description": {
+      "translate": "dimdoors.advancement.public_pocket.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "changed_dimension": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "dimdoors:public_pockets"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "changed_dimension"
+    ]
+  ]
+}

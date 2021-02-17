@@ -195,5 +195,17 @@
   "dimdoors.config.screen.reload": "Reload Config",
   "dimdoors.linkProperties.oneWay": "One way: %s",
   "dimdoors.linkProperties.linksRemaining": "Remaining links: %s",
-  "dimdoors.color": "Color: "
+  "dimdoors.color": "Color: ",
+  "dimdoors.advancement.root": "Dimensional Doors",
+  "dimdoors.advancement.root.desc": "Venture into the depths",
+  "dimdoors.advancement.public_pocket": "Public Pockets",
+  "dimdoors.advancement.public_pocket.desc": "Enter a public pocket",
+  "dimdoors.advancement.private_pocket": "Private Pockets",
+  "dimdoors.advancement.private_pocket.desc": "Enter a private pocket",
+  "dimdoors.advancement.dungeon": "Dungeons",
+  "dimdoors.advancement.dungeon.desc": "Enter a dungeon",
+  "dimdoors.advancement.limbo": "Decay",
+  "dimdoors.advancement.limbo.desc": "Enter limbo",
+  "dimdoors.advancement.escape_limbo": "Escape",
+  "dimdoors.advancement.escape_limbo.desc": "Escape limbo"
 }
