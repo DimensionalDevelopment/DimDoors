@@ -30,8 +30,8 @@ public final class ModBlocks {
 	public static final Block QUARTZ_DIMENSIONAL_DOOR = register("dimdoors:quartz_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.QUARTZ).nonOpaque().lightLevel(state -> ((DimensionalDoorBlock) state.getBlock()).hasBlockEntity(state) ? 10 : 0)));
 	public static final Block OAK_DIMENSIONAL_TRAPDOOR = register("dimdoors:wood_dimensional_trapdoor", new DimensionalTrapdoorBlock(FabricBlockSettings.of(Material.WOOD, MaterialColor.WOOD).nonOpaque()));
 
-	public static final Block DIMENSIONAL_PORTAL = register("dimdoors:dimensional_portal", new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).nonOpaque().dropsNothing().lightLevel(10)));
-	public static final Block DETACHED_RIFT = register("dimdoors:detached_rift", new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).noCollision().nonOpaque()));
+	public static final Block DIMENSIONAL_PORTAL = register("dimdoors:dimensional_portal", new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).strength(-1.0F, 3600000.0F).nonOpaque().dropsNothing().luminance(10)));
+	public static final Block DETACHED_RIFT = register("dimdoors:detached_rift", new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).strength(-1.0F, 3600000.0F).noCollision().nonOpaque()));
 
 	public static final Block WHITE_FABRIC = registerFabric("dimdoors:white_fabric", DyeColor.WHITE);
 	public static final Block ORANGE_FABRIC = registerFabric("dimdoors:orange_fabric", DyeColor.ORANGE);
@@ -98,7 +98,13 @@ public final class ModBlocks {
 
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.OAK_DIMENSIONAL_TRAPDOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DOOR);
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
+				ModBlocks.OAK_DIMENSIONAL_DOOR,
+				ModBlocks.GOLD_DIMENSIONAL_DOOR,
+				ModBlocks.IRON_DIMENSIONAL_DOOR,
+				ModBlocks.OAK_DIMENSIONAL_TRAPDOOR,
+				ModBlocks.QUARTZ_DIMENSIONAL_DOOR,
+				ModBlocks.QUARTZ_DOOR);
 	}
 
 	public static Block ancientFabricFromDye(DyeColor color) {

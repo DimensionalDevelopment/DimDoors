@@ -27,9 +27,10 @@ import net.minecraft.world.World;
 
 public class DimensionalPortalBlock extends Block implements RiftProvider<EntranceRiftBlockEntity> {
 	public static DirectionProperty FACING = HorizontalFacingBlock.FACING;
+
 	public DimensionalPortalBlock(Settings settings) {
 		super(settings);
-		setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
 	}
 
 	@Override
@@ -55,18 +56,18 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 		this.getRift(world, pos, state).teleport(entity);
 
-		EntranceRiftBlockEntity rift = getRift(world, pos, state);
+		EntranceRiftBlockEntity rift = this.getRift(world, pos, state);
 
 		world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
 		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 	}
 
 	public BlockState rotate(BlockState state, BlockRotation rotation) {
-		return (BlockState)state.with(FACING, rotation.rotate((Direction)state.get(FACING)));
+		return state.with(FACING, rotation.rotate(state.get(FACING)));
 	}
 
 	public BlockState mirror(BlockState state, BlockMirror mirror) {
-		return state.rotate(mirror.getRotation((Direction)state.get(FACING)));
+		return state.rotate(mirror.getRotation(state.get(FACING)));
 	}
 
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
