@@ -45,6 +45,13 @@ public abstract class SchematicV2Gateway implements Gateway {
 	}
 
 	public final void generate(StructureWorldAccess world, BlockPos pos) {
+		if (DimensionalDoorsInitializer.getConfig()
+				.getWorldConfig()
+				.gatewayDimBlacklist
+				.contains(world.toServerWorld().getRegistryKey().getValue().toString())
+		) {
+			return;
+		}
 		if (!this.replaced) {
 			TemplateUtils.replacePlaceholders(this.schematic, world);
 			this.replaced = true;

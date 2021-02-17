@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.block;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -18,11 +15,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import org.dimdev.dimdoors.util.InstanceMap;
 
 public class FabricBlock extends Block {
 	FabricBlock(DyeColor color) {
-		super(FabricBlockSettings.of(Material.STONE, color).lightLevel(15));
+		super(FabricBlockSettings.of(Material.STONE, color).strength(1.2F).luminance(15));
 	}
 
 	@Override
