@@ -115,10 +115,12 @@ dependencies {
 	}
 	modCompileOnly 'com.github.badasintended:wthit:3.0.0'
 	modRuntime 'com.github.badasintended:wthit:3.0.0'
+	modCompileOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
+	modRuntime "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
 
 	datagenImplementation sourceSets.main.output
 	datagenImplementation sourceSets.main.compileClasspath
-	datagenImplementation "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
+	datagenRuntimeOnly sourceSets.main.runtimeClasspath
 
 	testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 }
