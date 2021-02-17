@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.block;
 
 import net.minecraft.util.math.Vec3d;
+
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.util.math.MathUtil;
@@ -37,8 +39,6 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 			return;
 		}
 
-
-
 		// TODO: replace with dimdoor cooldown?
 		if (entity.hasNetherPortalCooldown()) {
 			entity.resetNetherPortalCooldown();
@@ -46,10 +46,16 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 		}
 		entity.resetNetherPortalCooldown();
 
-		BlockState doorState = world.getBlockState(state.get(HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos);
+		BlockPos top = state.get(HALF) == DoubleBlockHalf.UPPER ? pos : pos.up();
+		BlockPos bottom = top.down();
+		BlockState doorState = world.getBlockState(bottom);
 
 		if (doorState.getBlock() == this && doorState.get(DoorBlock.OPEN)) { // '== this' to check if not half-broken
 			this.getRift(world, pos, state).teleport(entity);
+			if (DimensionalDoorsInitializer.getConfig().getGeneralConfig().closeDoorBehind) {
+				world.setBlockState(top, world.getBlockState(top).with(DoorBlock.OPEN, false));
+				world.setBlockState(bottom, world.getBlockState(bottom).with(DoorBlock.OPEN, false));
+			}
 		}
 	}
 
