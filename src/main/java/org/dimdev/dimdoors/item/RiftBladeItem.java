@@ -85,8 +85,7 @@ public class RiftBladeItem extends SwordItem {
 			player.teleport(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
 			player.setYaw((float) (Math.random() * 2 * Math.PI));
 
-			stack.damage(1, player, a -> {
-			});
+			stack.damage(1, player, a -> a.sendToolBreakStatus(hand));
 			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 		} else if (RaycastHelper.hitsDetachedRift(hit, world)) {
 			BlockHitResult blockHitResult = (BlockHitResult) hit;
