@@ -1,0 +1,31 @@
+{
+  "parent": "dimdoors:dimdoors/root",
+  "display": {
+    "icon": {
+      "item": "dimdoors:unravelled_fabric"
+    },
+    "title": {
+      "translate": "dimdoors.advancement.limbo"
+    },
+    "description": {
+      "translate": "dimdoors.advancement.limbo.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "changed_dimension": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "dimdoors:limbo"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "changed_dimension"
+    ]
+  ]
+}

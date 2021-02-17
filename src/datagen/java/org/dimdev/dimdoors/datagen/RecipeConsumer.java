@@ -29,7 +29,7 @@ public class RecipeConsumer implements DataProvider, Consumer<RecipeJsonProvider
 	public void run(DataCache cache) throws IOException {
 		Path path = this.dataGenerator.getOutput();
 		Set<Identifier> set = Sets.newHashSet();
-		recipes.forEach((recipeJsonProvider) -> {
+		this.recipes.forEach((recipeJsonProvider) -> {
 			if (!set.add(recipeJsonProvider.getRecipeId())) {
 				throw new IllegalStateException("Duplicate recipe " + recipeJsonProvider.getRecipeId());
 			} else {
@@ -49,6 +49,6 @@ public class RecipeConsumer implements DataProvider, Consumer<RecipeJsonProvider
 
 	@Override
 	public void accept(RecipeJsonProvider recipeJsonProvider) {
-		recipes.add(recipeJsonProvider);
+		this.recipes.add(recipeJsonProvider);
 	}
 }

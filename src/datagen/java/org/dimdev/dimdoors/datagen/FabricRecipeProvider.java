@@ -17,10 +17,10 @@ import net.minecraft.util.Identifier;
 
 import static org.dimdev.dimdoors.datagen.DatagenInitializer.RECIPE_CONSUMER;
 
-public class FabricRecipeHandler implements DataProvider {
+public class FabricRecipeProvider implements DataProvider {
 	private final DataGenerator dataGenerator;
 
-	public FabricRecipeHandler(DataGenerator dataGenerator) {
+	public FabricRecipeProvider(DataGenerator dataGenerator) {
 		this.dataGenerator = dataGenerator;
 	}
 
