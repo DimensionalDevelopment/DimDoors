@@ -12,7 +12,7 @@ class PocketDirectoryTest {
 
 	//@Test
 	void newPocket() {
-		PocketDirectory directory = new PocketDirectory(ModDimensions.DUNGEON, 512);
+		PocketDirectory directory = null;// new PocketDirectory(ModDimensions.DUNGEON, 512);
 
 		Pocket.PocketBuilder<?, ?> builder = Pocket.builder().expand(new Vec3i(1, 1, 1));
 
