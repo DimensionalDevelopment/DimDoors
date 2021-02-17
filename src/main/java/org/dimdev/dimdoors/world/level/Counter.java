@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.world.level;
 
-import dev.onyxstudios.cca.api.v3.component.Component;
+import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
-public class Counter implements Component {
+public class Counter implements ComponentV3 {
 	private final ItemStack stack;
 	private int counter;
 

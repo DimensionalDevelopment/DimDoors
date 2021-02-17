@@ -164,6 +164,9 @@ public final class ModItems {
 	@RegistryObject("rift_stabilizer")
 	public static final Item RIFT_STABILIZER = create(new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
 
+	@RegistryObject("rift_key")
+	public static final Item RIFT_KEY = create(new RiftKeyItem(new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1)));
+
 	@RegistryObject("dimensional_eraser")
 	public static final Item DIMENSIONAL_ERASER = create(new DimensionalEraserItem(new Item.Settings().maxDamage(100).group(DIMENSIONAL_DOORS)));
 
