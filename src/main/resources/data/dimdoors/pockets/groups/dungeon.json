@@ -1,9 +1,5 @@
 [
   {
-    "id": "custom/purpur_hallway",
-    "type": "dimdoors:id"
-  },
-  {
     "id": "custom/waiting_room",
     "type": "dimdoors:id"
   },
