@@ -13,6 +13,7 @@ import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 
 public class DatagenInitializer implements PreLaunchEntrypoint {
 	public static RecipeConsumer RECIPE_CONSUMER;
+	public static LootTableConsumer LOOT_TABLE_CONSUMER;
 
 	// How to run the data generator:-
 	// - Duplicate the Minecraft Client run config
@@ -27,7 +28,9 @@ public class DatagenInitializer implements PreLaunchEntrypoint {
 			DataGenerator dataGenerator = new DataGenerator(Paths.get("./generated"), Collections.emptyList());
 			dataGenerator.install(new FabricRecipeProvider(dataGenerator));
 			dataGenerator.install(new AdvancementProvider(dataGenerator));
+			dataGenerator.install(new LootTableProvider(dataGenerator));
 			dataGenerator.install(RECIPE_CONSUMER = new RecipeConsumer(dataGenerator));
+			dataGenerator.install(LOOT_TABLE_CONSUMER = new LootTableConsumer(dataGenerator));
 			dataGenerator.run();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

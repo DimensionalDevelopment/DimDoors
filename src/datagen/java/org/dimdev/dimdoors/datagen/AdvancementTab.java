@@ -14,13 +14,14 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 
 public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey) {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
 				new TranslatableText("dimdoors.advancement." + titleKey),
 				new TranslatableText("dimdoors.advancement." + titleKey + ".desc"),
-				null,
+				new Identifier("dimdoors:textures/block/unravelled_fabric.png"),
 				AdvancementFrame.TASK,
 				true,
 				true,
@@ -32,7 +33,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
 				new TranslatableText("dimdoors.advancement." + titleKey),
 				new TranslatableText("dimdoors.advancement." + titleKey + ".desc"),
-				null,
+				new Identifier("dimdoors:textures/block/unravelled_fabric.png"),
 				advancementFrame,
 				true,
 				true,
@@ -62,7 +63,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.DUNGEON))
 				.parent(root)
 				.build(advancementConsumer, "dimdoors:dimdoors/dungeon");
-		Advancement.Task.create()
+		Advancement limbo = Advancement.Task.create()
 				.display(makeDisplay(ModItems.UNRAVELLED_FABRIC, "limbo"))
 				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.LIMBO))
 				.parent(root)
@@ -70,7 +71,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		Advancement.Task.create()
 				.display(makeDisplay(ModItems.ETERNAL_FLUID_BUCKET, "escape_limbo"))
 				.criterion("changed_dimension", new ChangedDimensionCriterion.Conditions(EntityPredicate.Extended.EMPTY, ModDimensions.LIMBO, null))
-				.parent(root)
+				.parent(limbo)
 				.build(advancementConsumer, "dimdoors:dimdoors/escape_limbo");
 	}
 }
