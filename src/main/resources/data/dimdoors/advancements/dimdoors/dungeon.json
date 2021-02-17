@@ -13,7 +13,8 @@
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": false
+    "hidden": false,
+    "background": "dimdoors:textures/block/unravelled_fabric.png"
   },
   "criteria": {
     "changed_dimension": {

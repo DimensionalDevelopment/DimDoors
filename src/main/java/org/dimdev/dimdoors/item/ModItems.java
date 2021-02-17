@@ -95,7 +95,6 @@ public final class ModItems {
 			}
 	));
 
-	// TODO
 	@RegistryObject("unstable_dimensional_door")
     public static final Item UNSTABLE_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
             ModBlocks.IRON_DIMENSIONAL_DOOR,
