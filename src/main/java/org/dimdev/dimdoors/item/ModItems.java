@@ -8,7 +8,6 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.PrivatePocketExitTarget;
 import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
@@ -54,7 +53,7 @@ public final class ModItems {
 			ModBlocks.QUARTZ_DIMENSIONAL_DOOR,
 			new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
 			rift -> {
-				if (ModDimensions.isPocketDimension(rift.getWorld())) {
+				if (ModDimensions.isPrivatePocketDimension(rift.getWorld())) {
 					rift.setDestination(new PrivatePocketExitTarget()); // exit
 				} else {
 					rift.setDestination(new PrivatePocketTarget()); // entrances

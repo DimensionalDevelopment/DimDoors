@@ -15,7 +15,6 @@ import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import org.dimdev.dimdoors.util.math.MathUtil;
 
 public final class TeleportUtil {
 	public static  <E extends Entity> E teleport(E entity, World world, BlockPos pos, float yaw) {
@@ -31,12 +30,28 @@ public final class TeleportUtil {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
 
+		if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
+			entity.yaw = yaw;
+			entity.teleport(pos.x, pos.y, pos.z);
+
+			return entity;
+		}
+
 		return FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), yaw, entity.getPitch(1.0F)));
 	}
 
 	public static  <E extends Entity> E teleport(E entity, World world, Vec3d pos, EulerAngle angle, Vec3d velocity) {
 		if (world.isClient) {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
+		}
+
+		if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
+			entity.yaw = angle.getYaw();
+			entity.pitch = angle.getPitch();
+			entity.teleport(pos.x, pos.y, pos.z);
+			entity.setVelocity(velocity);
+
+			return entity;
 		}
 
 		return FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, velocity, angle.getYaw(), angle.getPitch()));
