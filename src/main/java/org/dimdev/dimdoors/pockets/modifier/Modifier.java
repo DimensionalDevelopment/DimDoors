@@ -46,6 +46,8 @@ public interface Modifier {
 		ModifierType<PocketEntranceModifier> PUBLIC_MODIFIER_TYPE = register(new Identifier("dimdoors", PocketEntranceModifier.KEY), PocketEntranceModifier::new);
 		ModifierType<RiftDataModifier> RIFT_DATA_MODIFIER_TYPE = register(new Identifier("dimdoors", RiftDataModifier.KEY), RiftDataModifier::new);
 		ModifierType<RelativeReferenceModifier> RELATIVE_REFERENCE_MODIFIER_TYPE = register(new Identifier("dimdoors", RelativeReferenceModifier.KEY), RelativeReferenceModifier::new);
+		ModifierType<OffsetModifier> OFFSET_MODIFIER_TYPE = register(new Identifier("dimdoors", OffsetModifier.KEY), OffsetModifier::new);
+
 		Modifier fromTag(CompoundTag tag);
 
 		CompoundTag toTag(CompoundTag tag);

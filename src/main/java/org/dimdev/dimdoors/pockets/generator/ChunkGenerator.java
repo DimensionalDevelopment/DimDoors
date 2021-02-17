@@ -41,7 +41,6 @@ public class ChunkGenerator extends PocketGenerator {
 
 	private Identifier dimensionID;
 	private Vec3i size; // TODO: equation-ify
-	private Vec3i offset; // TODO: equation-ify
 	private int virtualYOffset; // TODO: equation-ify
 
 	public ChunkGenerator() {
@@ -56,9 +55,6 @@ public class ChunkGenerator extends PocketGenerator {
 		int[] temp = tag.getIntArray("size");
 		this.size = new Vec3i(temp[0], temp[1], temp[2]);
 
-		temp = tag.contains("offset") ? tag.getIntArray("offset") : new int[]{0, 0, 0};
-		this.offset = new Vec3i(temp[0], temp[1], temp[2]);
-
 		this.virtualYOffset = tag.contains("virtual_y_offset") ? tag.getInt("virtual_y_offset") : 0;
 		return this;
 	}
@@ -69,9 +65,6 @@ public class ChunkGenerator extends PocketGenerator {
 
 		tag.putString("dimension_id", dimensionID.toString());
 		tag.putIntArray("size", new int[]{this.size.getX(), this.size.getY(), this.size.getZ()});
-		if (!(offset.getX() == 0 && offset.getY() == 0 && offset.getZ() == 0)) {
-			tag.putIntArray("offset", new int[]{this.offset.getX(), this.offset.getY(), this.offset.getZ()});
-		}
 		tag.putInt("virtual_y_offset", this.virtualYOffset);
 		return tag;
 	}
@@ -85,8 +78,6 @@ public class ChunkGenerator extends PocketGenerator {
 		int chunkSizeZ = ((this.size.getZ() >> 4) + (this.size.getZ() % 16 == 0 ? 0 : 1));
 
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
-		pocket.setSize(size);
-		pocket.offsetOrigin(offset);
 
 		LOGGER.info("Generating chunk pocket at location " + pocket.getOrigin());
 
