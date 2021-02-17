@@ -92,9 +92,9 @@ public final class ModConfig implements ConfigData {
 		@RequiresRestart
 		public int gatewayGenChance = 200;
 		@RequiresRestart
-		public List<Integer> clusterDimBlacklist = new LinkedList<>();
+		public List<String> clusterDimBlacklist = new LinkedList<>();
 		@RequiresRestart
-		public List<Integer> gatewayDimBlacklist = new LinkedList<>();
+		public List<String> gatewayDimBlacklist = new LinkedList<>();
 	}
 
 	public static class Dungeons {

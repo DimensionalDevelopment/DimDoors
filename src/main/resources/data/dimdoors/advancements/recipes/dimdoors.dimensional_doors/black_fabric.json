@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "dimdoors:black_fabric"
+    ]
+  },
+  "criteria": {
+    "inventory_changed": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "dimdoors:world_thread"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "dimdoors:black_fabric"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed",
+      "has_the_recipe"
+    ]
+  ]
+}

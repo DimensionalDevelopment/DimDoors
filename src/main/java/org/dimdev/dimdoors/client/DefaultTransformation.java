@@ -5,15 +5,16 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3f;
 
 public enum DefaultTransformation implements Transformer {
-	NONE {
+	DOWN {
 		@Override
 		public void transform(MatrixStack matrices) {
+
 		}
 	},
-	DIMENSIONAL_PORTAL {
+	UP {
 		@Override
 		public void transform(MatrixStack matrices) {
-			matrices.translate(0, 0, 0.5F);
+
 		}
 	},
 	NORTH_DOOR {
@@ -42,6 +43,17 @@ public enum DefaultTransformation implements Transformer {
 			// TODO
 			matrices.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
 			matrices.translate(0, 0, -0.19F);
+		}
+	},
+	NONE {
+		@Override
+		public void transform(MatrixStack matrices) {
+		}
+	},
+	DIMENSIONAL_PORTAL {
+		@Override
+		public void transform(MatrixStack matrices) {
+			matrices.translate(0, 0, 0.5F);
 		}
 	};
 

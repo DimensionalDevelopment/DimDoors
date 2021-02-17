@@ -115,10 +115,12 @@ dependencies {
 	}
 	modCompileOnly 'com.github.badasintended:wthit:3.0.0'
 	modRuntime 'com.github.badasintended:wthit:3.0.0'
+	modCompileOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
+	modRuntime "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
 
 	datagenImplementation sourceSets.main.output
 	datagenImplementation sourceSets.main.compileClasspath
-	datagenImplementation "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
+	datagenRuntimeOnly sourceSets.main.runtimeClasspath
 
 	testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
 }
@@ -155,7 +157,7 @@ curseforge {
 		releaseType = 'alpha'
 		addGameVersion '1.17'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[${project.minecraft_version}] Dimensional Doors ${version}"
+			displayName = "[21w06a] Dimensional Doors ${version}"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")

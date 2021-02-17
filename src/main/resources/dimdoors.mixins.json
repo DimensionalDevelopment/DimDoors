@@ -5,6 +5,7 @@
   "mixins": [
     "DefaultBiomeFeaturesMixin",
     "PlayerEntityMixin",
+    "RecipesProviderAccessor",
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
     "accessor.BuiltinBiomesAccessor",

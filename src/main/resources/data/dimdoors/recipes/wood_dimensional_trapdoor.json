@@ -5,7 +5,7 @@
   ],
   "key": {
     "#": {
-      "tag": "#minecraft:wooden_trapdoors"
+      "tag": "minecraft:wooden_trapdoors"
     },
     "X": {
       "item": "minecraft:ender_pearl"

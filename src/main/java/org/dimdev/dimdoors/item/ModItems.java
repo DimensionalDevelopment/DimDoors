@@ -95,7 +95,6 @@ public final class ModItems {
 			}
 	));
 
-	// TODO
 	@RegistryObject("unstable_dimensional_door")
     public static final Item UNSTABLE_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
             ModBlocks.IRON_DIMENSIONAL_DOOR,
@@ -122,7 +121,9 @@ public final class ModItems {
 							.negativeDepthFactor(80)
 							.positiveDepthFactor(Double.MAX_VALUE)
 							.weightMaximum(100)
-							.noLink(false).newRiftWeight(0).build()
+							.noLink(false)
+							.newRiftWeight(0)
+							.build()
 			)
 	));
 
@@ -130,9 +131,17 @@ public final class ModItems {
 	public static final Item OAK_DIMENSIONAL_TRAPDOOR = create(new DimensionalTrapdoorItem(
 			ModBlocks.OAK_DIMENSIONAL_TRAPDOOR,
 			new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-			rift -> rift.setDestination(new EscapeTarget(false))
+			rift -> rift.setDestination(
+					RandomTarget.builder()
+							.acceptedGroups(Collections.singleton(0))
+							.coordFactor(1)
+							.negativeDepthFactor(80)
+							.positiveDepthFactor(Double.MAX_VALUE)
+							.weightMaximum(100)
+							.noLink(false)
+							.newRiftWeight(0)
+							.build())
 	));
-
 
 	@RegistryObject("world_thread")
 	public static final Item WORLD_THREAD = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
@@ -154,6 +163,9 @@ public final class ModItems {
 
 	@RegistryObject("rift_stabilizer")
 	public static final Item RIFT_STABILIZER = create(new RiftStabilizerItem(new Item.Settings().maxCount(1).maxDamage(6).group(DIMENSIONAL_DOORS)));
+
+	@RegistryObject("rift_key")
+	public static final Item RIFT_KEY = create(new RiftKeyItem(new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1)));
 
 	@RegistryObject("dimensional_eraser")
 	public static final Item DIMENSIONAL_ERASER = create(new DimensionalEraserItem(new Item.Settings().maxDamage(100).group(DIMENSIONAL_DOORS)));
