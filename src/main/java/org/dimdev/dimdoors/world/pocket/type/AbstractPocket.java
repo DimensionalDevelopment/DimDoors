@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public abstract class AbstractPocket<V extends AbstractPocket<V>> implements IAbstractPocket<V> {
+public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "abstract_pocket_type")), Lifecycle.stable())).buildAndRegister();
 
 	protected Integer id;
@@ -69,22 +69,11 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> implements IAb
 		return world;
 	}
 
-	@Override
-	public void setID(int id) { // sneakily checking for world, just always set world first when initializing and everything will be fine.
-		if (this.id != null) throw new UnsupportedOperationException("Cannot change the id of a pocket that has already been initialized.");
-		this.id = id;
-	}
-
-	@Override
-	public void setWorld(RegistryKey<World> world) {
-		if (this.world != null) throw new UnsupportedOperationException("Cannot change the world of a pocket that has already been initialized.");
-		this.world = world;
-	}
-
-	public interface AbstractPocketType<T extends IAbstractPocket<?>> {
+	public interface AbstractPocketType<T extends AbstractPocket<?>> {
 		AbstractPocketType<IdReferencePocket> ID_REFERENCE = register(new Identifier("dimdoors", IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder);
 
 		AbstractPocketType<Pocket> POCKET = register(new Identifier("dimdoors", Pocket.KEY), Pocket::new, Pocket::builder);
+		AbstractPocketType<PrivatePocket> PRIVATE_POCKET = register(new Identifier("dimdoors", PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
 
 
 		T fromTag(CompoundTag tag);
@@ -98,11 +87,11 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> implements IAb
 		static void register() {
 		}
 
-		static <U extends AbstractPocket<U>> AbstractPocketType<U> register(Identifier id, Supplier<U> supplier, Supplier<AbstractPocketBuilder<?, U>> factorySupplier) {
+		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> AbstractPocketType<U> register(Identifier id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
 			return Registry.register(REGISTRY, id, new AbstractPocketType<U>() {
 				@Override
 				public U fromTag(CompoundTag tag) {
-					return supplier.get().fromTag(tag);
+					return (U) supplier.get().fromTag(tag);
 				}
 
 				@Override
@@ -124,7 +113,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> implements IAb
 		}
 	}
 
-	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends IAbstractPocket<?>> {
+	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket<?>> {
 		private final AbstractPocketType<T> type;
 
 		private int id;
@@ -142,8 +131,8 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> implements IAb
 		public T build() {
 			T instance = type.instance();
 
-			instance.setID(id);
-			instance.setWorld(world);
+			instance.id = id;
+			instance.world = world;
 
 			return instance;
 		}

@@ -1,17 +1,19 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import org.dimdev.dimdoors.world.pocket.type.IPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public interface PocketAddon<C extends IPocket<C>> extends IPocket<C>{
+public interface PocketAddon<A extends PocketAddon<A>> {
 
-	interface PocketBuilderExtension<T extends Pocket.PocketBuilder<T, P>, P extends IPocket<P>> extends Pocket.IPocketBuilder<T, P> {
+	interface PocketBuilderExtension<T extends Pocket.PocketBuilder<T, ?>, P extends PocketAddon<P>> {
+		<C extends PocketAddon.PocketBuilderAddon<P>, P extends PocketAddon<P>> C getAddon(Class<C> addonClass);
+
 		void initAddons();
 
 		T getSelf();
 	}
 
-	interface PocketBuilderAddon<T> {
+	interface PocketBuilderAddon<T extends PocketAddon> {
+
 		void apply(T pocket);
 	}
 }

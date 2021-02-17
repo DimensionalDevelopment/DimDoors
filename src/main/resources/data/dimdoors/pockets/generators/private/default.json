@@ -1,4 +1,5 @@
 {
+  "builder": "dimdoors:private_pocket",
   "width": "5 + 16 * private_size",
   "length": "5 + 16 * private_size",
   "type": "dimdoors:void",
