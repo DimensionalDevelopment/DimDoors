@@ -122,7 +122,9 @@ public final class ModItems {
 							.negativeDepthFactor(80)
 							.positiveDepthFactor(Double.MAX_VALUE)
 							.weightMaximum(100)
-							.noLink(false).newRiftWeight(0).build()
+							.noLink(false)
+							.newRiftWeight(0)
+							.build()
 			)
 	));
 
@@ -130,9 +132,17 @@ public final class ModItems {
 	public static final Item OAK_DIMENSIONAL_TRAPDOOR = create(new DimensionalTrapdoorItem(
 			ModBlocks.OAK_DIMENSIONAL_TRAPDOOR,
 			new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-			rift -> rift.setDestination(new EscapeTarget(false))
+			rift -> rift.setDestination(
+					RandomTarget.builder()
+							.acceptedGroups(Collections.singleton(0))
+							.coordFactor(1)
+							.negativeDepthFactor(80)
+							.positiveDepthFactor(Double.MAX_VALUE)
+							.weightMaximum(100)
+							.noLink(false)
+							.newRiftWeight(0)
+							.build())
 	));
-
 
 	@RegistryObject("world_thread")
 	public static final Item WORLD_THREAD = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
