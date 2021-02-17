@@ -27,8 +27,6 @@ public class ServerPacketHandler {
 
 	private final ServerPlayNetworkHandler networkHandler;
 	private final MinecraftServer server;
-	private final ServerPlayerEntity player;
-
 	private final Set<Identifier> registeredChannels = new HashSet<>();
 
 	private void registerModReceivers() {
@@ -39,7 +37,6 @@ public class ServerPacketHandler {
 	public ServerPacketHandler(ServerPlayNetworkHandler networkHandler, MinecraftServer server) {
 		this.networkHandler = networkHandler;
 		this.server = server;
-		this.player = networkHandler.player;
 		registerModReceivers();
 	}
 
@@ -64,11 +61,15 @@ public class ServerPacketHandler {
 		new HashSet<>(registeredChannels).forEach(this::unregisterReceiver);
 	}
 
+	public ServerPlayerEntity getPlayer() {
+		return networkHandler.player;
+	}
+
 	public void onAttackBlock(Hand hand, BlockPos pos, Direction direction) {
 		server.execute(() -> {
-			Item item = player.getStackInHand(hand).getItem();
+			Item item = getPlayer().getStackInHand(hand).getItem();
 			if (item instanceof ModItem) {
-				((ModItem) item).onAttackBlock(player.world, player, hand, pos, direction);
+				((ModItem) item).onAttackBlock(getPlayer().world, getPlayer(), hand, pos, direction);
 			}
 		});
 	}
