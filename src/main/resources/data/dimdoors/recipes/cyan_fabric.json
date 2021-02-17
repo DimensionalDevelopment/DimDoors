@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "colored_fabric",
+  "pattern": [
+    " X ",
+    "XDX",
+    " X "
+  ],
+  "key": {
+    "X": {
+      "item": "dimdoors:world_thread"
+    },
+    "D": {
+      "item": "minecraft:cyan_dye"
+    }
+  },
+  "result": {
+    "item": "dimdoors:cyan_fabric"
+  }
+}
