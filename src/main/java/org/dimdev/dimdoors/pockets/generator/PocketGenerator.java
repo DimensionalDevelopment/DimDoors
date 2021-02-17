@@ -27,6 +27,7 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.*;
@@ -40,6 +41,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	private static final int fallbackWeight = 5; // TODO: make config
 	private final List<Modifier> modifierList = new ArrayList<>();
 
+	private String builderType;
 	protected String weight;
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
@@ -82,6 +84,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	}
 
 	public PocketGenerator fromTag(CompoundTag tag) {
+		if (tag.contains("builder", NbtType.STRING)) builderType = tag.getString("builder");
+
 		this.weight = tag.contains("weight") ? tag.getString("weight") : defaultWeightEquation;
 		parseWeight();
 
@@ -105,6 +109,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 
 	public CompoundTag toTag(CompoundTag tag) {
 		this.getType().toTag(tag);
+
+		if (builderType != null) tag.putString("builder", builderType);
 
 		if (!weight.equals("5")) tag.putString("weight", weight);
 
@@ -178,8 +184,6 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 			}
 		});
 		TemplateUtils.registerRifts(rifts, parameters.getLinkTo(), parameters.getLinkProperties(), pocket);
-
-		pocket.virtualLocation = parameters.getSourceVirtualLocation(); //TODO: this makes very little sense
 	}
 
 	// why would you want to check for exact tags, but still need a blackList? Good question, but there is probably some use case for it.
@@ -199,8 +203,17 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	}
 
 	public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationParameters parameters) { // TODO: PocketBuilder from json
-		return Pocket.builder()
-				.expand(getSize(parameters));
+		if (builderType == null){
+			return Pocket.builder()
+					.expand(getSize(parameters));
+		}
+		AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.REGISTRY.get(new Identifier(builderType)).builder();
+		if (! (abstractBuilder instanceof Pocket.PocketBuilder)) {
+			return Pocket.builder()
+					.expand(getSize(parameters));
+		}
+		Pocket.PocketBuilder<?, ?> builder = (Pocket.PocketBuilder<?, ?>) abstractBuilder;
+		return builder.expand(getSize(parameters));
 	}
 
 	public abstract Vec3i getSize(PocketGenerationParameters parameters);

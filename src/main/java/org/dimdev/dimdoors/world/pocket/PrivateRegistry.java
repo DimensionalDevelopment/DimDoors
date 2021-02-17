@@ -14,6 +14,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class PrivateRegistry {
 	protected static class PocketInfo {
@@ -67,10 +68,10 @@ public class PrivateRegistry {
 		return nbt;
 	}
 
-	public Pocket getPrivatePocket(UUID playerUUID) {
+	public PrivatePocket getPrivatePocket(UUID playerUUID) {
 		PocketInfo pocket = this.privatePocketMap.get(playerUUID);
 		if (pocket == null) return null;
-		return DimensionalRegistry.getPocketDirectory(pocket.world).getPocket(pocket.id);
+		return DimensionalRegistry.getPocketDirectory(pocket.world).getPocket(pocket.id, PrivatePocket.class);
 	}
 
 	public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {

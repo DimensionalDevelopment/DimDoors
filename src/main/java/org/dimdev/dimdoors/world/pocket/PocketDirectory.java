@@ -143,6 +143,12 @@ public class PocketDirectory {
 		return pocket == null ? null : pocket.getReferencedPocket();
 	}
 
+	public <P extends Pocket> P getPocket(int id, Class<P> clazz) {
+		Pocket pocket = getPocket(id);
+		if (clazz.isInstance(pocket)) return clazz.cast(pocket);
+		return null;
+	}
+
 	public GridUtil.GridPos idToGridPos(int id) {
 		return GridUtil.idToGridPos(id);
 	}

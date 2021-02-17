@@ -49,7 +49,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class DimensionalDoorsInitializer implements ModInitializer {
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
 	public static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
-	private static Map<UUID, ServerPacketHandler> UUID_SERVER_PACKET_HANDLER_MAP = new HashMap<>();
+	private static final Map<UUID, ServerPacketHandler> UUID_SERVER_PACKET_HANDLER_MAP = new HashMap<>();
 	private static MinecraftServer server;
 
     @NotNull

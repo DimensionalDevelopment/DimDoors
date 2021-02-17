@@ -104,7 +104,9 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
 		PocketGenerator generator = getReferencedPocketGenerator(parameters);
 
-		Pocket.PocketBuilder<?, ?> builder = generator.pocketBuilder(parameters);
+
+		Pocket.PocketBuilder<?, ?> builder = generator.pocketBuilder(parameters)
+				.virtualLocation(parameters.getSourceVirtualLocation()); // TODO: virtualLocation thing still makes little sense
 		generator.applyModifiers(parameters, builder);
 		this.applyModifiers(parameters, builder);
 

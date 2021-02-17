@@ -7,18 +7,11 @@ import java.util.stream.IntStream;
 import com.mojang.serialization.Codec;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.block.AncientFabricBlock;
-import org.dimdev.dimdoors.block.FabricBlock;
-import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
-import org.dimdev.dimdoors.util.EntityUtils;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -29,17 +22,11 @@ import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
+public class Pocket extends AbstractPocket<Pocket> {
 	public static String KEY = "pocket";
-
-	private static final int BLOCKS_PAINTED_PER_DYE = 1000000;
-
 
 	public BlockBox box; // TODO: make protected
 	public VirtualLocation virtualLocation;
-	protected PocketColor dyeColor = PocketColor.WHITE;
-	private PocketColor nextDyeColor = PocketColor.NONE;
-	private int count = 0;
 
 	public Pocket(int id, RegistryKey<World> world, int x, int z) {
 		super(id, world);
@@ -68,56 +55,6 @@ public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
 		this.box = box.offset(x, y, z);
 	}
 
-	public boolean addDye(Entity entity, DyeColor dyeColor) {
-		PocketColor color = PocketColor.from(dyeColor);
-
-		int maxDye = amountOfDyeRequiredToColor(this);
-
-		if (this.dyeColor == color) {
-			EntityUtils.chat(entity, new TranslatableText("dimdoors.pockets.dyeAlreadyAbsorbed"));
-			return false;
-		}
-
-		if (this.nextDyeColor != PocketColor.NONE && this.nextDyeColor == color) {
-			if (this.count + 1 > maxDye) {
-				repaint(dyeColor);
-				this.dyeColor = color;
-				this.nextDyeColor = PocketColor.NONE;
-				this.count = 0;
-				EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.pocketHasBeenDyed", dyeColor));
-			} else {
-				this.count++;
-				EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color));
-			}
-		} else {
-			this.nextDyeColor = color;
-			this.count = 1;
-			EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color));
-		}
-		return true;
-	}
-
-    private void repaint(DyeColor dyeColor) {
-        ServerWorld serverWorld = DimensionalDoorsInitializer.getWorld(getWorld());
-        BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).getDefaultState();
-        BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).getDefaultState();
-
-		BlockPos.stream(box).forEach(pos -> {
-			if (serverWorld.getBlockState(pos).getBlock() instanceof AncientFabricBlock) {
-				serverWorld.setBlockState(pos, outerWall);
-			} else if (serverWorld.getBlockState(pos).getBlock() instanceof FabricBlock) {
-				serverWorld.setBlockState(pos, innerWall);
-			}
-		});
-    }
-
-	private static int amountOfDyeRequiredToColor(Pocket pocket) {
-		int outerVolume = pocket.box.getBlockCountX() * pocket.box.getBlockCountY() * pocket.box.getBlockCountZ();
-		int innerVolume = (pocket.box.getBlockCountX() - 5) * (pocket.box.getBlockCountY() - 5) * (pocket.box.getBlockCountZ() - 5);
-
-		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
-	}
-
 	public void setSize(Vec3i size) {
 		setSize(size.getX(), size.getY(), size.getZ());
 	}
@@ -134,9 +71,6 @@ public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
 		super.toTag(tag);
 		tag.putIntArray("box", IntStream.of(this.box.minX, this.box.minY, this.box.minZ, this.box.maxX, this.box.maxY, this.box.maxZ).toArray());
 		tag.put("virtualLocation", VirtualLocation.toTag(this.virtualLocation));
-		tag.putInt("dyeColor", this.dyeColor.getId());
-		tag.putInt("nextDyeColor", this.nextDyeColor.getId());
-		tag.putInt("count", this.count);
 		return tag;
 	}
 
@@ -150,21 +84,8 @@ public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
 		int[] box = tag.getIntArray("box");
 		this.box = new BlockBox(box[0], box[1], box[2], box[3], box[4], box[5]);
 		this.virtualLocation = VirtualLocation.fromTag(tag.getCompound("virtualLocation"));
-		this.dyeColor = PocketColor.from(tag.getInt("dyeColor"));
-		this.nextDyeColor = PocketColor.from(tag.getInt("nextDyeColor"));
-		this.count = tag.getInt("count");
 
 		return this;
-	}
-
-	@Override
-	public void setBox(BlockBox box) {
-		this.box = box;
-	}
-
-	@Override
-	public void setVirtualLocation(VirtualLocation virtualLocation) {
-		this.virtualLocation = virtualLocation;
 	}
 
 	public enum PocketColor {
@@ -265,8 +186,8 @@ public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
 	}
 
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
-	public static class PocketBuilder<P extends PocketBuilder<P, T>, T extends IPocket<T>> extends AbstractPocketBuilder<P, T> {
-		private final Map<Class<? extends PocketAddon.PocketBuilderAddon>, PocketAddon.PocketBuilderAddon> addons = new HashMap<>();
+	public static class PocketBuilder<P extends PocketBuilder<P, T>, T extends Pocket> extends AbstractPocketBuilder<P, T> {
+		private final Map<Class<? extends PocketAddon.PocketBuilderAddon<?>>, PocketAddon.PocketBuilderAddon<?>> addons = new HashMap<>();
 
 		private Vec3i origin = new Vec3i(0, 0, 0);
 		private Vec3i size = new Vec3i(0, 0, 0);
@@ -290,6 +211,10 @@ public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
 			return (C) addons.get(addonClass);
 		}
 
+		public P getSelf() {
+			return (P) this;
+		}
+
 		@Override
 		public Vec3i getExpectedSize() {
 			return expected;
@@ -298,9 +223,8 @@ public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
 		public T build() {
 			T instance = super.build();
 
-			instance.setBox(BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ()));
-			instance.setVirtualLocation(virtualLocation);
-			//instance.dyeColor = dyeColor;
+			instance.box = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ());
+			instance.virtualLocation = virtualLocation;
 
 			return instance;
 		}
@@ -330,13 +254,5 @@ public class Pocket extends AbstractPocket<Pocket> implements IPocket<Pocket> {
 			this.dyeColor = dyeColor;
 			return (P) this;
 		}
-	}
-
-	public interface IPocketBuilder<P extends PocketBuilder<P, T>, T extends IPocket<T>> {
-		<C extends PocketAddon.PocketBuilderAddon<V>, V extends PocketAddon<V>> boolean hasAddon(Class<C> addonClass);
-
-		<C extends PocketAddon.PocketBuilderAddon<V>, V extends PocketAddon<V>> void addAddon(Class<C> addonClass, C addon);
-
-		<C extends PocketAddon.PocketBuilderAddon<V>, V extends PocketAddon<V>> C getAddon(Class<C> addonClass);
 	}
 }
