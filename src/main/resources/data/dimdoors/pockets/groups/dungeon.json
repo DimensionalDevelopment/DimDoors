@@ -112,5 +112,17 @@
   {
     "id": "custom/smile_6",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/lantredom",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/lantredom_end",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/lantredom_red",
+    "type": "dimdoors:id"
   }
 ]

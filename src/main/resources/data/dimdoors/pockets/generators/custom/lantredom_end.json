@@ -1,0 +1,21 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "v2/custom/lantredom_end",
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "rift_data/pocket_entrance"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [2],
+      "rift_data": "rift_data/available_link"
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 1,
+      "point_b": 3
+    }
+  ]
+}
