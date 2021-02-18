@@ -10,6 +10,8 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
+
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.math.Vec3i;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -45,6 +47,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
@@ -94,7 +97,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		PocketGenerator.PocketGeneratorType.register();
 		AbstractPocket.AbstractPocketType.register();
 
-        SchematicV2Handler.getInstance().load();
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(SchematicV2Handler.getInstance());
+//        SchematicV2Handler.getInstance().load();
         SchematicHandler.INSTANCE.loadSchematics();
 
 		registerListeners();
