@@ -8,10 +8,12 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import net.fabricmc.fabric.api.util.NbtType;
+
 public interface VirtualPocket extends Weighted<PocketGenerationParameters> {
 
 	static VirtualPocket deserialize(Tag tag) {
-		if (tag.getType() == 9) { // ListTag
+		if (tag.getType() == NbtType.LIST) {
 			return VirtualPocketList.deserialize((ListTag) tag);
 		}
 		return VirtualSingularPocket.deserialize((CompoundTag) tag); // should be CompoundTag
