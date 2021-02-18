@@ -7,6 +7,8 @@ import net.minecraft.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.util.math.MathHelper;
+
 public interface Equation {
 	double FALSE = 0d;
 	double TRUE = 1d;
@@ -113,6 +115,9 @@ public interface Equation {
 				}
 				return min;
 			})));
+
+			// clamp
+			parseRules.add(new FunctionParser("clamp", 3, 3, (stringDoubleMap, equations) -> MathHelper.clamp(equations[0].apply(stringDoubleMap), equations[1].apply(stringDoubleMap), equations[2].apply(stringDoubleMap))));
 
 			// variable replacer
 			parseRules.add(new VariableReplacer());
