@@ -1,4 +1,6 @@
-{
-  "id": "private/default",
-  "type": "dimdoors:id"
-}
+[
+  {
+    "id": "private/default",
+    "type": "dimdoors:id"
+  }
+]
