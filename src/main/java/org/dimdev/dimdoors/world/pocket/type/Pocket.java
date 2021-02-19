@@ -1,18 +1,21 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.mojang.serialization.Codec;
-
+import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -20,11 +23,14 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.addon.IHasAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-public class Pocket extends AbstractPocket<Pocket> {
+public class Pocket extends AbstractPocket<Pocket> implements IHasAddon {
 	public static String KEY = "pocket";
 
+	private final Map<Identifier, PocketAddon> addons = new HashMap<>();
+	private int range = -1;
 	public BlockBox box; // TODO: make protected
 	public VirtualLocation virtualLocation;
 
@@ -37,6 +43,29 @@ public class Pocket extends AbstractPocket<Pocket> {
 
 	protected Pocket() {
 
+	}
+
+	public boolean hasAddon(Identifier id) {
+		return addons.containsKey(id);
+	}
+
+	public <C extends PocketAddon> boolean addAddon(C addon) {
+		if (addon.applicable(this)) {
+			addon.addAddon(addons);
+			return true;
+		}
+		return false;
+	}
+
+	public <C extends PocketAddon> C getAddon(Identifier id) {
+		return (C) addons.get(id);
+	}
+
+	public <T> List<T> getAddonsInstanceOf(Class<T> clazz) {
+		return addons.values().stream()
+				.filter(clazz::isInstance)
+				.map(clazz::cast)
+				.collect(Collectors.toList());
 	}
 
 	public boolean isInBounds(BlockPos pos) {
@@ -63,14 +92,31 @@ public class Pocket extends AbstractPocket<Pocket> {
 		this.box = BlockBox.create(this.box.minX, this.box.minY, this.box.minZ, this.box.minX + x - 1, this.box.minY + y - 1, this.box.minZ + z - 1);
 	}
 
+	public void setRange(int range) {
+		if (this.range > 0) throw new UnsupportedOperationException("Cannot set range of Pocket that has already been initialized.");
+		this.range = range;
+	}
+
+	public int getRange() {
+		if (range < 1) throw new UnsupportedOperationException("Range of pocket has not been initialized yet.");
+		return range;
+	}
+
 	public Vec3i getSize() {
 		return this.box.getDimensions();
 	}
 
 	public CompoundTag toTag(CompoundTag tag) {
 		super.toTag(tag);
+
+		tag.putInt("range", range);
 		tag.putIntArray("box", IntStream.of(this.box.minX, this.box.minY, this.box.minZ, this.box.maxX, this.box.maxY, this.box.maxZ).toArray());
 		tag.put("virtualLocation", VirtualLocation.toTag(this.virtualLocation));
+
+		ListTag addonsTag = new ListTag();
+		addonsTag.addAll(addons.values().stream().map(addon -> addon.toTag(new CompoundTag())).collect(Collectors.toList()));
+		if (addonsTag.size() > 0) tag.put("addons", addonsTag);
+
 		return tag;
 	}
 
@@ -81,69 +127,20 @@ public class Pocket extends AbstractPocket<Pocket> {
 
 	public Pocket fromTag(CompoundTag tag) {
 		super.fromTag(tag);
+
+		this.range = tag.getInt("range");
 		int[] box = tag.getIntArray("box");
 		this.box = new BlockBox(box[0], box[1], box[2], box[3], box[4], box[5]);
 		this.virtualLocation = VirtualLocation.fromTag(tag.getCompound("virtualLocation"));
 
+		if (tag.contains("addons", NbtType.LIST)) {
+			for (Tag addonTag : tag.getList("addons", NbtType.COMPOUND)) {
+				PocketAddon addon = PocketAddon.deserialize((CompoundTag) addonTag);
+				addons.put(addon.getId(), addon);
+			}
+		}
+
 		return this;
-	}
-
-	public enum PocketColor {
-		WHITE(0, DyeColor.WHITE),
-		ORANGE(1, DyeColor.ORANGE),
-		MAGENTA(2, DyeColor.MAGENTA),
-		LIGHT_BLUE(3, DyeColor.LIGHT_BLUE),
-		YELLOW(4, DyeColor.YELLOW),
-		LIME(5, DyeColor.LIME),
-		PINK(6, DyeColor.PINK),
-		GRAY(7, DyeColor.GRAY),
-		LIGHT_GRAY(8, DyeColor.LIGHT_GRAY),
-		CYAN(9, DyeColor.CYAN),
-		PURPLE(10, DyeColor.PURPLE),
-		BLUE(11, DyeColor.BLUE),
-		BROWN(12, DyeColor.BROWN),
-		GREEN(13, DyeColor.GREEN),
-		RED(14, DyeColor.RED),
-		BLACK(15, DyeColor.BLACK),
-		NONE(16, null);
-
-		private final int id;
-		private final DyeColor color;
-
-		public static Codec<PocketColor> CODEC = Codec.INT.xmap(PocketColor::from, PocketColor::getId);
-
-		PocketColor(int id, DyeColor color) {
-			this.id = id;
-			this.color = color;
-		}
-
-		public DyeColor getColor() {
-			return this.color;
-		}
-
-		public Integer getId() {
-			return this.id;
-		}
-
-		public static PocketColor from(DyeColor color) {
-			for (PocketColor a : PocketColor.values()) {
-				if (color == a.color) {
-					return a;
-				}
-			}
-
-			return NONE;
-		}
-
-		public static PocketColor from(int id) {
-			for (PocketColor a : PocketColor.values()) {
-				if (id == a.id) {
-					return a;
-				}
-			}
-
-			return NONE;
-		}
 	}
 
 	public Map<BlockPos, BlockEntity> getBlockEntities() {
@@ -187,32 +184,57 @@ public class Pocket extends AbstractPocket<Pocket> {
 
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
 	public static class PocketBuilder<P extends PocketBuilder<P, T>, T extends Pocket> extends AbstractPocketBuilder<P, T> {
-		private final Map<Class<? extends PocketAddon.PocketBuilderAddon<?>>, PocketAddon.PocketBuilderAddon<?>> addons = new HashMap<>();
+		private final Map<Identifier, PocketAddon.PocketBuilderAddon<?>> addons = new HashMap<>();
 
 		private Vec3i origin = new Vec3i(0, 0, 0);
 		private Vec3i size = new Vec3i(0, 0, 0);
 		private Vec3i expected = new Vec3i(0, 0, 0);
 		private VirtualLocation virtualLocation;
-		private PocketColor dyeColor = PocketColor.NONE;
+		private int range = -1;
 
 		protected PocketBuilder(AbstractPocketType<T> type) {
 			super(type);
+			initAddons();
 		}
 
-		public <C extends PocketAddon.PocketBuilderAddon<X>, X extends PocketAddon<X>> boolean hasAddon(Class<C> addonClass) {
-			return addons.containsKey(addonClass);
+		public void initAddons() {
+
 		}
 
-		protected <C extends PocketAddon.PocketBuilderAddon<X>, X extends PocketAddon<X>> void addAddon(Class<C> addonClass, C addon) {
-			addons.put(addonClass, addon);
+		// TODO: actually utilize fromTag/ toTag methods + implement them
+		public P fromTag(CompoundTag tag) {
+			if (tag.contains("addons", NbtType.LIST)) {
+				for (Tag addonTag : tag.getList("addons", NbtType.COMPOUND)) {
+					PocketAddon.PocketBuilderAddon<?> addon = PocketAddon.deserializeBuilder((CompoundTag) addonTag);
+					addons.put(addon.getId(), addon);
+				}
+			}
+
+			return getSelf();
 		}
 
-		public <C extends PocketAddon.PocketBuilderAddon<X>, X extends PocketAddon<X>> C getAddon(Class<C> addonClass) {
-			return (C) addons.get(addonClass);
+		public CompoundTag toTag(CompoundTag tag) {
+			ListTag addonsTag = new ListTag();
+			addonsTag.addAll(addons.values().stream().map(addon -> addon.toTag(new CompoundTag())).collect(Collectors.toList()));
+			if (addonsTag.size() > 0) tag.put("addons", addonsTag);
+
+			return tag;
 		}
 
-		public P getSelf() {
-			return (P) this;
+		public boolean hasAddon(Identifier id) {
+			return addons.containsKey(id);
+		}
+
+		protected <C extends PocketAddon.PocketBuilderAddon<?>> boolean addAddon(C addon) {
+			if (addon.applicable(this)) {
+				addon.addAddon(addons);
+				return true;
+			}
+			return false;
+		}
+
+		public <C extends PocketAddon.PocketBuilderAddon<?>> C getAddon(Identifier id) {
+			return (C) addons.get(id);
 		}
 
 		@Override
@@ -221,38 +243,43 @@ public class Pocket extends AbstractPocket<Pocket> {
 		}
 
 		public T build() {
+			if (range < 1) throw new RuntimeException("Cannot create pocket with range < 1");
+
 			T instance = super.build();
 
+			instance.setRange(range);
 			instance.box = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ());
 			instance.virtualLocation = virtualLocation;
+
+			addons.values().forEach(addon -> addon.apply(instance));
 
 			return instance;
 		}
 
 		public P offsetOrigin(Vec3i offset) {
 			this.origin = new Vec3i(origin.getX() + offset.getX(), origin.getY() + offset.getY(), origin.getZ() + offset.getZ());
-			return (P) this;
+			return getSelf();
 		}
 
 		public P expand(Vec3i expander) {
 			this.size = new Vec3i(size.getX() + expander.getX(), size.getY() + expander.getY(), size.getZ() + expander.getZ());
 			this.expected = new Vec3i(expected.getX() + expander.getX(), expected.getY() + expander.getY(), expected.getZ() + expander.getZ());
-			return (P) this;
+			return getSelf();
 		}
 
 		public P expandExpected(Vec3i expander) {
 			this.expected = new Vec3i(expected.getX() + expander.getX(), expected.getY() + expander.getY(), expected.getZ() + expander.getZ());
-			return (P) this;
+			return getSelf();
 		}
 
 		public P virtualLocation(VirtualLocation virtualLocation) {
 			this.virtualLocation = virtualLocation;
-			return (P) this;
+			return getSelf();
 		}
 
-		public P dyeColor(PocketColor dyeColor) {
-			this.dyeColor = dyeColor;
-			return (P) this;
+		public P range(int range) {
+			this.range = range;
+			return getSelf();
 		}
 	}
 }

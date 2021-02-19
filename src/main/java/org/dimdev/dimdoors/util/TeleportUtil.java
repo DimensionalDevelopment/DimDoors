@@ -14,6 +14,8 @@ import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
 
 @SuppressWarnings("deprecation")
 public final class TeleportUtil {
@@ -50,11 +52,15 @@ public final class TeleportUtil {
 			entity.pitch = angle.getPitch();
 			entity.teleport(pos.x, pos.y, pos.z);
 			entity.setVelocity(velocity);
-
-			return entity;
+		} else {
+			entity = FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, velocity, angle.getYaw(), angle.getPitch()));
 		}
 
-		return FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, velocity, angle.getYaw(), angle.getPitch()));
+		if (entity instanceof ServerPlayerEntity) {
+			((ExtendedServerPlayNetworkHandler) ((ServerPlayerEntity) entity).networkHandler).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos(pos));
+		}
+
+		return entity;
 	}
 
 	public static  <E extends Entity> E teleport(E entity, World world, BlockPos pos, EulerAngle angle, Vec3d velocity) {

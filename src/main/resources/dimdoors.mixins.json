@@ -4,10 +4,12 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "DefaultBiomeFeaturesMixin",
+    "ExtendedServerPlayNetworkhandlerMixin",
     "PlayerEntityMixin",
     "RecipesProviderAccessor",
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
+    "ServerPlayerInteractionManagerMixin",
     "accessor.BuiltinBiomesAccessor",
     "accessor.ChunkGeneratorAccessor",
     "accessor.ChunkGeneratorSettingsAccessor",
@@ -19,7 +21,9 @@
     "accessor.StatsAccessor"
   ],
   "client": [
+    "client.ClientPlayerInteractionManagerMixin",
     "client.ClientPlayNetworkHandlerMixin",
+    "client.ExtendedClientPlayNetworkHandlerMixin",
     "client.InGameHudMixin",
     "client.accessor.GlStateManagerAccessor"
   ],

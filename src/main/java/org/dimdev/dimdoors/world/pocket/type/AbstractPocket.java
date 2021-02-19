@@ -36,6 +36,11 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 		return REGISTRY.get(id).fromTag(tag);
 	}
 
+	public static AbstractPocketBuilder<?, ?> deserializeBuilder(CompoundTag tag) {
+		Identifier id = Identifier.tryParse(tag.getString("type"));
+		return REGISTRY.get(id).builder().fromTag(tag);
+	}
+
 	public static CompoundTag serialize(AbstractPocket<?> pocket) {
 		return pocket.toTag(new CompoundTag());
 	}
@@ -114,12 +119,11 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 	}
 
 	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket<?>> {
-		private final AbstractPocketType<T> type;
+		protected final AbstractPocketType<T> type;
 
 		private int id;
 		private RegistryKey<World> world;
 
-		//TODO: fromTag/ toTag for reading builders from json, in subclasses as well
 		protected AbstractPocketBuilder(AbstractPocketType<T> type) {
 			this.type = type;
 		}
@@ -139,12 +143,36 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 
 		public P id(int id) {
 			this.id = id;
-			return (P) this;
+			return getSelf();
 		}
 
 		public P world(RegistryKey<World> world) {
 			this.world = world;
+			return getSelf();
+		}
+
+		public P getSelf() {
 			return (P) this;
 		}
+
+		abstract public P fromTag(CompoundTag tag);
+
+		abstract public CompoundTag toTag(CompoundTag tag);
+
+		/*
+		public P fromTag(CompoundTag tag) {
+			id = tag.getInt("id");
+			world = RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("world")));
+
+			return getSelf();
+		}
+
+		public CompoundTag toTag(CompoundTag tag) {
+			tag.putInt("id", id);
+			tag.putString("world", world.getValue().toString());
+
+			return tag;
+		}
+		 */
 	}
 }

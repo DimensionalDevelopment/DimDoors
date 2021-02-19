@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.network.SimplePacket;
 import java.io.IOException;
 
 public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketHandler> {
-	public static final Identifier ID = new Identifier("dimdoors:hit_block");
+	public static final Identifier ID = new Identifier("dimdoors", "hit_block_with_item");
 
 	private Hand hand;
 	private BlockPos pos;
@@ -48,5 +48,10 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketHandl
 	@Override
 	public void apply(ServerPacketHandler listener) {
 		listener.onAttackBlock(hand, pos, direction);
+	}
+
+	@Override
+	public Identifier channelId() {
+		return ID;
 	}
 }

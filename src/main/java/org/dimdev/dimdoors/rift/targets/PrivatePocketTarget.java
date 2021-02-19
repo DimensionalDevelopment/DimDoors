@@ -20,6 +20,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
+import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
 
 public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 	private static final Logger LOGGER = LogManager.getLogger();
