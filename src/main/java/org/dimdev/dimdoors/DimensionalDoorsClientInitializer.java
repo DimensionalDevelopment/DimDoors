@@ -1,15 +1,13 @@
 package org.dimdev.dimdoors;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.ModSkyRendering;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.network.ClientPacketHandler;
+import org.dimdev.dimdoors.network.ExtendedClientPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -19,9 +17,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClientInitializer implements ClientModInitializer {
-	private static ClientPacketHandler clientPacketHandler;
-
-	private static final Logger LOGGER = LogManager.getLogger();
     @Override
     public void onInitializeClient() {
         ModEntityTypes.initClient();
@@ -37,11 +32,10 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
     }
 
     private void registerListeners() {
-		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> clientPacketHandler = new ClientPacketHandler(handler, client));
+		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> ((ExtendedClientPlayNetworkHandler) handler).getDimDoorsPacketHandler().init());
 
 		ClientPlayConnectionEvents.DISCONNECT.register(((handler, client) -> {
-			clientPacketHandler.unregister();
-			clientPacketHandler = null;
+			((ExtendedClientPlayNetworkHandler) handler).getDimDoorsPacketHandler().unregister();
 		}));
 	}
 }

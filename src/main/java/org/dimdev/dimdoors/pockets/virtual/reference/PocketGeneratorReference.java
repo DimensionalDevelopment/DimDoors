@@ -1,9 +1,11 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.fabricmc.fabric.api.util.NbtType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -27,6 +29,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
 	protected final List<Modifier> modifierList = Lists.newArrayList();
+	protected final List<CompoundTag> addons = new ArrayList<>();
 
 
 	private void parseWeight() {
@@ -59,7 +62,14 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 			}
 		}
 
-		return null;
+		if (tag.contains("addons", NbtType.LIST)) {
+			ListTag modifiersTag = tag.getList("addons", 10);
+			for (int i = 0; i < modifiersTag.size(); i++) {
+				addons.add(modifiersTag.getCompound(i));
+			}
+		}
+
+		return this;
 	}
 
 	@Override
@@ -75,6 +85,10 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 			modifiersTag.add(modifier.toTag(new CompoundTag()));
 		}
 		if (modifiersTag.size() > 0) tag.put("modifiers", modifiersTag);
+
+		ListTag addonsTag = new ListTag();
+		addonsTag.addAll(addons);
+		if (addonsTag.size() > 0) tag.put("addons", addonsTag);
 
 		return tag;
 	}

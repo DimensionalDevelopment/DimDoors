@@ -44,4 +44,9 @@ public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPa
 	public void apply(ClientPacketHandler listener) {
 		listener.onPlayerInventorySlotUpdate(slot, stack);
 	}
+
+	@Override
+	public Identifier channelId() {
+		return ID;
+	}
 }

@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,28 +23,12 @@ public class FabricBlock extends Block {
 	}
 
 	@Override
-	@SuppressWarnings({"deprecation"})
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
-		ItemStack heldStack = hand == Hand.MAIN_HAND ? player.getMainHandStack() : player.getOffHandStack();
-		Block heldBlock = Block.getBlockFromItem(heldStack.getItem());
+	public boolean canReplace(BlockState state, ItemPlacementContext context) {
+		if (context.getPlayer().isSneaking()) return false;
+		Block heldBlock = Block.getBlockFromItem(context.getPlayer().getStackInHand(context.getHand()).getItem());
+		if (!heldBlock.getDefaultState().isFullCube(context.getWorld(), context.getBlockPos())) return false;
+		if (heldBlock instanceof BlockEntityProvider || heldBlock instanceof FabricBlock) return false;
 
-		if (world.canPlayerModifyAt(player, pos) &&
-				player.canPlaceOn(pos, hit.getSide(), heldStack) &&
-				heldBlock.getDefaultState().isFullCube(world, pos) &&
-				!heldBlock.hasBlockEntity() &&
-				heldBlock != this &&
-				!player.isSneaking() &&
-				!(heldBlock instanceof FabricBlock)
-		) {
-
-			if (!player.isCreative()) {
-				heldStack.decrement(1);
-			}
-
-			world.setBlockState(pos, heldBlock.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit))));
-			return ActionResult.SUCCESS;
-		} else {
-			return ActionResult.PASS;
-		}
+		return true;
 	}
 }

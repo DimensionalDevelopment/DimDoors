@@ -106,7 +106,8 @@ public class PocketDirectory {
 		T pocket = builder
 				.id(cursor)
 				.world(worldKey)
-				.offsetOrigin(idToPos(cursor))
+				.range(squaredSize)
+				.offsetOrigin(idToCenteredPos(cursor, base3Size, builder.getExpectedSize()))
 				.build();
 
 		nextIDMap.put(base3Size, cursor + squaredSize);
@@ -120,7 +121,6 @@ public class PocketDirectory {
 					.referencedId(cursor)
 					.build());
 		}
-
 		return pocket;
 	}
 
@@ -167,6 +167,12 @@ public class PocketDirectory {
 	public BlockPos idToPos(int id) {
 		GridUtil.GridPos pos = this.idToGridPos(id);
 		return new BlockPos(pos.x * this.gridSize * 16, 0, pos.z * this.gridSize * 16);
+	}
+
+	public BlockPos idToCenteredPos(int id, int base3Size, Vec3i expectedSize) {
+		GridUtil.GridPos pos = this.idToGridPos(id);
+		// you actually need the "/ 2 * 16" here. "*8" would not work the same since it doesn't guarantee chunk alignment
+		return new BlockPos((pos.x * this.gridSize * 16) + (base3Size * this.gridSize - expectedSize.getX() / 16) / 2 * 16, 0, (pos.z * this.gridSize * 16) + (base3Size * this.gridSize - expectedSize.getZ() / 16) / 2 * 16);
 	}
 
 	/**

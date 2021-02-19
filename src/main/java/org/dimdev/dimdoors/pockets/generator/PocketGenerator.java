@@ -41,7 +41,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	private static final int fallbackWeight = 5; // TODO: make config
 	private final List<Modifier> modifierList = new ArrayList<>();
 
-	private String builderType;
+	private CompoundTag builderTag;
 	protected String weight;
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
@@ -84,7 +84,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	}
 
 	public PocketGenerator fromTag(CompoundTag tag) {
-		if (tag.contains("builder", NbtType.STRING)) builderType = tag.getString("builder");
+		if (tag.contains("builder", NbtType.COMPOUND)) builderTag = tag.getCompound("builder");
 
 		this.weight = tag.contains("weight") ? tag.getString("weight") : defaultWeightEquation;
 		parseWeight();
@@ -110,7 +110,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	public CompoundTag toTag(CompoundTag tag) {
 		this.getType().toTag(tag);
 
-		if (builderType != null) tag.putString("builder", builderType);
+		if (builderTag != null) tag.put("builder", builderTag);
 
 		if (!weight.equals("5")) tag.putString("weight", weight);
 
@@ -203,11 +203,11 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 	}
 
 	public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationParameters parameters) { // TODO: PocketBuilder from json
-		if (builderType == null){
+		if (builderTag == null){
 			return Pocket.builder()
 					.expand(getSize(parameters));
 		}
-		AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.REGISTRY.get(new Identifier(builderType)).builder();
+		AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.deserializeBuilder(builderTag);
 		if (! (abstractBuilder instanceof Pocket.PocketBuilder)) {
 			return Pocket.builder()
 					.expand(getSize(parameters));

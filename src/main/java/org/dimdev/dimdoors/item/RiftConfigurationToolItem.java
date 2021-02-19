@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.s2c.PlayerInventorySlotUpdateS2CPacket;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.util.EntityUtils;
@@ -119,18 +120,11 @@ public class RiftConfigurationToolItem extends ModItem {
 	// TODO: put in ServerPacketHandler
 	private void sync(ItemStack stack, PlayerEntity player, Hand hand) {
 		ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
-		PlayerInventorySlotUpdateS2CPacket packet;
+
 		if (hand == Hand.OFF_HAND) {
-			packet = new PlayerInventorySlotUpdateS2CPacket(45, stack);
+			ServerPacketHandler.sendPacket(serverPlayer, new PlayerInventorySlotUpdateS2CPacket(45, stack));
 		} else {
-			packet = new PlayerInventorySlotUpdateS2CPacket(serverPlayer.inventory.selectedSlot, stack);
-		}
-		PacketByteBuf buf = PacketByteBufs.create();
-		try {
-			packet.write(buf);
-			ServerPlayNetworking.send(serverPlayer, PlayerInventorySlotUpdateS2CPacket.ID, buf);
-		} catch (IOException e) {
-			LOGGER.error(e);
+			ServerPacketHandler.sendPacket(serverPlayer, new PlayerInventorySlotUpdateS2CPacket(serverPlayer.getInventory().selectedSlot, stack));
 		}
 	}
 }

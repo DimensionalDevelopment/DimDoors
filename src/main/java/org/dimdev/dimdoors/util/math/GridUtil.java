@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.util.math;
 
+import net.minecraft.util.math.BlockPos;
+
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -11,6 +13,11 @@ public final class GridUtil {
 		public GridPos(int x, int z) {
 			this.x = x;
 			this.z = z;
+		}
+
+		public GridPos(BlockPos pos, int gridSize) {
+			this.x = pos.getX() / gridSize / 16;
+			this.z = pos.getZ() / gridSize / 16;
 		}
 
 		@Override

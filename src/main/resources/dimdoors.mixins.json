@@ -4,24 +4,27 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "DefaultBiomeFeaturesMixin",
+    "ExtendedServerPlayNetworkhandlerMixin",
     "PlayerEntityMixin",
     "RecipesProviderAccessor",
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
+    "ServerPlayerInteractionManagerMixin",
     "accessor.BuiltinBiomesAccessor",
     "accessor.ChunkGeneratorAccessor",
     "accessor.ChunkGeneratorSettingsAccessor",
     "accessor.DefaultParticleTypeAccessor",
-    "accessor.DimensionTypeAccessor",
     "accessor.DirectionAccessor",
+    "accessor.EntityAccessor",
     "accessor.GenerationSettingsAccessor",
-    "accessor.ListTagAccessor",
     "accessor.RedstoneWireBlockAccessor",
     "accessor.StatsAccessor"
   ],
   "client": [
-    "client.InGameHudMixin",
+    "client.ClientPlayerInteractionManagerMixin",
     "client.ClientPlayNetworkHandlerMixin",
+    "client.ExtendedClientPlayNetworkHandlerMixin",
+    "client.InGameHudMixin",
     "client.accessor.GlStateManagerAccessor"
   ],
   "injectors": {
