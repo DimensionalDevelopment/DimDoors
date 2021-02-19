@@ -1,11 +1,14 @@
 package org.dimdev.dimdoors.pockets;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -14,55 +17,101 @@ import com.google.common.collect.*;
 import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
 
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.*;
+import net.minecraft.resource.Resource;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 
-import org.apache.logging.log4j.Level;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
+import org.lwjgl.system.CallbackI;
 
-public class SchematicV2Handler {
+public class SchematicV2Handler implements SimpleSynchronousResourceReloadListener {
     private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
     private static final SchematicV2Handler INSTANCE = new SchematicV2Handler();
     private final Map<String, PocketGenerator> pocketGeneratorMap = Maps.newHashMap();
     private final Map<String, VirtualPocket> pocketGroups = Maps.newHashMap();
 	private final Map<Identifier, PocketTemplateV2> templates = Maps.newHashMap();
-    private boolean loaded = false;
 
     private SchematicV2Handler() {
     }
 
-    public void load() {
-        if (this.loaded) {
-            throw new UnsupportedOperationException("Attempted to load pockets twice!");
-        }
-        this.loaded = true;
-        long startTime = System.currentTimeMillis();
+	@Override
+	public void apply(ResourceManager manager) {
+		pocketGeneratorMap.clear();
+		pocketGroups.clear();
+		templates.clear();
 
-		try {
-			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/generators").toURI());
-			loadJson(path, new String[0], this::loadPocketGenerator);
-			LOGGER.info("Loaded pockets in {} seconds", System.currentTimeMillis() - startTime);
-		} catch (URISyntaxException e) {
-			LOGGER.error(e);
+		Collection<Identifier> groupIds = manager.findResources("pockets/groups", str -> str.endsWith(".json"));
+		for (Identifier groupId : groupIds) {
+			JsonObject[] groupData = new JsonObject[0];
+			List<Resource> groups;
+			try {
+				groups = manager.getAllResources(groupId);
+			} catch (IOException e) {
+				throw new RuntimeException("Error loading pocket group " + groupId, e);
+			}
+			for (Resource group : groups) {
+				JsonObject[] objects = GSON.fromJson(new InputStreamReader(group.getInputStream()), JsonObject[].class);
+				groupData = ArrayUtils.addAll(groupData, objects);
+			}
+			String[] path = groupId.getPath().split("/");
+			String id = path[path.length - 1]; // Last one is the file name
+			id = id.substring(0, id.indexOf('.')); // Remove extension
+			JsonArray arr = new JsonArray();
+			for (JsonObject groupDatum : groupData) {
+				arr.add(groupDatum);
+			}
+			this.loadPocketGroup(id, JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, arr));
 		}
 
-		startTime = System.currentTimeMillis();
-		try {
-			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/groups").toURI());
-			loadJson(path, new String[0], this::loadPocketGroup);
-			LOGGER.info("Loaded pocket groups in {} seconds", System.currentTimeMillis() - startTime);
-		} catch (URISyntaxException e) {
-			LOGGER.error(e);
+		Collection<Identifier> generatorIds = manager.findResources("pockets/generators", str -> str.endsWith(".json"));
+		for (Identifier generatorId : generatorIds) {
+			Resource generator;
+			try {
+				generator = manager.getResource(generatorId);
+			} catch (IOException e) {
+				throw new RuntimeException("Error loading pocket generator " + generatorId, e);
+			}
+			JsonObject json = GSON.fromJson(new InputStreamReader(generator.getInputStream()), JsonObject.class);
+			String[] path = generatorId.toString().split("/");
+			String id = String.join("/", ArrayUtils.subarray(path, 1, path.length));
+			id = id.substring(0, id.lastIndexOf("."));
+			this.loadPocketGenerator(id, JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
 		}
-    }
+	}
+
+//    public void load() {
+//        long startTime = System.currentTimeMillis();
+//
+//		try {
+//			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/generators").toURI());
+//			loadJson(path, new String[0], this::loadPocketGenerator);
+//			LOGGER.info("Loaded pockets in {} seconds", System.currentTimeMillis() - startTime);
+//		} catch (URISyntaxException e) {
+//			LOGGER.error(e);
+//		}
+//
+//		startTime = System.currentTimeMillis();
+//		try {
+//			Path path = Paths.get(SchematicV2Handler.class.getResource("/data/dimdoors/pockets/groups").toURI());
+//			loadJson(path, new String[0], this::loadPocketGroup);
+//			LOGGER.info("Loaded pocket groups in {} seconds", System.currentTimeMillis() - startTime);
+//		} catch (URISyntaxException e) {
+//			LOGGER.error(e);
+//		}
+//    }
 
     public Tag readNbtFromJson(String id) {
 		try {
@@ -169,5 +218,10 @@ public class SchematicV2Handler {
 
     public PocketGenerator getGenerator(String id) {
     	return pocketGeneratorMap.get(id);
+	}
+
+	@Override
+	public Identifier getFabricId() {
+		return new Identifier("dimdoors", "schematics_v2");
 	}
 }
