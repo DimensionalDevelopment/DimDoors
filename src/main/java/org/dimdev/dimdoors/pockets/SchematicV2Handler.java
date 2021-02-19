@@ -66,9 +66,9 @@ public class SchematicV2Handler implements SimpleSynchronousResourceReloadListen
 				JsonObject[] objects = GSON.fromJson(new InputStreamReader(group.getInputStream()), JsonObject[].class);
 				groupData = ArrayUtils.addAll(groupData, objects);
 			}
-			String[] path = groupId.getPath().split("/");
-			String id = path[path.length - 1]; // Last one is the file name
-			id = id.substring(0, id.indexOf('.')); // Remove extension
+			String[] path = groupId.toString().split("/");
+			String id = String.join("/", ArrayUtils.subarray(path, 2, path.length));
+			id = id.substring(0, id.lastIndexOf("."));
 			JsonArray arr = new JsonArray();
 			for (JsonObject groupDatum : groupData) {
 				arr.add(groupDatum);
@@ -86,7 +86,7 @@ public class SchematicV2Handler implements SimpleSynchronousResourceReloadListen
 			}
 			JsonObject json = GSON.fromJson(new InputStreamReader(generator.getInputStream()), JsonObject.class);
 			String[] path = generatorId.toString().split("/");
-			String id = String.join("/", ArrayUtils.subarray(path, 1, path.length));
+			String id = String.join("/", ArrayUtils.subarray(path, 2, path.length));
 			id = id.substring(0, id.lastIndexOf("."));
 			this.loadPocketGenerator(id, JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
 		}
