@@ -78,7 +78,6 @@ public class PocketTemplateV2 {
 	}
 
 	public void place(LazyGenerationPocket pocket, Chunk chunk, BlockPos originalOrigin) {
-		BlockPos origin = pocket.getOrigin();
 		SchematicPlacer.place(this.schematic, DimensionalDoorsInitializer.getWorld(pocket.getWorld()), chunk, originalOrigin);
 	}
 

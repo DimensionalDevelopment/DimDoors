@@ -22,7 +22,7 @@ public class ChunkLoadListener implements ServerChunkEvents.Load {
 			LazyPocketGenerator.generationQueue.add(chunk);
 		} else {
 			MinecraftServer server = DimensionalDoorsInitializer.getServer();
-			DimensionalDoorsInitializer.getServer().send(new ServerTask(server.getTicks(), () -> ((LazyGenerationPocket) pocket).chunkLoaded(chunk)));
+			server.send(new ServerTask(server.getTicks(), () -> ((LazyGenerationPocket) pocket).chunkLoaded(chunk)));
 		}
 	}
 }
