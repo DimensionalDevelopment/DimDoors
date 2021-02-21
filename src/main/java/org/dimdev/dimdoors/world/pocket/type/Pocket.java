@@ -121,7 +121,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	@Override
-	public AbstractPocketType<Pocket> getType() {
+	public AbstractPocketType<?> getType() {
 		return AbstractPocketType.POCKET;
 	}
 
@@ -130,7 +130,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 		this.range = tag.getInt("range");
 		int[] box = tag.getIntArray("box");
-		this.box = new BlockBox(box[0], box[1], box[2], box[3], box[4], box[5]);
+		this.box = BlockBox.create(box[0], box[1], box[2], box[3], box[4], box[5]);
 		this.virtualLocation = VirtualLocation.fromTag(tag.getCompound("virtualLocation"));
 
 		if (tag.contains("addons", NbtType.LIST)) {
@@ -179,7 +179,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public static PocketBuilder<?, Pocket> builder() {
-		return new PocketBuilder<>(AbstractPocketType.POCKET);
+		return new PocketBuilder(AbstractPocketType.POCKET);
 	}
 
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm

@@ -2,6 +2,7 @@ package org.dimdev.dimdoors;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -20,6 +21,7 @@ import org.dimdev.dimdoors.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
+import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.pocket.*;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
@@ -111,6 +113,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 			((ExtendedServerPlayNetworkHandler) handler).getDimDoorsPacketHandler().unregister();
 		});
+
+		ServerChunkEvents.CHUNK_LOAD.register(new ChunkLoadListener()); // lazy pocket gen
 
 
 		AttackBlockCallback.EVENT.register(new AttackBlockCallbackListener());

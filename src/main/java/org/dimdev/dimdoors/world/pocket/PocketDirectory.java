@@ -75,7 +75,7 @@ public class PocketDirectory {
 	public <T extends Pocket> T newPocket(Pocket.PocketBuilder<?, T> builder) {
 		Vec3i size = builder.getExpectedSize();
 		int longest = Math.max(size.getX(), size.getZ());
-		longest = ((longest - 1) / gridSize) >> 4 + 1;
+		longest = (longest / (gridSize * 16)) + 1;
 
 		int base3Size = 1;
 		while (longest > base3Size) {
@@ -91,17 +91,18 @@ public class PocketDirectory {
 		while (pocketAt != null) {
 			size = pocketAt.getSize();
 			longest = Math.max(size.getX(), size.getZ());
-			longest = ((longest - 1) / gridSize) >> 4 + 1;
+			longest = (longest / (gridSize * 16)) + 1;
 
 			int pocketBase3Size = 1;
 			while (longest > pocketBase3Size) {
 				pocketBase3Size *= 3;
 			}
 
-			System.out.println(Math.max(squaredSize, pocketBase3Size * pocketBase3Size));
 			cursor += Math.max(squaredSize, pocketBase3Size * pocketBase3Size);
 			pocketAt = getPocket(cursor);
 		}
+
+		cursor = cursor + squaredSize - 1; // we actually want to use the last id of the assigned grid space since it is in the bottom left corner
 
 		T pocket = builder
 				.id(cursor)
@@ -116,7 +117,7 @@ public class PocketDirectory {
 		IdReferencePocket.IdReferencePocketBuilder idReferenceBuilder = IdReferencePocket.builder();
 		for (int i = 1; i < squaredSize; i++) {
 			addPocket(idReferenceBuilder
-					.id(cursor + i)
+					.id(cursor - i)
 					.world(worldKey)
 					.referencedId(cursor)
 					.build());
@@ -182,7 +183,7 @@ public class PocketDirectory {
 	 * @return The ID of the pocket, or -1 if there is no pocket at that location
 	 */
 	public int posToID(BlockPos pos) {
-		return this.gridPosToID(new GridUtil.GridPos(pos.getX() / (this.gridSize * 16), pos.getZ() / (this.gridSize * 16)));
+		return this.gridPosToID(new GridUtil.GridPos(Math.floorDiv(pos.getX(), this.gridSize * 16), Math.floorDiv(pos.getZ(), this.gridSize * 16)));
 	}
 
 	public Pocket getPocketAt(BlockPos pos) { // TODO: use BlockPos

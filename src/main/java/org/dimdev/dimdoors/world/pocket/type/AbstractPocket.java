@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public abstract class AbstractPocket<V extends AbstractPocket<V>> {
+public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "abstract_pocket_type")), Lifecycle.stable())).buildAndRegister();
 
 	protected Integer id;
@@ -61,7 +61,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 		return tag;
 	}
 
-	public abstract AbstractPocketType<V> getType();
+	public abstract AbstractPocketType<?> getType();
 
 	public Map<String, Double> toVariableMap(Map<String, Double> variableMap) {
 		variableMap.put("id", (double) this.id);
@@ -79,6 +79,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<V>> {
 
 		AbstractPocketType<Pocket> POCKET = register(new Identifier("dimdoors", Pocket.KEY), Pocket::new, Pocket::builder);
 		AbstractPocketType<PrivatePocket> PRIVATE_POCKET = register(new Identifier("dimdoors", PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
+		AbstractPocketType<LazyGenerationPocket> LAZY_GENERATION_POCKET = register(new Identifier("dimdoors", LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
 
 		T fromTag(CompoundTag tag);

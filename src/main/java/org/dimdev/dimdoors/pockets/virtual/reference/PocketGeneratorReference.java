@@ -2,19 +2,24 @@ package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.minecraft.nbt.CompoundTag;
@@ -125,14 +130,32 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		generator.applyModifiers(parameters, builder);
 		this.applyModifiers(parameters, builder);
 
+		LazyPocketGenerator.currentlyGenerating = true;
 		Pocket pocket = generator.prepareAndPlacePocket(parameters, builder);
 
-		RiftManager manager = new RiftManager(pocket);
+		RiftManager manager = generator.getRiftManager(pocket);
 
 		generator.applyModifiers(parameters, manager);
 
 		this.applyModifiers(parameters, manager);
-		generator.setup(pocket, parameters, setupLoot != null ? setupLoot : (generator.getSetupLoot()) != null ? generator.getSetupLoot() : true);
+		generator.setup(pocket, manager, parameters, setupLoot != null ? setupLoot : (generator.getSetupLoot()) != null ? generator.getSetupLoot() : true);
+		if (pocket instanceof LazyGenerationPocket) {
+			if (!(generator instanceof LazyPocketGenerator)) throw new RuntimeException("pocket was instance of LazyGenerationPocket but generator was not instance of LazyPocketGenerator");
+			LazyGenerationPocket lazyPocket = (LazyGenerationPocket) pocket;
+			LazyPocketGenerator clonedGenerator = ((LazyPocketGenerator) generator).cloneWithLazyModifiers();
+			attachLazyModifiers(clonedGenerator);
+			clonedGenerator.attachToPocket(lazyPocket);
+			lazyPocket.init();
+
+			LazyPocketGenerator.currentlyGenerating = false;
+			while (!LazyPocketGenerator.generationQueue.isEmpty()) {
+				lazyPocket.chunkLoaded(LazyPocketGenerator.generationQueue.remove());
+			}
+		} else {
+			LazyPocketGenerator.generationQueue.clear();
+			LazyPocketGenerator.currentlyGenerating = false;
+		}
+
 		return pocket;
 	}
 
@@ -152,4 +175,8 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 
 	@Override
 	public abstract String toString();
+
+	public void attachLazyModifiers(LazyPocketGenerator generator) {
+		generator.attachLazyModifiers(modifierList.stream().filter(LazyModifier.class::isInstance).map(LazyModifier.class::cast).collect(Collectors.toList()));
+	}
 }

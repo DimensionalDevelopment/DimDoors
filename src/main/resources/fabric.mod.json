@@ -45,7 +45,8 @@
   "custom": {
     "cardinal-components": [
       "dimdoors:dimensional_registry",
-      "dimdoors:counter"
+      "dimdoors:counter",
+      "dimdoors:chunk_lazily_generated"
     ],
     "waila:plugins": {
       "id": "dimdoors:wthit_plugin",

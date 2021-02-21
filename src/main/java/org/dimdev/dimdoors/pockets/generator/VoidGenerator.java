@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VoidGenerator extends PocketGenerator {
+public class VoidGenerator extends LazyPocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "void";
 	private String width;
@@ -76,5 +76,20 @@ public class VoidGenerator extends PocketGenerator {
 		tag.putString("length", length);
 
 		return tag;
+	}
+
+	@Override
+	public LazyPocketGenerator cloneWithEmptyModifiers() {
+		VoidGenerator generator = (VoidGenerator) super.cloneWithEmptyModifiers();
+		generator.width = width;
+		generator.height = height;
+		generator.length = length;
+
+		return generator;
+	}
+
+	@Override
+	public LazyPocketGenerator getNewInstance() {
+		return new VoidGenerator();
 	}
 }
