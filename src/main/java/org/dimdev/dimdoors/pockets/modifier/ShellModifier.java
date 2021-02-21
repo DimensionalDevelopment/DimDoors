@@ -21,6 +21,7 @@ import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.dimdev.dimdoors.util.BlockBoxUtil;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.schematic.v2.SchematicBlockPalette;
@@ -66,42 +67,42 @@ public class ShellModifier implements LazyModifier {
 
 			// x-planes
 			temp = BlockBox.create(boxToDrawAround.maxX + 1 + boxExpansion, boxToDrawAround.minY - thickness - boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion, boxToDrawAround.maxX + thickness + boxExpansion, boxToDrawAround.maxY + thickness + boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = intersection(temp, chunkBox);
-			if (isRealBox(temp)) BlockPos.stream(temp)
+			temp = BlockBoxUtil.intersection(temp, chunkBox);
+			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
 					.forEach(blockPos -> {
 						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
 					});
 			temp = BlockBox.create(boxToDrawAround.minX - 1 - boxExpansion, boxToDrawAround.minY - thickness - boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion, boxToDrawAround.minX - thickness - boxExpansion, boxToDrawAround.maxY + thickness + boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = intersection(temp, chunkBox);
-			if (isRealBox(temp)) BlockPos.stream(temp)
+			temp = BlockBoxUtil.intersection(temp, chunkBox);
+			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
 					.forEach(blockPos -> {
 						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
 					});
 
 			// y-planes
 			temp = BlockBox.create(boxToDrawAround.minX - boxExpansion, boxToDrawAround.maxY + 1 + boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion, boxToDrawAround.maxX + boxExpansion, boxToDrawAround.maxY + thickness + boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = intersection(temp, chunkBox);
-			if (isRealBox(temp)) BlockPos.stream(temp)
+			temp = BlockBoxUtil.intersection(temp, chunkBox);
+			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
 					.forEach(blockPos -> {
 						if(chunk.getBlockState(blockPos).getBlock() instanceof AirBlock) chunk.setBlockState(blockPos, blockState, false);
 					});
 			temp = BlockBox.create(boxToDrawAround.minX - boxExpansion, boxToDrawAround.minY - 1 - boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion, boxToDrawAround.maxX + boxExpansion, boxToDrawAround.minY - thickness - boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = intersection(temp, chunkBox);
-			if (isRealBox(temp)) BlockPos.stream(temp)
+			temp = BlockBoxUtil.intersection(temp, chunkBox);
+			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
 					.forEach(blockPos -> {
 						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
 					});
 
 			// z-planes
 			temp = BlockBox.create(boxToDrawAround.minX - boxExpansion, boxToDrawAround.minY - boxExpansion, boxToDrawAround.minZ - 1 - boxExpansion, boxToDrawAround.maxX + boxExpansion, boxToDrawAround.maxY + boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion);
-			temp = intersection(temp, chunkBox);
-			if (isRealBox(temp)) BlockPos.stream(temp)
+			temp = BlockBoxUtil.intersection(temp, chunkBox);
+			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
 					.forEach(blockPos -> {
 						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
 					});
 			temp = BlockBox.create(boxToDrawAround.minX - boxExpansion, boxToDrawAround.minY - boxExpansion, boxToDrawAround.maxZ + 1 + boxExpansion, boxToDrawAround.maxX + boxExpansion, boxToDrawAround.maxY + boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = intersection(temp, chunkBox);
-			if (isRealBox(temp)) BlockPos.stream(temp)
+			temp = BlockBoxUtil.intersection(temp, chunkBox);
+			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
 					.forEach(blockPos -> {
 						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
 					});
@@ -233,14 +234,5 @@ public class ShellModifier implements LazyModifier {
 		public static Layer fromTag(CompoundTag tag) throws CommandSyntaxException {
 			return new Layer(tag.getString("block_state"), tag.getString("thickness"));
 		}
-	}
-
-	// intersection might be non real box, check with isRealBox
-	private BlockBox intersection(BlockBox box1, BlockBox box2) {
-		return new BlockBox(Math.max(box1.minX, box2.minX), Math.max(box1.minY, box2.minY), Math.max(box1.minZ, box2.minZ), Math.min(box1.maxX, box2.maxX), Math.min(box1.maxY, box2.maxY), Math.min(box1.maxZ, box2.maxZ));
-	}
-
-	private boolean isRealBox(BlockBox box) {
-		return box.minX <= box.maxX && box.minY <= box.maxY && box.minZ <= box.maxZ;
 	}
 }

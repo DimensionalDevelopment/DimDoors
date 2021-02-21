@@ -15,6 +15,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -146,8 +147,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		return this.weightEquation.apply(parameters.toVariableMap(new HashMap<>()));
 	}
 
-	public Boolean getSetupLoot() {
-		return setupLoot;
+	public boolean isSetupLoot() {
+		return setupLoot != null && setupLoot;
 	}
 
 	public void applyModifiers(PocketGenerationParameters parameters, RiftManager manager) {

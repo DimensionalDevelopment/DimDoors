@@ -1,13 +1,16 @@
 package org.dimdev.dimdoors.util.schematic.v2;
 
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
+import net.minecraft.block.*;
+import net.minecraft.util.math.*;
+import net.minecraft.world.chunk.Chunk;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.util.BlockBoxUtil;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockEntityProvider;
@@ -129,6 +132,71 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		}
 	}
 
+	public void place(BlockPos origin, StructureWorldAccess world, Chunk chunk, boolean biomes) {
+		ChunkPos pos = chunk.getPos();
+		BlockBox chunkBox = BlockBox.create(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX(), chunk.getHeight() - 1, pos.getEndZ());
+		BlockBox schemBox = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + schematic.getWidth() - 1, origin.getY() + schematic.getHeight() - 1, origin.getZ() + schematic.getLength() - 1);
+		BlockBox intersection = BlockBoxUtil.intersection(chunkBox, schemBox);
+		if (!BlockBoxUtil.isRealBox(intersection)) return;
+
+		BlockPos.stream(intersection).forEach(blockPos -> {
+			if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, this.blockContainer.get(blockPos.subtract(origin)), false);
+		});
+
+		// TODO: depending on size of blockEntityContainer it might be faster to iterate over BlockPos.stream(intersection) instead
+		this.blockEntityContainer.forEach((blockPos, tag) -> {
+			BlockPos actualPos = blockPos.add(origin);
+			if (intersection.contains(actualPos)) {
+				if(tag.contains("Id")) {
+					tag.put("id", tag.get("Id")); // boogers
+					tag.remove("Id");
+				}
+
+				BlockEntity blockEntity = BlockEntity.createFromTag(this.getBlockState(blockPos), tag);
+				if (blockEntity != null && !(blockEntity instanceof RiftBlockEntity)) {
+					chunk.setBlockEntity(actualPos, blockEntity);
+				}
+			}
+		});
+
+		this.entityContainer.forEach(((tag, vec3d) -> {
+			ListTag doubles = tag.getList("Pos", NbtType.DOUBLE);
+			Vec3d vec = vec3d.add(origin.getX(), origin.getY(), origin.getZ());
+			if (intersection.contains(new Vec3i(vec.x, vec.y, vec.z))) {
+				doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
+				doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
+				doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
+				tag.put("Pos", doubles);
+
+				Entity entity = EntityType.getEntityFromTag(tag, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
+				world.spawnEntity(entity);
+			}
+		}));
+	}
+
+	public List<RiftBlockEntity> placeRiftsOnly(BlockPos origin, StructureWorldAccess world) {
+		List<RiftBlockEntity> rifts = new ArrayList<>();
+		this.blockEntityContainer.forEach( (blockPos, tag) ->  {
+			BlockPos actualPos = origin.add(blockPos);
+
+			if(tag.contains("Id")) {
+				tag.put("id", tag.get("Id")); // boogers
+				tag.remove("Id");
+			}
+			BlockState state = getBlockState(blockPos);
+			BlockEntity blockEntity = BlockEntity.createFromTag(state, tag);
+			if (blockEntity instanceof RiftBlockEntity) {
+				world.setBlockState(actualPos, state, 0);
+				if (state.getBlock() instanceof DoorBlock) {
+					world.setBlockState(actualPos.up(), getBlockState(blockPos.up()), 0);
+				}
+				world.toServerWorld().addBlockEntity(blockEntity);
+				rifts.add((RiftBlockEntity) blockEntity);
+			}
+		});
+		return rifts;
+	}
+
 	public int[][][] getBlockData() {
 		return this.blockData;
 	}
@@ -162,6 +230,6 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	}
 
 	public boolean hasBiomes() {
-		return biomeData.length != 0;
+		return this.biomeData.length != 0;
 	}
 }

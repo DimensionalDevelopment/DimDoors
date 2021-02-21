@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets.generator;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,8 +80,8 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public LazyPocketGenerator cloneWithEmptyModifiers() {
-		VoidGenerator generator = (VoidGenerator) super.cloneWithEmptyModifiers();
+	public LazyPocketGenerator cloneWithEmptyModifiers(BlockPos originalOrigin) {
+		VoidGenerator generator = (VoidGenerator) super.cloneWithEmptyModifiers(originalOrigin);
 		generator.width = width;
 		generator.height = height;
 		generator.length = length;

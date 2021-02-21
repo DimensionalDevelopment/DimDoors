@@ -2,6 +2,9 @@
   "type": "dimdoors:schematic",
   "setup_loot": true,
   "id": "v2/custom/smile_6",
+  "builder": {
+    "type": "dimdoors:lazy_gen_pocket"
+  },
   "modifiers": [
     {
       "layers": [
@@ -17,8 +20,5 @@
       "ids": [0],
       "rift_data": "rift_data/pocket_entrance"
     }
-  ],
-  "offset_x": "1",
-  "offset_y": "1",
-  "offset_z": "1"
+  ]
 }

@@ -7,9 +7,13 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerTask;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
@@ -132,24 +136,29 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 
 		LazyPocketGenerator.currentlyGenerating = true;
 		Pocket pocket = generator.prepareAndPlacePocket(parameters, builder);
+		BlockPos originalOrigin = pocket.getOrigin();
 
 		RiftManager manager = generator.getRiftManager(pocket);
 
 		generator.applyModifiers(parameters, manager);
 
 		this.applyModifiers(parameters, manager);
-		generator.setup(pocket, manager, parameters, setupLoot != null ? setupLoot : (generator.getSetupLoot()) != null ? generator.getSetupLoot() : true);
+		generator.setup(pocket, manager, parameters, setupLoot != null ? setupLoot : generator.isSetupLoot());
 		if (pocket instanceof LazyGenerationPocket) {
 			if (!(generator instanceof LazyPocketGenerator)) throw new RuntimeException("pocket was instance of LazyGenerationPocket but generator was not instance of LazyPocketGenerator");
 			LazyGenerationPocket lazyPocket = (LazyGenerationPocket) pocket;
-			LazyPocketGenerator clonedGenerator = ((LazyPocketGenerator) generator).cloneWithLazyModifiers();
+			LazyPocketGenerator clonedGenerator = ((LazyPocketGenerator) generator).cloneWithLazyModifiers(originalOrigin);
+			if (setupLoot != null) clonedGenerator.setSetupLoot(setupLoot);
+
 			attachLazyModifiers(clonedGenerator);
 			clonedGenerator.attachToPocket(lazyPocket);
 			lazyPocket.init();
 
 			LazyPocketGenerator.currentlyGenerating = false;
 			while (!LazyPocketGenerator.generationQueue.isEmpty()) {
-				lazyPocket.chunkLoaded(LazyPocketGenerator.generationQueue.remove());
+				Chunk chunk = LazyPocketGenerator.generationQueue.remove();
+				MinecraftServer server = DimensionalDoorsInitializer.getServer();
+				DimensionalDoorsInitializer.getServer().send(new ServerTask(server.getTicks(), () -> (lazyPocket).chunkLoaded(chunk)));
 			}
 		} else {
 			LazyPocketGenerator.generationQueue.clear();

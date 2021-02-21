@@ -1,8 +1,16 @@
 package org.dimdev.dimdoors.pockets.generator;
 
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.entity.DispenserBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
@@ -13,6 +21,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class LazyPocketGenerator extends PocketGenerator {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public static boolean currentlyGenerating = false;
 	public static Queue<Chunk> generationQueue = new LinkedList<>();
 
@@ -60,20 +70,24 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 
 	@Override
 	public RiftManager getRiftManager(Pocket pocket) {
-		return new RiftManager(pocket, true);
+		if (pocket instanceof LazyGenerationPocket) {
+			return new RiftManager(pocket, true);
+		} else {
+			return new RiftManager(pocket, false);
+		}
 	}
 
 	public void attachLazyModifiers(Collection<LazyModifier> lazyModifiers) {
 		this.lazyModifierList.addAll(lazyModifiers);
 	}
 
-	public LazyPocketGenerator cloneWithLazyModifiers() {
-		LazyPocketGenerator clone = cloneWithEmptyModifiers();
+	public LazyPocketGenerator cloneWithLazyModifiers(BlockPos originalOrigin) {
+		LazyPocketGenerator clone = cloneWithEmptyModifiers(originalOrigin);
 		clone.attachLazyModifiers(this.modifierList.stream().filter(LazyModifier.class::isInstance).map(LazyModifier.class::cast).collect(Collectors.toList()));
 		return clone;
 	}
 
-	public LazyPocketGenerator cloneWithEmptyModifiers() {
+	public LazyPocketGenerator cloneWithEmptyModifiers(BlockPos originalOrigin) {
 		LazyPocketGenerator generator = getNewInstance();
 
 		// Builder/ weight related stuff seems irrelevant here
@@ -82,5 +96,22 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 		return generator;
 	}
 
+	public void setSetupLoot(Boolean setupLoot) {
+		this.setupLoot = setupLoot;
+	}
+
 	abstract public LazyPocketGenerator getNewInstance();
+
+	public void setupChunk(Pocket pocket, Chunk chunk, boolean setupLootTables) {
+		chunk.getBlockEntityPositions().stream().map(chunk::getBlockEntity).forEach(blockEntity -> { // RiftBlockEntities should already be initialized here
+			if (setupLootTables && blockEntity instanceof Inventory) {
+				Inventory inventory = (Inventory) blockEntity;
+				if (inventory.isEmpty()) {
+					if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
+						TemplateUtils.setupLootTable(DimensionalDoorsInitializer.getWorld(pocket.getWorld()), blockEntity, inventory, LOGGER);
+					}
+				}
+			}
+		});
+	}
 }
