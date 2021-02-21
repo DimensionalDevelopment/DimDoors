@@ -23,10 +23,10 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.addon.IHasAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-public class Pocket extends AbstractPocket<Pocket> implements IHasAddon {
+public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	public static String KEY = "pocket";
 
 	private final Map<Identifier, PocketAddon> addons = new HashMap<>();
