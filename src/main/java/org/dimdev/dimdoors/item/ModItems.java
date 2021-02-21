@@ -93,7 +93,7 @@ public final class ModItems {
 				rift.setDestination(destination);
 			}
 	));
-
+	/*
 	@RegistryObject("unstable_dimensional_door")
     public static final Item UNSTABLE_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
             ModBlocks.IRON_DIMENSIONAL_DOOR,
@@ -108,7 +108,7 @@ public final class ModItems {
 					.noLinkBack(false)
 					.newRiftWeight(0.5F).build())
     ));
-
+	*/
 	@RegistryObject("oak_dimensional_door")
 	public static final Item OAK_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
 			ModBlocks.OAK_DIMENSIONAL_DOOR,
