@@ -61,7 +61,7 @@ public final class PocketGenerator {
     }
 
     public static Pocket generateFromPocketGroupV2(ServerWorld world, String group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-    	PocketGenerationParameters parameters = new PocketGenerationParameters(world, group, virtualLocation, linkTo, linkProperties);
+    	PocketGenerationParameters parameters = new PocketGenerationParameters(world, virtualLocation, linkTo, linkProperties);
     	return generatePocketV2(SchematicV2Handler.getInstance().getGroup(group).getNextPocketGeneratorReference(parameters), parameters);
 	}
 

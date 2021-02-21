@@ -21,4 +21,13 @@ public class PrivatePocket extends Pocket implements DyeableAddon.DyeablePocket 
 			this.dyeColor(PocketColor.WHITE);
 		}
 	}
+
+	@Override
+	public AbstractPocketType<?> getType() {
+		return AbstractPocketType.PRIVATE_POCKET;
+	}
+
+	public static String getKEY() {
+		return KEY;
+	}
 }

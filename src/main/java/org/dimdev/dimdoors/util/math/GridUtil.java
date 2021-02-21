@@ -52,6 +52,7 @@ public final class GridUtil {
 	 * @return The location on the grid
 	 */
 	public static GridPos idToGridPos(int id) {
+		if (id < 0) throw new UnsupportedOperationException("Cannot get GridPos of negative id.");
 		GridPos out = id > 8 ? idToGridPos(id / 9) : new GridPos(0, 0);
 		int x = out.x * 3;
 		int z = out.z * 3;

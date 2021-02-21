@@ -11,14 +11,12 @@ import java.util.Map;
 
 public class PocketGenerationParameters {
 	private final ServerWorld world;
-	private final String group;
 	private final VirtualLocation sourceVirtualLocation;
 	private final VirtualTarget linkTo;
 	private final LinkProperties linkProperties;
 
-	public PocketGenerationParameters(ServerWorld world, String group, VirtualLocation sourceVirtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+	public PocketGenerationParameters(ServerWorld world, VirtualLocation sourceVirtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
 		this.world = world;
-		this.group = group;
 		this.sourceVirtualLocation = sourceVirtualLocation;
 		this.linkTo = linkTo;
 		this.linkProperties = linkProperties;
@@ -26,10 +24,6 @@ public class PocketGenerationParameters {
 
 	public ServerWorld getWorld() {
 		return this.world;
-	}
-
-	public String getGroup() {
-		return this.group;
 	}
 
 	public VirtualLocation getSourceVirtualLocation() {

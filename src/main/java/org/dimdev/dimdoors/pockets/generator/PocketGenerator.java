@@ -28,6 +28,7 @@ import org.dimdev.dimdoors.util.Weighted;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
+import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.*;
@@ -39,10 +40,10 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
 	private static final int fallbackWeight = 5; // TODO: make config
-	private final List<Modifier> modifierList = new ArrayList<>();
+	protected final List<Modifier> modifierList = new ArrayList<>();
 
 	private CompoundTag builderTag;
-	protected String weight;
+	protected String weight = defaultWeightEquation;
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
 
@@ -112,7 +113,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 
 		if (builderTag != null) tag.put("builder", builderTag);
 
-		if (!weight.equals("5")) tag.putString("weight", weight);
+		if (!weight.equals(defaultWeightEquation)) tag.putString("weight", weight);
 
 		if (setupLoot != null) tag.putBoolean("setup_loot", setupLoot);
 
@@ -161,29 +162,31 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		}
 	}
 
-	public void setup(Pocket pocket, PocketGenerationParameters parameters, boolean setupLootTables) {
-		ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
-		List<RiftBlockEntity> rifts = new ArrayList<>();
+	public void setup(Pocket pocket, RiftManager manager, PocketGenerationParameters parameters, boolean setupLootTables) {
+		ServerWorld world = parameters.getWorld();
 
-		pocket.getBlockEntities().forEach((blockPos, blockEntity) -> {
-			if (blockEntity instanceof RiftBlockEntity) {
-				LOGGER.debug("Rift found in pocket at " + blockPos);
-				RiftBlockEntity rift = (RiftBlockEntity) blockEntity;
-				rift.getDestination().setLocation(new Location((ServerWorld) Objects.requireNonNull(rift.getWorld()), rift.getPos()));
-				rifts.add(rift);
-			} else if (setupLootTables && blockEntity instanceof Inventory) {
-				Inventory inventory = (Inventory) blockEntity;
-				if (inventory.isEmpty()) {
-					if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
-						TemplateUtils.setupLootTable(world, blockEntity, inventory, LOGGER);
+		if (!(pocket instanceof LazyGenerationPocket)) { // should not iterate over that which does not exist & area may be massive, getBlockEntities() might force generation
+			if (setupLootTables) // temp
+				pocket.getBlockEntities().forEach((blockPos, blockEntity) -> {
+					if (/*setupLootTables &&*/ blockEntity instanceof Inventory) { // comment in if needed
+						Inventory inventory = (Inventory) blockEntity;
 						if (inventory.isEmpty()) {
-							LOGGER.error(", however Inventory is: empty!");
+							if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
+								TemplateUtils.setupLootTable(world, blockEntity, inventory, LOGGER);
+								if (inventory.isEmpty()) {
+									LOGGER.error(", however Inventory is: empty!");
+								}
+							}
 						}
 					}
-				}
-			}
-		});
-		TemplateUtils.registerRifts(rifts, parameters.getLinkTo(), parameters.getLinkProperties(), pocket);
+				});
+		}
+		manager.getRifts().forEach(rift -> rift.getDestination().setLocation(new Location((ServerWorld) Objects.requireNonNull(rift.getWorld()), rift.getPos())));
+		TemplateUtils.registerRifts(manager.getRifts(), parameters.getLinkTo(), parameters.getLinkProperties(), pocket);
+	}
+
+	public RiftManager getRiftManager(Pocket pocket) {
+		return new RiftManager(pocket);
 	}
 
 	// why would you want to check for exact tags, but still need a blackList? Good question, but there is probably some use case for it.

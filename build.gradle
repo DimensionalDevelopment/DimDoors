@@ -104,6 +104,7 @@ dependencies {
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-level", "3.0.0-nightly.21w06a")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-util", "3.0.0-nightly.21w06a")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-world", "3.0.0-nightly.21w06a")
+	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-chunk", "3.0.0-nightly.21w06a")
 	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
 	includeCompile("dev.hephaestus", "seedy-behavior", "1.0.1")
 

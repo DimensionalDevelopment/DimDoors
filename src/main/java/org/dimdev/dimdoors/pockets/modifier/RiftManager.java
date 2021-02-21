@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -13,13 +11,20 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class RiftManager {
 	private final Map<Integer, RiftBlockEntity> map;
+	private final List<RiftBlockEntity> rifts;
 	private final Pocket pocket;
 	private int maxId;
 
-	public RiftManager(Pocket pocket) {
+	public RiftManager(Pocket pocket, boolean skipGatheringRifts) {
 		this.pocket = pocket;
-		map = pocket.getBlockEntities().values().stream()
-				.filter(RiftBlockEntity.class::isInstance).map(RiftBlockEntity.class::cast)
+		if (skipGatheringRifts) {
+			map = new HashMap<>();
+			rifts = new ArrayList<>();
+			return;
+		}
+		rifts = pocket.getBlockEntities().values().stream()
+				.filter(RiftBlockEntity.class::isInstance).map(RiftBlockEntity.class::cast).collect(Collectors.toList());
+		map = rifts.stream()
 				.filter(a -> a.getData().getDestination() instanceof IdMarker)
 				.filter(a -> ((IdMarker) a.getData().getDestination()).getId() >= 0)
 				.collect(Collectors.toMap(rift -> ((IdMarker) rift.getData().getDestination()).getId(), rift -> rift));
@@ -29,8 +34,13 @@ public class RiftManager {
 				.orElse(-1);
 	}
 
+	public RiftManager(Pocket pocket) {
+		this(pocket, false);
+	}
+
 	//TODO add javadocs
 	public boolean add(RiftBlockEntity rift) {
+		rifts.add(rift);
 		if(rift.getData().getDestination() instanceof IdMarker) {
 			int id = ((IdMarker) rift.getData().getDestination()).getId();
 
@@ -48,6 +58,7 @@ public class RiftManager {
 
 	public boolean consume(int id, Predicate<RiftBlockEntity> consumer) {
 		if (map.containsKey(id) && consumer.test(map.get(id))) {
+
 			map.remove(id);
 			return true;
 		}
@@ -76,5 +87,9 @@ public class RiftManager {
 
 	public Optional<RiftBlockEntity> get(int id) {
 		return Optional.ofNullable(map.get(id));
+	}
+
+	public List<RiftBlockEntity> getRifts() {
+		return rifts;
 	}
 }
