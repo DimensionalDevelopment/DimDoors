@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
 import net.fabricmc.loader.api.FabricLoader;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 public final class SchematicPlacer {
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -34,6 +36,30 @@ public final class SchematicPlacer {
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
 		blockSample.place(origin, world, false);
 	}
+
+	public static List<RiftBlockEntity> placeRiftsOnly(Schematic schematic, StructureWorldAccess world, BlockPos origin) {
+		LOGGER.debug("Placing schematic rifts only: {}", schematic.getMetadata().getName());
+		for (String id : schematic.getMetadata().getRequiredMods()) {
+			if (!FabricLoader.getInstance().isModLoaded(id)) {
+				LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
+			}
+		}
+		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
+		return blockSample.placeRiftsOnly(origin, world);
+	}
+
+	public static void place(Schematic schematic, StructureWorldAccess world, Chunk chunk, BlockPos origin) {
+		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
+		for (String id : schematic.getMetadata().getRequiredMods()) {
+			if (!FabricLoader.getInstance().isModLoaded(id)) {
+				LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
+			}
+		}
+		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
+		blockSample.place(origin, world, chunk, false);
+	}
+
+
 
 	public static int[][][] getBlockData(Schematic schematic) {
 		int width = schematic.getWidth();

@@ -1,6 +1,9 @@
 {
   "type": "dimdoors:schematic",
   "id": "v2/custom/line_walker",
+  "builder": {
+    "type": "dimdoors:lazy_gen_pocket"
+  },
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

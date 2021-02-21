@@ -1,14 +1,19 @@
 package org.dimdev.dimdoors.pockets;
 
+import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.schematic.v2.Schematic;
 import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
+import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.List;
 
 public class PocketTemplateV2 {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -61,8 +66,21 @@ public class PocketTemplateV2 {
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
-        SchematicPlacer.place(this.schematic, world, origin);
+		SchematicPlacer.place(this.schematic, world, origin);
     }
+
+	public List<RiftBlockEntity> placeRiftsOnly(Pocket pocket) {
+		pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
+		ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
+		BlockPos origin = pocket.getOrigin();
+		LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
+		return SchematicPlacer.placeRiftsOnly(this.schematic, world, origin);
+	}
+
+	public void place(LazyGenerationPocket pocket, Chunk chunk, BlockPos originalOrigin) {
+		BlockPos origin = pocket.getOrigin();
+		SchematicPlacer.place(this.schematic, DimensionalDoorsInitializer.getWorld(pocket.getWorld()), chunk, originalOrigin);
+	}
 
     public static boolean isReplacingPlaceholders() {
         return replacingPlaceholders;

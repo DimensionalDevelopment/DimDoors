@@ -71,6 +71,9 @@ public class TemplateUtils {
         }
         LootContext ctx = new LootContext.Builder(world).random(world.random).parameter(LootContextParameters.ORIGIN, Vec3d.of(tile.getPos())).build(LootContextTypes.CHEST);
         table.supplyInventory(inventory, ctx);
+		if (inventory.isEmpty()) {
+			logger.error(", however Inventory is: empty!");
+		}
     }
 
     static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
