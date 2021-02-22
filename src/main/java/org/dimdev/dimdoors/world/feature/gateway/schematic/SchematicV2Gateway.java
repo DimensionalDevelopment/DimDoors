@@ -59,7 +59,7 @@ public abstract class SchematicV2Gateway implements Gateway, BiPredicate<Structu
 			TemplateUtils.replacePlaceholders(this.schematic, world);
 			this.replaced = true;
 		}
-		SchematicPlacer.place(this.schematic, world, pos);
+		SchematicPlacer.place(this.schematic, world, pos, false);
 		this.generateRandomBits(world, pos);
 	}
 

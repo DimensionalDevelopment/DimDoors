@@ -45,7 +45,8 @@ public class SchematicV2Command {
             SchematicPlacer.place(
                     Schematic.fromTag(NbtIo.readCompressed(in)),
                     ctx.getSource().getWorld(),
-                    ctx.getSource().getPlayer().getBlockPos()
+                    ctx.getSource().getPlayer().getBlockPos(),
+					false
             );
         } catch (IOException e) {
             e.printStackTrace();

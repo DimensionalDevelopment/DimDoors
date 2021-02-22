@@ -27,7 +27,7 @@ public final class SchematicPlacer {
 	private SchematicPlacer() {
 	}
 
-	public static void place(Schematic schematic, ServerWorld world, BlockPos origin, boolean blockUpdate) {
+	public static void place(Schematic schematic, StructureWorldAccess world, BlockPos origin, boolean blockUpdate) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
 		for (String id : schematic.getMetadata().getRequiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {

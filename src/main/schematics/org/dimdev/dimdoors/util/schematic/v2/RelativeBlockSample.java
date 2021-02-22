@@ -99,11 +99,13 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		return this.blockContainer.get(pos).getFluidState();
 	}
 
-	public void place(BlockPos origin, ServerWorld world, boolean blockUpdate, boolean biomes) {
+	public void place(BlockPos origin, StructureWorldAccess world, boolean blockUpdate, boolean biomes) {
+		if (!(world instanceof ServerWorld)) blockUpdate = false;
+		boolean finalBlockUpdate = blockUpdate;
 		this.blockContainer.forEach((pos, state) -> {
 			BlockPos actualPos = origin.add(pos);
 			world.setBlockState(actualPos, state, 0, 0);
-			if (blockUpdate) world.getChunkManager().markForUpdate(actualPos);
+			if (finalBlockUpdate) ((ServerWorld) world).getChunkManager().markForUpdate(actualPos);
 		});
 		for (Map.Entry<BlockPos, CompoundTag> entry : this.blockEntityContainer.entrySet()) {
 			BlockPos pos = entry.getKey();
