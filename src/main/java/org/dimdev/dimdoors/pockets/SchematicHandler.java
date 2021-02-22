@@ -76,7 +76,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
         String[] names = {"default_dungeon_nether", "default_dungeon_normal", "default_private", "default_public", "default_blank"}; // TODO: don't hardcode
         for (String name : names) {
             try {
-                URL resource = DimensionalDoorsInitializer.class.getResource("/data/dimdoors/pockets/json/" + name + ".json");
+                URL resource = DimensionalDoorsInitializer.class.getResource("/resourcepacks/default_pockets/data/dimdoors/pockets/json/" + name + ".json");
                 String jsonString = IOUtils.toString(resource, StandardCharsets.UTF_8);
                 this.templates.addAll(loadTemplatesFromJson(jsonString));
             } catch (IOException e) {
@@ -128,7 +128,7 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
     }
 
     private static List<PocketTemplate> loadTemplatesFromJson(String jsonString) {
-        String schematicJarDirectory = "/data/dimdoors/pockets/schematic/";
+        String schematicJarDirectory = "/resourcepacks/default_pockets/data/dimdoors/pockets/schematic/";
         File schematicFolder = new File(getFolder(), "/schematics");
 
         JsonParser parser = new JsonParser();

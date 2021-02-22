@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.pockets;
 
 import java.util.Random;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +48,7 @@ public final class PocketGenerator {
     }
 
     public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
-		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), "private", virtualLocation, null, null);
+		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), new Identifier("dimdoors", "private"), virtualLocation, null, null);
     }
 
     // TODO: size of public pockets should increase with depth
@@ -57,10 +58,10 @@ public final class PocketGenerator {
     }
 
     public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-        return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), "public", virtualLocation, linkTo, linkProperties);
+        return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), new Identifier("dimdoors", "public"), virtualLocation, linkTo, linkProperties);
     }
 
-    public static Pocket generateFromPocketGroupV2(ServerWorld world, String group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    public static Pocket generateFromPocketGroupV2(ServerWorld world, Identifier group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
     	PocketGenerationParameters parameters = new PocketGenerationParameters(world, virtualLocation, linkTo, linkProperties);
     	return generatePocketV2(SchematicV2Handler.getInstance().getGroup(group).getNextPocketGeneratorReference(parameters), parameters);
 	}
@@ -70,7 +71,7 @@ public final class PocketGenerator {
 	}
 
 	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), "dungeon", virtualLocation, linkTo, linkProperties);
+		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), new Identifier("dimdoors", "dungeon"), virtualLocation, linkTo, linkProperties);
 	}
 
     /**

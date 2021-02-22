@@ -27,7 +27,7 @@ public class SchematicCommand {
                                                     ServerPlayerEntity player = ctx.getSource().getPlayer();
                                                     String id = StringArgumentType.getString(ctx, "schematic_name");
                                                     String ns = SchematicNamespaceArgumentType.getValue(ctx, "namespace");
-                                                    try (InputStream in = SchematicCommand.class.getResourceAsStream("/data/dimdoors/pockets/schematic/" + ns + "/" + id + ".schem")) {
+                                                    try (InputStream in = SchematicCommand.class.getResourceAsStream("/resourcepacks/default_pockets/data/dimdoors/pockets/schematic/" + ns + "/" + id + ".schem")) {
                                                         Schematic.fromTag(NbtIo.readCompressed(in))
                                                                 .place(
                                                                         player.world,

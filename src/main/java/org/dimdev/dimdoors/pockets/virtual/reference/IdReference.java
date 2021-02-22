@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.pockets.virtual.reference;
 import net.minecraft.nbt.CompoundTag;
 
 import com.google.common.base.MoreObjects;
+import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
@@ -11,13 +12,14 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 public class IdReference extends PocketGeneratorReference {
 	public static final String KEY = "id";
 
-	private String id;
+	private Identifier id;
 
 	@Override
 	public VirtualSingularPocket fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 
-		id = tag.getString("id");
+		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
+		id = new Identifier("dimdoors", tag.getString("id"));
 
 		return this;
 	}
@@ -26,7 +28,7 @@ public class IdReference extends PocketGeneratorReference {
 	public CompoundTag toTag(CompoundTag tag) {
 		super.toTag(tag);
 
-		tag.putString("id", id);
+		tag.putString("id", id.getPath());
 
 		return tag;
 	}

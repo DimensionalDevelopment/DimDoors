@@ -41,7 +41,7 @@ public class SchematicV2Command {
         String id = StringArgumentType.getString(ctx, "schematic_name");
         String ns = SchematicNamespaceArgumentType.getValue(ctx, "namespace");
 
-        try (InputStream in = DimensionalDoorsInitializer.class.getResourceAsStream("/data/dimdoors/pockets/schematic/v2/" + ns + "/" + id + ".schem")) {
+        try (InputStream in = DimensionalDoorsInitializer.class.getResourceAsStream("/resourcepacks/default_pockets/data/dimdoors/pockets/schematic/v2/" + ns + "/" + id + ".schem")) {
             SchematicPlacer.place(
                     Schematic.fromTag(NbtIo.readCompressed(in)),
                     ctx.getSource().getWorld(),
