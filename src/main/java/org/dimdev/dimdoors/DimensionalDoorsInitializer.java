@@ -11,6 +11,9 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resource.ResourceType;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -54,6 +57,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
     public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
 	public static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
 	private static MinecraftServer server;
+	private static ModContainer dimDoorsMod;
 
     @NotNull
     public static MinecraftServer getServer() {
@@ -71,8 +75,13 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		return CONFIG_MANAGER.get();
 	}
 
+	public static ModContainer getDimDoorsMod() {
+		return dimDoorsMod;
+	}
+
 	@Override
     public void onInitialize() {
+    	dimDoorsMod = FabricLoader.getInstance().getModContainer("dimdoors").orElseThrow(RuntimeException::new);
         ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             server = minecraftServer;
         });
@@ -99,6 +108,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		PocketAddon.PocketAddonType.register();
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(SchematicV2Handler.getInstance());
+		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default_pockets"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);
 //        SchematicV2Handler.getInstance().load();
         SchematicHandler.INSTANCE.loadSchematics();
 
