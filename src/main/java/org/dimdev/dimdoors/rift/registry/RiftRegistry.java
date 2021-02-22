@@ -37,6 +37,7 @@ public class RiftRegistry {
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
 	protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
 
+	// TODO: async
 	public static RiftRegistry fromTag(Map<RegistryKey<World>, PocketDirectory> pocketRegistry, CompoundTag nbt) {
 		// Read rifts in this dimension
 
@@ -75,6 +76,7 @@ public class RiftRegistry {
 		return riftRegistry;
 	}
 
+	// TODO: async
 	public CompoundTag toTag() {
 		CompoundTag tag = new CompoundTag();
 		// Write rifts in this dimension

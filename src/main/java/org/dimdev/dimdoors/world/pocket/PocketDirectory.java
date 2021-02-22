@@ -35,6 +35,7 @@ public class PocketDirectory {
 		this.pockets = new HashMap<>();
 	}
 
+	// TODO: async
 	public static PocketDirectory readFromNbt(String id, CompoundTag tag) {
 		PocketDirectory directory = new PocketDirectory(RegistryKey.of(Registry.DIMENSION, new Identifier(id)));
 
@@ -50,6 +51,7 @@ public class PocketDirectory {
 		return directory;
 	}
 
+	// TODO: async
 	public CompoundTag writeToNbt() {
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("gridSize", this.gridSize);
