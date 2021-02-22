@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/crumbled_hall",
+  "id": "custom/crumbled_hall",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

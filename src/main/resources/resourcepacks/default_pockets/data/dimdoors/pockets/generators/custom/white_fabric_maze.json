@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/white_fabric_maze",
+  "id": "custom/white_fabric_maze",
   "setup_loot": true,
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"

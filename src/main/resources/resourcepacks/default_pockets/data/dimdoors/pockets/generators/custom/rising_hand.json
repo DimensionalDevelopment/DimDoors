@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/rising_hand",
+  "id": "custom/rising_hand",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

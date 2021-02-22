@@ -8,7 +8,6 @@ import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.EntityTarget;
@@ -113,8 +112,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		this.markDirty();
 	}
 
-	public boolean isRegistered() {
-		return !PocketTemplate.isReplacingPlaceholders() && this.world != null && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerWorld) this.world, this.pos));
+	public boolean isRegistered() { // TODO: do we need to implement this for v2?
+		return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.world != null && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerWorld) this.world, this.pos));
 	}
 
 	public void register() {

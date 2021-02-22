@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 
 import com.google.common.base.MoreObjects;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.pockets.SchematicV2Handler;
+import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
@@ -40,7 +40,7 @@ public class IdReference extends PocketGeneratorReference {
 
 	@Override
 	public PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters) {
-		return SchematicV2Handler.getInstance().getGenerator(id);
+		return SchematicHandler.getInstance().getGenerator(id);
 	}
 
 	@Override

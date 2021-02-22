@@ -6,8 +6,7 @@ public final class ModCommands {
     public static void init() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             DimTeleportCommand.register(dispatcher);
-            PocketCommand.register(dispatcher);
-            SchematicV2Command.register(dispatcher);
+            SchematicCommand.register(dispatcher);
             SchematicCommand.register(dispatcher);
         });
     }

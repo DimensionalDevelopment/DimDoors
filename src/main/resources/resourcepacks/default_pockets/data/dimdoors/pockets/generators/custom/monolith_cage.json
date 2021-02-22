@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/monolith_cage",
+  "id": "custom/monolith_cage",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

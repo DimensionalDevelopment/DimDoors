@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/lantredom_red",
+  "id": "custom/lantredom_red",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

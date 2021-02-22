@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/upwards_t_treasure",
+  "id": "custom/upwards_t_treasure",
   "setup_loot": true,
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"

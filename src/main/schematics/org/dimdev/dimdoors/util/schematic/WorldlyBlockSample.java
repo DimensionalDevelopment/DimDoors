@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.util.schematic.v2;
+package org.dimdev.dimdoors.util.schematic;
 
 import java.util.function.Predicate;
 
@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.Heightmap;
 import net.minecraft.world.ModifiableTestableWorld;
 import net.minecraft.world.StructureWorldAccess;
 

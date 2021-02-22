@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "v2/custom/trap_rib_tunnel",
+  "id": "custom/trap_rib_tunnel",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

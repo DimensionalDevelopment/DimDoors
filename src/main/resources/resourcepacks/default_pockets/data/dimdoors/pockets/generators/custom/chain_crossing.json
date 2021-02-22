@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/chain_crossing",
+  "id": "custom/chain_crossing",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

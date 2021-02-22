@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/collapsed_single_tunnel",
+  "id": "custom/collapsed_single_tunnel",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

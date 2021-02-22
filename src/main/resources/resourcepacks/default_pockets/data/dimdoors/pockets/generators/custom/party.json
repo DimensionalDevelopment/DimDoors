@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/party",
+  "id": "custom/party",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

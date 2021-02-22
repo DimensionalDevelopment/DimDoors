@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.util.schematic.v2;
+package org.dimdev.dimdoors.util.schematic;
 
 import java.util.List;
 
