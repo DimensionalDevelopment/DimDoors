@@ -48,6 +48,7 @@ public class PrivateRegistry {
 	public PrivateRegistry() {
 	}
 
+	// TODO: async
 	public void fromTag(CompoundTag nbt) {
 		CompoundTag tag = nbt.getCompound("privatePocketMap");
 
@@ -58,6 +59,7 @@ public class PrivateRegistry {
 		this.privatePocketMap = bm;
 	}
 
+	// TODO: async
 	public CompoundTag toTag(CompoundTag nbt) {
 		CompoundTag tag = new CompoundTag();
 		for (Map.Entry<UUID, PocketInfo> entry : this.privatePocketMap.entrySet()) {

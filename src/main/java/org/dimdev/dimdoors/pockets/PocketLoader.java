@@ -51,14 +51,9 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		CompletableFuture<Map<Identifier, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToMap(manager, "pockets/groups", this::loadPocketGroup);
 		CompletableFuture<Map<Identifier, PocketTemplate>> futureTemplates = loadResourcePathFromCompressedNbtToMap(manager, "pockets/schematic", ".schem", this::loadPocketTemplate);
 
-		try {
-			pocketGeneratorMap = futurePocketGeneratorMap.get();
-			pocketGroups = futurePocketGroups.get();
-			templates = futureTemplates.get();
-		} catch (InterruptedException | ExecutionException e) {
-			throw new RuntimeException(e);
-		}
-
+		pocketGeneratorMap = futurePocketGeneratorMap.join();
+		pocketGroups = futurePocketGroups.join();
+		templates = futureTemplates.join();
 	}
 
 	private <T> CompletableFuture<Map<Identifier, T>> loadResourcePathFromJsonToMap(ResourceManager manager, String startingPath, Function<Tag, T> reader) {
@@ -115,6 +110,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 //		}
 //    }
 
+	// TODO: load via resource loader
 	public Tag readNbtFromJson(String id) {
 		try {
 			Path path = Paths.get(PocketLoader.class.getResource("/resourcepacks/default_pockets/data/dimdoors/pockets/json/" + id + ".json").toURI());
