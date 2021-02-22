@@ -154,6 +154,12 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 			lazyPocket.init();
 
 			LazyPocketGenerator.currentlyGenerating = false;
+
+			/*
+			TODO: some sort of generationQueueMap where some non lazy modifications can be stored as Consumer<Chunk> so that they can be accessed by ChunkLoadListener
+				We want (mostly) everything to be placed during chunk load with lazy gen so that we don't experience any breakage with redstone or modded multiblocks/ cable stuff.
+			 */
+
 			while (!LazyPocketGenerator.generationQueue.isEmpty()) {
 				Chunk chunk = LazyPocketGenerator.generationQueue.remove();
 				MinecraftServer server = DimensionalDoorsInitializer.getServer();
