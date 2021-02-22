@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/chain_t",
+  "id": "custom/chain_t",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

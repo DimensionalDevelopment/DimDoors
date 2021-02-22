@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/exit_cube",
+  "id": "custom/exit_cube",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

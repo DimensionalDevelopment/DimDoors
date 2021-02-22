@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/returning_eye",
+  "id": "custom/returning_eye",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "v2/custom/buggy_top_entry",
+  "id": "custom/buggy_top_entry",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

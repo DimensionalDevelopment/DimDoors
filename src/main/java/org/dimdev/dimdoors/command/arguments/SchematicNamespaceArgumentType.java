@@ -16,6 +16,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.TranslatableText;
 
+// TODO
 public class SchematicNamespaceArgumentType implements ArgumentType<String> {
     private static final Collection<String> NAMESPACES = ImmutableList.of("ruins", "blank", "nether", "private", "public");
 

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/river_road_twin_bridges",
+  "id": "custom/river_road_twin_bridges",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

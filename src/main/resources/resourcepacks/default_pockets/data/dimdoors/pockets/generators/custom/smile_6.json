@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "v2/custom/smile_6",
+  "id": "custom/smile_6",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

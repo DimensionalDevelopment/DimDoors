@@ -4,15 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.schematic.v2.Schematic;
-import org.dimdev.dimdoors.util.schematic.v2.SchematicPlacer;
+import org.dimdev.dimdoors.util.schematic.Schematic;
+import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 import org.dimdev.dimdoors.world.feature.gateway.Gateway;
 
 import net.minecraft.nbt.NbtIo;

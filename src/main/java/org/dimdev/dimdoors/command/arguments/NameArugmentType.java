@@ -8,11 +8,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import org.dimdev.dimdoors.pockets.SchematicHandler;
 
 import net.minecraft.command.CommandSource;
 
-public class NameArugmentType implements ArgumentType<String> {
+// TODO
+public class NameArugmentType /*implements ArgumentType<String>*/ {
+	/*
     @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
         return reader.readUnquotedString();
@@ -28,4 +29,5 @@ public class NameArugmentType implements ArgumentType<String> {
 
         return CommandSource.suggestMatching(SchematicHandler.INSTANCE.getTemplateNames(group), builder);
     }
+    */
 }

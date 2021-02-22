@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.BlockBoxUtil;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.math.Equation;
-import org.dimdev.dimdoors.util.schematic.v2.SchematicBlockPalette;
+import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 

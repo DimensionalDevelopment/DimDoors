@@ -20,7 +20,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.math.MathUtil;
-import org.dimdev.dimdoors.util.schematic.v2.Schematic;
+import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.minecraft.block.entity.BlockEntity;

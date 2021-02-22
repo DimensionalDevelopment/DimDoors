@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "v2/custom/broken_pillars",
+  "id": "custom/broken_pillars",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "v2/custom/decaying_chain_tunnel",
+  "id": "custom/decaying_chain_tunnel",
   "builder": {
     "type": "dimdoors:lazy_gen_pocket"
   },

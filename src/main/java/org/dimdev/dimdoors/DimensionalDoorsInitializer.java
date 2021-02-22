@@ -29,7 +29,6 @@ import org.dimdev.dimdoors.listener.pocket.*;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.SchematicHandler;
-import org.dimdev.dimdoors.pockets.SchematicV2Handler;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
@@ -107,10 +106,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		AbstractPocket.AbstractPocketType.register();
 		PocketAddon.PocketAddonType.register();
 
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(SchematicV2Handler.getInstance());
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(SchematicHandler.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default_pockets"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);
-//        SchematicV2Handler.getInstance().load();
-        SchematicHandler.INSTANCE.loadSchematics();
 
 		registerListeners();
     }

@@ -15,7 +15,7 @@ import net.fabricmc.fabric.api.util.NbtType;
 import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
-import org.dimdev.dimdoors.pockets.SchematicV2Handler;
+import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.TagEquations;
@@ -32,7 +32,7 @@ public class RiftDataModifier implements Modifier {
 	public Modifier fromTag(CompoundTag tag) {
 		if (tag.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = tag.getString("rift_data");
-			doorData = (CompoundTag) SchematicV2Handler.getInstance().readNbtFromJson(doorDataReference);
+			doorData = (CompoundTag) SchematicHandler.getInstance().readNbtFromJson(doorDataReference);
 		}
 		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
 
