@@ -38,6 +38,8 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	private String id;
 	private Identifier templateID;
+	private boolean blockUpdate = false;
+
 	private final List<RiftBlockEntity> rifts = new ArrayList<>();
 	private BlockPos origin;
 
@@ -62,7 +64,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	public void generateChunk(LazyGenerationPocket pocket, Chunk chunk) {
 		PocketTemplateV2 template = SchematicV2Handler.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
-		template.place(pocket, chunk, origin);
+		template.place(pocket, chunk, origin, blockUpdate);
 		setupChunk(pocket, chunk, isSetupLoot());
 
 		super.generateChunk(pocket, chunk);
@@ -78,6 +80,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 			int[] originInts = tag.getIntArray("origin");
 			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
 		}
+		if (tag.contains("block_update")) blockUpdate = tag.getBoolean("block_update");
 
 		SchematicV2Handler.getInstance().loadSchematic(templateID, id);
 
@@ -89,6 +92,8 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		super.toTag(tag);
 
 		tag.putString("id", this.id);
+		if (blockUpdate) tag.putBoolean("block_update", true);
+
 		if (origin != null) tag.putIntArray("origin", new int[]{origin.getX(), origin.getY(), origin.getZ()});
 
 		return tag;
@@ -133,7 +138,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		if (pocket instanceof LazyGenerationPocket) {
 			rifts.addAll(template.placeRiftsOnly(pocket));
 		} else {
-			template.place(pocket);
+			template.place(pocket, blockUpdate);
 		}
 
 		return pocket;

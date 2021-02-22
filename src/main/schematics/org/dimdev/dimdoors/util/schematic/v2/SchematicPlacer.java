@@ -27,7 +27,7 @@ public final class SchematicPlacer {
 	private SchematicPlacer() {
 	}
 
-	public static void place(Schematic schematic, StructureWorldAccess world, BlockPos origin) {
+	public static void place(Schematic schematic, ServerWorld world, BlockPos origin, boolean blockUpdate) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
 		for (String id : schematic.getMetadata().getRequiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
@@ -35,7 +35,7 @@ public final class SchematicPlacer {
 			}
 		}
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		blockSample.place(origin, world, false);
+		blockSample.place(origin, world, blockUpdate, false);
 	}
 
 	public static List<RiftBlockEntity> placeRiftsOnly(Schematic schematic, ServerWorld world, BlockPos origin) {
@@ -49,7 +49,7 @@ public final class SchematicPlacer {
 		return blockSample.placeRiftsOnly(origin, world);
 	}
 
-	public static void place(Schematic schematic, ServerWorld world, Chunk chunk, BlockPos origin) {
+	public static void place(Schematic schematic, ServerWorld world, Chunk chunk, BlockPos origin, boolean blockUpdate) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
 		for (String id : schematic.getMetadata().getRequiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
@@ -57,7 +57,7 @@ public final class SchematicPlacer {
 			}
 		}
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		blockSample.place(origin, world, chunk, false);
+		blockSample.place(origin, world, chunk, blockUpdate, false);
 	}
 
 
