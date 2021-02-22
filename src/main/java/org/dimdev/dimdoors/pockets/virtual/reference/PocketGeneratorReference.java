@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.pockets.modifier.LazyCompatibleModifier;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
@@ -143,7 +144,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		generator.applyModifiers(parameters, manager);
 
 		this.applyModifiers(parameters, manager);
-		generator.setup(pocket, manager, parameters, setupLoot != null ? setupLoot : generator.isSetupLoot());
+
 		if (pocket instanceof LazyGenerationPocket) {
 			if (!(generator instanceof LazyPocketGenerator)) throw new RuntimeException("pocket was instance of LazyGenerationPocket but generator was not instance of LazyPocketGenerator");
 			LazyGenerationPocket lazyPocket = (LazyGenerationPocket) pocket;
@@ -156,20 +157,21 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 
 			LazyPocketGenerator.currentlyGenerating = false;
 
-			/*
-			TODO: some sort of generationQueueMap where some non lazy modifications can be stored as Consumer<Chunk> so that they can be accessed by ChunkLoadListener
-				We want (mostly) everything to be placed during chunk load with lazy gen so that we don't experience any breakage with redstone or modded multiblocks/ cable stuff.
-			 */
-
 			while (!LazyPocketGenerator.generationQueue.isEmpty()) {
 				Chunk chunk = LazyPocketGenerator.generationQueue.remove();
+
+				LazyCompatibleModifier.runQueuedModifications(chunk);
 				MinecraftServer server = DimensionalDoorsInitializer.getServer();
 				DimensionalDoorsInitializer.getServer().send(new ServerTask(server.getTicks(), () -> (lazyPocket).chunkLoaded(chunk)));
 			}
+
+			LazyCompatibleModifier.runLeftoverModifications(DimensionalDoorsInitializer.getWorld(lazyPocket.getWorld()));
 		} else {
-			LazyPocketGenerator.generationQueue.clear();
 			LazyPocketGenerator.currentlyGenerating = false;
+			LazyPocketGenerator.generationQueue.clear();
 		}
+
+		generator.setup(pocket, manager, parameters, setupLoot != null ? setupLoot : generator.isSetupLoot());
 
 		return pocket;
 	}

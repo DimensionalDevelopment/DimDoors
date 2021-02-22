@@ -52,13 +52,11 @@ public class RiftManager {
 
 			return true;
 		}
-		// TODO: should we register the rift here?
 		return false;
 	}
 
 	public boolean consume(int id, Predicate<RiftBlockEntity> consumer) {
 		if (map.containsKey(id) && consumer.test(map.get(id))) {
-			// TODO: should we register the rift here?
 			map.remove(id);
 			return true;
 		}

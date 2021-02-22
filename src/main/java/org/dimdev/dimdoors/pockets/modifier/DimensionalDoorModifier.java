@@ -12,6 +12,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
@@ -29,9 +30,10 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.TagEquations;
 import org.dimdev.dimdoors.util.math.Equation;
 import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class DimensionalDoorModifier implements Modifier {
+public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "door";
 
@@ -88,7 +90,7 @@ public class DimensionalDoorModifier implements Modifier {
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
-		Modifier.super.toTag(tag);
+		LazyCompatibleModifier.super.toTag(tag);
 
 		tag.putString("facing", facing.asString());
 		tag.putString("door_type", doorTypeString);
@@ -134,12 +136,9 @@ public class DimensionalDoorModifier implements Modifier {
 		BlockPos pocketOrigin = manager.getPocket().getOrigin();
 		BlockPos pos = new BlockPos(xEquation.apply(variableMap) + pocketOrigin.getX(), yEquation.apply(variableMap) + pocketOrigin.getY(), zEquation.apply(variableMap) + pocketOrigin.getZ());
 
-		ServerWorld world = parameters.getWorld();
 		BlockState lower = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).with(DimensionalDoorBlock.FACING, facing);
-		world.setBlockState(pos, lower);
-		world.setBlockState(pos.up(), doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).with(DimensionalDoorBlock.FACING, facing));
-
-		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
+		BlockState upper = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).with(DimensionalDoorBlock.FACING, facing);
+		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate(pos, lower);
 
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));
@@ -150,7 +149,24 @@ public class DimensionalDoorModifier implements Modifier {
 
 		manager.add(rift);
 
-		world.setBlockEntity(pos, rift);
+		if (manager.getPocket() instanceof LazyGenerationPocket) {
+
+			// queue two separate tasks, Cubic Chunks may cause the positions to be in different chunks.
+			queueChunkModificationTask(new ChunkPos(pos), chunk -> {
+				chunk.setBlockState(pos, lower, false);
+				chunk.setBlockEntity(rift);
+			});
+			queueChunkModificationTask(new ChunkPos(pos.up()), chunk -> {
+				chunk.setBlockState(pos.up(), upper, false);
+			});
+		} else {
+			ServerWorld world = parameters.getWorld();
+
+			world.setBlockState(pos, lower);
+			world.setBlockState(pos.up(), upper);
+
+			world.addBlockEntity(rift);
+		}
 	}
 
 	@Override
