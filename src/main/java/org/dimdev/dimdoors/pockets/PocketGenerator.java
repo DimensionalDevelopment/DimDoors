@@ -39,7 +39,7 @@ public final class PocketGenerator {
 
     public static Pocket generateFromPocketGroupV2(ServerWorld world, Identifier group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
     	PocketGenerationParameters parameters = new PocketGenerationParameters(world, virtualLocation, linkTo, linkProperties);
-    	return generatePocketV2(SchematicHandler.getInstance().getGroup(group).getNextPocketGeneratorReference(parameters), parameters);
+    	return generatePocketV2(PocketLoader.getInstance().getGroup(group).getNextPocketGeneratorReference(parameters), parameters);
 	}
 
 	public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationParameters parameters) {

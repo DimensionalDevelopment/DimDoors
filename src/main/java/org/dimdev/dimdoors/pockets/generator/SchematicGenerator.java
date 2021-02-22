@@ -10,8 +10,8 @@ import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
-import org.dimdev.dimdoors.pockets.SchematicHandler;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.schematic.Schematic;
@@ -62,7 +62,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	@Override
 	public void generateChunk(LazyGenerationPocket pocket, Chunk chunk) {
-		PocketTemplate template = SchematicHandler.getInstance().getTemplates().get(templateID);
+		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 		template.place(pocket, chunk, origin, blockUpdate);
 		setupChunk(pocket, chunk, isSetupLoot());
@@ -81,8 +81,6 @@ public class SchematicGenerator extends LazyPocketGenerator{
 			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
 		}
 		if (tag.contains("block_update")) blockUpdate = tag.getBoolean("block_update");
-
-		SchematicHandler.getInstance().loadSchematic(templateID, id);
 
 		return this;
 	}
@@ -129,11 +127,11 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		ServerWorld world = parameters.getWorld();
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 
-		PocketTemplate template = SchematicHandler.getInstance().getTemplates().get(templateID);
+		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
-		LOGGER.info("Generating pocket from template " + template.getId() + " at location " + pocket.getOrigin());
+		LOGGER.info("Generating pocket from template " + templateID + " at location " + pocket.getOrigin());
 
 		if (pocket instanceof LazyGenerationPocket) {
 			rifts.addAll(template.placeRiftsOnly(pocket));
@@ -156,7 +154,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	@Override
 	public Vec3i getSize(PocketGenerationParameters parameters) {
-		PocketTemplate template = SchematicHandler.getInstance().getTemplates().get(templateID);
+		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 		Schematic schem = template.getSchematic();
 		return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());

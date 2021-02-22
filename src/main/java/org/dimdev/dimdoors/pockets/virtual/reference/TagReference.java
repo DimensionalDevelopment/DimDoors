@@ -6,7 +6,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 
 import com.google.common.base.MoreObjects;
-import org.dimdev.dimdoors.pockets.SchematicHandler;
+import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
@@ -87,13 +87,13 @@ public class TagReference extends PocketGeneratorReference{
 	// TODO: this will break if pockets change in between (which they could if we add a tool for creating pocket json config stuff ingame)
 	@Override
 	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationParameters parameters) {
-		if (pockets == null) pockets = SchematicHandler.getInstance().getPocketsMatchingTags(required, blackList, exact);
+		if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact);
 		return pockets.peekNextRandomWeighted(parameters);
 	}
 
 	@Override
 	public PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters) {
-		if (pockets == null) pockets = SchematicHandler.getInstance().getPocketsMatchingTags(required, blackList, exact);
+		if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact);
 		return pockets.getNextRandomWeighted(parameters);
 	}
 
