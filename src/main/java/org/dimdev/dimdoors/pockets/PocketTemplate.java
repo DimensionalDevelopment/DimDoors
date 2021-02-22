@@ -19,11 +19,9 @@ public class PocketTemplate {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final boolean replacingPlaceholders = false;
     private final Schematic schematic;
-    private final String id;
 
-    public PocketTemplate(Schematic schematic, String id) {
+    public PocketTemplate(Schematic schematic) {
         this.schematic = schematic;
-        this.id = id;
     }
 
     /*
@@ -65,7 +63,6 @@ public class PocketTemplate {
         pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
         BlockPos origin = pocket.getOrigin();
-        LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
 		SchematicPlacer.place(this.schematic, world, origin, blockUpdate);
     }
 
@@ -73,7 +70,6 @@ public class PocketTemplate {
 		pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
 		ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
 		BlockPos origin = pocket.getOrigin();
-		LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
 		return SchematicPlacer.placeRiftsOnly(this.schematic, world, origin);
 	}
 
@@ -87,9 +83,5 @@ public class PocketTemplate {
 
     public Schematic getSchematic() {
         return this.schematic;
-    }
-
-    public String getId() {
-        return this.id;
     }
 }

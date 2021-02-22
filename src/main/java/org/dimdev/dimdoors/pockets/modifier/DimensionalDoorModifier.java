@@ -24,7 +24,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftData;
-import org.dimdev.dimdoors.pockets.SchematicHandler;
+import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.TagEquations;
@@ -70,7 +70,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 
 		if (tag.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = tag.getString("rift_data");
-			doorData = (CompoundTag) SchematicHandler.getInstance().readNbtFromJson(doorDataReference);
+			doorData = (CompoundTag) PocketLoader.getInstance().readNbtFromJson(doorDataReference);
 		}
 		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
 

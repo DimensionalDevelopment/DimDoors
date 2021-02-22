@@ -30,15 +30,15 @@ import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.WeightedList;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
-public class SchematicHandler implements SimpleSynchronousResourceReloadListener {
+public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
-	private static final SchematicHandler INSTANCE = new SchematicHandler();
+	private static final PocketLoader INSTANCE = new PocketLoader();
 	private Map<Identifier, PocketGenerator> pocketGeneratorMap = new ConcurrentHashMap<>();
 	private Map<Identifier, VirtualPocket> pocketGroups = new ConcurrentHashMap<>();
 	private Map<Identifier, PocketTemplate> templates = new ConcurrentHashMap<>();
 
-	private SchematicHandler() {
+	private PocketLoader() {
 	}
 
 	@Override
@@ -49,10 +49,12 @@ public class SchematicHandler implements SimpleSynchronousResourceReloadListener
 
 		CompletableFuture<Map<Identifier, PocketGenerator>> futurePocketGeneratorMap = loadResourcePathFromJsonToMap(manager, "pockets/generators", this::loadPocketGenerator);
 		CompletableFuture<Map<Identifier, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToMap(manager, "pockets/groups", this::loadPocketGroup);
+		CompletableFuture<Map<Identifier, PocketTemplate>> futureTemplates = loadResourcePathFromCompressedNbtToMap(manager, "pockets/schematic", ".schem", this::loadPocketTemplate);
 
 		try {
 			pocketGeneratorMap = futurePocketGeneratorMap.get();
 			pocketGroups = futurePocketGroups.get();
+			templates = futureTemplates.get();
 		} catch (InterruptedException | ExecutionException e) {
 			throw new RuntimeException(e);
 		}
@@ -70,6 +72,22 @@ public class SchematicHandler implements SimpleSynchronousResourceReloadListener
 							try {
 								JsonElement json = GSON.fromJson(new InputStreamReader(manager.getResource(id).getInputStream()), JsonElement.class);
 								return reader.apply(JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
+							} catch (IOException e) {
+								throw new RuntimeException("Error loading resource: " + id);
+							}
+						})));
+	}
+
+	private <T> CompletableFuture<Map<Identifier, T>> loadResourcePathFromCompressedNbtToMap(ResourceManager manager, String startingPath, String extension, Function<Tag, T> reader) {
+		int sub = startingPath.endsWith("/") ? 0 : 1;
+
+		Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(extension));
+		return CompletableFuture.supplyAsync(() ->
+				ids.parallelStream().unordered().collect(Collectors.toConcurrentMap(
+						id -> new Identifier(id.getNamespace(), id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub)),
+						id -> {
+							try {
+								return reader.apply(NbtIo.readCompressed(manager.getResource(id).getInputStream()));
 							} catch (IOException e) {
 								throw new RuntimeException("Error loading resource: " + id);
 							}
@@ -99,7 +117,7 @@ public class SchematicHandler implements SimpleSynchronousResourceReloadListener
 
 	public Tag readNbtFromJson(String id) {
 		try {
-			Path path = Paths.get(SchematicHandler.class.getResource("/resourcepacks/default_pockets/data/dimdoors/pockets/json/" + id + ".json").toURI());
+			Path path = Paths.get(PocketLoader.class.getResource("/resourcepacks/default_pockets/data/dimdoors/pockets/json/" + id + ".json").toURI());
 			if (!Files.isRegularFile(path)) {
 				return null;
 			}
@@ -126,17 +144,11 @@ public class SchematicHandler implements SimpleSynchronousResourceReloadListener
 		return PocketGenerator.deserialize((CompoundTag) tag);
 	}
 
-	public void loadSchematic(Identifier templateID, String id) {
-		try {
-			if (templates.containsKey(templateID)) return;
-			Path schemPath = Paths.get(SchematicHandler.class.getResource(String.format("/resourcepacks/default_pockets/data/dimdoors/pockets/schematic/%s.schem", id)).toURI());
-			CompoundTag schemTag = NbtIo.readCompressed(Files.newInputStream(schemPath));
-			Schematic schematic = Schematic.fromTag(schemTag);
-			PocketTemplate template = new PocketTemplate(schematic, id);
-			templates.put(templateID, template);
-		} catch (URISyntaxException | IOException e) {
-			LOGGER.error("Could not load schematic!", e);
+	private PocketTemplate loadPocketTemplate(Tag tag) {
+		if (tag == null || tag.getType() != NbtType.COMPOUND) {
+			throw new RuntimeException("Could not load Schematic since its json does not represent a CompoundTag!");
 		}
+		return new PocketTemplate(Schematic.fromTag((CompoundTag) tag));
 	}
 
 	public WeightedList<PocketGenerator, PocketGenerationParameters> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
@@ -147,7 +159,7 @@ public class SchematicHandler implements SimpleSynchronousResourceReloadListener
 		return pocketGroups.get(group);
 	}
 
-	public static SchematicHandler getInstance() {
+	public static PocketLoader getInstance() {
 		return INSTANCE;
 	}
 
