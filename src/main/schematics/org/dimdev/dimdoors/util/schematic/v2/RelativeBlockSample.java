@@ -103,8 +103,12 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		return this.blockContainer.get(pos).getFluidState();
 	}
 
-	public void place(BlockPos origin, StructureWorldAccess world, boolean biomes) {
-		this.blockContainer.forEach((pos, state) -> world.setBlockState(origin.add(pos), state, 0b0000011));
+	public void place(BlockPos origin, ServerWorld world, boolean blockUpdate, boolean biomes) {
+		this.blockContainer.forEach((pos, state) -> {
+			BlockPos actualPos = origin.add(pos);
+			world.setBlockState(actualPos, state, 0, 0);
+			if (blockUpdate) world.getChunkManager().markForUpdate(actualPos);
+		});
 		for (Map.Entry<BlockPos, CompoundTag> entry : this.blockEntityContainer.entrySet()) {
 			BlockPos pos = entry.getKey();
 			BlockPos actualPos = origin.add(entry.getKey());
@@ -133,7 +137,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		}
 	}
 
-	public void place(BlockPos origin, ServerWorld world, Chunk chunk, boolean biomes) {
+	public void place(BlockPos origin, ServerWorld world, Chunk chunk, boolean blockUpdate, boolean biomes) {
 		ChunkPos pos = chunk.getPos();
 		BlockBox chunkBox = BlockBox.create(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX(), chunk.getHeight() - 1, pos.getEndZ());
 		BlockBox schemBox = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + schematic.getWidth() - 1, origin.getY() + schematic.getHeight() - 1, origin.getZ() + schematic.getLength() - 1);
@@ -145,7 +149,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
 				if (!newState.isAir()) {
 					chunk.setBlockState(blockPos, newState, false);
-					world.getChunkManager().markForUpdate(blockPos);
+					if (blockUpdate) world.getChunkManager().markForUpdate(blockPos);
 				}
 			}
 		});

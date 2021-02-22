@@ -61,12 +61,12 @@ public class PocketTemplateV2 {
     }
      */
 
-    public void place(Pocket pocket) {
+    public void place(Pocket pocket, boolean blockUpdate) {
         pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Placing new pocket using schematic " + this.id + " at x = " + origin.getX() + ", z = " + origin.getZ());
-		SchematicPlacer.place(this.schematic, world, origin);
+		SchematicPlacer.place(this.schematic, world, origin, blockUpdate);
     }
 
 	public List<RiftBlockEntity> placeRiftsOnly(Pocket pocket) {
@@ -77,8 +77,8 @@ public class PocketTemplateV2 {
 		return SchematicPlacer.placeRiftsOnly(this.schematic, world, origin);
 	}
 
-	public void place(LazyGenerationPocket pocket, Chunk chunk, BlockPos originalOrigin) {
-		SchematicPlacer.place(this.schematic, DimensionalDoorsInitializer.getWorld(pocket.getWorld()), chunk, originalOrigin);
+	public void place(LazyGenerationPocket pocket, Chunk chunk, BlockPos originalOrigin, boolean blockUpdate) {
+		SchematicPlacer.place(this.schematic, DimensionalDoorsInitializer.getWorld(pocket.getWorld()), chunk, originalOrigin, blockUpdate);
 	}
 
     public static boolean isReplacingPlaceholders() {
