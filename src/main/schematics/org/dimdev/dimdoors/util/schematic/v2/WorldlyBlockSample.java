@@ -24,7 +24,7 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 	}
 
 	public void place(BlockPos origin, boolean biomes) {
-		this.relativeBlockSample.place(origin, this.world, biomes);
+		this.relativeBlockSample.place(origin, this.world, false, biomes);
 	}
 
 	@Nullable
