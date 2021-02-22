@@ -159,6 +159,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			}
 		});
 
+		// TODO: is it ok if this is not executed with MinecraftServer#send?
 		this.entityContainer.forEach(((tag, vec3d) -> {
 			ListTag doubles = tag.getList("Pos", NbtType.DOUBLE);
 			Vec3d vec = vec3d.add(origin.getX(), origin.getY(), origin.getZ());

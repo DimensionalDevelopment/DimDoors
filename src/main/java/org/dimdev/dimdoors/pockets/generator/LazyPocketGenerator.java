@@ -5,6 +5,8 @@ import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerTask;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
@@ -103,14 +105,17 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	abstract public LazyPocketGenerator getNewInstance();
 
 	public void setupChunk(Pocket pocket, Chunk chunk, boolean setupLootTables) {
+		MinecraftServer server = DimensionalDoorsInitializer.getServer();
 		chunk.getBlockEntityPositions().stream().map(chunk::getBlockEntity).forEach(blockEntity -> { // RiftBlockEntities should already be initialized here
 			if (setupLootTables && blockEntity instanceof Inventory) {
 				Inventory inventory = (Inventory) blockEntity;
-				if (inventory.isEmpty()) {
-					if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
-						TemplateUtils.setupLootTable(DimensionalDoorsInitializer.getWorld(pocket.getWorld()), blockEntity, inventory, LOGGER);
+				server.send(new ServerTask(server.getTicks(), () -> {
+					if (inventory.isEmpty()) {
+						if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
+							TemplateUtils.setupLootTable(DimensionalDoorsInitializer.getWorld(pocket.getWorld()), blockEntity, inventory, LOGGER);
+						}
 					}
-				}
+				}));
 			}
 		});
 	}
