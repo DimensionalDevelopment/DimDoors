@@ -7,6 +7,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.WorldChunk;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
+import org.dimdev.dimdoors.pockets.modifier.LazyCompatibleModifier;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
@@ -21,6 +22,7 @@ public class ChunkLoadListener implements ServerChunkEvents.Load {
 		if (LazyPocketGenerator.currentlyGenerating) {
 			LazyPocketGenerator.generationQueue.add(chunk);
 		} else {
+			LazyCompatibleModifier.runQueuedModifications(chunk);
 			((LazyGenerationPocket) pocket).chunkLoaded(chunk);
 		}
 	}

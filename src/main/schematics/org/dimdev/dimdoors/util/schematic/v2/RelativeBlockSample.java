@@ -7,6 +7,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
 import net.minecraft.block.*;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.*;
 import net.minecraft.world.chunk.Chunk;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -128,7 +129,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		}
 	}
 
-	public void place(BlockPos origin, StructureWorldAccess world, Chunk chunk, boolean biomes) {
+	public void place(BlockPos origin, ServerWorld world, Chunk chunk, boolean biomes) {
 		ChunkPos pos = chunk.getPos();
 		BlockBox chunkBox = BlockBox.create(pos.getStartX(), chunk.getBottomY(), pos.getStartZ(), pos.getEndX(), chunk.getTopY(), pos.getEndZ());
 		BlockBox schemBox = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + schematic.getWidth() - 1, origin.getY() + schematic.getHeight() - 1, origin.getZ() + schematic.getLength() - 1);
@@ -136,7 +137,13 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		if (!BlockBoxUtil.isRealBox(intersection)) return;
 
 		BlockPos.stream(intersection).forEach(blockPos -> {
-			if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, this.blockContainer.get(blockPos.subtract(origin)), false);
+			if(chunk.getBlockState(blockPos).isAir()) {
+				BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
+				if (!newState.isAir()) {
+					chunk.setBlockState(blockPos, newState, false);
+					world.getChunkManager().markForUpdate(blockPos);
+				}
+			}
 		});
 
 		// TODO: depending on size of blockEntityContainer it might be faster to iterate over BlockPos.stream(intersection) instead
@@ -171,7 +178,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		}));
 	}
 
-	public List<RiftBlockEntity> placeRiftsOnly(BlockPos origin, StructureWorldAccess world) {
+	public List<RiftBlockEntity> placeRiftsOnly(BlockPos origin, ServerWorld world) {
 		List<RiftBlockEntity> rifts = new ArrayList<>();
 		this.blockEntityContainer.forEach( (blockPos, tag) ->  {
 			BlockPos actualPos = origin.add(blockPos);
@@ -184,6 +191,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			BlockEntity blockEntity = BlockEntity.createFromTag(actualPos, state, tag);
 			if (blockEntity instanceof RiftBlockEntity) {
 				world.setBlockState(actualPos, state, 0);
+				world.getChunkManager().markForUpdate(blockPos);
 				if (state.getBlock() instanceof DoorBlock) {
 					world.setBlockState(actualPos.up(), getBlockState(blockPos.up()), 0);
 				}

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +38,7 @@ public final class SchematicPlacer {
 		blockSample.place(origin, world, false);
 	}
 
-	public static List<RiftBlockEntity> placeRiftsOnly(Schematic schematic, StructureWorldAccess world, BlockPos origin) {
+	public static List<RiftBlockEntity> placeRiftsOnly(Schematic schematic, ServerWorld world, BlockPos origin) {
 		LOGGER.debug("Placing schematic rifts only: {}", schematic.getMetadata().getName());
 		for (String id : schematic.getMetadata().getRequiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
@@ -48,7 +49,7 @@ public final class SchematicPlacer {
 		return blockSample.placeRiftsOnly(origin, world);
 	}
 
-	public static void place(Schematic schematic, StructureWorldAccess world, Chunk chunk, BlockPos origin) {
+	public static void place(Schematic schematic, ServerWorld world, Chunk chunk, BlockPos origin) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
 		for (String id : schematic.getMetadata().getRequiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
