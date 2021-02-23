@@ -1,6 +1,6 @@
 {
   "fixed_time" : 6000,
-  "has_skylight": true,
+  "has_skylight": false,
   "has_ceiling": false,
   "ultrawarm": false,
   "natural": false,
@@ -13,5 +13,5 @@
   "height": 256,
   "logical_height" : 256,
   "infiniburn": "minecraft:infiniburn_overworld",
-  "ambient_light": 0.1
+  "ambient_light": 0
 }
