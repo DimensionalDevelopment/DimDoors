@@ -7,6 +7,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
 import net.minecraft.block.*;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.*;
 import net.minecraft.world.chunk.Chunk;
@@ -146,15 +147,21 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		BlockBox intersection = BlockBoxUtil.intersection(chunkBox, schemBox);
 		if (!BlockBoxUtil.isRealBox(intersection)) return;
 
+		ServerChunkManager serverChunkManager = world.getChunkManager();
+
+
 		BlockPos.stream(intersection).forEach(blockPos -> {
 			if(chunk.getBlockState(blockPos).isAir()) {
 				BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
 				if (!newState.isAir()) {
 					chunk.setBlockState(blockPos, newState, false);
-					if (blockUpdate) world.getChunkManager().markForUpdate(blockPos);
+					if (blockUpdate) serverChunkManager.markForUpdate(blockPos);
 				}
 			}
 		});
+
+		// do the lighting thing
+		serverChunkManager.getLightingProvider().light(chunk, false);
 
 		// TODO: depending on size of blockEntityContainer it might be faster to iterate over BlockPos.stream(intersection) instead
 		this.blockEntityContainer.forEach((blockPos, tag) -> {
