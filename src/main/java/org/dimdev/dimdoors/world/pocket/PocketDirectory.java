@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3i;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.util.math.GridUtil;
@@ -35,36 +37,39 @@ public class PocketDirectory {
 		this.pockets = new HashMap<>();
 	}
 
-	// TODO: async
 	public static PocketDirectory readFromNbt(String id, CompoundTag tag) {
 		PocketDirectory directory = new PocketDirectory(RegistryKey.of(Registry.DIMENSION, new Identifier(id)));
-
-		directory.gridSize = tag.getInt("gridSize");
-		directory.privatePocketSize = tag.getInt("privatePocketSize");
-		directory.publicPocketSize = tag.getInt("publicPocketSize");
-
-		CompoundTag pocketsTag = tag.getCompound("pockets");
-		directory.pockets = pocketsTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, a -> AbstractPocket.deserialize(pocketsTag.getCompound(a))));
+		// no need to parallelize
+		directory.gridSize = tag.getInt("grid_size");
+		directory.privatePocketSize = tag.getInt("private_pocket_size");
+		directory.publicPocketSize = tag.getInt("public_pocket_size");
+		// same thing, too short anyways
 		CompoundTag nextIdMapTag = tag.getCompound("next_id_map");
 		directory.nextIDMap.putAll(nextIdMapTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapTag::getInt)));
+
+		CompoundTag pocketsTag = tag.getCompound("pockets");
+		directory.pockets = pocketsTag.getKeys().stream().unordered().map(key -> {
+			CompoundTag pocketTag = pocketsTag.getCompound(key);
+			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketTag)));
+		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight));
 
 		return directory;
 	}
 
-	// TODO: async
 	public CompoundTag writeToNbt() {
 		CompoundTag tag = new CompoundTag();
-		tag.putInt("gridSize", this.gridSize);
-		tag.putInt("privatePocketSize", this.privatePocketSize);
-		tag.putInt("publicPocketSize", this.publicPocketSize);
-
-		CompoundTag pocketsTag = new CompoundTag();
-		this.pockets.forEach((key, value) -> pocketsTag.put(key.toString(), value.toTag(new CompoundTag())));
-		tag.put("pockets", pocketsTag);
+		tag.putInt("grid_size", this.gridSize);
+		tag.putInt("private_pocket_size", this.privatePocketSize);
+		tag.putInt("public_pocket_size", this.publicPocketSize);
 
 		CompoundTag nextIdMapTag = new CompoundTag();
 		this.nextIDMap.forEach((key, value) -> nextIdMapTag.putInt(key.toString(), value));
 		tag.put("next_id_map", nextIdMapTag);
+
+		CompoundTag pocketsTag = new CompoundTag();
+		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toTag(new CompoundTag()))))
+				.map(CompletableFuture::join).forEach(pair -> pocketsTag.put(pair.getLeft(), pair.getRight()));
+		tag.put("pockets", pocketsTag);
 
 		return tag;
 	}
@@ -104,7 +109,8 @@ public class PocketDirectory {
 			pocketAt = getPocket(cursor);
 		}
 
-		cursor = cursor + squaredSize - 1; // we actually want to use the last id of the assigned grid space since it is in the bottom left corner
+		cursor = cursor + squaredSize - 1; // we actually want to use the last id of
+		// the assigned grid space since it is in the bottom left corner
 
 		T pocket = builder
 				.id(cursor)
