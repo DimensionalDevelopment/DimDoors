@@ -2,10 +2,14 @@ package org.dimdev.dimdoors.world.pocket;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.Pair;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 
 import net.minecraft.nbt.CompoundTag;
@@ -48,26 +52,29 @@ public class PrivateRegistry {
 	public PrivateRegistry() {
 	}
 
-	// TODO: async
-	public void fromTag(CompoundTag nbt) {
-		CompoundTag tag = nbt.getCompound("privatePocketMap");
+	public void fromTag(CompoundTag tag) {
+		privatePocketMap.clear();
+		CompoundTag privatePocketMapTag = tag.getCompound("private_pocket_map");
+		CompletableFuture<Map<UUID, PocketInfo>> futurePrivatePocketMap = CompletableFuture.supplyAsync(() ->
+				privatePocketMapTag.getKeys().stream().unordered().map(key -> {
+					CompoundTag pocketInfoTag = privatePocketMapTag.getCompound(key);
+					return CompletableFuture.supplyAsync(() -> new Pair<>(UUID.fromString(key), PocketInfo.fromTag(pocketInfoTag)));
+				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight)));
 
-		HashBiMap<UUID, PocketInfo> bm = HashBiMap.create();
-		for (String t : tag.getKeys()) {
-			bm.put(UUID.fromString(t), PocketInfo.fromTag(tag.getCompound(t)));
-		}
-		this.privatePocketMap = bm;
+		futurePrivatePocketMap.join().forEach(this.privatePocketMap::put);
 	}
 
-	// TODO: async
-	public CompoundTag toTag(CompoundTag nbt) {
-		CompoundTag tag = new CompoundTag();
-		for (Map.Entry<UUID, PocketInfo> entry : this.privatePocketMap.entrySet()) {
-			tag.put(entry.getKey().toString(), PocketInfo.toTag(entry.getValue()));
-		}
-		nbt.put("privatePocketMap", tag);
+	public CompoundTag toTag(CompoundTag tag) {
+		CompletableFuture<CompoundTag> futurePrivatePocketMapTag = CompletableFuture.supplyAsync(() -> {
+			Map<String, Tag> privatePocketTagMap = this.privatePocketMap.entrySet().parallelStream().unordered().collect(Collectors.toConcurrentMap(entry -> entry.getKey().toString(), entry -> PocketInfo.toTag(entry.getValue())));
+			CompoundTag privatePocketMapTag = new CompoundTag();
+			privatePocketTagMap.forEach(privatePocketMapTag::put);
+			return privatePocketMapTag;
+		});
 
-		return nbt;
+		tag.put("private_pocket_map", futurePrivatePocketMapTag.join());
+
+		return tag;
 	}
 
 	public PrivatePocket getPrivatePocket(UUID playerUUID) {
