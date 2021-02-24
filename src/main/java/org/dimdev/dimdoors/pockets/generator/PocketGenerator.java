@@ -15,11 +15,8 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
@@ -182,7 +179,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 					}
 				});
 		}
-		manager.getRifts().forEach(rift -> rift.getDestination().setLocation(new Location((ServerWorld) Objects.requireNonNull(rift.getWorld()), rift.getPos())));
+		manager.getRifts().forEach(rift -> rift.getDestination().setLocation(new Location(world, rift.getPos())));
 		TemplateUtils.registerRifts(manager.getRifts(), parameters.getLinkTo(), parameters.getLinkProperties(), pocket);
 	}
 

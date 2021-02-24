@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets.generator;
 
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
+import org.dimdev.dimdoors.pockets.modifier.AbsoluteRiftBlockEntityModifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.schematic.Schematic;
@@ -42,6 +44,8 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	private final List<RiftBlockEntity> rifts = new ArrayList<>();
 	private BlockPos origin;
+
+	private AbsoluteRiftBlockEntityModifier queuedRiftBlockEntities;
 
 	public SchematicGenerator() {
 	}
@@ -107,6 +111,14 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
+	public LazyPocketGenerator cloneWithLazyModifiers(BlockPos originalOrigin) {
+		LazyPocketGenerator generator = super.cloneWithLazyModifiers(originalOrigin);
+		generator.lazyModifierList.add(0, queuedRiftBlockEntities);
+
+		return generator;
+	}
+
+	@Override
 	public LazyPocketGenerator cloneWithEmptyModifiers(BlockPos originalOrigin) {
 		SchematicGenerator generator = (SchematicGenerator) super.cloneWithEmptyModifiers(originalOrigin);
 
@@ -134,7 +146,10 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		LOGGER.info("Generating pocket from template " + templateID + " at location " + pocket.getOrigin());
 
 		if (pocket instanceof LazyGenerationPocket) {
-			rifts.addAll(template.placeRiftsOnly(pocket));
+			Map<BlockPos, RiftBlockEntity> absoluteRifts = template.getAbsoluteRifts(pocket);
+			rifts.addAll(absoluteRifts.values());
+
+			queuedRiftBlockEntities = new AbsoluteRiftBlockEntityModifier(absoluteRifts);
 		} else {
 			template.place(pocket, blockUpdate);
 		}
