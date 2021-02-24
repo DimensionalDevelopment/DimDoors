@@ -22,6 +22,7 @@ import net.minecraft.world.StructureWorldAccess;
 
 import net.fabricmc.loader.api.FabricLoader;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.util.BlockPlacementType;
 
 public final class SchematicPlacer {
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -29,7 +30,7 @@ public final class SchematicPlacer {
 	private SchematicPlacer() {
 	}
 
-	public static void place(Schematic schematic, StructureWorldAccess world, BlockPos origin, boolean blockUpdate) {
+	public static void place(Schematic schematic, StructureWorldAccess world, BlockPos origin, BlockPlacementType placementType) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
 		for (String id : schematic.getMetadata().getRequiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
@@ -37,7 +38,7 @@ public final class SchematicPlacer {
 			}
 		}
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		blockSample.place(origin, world, blockUpdate, false);
+		blockSample.place(origin, world, placementType, false);
 	}
 
 	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin) {
@@ -51,7 +52,7 @@ public final class SchematicPlacer {
 		return blockSample.getAbsoluteRifts(origin);
 	}
 
-	public static void place(Schematic schematic, ServerWorld world, Chunk chunk, BlockPos origin, boolean blockUpdate) {
+	public static void place(Schematic schematic, ServerWorld world, Chunk chunk, BlockPos origin, BlockPlacementType placementType) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
 		for (String id : schematic.getMetadata().getRequiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
@@ -59,7 +60,7 @@ public final class SchematicPlacer {
 			}
 		}
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		blockSample.place(origin, world, chunk, blockUpdate, false);
+		blockSample.place(origin, world, chunk, placementType, false);
 	}
 
 

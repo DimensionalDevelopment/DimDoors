@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.util.schematic;
 
 import java.util.function.Predicate;
 
+import org.dimdev.dimdoors.util.BlockPlacementType;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -23,7 +24,7 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 	}
 
 	public void place(BlockPos origin, boolean biomes) {
-		this.relativeBlockSample.place(origin, this.world, false, biomes);
+		this.relativeBlockSample.place(origin, this.world, BlockPlacementType.SECTION_NO_UPDATE, biomes);
 	}
 
 	@Nullable
