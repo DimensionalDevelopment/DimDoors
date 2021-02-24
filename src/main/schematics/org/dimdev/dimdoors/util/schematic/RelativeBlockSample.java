@@ -11,6 +11,7 @@ import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.*;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.BlockBoxUtil;
 import org.jetbrains.annotations.Nullable;
@@ -149,12 +150,22 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 		ServerChunkManager serverChunkManager = world.getChunkManager();
 
+		ChunkSection[] sections = chunk.getSectionArray();
 
 		BlockPos.stream(intersection).forEach(blockPos -> {
-			if(chunk.getBlockState(blockPos).isAir()) {
+			int x = Math.floorMod(blockPos.getX(), 16);
+			int y = Math.floorMod(blockPos.getY(), 16);
+			int z = Math.floorMod(blockPos.getZ(), 16);
+			int sectionY = chunk.getSectionIndex(blockPos.getY());
+			ChunkSection section = sections[sectionY];
+			if (section == null) {
+				section = new ChunkSection(sectionY);
+				sections[sectionY] = section;
+			}
+			if(section.getBlockState(x, y, z).isAir()) {
 				BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
 				if (!newState.isAir()) {
-					chunk.setBlockState(blockPos, newState, false);
+					section.setBlockState(x, y, z, newState, false);
 					if (blockUpdate) serverChunkManager.markForUpdate(blockPos);
 				}
 			}
@@ -195,8 +206,8 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		}));
 	}
 
-	public List<RiftBlockEntity> placeRiftsOnly(BlockPos origin, ServerWorld world) {
-		List<RiftBlockEntity> rifts = new ArrayList<>();
+	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(BlockPos origin) {
+		Map<BlockPos, RiftBlockEntity> rifts = new HashMap<>();
 		this.blockEntityContainer.forEach( (blockPos, tag) ->  {
 			BlockPos actualPos = origin.add(blockPos);
 
@@ -207,13 +218,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			BlockState state = getBlockState(blockPos);
 			BlockEntity blockEntity = BlockEntity.createFromTag(state, tag);
 			if (blockEntity instanceof RiftBlockEntity) {
-				world.setBlockState(actualPos, state, 0);
-				world.getChunkManager().markForUpdate(blockPos);
-				if (state.getBlock() instanceof DoorBlock) {
-					world.setBlockState(actualPos.up(), getBlockState(blockPos.up()), 0);
-				}
-				world.toServerWorld().addBlockEntity(blockEntity);
-				rifts.add((RiftBlockEntity) blockEntity);
+				rifts.put(actualPos, (RiftBlockEntity) blockEntity);
 			}
 		});
 		return rifts;

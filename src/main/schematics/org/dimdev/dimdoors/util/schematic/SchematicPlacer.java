@@ -1,9 +1,11 @@
 package org.dimdev.dimdoors.util.schematic;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
@@ -38,15 +40,15 @@ public final class SchematicPlacer {
 		blockSample.place(origin, world, blockUpdate, false);
 	}
 
-	public static List<RiftBlockEntity> placeRiftsOnly(Schematic schematic, ServerWorld world, BlockPos origin) {
-		LOGGER.debug("Placing schematic rifts only: {}", schematic.getMetadata().getName());
+	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin) {
+		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
 		for (String id : schematic.getMetadata().getRequiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
 				LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		return blockSample.placeRiftsOnly(origin, world);
+		return blockSample.getAbsoluteRifts(origin);
 	}
 
 	public static void place(Schematic schematic, ServerWorld world, Chunk chunk, BlockPos origin, boolean blockUpdate) {

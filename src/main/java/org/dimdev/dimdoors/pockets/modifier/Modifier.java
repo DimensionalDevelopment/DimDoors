@@ -47,6 +47,7 @@ public interface Modifier {
 		ModifierType<RiftDataModifier> RIFT_DATA_MODIFIER_TYPE = register(new Identifier("dimdoors", RiftDataModifier.KEY), RiftDataModifier::new);
 		ModifierType<RelativeReferenceModifier> RELATIVE_REFERENCE_MODIFIER_TYPE = register(new Identifier("dimdoors", RelativeReferenceModifier.KEY), RelativeReferenceModifier::new);
 		ModifierType<OffsetModifier> OFFSET_MODIFIER_TYPE = register(new Identifier("dimdoors", OffsetModifier.KEY), OffsetModifier::new);
+		ModifierType<AbsoluteRiftBlockEntityModifier> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(new Identifier("dimdoors", AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
 
 		Modifier fromTag(CompoundTag tag);
 

@@ -29,7 +29,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	public static Queue<Chunk> generationQueue = new LinkedList<>();
 
 
-	private List<LazyModifier> lazyModifierList = new ArrayList<>();
+	protected List<LazyModifier> lazyModifierList = new ArrayList<>();
 
 	public void generateChunk(LazyGenerationPocket pocket, Chunk chunk) {
 		lazyModifierList.forEach(modifier -> modifier.applyToChunk(pocket, chunk));

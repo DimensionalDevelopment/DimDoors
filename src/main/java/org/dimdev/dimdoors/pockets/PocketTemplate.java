@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.pockets;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +15,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.List;
+import java.util.Map;
 
 public class PocketTemplate {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -66,11 +68,12 @@ public class PocketTemplate {
 		SchematicPlacer.place(this.schematic, world, origin, blockUpdate);
     }
 
-	public List<RiftBlockEntity> placeRiftsOnly(Pocket pocket) {
+	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Pocket pocket) {
 		pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
-		ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
-		BlockPos origin = pocket.getOrigin();
-		return SchematicPlacer.placeRiftsOnly(this.schematic, world, origin);
+		Map<BlockPos, RiftBlockEntity> absoluteRifts = SchematicPlacer.getAbsoluteRifts(this.schematic, pocket.getOrigin());
+		World world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
+		absoluteRifts.values().forEach(rift -> rift.setWorld(world));
+		return absoluteRifts;
 	}
 
 	public void place(LazyGenerationPocket pocket, Chunk chunk, BlockPos originalOrigin, boolean blockUpdate) {
