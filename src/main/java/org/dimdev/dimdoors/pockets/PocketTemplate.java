@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.util.BlockPlacementType;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
@@ -61,11 +62,11 @@ public class PocketTemplate {
     }
      */
 
-    public void place(Pocket pocket, boolean blockUpdate) {
+    public void place(Pocket pocket, BlockPlacementType placementType) {
         pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
         ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
         BlockPos origin = pocket.getOrigin();
-		SchematicPlacer.place(this.schematic, world, origin, blockUpdate);
+		SchematicPlacer.place(this.schematic, world, origin, placementType);
     }
 
 	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Pocket pocket) {
@@ -76,8 +77,8 @@ public class PocketTemplate {
 		return absoluteRifts;
 	}
 
-	public void place(LazyGenerationPocket pocket, Chunk chunk, BlockPos originalOrigin, boolean blockUpdate) {
-		SchematicPlacer.place(this.schematic, DimensionalDoorsInitializer.getWorld(pocket.getWorld()), chunk, originalOrigin, blockUpdate);
+	public void place(LazyGenerationPocket pocket, Chunk chunk, BlockPos originalOrigin, BlockPlacementType placementType) {
+		SchematicPlacer.place(this.schematic, DimensionalDoorsInitializer.getWorld(pocket.getWorld()), chunk, originalOrigin, placementType);
 	}
 
     public static boolean isReplacingPlaceholders() {

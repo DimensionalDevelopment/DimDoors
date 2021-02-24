@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.pockets.generator;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -15,6 +14,7 @@ import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.modifier.AbsoluteRiftBlockEntityModifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
+import org.dimdev.dimdoors.util.BlockPlacementType;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
@@ -40,7 +40,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	private String id;
 	private Identifier templateID;
-	private boolean blockUpdate = false;
+	BlockPlacementType placementType = BlockPlacementType.SECTION_NO_UPDATE;
 
 	private final List<RiftBlockEntity> rifts = new ArrayList<>();
 	private BlockPos origin;
@@ -68,7 +68,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	public void generateChunk(LazyGenerationPocket pocket, Chunk chunk) {
 		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
-		template.place(pocket, chunk, origin, blockUpdate);
+		template.place(pocket, chunk, origin, placementType);
 		setupChunk(pocket, chunk, isSetupLoot());
 
 		super.generateChunk(pocket, chunk);
@@ -84,7 +84,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 			int[] originInts = tag.getIntArray("origin");
 			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
 		}
-		if (tag.contains("block_update")) blockUpdate = tag.getBoolean("block_update");
+		if (tag.contains("placement_type")) placementType = BlockPlacementType.getFromId(tag.getString("placement_type"));
 
 		return this;
 	}
@@ -94,7 +94,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		super.toTag(tag);
 
 		tag.putString("id", this.id);
-		if (blockUpdate) tag.putBoolean("block_update", true);
+		if (placementType != BlockPlacementType.SECTION_NO_UPDATE) tag.putString("placement_type", placementType.getId());
 
 		if (origin != null) tag.putIntArray("origin", new int[]{origin.getX(), origin.getY(), origin.getZ()});
 
@@ -151,7 +151,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 			queuedRiftBlockEntities = new AbsoluteRiftBlockEntityModifier(absoluteRifts);
 		} else {
-			template.place(pocket, blockUpdate);
+			template.place(pocket, placementType);
 		}
 
 		return pocket;

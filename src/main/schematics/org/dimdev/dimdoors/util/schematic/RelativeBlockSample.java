@@ -14,6 +14,8 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.BlockBoxUtil;
+import org.dimdev.dimdoors.util.BlockPlacementType;
+import org.dimdev.dimdoors.util.ChunkSectionLocalPos;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -101,13 +103,12 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		return this.blockContainer.get(pos).getFluidState();
 	}
 
-	public void place(BlockPos origin, StructureWorldAccess world, boolean blockUpdate, boolean biomes) {
-		if (!(world instanceof ServerWorld)) blockUpdate = false;
-		boolean finalBlockUpdate = blockUpdate;
+	public void place(BlockPos origin, StructureWorldAccess world, BlockPlacementType placementType, boolean biomes) {
+		// TODO: properly implement placement types
 		this.blockContainer.forEach((pos, state) -> {
 			BlockPos actualPos = origin.add(pos);
 			world.setBlockState(actualPos, state, 0, 0);
-			if (finalBlockUpdate) ((ServerWorld) world).getChunkManager().markForUpdate(actualPos);
+			if (placementType.shouldMarkForUpdate()) ((ServerWorld) world).getChunkManager().markForUpdate(actualPos);
 		});
 		for (Map.Entry<BlockPos, CompoundTag> entry : this.blockEntityContainer.entrySet()) {
 			BlockPos pos = entry.getKey();
@@ -137,7 +138,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		}
 	}
 
-	public void place(BlockPos origin, ServerWorld world, Chunk chunk, boolean blockUpdate, boolean biomes) {
+	public void place(BlockPos origin, ServerWorld world, Chunk chunk, BlockPlacementType placementType, boolean biomes) {
 		ChunkPos pos = chunk.getPos();
 		BlockBox chunkBox = BlockBox.create(pos.getStartX(), chunk.getBottomY(), pos.getStartZ(), pos.getEndX(), chunk.getTopY(), pos.getEndZ());
 		BlockBox schemBox = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + schematic.getWidth() - 1, origin.getY() + schematic.getHeight() - 1, origin.getZ() + schematic.getLength() - 1);
@@ -148,24 +149,36 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 		ChunkSection[] sections = chunk.getSectionArray();
 
-		BlockPos.stream(intersection).forEach(blockPos -> {
-			int x = Math.floorMod(blockPos.getX(), 16);
-			int y = Math.floorMod(blockPos.getY(), 16);
-			int z = Math.floorMod(blockPos.getZ(), 16);
-			int sectionY = chunk.getSectionIndex(blockPos.getY());
-			ChunkSection section = sections[sectionY];
-			if (section == null) {
-				section = new ChunkSection(sectionY);
-				sections[sectionY] = section;
-			}
-			if(section.getBlockState(x, y, z).isAir()) {
-				BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
-				if (!newState.isAir()) {
-					section.setBlockState(x, y, z, newState, false);
-					if (blockUpdate) serverChunkManager.markForUpdate(blockPos);
+		if (placementType.useSection()) {
+			BlockPos.stream(intersection).forEach(blockPos -> {
+				int x = Math.floorMod(blockPos.getX(), 16);
+				int y = Math.floorMod(blockPos.getY(), 16);
+				int z = Math.floorMod(blockPos.getZ(), 16);
+				int sectionY = chunk.getSectionIndex(blockPos.getY());
+				ChunkSection section = sections[sectionY];
+				if (section == null) {
+					section = new ChunkSection(sectionY);
+					sections[sectionY] = section;
 				}
-			}
-		});
+				if(section.getBlockState(x, y, z).isAir()) {
+					BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
+					if (!newState.isAir()) {
+						section.setBlockState(x, y, z, newState, false);
+						if (placementType.shouldMarkForUpdate()) serverChunkManager.markForUpdate(blockPos);
+					}
+				}
+			});
+		} else {
+			BlockPos.stream(intersection).forEach(blockPos -> { // FIXME: currently extremely unstable since it can try to get neighbouring chunks which can cause a deadlock
+				if(chunk.getBlockState(blockPos).isAir()) {
+					BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
+					if (!newState.isAir()) {
+						chunk.setBlockState(blockPos, newState, false);
+					}
+				}
+			});
+		}
+
 
 		// do the lighting thing
 		serverChunkManager.getLightingProvider().light(chunk, false);

@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.command.arguments.SchematicNamespaceArgumentType;
+import org.dimdev.dimdoors.util.BlockPlacementType;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 
@@ -46,7 +47,7 @@ public class SchematicCommand {
                     Schematic.fromTag(NbtIo.readCompressed(in)),
                     ctx.getSource().getWorld(),
                     ctx.getSource().getPlayer().getBlockPos(),
-					false
+					BlockPlacementType.SECTION_NO_UPDATE
             );
         } catch (IOException e) {
             e.printStackTrace();
