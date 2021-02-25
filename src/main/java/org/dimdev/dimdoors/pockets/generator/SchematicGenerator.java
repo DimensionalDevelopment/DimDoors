@@ -40,7 +40,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	private String id;
 	private Identifier templateID;
-	BlockPlacementType placementType = BlockPlacementType.SECTION_NO_UPDATE;
+	private BlockPlacementType placementType = BlockPlacementType.SECTION_NO_UPDATE;
 
 	private final List<RiftBlockEntity> rifts = new ArrayList<>();
 	private BlockPos origin;
@@ -84,7 +84,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 			int[] originInts = tag.getIntArray("origin");
 			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
 		}
-		if (tag.contains("placement_type")) placementType = BlockPlacementType.getFromId(tag.getString("placement_type"));
+		if (tag.contains("placement_type", NbtType.STRING)) placementType = BlockPlacementType.getFromId(tag.getString("placement_type"));
 
 		return this;
 	}
