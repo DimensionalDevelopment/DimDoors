@@ -96,7 +96,7 @@ public class ConditionalSelector extends VirtualSingularPocket {
 
 	@Override
 	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
-		return VirtualSingularPocketType.DEPTH_DEPENDENT_SELECTOR;
+		return VirtualSingularPocketType.CONDITIONAL_SELECTOR;
 	}
 
 	@Override
@@ -115,6 +115,6 @@ public class ConditionalSelector extends VirtualSingularPocket {
 				return entry.getValue();
 			}
 		}
-		return pocketMap.values().stream().findFirst().get(); // TODO: orElse() with some NONE VirtualPocket
+		return pocketMap.values().stream().findFirst().orElse(NoneVirtualPocket.NONE);
 	}
 }

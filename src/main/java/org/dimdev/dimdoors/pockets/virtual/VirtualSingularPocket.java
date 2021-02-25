@@ -8,32 +8,21 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
+import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.pockets.virtual.reference.TagReference;
 import org.dimdev.dimdoors.pockets.virtual.selection.ConditionalSelector;
+import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.function.Supplier;
 
-// TODO: do something about getting correct Pocket sizes
 public abstract class VirtualSingularPocket implements VirtualPocket {
 	public static final Registry<VirtualSingularPocketType<? extends VirtualSingularPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualSingularPocketType<? extends VirtualSingularPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
-	/*
-	public static final Codec<VirtualPocket> CODEC = new Codec<VirtualPocket>() {
-		@Override
-		public <T> DataResult<Pair<VirtualPocket, T>> decode(DynamicOps<T> dynamicOps, T input) {
-			Identifier id = new Identifier("dimdoors", Codec.STRING.decode(dynamicOps, dynamicOps.get(input, "virtual_type").getOrThrow(false, System.err::println)).getOrThrow(false, System.err::println).getFirst());
-			return REGISTRY.get(id).getCodec().decode(dynamicOps, input).map(pair -> pair.mapFirst(virtualPocket -> (VirtualPocket) virtualPocket));
-		}
-
-		@Override
-		public <T> DataResult<T> encode(VirtualPocket input, DynamicOps<T> ops, T prefix) {
-			return null; // TODO: write encode function
-		}
-	};
-	 */
 
 	public static VirtualSingularPocket deserialize(CompoundTag tag) {
-		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: return some NONE VirtualPocket if type cannot be found or deserialization fails.
-		return REGISTRY.get(id).fromTag(tag);
+		Identifier id = Identifier.tryParse(tag.getString("type"));
+		VirtualSingularPocketType<?> type = REGISTRY.get(id);
+		return type != null ? type.fromTag(tag) : VirtualSingularPocketType.NONE.fromTag(tag);
 	}
 
 	public static CompoundTag serialize(VirtualSingularPocket virtualSingularPocket) {
@@ -51,9 +40,10 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 	public abstract String getKey();
 
 	public interface VirtualSingularPocketType<T extends VirtualSingularPocket> {
+		VirtualSingularPocketType<NoneVirtualPocket> NONE = register(new Identifier("dimdoors", NoneVirtualPocket.KEY), () -> NoneVirtualPocket.NONE);
 		VirtualSingularPocketType<IdReference> ID_REFERENCE = register(new Identifier("dimdoors", IdReference.KEY), IdReference::new);
 		VirtualSingularPocketType<TagReference> TAG_REFERENCE = register(new Identifier("dimdoors", TagReference.KEY), TagReference::new);
-		VirtualSingularPocketType<ConditionalSelector> DEPTH_DEPENDENT_SELECTOR = register(new Identifier("dimdoors", ConditionalSelector.KEY), ConditionalSelector::new);
+		VirtualSingularPocketType<ConditionalSelector> CONDITIONAL_SELECTOR = register(new Identifier("dimdoors", ConditionalSelector.KEY), ConditionalSelector::new);
 
 		VirtualSingularPocket fromTag(CompoundTag tag);
 
@@ -75,6 +65,47 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 					return tag;
 				}
 			});
+		}
+	}
+
+	// TODO: NoneReference instead?
+	public static class NoneVirtualPocket extends VirtualSingularPocket {
+		public static final String KEY = "none";
+		public static final NoneVirtualPocket NONE = new NoneVirtualPocket();
+
+		@Override
+		public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
+			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+		}
+
+		@Override
+		public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+		}
+
+		@Override
+		public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+		}
+
+		@Override
+		public VirtualSingularPocket fromTag(CompoundTag tag) {
+			return this;
+		}
+
+		@Override
+		public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
+			return VirtualSingularPocketType.NONE;
+		}
+
+		@Override
+		public String getKey() {
+			return KEY;
+		}
+
+		@Override
+		public double getWeight(PocketGenerationParameters parameters) {
+			return 0;
 		}
 	}
 }
