@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.util.GraphUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -279,7 +279,7 @@ public class RiftRegistry {
 	}
 
 	public void addPocketEntrance(Pocket pocket, Location location) {
-		LOGGER.debug("Adding pocket entrance for pocket " + pocket.id + " in dimension " + pocket.world + " at " + location);
+		LOGGER.debug("Adding pocket entrance for pocket " + pocket.getId() + " in dimension " + pocket.getWorld() + " at " + location);
 
 //		PocketEntrancePointer pointer = this.pocketEntranceMap.get(pocket);
 //		if (pointer == null) {
@@ -291,8 +291,8 @@ public class RiftRegistry {
 //		}
 		this.addEdge(
 				this.pocketEntranceMap.computeIfAbsent(pocket, p -> {
-					PocketEntrancePointer pointer = new PocketEntrancePointer(pocket.world, pocket.id);
-					pointer.world = pocket.world;
+					PocketEntrancePointer pointer = new PocketEntrancePointer(pocket.getWorld(), pocket.getId());
+					pointer.world = pocket.getWorld();
 					this.graph.addVertex(pointer);
 					this.uuidMap.put(pointer.id, pointer);
 					return pointer;
