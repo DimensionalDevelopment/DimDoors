@@ -2,9 +2,6 @@
   "width": "5 + 16 * public_size",
   "length": "5 + 16 * public_size",
   "type": "dimdoors:void",
-  "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
-  },
   "modifiers": [
     {
       "layers": [

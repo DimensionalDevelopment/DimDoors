@@ -139,6 +139,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 		BlockState lower = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).with(DimensionalDoorBlock.FACING, facing);
 		BlockState upper = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).with(DimensionalDoorBlock.FACING, facing);
 		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
+		rift.setPos(pos);
 
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));
