@@ -15,7 +15,6 @@ import net.minecraft.world.chunk.ChunkSection;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.util.BlockBoxUtil;
 import org.dimdev.dimdoors.util.BlockPlacementType;
-import org.dimdev.dimdoors.util.ChunkSectionLocalPos;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
