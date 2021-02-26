@@ -16,7 +16,6 @@ import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.world.level.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
-import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
