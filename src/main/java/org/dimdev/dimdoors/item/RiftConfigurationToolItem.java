@@ -123,7 +123,7 @@ public class RiftConfigurationToolItem extends ModItem {
 		if (hand == Hand.OFF_HAND) {
 			packet = new PlayerInventorySlotUpdateS2CPacket(45, stack);
 		} else {
-			packet = new PlayerInventorySlotUpdateS2CPacket(serverPlayer.getInventory().selectedSlot, stack);
+			packet = new PlayerInventorySlotUpdateS2CPacket(serverPlayer.inventory.selectedSlot, stack);
 		}
 		PacketByteBuf buf = PacketByteBufs.create();
 		try {

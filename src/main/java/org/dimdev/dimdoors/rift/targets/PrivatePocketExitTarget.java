@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 import net.minecraft.entity.Entity;
