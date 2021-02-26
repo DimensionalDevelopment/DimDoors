@@ -138,7 +138,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 
 		BlockState lower = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).with(DimensionalDoorBlock.FACING, facing);
 		BlockState upper = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).with(DimensionalDoorBlock.FACING, facing);
-		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate(pos, lower);
+		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate();
 
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));
@@ -154,7 +154,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 			// queue two separate tasks, Cubic Chunks may cause the positions to be in different chunks.
 			queueChunkModificationTask(new ChunkPos(pos), chunk -> {
 				chunk.setBlockState(pos, lower, false);
-				chunk.setBlockEntity(rift);
+				chunk.setBlockEntity(pos, rift);
 			});
 			queueChunkModificationTask(new ChunkPos(pos.up()), chunk -> {
 				chunk.setBlockState(pos.up(), upper, false);

@@ -60,7 +60,7 @@ public class ShellModifier implements LazyModifier {
 			final BlockState blockState = layer.getBlockState();
 
 			ChunkPos pos = chunk.getPos();
-			BlockBox chunkBox = BlockBox.create(pos.getStartX(), chunk.getBottomY(), pos.getStartZ(), pos.getEndX(), chunk.getTopY(), pos.getEndZ());
+			BlockBox chunkBox = BlockBox.create(pos.getStartX(), 0, pos.getStartZ(), pos.getEndX(), chunk.getHeight() - 1, pos.getEndZ());
 
 			BlockBox temp;
 

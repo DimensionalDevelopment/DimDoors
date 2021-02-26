@@ -34,8 +34,12 @@ public class SchematicBlockPalette {
 
 				String[] stateArray = string.substring(string.indexOf("[") + 1, string.length() - 1).split(",");
 				for (String stateString : stateArray) {
-					Property<?> property = Objects.requireNonNull(block.getStateManager().getProperty(stateString.split("=")[0]));
-					state = process(property, stateString.split("=")[1], state);
+					Property<?> property = block.getStateManager().getProperty(stateString.split("=")[0]);
+					if (property == null) {
+						System.out.println(stateString + " could not be applied to " + block.toString());
+					} else {
+						state = process(property, stateString.split("=")[1], state);
+					}
 				}
 
 				return DataResult.success(state);

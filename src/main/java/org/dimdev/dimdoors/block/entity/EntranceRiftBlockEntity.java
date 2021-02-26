@@ -75,7 +75,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		entity = TeleportUtil.teleport(entity, this.world, targetPos, relativeAngle, relativeVelocity);
 		if (entity instanceof ServerPlayerEntity) {
 			ServerPlayerEntity player = (ServerPlayerEntity) entity;
-			player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), relativeVelocity));
+			player.networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(player.getEntityId(), relativeVelocity));
 		}
 
 		return true;

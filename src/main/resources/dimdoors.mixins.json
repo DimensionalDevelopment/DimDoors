@@ -14,8 +14,8 @@
     "accessor.ChunkGeneratorAccessor",
     "accessor.ChunkGeneratorSettingsAccessor",
     "accessor.DefaultParticleTypeAccessor",
+    "accessor.DimensionTypeAccessor",
     "accessor.DirectionAccessor",
-    "accessor.EntityAccessor",
     "accessor.GenerationSettingsAccessor",
     "accessor.RedstoneWireBlockAccessor",
     "accessor.StatsAccessor"

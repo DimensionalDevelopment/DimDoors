@@ -98,7 +98,7 @@ public class ClientPacketHandler {
 
 	public void onPlayerInventorySlotUpdate(int slot, ItemStack stack) {
 		if (client.player != null) {
-			client.player.getInventory().setStack(slot, stack);
+			client.player.inventory.setStack(slot, stack);
 		}
 	}
 

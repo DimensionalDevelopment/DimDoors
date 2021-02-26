@@ -85,19 +85,21 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	@Override
 	public void applyToChunk(LazyGenerationPocket pocket, Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-		BlockBox chunkBox = BlockBox.create(chunkPos.getStartX(), chunk.getBottomY(), chunkPos.getStartZ(), chunkPos.getEndX(), chunk.getTopY(), chunkPos.getEndZ());
+		BlockBox chunkBox = BlockBox.create(chunkPos.getStartX(), 0, chunkPos.getStartZ(), chunkPos.getEndX(), chunk.getHeight() - 1, chunkPos.getEndZ());
 
 		if (rifts != null) {
 			rifts.entrySet().stream().unordered().filter(entry -> chunkBox.contains(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 					.forEach((pos, rift) -> {
 						rifts.remove(pos);
-						chunk.setBlockEntity(rift);
+						chunk.setBlockEntity(rift.getPos(), rift);
 					});
 		} else {
 			serializedRifts.entrySet().stream().unordered().filter(entry -> chunkBox.contains(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 					.forEach((pos, riftTag) -> {
 						rifts.remove(pos);
-						chunk.setBlockEntity(BlockEntity.createFromTag(pos, chunk.getBlockState(pos), riftTag));
+						BlockEntity rift = BlockEntity.createFromTag(chunk.getBlockState(pos), riftTag);
+						rift.setPos(pos);
+						chunk.setBlockEntity(pos, rift);
 					});
 		}
 	}

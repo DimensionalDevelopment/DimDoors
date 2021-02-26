@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.util.schematic;
 
 import java.util.function.Predicate;
 
+import net.minecraft.world.Heightmap;
 import org.dimdev.dimdoors.util.BlockPlacementType;
 import org.jetbrains.annotations.Nullable;
 

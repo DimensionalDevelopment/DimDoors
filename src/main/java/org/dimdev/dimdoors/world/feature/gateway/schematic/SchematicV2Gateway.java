@@ -18,7 +18,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
-public abstract class SchematicV2Gateway implements Gateway, BiPredicate<StructureWorldAccess, BlockPos> {
+public abstract class SchematicV2Gateway implements Gateway {
 	private Schematic schematic;
 	private final String id;
 	public static final BiMap<String, SchematicV2Gateway> ID_SCHEMATIC_MAP = HashBiMap.create();

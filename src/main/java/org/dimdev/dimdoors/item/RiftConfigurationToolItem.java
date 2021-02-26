@@ -124,7 +124,7 @@ public class RiftConfigurationToolItem extends ModItem {
 		if (hand == Hand.OFF_HAND) {
 			ServerPacketHandler.sendPacket(serverPlayer, new PlayerInventorySlotUpdateS2CPacket(45, stack));
 		} else {
-			ServerPacketHandler.sendPacket(serverPlayer, new PlayerInventorySlotUpdateS2CPacket(serverPlayer.getInventory().selectedSlot, stack));
+			ServerPacketHandler.sendPacket(serverPlayer, new PlayerInventorySlotUpdateS2CPacket(serverPlayer.inventory.selectedSlot, stack));
 		}
 	}
 }
