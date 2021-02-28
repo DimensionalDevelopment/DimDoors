@@ -89,10 +89,10 @@ sourceSets {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:21w06a"
-	mappings "net.fabricmc:yarn:21w06a+build.3:v2"
-	modImplementation "net.fabricmc:fabric-loader:0.11.1"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.30.2+1.17"
+	minecraft "com.mojang:minecraft:21w08b"
+	mappings "net.fabricmc:yarn:21w08b+build.8:v2"
+	modImplementation "net.fabricmc:fabric-loader:0.11.2"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.31.1+1.17"
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
@@ -158,7 +158,7 @@ curseforge {
 		releaseType = 'alpha'
 		addGameVersion '1.17'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[21w06a] Dimensional Doors ${version}"
+			displayName = "[21w08b] Dimensional Doors ${version}"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")
