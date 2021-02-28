@@ -7,7 +7,7 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.CoordinateTransformationProvider;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
@@ -20,6 +20,8 @@ import net.minecraft.util.math.Vec3d;
 import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
+	private Boolean portalState; //effectively a trite: null=no portal here; true=initialSendingPortal; false=initialReceivingPortal;
+
 	public EntranceRiftBlockEntity() {
 		super(ModBlockEntityTypes.ENTRANCE_RIFT);
 	}
@@ -27,11 +29,31 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	@Override
 	public void fromTag(BlockState state, CompoundTag nbt) {
 		super.fromTag(state, nbt);
+
+		if (nbt.contains("portal_state")) this.portalState = nbt.getBoolean("portal_state");
 	}
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
 		tag = super.toTag(tag);
+
+		if (portalState != null) tag.putBoolean("portal_state", portalState);
+
+		return tag;
+	}
+
+	@Override
+	public void fromClientTag(CompoundTag tag) {
+		super.fromClientTag(tag);
+		if (tag.contains("portal_state")) this.portalState = tag.getBoolean("portal_state");
+	}
+
+	@Override
+	public CompoundTag toClientTag(CompoundTag tag) {
+		tag = super.toClientTag(tag);
+
+		if (portalState != null) tag.putBoolean("portal_state", portalState);
+
 		return tag;
 	}
 
@@ -52,8 +74,8 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		Block block = state.getBlock();
 		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.getConfig().getGeneralConfig().teleportOffset + 0.5));
 
-		if (block instanceof CoordinateTransformerBlock) {
-			CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
+		if (block instanceof CoordinateTransformationProvider) {
+			CoordinateTransformationProvider transformer = (CoordinateTransformationProvider) block;
 
 			if (transformer.isExitFlipped()) {
 				TransformationMatrix3d flipper = TransformationMatrix3d.builder().rotateY(Math.PI).build();
@@ -63,7 +85,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				relativeVelocity = flipper.transform(relativeVelocity);
 			}
 
-			relativePos = relativePos.add(new Vec3d(0, 0, 1).multiply(0.6)); // TODO: skip this for Immersive Portals
+			relativePos = relativePos.add(new Vec3d(0, 0, 1).multiply(0.6));
 
 			TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getPos());
 			TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getPos());
@@ -79,6 +101,18 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		}
 
 		return true;
+	}
+
+	public boolean isIpPortalLinked() {
+		return portalState != null;
+	}
+
+	public Boolean getPortalState() {
+		return portalState;
+	}
+
+	public void setPortalState(Boolean portalState) {
+		this.portalState = portalState;
 	}
 
 	public Direction getOrientation() {

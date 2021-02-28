@@ -22,6 +22,7 @@ public class EntranceRiftBlockEntityRenderer extends BlockEntityRenderer<Entranc
 
 	@Override
 	public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+		if (!blockEntity.isIpPortalLinked())
 		DimensionalPortalRenderer.renderWithTransforms(
 				matrices,
 				blockEntity.getPos(),

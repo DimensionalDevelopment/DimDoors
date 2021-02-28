@@ -180,6 +180,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 				});
 		}
 		manager.getRifts().forEach(rift -> rift.getDestination().setLocation(new Location(world, rift.getPos())));
+		manager.getRifts().forEach(rift -> rift.setWorld(world));
 		TemplateUtils.registerRifts(manager.getRifts(), parameters.getLinkTo(), parameters.getLinkProperties(), pocket);
 	}
 

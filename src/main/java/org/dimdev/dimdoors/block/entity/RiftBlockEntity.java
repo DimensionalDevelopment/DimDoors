@@ -7,7 +7,7 @@ import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.CoordinateTransformationProvider;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.EntityTarget;
@@ -183,8 +183,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
 			BlockState state = this.getWorld().getBlockState(this.getPos());
 			Block block = state.getBlock();
-			if (block instanceof CoordinateTransformerBlock) {
-				CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
+			if (block instanceof CoordinateTransformationProvider) {
+				CoordinateTransformationProvider transformer = (CoordinateTransformationProvider) block;
 				TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getPos());
 				TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getPos());
 				relativePos = transformer.transformTo(transformationBuilder, entity.getPos());

@@ -34,10 +34,6 @@ repositories {
 
     maven {
 		url = "https://jitpack.io"
-		content {
-			includeGroup "com.github.DimensionalDevelopment"
-			includeGroup "com.github.Waterpicker"
-		}
 	}
 
 	maven {
@@ -93,6 +89,9 @@ dependencies {
 	includeCompile("me.shedaniel.cloth", "config-2", "4.8.3")
 	includeCompile("io.github.onyxstudios", "Cardinal-Components-API", "2.7.10")
 	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
+
+	modImplementation ('com.github.qouteall.ImmersivePortalsMod:imm_ptl_core:1.16-SNAPSHOT')
+	include 'com.github.qouteall.ImmersivePortalsMod:imm_ptl_core:1.16-SNAPSHOT'
 
 	modRuntime "curse.maven:Worldedit-225608:3039223" // For saving schematics
 	modRuntime "curse.maven:wecui-402098:3169571" // Cos why not

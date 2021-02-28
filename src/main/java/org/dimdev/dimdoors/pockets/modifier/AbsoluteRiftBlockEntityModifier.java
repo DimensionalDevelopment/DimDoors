@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -11,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.util.NbtUtil;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -49,7 +51,12 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 
 		ListTag riftsTag;
 		if (rifts != null) {
-			riftsTag = rifts.values().parallelStream().unordered().map(rift -> rift.toTag(new CompoundTag())).collect(Collectors.toCollection(ListTag::new));
+			riftsTag = rifts.entrySet().parallelStream().unordered().map(entry -> {
+				CompoundTag riftTag = entry.getValue().toTag(new CompoundTag());
+				BlockPos pos = entry.getKey();
+				riftTag.putIntArray("Pos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
+				return riftTag;
+			}).collect(Collectors.toCollection(ListTag::new));
 		} else {
 			riftsTag = new ListTag();
 			riftsTag.addAll(serializedRifts.values());

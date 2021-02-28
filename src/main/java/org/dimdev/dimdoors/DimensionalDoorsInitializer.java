@@ -57,6 +57,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 	public static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
 	private static MinecraftServer server;
 	private static ModContainer dimDoorsMod;
+	private static boolean isIpLoaded;
 
     @NotNull
     public static MinecraftServer getServer() {
@@ -78,9 +79,14 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		return dimDoorsMod;
 	}
 
+	public static boolean isIpLoaded() {
+    	return isIpLoaded;
+	}
+
 	@Override
     public void onInitialize() {
     	dimDoorsMod = FabricLoader.getInstance().getModContainer("dimdoors").orElseThrow(RuntimeException::new);
+		isIpLoaded = FabricLoader.getInstance().isModLoaded("imm_ptl_core");
         ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             server = minecraftServer;
         });
