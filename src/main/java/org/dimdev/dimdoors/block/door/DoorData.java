@@ -28,10 +28,10 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 public final class DoorData implements AutoCloseable {
 	public static final List<Block> DOORS = new ArrayList<>();
-	private String id;
-	private UnbakedItemSettings itemSettings;
-	private UnbakedBlockSettings blockSettings;
-	private RiftDataList riftDataList;
+	private final String id;
+	private final UnbakedItemSettings itemSettings;
+	private final UnbakedBlockSettings blockSettings;
+	private final RiftDataList riftDataList;
 	private boolean closed = false;
 
 	public static DoorData fromJson(JsonObject json) {
@@ -51,15 +51,36 @@ public final class DoorData implements AutoCloseable {
 
 	public JsonObject toJson(JsonObject json) {
 		json.addProperty("id", this.id);
+		json.add("itemSettings", this.itemSettings.toJson(new JsonObject()));
+		json.add("blockSettings", this.blockSettings.toJson(new JsonObject()));
+		json.add("riftData", this.riftDataList.toJson());
 		return json;
 	}
 
 	private Consumer<? super EntranceRiftBlockEntity> createSetupFunction() {
+		RiftDataList riftDataList = this.riftDataList;
+
 		return rift -> {
-			RiftDataList.OptRiftData riftData = this.riftDataList.getRiftData(rift);
+			RiftDataList.OptRiftData riftData = riftDataList.getRiftData(rift);
 			riftData.getDestination().ifPresent(rift::setDestination);
 			riftData.getProperties().ifPresent(rift::setProperties);
 		};
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public UnbakedItemSettings getItemSettings() {
+		return itemSettings;
+	}
+
+	public UnbakedBlockSettings getBlockSettings() {
+		return blockSettings;
+	}
+
+	public RiftDataList getRiftDataList() {
+		return riftDataList;
 	}
 
 	@Override
@@ -87,11 +108,6 @@ public final class DoorData implements AutoCloseable {
 		Registry.register(Registry.BLOCK, id, doorBlock);
 		Registry.register(Registry.ITEM, id, doorItem);
 		DOORS.add(doorBlock);
-
-		this.id = null;
-		this.blockSettings = null;
-		this.itemSettings = null;
-		this.riftDataList = null;
 		this.closed = true;
 	}
 

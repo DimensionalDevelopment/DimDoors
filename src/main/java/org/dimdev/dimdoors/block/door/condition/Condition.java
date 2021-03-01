@@ -20,7 +20,7 @@ public interface Condition {
 	boolean matches(EntranceRiftBlockEntity rift);
 
 	default JsonObject toJson(JsonObject json) {
-		json.addProperty("type", "dimdoors:" + getType().getId());
+		json.addProperty("type", getType().getId());
 		this.toJsonInner(json);
 		return json;
 	}

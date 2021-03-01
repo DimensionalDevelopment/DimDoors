@@ -1,10 +1,12 @@
 package org.dimdev.dimdoors;
 
 import java.nio.file.Path;
+import java.util.function.Supplier;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DoorDataReader;
 import org.dimdev.dimdoors.block.door.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -58,10 +60,10 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
+	private static final Supplier<Path> CONFIG_ROOT = () -> FabricLoader.getInstance().getConfigDir().resolve("dimdoors").toAbsolutePath();
 	public static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, SubRootJanksonConfigSerializer::new);
 	private static MinecraftServer server;
 	private static ModContainer dimDoorsMod;
-	private static Path configRoot;
 
     @NotNull
     public static MinecraftServer getServer() {
@@ -84,13 +86,12 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 	}
 
 	public static Path getConfigRoot() {
-		return configRoot;
+		return CONFIG_ROOT.get();
 	}
 
 	@Override
     public void onInitialize() {
     	dimDoorsMod = FabricLoader.getInstance().getModContainer("dimdoors").orElseThrow(RuntimeException::new);
-        configRoot = FabricLoader.getInstance().getConfigDir().resolve("dimdoors");
     	ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             server = minecraftServer;
         });
@@ -116,6 +117,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		AbstractPocket.AbstractPocketType.register();
 		PocketAddon.PocketAddonType.register();
 		Condition.ConditionType.register();
+
+		DoorDataReader.read();
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default_pockets"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);

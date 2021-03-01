@@ -8,9 +8,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -79,7 +81,7 @@ public class DoorDataReader {
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(RandomTarget.builder().acceptedGroups(Collections.singleton(0)).coordFactor(1).negativeDepthFactor(80).positiveDepthFactor(Double.MAX_VALUE).weightMaximum(100).noLink(false).newRiftWeight(0).build()), Optional.empty()), AlwaysTrueCondition.INSTANCE)))
 	));
 	private static final DoorData DEFAULT_QUARTZ_DIMENSIONAL_DOOR = new DoorData(
-			"dimdoors:gold_dimensional_door",
+			"dimdoors:quartz_dimensional_door",
 			new DoorData.UnbakedItemSettings(
 					Optional.empty(),
 					OptionalInt.of(1),
@@ -98,31 +100,50 @@ public class DoorDataReader {
 	));
 
 	public static void read() {
-		try {
-			Path doorDir = DimensionalDoorsInitializer.getConfigRoot().resolve("doors");
+		Path doorDir = DimensionalDoorsInitializer.getConfigRoot().resolve("doors");
 
-			if (Files.notExists(doorDir)) {
-				writeDefault(doorDir);
+		if (Files.exists(doorDir) && !Files.isDirectory(doorDir)) {
+			try {
+				Files.delete(doorDir);
+			} catch (IOException e) {
+				LOGGER.error("Error deleting " + doorDir, e);
 				return;
 			}
+		}
 
-			if (Files.isDirectory(doorDir)) {
-				for (Path p : Files.list(doorDir).collect(Collectors.toList())) {
-					if (!Files.isDirectory(p) && Files.isRegularFile(p)) {
-						String jsonStr = new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
-						JsonObject json = GSON.fromJson(jsonStr, JsonObject.class);
-						try (DoorData ignored = DoorData.fromJson(json)) {
-							LOGGER.info("Loading door json from {}", p.toAbsolutePath().toString());
-						}
+		if (Files.notExists(doorDir)) {
+			try {
+				Files.createDirectory(doorDir);
+				writeDefault(doorDir);
+			} catch (IOException e) {
+				LOGGER.error("Error creating directory " + doorDir, e);
+				return;
+			}
+		}
+
+		if (Files.isDirectory(doorDir)) {
+			List<Path> paths;
+			try {
+				paths = Files.list(doorDir).collect(Collectors.toList());
+			} catch (IOException e) {
+				LOGGER.error("Error retrieving paths in directory " + doorDir, e);
+				return;
+			}
+			for (Path p : paths) {
+				if (!Files.isDirectory(p) && Files.isRegularFile(p)) {
+					String jsonStr;
+					try {
+						jsonStr = new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
+					} catch (IOException e) {
+						LOGGER.error("Error reading " + p, e);
+						return;
+					}
+					JsonObject json = GSON.fromJson(jsonStr, JsonObject.class);
+					try (DoorData ignored = DoorData.fromJson(json)) {
+						LOGGER.info("Loaded door json from {} with id {}", p.toAbsolutePath().toString(), ignored.getId());
 					}
 				}
-			} else {
-				Files.delete(doorDir);
-				writeDefault(doorDir);
 			}
-		} catch (IOException | RuntimeException e) {
-			LOGGER.error("Error leading door json", e);
-			e.printStackTrace();
 		}
 	}
 
@@ -133,9 +154,18 @@ public class DoorDataReader {
 		writeDefault(root.resolve("quartz_dimensional_door.json"), DEFAULT_QUARTZ_DIMENSIONAL_DOOR);
 	}
 
-	private static void writeDefault(Path path, DoorData doorData) throws IOException {
-		Files.createFile(path);
+	private static void writeDefault(Path path, DoorData doorData) {
+		try {
+			Files.createFile(path);
+		} catch (IOException e) {
+			LOGGER.error("Error creating " + path, e);
+			return;
+		}
 		String json = GSON.toJson(doorData.toJson(new JsonObject()));
-		Files.write(path, json.getBytes(StandardCharsets.UTF_8));
+		try {
+			Files.write(path, json.getBytes(StandardCharsets.UTF_8));
+		} catch (IOException e) {
+			LOGGER.error("Error writing to " + path, e);
+		}
 	}
 }

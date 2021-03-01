@@ -26,7 +26,8 @@ public abstract class VirtualTarget implements Target {
 	protected Location location;
 
 	public static VirtualTarget fromTag(CompoundTag nbt) {
-		return Objects.requireNonNull(REGISTRY.get(new Identifier(nbt.getString("type")))).fromTag(nbt);
+		Identifier id = new Identifier(nbt.getString("type"));
+		return Objects.requireNonNull(REGISTRY.get(id), "Unknown virtual target type " + id.toString()).fromTag(nbt);
 	}
 
 	public static CompoundTag toTag(VirtualTarget virtualTarget) {
@@ -126,6 +127,7 @@ public abstract class VirtualTarget implements Target {
 		}
 	}
 
+	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
 	public static class NoneTarget extends VirtualTarget {
 		public static final NoneTarget INSTANCE = new NoneTarget();
 

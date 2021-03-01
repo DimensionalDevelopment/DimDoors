@@ -17,6 +17,6 @@ public enum AlwaysTrueCondition implements Condition {
 
 	@Override
 	public Condition.ConditionType<?> getType() {
-		return null;
+		return ConditionType.ALWAYS_TRUE;
 	}
 }
