@@ -35,6 +35,7 @@ public interface Condition {
 	}
 
 	interface ConditionType<T extends Condition> {
+		ConditionType<AlwaysTrueCondition> ALWAYS_TRUE = register("always_true", j -> AlwaysTrueCondition.INSTANCE);
 		ConditionType<AllCondition> ALL = register("all", AllCondition::fromJson);
 		ConditionType<AnyCondition> ANY = register("any", AnyCondition::fromJson);
 		ConditionType<InverseCondition> INVERSE = register("inverse", InverseCondition::fromJson);
@@ -45,7 +46,10 @@ public interface Condition {
 		JsonObject toJson(T t, JsonObject json);
 
 		default String getId() {
-			return REGISTRY.getId(this).toString();
+			return String.valueOf(REGISTRY.getId(this));
+		}
+
+		static void register() {
 		}
 
 		static <T extends Condition> ConditionType<T> register(String name, Function<JsonObject, T> fromJson) {

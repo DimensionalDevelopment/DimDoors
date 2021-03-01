@@ -10,6 +10,8 @@ import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
 public final class OptionalBool {
     private static final OptionalBool EMPTY = new OptionalBool();
+    public static final OptionalBool TRUE = new OptionalBool(true);
+	public static final OptionalBool FALSE = new OptionalBool(false);
     private final boolean present;
     private final boolean value;
 
@@ -28,7 +30,7 @@ public final class OptionalBool {
     }
 
     public static OptionalBool of(boolean value) {
-        return new OptionalBool(value);
+        return value ? TRUE : FALSE;
     }
 
     public boolean getAsBool() {

@@ -25,10 +25,10 @@ public class LootTableProvider implements DataProvider {
 		}
 		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.GOLD_DOOR);
 		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.QUARTZ_DOOR);
-		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.OAK_DIMENSIONAL_DOOR);
-		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.IRON_DIMENSIONAL_DOOR);
-		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.GOLD_DIMENSIONAL_DOOR);
-		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.QUARTZ_DIMENSIONAL_DOOR);
+//		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.OAK_DIMENSIONAL_DOOR);
+//		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.IRON_DIMENSIONAL_DOOR);
+//		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.GOLD_DIMENSIONAL_DOOR);
+//		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.QUARTZ_DIMENSIONAL_DOOR);
 		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR);
 		LOOT_TABLE_CONSUMER.registerBlockDropSelf(ModBlocks.MARKING_PLATE);
 	}

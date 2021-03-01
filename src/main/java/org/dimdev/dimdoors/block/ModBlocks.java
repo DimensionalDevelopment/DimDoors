@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
+import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
+import org.dimdev.dimdoors.block.door.DoorData;
+import org.dimdev.dimdoors.block.door.DoorDataReader;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -95,18 +99,14 @@ public final class ModBlocks {
 		BLOCKS.forEach((str, block) -> {
 			Registry.register(Registry.BLOCK, str, block);
 		});
+		DoorDataReader.read();
 		BLOCKS.clear();
 	}
 
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(),
-				ModBlocks.OAK_DIMENSIONAL_DOOR,
-				ModBlocks.GOLD_DIMENSIONAL_DOOR,
-				ModBlocks.IRON_DIMENSIONAL_DOOR,
-				ModBlocks.OAK_DIMENSIONAL_TRAPDOOR,
-				ModBlocks.QUARTZ_DIMENSIONAL_DOOR,
-				ModBlocks.QUARTZ_DOOR);
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR);
+		DoorData.DOORS.forEach(door -> BlockRenderLayerMap.INSTANCE.putBlock(door, RenderLayer.getCutout()));
 	}
 
 	public static Block ancientFabricFromDye(DyeColor color) {

@@ -1,5 +1,6 @@
-package org.dimdev.dimdoors.block;
+package org.dimdev.dimdoors.block.door;
 
+import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
 

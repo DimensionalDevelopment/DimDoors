@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -114,6 +115,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		PocketGenerator.PocketGeneratorType.register();
 		AbstractPocket.AbstractPocketType.register();
 		PocketAddon.PocketAddonType.register();
+		Condition.ConditionType.register();
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default_pockets"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);

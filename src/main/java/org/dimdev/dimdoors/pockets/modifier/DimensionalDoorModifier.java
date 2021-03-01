@@ -19,7 +19,7 @@ import net.minecraft.util.registry.Registry;
 import com.google.common.base.MoreObjects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.block.DimensionalDoorBlock;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -56,15 +56,13 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 		String facingString = tag.getString("facing");
 		facing = Direction.byName(tag.getString("facing"));
 		if (facing == null || facing.getAxis().isVertical()) {
-			LOGGER.error("Could not interpret facing direction \"" + facingString + "\"");
-			facing = Direction.NORTH;
+			throw new RuntimeException("Could not interpret facing direction \"" + facingString + "\"");
 		}
 
 		doorTypeString = tag.getString("door_type");
 		Block doorBlock = Registry.BLOCK.get(Identifier.tryParse(doorTypeString));
 		if (!(doorBlock instanceof DimensionalDoorBlock)) {
-			LOGGER.error("Could not interpret door type \"" + doorTypeString + "\"");
-			doorBlock = ModBlocks.IRON_DIMENSIONAL_DOOR;
+			throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
 		}
 		doorType = (DimensionalDoorBlock) doorBlock;
 

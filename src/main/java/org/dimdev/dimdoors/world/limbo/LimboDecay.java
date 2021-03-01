@@ -17,9 +17,11 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.door.DoorData;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -84,12 +86,8 @@ import static net.minecraft.block.Blocks.SPRUCE_WOOD;
 import static net.minecraft.block.Blocks.STONE;
 import static net.minecraft.block.Blocks.STONE_BRICKS;
 import static org.dimdev.dimdoors.block.ModBlocks.DETACHED_RIFT;
-import static org.dimdev.dimdoors.block.ModBlocks.DIMENSIONAL_PORTAL;
 import static org.dimdev.dimdoors.block.ModBlocks.ETERNAL_FLUID;
-import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DIMENSIONAL_DOOR;
 import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DOOR;
-import static org.dimdev.dimdoors.block.ModBlocks.IRON_DIMENSIONAL_DOOR;
-import static org.dimdev.dimdoors.block.ModBlocks.OAK_DIMENSIONAL_DOOR;
 import static org.dimdev.dimdoors.block.ModBlocks.QUARTZ_DOOR;
 import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
 
@@ -134,7 +132,7 @@ public final class LimboDecay {
 		}
 	}
 
-	private static final Random random = new Random();
+	private static final Random RANDOM = new Random();
 	private static Block[] blocksImmuneToDecay = null;
 
 	public static Map<Block, Block> getDecaySequence() {
@@ -143,17 +141,7 @@ public final class LimboDecay {
 
 	public static Block[] getBlocksImmuneToDecay() {
 		if (blocksImmuneToDecay == null) {
-			blocksImmuneToDecay = new Block[]{
-					UNRAVELLED_FABRIC,
-					ETERNAL_FLUID,
-					DIMENSIONAL_PORTAL,
-					IRON_DIMENSIONAL_DOOR,
-					OAK_DIMENSIONAL_DOOR,
-					DETACHED_RIFT,
-					GOLD_DOOR,
-					QUARTZ_DOOR,
-					GOLD_DIMENSIONAL_DOOR
-			};
+			blocksImmuneToDecay = ArrayUtils.addAll(DoorData.DOORS.toArray(new Block[0]), UNRAVELLED_FABRIC, ETERNAL_FLUID, DETACHED_RIFT, GOLD_DOOR, QUARTZ_DOOR);
 		}
 
 		return blocksImmuneToDecay;
@@ -166,7 +154,7 @@ public final class LimboDecay {
 	public static void applySpreadDecay(World world, BlockPos pos) {
 		//Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
 		//full spread decay checks, which can also shift its performance impact on the game.
-		if (random.nextDouble() < DimensionalDoorsInitializer.getConfig().getLimboConfig().decaySpreadChance) {
+		if (RANDOM.nextDouble() < DimensionalDoorsInitializer.getConfig().getLimboConfig().decaySpreadChance) {
 			//Apply decay to the blocks above, below, and on all four sides.
 			//World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
 			boolean flag = decayBlock(world, pos.up());
