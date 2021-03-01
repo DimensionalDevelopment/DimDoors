@@ -1,20 +1,9 @@
 package org.dimdev.dimdoors;
 
+import java.nio.file.Path;
+
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-
-import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
-
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.resource.ResourceType;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -25,16 +14,21 @@ import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
-import org.dimdev.dimdoors.listener.pocket.*;
+import org.dimdev.dimdoors.listener.pocket.PlayerBlockBreakEventBeforeListener;
+import org.dimdev.dimdoors.listener.pocket.PocketAttackBlockCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseItemCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
+import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.util.SubRootJanksonConfigSerializer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
@@ -42,6 +36,7 @@ import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -49,14 +44,23 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
-    public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
-	public static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
+	public static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, SubRootJanksonConfigSerializer::new);
 	private static MinecraftServer server;
 	private static ModContainer dimDoorsMod;
+	private static Path configRoot;
 
     @NotNull
     public static MinecraftServer getServer() {
@@ -78,10 +82,15 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		return dimDoorsMod;
 	}
 
+	public static Path getConfigRoot() {
+		return configRoot;
+	}
+
 	@Override
     public void onInitialize() {
     	dimDoorsMod = FabricLoader.getInstance().getModContainer("dimdoors").orElseThrow(RuntimeException::new);
-        ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
+        configRoot = FabricLoader.getInstance().getConfigDir().resolve("dimdoors");
+    	ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             server = minecraftServer;
         });
 

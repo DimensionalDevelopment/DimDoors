@@ -5,6 +5,8 @@
   "mixins": [
     "DefaultBiomeFeaturesMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
+    "ItemMixin",
+    "ItemMixin$SettingsMixin",
     "PlayerEntityMixin",
     "RecipesProviderAccessor",
     "RegistryKeyMixin",

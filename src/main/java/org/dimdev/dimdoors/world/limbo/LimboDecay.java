@@ -29,8 +29,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 import static net.minecraft.block.Blocks.ACACIA_LOG;
 import static net.minecraft.block.Blocks.ACACIA_PLANKS;
 import static net.minecraft.block.Blocks.ACACIA_WOOD;
@@ -106,7 +104,7 @@ public final class LimboDecay {
 	private static final Map<Block, Block> DECAY_SEQUENCE = new HashMap<>();
 	private static final Map<Block, Block> DEFAULT_VALUES;
 	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
-	private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("dimdoors_limbo_decay.json");
+	private static final Path CONFIG_PATH = DimensionalDoorsInitializer.getConfigRoot().resolve("limbo_decay.json");
 
 	public static void init() {
 		try {

@@ -16,8 +16,6 @@ import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
 
-//import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
 	public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
 

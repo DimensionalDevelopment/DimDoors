@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.client.render.RenderLayer;
@@ -25,11 +26,11 @@ public final class ModBlocks {
 
 	public static final Block GOLD_DOOR = register("dimdoors:gold_door", new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).breakByHand(false).breakByTool(FabricToolTags.PICKAXES).nonOpaque()));
 	public static final Block QUARTZ_DOOR = register("dimdoors:quartz_door", new DoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).strength(5.0F).breakByHand(false).breakByTool(FabricToolTags.PICKAXES).nonOpaque()));
-	public static final Block OAK_DIMENSIONAL_DOOR = register("dimdoors:oak_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.WOOD, MapColor.OAK_TAN).strength(3.0F).breakByTool(FabricToolTags.AXES).breakByHand(true).nonOpaque().luminance(state -> 10)));
-	public static final Block IRON_DIMENSIONAL_DOOR = register("dimdoors:iron_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.IRON_GRAY).strength(5.0F).breakByHand(false).breakByTool(FabricToolTags.PICKAXES).nonOpaque().luminance(state -> 10)));
-	public static final Block GOLD_DIMENSIONAL_DOOR = register("dimdoors:gold_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).breakByHand(false).breakByTool(FabricToolTags.PICKAXES).nonOpaque().luminance(state -> 10)));
-	public static final Block QUARTZ_DIMENSIONAL_DOOR = register("dimdoors:quartz_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).strength(5.0F).breakByHand(false).breakByTool(FabricToolTags.PICKAXES).nonOpaque().luminance(state -> 10)));
-	public static final Block OAK_DIMENSIONAL_TRAPDOOR = register("dimdoors:wood_dimensional_trapdoor", new DimensionalTrapdoorBlock(FabricBlockSettings.of(Material.WOOD, MapColor.OAK_TAN).strength(3.0F).breakByTool(FabricToolTags.AXES).breakByHand(true).nonOpaque()));
+	public static final Block OAK_DIMENSIONAL_DOOR = register("dimdoors:oak_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.copyOf(Blocks.OAK_DOOR).luminance(state -> 10)));
+	public static final Block IRON_DIMENSIONAL_DOOR = register("dimdoors:iron_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.copyOf(Blocks.IRON_DOOR).luminance(state -> 10)));
+	public static final Block GOLD_DIMENSIONAL_DOOR = register("dimdoors:gold_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.copyOf(GOLD_DOOR).luminance(state -> 10)));
+	public static final Block QUARTZ_DIMENSIONAL_DOOR = register("dimdoors:quartz_dimensional_door", new DimensionalDoorBlock(FabricBlockSettings.copy(QUARTZ_DOOR).luminance(state -> 10)));
+	public static final Block OAK_DIMENSIONAL_TRAPDOOR = register("dimdoors:wood_dimensional_trapdoor", new DimensionalTrapdoorBlock(FabricBlockSettings.copyOf(Blocks.OAK_TRAPDOOR).luminance(state -> 10)));
 
 	public static final Block DIMENSIONAL_PORTAL = register("dimdoors:dimensional_portal", new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).strength(-1.0F, 3600000.0F).nonOpaque().dropsNothing().luminance(10)));
 	public static final Block DETACHED_RIFT = register("dimdoors:detached_rift", new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).strength(-1.0F, 3600000.0F).noCollision().nonOpaque()));

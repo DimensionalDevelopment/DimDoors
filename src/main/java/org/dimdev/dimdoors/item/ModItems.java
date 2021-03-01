@@ -41,7 +41,7 @@ public final class ModItems {
 
 	public static final ItemGroup DIMENSIONAL_DOORS = FabricItemGroupBuilder
 			.create(new Identifier("dimdoors", "dimensional_doors"))
-			.icon(() -> new ItemStack(ModItems.IRON_DIMENSIONAL_DOOR))
+			.icon(() -> new ItemStack(ModItems.RIFT_BLADE))
 			.build();
 
 	@RegistryObject("quartz_door")
