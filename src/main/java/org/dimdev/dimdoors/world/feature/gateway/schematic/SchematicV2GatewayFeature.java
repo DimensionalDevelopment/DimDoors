@@ -13,8 +13,8 @@ public class SchematicV2GatewayFeature extends Feature<SchematicV2GatewayFeature
 
 	@Override
     public boolean generate(FeatureContext<SchematicV2GatewayFeatureConfig> featureContext) {
-        if (featureContext.getWorld().getBlockState(featureContext.getPos()).getBlock() instanceof AirBlock && featureContext.getConfig().getGateway().test(featureContext.getWorld(), featureContext.getPos())) {
-			featureContext.getConfig().getGateway().generate(featureContext.getWorld(), featureContext.getPos());
+        if (featureContext.getWorld().getBlockState(featureContext.getOrigin()).getBlock() instanceof AirBlock && featureContext.getConfig().getGateway().test(featureContext.getWorld(), featureContext.getOrigin())) {
+			featureContext.getConfig().getGateway().generate(featureContext.getWorld(), featureContext.getOrigin());
             return true;
         }
         return false;

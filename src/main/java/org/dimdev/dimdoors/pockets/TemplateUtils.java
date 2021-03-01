@@ -50,7 +50,7 @@ public class TemplateUtils {
                 monolith.setPos(x, y, z);
                 monolith.yaw = yaw;
                 monolith.pitch = pitch;
-                newTag = monolith.toTag(new CompoundTag());
+                newTag = monolith.writeNbt(new CompoundTag());
             } else {
                 throw new RuntimeException("Unknown entity placeholder: " + entityTag.getString("placeholder"));
             }
@@ -136,27 +136,27 @@ public class TemplateUtils {
                     case "deeper_depth_door":
                         rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
                         rift.setDestination(DefaultDungeonDestinations.DEEPER_DUNGEON_DESTINATION);
-                        newTag = rift.toTag(newTag);
+                        newTag = rift.writeNbt(newTag);
                         break;
                     case "less_deep_depth_door":
                         rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
                         rift.setDestination(DefaultDungeonDestinations.SHALLOWER_DUNGEON_DESTINATION);
-                        newTag = rift.toTag(newTag);
+                        newTag = rift.writeNbt(newTag);
                         break;
                     case "overworld_door":
                         rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
                         rift.setDestination(DefaultDungeonDestinations.OVERWORLD_DESTINATION);
-                        newTag = rift.toTag(newTag);
+                        newTag = rift.writeNbt(newTag);
                         break;
                     case "entrance_door":
                         rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
                         rift.setDestination(DefaultDungeonDestinations.TWO_WAY_POCKET_ENTRANCE);
-                        newTag = rift.toTag(newTag);
+                        newTag = rift.writeNbt(newTag);
                         break;
                     case "gateway_portal":
                         rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
                         rift.setDestination(DefaultDungeonDestinations.GATEWAY_DESTINATION);
-                        newTag = rift.toTag(newTag);
+                        newTag = rift.writeNbt(newTag);
                         break;
                     default:
                         throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));

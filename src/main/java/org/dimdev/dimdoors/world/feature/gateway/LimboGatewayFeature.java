@@ -11,7 +11,7 @@ public class LimboGatewayFeature extends Feature<DefaultFeatureConfig> {
 
 	@Override
 	public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
-		LimboGateway.INSTANCE.generate(context.getWorld(), context.getPos());
+		LimboGateway.INSTANCE.generate(context.getWorld(), context.getOrigin());
 		return true;
 	}
 }

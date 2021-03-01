@@ -101,11 +101,11 @@ public final class SchematicPlacer {
 			ListTag listTag = Objects.requireNonNull(tag.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos tag!");
 			SchematicPlacer.processPos(listTag, originX, originY, originZ, tag);
 
-			EntityType<?> entityType = EntityType.fromTag(tag).orElseThrow(AssertionError::new);
+			EntityType<?> entityType = EntityType.fromNbt(tag).orElseThrow(AssertionError::new);
 			Entity e = entityType.create(world.toServerWorld());
 			// TODO: fail with an exception
 			if (e != null) {
-				e.fromTag(tag);
+				e.readNbt(tag);
 				world.spawnEntityAndPassengers(e);
 			}
 		}
