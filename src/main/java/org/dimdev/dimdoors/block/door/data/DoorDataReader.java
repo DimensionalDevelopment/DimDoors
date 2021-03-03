@@ -27,6 +27,7 @@ import org.dimdev.dimdoors.rift.targets.PrivatePocketExitTarget;
 import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
+import org.dimdev.dimdoors.rift.targets.UnstableTarget;
 import org.dimdev.dimdoors.util.OptionalBool;
 import org.dimdev.dimdoors.world.ModDimensions;
 
@@ -96,6 +97,20 @@ public class DoorDataReader {
 				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketExitTarget()), Optional.empty()), condition));
 				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketTarget()), Optional.empty()), new InverseCondition(condition)));
 	})
+	));
+	private static final DoorData DEFAULT_UNSTABLE_DIMENSIONAL_DOOR = new DoorData(
+			"dimdoors:unstable_dimensional_door",
+			new DoorData.UnbakedItemSettings(
+					Optional.empty(),
+					OptionalInt.of(1),
+					OptionalInt.empty(),
+					Optional.of(Rarity.UNCOMMON),
+					OptionalBool.FALSE
+			),
+			new DoorData.UnbakedBlockSettings(
+					"minecraft:iron_door",
+					OptionalInt.of(10)
+			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new UnstableTarget()), Optional.empty()), AlwaysTrueCondition.INSTANCE)))
 	));
 
 	public static void read() {

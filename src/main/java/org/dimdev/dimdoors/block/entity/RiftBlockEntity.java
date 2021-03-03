@@ -171,8 +171,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		}
 	}
 
-	public boolean
-	teleport(Entity entity) {
+	public boolean teleport(Entity entity) {
 		this.riftStateChanged = false;
 
 		// Attempt a teleport
