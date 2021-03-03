@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.block.entity;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.door.DoorData;
+import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
 

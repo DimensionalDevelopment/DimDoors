@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.block.door;
+package org.dimdev.dimdoors.block.door.data;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -9,7 +9,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import org.dimdev.dimdoors.block.door.condition.Condition;
+import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;

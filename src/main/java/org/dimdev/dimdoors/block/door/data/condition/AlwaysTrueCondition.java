@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.block.door.condition;
+package org.dimdev.dimdoors.block.door.data.condition;
 
 import com.google.gson.JsonObject;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;

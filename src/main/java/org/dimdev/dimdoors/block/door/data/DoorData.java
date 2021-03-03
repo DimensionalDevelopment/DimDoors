@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.block.door;
+package org.dimdev.dimdoors.block.door.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.DimensionalDoorItem;
 import org.dimdev.dimdoors.item.ItemExtensions;
@@ -108,6 +109,7 @@ public final class DoorData implements AutoCloseable {
 		Registry.register(Registry.BLOCK, id, doorBlock);
 		Registry.register(Registry.ITEM, id, doorItem);
 		DOORS.add(doorBlock);
+		Item.BLOCK_ITEMS.put(doorBlock, doorItem);
 		this.closed = true;
 	}
 
