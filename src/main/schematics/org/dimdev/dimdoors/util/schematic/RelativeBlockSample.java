@@ -119,7 +119,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				tag.remove("Id");
 			}
 
-			BlockEntity blockEntity = BlockEntity.createFromTag(actualPos, this.getBlockState(pos), tag);
+			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(pos), tag);
 			if (blockEntity != null) {
 				world.toServerWorld().addBlockEntity(blockEntity);
 			}
@@ -132,7 +132,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 			doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
 			tag.put("Pos", doubles);
-			Entity entity = EntityType.getEntityFromTag(tag, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
+			Entity entity = EntityType.getEntityFromNbt(tag, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
 			world.spawnEntity(entity);
 		}
 	}
@@ -191,7 +191,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 					tag.remove("Id");
 				}
 
-				BlockEntity blockEntity = BlockEntity.createFromTag(actualPos, this.getBlockState(blockPos), tag);
+				BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(blockPos), tag);
 				if (blockEntity != null && !(blockEntity instanceof RiftBlockEntity)) {
 					chunk.setBlockEntity(blockEntity);
 				}
@@ -208,7 +208,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
 				tag.put("Pos", doubles);
 
-				Entity entity = EntityType.getEntityFromTag(tag, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
+				Entity entity = EntityType.getEntityFromNbt(tag, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
 				world.spawnEntity(entity);
 			}
 		}));
@@ -224,7 +224,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				tag.remove("Id");
 			}
 			BlockState state = getBlockState(blockPos);
-			BlockEntity blockEntity = BlockEntity.createFromTag(actualPos, state, tag);
+			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, state, tag);
 			if (blockEntity instanceof RiftBlockEntity) {
 				rifts.put(actualPos, (RiftBlockEntity) blockEntity);
 			}

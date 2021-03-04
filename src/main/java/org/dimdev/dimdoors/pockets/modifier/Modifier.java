@@ -56,11 +56,11 @@ public interface Modifier {
 		static void register() {
 		}
 
-		static <U extends Modifier> ModifierType<U> register(Identifier id, Supplier<U> constructor) {
+		static <U extends Modifier> ModifierType<U> register(Identifier id, Supplier<U> factory) {
 			return Registry.register(REGISTRY, id, new ModifierType<U>() {
 				@Override
 				public Modifier fromTag(CompoundTag tag) {
-					return constructor.get().fromTag(tag);
+					return factory.get().fromTag(tag);
 				}
 
 				@Override

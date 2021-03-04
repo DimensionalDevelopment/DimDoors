@@ -26,14 +26,13 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public void fromTag(CompoundTag nbt) {
-		super.fromTag(nbt);
+	public void readNbt(CompoundTag nbt) {
+		super.readNbt(nbt);
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		tag = super.toTag(tag);
-		return tag;
+	public CompoundTag writeNbt(CompoundTag tag) {
+		return super.writeNbt(tag);
 	}
 
 	@Override

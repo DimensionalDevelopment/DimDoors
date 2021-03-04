@@ -1,8 +1,11 @@
-package org.dimdev.dimdoors.block;
+package org.dimdev.dimdoors.block.door;
 
 import net.minecraft.util.math.Vec3d;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.util.math.MathUtil;

@@ -48,21 +48,21 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.ENDER_PEARL))
 				.build(advancementConsumer, "dimdoors:dimdoors/root");
 
-		Advancement.Task.create()
-				.display(makeDisplay(ModItems.IRON_DIMENSIONAL_DOOR, "public_pocket"))
-				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.PUBLIC))
-				.parent(root)
-				.build(advancementConsumer, "dimdoors:dimdoors/public_pocket");
-		Advancement.Task.create()
-				.display(makeDisplay(ModItems.QUARTZ_DIMENSIONAL_DOOR, "private_pocket"))
-				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.PERSONAL))
-				.parent(root)
-				.build(advancementConsumer, "dimdoors:dimdoors/private_pocket");
-		Advancement.Task.create()
-				.display(makeDisplay(ModItems.GOLD_DIMENSIONAL_DOOR, "dungeon"))
-				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.DUNGEON))
-				.parent(root)
-				.build(advancementConsumer, "dimdoors:dimdoors/dungeon");
+//		Advancement.Task.create()
+//				.display(makeDisplay(ModItems.IRON_DIMENSIONAL_DOOR, "public_pocket"))
+//				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.PUBLIC))
+//				.parent(root)
+//				.build(advancementConsumer, "dimdoors:dimdoors/public_pocket");
+//		Advancement.Task.create()
+//				.display(makeDisplay(ModItems.QUARTZ_DIMENSIONAL_DOOR, "private_pocket"))
+//				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.PERSONAL))
+//				.parent(root)
+//				.build(advancementConsumer, "dimdoors:dimdoors/private_pocket");
+//		Advancement.Task.create()
+//				.display(makeDisplay(ModItems.GOLD_DIMENSIONAL_DOOR, "dungeon"))
+//				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.DUNGEON))
+//				.parent(root)
+//				.build(advancementConsumer, "dimdoors:dimdoors/dungeon");
 		Advancement limbo = Advancement.Task.create()
 				.display(makeDisplay(ModItems.UNRAVELLED_FABRIC, "limbo"))
 				.criterion("changed_dimension", ChangedDimensionCriterion.Conditions.to(ModDimensions.LIMBO))

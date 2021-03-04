@@ -30,3 +30,4 @@ remappedSrc
 logs
 *.hprof
 generated
+.vscode

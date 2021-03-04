@@ -34,19 +34,19 @@ public final class DimensionalPortalRenderer {
 		double squaredDistance = pos.getSquaredDistance(ENTITY_RENDER_DISPATCHER.camera.getPos(), true);
 		int offset = getOffset(squaredDistance);
 		transformer.transform(matrices);
-		renderModels(vertexConsumers, transformer, matrices, light, overlay, tall, offset);
+		renderModels(vertexConsumers, matrices, light, overlay, tall, offset);
 		matrices.pop();
 	}
 
-	private static void renderModels(VertexConsumerProvider vertexConsumers, Transformer transformer, MatrixStack matrices, int light, int overlay, boolean tall, int offset) {
-		renderSingleModel(vertexConsumers.getBuffer(RENDER_LAYERS.get(0)), transformer,  matrices, light, overlay, 0.15F, tall);
+	private static void renderModels(VertexConsumerProvider vertexConsumers, MatrixStack matrices, int light, int overlay, boolean tall, int offset) {
+		renderSingleModel(vertexConsumers.getBuffer(RENDER_LAYERS.get(0)), matrices, light, overlay, 0.15F, tall);
 
 		for (int i = 1; i < offset; ++i) {
-			renderSingleModel(vertexConsumers.getBuffer(RENDER_LAYERS.get(i)), transformer,  matrices, light, overlay,  2.0F / (float) (18 - i), tall);
+			renderSingleModel(vertexConsumers.getBuffer(RENDER_LAYERS.get(i)), matrices, light, overlay,  2.0F / (float) (18 - i), tall);
 		}
 	}
 
-	private static void renderSingleModel(VertexConsumer vertexConsumer, Transformer transformer, MatrixStack matrices, int light, int overlay, float v, boolean tall) {
+	private static void renderSingleModel(VertexConsumer vertexConsumer, MatrixStack matrices, int light, int overlay, float v, boolean tall) {
 		float r = MathHelper.clamp((RANDOM.nextFloat() * 0.3F + 0.1F) * v, 0, 1);
 		float g = MathHelper.clamp((RANDOM.nextFloat() * 0.4F + 0.1F) * v, 0, 1);
 		float b = MathHelper.clamp((RANDOM.nextFloat() * 0.5F + 0.6F) * v, 0, 1);

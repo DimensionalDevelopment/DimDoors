@@ -49,8 +49,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	@Override
-	public void fromTag(CompoundTag nbt) {
-		super.fromTag(nbt);
+	public void readNbt(CompoundTag nbt) {
+		super.readNbt(nbt);
 		this.deserialize(nbt);
 	}
 
@@ -59,8 +59,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		super.toTag(tag);
+	public CompoundTag writeNbt(CompoundTag tag) {
+		super.writeNbt(tag);
 		return this.serialize(tag);
 	}
 
@@ -171,8 +171,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		}
 	}
 
-	public boolean
-	teleport(Entity entity) {
+	public boolean teleport(Entity entity) {
 		this.riftStateChanged = false;
 
 		// Attempt a teleport

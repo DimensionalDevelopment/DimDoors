@@ -266,15 +266,15 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
+    public CompoundTag writeNbt(CompoundTag tag) {
+        super.writeNbt(tag);
         tag.putInt("Aggro", this.aggro);
         return tag;
     }
 
     @Override
-    public void fromTag(CompoundTag nbt) {
-        super.fromTag(nbt);
+    public void readNbt(CompoundTag nbt) {
+        super.readNbt(nbt);
         this.aggro = nbt.getInt("Aggro");
     }
 

@@ -5,6 +5,8 @@
   "mixins": [
     "DefaultBiomeFeaturesMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
+    "ItemMixin",
+    "ItemMixin$SettingsMixin",
     "PlayerEntityMixin",
     "RecipesProviderAccessor",
     "RegistryKeyMixin",
@@ -12,7 +14,6 @@
     "ServerPlayerInteractionManagerMixin",
     "accessor.BuiltinBiomesAccessor",
     "accessor.ChunkGeneratorAccessor",
-    "accessor.ChunkGeneratorSettingsAccessor",
     "accessor.DefaultParticleTypeAccessor",
     "accessor.DirectionAccessor",
     "accessor.EntityAccessor",
