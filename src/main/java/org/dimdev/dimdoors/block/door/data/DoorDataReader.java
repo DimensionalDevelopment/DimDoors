@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -110,7 +111,7 @@ public class DoorDataReader {
 			new DoorData.UnbakedBlockSettings(
 					"minecraft:iron_door",
 					OptionalInt.of(10)
-			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new UnstableTarget()), Optional.empty()), AlwaysTrueCondition.INSTANCE)))
+			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new UnstableTarget()), Optional.of(LinkProperties.builder().linksRemaining(1).groups(IntStream.of(0, 1).boxed().collect(Collectors.toSet())).build())), AlwaysTrueCondition.INSTANCE)))
 	));
 
 	public static void read() {
@@ -166,6 +167,7 @@ public class DoorDataReader {
 		writeDefault(root.resolve("gold_dimensional_door.json"), DEFAULT_GOLD_DIMENSIONAL_DOOR);
 		writeDefault(root.resolve("oak_dimensional_door.json"), DEFAULT_OAK_DIMENSIONAL_DOOR);
 		writeDefault(root.resolve("quartz_dimensional_door.json"), DEFAULT_QUARTZ_DIMENSIONAL_DOOR);
+//		writeDefault(root.resolve("unstable_dimensional_door.json"), DEFAULT_UNSTABLE_DIMENSIONAL_DOOR);
 	}
 
 	private static void writeDefault(Path path, DoorData doorData) {
