@@ -26,7 +26,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
 	).apply(instance, EscapeTarget::new));
 
-	protected boolean canEscapeLimbo;
+	protected final boolean canEscapeLimbo;
 
 	public EscapeTarget(boolean canEscapeLimbo) {
 		this.canEscapeLimbo = canEscapeLimbo;

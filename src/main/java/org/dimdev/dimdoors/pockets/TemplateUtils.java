@@ -110,7 +110,7 @@ public class TemplateUtils {
             VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
-                rift.setDestination(rift.getProperties() == null || !rift.getProperties().oneWay ? linkTo : null);
+                rift.setDestination(rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : null);
             }
         }
 

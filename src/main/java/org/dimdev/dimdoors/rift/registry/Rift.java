@@ -12,12 +12,13 @@ import net.minecraft.nbt.CompoundTag;
 
 public class Rift extends RegistryVertex {
 	private static final Logger LOGGER = LogManager.getLogger();
-	public Location location;
-	public boolean isDetached;
-	public LinkProperties properties;
+	private Location location;
+	private boolean isDetached;
+	private LinkProperties properties;
 
 	public Rift(Location location) {
 		this.location = location;
+		this.setWorld(location.getWorldId());
 	}
 
 	public Rift(Location location, boolean isDetached, LinkProperties properties) {
@@ -88,5 +89,29 @@ public class Rift extends RegistryVertex {
 		rift.isDetached = tag.getBoolean("isDetached");
 		if (tag.contains("properties")) rift.properties = LinkProperties.fromTag(tag.getCompound("properties"));
 		return rift;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
+
+	public boolean isDetached() {
+		return isDetached;
+	}
+
+	public void setDetached(boolean detached) {
+		isDetached = detached;
+	}
+
+	public LinkProperties getProperties() {
+		return properties;
+	}
+
+	public void setProperties(LinkProperties properties) {
+		this.properties = properties;
 	}
 }

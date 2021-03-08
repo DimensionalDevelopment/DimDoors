@@ -2,30 +2,23 @@ package org.dimdev.dimdoors.rift.registry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.github.cottonmc.cotton.gui.widget.WBox;
-import io.github.cottonmc.cotton.gui.widget.WLabel;
-import io.github.cottonmc.cotton.gui.widget.WTextField;
-import io.github.cottonmc.cotton.gui.widget.WToggleButton;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
-import io.github.cottonmc.cotton.gui.widget.data.Axis;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.text.Text;
 
 public class LinkProperties {
-	public static final LinkProperties NONE = new LinkProperties();
+	public static final LinkProperties NONE = LinkProperties.builder().build();
 
 	public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
 
-	public float entranceWeight;
-	public Set<Integer> groups = new HashSet<>();
-	public int linksRemaining;
-	public boolean oneWay;
+	private final float entranceWeight;
+	private final Set<Integer> groups;
+	private final int linksRemaining;
+	private final boolean oneWay;
 
 	public LinkProperties(float floatingWeight, float entranceWeight, Set<Integer> groups, int linksRemaining, boolean oneWay) {
 		this.floatingWeight = floatingWeight;
@@ -33,9 +26,6 @@ public class LinkProperties {
 		this.groups = groups;
 		this.linksRemaining = linksRemaining;
 		this.oneWay = oneWay;
-	}
-
-	private LinkProperties() {
 	}
 
 	public static LinkPropertiesBuilder builder() {
@@ -49,9 +39,7 @@ public class LinkProperties {
 		if (!other.canEqual(this)) return false;
 		if (Float.compare(this.floatingWeight, other.floatingWeight) != 0) return false;
 		if (Float.compare(this.entranceWeight, other.entranceWeight) != 0) return false;
-		final Object this$groups = this.groups;
-		final Object other$groups = other.groups;
-		if (!Objects.equals(this$groups, other$groups)) return false;
+		if (!Objects.equals(this.groups, other.groups)) return false;
 		if (this.linksRemaining != other.linksRemaining) return false;
 		return this.oneWay == other.oneWay;
 	}
@@ -91,13 +79,33 @@ public class LinkProperties {
 	}
 
 	public static LinkProperties fromTag(CompoundTag tag) {
-		LinkProperties properties = new LinkProperties();
-		properties.floatingWeight = tag.getFloat("floatingWeight");
-		properties.entranceWeight = tag.getFloat("entranceWeight");
-		properties.groups = Arrays.stream(tag.getIntArray("groups")).boxed().collect(Collectors.toSet());
-		properties.linksRemaining = tag.getInt("linksRemaining");
-		properties.oneWay = tag.getBoolean("oneWay");
-		return properties;
+		return LinkProperties.builder()
+				.floatingWeight(tag.getFloat("floatingWeight"))
+				.entranceWeight(tag.getFloat("entranceWeight"))
+				.groups(Arrays.stream(tag.getIntArray("groups")).boxed().collect(Collectors.toSet()))
+				.linksRemaining(tag.getInt("linksRemaining"))
+				.oneWay(tag.getBoolean("oneWay"))
+				.build();
+	}
+
+	public float getEntranceWeight() {
+		return entranceWeight;
+	}
+
+	public Set<Integer> getGroups() {
+		return groups;
+	}
+
+	public int getLinksRemaining() {
+		return linksRemaining;
+	}
+
+	public LinkProperties withLinksRemaining(int linksRemaining) {
+		return toBuilder().linksRemaining(linksRemaining).build();
+	}
+
+	public boolean isOneWay() {
+		return oneWay;
 	}
 
 	public static class LinkPropertiesBuilder {
@@ -139,42 +147,49 @@ public class LinkProperties {
 			return new LinkProperties(this.floatingWeight, this.entranceWeight, this.groups, this.linksRemaining, this.oneWay);
 		}
 
+		@Override
 		public String toString() {
-			return "LinkProperties.LinkPropertiesBuilder(floatingWeight=" + this.floatingWeight + ", entranceWeight=" + this.entranceWeight + ", groups=" + this.groups + ", linksRemaining=" + this.linksRemaining + ", oneWay=" + this.oneWay + ")";
+			return new ToStringBuilder(this)
+					.append("floatingWeight", floatingWeight)
+					.append("entranceWeight", entranceWeight)
+					.append("groups", groups)
+					.append("linksRemaining", linksRemaining)
+					.append("oneWay", oneWay)
+					.toString();
 		}
 	}
 
-	public WWidget widget() {
-		WBox root = new WBox(Axis.VERTICAL);
-		root.add(new WLabel("Rift Data:"));
-
-		WBox tab = new WBox(Axis.HORIZONTAL);
-		tab.add(new WLabel("  "));
-
-		WBox main = new WBox(Axis.VERTICAL);
-
-		WBox box = new WBox(Axis.HORIZONTAL);
-		box.add(new WLabel("Floating Weight:"));
-
-		WTextField floatingWeightText = new WTextField().setChangedListener(a -> {
-			try {
-				this.floatingWeight = Float.parseFloat(a);
-			} catch (NumberFormatException ignored) {
-			}
-		});
-		floatingWeightText.setText(String.valueOf(this.floatingWeight));
-		box.add(floatingWeightText);
-
-		WToggleButton oneWayButton = new WToggleButton(Text.of("One Way:")).setOnToggle(oneWay -> this.oneWay = oneWay);
-		oneWayButton.setToggle(this.oneWay);
-
-		main.add(box);
-		main.add(oneWayButton);
-
-		tab.add(main);
-
-		root.add(tab);
-
-		return root;
-	}
+//	public WWidget widget() {
+//		WBox root = new WBox(Axis.VERTICAL);
+//		root.add(new WLabel("Rift Data:"));
+//
+//		WBox tab = new WBox(Axis.HORIZONTAL);
+//		tab.add(new WLabel("  "));
+//
+//		WBox main = new WBox(Axis.VERTICAL);
+//
+//		WBox box = new WBox(Axis.HORIZONTAL);
+//		box.add(new WLabel("Floating Weight:"));
+//
+//		WTextField floatingWeightText = new WTextField().setChangedListener(a -> {
+//			try {
+//				this.floatingWeight = Float.parseFloat(a);
+//			} catch (NumberFormatException ignored) {
+//			}
+//		});
+//		floatingWeightText.setText(String.valueOf(this.floatingWeight));
+//		box.add(floatingWeightText);
+//
+//		WToggleButton oneWayButton = new WToggleButton(Text.of("One Way:")).setOnToggle(oneWay -> this.oneWay = oneWay);
+//		oneWayButton.setToggle(this.oneWay);
+//
+//		main.add(box);
+//		main.add(oneWayButton);
+//
+//		tab.add(main);
+//
+//		root.add(tab);
+//
+//		return root;
+//	}
 }

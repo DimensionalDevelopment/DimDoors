@@ -21,8 +21,8 @@ public enum EntranceRiftProvider implements IComponentProvider {
 		EntranceRiftBlockEntity blockEntity = ((EntranceRiftBlockEntity) accessor.getBlockEntity());
 		LinkProperties properties = blockEntity.getProperties();
 		if (properties != null) {
-			tooltip.add(new TranslatableText("dimdoors.linkProperties.oneWay", properties.oneWay));
-			tooltip.add(new TranslatableText("dimdoors.linkProperties.linksRemaining", properties.linksRemaining));
+			tooltip.add(new TranslatableText("dimdoors.linkProperties.oneWay", properties.isOneWay()));
+			tooltip.add(new TranslatableText("dimdoors.linkProperties.linksRemaining", properties.getLinksRemaining()));
 		}
 		if (blockEntity.getColor() != null) {
 			TranslatableText colorText = new TranslatableText("dimdoors.color");

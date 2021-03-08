@@ -4,7 +4,6 @@ import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
 
 public abstract class RestoringTarget extends VirtualTarget {
-
 	public RestoringTarget() {
 	}
 

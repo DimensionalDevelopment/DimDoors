@@ -49,13 +49,13 @@ public class RiftRegistry {
 		futureRifts.join().forEach(rift -> {
 			riftRegistry.graph.addVertex(rift);
 			riftRegistry.uuidMap.put(rift.id, rift);
-			riftRegistry.locationMap.put(rift.location, rift);
+			riftRegistry.locationMap.put(rift.getLocation(), rift);
 		});
 
 		futurePockets.join().forEach(pocket -> {
 			riftRegistry.graph.addVertex(pocket);
 			riftRegistry.uuidMap.put(pocket.id, pocket);
-			riftRegistry.pocketEntranceMap.put(pocketRegistry.get(pocket.world).getPocket(pocket.pocketId), pocket);
+			riftRegistry.pocketEntranceMap.put(pocketRegistry.get(pocket.getWorld()).getPocket(pocket.getPocketId()), pocket);
 		});
 
 		// Read the connections between links that have a source or destination in this dimension
@@ -172,8 +172,8 @@ public class RiftRegistry {
 		if (rift == null) {
 			LOGGER.debug("Creating a rift placeholder at " + location);
 			rift = new RiftPlaceholder();
-			rift.world = location.world;
-			rift.location = location;
+			rift.setWorld(location.world);
+			rift.setLocation(location);
 			this.locationMap.put(location, rift);
 			this.uuidMap.put(rift.id, rift);
 			this.graph.addVertex(rift);
@@ -188,12 +188,10 @@ public class RiftRegistry {
 		if (currentRift instanceof RiftPlaceholder) {
 			LOGGER.info("Converting a rift placeholder at " + location + " into a rift");
 			rift = new Rift(location);
-			rift.world = location.world;
 			rift.id = currentRift.id;
 			GraphUtils.replaceVertex(this.graph, currentRift, rift);
 		} else if (currentRift == null) {
 			rift = new Rift(location);
-			rift.world = location.world;
 			this.graph.addVertex(rift);
 		} else {
 			throw new IllegalArgumentException("There is already a rift registered at " + location);
@@ -266,7 +264,7 @@ public class RiftRegistry {
 	public void setProperties(Location location, LinkProperties properties) {
 		LOGGER.debug("Setting DungeonLinkProperties for rift at " + location + " to " + properties);
 		Rift rift = this.getRift(location);
-		rift.properties = properties;
+		rift.setProperties(properties);
 		rift.markDirty();
 	}
 
@@ -278,7 +276,7 @@ public class RiftRegistry {
 			return this.graph.outgoingEdgesOf(pointer).stream()
 					.map(this.graph::getEdgeTarget)
 					.map(Rift.class::cast)
-					.map(rift -> rift.location)
+					.map(rift -> rift.getLocation())
 					.collect(Collectors.toSet());
 		}
 	}
@@ -304,7 +302,7 @@ public class RiftRegistry {
 		this.addEdge(
 				this.pocketEntranceMap.computeIfAbsent(pocket, p -> {
 					PocketEntrancePointer pointer = new PocketEntrancePointer(pocket.getWorld(), pocket.getId());
-					pointer.world = pocket.getWorld();
+					pointer.setWorld(pocket.getWorld());
 					this.graph.addVertex(pointer);
 					this.uuidMap.put(pointer.id, pointer);
 					return pointer;
@@ -317,7 +315,7 @@ public class RiftRegistry {
 		// Try to get the last used entrance
 		PlayerRiftPointer entrancePointer = this.lastPrivatePocketEntrances.get(playerUUID);
 		Rift entrance = (Rift) GraphUtils.followPointer(this.graph, entrancePointer);
-		if (entrance != null) return entrance.location;
+		if (entrance != null) return entrance.getLocation();
 
 		// If there was no last used private entrance, get the first player's private pocket entrance
 		return this.getPocketEntrance(DimensionalRegistry.getPrivateRegistry().getPrivatePocket(playerUUID));
@@ -347,7 +345,7 @@ public class RiftRegistry {
 	public Location getPrivatePocketExit(UUID playerUUID) {
 		PlayerRiftPointer entrancePointer = this.lastPrivatePocketExits.get(playerUUID);
 		Rift entrance = (Rift) GraphUtils.followPointer(this.graph, entrancePointer);
-		return entrance != null ? entrance.location : null;
+		return entrance != null ? entrance.getLocation() : null;
 	}
 
 	public void setLastPrivatePocketExit(UUID playerUUID, Location rift) {
@@ -358,7 +356,7 @@ public class RiftRegistry {
 	public Location getOverworldRift(UUID playerUUID) {
 		PlayerRiftPointer entrancePointer = this.overworldRifts.get(playerUUID);
 		Rift rift = (Rift) GraphUtils.followPointer(this.graph, entrancePointer);
-		return rift != null ? rift.location : null;
+		return rift != null ? rift.getLocation() : null;
 	}
 
 	public void setOverworldRift(UUID playerUUID, Location rift) {
@@ -374,7 +372,7 @@ public class RiftRegistry {
 		return this.graph.outgoingEdgesOf(this.getRift(location)).stream()
 				.map(this.graph::getEdgeTarget)
 				.map(Rift.class::cast)
-				.map(rift -> rift.location)
+				.map(rift -> rift.getLocation())
 				.collect(Collectors.toSet());
 	}
 
@@ -382,7 +380,7 @@ public class RiftRegistry {
 		return this.graph.incomingEdgesOf(this.getRift(location)).stream()
 				.map(this.graph::getEdgeTarget)
 				.map(Rift.class::cast)
-				.map(rift -> rift.location)
+				.map(rift -> rift.getLocation())
 				.collect(Collectors.toSet());
 	}
 }

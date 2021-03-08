@@ -20,7 +20,7 @@ public class PlayerRiftPointer extends RegistryVertex {
 		});
 	});
 
-	public UUID player;
+	private final UUID player;
 
 	public PlayerRiftPointer(UUID player) {
 		this.player = player;
@@ -43,8 +43,10 @@ public class PlayerRiftPointer extends RegistryVertex {
 	}
 
 	public static PlayerRiftPointer fromTag(CompoundTag tag) {
-		PlayerRiftPointer vertex = new PlayerRiftPointer(tag.getUuid("id"));
-		vertex.player = tag.getUuid("player");
-		return vertex;
+		return new PlayerRiftPointer(tag.getUuid("id"));
+	}
+
+	public UUID getPlayer() {
+		return player;
 	}
 }

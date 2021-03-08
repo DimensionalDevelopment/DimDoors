@@ -16,9 +16,9 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 public abstract class RegistryVertex {
 	public static final Registry<RegistryVertexType> registry = FabricRegistryBuilder.createSimple(RegistryVertex.RegistryVertexType.class, new Identifier("dimdoors", "registry_vertex")).attribute(RegistryAttribute.MODDED).buildAndRegister();
 
-	public RegistryKey<World> world; // The dimension to store this object in. Links are stored in both registries.
+	private RegistryKey<World> world; // The dimension to store this object in. Links are stored in both registries.
 
-	public UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
+	protected UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
 
 	public void sourceGone(RegistryVertex source) {
 	}
@@ -49,6 +49,22 @@ public abstract class RegistryVertex {
 		tag.putString("type", type);
 
 		return tag;
+	}
+
+	public UUID getId() {
+		return id;
+	}
+
+	public void setId(UUID id) {
+		this.id = id;
+	}
+
+	protected RegistryKey<World> getWorld() {
+		return world;
+	}
+
+	protected void setWorld(RegistryKey<World> world) {
+		this.world = world;
 	}
 
 	public interface RegistryVertexType<T extends RegistryVertex> {

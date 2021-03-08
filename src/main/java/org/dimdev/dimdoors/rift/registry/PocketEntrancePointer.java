@@ -1,20 +1,16 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftPointer superclass?
-	public int pocketId;
+	private int pocketId;
 
 	public PocketEntrancePointer(RegistryKey<World> pocketDim, int pocketId) {
-		this.world = pocketDim;
+		this.setWorld(pocketDim);
 		this.pocketId = pocketId;
 	}
 
@@ -27,13 +23,13 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 	}
 
 	public String toString() {
-		return "PocketEntrancePointer(pocketDim=" + this.world + ", pocketId=" + this.pocketId + ")";
+		return "PocketEntrancePointer(pocketDim=" + this.getWorld() + ", pocketId=" + this.pocketId + ")";
 	}
 
 	public static CompoundTag toTag(PocketEntrancePointer vertex) {
 		CompoundTag tag = new CompoundTag();
 		tag.putUuid("id", vertex.id);
-		tag.putString("pocketDim", vertex.world.getValue().toString());
+		tag.putString("pocketDim", vertex.getWorld().getValue().toString());
 		tag.putInt("pocketId", vertex.pocketId);
 		return tag;
 	}
@@ -42,5 +38,9 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 		PocketEntrancePointer pointer = new PocketEntrancePointer(RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("pocketDim"))), tag.getInt("pocketId"));
 		pointer.id = tag.getUuid("id");
 		return pointer;
+	}
+
+	public int getPocketId() {
+		return pocketId;
 	}
 }

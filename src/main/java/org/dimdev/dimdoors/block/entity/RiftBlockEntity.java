@@ -144,7 +144,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	public void updateType() {
 		if (!this.isRegistered()) return;
 		Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location((ServerWorld) this.world, this.pos));
-		rift.isDetached = this.isDetached();
+		rift.setDetached(this.isDetached());
 		rift.markDirty();
 	}
 

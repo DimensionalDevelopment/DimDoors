@@ -75,14 +75,14 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		if (this.newRiftWeight > 0) riftWeights.put(null, this.newRiftWeight);
 
 		for (Rift otherRift : DimensionalRegistry.getRiftRegistry().getRifts()) {
-			VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.location);
-			if (otherRift.properties == null) continue;
-			double otherWeight = otherRift.isDetached ? otherRift.properties.floatingWeight : otherRift.properties.entranceWeight;
-			if (otherWeight == 0 || Sets.intersection(this.acceptedGroups, otherRift.properties.groups).isEmpty())
+			VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.getLocation());
+			if (otherRift.getProperties() == null) continue;
+			double otherWeight = otherRift.isDetached() ? otherRift.getProperties().floatingWeight : otherRift.getProperties().getEntranceWeight();
+			if (otherWeight == 0 || Sets.intersection(this.acceptedGroups, otherRift.getProperties().getGroups()).isEmpty())
 				continue;
 
 			// Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
-			if (otherRift.properties.linksRemaining == 0) continue;
+			if (otherRift.getProperties().getLinksRemaining() == 0) continue;
 			double depthDifference = otherVirtualLocation.getDepth() - virtualLocationHere.getDepth();
 			double coordDistance = Math.sqrt(this.sq(otherVirtualLocation.getX() - virtualLocationHere.getX())
 					+ this.sq(otherVirtualLocation.getZ() - virtualLocationHere.getZ()));
@@ -98,7 +98,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 			// of 1 is equivalent to having a total link weight of 1 distributed equally across all layers.
 			// TODO: We might want an a larger than 1 to make the function closer to 1/d^2
 			double weight = 4 * this.weightMaximum / Math.PI * otherWeight / this.sq(this.sq(this.weightMaximum) / distance + distance);
-			riftWeights.put(otherRift.location, (float) weight);
+			riftWeights.put(otherRift.getLocation(), (float) weight);
 		}
 
 		Location selectedLink;
@@ -163,7 +163,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 				// TODO: Should the rift not be configured like the other link
 				riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
-				if (!this.noLinkBack && !riftEntity.getProperties().oneWay)
+				if (!this.noLinkBack && !riftEntity.getProperties().isOneWay())
 					linkRifts(new Location(world, pos), this.location);
 				if (!this.noLink) linkRifts(this.location, new Location(world, pos));
 				return riftEntity.as(Targets.ENTITY);
@@ -184,20 +184,20 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
 			// Link the rifts if necessary and teleport the entity
 			if (!this.noLink) linkRifts(this.location, selectedLink);
-			if (!this.noLinkBack && !riftEntity.getProperties().oneWay) linkRifts(selectedLink, this.location);
+			if (!this.noLinkBack && !riftEntity.getProperties().isOneWay()) linkRifts(selectedLink, this.location);
 			return riftEntity;
 		}
 	}
 
 	private static void linkRifts(Location from, Location to) {
-		RiftBlockEntity BlockEntityFrom = (RiftBlockEntity) from.getBlockEntity();
-		RiftBlockEntity BlockEntityTo = (RiftBlockEntity) to.getBlockEntity();
-		BlockEntityFrom.setDestination(RiftReference.tryMakeLocal(from, to));
-		BlockEntityFrom.markDirty();
-		if (BlockEntityTo.getProperties() != null) {
-			BlockEntityTo.getProperties().linksRemaining--;
-			BlockEntityTo.updateProperties();
-			BlockEntityTo.markDirty();
+		RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
+		RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
+		fromBe.setDestination(RiftReference.tryMakeLocal(from, to));
+		fromBe.markDirty();
+		if (toBe.getProperties() != null) {
+			toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().getLinksRemaining() - 1));
+			toBe.updateProperties();
+			toBe.markDirty();
 		}
 	}
 
