@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.util.BlockPlacementType;
 import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.util.schematic.Schematic;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 

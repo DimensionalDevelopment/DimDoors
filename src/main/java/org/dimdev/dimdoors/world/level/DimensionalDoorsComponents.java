@@ -11,6 +11,7 @@ import dev.onyxstudios.cca.api.v3.item.ItemComponentInitializer;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DimensionalDoorsComponents implements LevelComponentInitializer, ItemComponentInitializer, ChunkComponentInitializer {

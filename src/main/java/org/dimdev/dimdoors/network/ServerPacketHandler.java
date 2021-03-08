@@ -21,7 +21,7 @@ import org.dimdev.dimdoors.network.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.s2c.SyncPocketAddonsS2CPacket;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;

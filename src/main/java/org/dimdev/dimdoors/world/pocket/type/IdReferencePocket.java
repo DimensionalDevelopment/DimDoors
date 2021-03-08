@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world.pocket.type;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 	public static String KEY = "id_reference";

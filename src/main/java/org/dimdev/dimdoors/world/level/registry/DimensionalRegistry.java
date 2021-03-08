@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.level;
+package org.dimdev.dimdoors.world.level.registry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +19,7 @@ import net.minecraft.world.level.LevelProperties;
 import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.level.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 
