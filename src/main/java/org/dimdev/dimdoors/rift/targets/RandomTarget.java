@@ -30,27 +30,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
-	public static final Codec<RandomTarget> CODEC = RecordCodecBuilder.create(instance -> {
-		return instance.group(
-				Codec.FLOAT.fieldOf("newRiftWeight").forGetter(target -> target.newRiftWeight),
-				Codec.DOUBLE.fieldOf("weightMaximum").forGetter(location -> location.weightMaximum),
-				Codec.DOUBLE.fieldOf("coordFactor").forGetter(location -> location.coordFactor),
-				Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(location -> location.positiveDepthFactor),
-				Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(location -> location.negativeDepthFactor),
-				Codec.INT_STREAM.comapFlatMap(a -> DataResult.success(a.boxed().collect(Collectors.toSet())), a -> a.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(target -> target.acceptedGroups),
-				Codec.BOOL.fieldOf("noLink").forGetter(target -> target.noLink),
-				Codec.BOOL.fieldOf("noLinkBack").forGetter(target -> target.noLinkBack)
-		).apply(instance, RandomTarget::new);
-	});
-
-	protected float newRiftWeight;
-	protected double weightMaximum;
-	protected double coordFactor;
-	protected double positiveDepthFactor;
-	protected double negativeDepthFactor;
-	protected Set<Integer> acceptedGroups;
-	protected boolean noLink;
-	protected boolean noLinkBack;
+	private final float newRiftWeight;
+	private final double weightMaximum;
+	private final double coordFactor;
+	private final double positiveDepthFactor;
+	private final double negativeDepthFactor;
+	private final Set<Integer> acceptedGroups;
+	private final boolean noLink;
+	private final boolean noLinkBack;
 
 	public RandomTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack) {
 		this.newRiftWeight = newRiftWeight;
