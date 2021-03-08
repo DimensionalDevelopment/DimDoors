@@ -83,7 +83,6 @@ public interface PocketAddon {
 		PocketAddonType<PreventBlockModificationAddon> PREVENT_BLOCK_MODIFICATION_ADDON = register(PreventBlockModificationAddon.ID, PreventBlockModificationAddon::new, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon::new);
 		PocketAddonType<BlockBreakContainer> BLOCK_BREAK_CONTAINER = register(BlockBreakContainer.ID, BlockBreakContainer::new, null);
 
-
 		T fromTag(CompoundTag tag);
 
 		CompoundTag toTag(CompoundTag tag);
@@ -96,12 +95,12 @@ public interface PocketAddon {
 
 		static void register() {
 		}
-
-		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> supplier, Supplier<PocketBuilderAddon<U>> addonSupplier) {
+z=
+		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {
 			return Registry.register(REGISTRY, id, new PocketAddonType<U>() {
 				@Override
 				public U fromTag(CompoundTag tag) {
-					return (U) supplier.get().fromTag(tag);
+					return (U) factory.get().fromTag(tag);
 				}
 
 				@Override
@@ -112,7 +111,7 @@ public interface PocketAddon {
 
 				@Override
 				public U instance() {
-					return supplier.get();
+					return factory.get();
 				}
 
 				@Override

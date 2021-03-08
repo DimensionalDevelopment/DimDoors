@@ -25,12 +25,20 @@ import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getServer;
 
 public class DimensionalRegistry implements ComponentV3 {
+	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time
 	private Map<RegistryKey<World>, PocketDirectory> pocketRegistry = new HashMap<>();
 	private RiftRegistry riftRegistry = new RiftRegistry();
 	private PrivateRegistry privateRegistry = new PrivateRegistry();
 
 	@Override
 	public void readFromNbt(CompoundTag tag) {
+		int riftDataVersion = tag.getInt("RiftDataVersion");
+		if (riftDataVersion < RIFT_DATA_VERSION) {
+			tag = RiftSchemas.update(riftDataVersion, tag);
+		} else if (RIFT_DATA_VERSION < riftDataVersion) {
+			throw new UnsupportedOperationException("Downgrading is not supported!");
+		}
+
 		CompoundTag pocketRegistryTag = tag.getCompound("pocket_registry");
 		CompletableFuture<Map<RegistryKey<World>, PocketDirectory>> futurePocketRegistry = CompletableFuture.supplyAsync(() -> pocketRegistryTag.getKeys().stream().map(key -> {
 					CompoundTag pocketDirectoryTag = pocketRegistryTag.getCompound(key);
@@ -55,7 +63,6 @@ public class DimensionalRegistry implements ComponentV3 {
 
 	@Override
 	public void writeToNbt(CompoundTag tag) {
-
 		CompletableFuture<Tag> futurePocketRegistryTag = CompletableFuture.supplyAsync(() -> {
 			List<CompletableFuture<Pair<String, Tag>>> futurePocketRegistryTags = new ArrayList<>();
 			pocketRegistry.forEach((key, value) -> futurePocketRegistryTags.add(CompletableFuture.supplyAsync(() -> new Pair<>(key.getValue().toString(), value.writeToNbt()))));
@@ -67,10 +74,11 @@ public class DimensionalRegistry implements ComponentV3 {
 		CompletableFuture<Tag> futureRiftRegistryTag = CompletableFuture.supplyAsync(riftRegistry::toTag);
 		CompletableFuture<Tag> futurePrivateRegistryTag = CompletableFuture.supplyAsync(() -> privateRegistry.toTag(new CompoundTag()));
 
-
 		tag.put("pocket_registry", futurePocketRegistryTag.join());
 		tag.put("rift_registry", futureRiftRegistryTag.join());
 		tag.put("private_registry", futurePrivateRegistryTag.join());
+
+		tag.putInt("RiftDataVersion", RIFT_DATA_VERSION);
 	}
 
 	public static DimensionalRegistry instance() {

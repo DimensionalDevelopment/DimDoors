@@ -153,8 +153,8 @@ curseforge {
 	}
 	project {
 		id = '284876'
-		changelog = 'FOR TESTING ONLY. A changelog can be found at https://github.com/DimensionalDevelopment/DimDoors/commits/1.17'
-		releaseType = 'alpha'
+		changelog = 'NOTE: THIS UPDATE IS INCOMPATIBLE WITH WORLDS CREATED ON THE FIRST ALPHA. Please back up your worlds before loading it in a new version. A changelog can be found at https://github.com/DimensionalDevelopment/DimDoors/commits/1.17'
+		releaseType = 'beta'
 		addGameVersion '1.17'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[21w08b] Dimensional Doors ${version}"
