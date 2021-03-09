@@ -26,7 +26,7 @@ import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getServer;
 
 public class DimensionalRegistry implements ComponentV3 {
-	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time
+	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
 	private Map<RegistryKey<World>, PocketDirectory> pocketRegistry = new HashMap<>();
 	private RiftRegistry riftRegistry = new RiftRegistry();
 	private PrivateRegistry privateRegistry = new PrivateRegistry();

@@ -129,4 +129,14 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	public void setUnregisterDisabled(boolean unregisterDisabled) {
 		this.unregisterDisabled = unregisterDisabled;
 	}
+
+	@Override
+	public boolean isLocked() {
+		return false;
+	}
+
+	@Override
+	public void setLocked(boolean locked) {
+		// NO-OP
+	}
 }

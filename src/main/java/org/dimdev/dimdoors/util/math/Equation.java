@@ -1,6 +1,12 @@
 package org.dimdev.dimdoors.util.math;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import net.minecraft.util.Pair;
@@ -9,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.util.math.MathHelper;
 
+@FunctionalInterface
 public interface Equation {
 	double FALSE = 0d;
 	double TRUE = 1d;
@@ -132,7 +139,7 @@ public interface Equation {
 			throw new EquationParseException("\"" + equationString + "\" could not be parsed");
 		}
 
-
+		@FunctionalInterface
 		private interface EquationParser {
 			Optional<Equation> tryParse(String toParse) throws EquationParseException;
 		}
@@ -240,7 +247,7 @@ public interface Equation {
 			}
 		}
 
-
+		@FunctionalInterface
 		private interface TriFunction<T, U, V, R> {
 			R apply(T t, U u, V v);
 		}

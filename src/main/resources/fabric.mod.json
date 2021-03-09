@@ -46,7 +46,6 @@
     "cardinal-components": [
       "dimdoors:dimensional_registry",
       "dimdoors:counter",
-      "dimdoors:rift_key_ids",
       "dimdoors:chunk_lazily_generated"
     ],
     "waila:plugins": {

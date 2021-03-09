@@ -12,6 +12,7 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.TeleportUtil;
@@ -52,16 +53,21 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		if (this.isLocked()) {
 			if (entity instanceof LivingEntity) {
 				ItemStack stack = ((LivingEntity) entity).getStackInHand(((LivingEntity) entity).getActiveHand());
-				RiftKeyIdsComponent component = RiftKeyIdsComponent.get(stack);
 				Rift rift = this.asRift();
-				if (!component.hasId(rift.getId())) {
-					EntityUtils.chat(entity, new TranslatableText("rifts.isLocked"));
-					return false;
+
+				if (RiftKeyItem.has(stack, rift.getId())) {
+					return innerTeleport(entity);
 				}
-			} else {
-				return false;
+
+				EntityUtils.chat(entity, new TranslatableText("rifts.isLocked"));
 			}
+			return false;
 		}
+
+		return innerTeleport(entity);
+	}
+
+	private boolean innerTeleport(Entity entity) {
 		boolean status = super.teleport(entity);
 
 		if (this.riftStateChanged && !this.data.isAlwaysDelete()) {

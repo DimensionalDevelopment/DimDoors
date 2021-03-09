@@ -13,14 +13,12 @@ import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 import org.dimdev.dimdoors.world.level.component.CounterComponent;
-import org.dimdev.dimdoors.world.level.component.RiftKeyIdsComponent;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DimensionalDoorsComponents implements LevelComponentInitializer, ItemComponentInitializer, ChunkComponentInitializer {
 	public static final ComponentKey<DimensionalRegistry> DIMENSIONAL_REGISTRY_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier("dimdoors:dimensional_registry"), DimensionalRegistry.class);
 	public static final ComponentKey<CounterComponent> COUNTER_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier("dimdoors:counter"), CounterComponent.class);
-	public static final ComponentKey<RiftKeyIdsComponent> RIFT_KEY_IDS_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier("dimdoors:rift_key_ids"), RiftKeyIdsComponent.class);
 	public static final ComponentKey<ChunkLazilyGeneratedComponent> CHUNK_LAZILY_GENERATED_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(new Identifier("dimdoors:chunk_lazily_generated"), ChunkLazilyGeneratedComponent.class);
 
 	@Override
@@ -31,7 +29,6 @@ public class DimensionalDoorsComponents implements LevelComponentInitializer, It
 	@Override
 	public void registerItemComponentFactories(ItemComponentFactoryRegistry registry) {
 		registry.register(ModItems.RIFT_CONFIGURATION_TOOL, COUNTER_COMPONENT_KEY, CounterComponent::new);
-		registry.register(ModItems.RIFT_KEY, RIFT_KEY_IDS_COMPONENT_KEY, RiftKeyIdsComponent::new);
 	}
 
 	@Override
