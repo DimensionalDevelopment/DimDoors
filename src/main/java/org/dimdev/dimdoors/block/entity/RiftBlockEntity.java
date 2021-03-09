@@ -221,7 +221,11 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		}
 	}
 
-	protected abstract boolean isDetached();
+	public abstract boolean isDetached();
+
+	public abstract void setLocked(boolean locked);
+
+	public abstract boolean isLocked();
 
 	public void copyFrom(DetachedRiftBlockEntity rift) {
 		this.data.setDestination(rift.data.getDestination());
@@ -260,5 +264,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
 	public void setWorld(World world) {
 		this.world = world;
+	}
+
+	public Rift asRift() {
+		return DimensionalRegistry.getRiftRegistry().getRift(new Location(this.world.getRegistryKey(), this.pos));
 	}
 }

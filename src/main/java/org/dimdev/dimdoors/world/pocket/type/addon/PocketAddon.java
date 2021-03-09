@@ -95,7 +95,7 @@ public interface PocketAddon {
 
 		static void register() {
 		}
-z=
+
 		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {
 			return Registry.register(REGISTRY, id, new PocketAddonType<U>() {
 				@Override

@@ -3,11 +3,17 @@ package org.dimdev.dimdoors.block.entity;
 import java.util.Optional;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.JsonHelper;
 import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.rift.registry.Rift;
+import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
@@ -19,8 +25,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.world.level.component.RiftKeyIdsComponent;
+import org.lwjgl.system.CallbackI;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
+	private boolean locked;
+
 	public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
 	}
@@ -28,15 +38,30 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	@Override
 	public void readNbt(CompoundTag nbt) {
 		super.readNbt(nbt);
+		locked = nbt.getBoolean("locked");
 	}
 
 	@Override
 	public CompoundTag writeNbt(CompoundTag tag) {
+		tag.putBoolean("locked", locked);
 		return super.writeNbt(tag);
 	}
 
 	@Override
 	public boolean teleport(Entity entity) {
+		if (this.isLocked()) {
+			if (entity instanceof LivingEntity) {
+				ItemStack stack = ((LivingEntity) entity).getStackInHand(((LivingEntity) entity).getActiveHand());
+				RiftKeyIdsComponent component = RiftKeyIdsComponent.get(stack);
+				Rift rift = this.asRift();
+				if (!component.hasId(rift.getId())) {
+					EntityUtils.chat(entity, new TranslatableText("rifts.isLocked"));
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
 		boolean status = super.teleport(entity);
 
 		if (this.riftStateChanged && !this.data.isAlwaysDelete()) {
@@ -103,5 +128,15 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	@Override
 	public boolean isDetached() {
 		return false;
+	}
+
+	@Override
+	public boolean isLocked() {
+		return locked;
+	}
+
+	@Override
+	public void setLocked(boolean locked) {
+		this.locked = locked;
 	}
 }

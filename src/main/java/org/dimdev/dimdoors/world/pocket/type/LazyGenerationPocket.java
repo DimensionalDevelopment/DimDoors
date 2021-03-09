@@ -9,7 +9,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.world.level.ChunkLazilyGenerated;
+import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class LazyGenerationPocket extends Pocket {
 	public void chunkLoaded(Chunk chunk) {
 		if (isDoneGenerating()) return;
 
-		ChunkLazilyGenerated lazyGenned = ChunkLazilyGenerated.get(chunk);
+		ChunkLazilyGeneratedComponent lazyGenned = ChunkLazilyGeneratedComponent.get(chunk);
 		if (lazyGenned.hasBeenLazyGenned()) return;
 
 		ChunkPos pos = chunk.getPos();

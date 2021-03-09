@@ -1,11 +1,13 @@
-package org.dimdev.dimdoors.world.level;
+package org.dimdev.dimdoors.world.level.component;
 
 import dev.onyxstudios.cca.api.v3.item.ItemComponent;
+import org.dimdev.dimdoors.world.level.DimensionalDoorsComponents;
+
 import net.minecraft.item.ItemStack;
 
-public class Counter extends ItemComponent {
+public class CounterComponent extends ItemComponent {
 
-	public Counter(ItemStack stack) {
+	public CounterComponent(ItemStack stack) {
 		super(stack);
 		if (!this.hasTag("counter"))
 			this.putInt("counter", 0);
@@ -25,7 +27,7 @@ public class Counter extends ItemComponent {
 		putInt("counter", 0);
 	}
 
-	public static <T> Counter get(T provider) {
+	public static <T> CounterComponent get(T provider) {
 		return DimensionalDoorsComponents.COUNTER_COMPONENT_KEY.get(provider);
 	}
 }

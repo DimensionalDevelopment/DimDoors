@@ -62,4 +62,5 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
 	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
 		return VoxelShapes.fullCube();
 	}
+
 }

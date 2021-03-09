@@ -7,6 +7,7 @@
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",
+    "ListTagAccessor",
     "PlayerEntityMixin",
     "RecipesProviderAccessor",
     "RegistryKeyMixin",

@@ -1,11 +1,13 @@
-package org.dimdev.dimdoors.world.level;
+package org.dimdev.dimdoors.world.level.component;
 
 import dev.onyxstudios.cca.api.v3.component.Component;
+import org.dimdev.dimdoors.world.level.DimensionalDoorsComponents;
+
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.chunk.Chunk;
 
-public class ChunkLazilyGenerated implements Component {
+public class ChunkLazilyGeneratedComponent implements Component {
 	private boolean hasBeenLazyGenned = false;
 
 	public boolean hasBeenLazyGenned() {
@@ -17,7 +19,7 @@ public class ChunkLazilyGenerated implements Component {
 		hasBeenLazyGenned = true;
 	}
 
-	public static ChunkLazilyGenerated get(Chunk chunk) {
+	public static ChunkLazilyGeneratedComponent get(Chunk chunk) {
 		return DimensionalDoorsComponents.CHUNK_LAZILY_GENERATED_COMPONENT_KEY.get(chunk);
 	}
 
