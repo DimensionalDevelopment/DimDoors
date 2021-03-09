@@ -10,6 +10,7 @@
       "bedrock_floor_position": 0,
       "bedrock_roof_position": -2147483648,
       "noise_caves_enabled": true,
+      "deepslate_enabled": false,
       "aquifers_enabled": false,
       "disable_mob_generation": false,
       "sea_level": 32,

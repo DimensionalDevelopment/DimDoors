@@ -2,32 +2,29 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.TeleportUtil;
+import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
-import org.dimdev.dimdoors.world.level.component.RiftKeyIdsComponent;
-import org.lwjgl.system.CallbackI;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private boolean locked;

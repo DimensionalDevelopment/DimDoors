@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dimdoors:unstable_dimensional_door"
+          "name": "dimdoors:iron_dimensional_door"
         }
       ],
       "conditions": [

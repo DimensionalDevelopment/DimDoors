@@ -112,8 +112,9 @@ public class RiftKeyItem extends Item {
 	}
 
 	public static void add(ItemStack stack, UUID id) {
-		IntArrayTag arrayTag = new IntArrayTag(DynamicSerializableUuid.toIntArray(id));
-		if (!has(stack, id)) stack.getOrCreateTag().getList("Ids", NbtType.LIST).add(arrayTag);
+		if (!has(stack, id)) {
+			stack.getOrCreateTag().getList("Ids", NbtType.LIST).add(new IntArrayTag(DynamicSerializableUuid.toIntArray(id)));
+		}
 	}
 
 	public static boolean has(ItemStack stack, UUID id) {
