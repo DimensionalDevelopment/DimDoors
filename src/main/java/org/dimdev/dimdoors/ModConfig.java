@@ -88,7 +88,7 @@ public final class ModConfig implements ConfigData {
 
 	public static class World {
 		@RequiresRestart
-		public double clusterGenChance = 0.0002;
+		public double clusterGenChance = 20000;
 		@RequiresRestart
 		public int gatewayGenChance = 200;
 		@RequiresRestart

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
+import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,9 +21,13 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	}
 
 	@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
-	public void checkDeath(DamageSource source, CallbackInfo ci) {
+	public void checkDeathServer(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
 		if (ci.isCancelled()) {
+			if (ModDimensions.isPocketDimension(this.world)) {
+				this.incrementStat(ModStats.DEATHS_IN_POCKETS);
+			}
+			this.incrementStat(ModStats.TIMES_SENT_TO_LIMBO);
 			TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 384);
 		}
 	}

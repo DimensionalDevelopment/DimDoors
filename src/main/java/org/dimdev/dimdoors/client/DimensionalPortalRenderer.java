@@ -41,15 +41,15 @@ public final class DimensionalPortalRenderer {
 	private static void renderModels(VertexConsumerProvider vertexConsumers, MatrixStack matrices, int light, int overlay, boolean tall, int offset) {
 		renderSingleModel(vertexConsumers.getBuffer(RENDER_LAYERS.get(0)), matrices, light, overlay, 0.15F, tall);
 
-		for (int i = 1; i < offset; ++i) {
-			renderSingleModel(vertexConsumers.getBuffer(RENDER_LAYERS.get(i)), matrices, light, overlay,  2.0F / (float) (18 - i), tall);
+		for (int count = 1; count < offset; ++count) {
+			renderSingleModel(vertexConsumers.getBuffer(RENDER_LAYERS.get(count)), matrices, light, overlay,  2.0F / (float) (18 - count), tall);
 		}
 	}
 
-	private static void renderSingleModel(VertexConsumer vertexConsumer, MatrixStack matrices, int light, int overlay, float v, boolean tall) {
-		float r = MathHelper.clamp((RANDOM.nextFloat() * 0.3F + 0.1F) * v, 0, 1);
-		float g = MathHelper.clamp((RANDOM.nextFloat() * 0.4F + 0.1F) * v, 0, 1);
-		float b = MathHelper.clamp((RANDOM.nextFloat() * 0.5F + 0.6F) * v, 0, 1);
+	private static void renderSingleModel(VertexConsumer vertexConsumer, MatrixStack matrices, int light, int overlay, float delta, boolean tall) {
+		float r = MathHelper.clamp((RANDOM.nextFloat() * 0.3F + 0.1F) * delta, 0, 1);
+		float g = MathHelper.clamp((RANDOM.nextFloat() * 0.4F + 0.1F) * delta, 0, 1);
+		float b = MathHelper.clamp((RANDOM.nextFloat() * 0.5F + 0.6F) * delta, 0, 1);
 
 		ModelPart model = tall ? TALL_MODEL : MODEL;
 		model.render(matrices, vertexConsumer, light, overlay, r, g, b, 1);
