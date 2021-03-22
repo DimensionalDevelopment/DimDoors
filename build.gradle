@@ -52,6 +52,11 @@ repositories {
 	maven {
 		url = "https://jitpack.io"
 	}
+
+	maven {
+		name = 'TerraformersMC'
+		url = 'https://maven.terraformersmc.com/'
+	}
 }
 
 def includeCompile(group, artifact, version) {
@@ -91,17 +96,17 @@ sourceSets {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:21w10a"
-	mappings "net.fabricmc:yarn:21w10a+build.2:v2"
+	minecraft "com.mojang:minecraft:21w11a"
+	mappings "net.fabricmc:yarn:21w11a+build.4:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.11.2"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.32.1+1.17"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.32.4+1.17"
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
 	includeCompile("com.github.DimensionalDevelopment", "Matrix", "1.0.0")
 //	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "c57e3ef")
-	includeCompile("io.github.cottonmc", "LibGui", "3.3.2+1.16.4")
-	includeCompile("me.shedaniel.cloth", "config-2", "5.0.0")
+	includeCompile("io.github.cottonmc", "LibGui", "4.0.0-alpha.1+21w11a")
+	includeCompile("me.shedaniel.cloth", "config-2", "5.0.16")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-base", "3.0.0-nightly.21w06a")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-item", "3.0.0-nightly.21w06a")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-level", "3.0.0-nightly.21w06a")
@@ -111,12 +116,13 @@ dependencies {
 	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
 	includeCompile("dev.hephaestus", "seedy-behavior", "1.0.1")
 
-	modCompileOnly("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
+	modCompileOnly("com.terraformersmc:modmenu:2.0.0-beta.2") {
 		exclude module: "fabric-api"
 	}
-//	modRuntime("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
-//		exclude module: "fabric-api"
-//	}
+	modRuntime("com.terraformersmc:modmenu:2.0.0-beta.2") {
+		exclude module: "fabric-api"
+	}
+
 	modCompileOnly('mcp.mobius.waila:wthit-fabric:3.2.3') {
 		exclude module: "modmenu"
 		exclude module: "fabric-api"
@@ -167,7 +173,7 @@ curseforge {
 		releaseType = 'beta'
 		addGameVersion '1.17'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[21w08b] Dimensional Doors ${version}"
+			displayName = "[21w11a] Dimensional Doors ${version}"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")
