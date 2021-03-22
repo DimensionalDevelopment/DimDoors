@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.mixin.ListTagAccessor;
+import org.dimdev.dimdoors.mixin.accessor.ListTagAccessor;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;

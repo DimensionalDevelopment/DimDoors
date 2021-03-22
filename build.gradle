@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "0.6-SNAPSHOT"
+	id "fabric-loom" version "0.7-SNAPSHOT"
 	id "maven-publish"
 	id 'com.matthewprenger.cursegradle' version "1.4.0"
 }
@@ -30,10 +30,6 @@ repositories {
 	}
 
 	maven {
-		url = "https://jitpack.io"
-	}
-
-	maven {
 		url = "https://server.bbkr.space/artifactory/libs-release"
 		content {
 			includeGroup "io.github.cottonmc"
@@ -47,6 +43,14 @@ repositories {
 
 	maven {
 		url = "https://maven.shedaniel.me/"
+	}
+
+	maven {
+		url = "https://bai.jfrog.io/artifactory/maven"
+	}
+
+	maven {
+		url = "https://jitpack.io"
 	}
 }
 
@@ -95,7 +99,7 @@ dependencies {
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
 	includeCompile("com.github.DimensionalDevelopment", "Matrix", "1.0.0")
-	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "c57e3ef")
+//	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "c57e3ef")
 	includeCompile("io.github.cottonmc", "LibGui", "3.3.2+1.16.4")
 	includeCompile("me.shedaniel.cloth", "config-2", "5.0.0")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-base", "3.0.0-nightly.21w06a")
@@ -110,11 +114,17 @@ dependencies {
 	modCompileOnly("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
 		exclude module: "fabric-api"
 	}
-	modRuntime("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
+//	modRuntime("io.github.prospector:modmenu:2.0.0-beta.1+build.2") {
+//		exclude module: "fabric-api"
+//	}
+	modCompileOnly('mcp.mobius.waila:wthit-fabric:3.2.3') {
+		exclude module: "modmenu"
 		exclude module: "fabric-api"
 	}
-	modCompileOnly 'com.github.badasintended:wthit:3.0.0'
-	modRuntime 'com.github.badasintended:wthit:3.0.0'
+	modRuntime('mcp.mobius.waila:wthit-fabric:3.2.3') {
+		exclude module: "modmenu"
+		exclude module: "fabric-api"
+	}
 	modCompileOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
 	modRuntime "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
 

@@ -143,7 +143,11 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		if (tag == null || tag.getType() != NbtType.COMPOUND) {
 			throw new RuntimeException("Could not load Schematic since its json does not represent a CompoundTag!");
 		}
-		return new PocketTemplate(Schematic.fromTag((CompoundTag) tag));
+		try {
+			return new PocketTemplate(Schematic.fromTag((CompoundTag) tag));
+		} catch (Exception e) {
+			throw new RuntimeException("Error loading " + tag.toString(), e);
+		}
 	}
 
 	public WeightedList<PocketGenerator, PocketGenerationParameters> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {

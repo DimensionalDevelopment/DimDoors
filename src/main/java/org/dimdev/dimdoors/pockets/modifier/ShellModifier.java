@@ -45,10 +45,14 @@ public class ShellModifier implements LazyModifier {
 		}
 		tag.put("layers", layersTag);
 		if (boxToDrawAround != null) {
-			tag.put("box_to_draw_around", boxToDrawAround.toNbt());
+			tag.put("box_to_draw_around", toNbt(boxToDrawAround));
 		}
 
 		return tag;
+	}
+
+	private static IntArrayTag toNbt(BlockBox box) {
+		return new IntArrayTag(new int[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ});
 	}
 
 	@Override

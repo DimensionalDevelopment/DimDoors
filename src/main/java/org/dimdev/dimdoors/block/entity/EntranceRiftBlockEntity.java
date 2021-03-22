@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.client.DefaultTransformation;
+import org.dimdev.dimdoors.client.Transformer;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.util.EntityUtils;
@@ -25,6 +27,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private boolean locked;
@@ -115,6 +120,11 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				.filter(state -> state.contains(HorizontalFacingBlock.FACING))
 				.map(state -> state.get(HorizontalFacingBlock.FACING))
 				.orElse(Direction.NORTH);
+	}
+
+	@Environment(EnvType.CLIENT)
+	public Transformer getTransformer() {
+		return DefaultTransformation.fromDirection(this.getOrientation());
 	}
 
 	public boolean hasOrientation() {

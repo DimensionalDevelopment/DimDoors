@@ -7,9 +7,9 @@
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",
-    "ListTagAccessor",
+    "accessor.ListTagAccessor",
     "PlayerEntityMixin",
-    "RecipesProviderAccessor",
+    "accessor.RecipesProviderAccessor",
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
@@ -27,7 +27,7 @@
     "client.ClientPlayNetworkHandlerMixin",
     "client.ExtendedClientPlayNetworkHandlerMixin",
     "client.InGameHudMixin",
-    "client.accessor.GlStateManagerAccessor"
+    "client.GameRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
