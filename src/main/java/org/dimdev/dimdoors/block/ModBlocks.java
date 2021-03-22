@@ -6,6 +6,7 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.door.data.DoorData;
+import org.dimdev.dimdoors.block.door.data.DoorDataReader;
 import org.dimdev.matrix.Matrix;
 import org.dimdev.matrix.Registrar;
 import org.dimdev.matrix.RegistryEntry;
@@ -171,6 +172,7 @@ public final class ModBlocks {
 
 	public static void init() {
 		Matrix.register(ModBlocks.class, Registry.BLOCK);
+		DoorDataReader.read();
 	}
 
 	@Environment(EnvType.CLIENT)

@@ -5,6 +5,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -62,5 +63,4 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
 	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
 		return VoxelShapes.fullCube();
 	}
-
 }

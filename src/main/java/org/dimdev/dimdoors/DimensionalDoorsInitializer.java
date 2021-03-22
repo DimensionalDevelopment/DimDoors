@@ -96,6 +96,15 @@ public class DimensionalDoorsInitializer implements ModInitializer {
             server = minecraftServer;
         });
 
+		Targets.registerDefaultTargets();
+		VirtualTarget.VirtualTargetType.register();
+		VirtualSingularPocket.VirtualSingularPocketType.register();
+		Modifier.ModifierType.register();
+		PocketGenerator.PocketGeneratorType.register();
+		AbstractPocket.AbstractPocketType.register();
+		PocketAddon.PocketAddonType.register();
+		Condition.ConditionType.register();
+
         ModBlocks.init();
         ModItems.init();
         ModFeatures.init();
@@ -108,17 +117,6 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		ModFluids.init();
         ModSoundEvents.init();
 		ModParticleTypes.init();
-
-        Targets.registerDefaultTargets();
-		VirtualTarget.VirtualTargetType.register();
-		VirtualSingularPocket.VirtualSingularPocketType.register();
-		Modifier.ModifierType.register();
-		PocketGenerator.PocketGeneratorType.register();
-		AbstractPocket.AbstractPocketType.register();
-		PocketAddon.PocketAddonType.register();
-		Condition.ConditionType.register();
-
-		DoorDataReader.read();
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default_pockets"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);

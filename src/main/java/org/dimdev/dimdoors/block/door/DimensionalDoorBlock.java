@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block.door;
 
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.math.Vec3d;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -139,6 +140,11 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 
 	@Override
 	public boolean isExitFlipped() {
+		return true;
+	}
+
+	@Override
+	public boolean isTall(BlockState cachedState) {
 		return true;
 	}
 }

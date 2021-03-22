@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.client.DefaultTransformation;
 import org.dimdev.dimdoors.client.Transformer;
 import org.dimdev.dimdoors.item.RiftKeyItem;
@@ -135,7 +136,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	 * Specifies if the portal should be rendered two blocks tall
 	 */
 	public boolean isTall() {
-		return this.getCachedState().getBlock() instanceof DoorBlock;
+		return ((RiftProvider<?>) this.getCachedState().getBlock()).isTall(this.getCachedState());
 	}
 
 	@Override
