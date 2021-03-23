@@ -12,9 +12,4 @@ public interface RenderLayerAccessor {
 	static RenderLayer.MultiPhase callOf(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, RenderLayer.MultiPhaseParameters phases) {
 		throw new UnsupportedOperationException();
 	}
-
-	@Invoker
-	static RenderLayer.MultiPhase callOf(String name, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int expectedBufferSize, RenderLayer.MultiPhaseParameters phaseData) {
-		throw new UnsupportedOperationException();
-	}
 }

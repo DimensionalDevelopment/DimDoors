@@ -3,7 +3,9 @@ package org.dimdev.dimdoors.network;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -19,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.item.ModItem;
 import org.dimdev.dimdoors.network.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.c2s.NetworkHandlerInitializedC2SPacket;
+import org.dimdev.dimdoors.network.s2c.PlayerInventorySlotUpdateS2CPacket;
 import org.dimdev.dimdoors.network.s2c.SyncPocketAddonsS2CPacket;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -50,6 +53,14 @@ public class ServerPacketHandler {
 		registerReceiver(HitBlockWithItemC2SPacket.ID, HitBlockWithItemC2SPacket::new);
 	}
 
+	public static ServerPacketHandler get(ServerPlayerEntity player) {
+		return get(player.networkHandler);
+	}
+
+	public static ServerPacketHandler get(ServerPlayNetworkHandler networkHandler) {
+		return ((ExtendedServerPlayNetworkHandler) networkHandler).getDimDoorsPacketHandler();
+	}
+
 	public static boolean sendPacket(ServerPlayerEntity player, SimplePacket<?> packet) {
 		try {
 			ServerPlayNetworking.send(player, packet.channelId(), packet.write(PacketByteBufs.create()));
@@ -58,6 +69,10 @@ public class ServerPacketHandler {
 			LOGGER.error(e);
 			return false;
 		}
+	}
+
+	public boolean sendPacket(SimplePacket<?> packet) {
+		return sendPacket(getPlayer(), packet);
 	}
 
 	public ServerPacketHandler(ServerPlayNetworkHandler networkHandler) {
@@ -119,5 +134,13 @@ public class ServerPacketHandler {
 
 	public void markPocketSyncDirty(int id) {
 		if (lastSyncedPocketId == id) pocketSyncDirty = true;
+	}
+
+	public void sync(ItemStack stack, Hand hand) {
+		if (hand == Hand.OFF_HAND) {
+			sendPacket(new PlayerInventorySlotUpdateS2CPacket(45, stack));
+		} else {
+			sendPacket(new PlayerInventorySlotUpdateS2CPacket(getPlayer().getInventory().selectedSlot, stack));
+		}
 	}
 }

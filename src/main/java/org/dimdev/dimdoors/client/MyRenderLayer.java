@@ -32,6 +32,8 @@ public class MyRenderLayer extends RenderLayer {
 			VertexFormats.POSITION_COLOR,
 			VertexFormat.DrawMode.QUADS,
 			256,
+			false,
+			false,
 			MultiPhaseParameters.builder()
 					.cull(DISABLE_CULLING)
 					.lightmap(RenderPhase.DISABLE_LIGHTMAP)
@@ -53,6 +55,8 @@ public class MyRenderLayer extends RenderLayer {
 			VertexFormats.POSITION_COLOR_TEXTURE,
 			VertexFormat.DrawMode.QUADS,
 			256,
+			false,
+			false,
 			MultiPhaseParameters.builder()
 					.cull(DISABLE_CULLING)
 					.lightmap(RenderPhase.DISABLE_LIGHTMAP)

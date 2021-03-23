@@ -28,7 +28,8 @@
     "client.ExtendedClientPlayNetworkHandlerMixin",
     "client.GameRendererMixin",
     "client.InGameHudMixin",
-    "client.accessor.RenderLayerAccessor"
+    "client.accessor.RenderLayerAccessor",
+    "client.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

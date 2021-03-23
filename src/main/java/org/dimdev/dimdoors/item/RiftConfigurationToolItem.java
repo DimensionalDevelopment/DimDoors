@@ -58,7 +58,9 @@ public class RiftConfigurationToolItem extends ModItem {
 					EntityUtils.chat(player, Text.of("Id: " + ((IdMarker) rift.getDestination()).getId()));
 				} else {
 					int id = counter.increment();
-					sync(stack, player, hand);
+
+					ServerPacketHandler.get((ServerPlayerEntity) player).sync(stack, hand);
+
 					EntityUtils.chat(player, Text.of("Rift stripped of data and set to target id: " + id));
 
 					rift.setDestination(new IdMarker(id));
@@ -95,7 +97,8 @@ public class RiftConfigurationToolItem extends ModItem {
 					}
 				} else if (CounterComponent.get(stack).count() != 0) {
 					CounterComponent.get(stack).reset();
-					sync(stack, player, hand);
+
+					ServerPacketHandler.get((ServerPlayerEntity) player).sync(stack, hand);
 
 					EntityUtils.chat(player, Text.of("Counter has been reset."));
 					return TypedActionResult.success(false);
@@ -110,17 +113,6 @@ public class RiftConfigurationToolItem extends ModItem {
 	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
 		if (I18n.hasTranslation(this.getTranslationKey() + ".info")) {
 			list.add(new TranslatableText(this.getTranslationKey() + ".info"));
-		}
-	}
-
-	// TODO: put in ServerPacketHandler
-	private void sync(ItemStack stack, PlayerEntity player, Hand hand) {
-		ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
-
-		if (hand == Hand.OFF_HAND) {
-			ServerPacketHandler.sendPacket(serverPlayer, new PlayerInventorySlotUpdateS2CPacket(45, stack));
-		} else {
-			ServerPacketHandler.sendPacket(serverPlayer, new PlayerInventorySlotUpdateS2CPacket(serverPlayer.getInventory().selectedSlot, stack));
 		}
 	}
 }

@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.mixin.accessor.ListTagAccessor;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.Location;
@@ -17,15 +18,20 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import net.minecraft.world.World;
 
@@ -41,8 +47,6 @@ public class RiftKeyItem extends Item {
 		if (isEmpty(stack)) {
 			tooltip.add(new TranslatableText("item.dimdoors.rift_key.no_links"));
 		} else if (context.isAdvanced()) {
-			tooltip.add(LiteralText.EMPTY);
-			tooltip.add(new TranslatableText("item.dimdoors.rift_key.ids"));
 			for (UUID id : getIds(stack)) {
 				tooltip.add(new LiteralText(" " + id.toString()));
 			}
@@ -63,6 +67,11 @@ public class RiftKeyItem extends Item {
 	@Override
 	public int getMaxUseTime(ItemStack stack) {
 		return 30;
+	}
+
+	@Override
+	public void onCraft(ItemStack stack, World world, PlayerEntity player) {
+		stack.setTag(this.getDefaultStack().getTag());
 	}
 
 	@Override
@@ -91,6 +100,7 @@ public class RiftKeyItem extends Item {
 					entranceRiftBlockEntity.setLocked(false);
 					entranceRiftBlockEntity.markDirty();
 					EntityUtils.chat(player, new TranslatableText("rifts.unlocked"));
+					ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
 					return ActionResult.SUCCESS;
 				} else {
 					EntityUtils.chat(player, new TranslatableText("rifts.cantUnlock"));
@@ -100,6 +110,7 @@ public class RiftKeyItem extends Item {
 				add(context.getStack(), rift.getId());
 				entranceRiftBlockEntity.markDirty();
 				EntityUtils.chat(player, new TranslatableText("rifts.locked"));
+				ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
 				return ActionResult.SUCCESS;
 			}
 		}
@@ -108,7 +119,7 @@ public class RiftKeyItem extends Item {
 
 	public static boolean tryRemove(ItemStack stack, UUID id) {
 		IntArrayTag arrayTag = new IntArrayTag(DynamicSerializableUuid.toIntArray(id));
-		return stack.getOrCreateTag().getList("Ids", NbtType.LIST).remove(arrayTag);
+		return stack.getTag().getList("Ids", NbtType.LIST).remove(arrayTag);
 	}
 
 	public static void add(ItemStack stack, UUID id) {
@@ -133,5 +144,12 @@ public class RiftKeyItem extends Item {
 				.map(IntArrayTag::getIntArray)
 				.map(DynamicSerializableUuid::toUuid)
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
+		if (this.isIn(group)) {
+			stacks.add(this.getDefaultStack());
+		}
 	}
 }

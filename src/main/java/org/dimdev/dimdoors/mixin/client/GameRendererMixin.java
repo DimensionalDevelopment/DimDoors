@@ -25,7 +25,7 @@ public abstract class GameRendererMixin {
 	@Shadow
 	protected abstract class_5944 method_34522(ResourceFactory arg, String string, VertexFormat vertexFormat) throws IOException;
 
-	@Inject(method = "method_34538", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/client/render/GameRenderer;method_34522(Lnet/minecraft/class_5912;Ljava/lang/String;Lnet/minecraft/client/render/VertexFormat;)Lnet/minecraft/class_5944;"))
+	@Inject(method = "method_34538", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/client/render/GameRenderer;method_34522(Lnet/minecraft/resource/ResourceFactory;Ljava/lang/String;Lnet/minecraft/client/render/VertexFormat;)Lnet/minecraft/class_5944;"))
 	public void onReload(ResourceManager resourceManager, CallbackInfo ci) throws IOException {
 		ModShaders.setDimensionalPortal(this.method_34522(resourceManager, "dimensional_portal", VertexFormats.POSITION));
 	}

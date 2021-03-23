@@ -33,7 +33,6 @@ public class ClientPacketHandler {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ClientPlayNetworkHandler networkHandler;
-	private final MinecraftClient client;
 	private boolean initialized = false;
 
 	private final Set<Identifier> registeredChannels = new HashSet<>();
@@ -65,7 +64,6 @@ public class ClientPacketHandler {
 
 	public ClientPacketHandler(ClientPlayNetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
-		this.client = ((ExtendedClientPlayNetworkHandler) networkHandler).dimdoorsGetClient();
 	}
 
 	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ClientPacketHandler>> supplier) {
@@ -98,8 +96,8 @@ public class ClientPacketHandler {
 	}
 
 	public void onPlayerInventorySlotUpdate(int slot, ItemStack stack) {
-		if (client.player != null) {
-			client.player.getInventory().setStack(slot, stack);
+		if (MinecraftClient.getInstance().player != null) {
+			MinecraftClient.getInstance().player.getInventory().setStack(slot, stack);
 		}
 	}
 
