@@ -4,14 +4,18 @@ import java.util.Optional;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.door.data.DoorDataReader;
 import org.dimdev.dimdoors.client.DefaultTransformation;
 import org.dimdev.dimdoors.client.Transformer;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.rift.registry.Rift;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.util.EntityUtils;
 import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,11 +32,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
+	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
 	private boolean locked;
 
 	public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
@@ -152,5 +158,14 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	@Override
 	public void setLocked(boolean locked) {
 		this.locked = locked;
+	}
+
+	public void setPortalDestination(World world) {
+		if (ModDimensions.isLimboDimension(world)) {
+			this.setDestination(ESCAPE_TARGET);
+		} else {
+			this.setDestination(DoorDataReader.GOLD_DIMDOOR_TARGET);
+			this.setProperties(DoorDataReader.GOLD_DIMDOOR_PROPERTIES);
+		}
 	}
 }

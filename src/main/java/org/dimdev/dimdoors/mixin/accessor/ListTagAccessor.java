@@ -10,7 +10,7 @@ import net.minecraft.nbt.Tag;
 
 @Mixin(ListTag.class)
 public interface ListTagAccessor {
-	@Invoker
+	@Invoker("<init>")
 	static ListTag createListTag(List<Tag> list, byte type) {
 		throw new UnsupportedOperationException();
 	}

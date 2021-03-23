@@ -29,6 +29,7 @@ import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.rift.targets.UnstableTarget;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.OptionalBool;
 import org.dimdev.dimdoors.world.ModDimensions;
 
@@ -37,9 +38,11 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.Util;
 
 public class DoorDataReader {
+	public static final VirtualTarget GOLD_DIMDOOR_TARGET = RandomTarget.builder().acceptedGroups(Collections.singleton(0)).coordFactor(1).negativeDepthFactor(10000).positiveDepthFactor(80).weightMaximum(100).noLink(false).noLinkBack(false).newRiftWeight(1).build();
+	public static final LinkProperties GOLD_DIMDOOR_PROPERTIES = LinkProperties.builder().groups(new HashSet<>(Arrays.asList(0, 1))).linksRemaining(1).build();
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().setLenient().create();
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final DoorData DEFAULT_IRON_DIMENSIONAL_DOOR = new DoorData(
+	public static final DoorData DEFAULT_IRON_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:iron_dimensional_door",
 			new DoorData.UnbakedItemSettings(
 					Optional.empty(),
@@ -53,7 +56,7 @@ public class DoorDataReader {
 					OptionalInt.of(10)
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PublicPocketTarget()), Optional.empty()), AlwaysTrueCondition.INSTANCE)))
 	));
-	private static final DoorData DEFAULT_GOLD_DIMENSIONAL_DOOR = new DoorData(
+	public static final DoorData DEFAULT_GOLD_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:gold_dimensional_door",
 			new DoorData.UnbakedItemSettings(
 					Optional.empty(),
@@ -65,9 +68,9 @@ public class DoorDataReader {
 			new DoorData.UnbakedBlockSettings(
 					"dimdoors:gold_door",
 					OptionalInt.of(10)
-			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(RandomTarget.builder().acceptedGroups(Collections.singleton(0)).coordFactor(1).negativeDepthFactor(10000).positiveDepthFactor(80).weightMaximum(100).noLink(false).noLinkBack(false).newRiftWeight(1).build()), Optional.of(LinkProperties.builder().groups(new HashSet<>(Arrays.asList(0, 1))).linksRemaining(1).build())), AlwaysTrueCondition.INSTANCE)))
+			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(GOLD_DIMDOOR_TARGET), Optional.of(GOLD_DIMDOOR_PROPERTIES)), AlwaysTrueCondition.INSTANCE)))
 	));
-	private static final DoorData DEFAULT_OAK_DIMENSIONAL_DOOR = new DoorData(
+	public static final DoorData DEFAULT_OAK_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:oak_dimensional_door",
 			new DoorData.UnbakedItemSettings(
 					Optional.empty(),
@@ -81,7 +84,7 @@ public class DoorDataReader {
 					OptionalInt.of(10)
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(RandomTarget.builder().acceptedGroups(Collections.singleton(0)).coordFactor(1).negativeDepthFactor(80).positiveDepthFactor(Double.MAX_VALUE).weightMaximum(100).noLink(false).newRiftWeight(0).build()), Optional.empty()), AlwaysTrueCondition.INSTANCE)))
 	));
-	private static final DoorData DEFAULT_QUARTZ_DIMENSIONAL_DOOR = new DoorData(
+	public static final DoorData DEFAULT_QUARTZ_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:quartz_dimensional_door",
 			new DoorData.UnbakedItemSettings(
 					Optional.empty(),
@@ -99,7 +102,7 @@ public class DoorDataReader {
 				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketTarget()), Optional.empty()), new InverseCondition(condition)));
 	})
 	));
-	private static final DoorData DEFAULT_UNSTABLE_DIMENSIONAL_DOOR = new DoorData(
+	public static final DoorData DEFAULT_UNSTABLE_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:unstable_dimensional_door",
 			new DoorData.UnbakedItemSettings(
 					Optional.empty(),

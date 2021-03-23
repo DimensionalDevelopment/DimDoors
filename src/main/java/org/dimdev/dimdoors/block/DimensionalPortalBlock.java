@@ -80,4 +80,9 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 	public boolean isTall(BlockState cachedState) {
 		return true;
 	}
+
+	@Override
+	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+		((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setPortalDestination(world);
+	}
 }
