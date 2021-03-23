@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " # ",
+    "###",
     "#X#",
-    " # "
+    "###"
   ],
   "key": {
     "#": {
       "item": "minecraft:gold_ingot"
     },
     "X": {
-      "item": "minecraft:ender_pearl"
+      "item": "dimdoors:stable_fabric"
     }
   },
   "result": {

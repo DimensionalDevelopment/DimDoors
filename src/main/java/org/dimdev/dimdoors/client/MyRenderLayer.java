@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.flowpowered.math.vector.VectorNi;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.dimdev.dimdoors.mixin.client.accessor.RenderLayerAccessor;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.render.RenderLayer;
@@ -27,7 +28,7 @@ public class MyRenderLayer extends RenderLayer {
         super(string, vertexFormat, drawMode, j, bl, bl2, runnable, runnable2);
     }
 
-    public static RenderLayer CRACK = RenderLayer.of("crack",
+    public static RenderLayer CRACK = RenderLayerAccessor.callOf("crack",
 			VertexFormats.POSITION_COLOR,
 			VertexFormat.DrawMode.QUADS,
 			256,
@@ -48,7 +49,7 @@ public class MyRenderLayer extends RenderLayer {
 					.build(false)
 	);
 
-    public static RenderLayer TESSERACT = RenderLayer.of("tesseract",
+    public static RenderLayer TESSERACT = RenderLayerAccessor.callOf("tesseract",
 			VertexFormats.POSITION_COLOR_TEXTURE,
 			VertexFormat.DrawMode.QUADS,
 			256,
@@ -65,6 +66,6 @@ public class MyRenderLayer extends RenderLayer {
 
 	public static RenderLayer getMonolith(Identifier texture) {
 		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().method_34577(new RenderPhase.Texture(texture, false, false)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
-		return RenderLayer.of("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, multiPhaseParameters);
+		return RenderLayerAccessor.callOf("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, multiPhaseParameters);
 	}
 }

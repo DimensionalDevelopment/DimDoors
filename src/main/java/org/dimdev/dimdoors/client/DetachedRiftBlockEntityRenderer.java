@@ -37,7 +37,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
             }
         }
 
-        this.renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
+//        this.renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift); TODO
     }
 
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
