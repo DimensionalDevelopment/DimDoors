@@ -42,6 +42,7 @@
     "fabricloader": ">=0.4.0",
     "fabric": "*"
   },
+  "accessWidener": "dimdoors.accesswidener",
   "custom": {
     "cardinal-components": [
       "dimdoors:dimensional_registry",

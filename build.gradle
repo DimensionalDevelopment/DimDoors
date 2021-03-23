@@ -95,6 +95,10 @@ sourceSets {
 	datagen
 }
 
+minecraft {
+	accessWidener = file('src/main/resources/dimdoors.accesswidener')
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:21w11a"
 	mappings "net.fabricmc:yarn:21w11a+build.4:v2"

@@ -7,9 +7,7 @@
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",
-    "accessor.ListTagAccessor",
     "PlayerEntityMixin",
-    "accessor.RecipesProviderAccessor",
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
@@ -19,6 +17,8 @@
     "accessor.DirectionAccessor",
     "accessor.EntityAccessor",
     "accessor.GenerationSettingsAccessor",
+    "accessor.ListTagAccessor",
+    "accessor.RecipesProviderAccessor",
     "accessor.RedstoneWireBlockAccessor",
     "accessor.StatsAccessor"
   ],
@@ -26,8 +26,9 @@
     "client.ClientPlayerInteractionManagerMixin",
     "client.ClientPlayNetworkHandlerMixin",
     "client.ExtendedClientPlayNetworkHandlerMixin",
+    "client.GameRendererMixin",
     "client.InGameHudMixin",
-    "client.GameRendererMixin"
+    "client.accessor.RenderLayerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

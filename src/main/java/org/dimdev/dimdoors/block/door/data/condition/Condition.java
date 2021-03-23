@@ -43,8 +43,6 @@ public interface Condition {
 
 		T fromJson(JsonObject json);
 
-		JsonObject toJson(T t, JsonObject json);
-
 		default String getId() {
 			return String.valueOf(REGISTRY.getId(this));
 		}
@@ -53,17 +51,7 @@ public interface Condition {
 		}
 
 		static <T extends Condition> ConditionType<T> register(String name, Function<JsonObject, T> fromJson) {
-			return Registry.register(REGISTRY, new Identifier("dimdoors", name), new ConditionType<T>() {
-				@Override
-				public T fromJson(JsonObject json) {
-					return fromJson.apply(json);
-				}
-
-				@Override
-				public JsonObject toJson(T t, JsonObject json) {
-					return t.toJson(json);
-				}
-			});
+			return Registry.register(REGISTRY, new Identifier("dimdoors", name), json -> fromJson.apply(json));
 		}
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Random;
 
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.mixin.client.accessor.RenderLayerAccessor;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
@@ -48,7 +49,7 @@ public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<Entr
 	static {
 		WARP_PATH = new Identifier("dimdoors:textures/other/warp.png");
 		DIMENSIONAL_PORTAL_SHADER = new RenderPhase.class_5942(ModShaders::getDimensionalPortal);
-		RENDER_LAYER = RenderLayer.of(
+		RENDER_LAYER = RenderLayerAccessor.callOf(
 				"dimensional_portal",
 				VertexFormats.POSITION,
 				VertexFormat.DrawMode.QUADS,
