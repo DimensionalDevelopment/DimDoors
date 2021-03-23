@@ -5,9 +5,9 @@ name: CI
 
 on:
   push:
-    branches: [ 1.16-fabric ]
+    branches: [ "1.17" ]
   pull_request:
-    branches: [ 1.16-fabric ]
+    branches: [ "1.17" ]
 
 jobs:
   build:
