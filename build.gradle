@@ -149,7 +149,7 @@ version = computeVersion(project.mod_version)
 archivesBaseName = "DimensionalDoors"
 
 static def computeVersion(String version) {
-	if (version.contains("alpha")) {
+	if (version.contains("alpha") || version.contains("beta")) {
 		return version + "-" + Calendar.getInstance().getTime().format("dd.MM.yyyy")
 	}
 	return version
