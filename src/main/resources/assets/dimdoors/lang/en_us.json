@@ -211,5 +211,9 @@
   "dimdoors.advancement.limbo": "Decay",
   "dimdoors.advancement.limbo.desc": "Enter limbo",
   "dimdoors.advancement.escape_limbo": "Escape",
-  "dimdoors.advancement.escape_limbo.desc": "Escape limbo"
+  "dimdoors.advancement.escape_limbo.desc": "Escape limbo",
+  "biome.dimdoors.black_void": "Black void (Public Pockets)",
+  "biome.dimdoors.dangerous_black_void": "Dangerous Black void (Dungeon Pockets)",
+  "biome.dimdoors.limbo": "Limbo",
+  "biome.dimdoors.white_void": "White void (Private Pockets)"
 }
