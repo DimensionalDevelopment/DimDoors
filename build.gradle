@@ -110,7 +110,7 @@ dependencies {
 	includeCompile("com.github.DimensionalDevelopment", "Matrix", "1.0.0")
 //	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "c57e3ef")
 	includeCompile("io.github.cottonmc", "LibGui", "4.0.0-alpha.1+21w11a")
-	includeCompile("me.shedaniel.cloth", "config-2", "5.0.0")
+	includeCompile("me.shedaniel.cloth", "cloth-config-fabric", "5.0.16")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-base", "3.0.0-nightly.21w06a")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-item", "3.0.0-nightly.21w06a")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-level", "3.0.0-nightly.21w06a")
