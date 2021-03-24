@@ -103,11 +103,8 @@ public final class ModBiomes {
 								GenerationStep.Feature.SURFACE_STRUCTURES,
 								ModFeatures.LIMBO_GATEWAY_CONFIGURED_FEATURE
 						)
-                        .feature(
-                        		GenerationStep.Feature.LAKES,
-								ModFeatures.ETERNAL_FLUID_LAKE)
                         .surfaceBuilder(
-                        		SurfaceBuilder.NETHER.withConfig(
+                        		SurfaceBuilder.DEFAULT.withConfig(
                         				new TernarySurfaceConfig(
                         						ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
 												ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),

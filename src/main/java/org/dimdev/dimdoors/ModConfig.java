@@ -6,8 +6,10 @@ import java.util.List;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Category;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.RequiresRestart;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.Tooltip;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.JanksonConfigSerializer;
 
@@ -65,57 +67,53 @@ public final class ModConfig implements ConfigData {
 	}
 
 	public static class General {
-		public boolean closeDoorBehind = false;
-		public double teleportOffset = 0.5;
-		public boolean riftBoundingBoxInCreative;
-		public double riftCloseSpeed = 0.005;
-		public double riftGrowthSpeed = 1;
-		public int depthSpreadFactor = 20;
-		public double endermanSpawnChance = 0.001;
-		public double endermanAggressiveChance = 0.5;
+		@Tooltip public boolean closeDoorBehind = false;
+		@Tooltip public double teleportOffset = 0.5;
+		@Tooltip public boolean riftBoundingBoxInCreative;
+		@Tooltip public double riftCloseSpeed = 0.005;
+		@Tooltip public double riftGrowthSpeed = 1;
+		@Tooltip public int depthSpreadFactor = 20;
+		@Tooltip public double endermanSpawnChance = 0.001;
+		@Tooltip public double endermanAggressiveChance = 0.5;
 	}
 
 	public static class Pockets {
-		public int pocketGridSize = 32;
-		public int maxPocketSize = 15;
-		public int privatePocketSize = 2;
-		public int publicPocketSize = 1;
-		@RequiresRestart
-		public boolean loadAllSchematics = false;
-		@RequiresRestart
-		public int cachedSchematics = 10;
+		@Tooltip public int pocketGridSize = 32;
+		@Tooltip public int maxPocketSize = 15;
+		@Tooltip public int privatePocketSize = 2;
+		@Tooltip public int publicPocketSize = 1;
 	}
 
 	public static class World {
 		@RequiresRestart
-		public double clusterGenChance = 20000;
+		@Tooltip public double clusterGenChance = 20000;
 		@RequiresRestart
-		public int gatewayGenChance = 200;
+		@Tooltip public int gatewayGenChance = 200;
 		@RequiresRestart
-		public List<String> clusterDimBlacklist = new LinkedList<>();
+		@Tooltip public List<String> clusterDimBlacklist = new LinkedList<>();
 		@RequiresRestart
-		public List<String> gatewayDimBlacklist = new LinkedList<>();
+		@Tooltip public List<String> gatewayDimBlacklist = new LinkedList<>();
 	}
 
 	public static class Dungeons {
-		public int maxDungeonDepth = 50;
+		@Tooltip public int maxDungeonDepth = 50;
 	}
 
 	public static class Monoliths {
-		public boolean dangerousLimboMonoliths = false;
-		public boolean monolithTeleportation = true;
+		@Tooltip public boolean dangerousLimboMonoliths = false;
+		@Tooltip public boolean monolithTeleportation = true;
 	}
 
 	public static class Limbo {
-		public boolean universalLimbo = false;
-		public boolean hardcoreLimbo = false;
-		public double decaySpreadChance = 0.5;
+		@Tooltip public boolean universalLimbo = false;
+		@Tooltip public boolean hardcoreLimbo = false;
+		@Tooltip public double decaySpreadChance = 0.5;
 	}
 
 	public static class Graphics {
-		public boolean showRiftCore = false;
-		public int highlightRiftCoreFor = 15000;
-		public double riftSize = 1;
-		public double riftJitter = 1;
+		@Tooltip public boolean showRiftCore = false;
+		@Tooltip public int highlightRiftCoreFor = 15000;
+		@Tooltip public double riftSize = 1;
+		@Tooltip public double riftJitter = 1;
 	}
 }

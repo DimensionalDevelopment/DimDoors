@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.door.data.DoorDataReader;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;

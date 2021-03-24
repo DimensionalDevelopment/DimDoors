@@ -30,16 +30,18 @@ import net.minecraft.world.gen.feature.SingleStateFeatureConfig;
 
 import net.fabricmc.loader.api.FabricLoader;
 
+// IMPORTANT NOTE
+// Do not remove deprecated stuff
 public final class ModFeatures {
     public static final Feature<SchematicV2GatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = new SchematicV2GatewayFeature(SchematicV2GatewayFeatureConfig.CODEC);
     public static final Feature<DefaultFeatureConfig> LIMBO_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "limbo_gateway"), new LimboGatewayFeature());
     public static final SchematicV2Gateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsV2Gateway();
     public static final SchematicV2Gateway TWO_PILLARS_GATEWAY = new TwoPillarsV2Gateway();
-    public static final Decorator<ChanceDecoratorConfig> ETERNAL_FLUID_LAKE_DECORATOR = new EternalFluidLakeDecorator(ChanceDecoratorConfig.CODEC);
+    @Deprecated public static final Decorator<ChanceDecoratorConfig> ETERNAL_FLUID_LAKE_DECORATOR = new EternalFluidLakeDecorator(ChanceDecoratorConfig.CODEC);
     public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> TWO_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> LIMBO_GATEWAY_CONFIGURED_FEATURE;
-    public static final ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE = Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(ETERNAL_FLUID_LAKE_DECORATOR.configure(new ChanceDecoratorConfig(20)));
+    @Deprecated public static final ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE = Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(ETERNAL_FLUID_LAKE_DECORATOR.configure(new ChanceDecoratorConfig(20)));
 
     public static void init() {
         SANDSTONE_PILLARS_GATEWAY.init();
