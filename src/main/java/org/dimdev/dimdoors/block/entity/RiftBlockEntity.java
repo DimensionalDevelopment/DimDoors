@@ -80,7 +80,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	public void setDestination(VirtualTarget destination) {
-		System.out.println("setting Destination " + destination);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Setting destination {} for {}", destination, this.pos.toShortString());
+		}
 
 		if (this.getDestination() != null && this.isRegistered()) {
 			this.getDestination().unregister();

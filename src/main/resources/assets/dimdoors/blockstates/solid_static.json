@@ -1,6 +1,6 @@
 {
   "variants": {
-    "normal": [
+    "": [
       { "model": "dimdoors:solid_static" },
       { "model": "dimdoors:solid_static", "x": 90 },
       { "model": "dimdoors:solid_static", "x": 180 },

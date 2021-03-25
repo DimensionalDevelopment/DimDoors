@@ -45,11 +45,13 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		try {
 			this.weightEquation = Equation.parse(weight);
 		} catch (EquationParseException e) {
-			LOGGER.error("Could not parse weight equation \"" + weight + "\", defaulting to default weight equation \"" + defaultWeightEquation + "\"", e);
+			LOGGER.debug("Defaulting to default weight equation for {}", this);
+			LOGGER.debug("Exception Stacktrace", e);
 			try {
 				this.weightEquation = Equation.parse(defaultWeightEquation);
 			} catch (EquationParseException equationParseException) {
-				LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
+				LOGGER.debug("Defaulting to default weight equation for {}", this);
+				LOGGER.debug("Exception Stacktrace", e);
 				this.weightEquation = stringDoubleMap -> fallbackWeight;
 			}
 		}
