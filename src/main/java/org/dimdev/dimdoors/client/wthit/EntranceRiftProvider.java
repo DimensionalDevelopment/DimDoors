@@ -31,7 +31,7 @@ public enum EntranceRiftProvider implements IComponentProvider {
 		VirtualTarget destination = Objects.requireNonNull(blockEntity).getDestination();
 		if (destination != null) {
 			TranslatableText tKey = new TranslatableText(destination.getType().getTranslationKey());
-			Text main = new TranslatableText("dimdoors.destination").append(" ").append(tKey);
+			Text main = new TranslatableText("dimdoors.destination").append(": ").append(tKey);
 			tooltip.add(main);
 		}
 	}

@@ -101,6 +101,21 @@
   "item.dimdoors.dimensional_eraser.desc": "Erases entities",
   "item.dimdoors.monolith_spawner": "Monolith Spawner",
 
+  "dimdoors.virtualTarget.dimdoors.available_link": "Random",
+  "dimdoors.virtualTarget.dimdoors.escape": "Escape",
+  "dimdoors.virtualTarget.dimdoors.global": "Global",
+  "dimdoors.virtualTarget.dimdoors.limbo": "Limbo",
+  "dimdoors.virtualTarget.dimdoors.local": "Local",
+  "dimdoors.virtualTarget.dimdoors.public_pocket": "Public Pocket",
+  "dimdoors.virtualTarget.dimdoors.pocket_entrance": "Pocket Entrance",
+  "dimdoors.virtualTarget.dimdoors.pocket_exit": "Pocket Exit",
+  "dimdoors.virtualTarget.dimdoors.private": "Private Pocket Entrance",
+  "dimdoors.virtualTarget.dimdoors.private_pocket_exit": "Private Pocket Exit",
+  "dimdoors.virtualTarget.dimdoors.relative": "Relative",
+  "dimdoors.virtualTarget.dimdoors.id_marker": "Id Marker",
+  "dimdoors.virtualTarget.dimdoors.unstable": "Unstable",
+  "dimdoors.virtualTarget.dimdoors.none": "None",
+
   "fluid.dimdoors.eternal_fabric": "Eternal Fabric",
 
   "entity.dimdoors.monolith": "",
