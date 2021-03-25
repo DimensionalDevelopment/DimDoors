@@ -7,7 +7,7 @@
   ],
   "key": {
     "X": {
-      "item": "minecraft:stable_fabric"
+      "item": "dimdoors:stable_fabric"
     },
     "#": {
       "item": "minecraft:diamond"

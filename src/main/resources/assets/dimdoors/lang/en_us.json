@@ -46,6 +46,7 @@
   "block.dimdoors.unravelled_fabric": "Unraveled Fabric",
   "block.dimdoors.rift": "Rift Scar",
   "block.dimdoors.eternal_fluid": "Eternal Fluid",
+  "block.dimdoors.solid_static": "Solid Static",
 
   "item.dimdoors.gold_door": "Gold Door",
   "item.dimdoors.quartz_door": "Quartz Door",
@@ -202,10 +203,7 @@
 
   "argument.dimdoors.schematic.invalidNamespace": "Invalid schematic namespace. Expected one of %s, found %s.",
   "command.dimdoors.schematicv2.unknownSchematic": "Unknown schematic \"%s\" in namespace \"%s\" ",
-  "dimdoors.config.screen.reload": "Reload Config",
-  "dimdoors.linkProperties.oneWay": "One way: %s",
-  "dimdoors.linkProperties.linksRemaining": "Remaining links: %s",
-  "dimdoors.color": "Color: ",
+  "dimdoors.destination": "Destination type",
   "dimdoors.advancement.root": "Dimensional Doors",
   "dimdoors.advancement.root.desc": "Venture into the depths",
   "dimdoors.advancement.public_pocket": "Public Pockets",

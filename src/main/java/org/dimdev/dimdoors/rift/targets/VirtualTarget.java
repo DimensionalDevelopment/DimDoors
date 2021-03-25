@@ -1,11 +1,13 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
 import javax.sound.sampled.Port;
 
 import com.mojang.serialization.Lifecycle;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import org.dimdev.dimdoors.util.Location;
 import org.dimdev.dimdoors.util.RGBA;
 
@@ -98,12 +100,24 @@ public abstract class VirtualTarget implements Target {
 		VirtualTargetType<IdMarker> ID_MARKER = register("dimdoors:id_marker", IdMarker::fromTag, IdMarker::toTag, VirtualTarget.COLOR);
 		VirtualTargetType<UnstableTarget> UNSTABLE = register("dimdoors:unstable", tag -> new UnstableTarget(), t -> new CompoundTag(), VirtualTarget.COLOR);
 		VirtualTargetType<NoneTarget> NONE = register("dimdoors:none", tag -> NoneTarget.INSTANCE, i -> new CompoundTag(), COLOR);
+		Map<VirtualTargetType<?>, String> TRANSLATION_KEYS = new Object2ObjectArrayMap<>();
 
 		T fromTag(CompoundTag tag);
 
 		CompoundTag toTag(VirtualTarget virtualType);
 
 		RGBA getColor();
+
+		default Identifier getId() {
+			return REGISTRY.getId(this);
+		}
+
+		default String getTranslationKey() {
+			return TRANSLATION_KEYS.computeIfAbsent(this, t -> {
+				Identifier id = t.getId();
+				return "dimdoors.virtualTarget." + id.getNamespace() + "." + id.getPath();
+			});
+		}
 
 		static void register() {
 		}

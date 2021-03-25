@@ -1,14 +1,17 @@
 package org.dimdev.dimdoors.client.wthit;
 
 import java.util.List;
+import java.util.Objects;
 
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
@@ -19,18 +22,11 @@ public enum EntranceRiftProvider implements IComponentProvider {
 	@Override
 	public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
 		EntranceRiftBlockEntity blockEntity = ((EntranceRiftBlockEntity) accessor.getBlockEntity());
-		LinkProperties properties = blockEntity.getProperties();
-		if (properties != null) {
-			tooltip.add(new TranslatableText("dimdoors.linkProperties.oneWay", properties.isOneWay()));
-			tooltip.add(new TranslatableText("dimdoors.linkProperties.linksRemaining", properties.getLinksRemaining()));
+		VirtualTarget destination = Objects.requireNonNull(blockEntity).getDestination();
+		if (destination != null) {
+			TranslatableText tKey = new TranslatableText(destination.getType().getTranslationKey());
+			Text main = new TranslatableText("dimdoors.destination").append(" ").append(tKey);
+			tooltip.add(main);
 		}
-		if (blockEntity.getColor() != null) {
-			TranslatableText colorText = new TranslatableText("dimdoors.color");
-			LiteralText actualColorText = new LiteralText(Integer.toHexString(blockEntity.getColor().toIntNoAlpha()));
-			actualColorText.getStyle().withColor(TextColor.fromRgb(blockEntity.getColor().toIntNoAlpha()));
-			colorText.append(actualColorText);
-			tooltip.add(new TranslatableText("dimdoors.color", colorText));
-		}
-		tooltip.add(new LiteralText("Foo"));
 	}
 }
