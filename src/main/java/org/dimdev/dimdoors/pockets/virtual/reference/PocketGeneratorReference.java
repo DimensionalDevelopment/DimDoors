@@ -32,8 +32,6 @@ import net.minecraft.nbt.ListTag;
 
 public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final String defaultWeightEquation = "5"; // TODO: make config
-	private static final int fallbackWeight = 5; // TODO: make config
 
 	protected String weight;
 	protected Equation weightEquation;
@@ -48,11 +46,11 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 			LOGGER.debug("Defaulting to default weight equation for {}", this);
 			LOGGER.debug("Exception Stacktrace", e);
 			try {
-				this.weightEquation = Equation.parse(defaultWeightEquation);
+				this.weightEquation = Equation.parse(DimensionalDoorsInitializer.getConfig().getPocketsConfig().defaultWeightEquation);
 			} catch (EquationParseException equationParseException) {
 				LOGGER.debug("Defaulting to default weight equation for {}", this);
 				LOGGER.debug("Exception Stacktrace", e);
-				this.weightEquation = stringDoubleMap -> fallbackWeight;
+				this.weightEquation = stringDoubleMap -> DimensionalDoorsInitializer.getConfig().getPocketsConfig().fallbackWeight;
 			}
 		}
 	}

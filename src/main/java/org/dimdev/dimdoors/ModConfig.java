@@ -82,6 +82,8 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public int maxPocketSize = 15;
 		@Tooltip public int privatePocketSize = 2;
 		@Tooltip public int publicPocketSize = 1;
+		@Tooltip public String defaultWeightEquation = "5";
+		@Tooltip public int fallbackWeight = 5;
 	}
 
 	public static class World {
