@@ -2,7 +2,9 @@ package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.util.EntityUtils;
+
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;

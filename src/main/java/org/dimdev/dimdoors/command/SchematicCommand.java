@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.command.arguments.SchematicNamespaceArgumentType;
-import org.dimdev.dimdoors.util.BlockPlacementType;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 

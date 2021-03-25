@@ -8,7 +8,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.function.Supplier;
@@ -36,9 +37,9 @@ public interface Modifier {
 
 	String getKey();
 
-	void apply(PocketGenerationParameters parameters, RiftManager manager);
+	void apply(PocketGenerationContext parameters, RiftManager manager);
 
-	void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder);
+	void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	interface ModifierType<T extends Modifier> {
 		ModifierType<ShellModifier> SHELL_MODIFIER_TYPE = register(new Identifier("dimdoors", ShellModifier.KEY), ShellModifier::new);
@@ -54,6 +55,7 @@ public interface Modifier {
 		CompoundTag toTag(CompoundTag tag);
 
 		static void register() {
+			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerModifierTypes(REGISTRY));
 		}
 
 		static <U extends Modifier> ModifierType<U> register(Identifier id, Supplier<U> factory) {

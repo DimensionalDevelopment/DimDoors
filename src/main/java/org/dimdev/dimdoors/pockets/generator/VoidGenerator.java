@@ -5,9 +5,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.Equation;
-import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -25,7 +25,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 	private Equation lengthEquation;
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.getWorld().getRegistryKey()).newPocket(builder);
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		pocket.setSize((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
@@ -44,7 +44,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public Vec3i getSize(PocketGenerationParameters parameters) {
+	public Vec3i getSize(PocketGenerationContext parameters) {
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		return new Vec3i((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
 	}

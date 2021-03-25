@@ -13,8 +13,8 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.util.BlockBoxUtil;
-import org.dimdev.dimdoors.util.BlockPlacementType;
+import org.dimdev.dimdoors.api.util.BlockBoxUtil;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;

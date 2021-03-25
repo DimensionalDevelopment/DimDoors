@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import com.mojang.serialization.Lifecycle;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -91,6 +93,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		AbstractPocketBuilder<?, T> builder();
 
 		static void register() {
+			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerAbstractPocketTypes(REGISTRY));
 		}
 
 		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> AbstractPocketType<U> register(Identifier id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {

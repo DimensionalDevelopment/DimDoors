@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.network.ClientPacketHandler;
 import org.dimdev.dimdoors.network.ExtendedClientPlayNetworkHandler;
-import org.dimdev.dimdoors.util.math.GridUtil;
+import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;

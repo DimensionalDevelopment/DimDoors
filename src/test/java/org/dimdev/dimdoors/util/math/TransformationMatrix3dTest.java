@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.util.math;
 
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
+
+import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.test.TestUtil;
 import org.junit.jupiter.api.Test;
 

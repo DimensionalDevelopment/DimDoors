@@ -4,8 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.Equation;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
@@ -61,12 +61,12 @@ public class OffsetModifier implements Modifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		builder.offsetOrigin(new Vec3i((int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap)));
 	}

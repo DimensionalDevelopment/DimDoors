@@ -4,12 +4,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import javax.sound.sampled.Port;
-
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.rift.target.Target;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.RGBA;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -120,6 +120,7 @@ public abstract class VirtualTarget implements Target {
 		}
 
 		static void register() {
+			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerVirtualTargetTypes(REGISTRY));
 		}
 
 		@SuppressWarnings("unchecked")

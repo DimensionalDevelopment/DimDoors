@@ -9,14 +9,15 @@ import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.math.MathUtil;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;

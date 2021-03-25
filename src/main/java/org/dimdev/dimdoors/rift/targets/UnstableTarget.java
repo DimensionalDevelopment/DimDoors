@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.rift.targets;
 import java.util.Collections;
 import java.util.Random;
 
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;

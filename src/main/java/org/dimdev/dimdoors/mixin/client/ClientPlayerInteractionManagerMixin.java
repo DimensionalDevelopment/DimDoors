@@ -6,7 +6,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import org.dimdev.dimdoors.event.UseItemOnBlockCallback;
+import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

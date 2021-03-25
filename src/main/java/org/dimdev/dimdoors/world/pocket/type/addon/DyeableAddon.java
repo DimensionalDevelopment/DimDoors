@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.AncientFabricBlock;
 import org.dimdev.dimdoors.block.FabricBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;

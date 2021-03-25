@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.DimensionalDoorItem;
 import org.dimdev.dimdoors.item.ItemExtensions;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.util.OptionalBool;
+import org.dimdev.dimdoors.api.util.OptionalBool;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;

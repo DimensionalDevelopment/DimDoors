@@ -1,17 +1,19 @@
 package org.dimdev.dimdoors;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Supplier;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
+import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
-import org.dimdev.dimdoors.event.UseItemOnBlockCallback;
+import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
@@ -30,7 +32,6 @@ import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.util.SubRootJanksonConfigSerializer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
@@ -59,8 +60,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
+	public static List<DimensionalDoorsApi> apiSubscribers;
 	private static final Supplier<Path> CONFIG_ROOT = () -> FabricLoader.getInstance().getConfigDir().resolve("dimdoors").toAbsolutePath();
-	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, SubRootJanksonConfigSerializer::new);
+	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootJanksonConfigSerializer::new);
 	private static MinecraftServer server;
 	private static ModContainer dimDoorsMod;
 
@@ -90,6 +92,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
 	@Override
     public void onInitialize() {
+		apiSubscribers = FabricLoader.getInstance().getEntrypoints("dimdoors:api", DimensionalDoorsApi.class);
     	dimDoorsMod = FabricLoader.getInstance().getModContainer("dimdoors").orElseThrow(RuntimeException::new);
     	ServerLifecycleEvents.SERVER_STARTING.register((minecraftServer) -> {
             server = minecraftServer;
@@ -121,6 +124,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default_pockets"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);
 
 		registerListeners();
+		apiSubscribers.forEach(DimensionalDoorsApi::postInitialize);
     }
 
     private void registerListeners() {

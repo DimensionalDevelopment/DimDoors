@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Lifecycle;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 import net.minecraft.util.Identifier;
@@ -48,6 +49,7 @@ public interface Condition {
 		}
 
 		static void register() {
+			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerConditionTypes(REGISTRY));
 		}
 
 		static <T extends Condition> ConditionType<T> register(String name, Function<JsonObject, T> fromJson) {

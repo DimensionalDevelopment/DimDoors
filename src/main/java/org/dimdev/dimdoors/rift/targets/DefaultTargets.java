@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.dimdoors.util.InstanceMap;
+import org.dimdev.dimdoors.api.rift.target.Target;
+import org.dimdev.dimdoors.api.util.InstanceMap;
 
 public final class DefaultTargets {
 	private static final InstanceMap DEFAULT_TARGETS = new InstanceMap();

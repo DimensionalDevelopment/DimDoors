@@ -6,7 +6,7 @@ import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.api.util.RGBA;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;

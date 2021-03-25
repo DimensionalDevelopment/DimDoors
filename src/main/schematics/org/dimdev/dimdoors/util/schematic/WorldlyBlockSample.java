@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.util.schematic;
 
 import java.util.function.Predicate;
 
-import org.dimdev.dimdoors.util.BlockPlacementType;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;

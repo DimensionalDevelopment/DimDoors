@@ -30,7 +30,7 @@ import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.rift.targets.UnstableTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.util.OptionalBool;
+import org.dimdev.dimdoors.api.util.OptionalBool;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.util.Pair;

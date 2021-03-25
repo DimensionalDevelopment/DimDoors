@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.util.math;
 
+import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.junit.jupiter.api.Test;
-
-import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.*;
 

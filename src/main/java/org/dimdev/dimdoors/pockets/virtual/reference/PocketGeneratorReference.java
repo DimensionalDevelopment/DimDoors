@@ -21,9 +21,9 @@ import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.Equation;
-import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -103,7 +103,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	}
 
 	@Override
-	public double getWeight(PocketGenerationParameters parameters) {
+	public double getWeight(PocketGenerationContext parameters) {
 		try {
 			return weightEquation != null ? this.weightEquation.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocketGenerator(parameters).getWeight(parameters);
 		} catch (RuntimeException e) {
@@ -112,20 +112,20 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		}
 	}
 
-	public void applyModifiers(PocketGenerationParameters parameters, RiftManager manager) {
+	public void applyModifiers(PocketGenerationContext parameters, RiftManager manager) {
 		for (Modifier modifier : modifierList) {
 			modifier.apply(parameters, manager);
 		}
 	}
 
-	public void applyModifiers(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void applyModifiers(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		for (Modifier modifier : modifierList) {
 			modifier.apply(parameters, builder);
 		}
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
+	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
 		PocketGenerator generator = getReferencedPocketGenerator(parameters);
 
 
@@ -176,18 +176,18 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	}
 
 	@Override
-	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters) {
 		return this;
 	}
 
 	@Override
-	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
 		return this;
 	}
 
-	public abstract PocketGenerator peekReferencedPocketGenerator(PocketGenerationParameters parameters);
+	public abstract PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters);
 
-	public abstract PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters);
+	public abstract PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters);
 
 	@Override
 	public abstract String toString();

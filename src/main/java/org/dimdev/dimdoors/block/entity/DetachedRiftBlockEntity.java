@@ -6,7 +6,7 @@ import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.util.TeleportUtil;
+import org.dimdev.dimdoors.api.util.TeleportUtil;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;

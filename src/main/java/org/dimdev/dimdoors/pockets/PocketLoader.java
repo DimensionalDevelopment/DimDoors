@@ -25,8 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.WeightedList;
+import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
 public class PocketLoader implements SimpleSynchronousResourceReloadListener {
@@ -150,7 +149,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		}
 	}
 
-	public WeightedList<PocketGenerator, PocketGenerationParameters> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
+	public WeightedList<PocketGenerator, PocketGenerationContext> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
 		return new WeightedList<>(pocketGeneratorMap.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
 

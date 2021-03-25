@@ -7,6 +7,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.blockbreak.BlockBreakContainer;
 
@@ -94,6 +96,7 @@ public interface PocketAddon {
 		Identifier identifier();
 
 		static void register() {
+			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerPocketAddonTypes(REGISTRY));
 		}
 
 		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {
