@@ -15,12 +15,18 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 
 public enum EntranceRiftProvider implements IComponentProvider {
 	INSTANCE;
 
+	private static final Identifier ID = new Identifier("dimdoors", "entrance_rift_provider");
+
 	@Override
 	public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
+		if (!config.get(ID, true)) {
+			return;
+		}
 		EntranceRiftBlockEntity blockEntity = ((EntranceRiftBlockEntity) accessor.getBlockEntity());
 		VirtualTarget destination = Objects.requireNonNull(blockEntity).getDestination();
 		if (destination != null) {
