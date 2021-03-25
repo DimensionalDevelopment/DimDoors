@@ -297,6 +297,9 @@ public final class ModItems {
 	@RegistryEntry("eternal_fluid_bucket")
 	public static final Item ETERNAL_FLUID_BUCKET = create(new BucketItem(ModFluids.ETERNAL_FLUID, new Item.Settings().group(DIMENSIONAL_DOORS).recipeRemainder(Items.BUCKET).maxCount(1)));
 
+	@RegistryEntry("solid_static")
+	public static final Item SOLID_STATIC = create(ModBlocks.SOLID_STATIC);
+
 	private static Item create(Block block) {
 		return create(new BlockItem(block, (new Item.Settings()).group(DIMENSIONAL_DOORS)));
 	}

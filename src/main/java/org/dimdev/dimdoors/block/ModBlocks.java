@@ -16,6 +16,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.registry.Registry;
 
@@ -153,6 +154,9 @@ public final class ModBlocks {
 
 	@RegistryEntry("marking_plate")
 	public static final Block MARKING_PLATE = register(new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).nonOpaque()));
+
+	@RegistryEntry("solid_static")
+	public static final Block SOLID_STATIC = register(new Block(FabricBlockSettings.of(Material.STONE).strength(7, 25).breakByTool(FabricToolTags.PICKAXES, 3).breakByHand(false).sounds(BlockSoundGroup.SAND)));
 
 	private static Block register(Block block) {
 		return block;
