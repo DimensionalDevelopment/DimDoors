@@ -47,6 +47,11 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.display(makeDisplay(ModItems.RIFT_BLADE, "root"))
 				.criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.ENDER_PEARL))
 				.build(advancementConsumer, "dimdoors:dimdoors/root");
+		Advancement.Task.create()
+				.display(makeDisplay(ModItems.WORLD_THREAD, "string_theory"))
+				.criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.WORLD_THREAD))
+				.parent(root)
+				.build(advancementConsumer, "dimdoors:dimdoors/string_theory");
 
 //		Advancement.Task.create()
 //				.display(makeDisplay(ModItems.IRON_DIMENSIONAL_DOOR, "public_pocket"))

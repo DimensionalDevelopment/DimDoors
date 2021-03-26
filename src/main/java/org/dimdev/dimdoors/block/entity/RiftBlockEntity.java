@@ -8,6 +8,7 @@ import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.entity.advancement.ModCriteria;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
@@ -34,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -108,6 +110,12 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		this.data.setProperties(properties);
 		this.updateProperties();
 		this.markDirty();
+	}
+
+	@Override
+	public CompoundTag toInitialChunkDataNbt() {
+		PlayerLookup.tracking(this).forEach(ModCriteria.RIFT_TRACKED::trigger);
+		return super.toInitialChunkDataNbt();
 	}
 
 	public void markStateChanged() {

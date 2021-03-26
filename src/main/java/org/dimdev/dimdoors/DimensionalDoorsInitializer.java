@@ -12,6 +12,7 @@ import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.entity.advancement.ModCriteria;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.fluid.ModFluids;
@@ -121,6 +122,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		ModFluids.init();
         ModSoundEvents.init();
 		ModParticleTypes.init();
+		ModCriteria.init();
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default_pockets"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);
