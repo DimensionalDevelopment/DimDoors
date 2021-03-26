@@ -2,13 +2,14 @@
   "parent": "dimdoors:dimdoors/root",
   "display": {
     "icon": {
-      "item": "dimdoors:quartz_dimensional_door"
+      "item": "dimdoors:rift_configuration_tool",
+      "nbt": "{Damage:0}"
     },
     "title": {
-      "translate": "dimdoors.advancement.private_pocket"
+      "translate": "dimdoors.advancement.hole_in_the_sky"
     },
     "description": {
-      "translate": "dimdoors.advancement.private_pocket.desc"
+      "translate": "dimdoors.advancement.hole_in_the_sky.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -17,16 +18,14 @@
     "background": "dimdoors:textures/block/unravelled_fabric.png"
   },
   "criteria": {
-    "changed_dimension": {
-      "trigger": "minecraft:changed_dimension",
-      "conditions": {
-        "to": "dimdoors:personal_pockets"
-      }
+    "encounter_rift": {
+      "trigger": "dimdoors:rift_tracked",
+      "conditions": {}
     }
   },
   "requirements": [
     [
-      "changed_dimension"
+      "encounter_rift"
     ]
   ]
 }

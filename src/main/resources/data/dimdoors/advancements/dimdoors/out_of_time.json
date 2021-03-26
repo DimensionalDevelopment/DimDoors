@@ -2,13 +2,13 @@
   "parent": "dimdoors:dimdoors/dark_ostiology",
   "display": {
     "icon": {
-      "item": "dimdoors:iron_dimensional_door"
+      "item": "minecraft:respawn_anchor"
     },
     "title": {
-      "translate": "dimdoors.advancement.public_pocket"
+      "translate": "dimdoors.advancement.out_of_time"
     },
     "description": {
-      "translate": "dimdoors.advancement.public_pocket.desc"
+      "translate": "dimdoors.advancement.out_of_time.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -17,16 +17,14 @@
     "background": "dimdoors:textures/block/unravelled_fabric.png"
   },
   "criteria": {
-    "public_pocket": {
-      "trigger": "minecraft:changed_dimension",
-      "conditions": {
-        "to": "dimdoors:public_pockets"
-      }
+    "spawn": {
+      "trigger": "dimdoors:pocket_spawn_point_set",
+      "conditions": {}
     }
   },
   "requirements": [
     [
-      "public_pocket"
+      "spawn"
     ]
   ]
 }

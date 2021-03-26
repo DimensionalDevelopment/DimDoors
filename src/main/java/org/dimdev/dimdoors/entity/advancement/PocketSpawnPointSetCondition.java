@@ -9,8 +9,8 @@ import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-public class RiftTrackedCriterion extends AbstractCriterion<RiftTrackedCriterion.Conditions> {
-	public static final Identifier ID = new Identifier("dimdoors", "rift_tracked");
+public class PocketSpawnPointSetCondition extends AbstractCriterion<PocketSpawnPointSetCondition.Conditions> {
+	public static final Identifier ID = new Identifier("dimdoors", "pocket_spawn_point_set");
 
 	@Override
 	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {

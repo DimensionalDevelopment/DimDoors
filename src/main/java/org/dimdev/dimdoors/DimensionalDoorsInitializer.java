@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors;
 
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -63,7 +64,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
 public class DimensionalDoorsInitializer implements ModInitializer {
-	public static List<DimensionalDoorsApi> apiSubscribers;
+	public static List<DimensionalDoorsApi> apiSubscribers = Collections.emptyList();
 	private static final Supplier<Path> CONFIG_ROOT = () -> FabricLoader.getInstance().getConfigDir().resolve("dimdoors").toAbsolutePath();
 	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootJanksonConfigSerializer::new);
 	private static MinecraftServer server;
@@ -101,14 +102,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
             server = minecraftServer;
         });
 
-		Targets.registerDefaultTargets();
-		VirtualTarget.VirtualTargetType.register();
-		VirtualSingularPocket.VirtualSingularPocketType.register();
-		Modifier.ModifierType.register();
-		PocketGenerator.PocketGeneratorType.register();
-		AbstractPocket.AbstractPocketType.register();
-		PocketAddon.PocketAddonType.register();
-		Condition.ConditionType.register();
+		registerRegistries();
 
         ModBlocks.init();
         ModItems.init();
@@ -130,6 +124,17 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		registerListeners();
 		apiSubscribers.forEach(DimensionalDoorsApi::postInitialize);
     }
+
+    public static void registerRegistries() {
+		Targets.registerDefaultTargets();
+		VirtualTarget.VirtualTargetType.register();
+		VirtualSingularPocket.VirtualSingularPocketType.register();
+		Modifier.ModifierType.register();
+		PocketGenerator.PocketGeneratorType.register();
+		AbstractPocket.AbstractPocketType.register();
+		PocketAddon.PocketAddonType.register();
+		Condition.ConditionType.register();
+	}
 
     private void registerListeners() {
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {

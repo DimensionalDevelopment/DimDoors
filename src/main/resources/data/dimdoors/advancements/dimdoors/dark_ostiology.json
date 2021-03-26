@@ -1,14 +1,14 @@
 {
-  "parent": "dimdoors:dimdoors/limbo",
+  "parent": "dimdoors:dimdoors/hole_in_the_sky",
   "display": {
     "icon": {
-      "item": "dimdoors:eternal_fluid_bucket"
+      "item": "dimdoors:oak_dimensional_door"
     },
     "title": {
-      "translate": "dimdoors.advancement.escape_limbo"
+      "translate": "dimdoors.advancement.dark_ostiology"
     },
     "description": {
-      "translate": "dimdoors.advancement.escape_limbo.desc"
+      "translate": "dimdoors.advancement.dark_ostiology.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -17,16 +17,16 @@
     "background": "dimdoors:textures/block/unravelled_fabric.png"
   },
   "criteria": {
-    "changed_dimension": {
-      "trigger": "minecraft:changed_dimension",
+    "place_door": {
+      "trigger": "minecraft:placed_block",
       "conditions": {
-        "from": "dimdoors:limbo"
+        "block": "dimdoors:oak_dimensional_door"
       }
     }
   },
   "requirements": [
     [
-      "changed_dimension"
+      "place_door"
     ]
   ]
 }

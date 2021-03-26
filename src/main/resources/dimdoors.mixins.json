@@ -3,6 +3,7 @@
   "package": "org.dimdev.dimdoors.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BlockMixin",
     "DefaultBiomeFeaturesMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",

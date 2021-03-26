@@ -1,14 +1,14 @@
 {
-  "parent": "dimdoors:dimdoors/dark_ostiology",
+  "parent": "dimdoors:dimdoors/door_to_adventure",
   "display": {
     "icon": {
-      "item": "dimdoors:iron_dimensional_door"
+      "item": "dimdoors:monolith_spawner"
     },
     "title": {
-      "translate": "dimdoors.advancement.public_pocket"
+      "translate": "dimdoors.advancement.enter_limbo"
     },
     "description": {
-      "translate": "dimdoors.advancement.public_pocket.desc"
+      "translate": "dimdoors.advancement.enter_limbo.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -17,16 +17,16 @@
     "background": "dimdoors:textures/block/unravelled_fabric.png"
   },
   "criteria": {
-    "public_pocket": {
+    "enter_limbo": {
       "trigger": "minecraft:changed_dimension",
       "conditions": {
-        "to": "dimdoors:public_pockets"
+        "to": "dimdoors:limbo"
       }
     }
   },
   "requirements": [
     [
-      "public_pocket"
+      "enter_limbo"
     ]
   ]
 }

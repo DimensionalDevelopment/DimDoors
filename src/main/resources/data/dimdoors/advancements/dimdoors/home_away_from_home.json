@@ -5,10 +5,10 @@
       "item": "dimdoors:iron_dimensional_door"
     },
     "title": {
-      "translate": "dimdoors.advancement.public_pocket"
+      "translate": "dimdoors.advancement.home_away_from_home"
     },
     "description": {
-      "translate": "dimdoors.advancement.public_pocket.desc"
+      "translate": "dimdoors.advancement.home_away_from_home.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -17,16 +17,16 @@
     "background": "dimdoors:textures/block/unravelled_fabric.png"
   },
   "criteria": {
-    "public_pocket": {
+    "private_pocket": {
       "trigger": "minecraft:changed_dimension",
       "conditions": {
-        "to": "dimdoors:public_pockets"
+        "to": "dimdoors:personal_pockets"
       }
     }
   },
   "requirements": [
     [
-      "public_pocket"
+      "private_pocket"
     ]
   ]
 }
