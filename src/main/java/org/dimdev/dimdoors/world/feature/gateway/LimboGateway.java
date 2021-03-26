@@ -39,7 +39,7 @@ public enum LimboGateway implements Gateway {
 
     @Override
     public boolean isLocationValid(StructureWorldAccess world, BlockPos pos) {
-        return ModDimensions.isLimbo(world);
+        return ModDimensions.isLimboDimension(world.toServerWorld());
     }
 
     private void placePortal(StructureWorldAccess world, BlockPos pos, Direction facing) {

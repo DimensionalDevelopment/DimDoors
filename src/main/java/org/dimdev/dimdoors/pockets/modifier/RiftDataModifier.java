@@ -32,7 +32,7 @@ public class RiftDataModifier implements Modifier {
 	public Modifier fromTag(CompoundTag tag) {
 		if (tag.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = tag.getString("rift_data");
-			doorData = (CompoundTag) PocketLoader.getInstance().readNbtFromJson(doorDataReference);
+			doorData = (CompoundTag) PocketLoader.getInstance().getRiftDataTag(doorDataReference);
 		}
 		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
 

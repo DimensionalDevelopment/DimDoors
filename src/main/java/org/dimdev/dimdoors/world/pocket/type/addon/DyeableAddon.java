@@ -27,8 +27,8 @@ public class DyeableAddon implements PocketAddon {
 	private int count = 0;
 
 	private static int amountOfDyeRequiredToColor(Pocket pocket) {
-		int outerVolume = pocket.box.getBlockCountX() * pocket.box.getBlockCountY() * pocket.box.getBlockCountZ();
-		int innerVolume = (pocket.box.getBlockCountX() - 5) * (pocket.box.getBlockCountY() - 5) * (pocket.box.getBlockCountZ() - 5);
+		int outerVolume = pocket.getBox().getBlockCountX() * pocket.getBox().getBlockCountY() * pocket.getBox().getBlockCountZ();
+		int innerVolume = (pocket.getBox().getBlockCountX() - 5) * (pocket.getBox().getBlockCountY() - 5) * (pocket.getBox().getBlockCountZ() - 5);
 
 		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}

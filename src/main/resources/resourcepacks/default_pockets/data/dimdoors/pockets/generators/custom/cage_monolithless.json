@@ -18,7 +18,7 @@
     {
       "type": "dimdoors:rift_data",
       "ids": [0],
-      "rift_data": "rift_data/pocket_entrance"
+      "rift_data": "dimdoors:rift_data/pocket_entrance"
     }
   ],
   "offset_x": "1",

@@ -43,10 +43,6 @@ public final class ModDimensions {
         return Objects.equals(type, PERSONAL) || Objects.equals(type, PUBLIC) || Objects.equals(type, DUNGEON);
     }
 
-    public static boolean isLimbo(StructureWorldAccess world) {
-        return world != null && world.getDimension() == LIMBO_TYPE;
-    }
-
     public static boolean isLimboDimension(World world) {
         return world != null && world.getRegistryKey().equals(LIMBO);
     }

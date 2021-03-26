@@ -49,7 +49,6 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	private Equation yEquation;
 	private Equation zEquation;
 
-
 	@Override
 	public Modifier fromTag(CompoundTag tag) {
 		String facingString = tag.getString("facing");
@@ -67,7 +66,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 
 		if (tag.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = tag.getString("rift_data");
-			doorData = (CompoundTag) PocketLoader.getInstance().readNbtFromJson(doorDataReference);
+			doorData = (CompoundTag) PocketLoader.getInstance().getRiftDataTag(doorDataReference);
 		}
 		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
 

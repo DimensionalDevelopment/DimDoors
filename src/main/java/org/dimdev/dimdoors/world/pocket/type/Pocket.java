@@ -31,7 +31,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 	private final Map<Identifier, PocketAddon> addons = new HashMap<>();
 	private int range = -1;
-	public BlockBox box; // TODO: make protected
+	private BlockBox box; // TODO: make protected
 	public VirtualLocation virtualLocation;
 
 	public Pocket(int id, RegistryKey<World> world, int x, int z) {
@@ -42,7 +42,6 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	protected Pocket() {
-
 	}
 
 	public boolean hasAddon(Identifier id) {
@@ -182,6 +181,10 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return new PocketBuilder(AbstractPocketType.POCKET);
 	}
 
+	protected void setBox(BlockBox box) {
+		this.box = box;
+	}
+
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
 	public static class PocketBuilder<P extends PocketBuilder<P, T>, T extends Pocket> extends AbstractPocketBuilder<P, T> {
 		private final Map<Identifier, PocketAddon.PocketBuilderAddon<?>> addons = new HashMap<>();
@@ -248,7 +251,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 			T instance = super.build();
 
 			instance.setRange(range);
-			instance.box = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ());
+			instance.setBox(BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ()));
 			instance.virtualLocation = virtualLocation;
 
 			addons.values().forEach(addon -> addon.apply(instance));
