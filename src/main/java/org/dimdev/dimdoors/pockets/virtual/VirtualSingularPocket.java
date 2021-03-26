@@ -76,19 +76,22 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 		public static final String KEY = "none";
 		public static final NoneVirtualPocket NONE = new NoneVirtualPocket();
 
+		private NoneVirtualPocket() {
+		}
+
 		@Override
 		public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
-			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+			throw new UnsupportedOperationException("Cannot place a NoneVirtualPocket");
 		}
 
 		@Override
 		public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
-			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+			throw new UnsupportedOperationException("Cannot get next pocket generator reference on a NoneVirtualPocket");
 		}
 
 		@Override
 		public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters) {
-			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+			throw new UnsupportedOperationException("Cannot peek next pocket generator reference on a NoneVirtualPocket");
 		}
 
 		@Override

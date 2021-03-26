@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.block.door.data.DoorDataReader;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.Transformer;
 import org.dimdev.dimdoors.item.RiftKeyItem;
+import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
@@ -162,8 +163,8 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		if (ModDimensions.isLimboDimension(world)) {
 			this.setDestination(ESCAPE_TARGET);
 		} else {
-			this.setDestination(DoorDataReader.GOLD_DIMDOOR_TARGET);
-			this.setProperties(DoorDataReader.GOLD_DIMDOOR_PROPERTIES);
+			this.setDestination(DefaultDungeonDestinations.GATEWAY_DESTINATION);
+			this.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 		}
 	}
 }
