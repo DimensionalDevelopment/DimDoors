@@ -13,12 +13,12 @@
     {
       "type": "dimdoors:rift_data",
       "ids": [1],
-      "rift_data": "dimdoors:rift_data/available_link"
+      "rift_data": "dimdoors:rift_data/default_dungeon"
     },
     {
       "type": "dimdoors:rift_data",
       "ids": [2],
-      "rift_data": "dimdoors:rift_data/available_link"
+      "rift_data": "dimdoors:rift_data/default_dungeon"
     }
   ]
 }
