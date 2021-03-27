@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.network;
+package org.dimdev.dimdoors.network.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,14 +9,18 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.network.c2s.NetworkHandlerInitializedC2SPacket;
-import org.dimdev.dimdoors.network.s2c.PlayerInventorySlotUpdateS2CPacket;
-import org.dimdev.dimdoors.network.s2c.SyncPocketAddonsS2CPacket;
+import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.dimdev.dimdoors.network.SimplePacket;
+import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
+import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
+import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
+import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
+import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket;
+import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
@@ -29,7 +33,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 @Environment(EnvType.CLIENT)
-public class ClientPacketHandler {
+public class ClientPacketHandler implements ClientPacketListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ClientPlayNetworkHandler networkHandler;
@@ -48,6 +52,8 @@ public class ClientPacketHandler {
 		initialized = true;
 		registerReceiver(PlayerInventorySlotUpdateS2CPacket.ID, PlayerInventorySlotUpdateS2CPacket::new);
 		registerReceiver(SyncPocketAddonsS2CPacket.ID, SyncPocketAddonsS2CPacket::new);
+		registerReceiver(MonolithAggroParticlesPacket.ID, MonolithAggroParticlesPacket::new);
+		registerReceiver(MonolithTeleportParticlesPacket.ID, MonolithTeleportParticlesPacket::new);
 
 		sendPacket(new NetworkHandlerInitializedC2SPacket());
 	}
@@ -66,9 +72,8 @@ public class ClientPacketHandler {
 		this.networkHandler = networkHandler;
 	}
 
-	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ClientPacketHandler>> supplier) {
-		ClientPlayNetworking.registerReceiver(channelName,
-				(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) -> {
+	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ClientPacketListener>> supplier) {
+		ClientPlayNetworking.registerReceiver(channelName, (client, handler, buf, responseSender) -> {
 					try {
 						supplier.get().read(buf).apply(this);
 					} catch (IOException e) {
@@ -85,20 +90,6 @@ public class ClientPacketHandler {
 
 	public void unregister() {
 		new HashSet<>(registeredChannels).forEach(this::unregisterReceiver);
-	}
-
-	public void onSyncPocketAddons(RegistryKey<World> world, int gridSize, int pocketId, int pocketRange, List<AutoSyncedAddon> addons) {
-		this.pocketWorld = world;
-		this.gridSize = gridSize;
-		this.pocketId = pocketId;
-		this.pocketRange = pocketRange;
-		this.addons = addons;
-	}
-
-	public void onPlayerInventorySlotUpdate(int slot, ItemStack stack) {
-		if (MinecraftClient.getInstance().player != null) {
-			MinecraftClient.getInstance().player.getInventory().setStack(slot, stack);
-		}
 	}
 
 	public RegistryKey<World> getPocketWorld() {
@@ -119,5 +110,35 @@ public class ClientPacketHandler {
 
 	public List<AutoSyncedAddon> getAddons() {
 		return addons;
+	}
+
+	@Override
+	public void onPlayerInventorySlotUpdate(PlayerInventorySlotUpdateS2CPacket packet) {
+		MinecraftClient.getInstance().execute(() -> {
+			if (MinecraftClient.getInstance().player != null) {
+				MinecraftClient.getInstance().player.getInventory().setStack(packet.getSlot(), packet.getStack());
+			}
+		});
+	}
+
+	@Override
+	public void onSyncPocketAddons(SyncPocketAddonsS2CPacket packet) {
+		this.pocketWorld = packet.getWorld();
+		this.gridSize = packet.getGridSize();
+		this.pocketId = packet.getPocketId();
+		this.pocketRange = packet.getPocketRange();
+		this.addons = packet.getAddons();
+	}
+
+	@Override
+	public void onMonolithAggroParticles(MonolithAggroParticlesPacket packet) {
+		MinecraftClient.getInstance().execute(() -> MonolithEntity.spawnParticles(packet.getAggro()));
+	}
+
+	@Override
+	public void onMonolithTeleportParticles(MonolithTeleportParticlesPacket packet) {
+		MinecraftClient client = MinecraftClient.getInstance();
+		//noinspection ConstantConditions
+		client.execute(() -> client.particleManager.addParticle(new MonolithParticle(client.world, client.player.getX(), client.player.getY(), client.player.getZ())));
 	}
 }

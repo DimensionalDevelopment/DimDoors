@@ -13,16 +13,15 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.item.ModItem;
-import org.dimdev.dimdoors.network.c2s.HitBlockWithItemC2SPacket;
-import org.dimdev.dimdoors.network.c2s.NetworkHandlerInitializedC2SPacket;
-import org.dimdev.dimdoors.network.s2c.PlayerInventorySlotUpdateS2CPacket;
-import org.dimdev.dimdoors.network.s2c.SyncPocketAddonsS2CPacket;
+import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
+import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
+import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
+import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
@@ -34,7 +33,7 @@ import java.util.*;
 import java.util.function.Supplier;
 
 // each client has their own corresponding ServerPacketHandler, so feel free to add client specific data in here
-public class ServerPacketHandler {
+public class ServerPacketHandler implements ServerPacketListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ServerPlayNetworkHandler networkHandler;
@@ -78,7 +77,7 @@ public class ServerPacketHandler {
 		this.networkHandler = networkHandler;
 	}
 
-	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ServerPacketHandler>> supplier) {
+	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ServerPacketListener>> supplier) {
 		ServerPlayNetworking.registerReceiver(networkHandler, channelName,
 				(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) -> {
 					try {
@@ -107,19 +106,6 @@ public class ServerPacketHandler {
 		return networkHandler.player;
 	}
 
-	public void onAttackBlock(Hand hand, BlockPos pos, Direction direction) {
-		getServer().execute(() -> {
-			Item item = getPlayer().getStackInHand(hand).getItem();
-			if (item instanceof ModItem) {
-				((ModItem) item).onAttackBlock(getPlayer().world, getPlayer(), hand, pos, direction);
-			}
-		});
-	}
-
-	public void onNetworkHandlerInitialized() {
-		syncPocketAddonsIfNeeded(getPlayer().world, getPlayer().getBlockPos());
-	}
-
 	// TODO: attach this to some event to detect other kinds teleportation
 	public void syncPocketAddonsIfNeeded(World world, BlockPos pos) {
 		if (!ModDimensions.isPocketDimension(world)) return;
@@ -144,5 +130,20 @@ public class ServerPacketHandler {
 		} else {
 			sendPacket(new PlayerInventorySlotUpdateS2CPacket(getPlayer().getInventory().selectedSlot, stack));
 		}
+	}
+
+	@Override
+	public void onAttackBlock(HitBlockWithItemC2SPacket packet) {
+		server.execute(() -> {
+			Item item = getPlayer().getStackInHand(packet.getHand()).getItem();
+			if (item instanceof ModItem) {
+				((ModItem) item).onAttackBlock(getPlayer().world, getPlayer(), packet.getHand(), packet.getPos(), packet.getDirection());
+			}
+		});
+	}
+
+	@Override
+	public void onNetworkHandlerInitialized(NetworkHandlerInitializedC2SPacket packet) {
+		syncPocketAddonsIfNeeded(getPlayer().world, getPlayer().getBlockPos());
 	}
 }

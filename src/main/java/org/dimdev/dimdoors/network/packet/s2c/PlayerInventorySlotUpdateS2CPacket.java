@@ -1,16 +1,17 @@
-package org.dimdev.dimdoors.network.s2c;
+package org.dimdev.dimdoors.network.packet.s2c;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.network.ClientPacketHandler;
+
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.SimplePacket;
 
 import java.io.IOException;
 
-public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPacketHandler> {
+public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPacketListener> {
 	public static final Identifier ID = new Identifier("dimdoors:player_inventory_slot_update");
 
 	private int slot;
@@ -27,7 +28,7 @@ public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPa
 	}
 
 	@Override
-	public SimplePacket<ClientPacketHandler> read(PacketByteBuf buf) throws IOException {
+	public SimplePacket<ClientPacketListener> read(PacketByteBuf buf) throws IOException {
 		slot = buf.readInt();
 		stack = buf.readItemStack();
 		return this;
@@ -41,12 +42,20 @@ public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPa
 	}
 
 	@Override
-	public void apply(ClientPacketHandler listener) {
-		listener.onPlayerInventorySlotUpdate(slot, stack);
+	public void apply(ClientPacketListener listener) {
+		listener.onPlayerInventorySlotUpdate(this);
 	}
 
 	@Override
 	public Identifier channelId() {
 		return ID;
+	}
+
+	public int getSlot() {
+		return slot;
+	}
+
+	public ItemStack getStack() {
+		return stack;
 	}
 }

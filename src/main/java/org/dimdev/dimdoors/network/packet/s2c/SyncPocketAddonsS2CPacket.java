@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.network.s2c;
+package org.dimdev.dimdoors.network.packet.s2c;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -7,14 +7,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.network.ClientPacketHandler;
+
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 import java.io.IOException;
 import java.util.List;
 
-public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketHandler> {
+public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListener> {
 	public static final Identifier ID = new Identifier("dimdoors:sync_pocket_addons");
 
 	private RegistryKey<World> world;
@@ -36,7 +37,7 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketHandl
 	}
 
 	@Override
-	public SimplePacket<ClientPacketHandler> read(PacketByteBuf buf) throws IOException {
+	public SimplePacket<ClientPacketListener> read(PacketByteBuf buf) throws IOException {
 		this.world = RegistryKey.of(Registry.DIMENSION, buf.readIdentifier());
 		this.gridSize = buf.readInt();
 		this.pocketId = buf.readInt();
@@ -56,12 +57,32 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketHandl
 	}
 
 	@Override
-	public void apply(ClientPacketHandler listener) {
-		listener.onSyncPocketAddons(world, gridSize, pocketId, pocketRange, addons);
+	public void apply(ClientPacketListener listener) {
+		listener.onSyncPocketAddons(this);
 	}
 
 	@Override
 	public Identifier channelId() {
 		return ID;
+	}
+
+	public int getGridSize() {
+		return gridSize;
+	}
+
+	public int getPocketId() {
+		return pocketId;
+	}
+
+	public int getPocketRange() {
+		return pocketRange;
+	}
+
+	public List<AutoSyncedAddon> getAddons() {
+		return addons;
+	}
+
+	public RegistryKey<World> getWorld() {
+		return world;
 	}
 }

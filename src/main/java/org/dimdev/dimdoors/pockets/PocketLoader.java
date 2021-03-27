@@ -49,15 +49,15 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		templates.clear();
 		riftDataMap.clear();
 
+		CompletableFuture<Map<Identifier, CompoundTag>> futureRiftDataMap = loadResourcePathFromJsonToMap(manager, "pockets/json", t -> NbtUtil.asCompoundTag(t, "Could not load rift data since its json does not represent a CompoundTag!"));
 		CompletableFuture<Map<Identifier, PocketGenerator>> futurePocketGeneratorMap = loadResourcePathFromJsonToMap(manager, "pockets/generators", this::loadPocketGenerator);
 		CompletableFuture<Map<Identifier, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToMap(manager, "pockets/groups", this::loadPocketGroup);
 		CompletableFuture<Map<Identifier, PocketTemplate>> futureTemplates = loadResourcePathFromCompressedNbtToMap(manager, "pockets/schematic", ".schem", this::loadPocketTemplate);
-		CompletableFuture<Map<Identifier, CompoundTag>> futureRiftDataMap = loadResourcePathFromJsonToMap(manager, "pockets/json", t -> NbtUtil.asCompoundTag(t, "Could not load rift data since its json does not represent a CompoundTag!"));
 
+		riftDataMap = futureRiftDataMap.join();
 		pocketGeneratorMap = futurePocketGeneratorMap.join();
 		pocketGroups = futurePocketGroups.join();
 		templates = futureTemplates.join();
-		riftDataMap = futureRiftDataMap.join();
 	}
 
 	private <T> CompletableFuture<Map<Identifier, T>> loadResourcePathFromJsonToMap(ResourceManager manager, String startingPath, Function<Tag, T> reader) {

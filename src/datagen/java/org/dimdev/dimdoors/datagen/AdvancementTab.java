@@ -2,10 +2,8 @@ package org.dimdev.dimdoors.datagen;
 
 import java.util.function.Consumer;
 
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.door.data.DoorData;
-import org.dimdev.dimdoors.entity.advancement.PocketSpawnPointSetCondition;
-import org.dimdev.dimdoors.entity.advancement.RiftTrackedCriterion;
+import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
+import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.world.ModDimensions;
 

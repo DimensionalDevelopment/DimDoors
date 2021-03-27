@@ -10,8 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.item.ModItem;
-import org.dimdev.dimdoors.network.ClientPacketHandler;
-import org.dimdev.dimdoors.network.c2s.HitBlockWithItemC2SPacket;
+import org.dimdev.dimdoors.network.client.ClientPacketHandler;
+import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 
 public class AttackBlockCallbackListener implements AttackBlockCallback {
 	@Override

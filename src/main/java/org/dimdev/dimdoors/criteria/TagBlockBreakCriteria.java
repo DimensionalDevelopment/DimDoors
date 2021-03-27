@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.entity.advancement;
+package org.dimdev.dimdoors.criteria;
 
 import java.util.Objects;
 

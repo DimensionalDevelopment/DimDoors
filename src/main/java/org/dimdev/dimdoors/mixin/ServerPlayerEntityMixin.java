@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
-import org.dimdev.dimdoors.entity.advancement.ModCriteria;
+import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
