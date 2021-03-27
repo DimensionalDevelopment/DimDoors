@@ -1,0 +1,32 @@
+{
+  "parent": "dimdoors:dimdoors/dark_ostiology",
+  "display": {
+    "icon": {
+      "item": "dimdoors:iron_dimensional_door"
+    },
+    "title": {
+      "translate": "dimdoors.advancement.home_away_from_home"
+    },
+    "description": {
+      "translate": "dimdoors.advancement.home_away_from_home.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "dimdoors:textures/block/unravelled_fabric.png"
+  },
+  "criteria": {
+    "private_pocket": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "dimdoors:personal_pockets"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "private_pocket"
+    ]
+  ]
+}

@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -49,7 +49,7 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 
 		ListTag riftsTag;
 		if (rifts != null) {
-			riftsTag = rifts.values().parallelStream().unordered().map(rift -> rift.toTag(new CompoundTag())).collect(Collectors.toCollection(ListTag::new));
+			riftsTag = rifts.values().parallelStream().unordered().map(rift -> rift.writeNbt(new CompoundTag())).collect(Collectors.toCollection(ListTag::new));
 		} else {
 			riftsTag = new ListTag();
 			riftsTag.addAll(serializedRifts.values());
@@ -70,7 +70,7 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		if (!manager.isPocketLazy()) { // rifts is guaranteed to exist at this stage since this modifier is not supposed to be loaded from json
 			World world = DimensionalDoorsInitializer.getWorld(manager.getPocket().getWorld());
 			rifts.values().forEach(world::addBlockEntity);
@@ -78,7 +78,7 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 
 	}
 
@@ -97,7 +97,7 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 			serializedRifts.entrySet().stream().unordered().filter(entry -> chunkBox.contains(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 					.forEach((pos, riftTag) -> {
 						rifts.remove(pos);
-						chunk.setBlockEntity(BlockEntity.createFromTag(pos, chunk.getBlockState(pos), riftTag));
+						chunk.setBlockEntity(BlockEntity.createFromNbt(pos, chunk.getBlockState(pos), riftTag));
 					});
 		}
 	}

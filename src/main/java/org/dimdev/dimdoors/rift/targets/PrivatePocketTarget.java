@@ -6,11 +6,12 @@ import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
-import org.dimdev.dimdoors.util.EntityUtils;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.RGBA;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.RGBA;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
@@ -20,7 +21,6 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
-import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
 
 public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 	private static final Logger LOGGER = LogManager.getLogger();

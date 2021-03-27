@@ -26,7 +26,7 @@ public class MonolithParticle extends Particle {
 	private final MonolithModel model;
 	private final RenderLayer layer;
 
-	private MonolithParticle(ClientWorld world, double x, double y, double z) {
+	public MonolithParticle(ClientWorld world, double x, double y, double z) {
 		super(world, x, y, z);
 		this.maxAge = 30;
 		this.model = new MonolithModel();

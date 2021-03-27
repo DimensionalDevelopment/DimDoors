@@ -4,8 +4,8 @@ import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
-import org.dimdev.dimdoors.util.Location;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.nbt.CompoundTag;

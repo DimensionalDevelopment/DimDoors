@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.client.tesseract;
 import com.flowpowered.math.matrix.Matrix4f;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
-import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.api.util.RGBA;
 
 import net.minecraft.client.render.VertexConsumer;
 

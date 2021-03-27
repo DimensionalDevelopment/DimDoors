@@ -75,4 +75,14 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
 		return VoxelShapes.fullCube();
 	}
+
+	@Override
+	public boolean isTall(BlockState cachedState) {
+		return true;
+	}
+
+	@Override
+	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
+		((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setPortalDestination(world);
+	}
 }

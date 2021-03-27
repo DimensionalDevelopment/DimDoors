@@ -1,5 +1,5 @@
 {
-  "parent": "dimdoors:dimdoors/root",
+  "parent": "dimdoors:dimdoors/dark_ostiology",
   "display": {
     "icon": {
       "item": "dimdoors:iron_dimensional_door"
@@ -17,7 +17,7 @@
     "background": "dimdoors:textures/block/unravelled_fabric.png"
   },
   "criteria": {
-    "changed_dimension": {
+    "public_pocket": {
       "trigger": "minecraft:changed_dimension",
       "conditions": {
         "to": "dimdoors:public_pockets"
@@ -26,7 +26,7 @@
   },
   "requirements": [
     [
-      "changed_dimension"
+      "public_pocket"
     ]
   ]
 }

@@ -9,7 +9,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
-import org.dimdev.dimdoors.util.BlockPlacementType;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 import org.dimdev.dimdoors.world.feature.gateway.Gateway;

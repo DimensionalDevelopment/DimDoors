@@ -9,8 +9,8 @@ import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.WeightedList;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.WeightedList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class TagReference extends PocketGeneratorReference{
 	private final List<String> blackList = new ArrayList<>();
 	private Boolean exact;
 
-	private WeightedList<PocketGenerator, PocketGenerationParameters> pockets;
+	private WeightedList<PocketGenerator, PocketGenerationContext> pockets;
 
 	@Override
 	public VirtualSingularPocket fromTag(CompoundTag tag) {
@@ -86,13 +86,13 @@ public class TagReference extends PocketGeneratorReference{
 	}
 	// TODO: this will break if pockets change in between (which they could if we add a tool for creating pocket json config stuff ingame)
 	@Override
-	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationParameters parameters) {
+	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters) {
 		if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact);
 		return pockets.peekNextRandomWeighted(parameters);
 	}
 
 	@Override
-	public PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters) {
+	public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
 		if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact);
 		return pockets.getNextRandomWeighted(parameters);
 	}

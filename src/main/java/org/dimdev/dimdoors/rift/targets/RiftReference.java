@@ -2,9 +2,10 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.Set;
 
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.RGBA;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.api.rift.target.Target;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.RGBA;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 import net.minecraft.util.math.Vec3i;
 

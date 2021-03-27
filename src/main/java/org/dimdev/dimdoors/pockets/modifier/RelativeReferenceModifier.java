@@ -9,8 +9,8 @@ import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.LocalReference;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class RelativeReferenceModifier implements Modifier {
@@ -44,7 +44,7 @@ public class RelativeReferenceModifier implements Modifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Optional<Location> riftA = manager.get(point_a).map(rift -> new Location((ServerWorld) rift.getWorld(), rift.getPos()));
 		Optional<Location> riftB = manager.get(point_b).map(rift -> new Location((ServerWorld) rift.getWorld(), rift.getPos()));
 
@@ -58,7 +58,7 @@ public class RelativeReferenceModifier implements Modifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 
 	}
 

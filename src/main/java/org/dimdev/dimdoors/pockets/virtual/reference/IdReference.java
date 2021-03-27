@@ -7,7 +7,7 @@ import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 
 public class IdReference extends PocketGeneratorReference {
 	public static final String KEY = "id";
@@ -34,12 +34,12 @@ public class IdReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationParameters parameters) {
+	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters) {
 		return getReferencedPocketGenerator(parameters);
 	}
 
 	@Override
-	public PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters) {
+	public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
 		return PocketLoader.getInstance().getGenerator(id);
 	}
 

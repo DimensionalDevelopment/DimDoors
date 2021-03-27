@@ -4,13 +4,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.Weighted;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
-public interface VirtualPocket extends Weighted<PocketGenerationParameters> {
+public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 
 	static VirtualPocket deserialize(Tag tag) {
 		if (tag.getType() == NbtType.LIST) {
@@ -27,9 +27,9 @@ public interface VirtualPocket extends Weighted<PocketGenerationParameters> {
 	}
 
 
-	Pocket prepareAndPlacePocket(PocketGenerationParameters parameters);
+	Pocket prepareAndPlacePocket(PocketGenerationContext parameters);
 
-	PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters);
+	PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters);
 
-	PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters);
+	PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters);
 }

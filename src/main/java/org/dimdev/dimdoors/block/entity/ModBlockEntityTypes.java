@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.block.entity;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
 
@@ -23,7 +25,7 @@ public class ModBlockEntityTypes {
 	public static final BlockEntityType<EntranceRiftBlockEntity> ENTRANCE_RIFT = register(
 			"dimdoors:entrance_rift",
 			EntranceRiftBlockEntity::new,
-			ModBlocks.OAK_DIMENSIONAL_DOOR, ModBlocks.IRON_DIMENSIONAL_DOOR, ModBlocks.GOLD_DIMENSIONAL_DOOR, ModBlocks.QUARTZ_DIMENSIONAL_DOOR, ModBlocks.DIMENSIONAL_PORTAL);
+			ArrayUtils.add(DoorData.DOORS.toArray(new Block[0]), ModBlocks.DIMENSIONAL_PORTAL));
 
 	private static <E extends BlockEntity> BlockEntityType<E> register(String id, FabricBlockEntityTypeBuilder.Factory<E> factory, Block... blocks) {
 		return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(factory, blocks).build());

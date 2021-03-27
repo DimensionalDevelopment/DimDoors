@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.util.math;
 
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

@@ -7,6 +7,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.blockbreak.BlockBreakContainer;
 
@@ -83,7 +85,6 @@ public interface PocketAddon {
 		PocketAddonType<PreventBlockModificationAddon> PREVENT_BLOCK_MODIFICATION_ADDON = register(PreventBlockModificationAddon.ID, PreventBlockModificationAddon::new, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon::new);
 		PocketAddonType<BlockBreakContainer> BLOCK_BREAK_CONTAINER = register(BlockBreakContainer.ID, BlockBreakContainer::new, null);
 
-
 		T fromTag(CompoundTag tag);
 
 		CompoundTag toTag(CompoundTag tag);
@@ -95,13 +96,14 @@ public interface PocketAddon {
 		Identifier identifier();
 
 		static void register() {
+			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerPocketAddonTypes(REGISTRY));
 		}
 
-		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> supplier, Supplier<PocketBuilderAddon<U>> addonSupplier) {
+		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {
 			return Registry.register(REGISTRY, id, new PocketAddonType<U>() {
 				@Override
 				public U fromTag(CompoundTag tag) {
-					return (U) supplier.get().fromTag(tag);
+					return (U) factory.get().fromTag(tag);
 				}
 
 				@Override
@@ -112,7 +114,7 @@ public interface PocketAddon {
 
 				@Override
 				public U instance() {
-					return supplier.get();
+					return factory.get();
 				}
 
 				@Override

@@ -19,17 +19,16 @@ import net.minecraft.util.registry.Registry;
 import com.google.common.base.MoreObjects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.block.DimensionalDoorBlock;
-import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.TagEquations;
-import org.dimdev.dimdoors.util.math.Equation;
-import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.TagEquations;
+import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -50,27 +49,24 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	private Equation yEquation;
 	private Equation zEquation;
 
-
 	@Override
 	public Modifier fromTag(CompoundTag tag) {
 		String facingString = tag.getString("facing");
 		facing = Direction.byName(tag.getString("facing"));
 		if (facing == null || facing.getAxis().isVertical()) {
-			LOGGER.error("Could not interpret facing direction \"" + facingString + "\"");
-			facing = Direction.NORTH;
+			throw new RuntimeException("Could not interpret facing direction \"" + facingString + "\"");
 		}
 
 		doorTypeString = tag.getString("door_type");
 		Block doorBlock = Registry.BLOCK.get(Identifier.tryParse(doorTypeString));
 		if (!(doorBlock instanceof DimensionalDoorBlock)) {
-			LOGGER.error("Could not interpret door type \"" + doorTypeString + "\"");
-			doorBlock = ModBlocks.IRON_DIMENSIONAL_DOOR;
+			throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
 		}
 		doorType = (DimensionalDoorBlock) doorBlock;
 
 		if (tag.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = tag.getString("rift_data");
-			doorData = (CompoundTag) PocketLoader.getInstance().readNbtFromJson(doorDataReference);
+			doorData = (CompoundTag) PocketLoader.getInstance().getRiftDataTag(doorDataReference);
 		}
 		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
 
@@ -131,7 +127,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
 		BlockPos pocketOrigin = manager.getPocket().getOrigin();
 		BlockPos pos = new BlockPos(xEquation.apply(variableMap) + pocketOrigin.getX(), yEquation.apply(variableMap) + pocketOrigin.getY(), zEquation.apply(variableMap) + pocketOrigin.getZ());
@@ -170,7 +166,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 
 	}
 }

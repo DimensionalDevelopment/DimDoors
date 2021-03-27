@@ -9,4 +9,8 @@ import net.minecraft.world.World;
 
 public interface RiftProvider<T extends RiftBlockEntity> extends BlockEntityProvider {
 	T getRift(World world, BlockPos pos, BlockState state);
+
+	default boolean isTall(BlockState cachedState) {
+		return false;
+	}
 }

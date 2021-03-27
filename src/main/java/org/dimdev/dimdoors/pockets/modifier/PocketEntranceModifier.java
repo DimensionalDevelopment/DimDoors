@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PocketEntranceModifier implements Modifier {
@@ -53,7 +53,7 @@ public class PocketEntranceModifier implements Modifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		manager.consume(id, rift -> {
 			rift.setDestination(PocketEntranceMarker.builder().ifDestination(new PocketExitMarker()).weight(1.0f).build());
 			return true;
@@ -61,7 +61,7 @@ public class PocketEntranceModifier implements Modifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 
 	}
 }

@@ -8,26 +8,27 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.TeleportUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 import static net.minecraft.predicate.entity.EntityPredicates.EXCEPT_SPECTATOR;
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
 public class MonolithAggroGoal extends Goal {
-    protected final MonolithEntity mob;
+	public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
+	public static final Identifier MONOLITH_TP_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_tp_particle_packet");
+	protected final MonolithEntity mob;
     protected PlayerEntity target;
     protected final float range;
     protected final TargetPredicate targetPredicate;
@@ -96,7 +97,7 @@ public class MonolithAggroGoal extends Goal {
 
                 PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
                 data.writeInt(this.mob.getAggro());
-				ServerPlayNetworking.send((ServerPlayerEntity) this.target, DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, data);
+				ServerPlayNetworking.send((ServerPlayerEntity) this.target, MONOLITH_PARTICLE_PACKET, data);
             }
 
             // Teleport the target player if various conditions are met
@@ -104,7 +105,8 @@ public class MonolithAggroGoal extends Goal {
                 this.mob.setAggro(0);
 				this.target.teleport(this.target.getX(), this.target.getY() + 256, this.target.getZ());
                 this.target.world.playSound(null, new BlockPos(this.target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
-            }
+				ServerPlayNetworking.send((ServerPlayerEntity) this.target, MONOLITH_PARTICLE_PACKET, PacketByteBufs.empty());
+			}
         }
     }
 }

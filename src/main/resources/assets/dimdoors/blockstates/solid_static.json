@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "": [
+      { "model": "dimdoors:block/solid_static" },
+      { "model": "dimdoors:block/solid_static", "x": 90 },
+      { "model": "dimdoors:block/solid_static", "x": 180 },
+      { "model": "dimdoors:block/solid_static", "x": 270 },
+      { "model": "dimdoors:block/solid_static", "y": 90 },
+      { "model": "dimdoors:block/solid_static", "y": 90, "x": 90 },
+      { "model": "dimdoors:block/solid_static", "y": 90, "x": 180 },
+      { "model": "dimdoors:block/solid_static", "y": 90, "x": 270 },
+      { "model": "dimdoors:block/solid_static", "y": 180 },
+      { "model": "dimdoors:block/solid_static", "y": 180, "x": 90 },
+      { "model": "dimdoors:block/solid_static", "y": 180, "x": 180 },
+      { "model": "dimdoors:block/solid_static", "y": 180, "x": 270 },
+      { "model": "dimdoors:block/solid_static", "y": 270 },
+      { "model": "dimdoors:block/solid_static", "y": 270, "x": 90 },
+      { "model": "dimdoors:block/solid_static", "y": 270, "x": 180 },
+      { "model": "dimdoors:block/solid_static", "y": 270, "x": 270 }
+    ]
+  }
+}

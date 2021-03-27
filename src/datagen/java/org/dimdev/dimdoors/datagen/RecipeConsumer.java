@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
-import org.dimdev.dimdoors.mixin.RecipesProviderAccessor;
+import org.dimdev.dimdoors.mixin.accessor.RecipesProviderAccessor;
 
 import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;

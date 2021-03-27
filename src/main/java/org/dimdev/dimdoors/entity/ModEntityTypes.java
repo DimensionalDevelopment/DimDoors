@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.entity;
 
 import org.dimdev.dimdoors.client.MaskRenderer;
 import org.dimdev.dimdoors.client.MonolithRenderer;
-import org.dimdev.dimdoors.client.RiftRenderer;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
@@ -28,11 +27,6 @@ public class ModEntityTypes {
             MaskEntity::new,
             1, 1
     );
-    public static final EntityType<RiftEntity> RIFT = register(
-            "dimdoors:rift",
-            RiftEntity::new,
-            1, 1
-    );
 
     public static void init() {
         FabricDefaultAttributeRegistry.register(MONOLITH, MonolithEntity.createMobAttributes());
@@ -43,7 +37,6 @@ public class ModEntityTypes {
     public static void initClient() {
         EntityRendererRegistry.INSTANCE.register(MONOLITH, MonolithRenderer::new);
         EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(RIFT, RiftRenderer::new);
     }
 
     private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, int width, int height) {

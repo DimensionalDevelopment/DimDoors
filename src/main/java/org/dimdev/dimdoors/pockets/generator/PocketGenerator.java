@@ -17,14 +17,15 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.Weighted;
-import org.dimdev.dimdoors.util.math.Equation;
-import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.Weighted;
+import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -32,7 +33,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.*;
 import java.util.function.Supplier;
 
-public abstract class PocketGenerator implements Weighted<PocketGenerationParameters> {
+public abstract class PocketGenerator implements Weighted<PocketGenerationContext> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketGeneratorType<? extends PocketGenerator>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "pocket_generator_type")), Lifecycle.stable())).buildAndRegister();
 
@@ -133,14 +134,14 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		return tag;
 	}
 
-	public abstract Pocket prepareAndPlacePocket(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder);
+	public abstract Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	public abstract PocketGeneratorType<? extends PocketGenerator> getType();
 
 	public abstract String getKey();
 
 	@Override
-	public double getWeight(PocketGenerationParameters parameters) {
+	public double getWeight(PocketGenerationContext parameters) {
 		return this.weightEquation.apply(parameters.toVariableMap(new HashMap<>()));
 	}
 
@@ -148,19 +149,19 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		return setupLoot != null && setupLoot;
 	}
 
-	public void applyModifiers(PocketGenerationParameters parameters, RiftManager manager) {
+	public void applyModifiers(PocketGenerationContext parameters, RiftManager manager) {
 		for (Modifier modifier : modifierList) {
 			modifier.apply(parameters, manager);
 		}
 	}
 
-	public void applyModifiers(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void applyModifiers(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		for (Modifier modifier : modifierList) {
 			modifier.apply(parameters, builder);
 		}
 	}
 
-	public void setup(Pocket pocket, RiftManager manager, PocketGenerationParameters parameters, boolean setupLootTables) {
+	public void setup(Pocket pocket, RiftManager manager, PocketGenerationContext parameters, boolean setupLootTables) {
 		ServerWorld world = parameters.getWorld();
 
 		if (!(pocket instanceof LazyGenerationPocket)) { // should not iterate over that which does not exist & area may be massive, getBlockEntities() might force generation
@@ -203,7 +204,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		return true;
 	}
 
-	public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationParameters parameters) { // TODO: PocketBuilder from json
+	public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationContext parameters) { // TODO: PocketBuilder from json
 		if (builderTag == null){
 			return Pocket.builder()
 					.expand(getSize(parameters));
@@ -217,7 +218,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		return builder.expand(getSize(parameters));
 	}
 
-	public abstract Vec3i getSize(PocketGenerationParameters parameters);
+	public abstract Vec3i getSize(PocketGenerationContext parameters);
 
 	public interface PocketGeneratorType<T extends PocketGenerator> {
 		PocketGeneratorType<SchematicGenerator> SCHEMATIC = register(new Identifier("dimdoors", SchematicGenerator.KEY), SchematicGenerator::new);
@@ -229,6 +230,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationParame
 		CompoundTag toTag(CompoundTag tag);
 
 		static void register() {
+			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerPocketGeneratorTypes(REGISTRY));
 		}
 
 		static <U extends PocketGenerator> PocketGeneratorType<U> register(Identifier id, Supplier<U> constructor) {

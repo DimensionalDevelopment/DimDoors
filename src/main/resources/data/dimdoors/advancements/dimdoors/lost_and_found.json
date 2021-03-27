@@ -1,0 +1,38 @@
+{
+  "parent": "dimdoors:dimdoors/door_to_adventure",
+  "display": {
+    "icon": {
+      "item": "minecraft:chest"
+    },
+    "title": {
+      "translate": "dimdoors.advancement.lost_and_found"
+    },
+    "description": {
+      "translate": "dimdoors.advancement.lost_and_found.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "dimdoors:textures/block/unravelled_fabric.png"
+  },
+  "criteria": {
+    "open_chest": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "location": {
+          "dimension": "dimdoors:dungeon_pockets",
+          "block": {
+            "block": "minecraft:chest"
+          }
+        },
+        "item": {}
+      }
+    }
+  },
+  "requirements": [
+    [
+      "open_chest"
+    ]
+  ]
+}

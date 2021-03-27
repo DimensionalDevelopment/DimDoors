@@ -7,7 +7,6 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
@@ -38,12 +37,12 @@ public final class PocketGenerator {
     }
 
     public static Pocket generateFromPocketGroupV2(ServerWorld world, Identifier group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-    	PocketGenerationParameters parameters = new PocketGenerationParameters(world, virtualLocation, linkTo, linkProperties);
-    	return generatePocketV2(PocketLoader.getInstance().getGroup(group).getNextPocketGeneratorReference(parameters), parameters);
+    	PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties);
+    	return generatePocketV2(PocketLoader.getInstance().getGroup(group).getNextPocketGeneratorReference(context), context);
 	}
 
-	public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationParameters parameters) {
-    	return pocketGeneratorReference.prepareAndPlacePocket(parameters);
+	public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationContext context) {
+    	return pocketGeneratorReference.prepareAndPlacePocket(context);
 	}
 
 	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {

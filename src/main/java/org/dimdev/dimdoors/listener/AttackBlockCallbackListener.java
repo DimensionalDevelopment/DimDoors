@@ -14,7 +14,6 @@ import org.dimdev.dimdoors.network.ClientPacketHandler;
 import org.dimdev.dimdoors.network.c2s.HitBlockWithItemC2SPacket;
 
 public class AttackBlockCallbackListener implements AttackBlockCallback {
-
 	@Override
 	public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
 		if (!world.isClient) return ActionResult.PASS;

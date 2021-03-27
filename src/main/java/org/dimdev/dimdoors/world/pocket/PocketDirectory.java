@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3i;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.util.math.GridUtil;
+import org.dimdev.dimdoors.api.util.math.GridUtil;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;

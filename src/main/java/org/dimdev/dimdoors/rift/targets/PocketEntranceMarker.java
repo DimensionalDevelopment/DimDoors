@@ -2,20 +2,22 @@ package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.util.EntityUtils;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.TranslatableText;
 
-
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
-
-	protected float weight = 1;
-	protected VirtualTarget ifDestination = NoneTarget.INSTANCE;
-	protected VirtualTarget otherwiseDestination = NoneTarget.INSTANCE;
+	private final float weight;
+	private final VirtualTarget ifDestination;
+	private final VirtualTarget otherwiseDestination;
 
 	public PocketEntranceMarker() {
+		this(1, NoneTarget.INSTANCE, NoneTarget.INSTANCE);
 	}
 
 	public PocketEntranceMarker(float weight, VirtualTarget ifDestination, VirtualTarget otherwiseDestination) {
@@ -54,7 +56,6 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 		return new PocketEntranceMarkerBuilder().weight(this.weight).ifDestination(this.ifDestination).otherwiseDestination(this.otherwiseDestination);
 	}
 
-
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
 		return VirtualTargetType.POCKET_ENTRANCE;
@@ -69,11 +70,11 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 	}
 
 	public static PocketEntranceMarker fromTag(CompoundTag tag) {
-		PocketEntranceMarker target = new PocketEntranceMarker();
-		target.weight = tag.getFloat("weight");
-		target.ifDestination = tag.contains("ifDestination") ? VirtualTarget.fromTag(tag.getCompound("ifDestination")) : NoneTarget.INSTANCE;
-		target.otherwiseDestination = tag.contains("otherwiseDestination") ? VirtualTarget.fromTag(tag.getCompound("otherwiseDestination")) : NoneTarget.INSTANCE;
-		return target;
+		return PocketEntranceMarker.builder()
+				.weight(tag.getFloat("weight"))
+				.ifDestination(tag.contains("ifDestination") ? VirtualTarget.fromTag(tag.getCompound("ifDestination")) : NoneTarget.INSTANCE)
+				.otherwiseDestination(tag.contains("otherwiseDestination") ? VirtualTarget.fromTag(tag.getCompound("otherwiseDestination")) : NoneTarget.INSTANCE)
+				.build();
 	}
 
 	public static class PocketEntranceMarkerBuilder {
@@ -103,8 +104,13 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 			return new PocketEntranceMarker(this.weight, this.ifDestination, this.otherwiseDestination);
 		}
 
+		@Override
 		public String toString() {
-			return "PocketEntranceMarker.PocketEntranceMarkerBuilder(weight=" + this.weight + ", ifDestination=" + this.ifDestination + ", otherwiseDestination=" + this.otherwiseDestination + ")";
+			return new ToStringBuilder(this)
+					.append("weight", weight)
+					.append("ifDestination", ifDestination)
+					.append("otherwiseDestination", otherwiseDestination)
+					.toString();
 		}
 	}
 }

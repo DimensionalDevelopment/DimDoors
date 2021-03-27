@@ -1,0 +1,32 @@
+{
+  "parent": "dimdoors:dimdoors/hole_in_the_sky",
+  "display": {
+    "icon": {
+      "item": "dimdoors:gold_dimensional_door"
+    },
+    "title": {
+      "translate": "dimdoors.advancement.door_to_adventure"
+    },
+    "description": {
+      "translate": "dimdoors.advancement.door_to_adventure.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "dimdoors:textures/block/unravelled_fabric.png"
+  },
+  "criteria": {
+    "enter_dungeon": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "dimdoors:dungeon_pockets"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "enter_dungeon"
+    ]
+  ]
+}

@@ -10,7 +10,7 @@ import com.google.common.collect.HashBiMap;
 
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.Pair;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;

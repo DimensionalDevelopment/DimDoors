@@ -4,6 +4,8 @@ import java.util.Random;
 
 import com.flowpowered.math.vector.VectorNi;
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.dimdev.dimdoors.api.client.RenderLayerFactory;
+import org.dimdev.dimdoors.mixin.client.accessor.RenderLayerAccessor;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.render.RenderLayer;
@@ -27,14 +29,16 @@ public class MyRenderLayer extends RenderLayer {
         super(string, vertexFormat, drawMode, j, bl, bl2, runnable, runnable2);
     }
 
-    public static RenderLayer CRACK = RenderLayer.of("crack",
+    public static RenderLayer CRACK = RenderLayerFactory.create("crack",
 			VertexFormats.POSITION_COLOR,
 			VertexFormat.DrawMode.QUADS,
 			256,
+			false,
+			false,
 			MultiPhaseParameters.builder()
 					.cull(DISABLE_CULLING)
 					.lightmap(RenderPhase.DISABLE_LIGHTMAP)
-					.texture(NO_TEXTURE)
+					.method_34577(NO_TEXTURE)
 					.transparency(new Transparency("crack_transparency",
 							() -> {
 								RenderSystem.enableBlend();
@@ -48,53 +52,25 @@ public class MyRenderLayer extends RenderLayer {
 					.build(false)
 	);
 
-    public static RenderLayer TESSERACT = RenderLayer.of("tesseract",
+    public static RenderLayer TESSERACT = RenderLayerFactory.create("tesseract",
 			VertexFormats.POSITION_COLOR_TEXTURE,
 			VertexFormat.DrawMode.QUADS,
 			256,
+			false,
+			false,
 			MultiPhaseParameters.builder()
 					.cull(DISABLE_CULLING)
 					.lightmap(RenderPhase.DISABLE_LIGHTMAP)
-					.texture(new Texture(DetachedRiftBlockEntityRenderer.TESSERACT_PATH,
+					.method_34577(new Texture(DetachedRiftBlockEntityRenderer.TESSERACT_PATH,
 							false,
 							false)
 					)
-					.alpha(Alpha.HALF_ALPHA)
+//					.alpha(Alpha.HALF_ALPHA)
 					.build(false)
 	);
 
-    public static RenderLayer getPortal(int layer) {
-        RenderPhase.Transparency transparency;
-        RenderPhase.Texture texture;
-        if (layer <= 1) {
-            transparency = TRANSLUCENT_TRANSPARENCY;
-            texture = new RenderPhase.Texture(EndPortalBlockEntityRenderer.PORTAL_TEXTURE,
-					false,
-					false
-			);
-        } else {
-            transparency = ADDITIVE_TRANSPARENCY;
-            texture = new RenderPhase.Texture(WARP_PATH, false, false);
-        }
-
-        return of(
-        		"dimensional_portal",
-				VertexFormats.POSITION_COLOR,
-				VertexFormat.DrawMode.QUADS,
-				256,
-				false,
-				true,
-				RenderLayer.MultiPhaseParameters.builder()
-						.transparency(transparency)
-						.texture(texture)
-						.texturing(new RenderPhase.PortalTexturing(layer))
-						.fog(BLACK_FOG)
-						.build(false)
-		);
-    }
-
 	public static RenderLayer getMonolith(Identifier texture) {
-		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, false, false)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).diffuseLighting(RenderPhase.ENABLE_DIFFUSE_LIGHTING).alpha(RenderPhase.ONE_TENTH_ALPHA).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
-		return RenderLayer.of("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, multiPhaseParameters);
+		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().method_34577(new RenderPhase.Texture(texture, false, false)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
+		return RenderLayerFactory.create("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, multiPhaseParameters);
 	}
 }

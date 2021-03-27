@@ -14,10 +14,10 @@ import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.modifier.AbsoluteRiftBlockEntityModifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
-import org.dimdev.dimdoors.util.BlockPlacementType;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.util.schematic.Schematic;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -135,7 +135,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		ServerWorld world = parameters.getWorld();
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 
@@ -168,7 +168,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
-	public Vec3i getSize(PocketGenerationParameters parameters) {
+	public Vec3i getSize(PocketGenerationContext parameters) {
 		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(templateID);
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 		Schematic schem = template.getSchematic();

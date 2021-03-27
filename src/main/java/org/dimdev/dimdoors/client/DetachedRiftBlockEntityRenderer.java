@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.tesseract.Tesseract;
-import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.api.util.RGBA;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -37,7 +37,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
             }
         }
 
-        this.renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
+//        this.renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift); TODO
     }
 
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {

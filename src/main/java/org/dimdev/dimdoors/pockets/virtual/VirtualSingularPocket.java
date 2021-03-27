@@ -7,11 +7,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.pockets.virtual.reference.TagReference;
 import org.dimdev.dimdoors.pockets.virtual.selection.ConditionalSelector;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.function.Supplier;
@@ -50,6 +52,7 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 		CompoundTag toTag(CompoundTag tag);
 
 		static void register() {
+			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerVirtualSingularPocketTypes(REGISTRY));
 		}
 
 		static <U extends VirtualSingularPocket> VirtualSingularPocketType<U> register(Identifier id, Supplier<U> factory) {
@@ -73,19 +76,22 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 		public static final String KEY = "none";
 		public static final NoneVirtualPocket NONE = new NoneVirtualPocket();
 
-		@Override
-		public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
-			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+		private NoneVirtualPocket() {
 		}
 
 		@Override
-		public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
-			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+		public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
+			throw new UnsupportedOperationException("Cannot place a NoneVirtualPocket");
 		}
 
 		@Override
-		public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
-			throw new UnsupportedOperationException("Cannot call this method on a NoneVirtualPocket");
+		public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
+			throw new UnsupportedOperationException("Cannot get next pocket generator reference on a NoneVirtualPocket");
+		}
+
+		@Override
+		public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters) {
+			throw new UnsupportedOperationException("Cannot peek next pocket generator reference on a NoneVirtualPocket");
 		}
 
 		@Override
@@ -104,7 +110,7 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 		}
 
 		@Override
-		public double getWeight(PocketGenerationParameters parameters) {
+		public double getWeight(PocketGenerationContext parameters) {
 			return 0;
 		}
 	}

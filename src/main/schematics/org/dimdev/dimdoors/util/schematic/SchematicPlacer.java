@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +21,7 @@ import net.minecraft.world.StructureWorldAccess;
 
 import net.fabricmc.loader.api.FabricLoader;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.util.BlockPlacementType;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
 
 public final class SchematicPlacer {
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -42,12 +41,6 @@ public final class SchematicPlacer {
 	}
 
 	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin) {
-		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
-		for (String id : schematic.getMetadata().getRequiredMods()) {
-			if (!FabricLoader.getInstance().isModLoaded(id)) {
-				LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
-			}
-		}
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
 		return blockSample.getAbsoluteRifts(origin);
 	}
@@ -101,11 +94,11 @@ public final class SchematicPlacer {
 			ListTag listTag = Objects.requireNonNull(tag.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos tag!");
 			SchematicPlacer.processPos(listTag, originX, originY, originZ, tag);
 
-			EntityType<?> entityType = EntityType.fromTag(tag).orElseThrow(AssertionError::new);
+			EntityType<?> entityType = EntityType.fromNbt(tag).orElseThrow(AssertionError::new);
 			Entity e = entityType.create(world.toServerWorld());
 			// TODO: fail with an exception
 			if (e != null) {
-				e.fromTag(tag);
+				e.readNbt(tag);
 				world.spawnEntityAndPassengers(e);
 			}
 		}

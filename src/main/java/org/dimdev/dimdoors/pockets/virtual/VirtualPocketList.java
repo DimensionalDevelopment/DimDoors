@@ -2,12 +2,12 @@ package org.dimdev.dimdoors.pockets.virtual;
 
 import net.minecraft.nbt.ListTag;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.WeightedList;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 // TODO: add weight tha
-public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationParameters> implements VirtualPocket {
+public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
 
 	public static VirtualPocketList deserialize(ListTag tag) {
 		return new VirtualPocketList().fromTag(tag);
@@ -36,20 +36,20 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
+	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
 		return getNextPocketGeneratorReference(parameters).prepareAndPlacePocket(parameters);
 	}
 
-	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
 		return getNextRandomWeighted(parameters).getNextPocketGeneratorReference(parameters);
 	}
 
-	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters) {
 		return peekNextRandomWeighted(parameters).peekNextPocketGeneratorReference(parameters);
 	}
 
 	@Override
-	public double getWeight(PocketGenerationParameters parameters) {
+	public double getWeight(PocketGenerationContext parameters) {
 		return peekNextRandomWeighted(parameters).getWeight(parameters);
 	}
 }

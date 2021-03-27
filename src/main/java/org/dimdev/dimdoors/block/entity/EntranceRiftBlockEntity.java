@@ -2,42 +2,80 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
-import net.minecraft.block.Block;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.util.TeleportUtil;
+import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.door.data.DoorDataReader;
+import org.dimdev.dimdoors.api.client.DefaultTransformation;
+import org.dimdev.dimdoors.api.client.Transformer;
+import org.dimdev.dimdoors.item.RiftKeyItem;
+import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
+import org.dimdev.dimdoors.rift.registry.Rift;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
+import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.world.ModDimensions;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.DoorBlock;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
+import net.minecraft.world.World;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
+	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
+	private boolean locked;
+
 	public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
 	}
 
 	@Override
-	public void fromTag(CompoundTag nbt) {
-		super.fromTag(nbt);
+	public void readNbt(CompoundTag nbt) {
+		super.readNbt(nbt);
+		locked = nbt.getBoolean("locked");
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		tag = super.toTag(tag);
-		return tag;
+	public CompoundTag writeNbt(CompoundTag tag) {
+		tag.putBoolean("locked", locked);
+		return super.writeNbt(tag);
 	}
 
 	@Override
 	public boolean teleport(Entity entity) {
+		if (this.isLocked()) {
+			if (entity instanceof LivingEntity) {
+				ItemStack stack = ((LivingEntity) entity).getStackInHand(((LivingEntity) entity).getActiveHand());
+				Rift rift = this.asRift();
+
+				if (RiftKeyItem.has(stack, rift.getId())) {
+					return innerTeleport(entity);
+				}
+
+				EntityUtils.chat(entity, new TranslatableText("rifts.isLocked"));
+			}
+			return false;
+		}
+
+		return innerTeleport(entity);
+	}
+
+	private boolean innerTeleport(Entity entity) {
 		boolean status = super.teleport(entity);
 
 		if (this.riftStateChanged && !this.data.isAlwaysDelete()) {
@@ -90,6 +128,11 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				.orElse(Direction.NORTH);
 	}
 
+	@Environment(EnvType.CLIENT)
+	public Transformer getTransformer() {
+		return DefaultTransformation.fromDirection(this.getOrientation());
+	}
+
 	public boolean hasOrientation() {
 		return this.world != null && this.world.getBlockState(this.pos).contains(HorizontalFacingBlock.FACING);
 	}
@@ -98,11 +141,30 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	 * Specifies if the portal should be rendered two blocks tall
 	 */
 	public boolean isTall() {
-		return this.getCachedState().getBlock() instanceof DoorBlock;
+		return ((RiftProvider<?>) this.getCachedState().getBlock()).isTall(this.getCachedState());
 	}
 
 	@Override
 	public boolean isDetached() {
 		return false;
+	}
+
+	@Override
+	public boolean isLocked() {
+		return locked;
+	}
+
+	@Override
+	public void setLocked(boolean locked) {
+		this.locked = locked;
+	}
+
+	public void setPortalDestination(World world) {
+		if (ModDimensions.isLimboDimension(world)) {
+			this.setDestination(ESCAPE_TARGET);
+		} else {
+			this.setDestination(DefaultDungeonDestinations.GATEWAY_DESTINATION);
+			this.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+		}
 	}
 }

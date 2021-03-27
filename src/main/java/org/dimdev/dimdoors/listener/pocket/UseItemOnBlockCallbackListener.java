@@ -5,7 +5,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.event.UseItemOnBlockCallback;
+import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 
 import java.util.List;
 

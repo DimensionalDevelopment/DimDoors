@@ -1,17 +1,12 @@
 package org.dimdev.dimdoors.network;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.network.c2s.NetworkHandlerInitializedC2SPacket;
@@ -19,12 +14,19 @@ import org.dimdev.dimdoors.network.s2c.PlayerInventorySlotUpdateS2CPacket;
 import org.dimdev.dimdoors.network.s2c.SyncPocketAddonsS2CPacket;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 @Environment(EnvType.CLIENT)
 public class ClientPacketHandler {
@@ -85,10 +87,6 @@ public class ClientPacketHandler {
 		new HashSet<>(registeredChannels).forEach(this::unregisterReceiver);
 	}
 
-	public MinecraftClient getClient() {
-		return ((ExtendedClientPlayNetworkHandler) networkHandler).dimdoorsGetClient();
-	}
-
 	public void onSyncPocketAddons(RegistryKey<World> world, int gridSize, int pocketId, int pocketRange, List<AutoSyncedAddon> addons) {
 		this.pocketWorld = world;
 		this.gridSize = gridSize;
@@ -98,8 +96,8 @@ public class ClientPacketHandler {
 	}
 
 	public void onPlayerInventorySlotUpdate(int slot, ItemStack stack) {
-		if (getClient().player != null) {
-			getClient().player.getInventory().setStack(slot, stack);
+		if (MinecraftClient.getInstance().player != null) {
+			MinecraftClient.getInstance().player.getInventory().setStack(slot, stack);
 		}
 	}
 

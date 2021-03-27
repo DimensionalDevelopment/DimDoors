@@ -21,9 +21,9 @@ import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.Equation;
-import org.dimdev.dimdoors.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -32,8 +32,6 @@ import net.minecraft.nbt.ListTag;
 
 public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final String defaultWeightEquation = "5"; // TODO: make config
-	private static final int fallbackWeight = 5; // TODO: make config
 
 	protected String weight;
 	protected Equation weightEquation;
@@ -45,12 +43,14 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		try {
 			this.weightEquation = Equation.parse(weight);
 		} catch (EquationParseException e) {
-			LOGGER.error("Could not parse weight equation \"" + weight + "\", defaulting to default weight equation \"" + defaultWeightEquation + "\"", e);
+			LOGGER.debug("Defaulting to default weight equation for {}", this);
+			LOGGER.debug("Exception Stacktrace", e);
 			try {
-				this.weightEquation = Equation.parse(defaultWeightEquation);
+				this.weightEquation = Equation.parse(DimensionalDoorsInitializer.getConfig().getPocketsConfig().defaultWeightEquation);
 			} catch (EquationParseException equationParseException) {
-				LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
-				this.weightEquation = stringDoubleMap -> fallbackWeight;
+				LOGGER.debug("Defaulting to default weight equation for {}", this);
+				LOGGER.debug("Exception Stacktrace", e);
+				this.weightEquation = stringDoubleMap -> DimensionalDoorsInitializer.getConfig().getPocketsConfig().fallbackWeight;
 			}
 		}
 	}
@@ -103,7 +103,7 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	}
 
 	@Override
-	public double getWeight(PocketGenerationParameters parameters) {
+	public double getWeight(PocketGenerationContext parameters) {
 		try {
 			return weightEquation != null ? this.weightEquation.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocketGenerator(parameters).getWeight(parameters);
 		} catch (RuntimeException e) {
@@ -112,20 +112,20 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 		}
 	}
 
-	public void applyModifiers(PocketGenerationParameters parameters, RiftManager manager) {
+	public void applyModifiers(PocketGenerationContext parameters, RiftManager manager) {
 		for (Modifier modifier : modifierList) {
 			modifier.apply(parameters, manager);
 		}
 	}
 
-	public void applyModifiers(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void applyModifiers(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		for (Modifier modifier : modifierList) {
 			modifier.apply(parameters, builder);
 		}
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
+	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
 		PocketGenerator generator = getReferencedPocketGenerator(parameters);
 
 
@@ -176,18 +176,18 @@ public abstract class PocketGeneratorReference extends VirtualSingularPocket {
 	}
 
 	@Override
-	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters) {
 		return this;
 	}
 
 	@Override
-	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
 		return this;
 	}
 
-	public abstract PocketGenerator peekReferencedPocketGenerator(PocketGenerationParameters parameters);
+	public abstract PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters);
 
-	public abstract PocketGenerator getReferencedPocketGenerator(PocketGenerationParameters parameters);
+	public abstract PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters);
 
 	@Override
 	public abstract String toString();

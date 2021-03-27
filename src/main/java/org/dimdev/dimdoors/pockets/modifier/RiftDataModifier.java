@@ -17,8 +17,8 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.TagEquations;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.TagEquations;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class RiftDataModifier implements Modifier {
@@ -32,7 +32,7 @@ public class RiftDataModifier implements Modifier {
 	public Modifier fromTag(CompoundTag tag) {
 		if (tag.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = tag.getString("rift_data");
-			doorData = (CompoundTag) PocketLoader.getInstance().readNbtFromJson(doorDataReference);
+			doorData = (CompoundTag) PocketLoader.getInstance().getRiftDataTag(doorDataReference);
 		}
 		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
 
@@ -83,7 +83,7 @@ public class RiftDataModifier implements Modifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
 
 		Consumer<RiftBlockEntity> riftBlockEntityConsumer;
@@ -107,6 +107,6 @@ public class RiftDataModifier implements Modifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 	}
 }

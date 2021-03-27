@@ -6,9 +6,11 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.ModSkyRendering;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.network.ExtendedClientPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
+import org.dimdev.dimdoors.particle.client.MonolithParticle;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -26,7 +28,12 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
         ModBlocks.initClient();
 		ModParticleTypes.initClient();
 
-		ClientPlayNetworking.registerGlobalReceiver(DimensionalDoorsInitializer.MONOLITH_PARTICLE_PACKET, (client, networkHandler, buf, sender) -> MonolithEntity.spawnParticles(buf, client));
+		ClientPlayNetworking.registerGlobalReceiver(MonolithAggroGoal.MONOLITH_PARTICLE_PACKET, (client, networkHandler, buf, sender) -> MonolithEntity.spawnParticles(buf, client));
+		ClientPlayNetworking.registerGlobalReceiver(MonolithAggroGoal.MONOLITH_TP_PARTICLE_PACKET, ((client, handler, buf, responseSender) -> {
+			client.execute(() -> {
+				client.particleManager.addParticle(new MonolithParticle(client.world, client.player.getX(), client.player.getY(), client.player.getZ()));
+			});
+		}));
 
 		registerListeners();
     }

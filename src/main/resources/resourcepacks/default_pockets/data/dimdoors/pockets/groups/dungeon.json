@@ -120,5 +120,77 @@
   {
     "id": "custom/lantredom_red",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/heart_of_disorder",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/hot_suspense",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/jump_pass",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/rope_bridge",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/ruins_oh_no",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/simple_drop_hall",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/simple_small_t",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/simple_stairs_down",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/simple_stairs_up",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/small_desert",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/small_exit_prison",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/small_maze",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/small_pond",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/spiral_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/transfer_tunnel",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/u_trap_right",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/u_turn_right",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "custom/u_turn_left",
+    "type": "dimdoors:id"
   }
 ]

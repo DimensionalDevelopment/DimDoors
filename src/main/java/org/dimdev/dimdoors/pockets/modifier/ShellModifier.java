@@ -21,9 +21,9 @@ import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import org.dimdev.dimdoors.util.BlockBoxUtil;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.Equation;
+import org.dimdev.dimdoors.api.util.BlockBoxUtil;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -45,10 +45,14 @@ public class ShellModifier implements LazyModifier {
 		}
 		tag.put("layers", layersTag);
 		if (boxToDrawAround != null) {
-			tag.put("box_to_draw_around", boxToDrawAround.toNbt());
+			tag.put("box_to_draw_around", toNbt(boxToDrawAround));
 		}
 
 		return tag;
+	}
+
+	private static IntArrayTag toNbt(BlockBox box) {
+		return new IntArrayTag(new int[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ});
 	}
 
 	@Override
@@ -142,7 +146,7 @@ public class ShellModifier implements LazyModifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, RiftManager manager) {
+	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Pocket pocket = manager.getPocket();
 		if (pocket instanceof LazyGenerationPocket) {
 			Map<String, Double> variableMap = pocket.toVariableMap(new HashMap<>());
@@ -155,7 +159,7 @@ public class ShellModifier implements LazyModifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		for (Layer layer : layers) {
 			int thickness = layer.getThickness(variableMap);

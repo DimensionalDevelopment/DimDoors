@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.math.Equation;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
@@ -67,17 +67,17 @@ public class ConditionalSelector extends VirtualSingularPocket {
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters) {
+	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
 		return getNextPocket(parameters).prepareAndPlacePocket(parameters);
 	}
 
 	@Override
-	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
 		return getNextPocket(parameters).getNextPocketGeneratorReference(parameters);
 	}
 
 	@Override
-	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationParameters parameters) {
+	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters) {
 		return getNextPocket(parameters).peekNextPocketGeneratorReference(parameters);
 	}
 
@@ -92,11 +92,11 @@ public class ConditionalSelector extends VirtualSingularPocket {
 	}
 
 	@Override
-	public double getWeight(PocketGenerationParameters parameters) {
+	public double getWeight(PocketGenerationContext parameters) {
 		return getNextPocket(parameters).getWeight(parameters);
 	}
 
-	private VirtualPocket getNextPocket(PocketGenerationParameters parameters) {
+	private VirtualPocket getNextPocket(PocketGenerationContext parameters) {
 		for (Map.Entry<String, VirtualPocket> entry : pocketMap.entrySet()) {
 			if (equationMap.get(entry.getKey()).asBoolean(parameters.toVariableMap(new HashMap<>()))) {
 				return entry.getValue();

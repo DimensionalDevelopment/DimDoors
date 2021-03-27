@@ -4,13 +4,12 @@ import java.util.UUID;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.entity.Entity;
@@ -18,15 +17,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
 
-import static org.dimdev.dimdoors.util.EntityUtils.chat;
+import static org.dimdev.dimdoors.api.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
 	public static final Codec<EscapeTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
 	).apply(instance, EscapeTarget::new));
 
-	protected boolean canEscapeLimbo;
+	protected final boolean canEscapeLimbo;
 
 	public EscapeTarget(boolean canEscapeLimbo) {
 		this.canEscapeLimbo = canEscapeLimbo;

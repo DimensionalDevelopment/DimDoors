@@ -1,6 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.rift.target.FluidTarget;
+import org.dimdev.dimdoors.api.rift.target.ItemTarget;
+import org.dimdev.dimdoors.api.rift.target.RedstoneTarget;
+import org.dimdev.dimdoors.api.util.EntityUtils;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.text.TranslatableText;

@@ -25,8 +25,8 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
@@ -70,7 +70,7 @@ public class ChunkGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationParameters parameters, Pocket.PocketBuilder<?, ?> builder) {
+	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		ServerWorld world = parameters.getWorld();
 		VirtualLocation sourceVirtualLocation = parameters.getSourceVirtualLocation();
 
@@ -189,7 +189,7 @@ public class ChunkGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public Vec3i getSize(PocketGenerationParameters parameters) {
+	public Vec3i getSize(PocketGenerationContext parameters) {
 		return size;
 	}
 

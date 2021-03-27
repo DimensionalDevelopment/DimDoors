@@ -25,21 +25,21 @@ public enum LimboGateway implements Gateway {
         BlockState unravelledFabric = ModBlocks.UNRAVELLED_FABRIC.getDefaultState();
         // Build the gateway out of Unraveled Fabric. Since nearly all the blocks in Limbo are of
         // that type, there is no point replacing the ground.
-        world.setBlockState(pos.add(0, 3, 1), unravelledFabric, 2);
-        world.setBlockState(pos.add(0, 3, -1), unravelledFabric, 2);
+        world.setBlockState(pos.add(1, 3, 0), unravelledFabric, 2);
+        world.setBlockState(pos.add(-1, 3, 0), unravelledFabric, 2);
 
         // Build the columns around the door
-        world.setBlockState(pos.add(0, 2, -1), unravelledFabric, 2);
-        world.setBlockState(pos.add(0, 2, 1), unravelledFabric, 2);
-        world.setBlockState(pos.add(0, 1, 1), unravelledFabric, 2);
-        world.setBlockState(pos.add(0, 1, 1), unravelledFabric, 2);
+        world.setBlockState(pos.add(-1, 2, 0), unravelledFabric, 2);
+        world.setBlockState(pos.add(1, 2, 0), unravelledFabric, 2);
+        world.setBlockState(pos.add(1, 1, 0), unravelledFabric, 2);
+        world.setBlockState(pos.add(1, 1, 0), unravelledFabric, 2);
 
         this.placePortal(world, pos.add(0, 1, 0), Direction.NORTH);
     }
 
     @Override
     public boolean isLocationValid(StructureWorldAccess world, BlockPos pos) {
-        return ModDimensions.isLimbo(world);
+        return ModDimensions.isLimboDimension(world.toServerWorld());
     }
 
     private void placePortal(StructureWorldAccess world, BlockPos pos, Direction facing) {

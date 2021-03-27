@@ -8,18 +8,19 @@ import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.entity.advancement.ModCriteria;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
-import org.dimdev.dimdoors.rift.targets.EntityTarget;
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.rift.targets.MessageTarget;
-import org.dimdev.dimdoors.rift.targets.Target;
+import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.util.EntityUtils;
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.RGBA;
-import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
-import org.dimdev.dimdoors.world.level.DimensionalRegistry;
+import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.RGBA;
+import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -49,8 +51,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	@Override
-	public void fromTag(CompoundTag nbt) {
-		super.fromTag(nbt);
+	public void readNbt(CompoundTag nbt) {
+		super.readNbt(nbt);
 		this.deserialize(nbt);
 	}
 
@@ -59,8 +61,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
-		super.toTag(tag);
+	public CompoundTag writeNbt(CompoundTag tag) {
+		super.writeNbt(tag);
 		return this.serialize(tag);
 	}
 
@@ -80,7 +82,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	public void setDestination(VirtualTarget destination) {
-		System.out.println("setting Destination " + destination);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Setting destination {} for {}", destination, this.pos.toShortString());
+		}
 
 		if (this.getDestination() != null && this.isRegistered()) {
 			this.getDestination().unregister();
@@ -106,6 +110,12 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		this.data.setProperties(properties);
 		this.updateProperties();
 		this.markDirty();
+	}
+
+	@Override
+	public CompoundTag toInitialChunkDataNbt() {
+		PlayerLookup.tracking(this).forEach(ModCriteria.RIFT_TRACKED::trigger);
+		return super.toInitialChunkDataNbt();
 	}
 
 	public void markStateChanged() {
@@ -144,7 +154,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	public void updateType() {
 		if (!this.isRegistered()) return;
 		Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location((ServerWorld) this.world, this.pos));
-		rift.isDetached = this.isDetached();
+		rift.setDetached(this.isDetached());
 		rift.markDirty();
 	}
 
@@ -171,8 +181,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		}
 	}
 
-	public boolean
-	teleport(Entity entity) {
+	public boolean teleport(Entity entity) {
 		this.riftStateChanged = false;
 
 		// Attempt a teleport
@@ -222,7 +231,11 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		}
 	}
 
-	protected abstract boolean isDetached();
+	public abstract boolean isDetached();
+
+	public abstract void setLocked(boolean locked);
+
+	public abstract boolean isLocked();
 
 	public void copyFrom(DetachedRiftBlockEntity rift) {
 		this.data.setDestination(rift.data.getDestination());
@@ -261,5 +274,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
 	public void setWorld(World world) {
 		this.world = world;
+	}
+
+	public Rift asRift() {
+		return DimensionalRegistry.getRiftRegistry().getRift(new Location(this.world.getRegistryKey(), this.pos));
 	}
 }

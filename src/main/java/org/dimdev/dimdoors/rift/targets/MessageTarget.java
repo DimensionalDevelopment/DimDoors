@@ -2,14 +2,16 @@ package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.util.EntityUtils;
+
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.rift.target.Target;
+import org.dimdev.dimdoors.api.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.TranslatableText;
 
-@SuppressWarnings("OverloadedVarargsMethod")
 public class MessageTarget implements EntityTarget {
-	private Target forwardTo;
+	private final Target forwardTo;
 	private final String message;
 	private final Object[] messageParams;
 
@@ -20,8 +22,7 @@ public class MessageTarget implements EntityTarget {
 	}
 
 	public MessageTarget(String message, Object... messageParams) {
-		this.message = message;
-		this.messageParams = messageParams;
+		this(null, message, messageParams);
 	}
 
 	@Override

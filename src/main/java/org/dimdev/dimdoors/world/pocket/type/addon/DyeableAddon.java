@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.AncientFabricBlock;
 import org.dimdev.dimdoors.block.FabricBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
@@ -27,8 +27,8 @@ public class DyeableAddon implements PocketAddon {
 	private int count = 0;
 
 	private static int amountOfDyeRequiredToColor(Pocket pocket) {
-		int outerVolume = pocket.box.getBlockCountX() * pocket.box.getBlockCountY() * pocket.box.getBlockCountZ();
-		int innerVolume = (pocket.box.getBlockCountX() - 5) * (pocket.box.getBlockCountY() - 5) * (pocket.box.getBlockCountZ() - 5);
+		int outerVolume = pocket.getBox().getBlockCountX() * pocket.getBox().getBlockCountY() * pocket.getBox().getBlockCountZ();
+		int innerVolume = (pocket.getBox().getBlockCountX() - 5) * (pocket.getBox().getBlockCountY() - 5) * (pocket.getBox().getBlockCountZ() - 5);
 
 		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}

@@ -2,7 +2,7 @@ package org.dimdev.test;
 
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.util.math.MatrixdImpl;
+import org.dimdev.dimdoors.api.util.math.AbstractMatrixd;
 
 import java.util.function.Supplier;
 
@@ -15,7 +15,7 @@ public class TestUtil {
 		return expected.squaredDistanceTo(actual) <= expected.lengthSquared() * 1E-10;
 	}
 
-	public static boolean closeEnough(MatrixdImpl<?> expected, MatrixdImpl<?> actual) {
+	public static boolean closeEnough(AbstractMatrixd<?> expected, AbstractMatrixd<?> actual) {
 		if (expected.getDimensionX() != actual.getDimensionX() || expected.getDimensionY() != actual.getDimensionY()) return false;
 
 		for (int i = 0; i < expected.getDimensionX(); i++) {

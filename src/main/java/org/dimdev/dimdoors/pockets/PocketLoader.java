@@ -23,10 +23,11 @@ import net.minecraft.util.Identifier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.util.NbtUtil;
+import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
-import org.dimdev.dimdoors.util.PocketGenerationParameters;
-import org.dimdev.dimdoors.util.WeightedList;
+import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
 public class PocketLoader implements SimpleSynchronousResourceReloadListener {
@@ -36,6 +37,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private Map<Identifier, PocketGenerator> pocketGeneratorMap = new ConcurrentHashMap<>();
 	private Map<Identifier, VirtualPocket> pocketGroups = new ConcurrentHashMap<>();
 	private Map<Identifier, PocketTemplate> templates = new ConcurrentHashMap<>();
+	private Map<Identifier, CompoundTag> riftDataMap = new ConcurrentHashMap<>();
 
 	private PocketLoader() {
 	}
@@ -45,14 +47,17 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		pocketGeneratorMap.clear();
 		pocketGroups.clear();
 		templates.clear();
+		riftDataMap.clear();
 
 		CompletableFuture<Map<Identifier, PocketGenerator>> futurePocketGeneratorMap = loadResourcePathFromJsonToMap(manager, "pockets/generators", this::loadPocketGenerator);
 		CompletableFuture<Map<Identifier, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToMap(manager, "pockets/groups", this::loadPocketGroup);
 		CompletableFuture<Map<Identifier, PocketTemplate>> futureTemplates = loadResourcePathFromCompressedNbtToMap(manager, "pockets/schematic", ".schem", this::loadPocketTemplate);
+		CompletableFuture<Map<Identifier, CompoundTag>> futureRiftDataMap = loadResourcePathFromJsonToMap(manager, "pockets/json", t -> NbtUtil.asCompoundTag(t, "Could not load rift data since its json does not represent a CompoundTag!"));
 
 		pocketGeneratorMap = futurePocketGeneratorMap.join();
 		pocketGroups = futurePocketGroups.join();
 		templates = futureTemplates.join();
+		riftDataMap = futureRiftDataMap.join();
 	}
 
 	private <T> CompletableFuture<Map<Identifier, T>> loadResourcePathFromJsonToMap(ResourceManager manager, String startingPath, Function<Tag, T> reader) {
@@ -72,7 +77,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 						})));
 	}
 
-	private <T> CompletableFuture<Map<Identifier, T>> loadResourcePathFromCompressedNbtToMap(ResourceManager manager, String startingPath, String extension, Function<Tag, T> reader) {
+	private <T> CompletableFuture<Map<Identifier, T>> loadResourcePathFromCompressedNbtToMap(ResourceManager manager, String startingPath, String extension, Function<CompoundTag, T> reader) {
 		int sub = startingPath.endsWith("/") ? 0 : 1;
 
 		Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(extension));
@@ -109,23 +114,8 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 //		}
 //    }
 
-	// TODO: load via resource loader
-	public Tag readNbtFromJson(String id) {
-		try {
-			Path path = Paths.get(PocketLoader.class.getResource("/resourcepacks/default_pockets/data/dimdoors/pockets/json/" + id + ".json").toURI());
-			if (!Files.isRegularFile(path)) {
-				return null;
-			}
-			try {
-				JsonElement json = GSON.fromJson(String.join("", Files.readAllLines(path)), JsonElement.class);
-				return JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json);
-			} catch (IOException e) {
-				LOGGER.error(e);
-			}
-		} catch (URISyntaxException e) {
-			LOGGER.error(e);
-		}
-		return null;
+	public Tag getRiftDataTag(String id) {
+		return this.riftDataMap.get(new Identifier(id));
 	}
 
 	private VirtualPocket loadPocketGroup(Tag tag) {
@@ -133,20 +123,18 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	}
 
 	private PocketGenerator loadPocketGenerator(Tag tag) {
-		if (tag == null || tag.getType() != NbtType.COMPOUND) {
-			throw new RuntimeException("Could not load PocketGenerator since its json does not represent a CompoundTag!");
-		}
-		return PocketGenerator.deserialize((CompoundTag) tag);
+		return PocketGenerator.deserialize(NbtUtil.asCompoundTag(tag, "Could not load PocketGenerator since its json does not represent a CompoundTag!"));
 	}
 
-	private PocketTemplate loadPocketTemplate(Tag tag) {
-		if (tag == null || tag.getType() != NbtType.COMPOUND) {
-			throw new RuntimeException("Could not load Schematic since its json does not represent a CompoundTag!");
+	private PocketTemplate loadPocketTemplate(CompoundTag tag) {
+		try {
+			return new PocketTemplate(Schematic.fromTag(tag));
+		} catch (Exception e) {
+			throw new RuntimeException("Error loading " + tag.toString(), e);
 		}
-		return new PocketTemplate(Schematic.fromTag((CompoundTag) tag));
 	}
 
-	public WeightedList<PocketGenerator, PocketGenerationParameters> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
+	public WeightedList<PocketGenerator, PocketGenerationContext> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
 		return new WeightedList<>(pocketGeneratorMap.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
 

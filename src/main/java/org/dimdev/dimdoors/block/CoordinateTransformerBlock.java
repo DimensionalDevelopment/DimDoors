@@ -4,7 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 
 public interface CoordinateTransformerBlock {
 	TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder(BlockState state, BlockPos pos);

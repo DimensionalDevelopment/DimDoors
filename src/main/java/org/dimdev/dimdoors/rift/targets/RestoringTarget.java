@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.dimdoors.util.Location;
-import org.dimdev.dimdoors.util.RGBA;
+import org.dimdev.dimdoors.api.rift.target.Target;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.RGBA;
 
 public abstract class RestoringTarget extends VirtualTarget {
-
 	public RestoringTarget() {
 	}
 

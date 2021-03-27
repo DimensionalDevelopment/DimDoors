@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
-import org.dimdev.dimdoors.entity.stat.ModStats;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.mixin.accessor.EntityAccessor;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -34,19 +34,18 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 			cir.setReturnValue(false);
 		}
 	}
-	/*
+
 	@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
 	public void checkDeath(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
 	}
-	*/
+
 	@Unique
 	protected void doOnDeathStuff(DamageSource source, CallbackInfo ci) {
-		if (ModDimensions.isPocketDimension(this.world)) {
+		if (ModDimensions.isPocketDimension(this.world) || DimensionalDoorsInitializer.getConfig().getLimboConfig().universalLimbo) {
 			((EntityAccessor) this).setRemovalReason(null);
 			this.dead = false;
 			this.setHealth(this.getMaxHealth());
-			this.incrementStat(ModStats.DEATHS_IN_POCKETS);
 			ci.cancel();
 		}
 	}
