@@ -276,7 +276,7 @@ public class RiftRegistry {
 			return this.graph.outgoingEdgesOf(pointer).stream()
 					.map(this.graph::getEdgeTarget)
 					.map(Rift.class::cast)
-					.map(rift -> rift.getLocation())
+					.map(Rift::getLocation)
 					.collect(Collectors.toSet());
 		}
 	}
