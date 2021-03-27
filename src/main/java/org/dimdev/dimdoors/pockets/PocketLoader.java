@@ -2,10 +2,6 @@ package org.dimdev.dimdoors.pockets;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +12,6 @@ import com.google.gson.*;
 import com.mojang.serialization.JsonOps;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.*;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -24,7 +19,6 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.NbtUtil;
-import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.api.util.WeightedList;
@@ -37,7 +31,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private Map<Identifier, PocketGenerator> pocketGeneratorMap = new ConcurrentHashMap<>();
 	private Map<Identifier, VirtualPocket> pocketGroups = new ConcurrentHashMap<>();
 	private Map<Identifier, PocketTemplate> templates = new ConcurrentHashMap<>();
-	private Map<Identifier, CompoundTag> riftDataMap = new ConcurrentHashMap<>();
+	private Map<Identifier, Tag> dataMap = new ConcurrentHashMap<>();
 
 	private PocketLoader() {
 	}
@@ -47,14 +41,15 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		pocketGeneratorMap.clear();
 		pocketGroups.clear();
 		templates.clear();
-		riftDataMap.clear();
+		dataMap.clear();
 
-		CompletableFuture<Map<Identifier, CompoundTag>> futureRiftDataMap = loadResourcePathFromJsonToMap(manager, "pockets/json", t -> NbtUtil.asCompoundTag(t, "Could not load rift data since its json does not represent a CompoundTag!"));
+		dataMap = loadResourcePathFromJsonToMap(manager, "pockets/json", t -> t).join();
+
 		CompletableFuture<Map<Identifier, PocketGenerator>> futurePocketGeneratorMap = loadResourcePathFromJsonToMap(manager, "pockets/generators", this::loadPocketGenerator);
 		CompletableFuture<Map<Identifier, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToMap(manager, "pockets/groups", this::loadPocketGroup);
 		CompletableFuture<Map<Identifier, PocketTemplate>> futureTemplates = loadResourcePathFromCompressedNbtToMap(manager, "pockets/schematic", ".schem", this::loadPocketTemplate);
 
-		riftDataMap = futureRiftDataMap.join();
+
 		pocketGeneratorMap = futurePocketGeneratorMap.join();
 		pocketGroups = futurePocketGroups.join();
 		templates = futureTemplates.join();
@@ -114,8 +109,12 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 //		}
 //    }
 
-	public Tag getRiftDataTag(String id) {
-		return this.riftDataMap.get(new Identifier(id));
+	public Tag getDataTag(String id) {
+		return this.dataMap.get(new Identifier(id));
+	}
+
+	public CompoundTag getDataCompoundTag(String id) {
+		return NbtUtil.asCompoundTag(getDataTag(id), "Could not convert Tag \"" + id + "\" to CompoundTag!");
 	}
 
 	private VirtualPocket loadPocketGroup(Tag tag) {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
@@ -31,7 +32,7 @@ import net.fabricmc.api.Environment;
 
 import static net.fabricmc.api.EnvType.CLIENT;
 
-public class RiftConfigurationToolItem extends ModItem {
+public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final String ID = "rift_configuration_tool";

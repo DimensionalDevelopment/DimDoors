@@ -17,7 +17,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.item.ModItem;
+import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
@@ -37,7 +37,6 @@ public class ServerPacketHandler implements ServerPacketListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ServerPlayNetworkHandler networkHandler;
-	private final MinecraftServer server;
 	private final Set<Identifier> registeredChannels = new HashSet<>();
 	private boolean initialized = false;
 
@@ -76,7 +75,6 @@ public class ServerPacketHandler implements ServerPacketListener {
 
 	public ServerPacketHandler(ServerPlayNetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
-		this.server = ((ExtendedServerPlayNetworkHandler) networkHandler).dimdoorsGetServer();
 	}
 
 	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ServerPacketListener>> supplier) {
@@ -98,6 +96,10 @@ public class ServerPacketHandler implements ServerPacketListener {
 
 	public void unregister() {
 		new HashSet<>(registeredChannels).forEach(this::unregisterReceiver);
+	}
+
+	public MinecraftServer getServer() {
+		return ((ExtendedServerPlayNetworkHandler) networkHandler).dimdoorsGetServer();
 	}
 
 	public ServerPlayerEntity getPlayer() {
@@ -132,10 +134,10 @@ public class ServerPacketHandler implements ServerPacketListener {
 
 	@Override
 	public void onAttackBlock(HitBlockWithItemC2SPacket packet) {
-		server.execute(() -> {
+		getServer().execute(() -> {
 			Item item = getPlayer().getStackInHand(packet.getHand()).getItem();
-			if (item instanceof ModItem) {
-				((ModItem) item).onAttackBlock(getPlayer().world, getPlayer(), packet.getHand(), packet.getPos(), packet.getDirection());
+			if (item instanceof ExtendedItem) {
+				((ExtendedItem) item).onAttackBlock(getPlayer().world, getPlayer(), packet.getHand(), packet.getPos(), packet.getDirection());
 			}
 		});
 	}
