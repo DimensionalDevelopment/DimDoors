@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.network.c2s;
+package org.dimdev.dimdoors.network.packet.c2s;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -7,12 +7,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import org.dimdev.dimdoors.network.ServerPacketHandler;
+
+import org.dimdev.dimdoors.network.ServerPacketListener;
 import org.dimdev.dimdoors.network.SimplePacket;
 
 import java.io.IOException;
 
-public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketHandler> {
+public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListener> {
 	public static final Identifier ID = new Identifier("dimdoors", "hit_block_with_item");
 
 	private Hand hand;
@@ -30,7 +31,7 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketHandl
 	}
 
 	@Override
-	public SimplePacket<ServerPacketHandler> read(PacketByteBuf buf) throws IOException {
+	public SimplePacket<ServerPacketListener> read(PacketByteBuf buf) throws IOException {
 		hand = buf.readEnumConstant(Hand.class);
 		pos = buf.readBlockPos();
 		direction = buf.readEnumConstant(Direction.class);
@@ -46,12 +47,24 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketHandl
 	}
 
 	@Override
-	public void apply(ServerPacketHandler listener) {
-		listener.onAttackBlock(hand, pos, direction);
+	public void apply(ServerPacketListener listener) {
+		listener.onAttackBlock(this);
 	}
 
 	@Override
 	public Identifier channelId() {
 		return ID;
+	}
+
+	public BlockPos getPos() {
+		return pos;
+	}
+
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public Hand getHand() {
+		return hand;
 	}
 }

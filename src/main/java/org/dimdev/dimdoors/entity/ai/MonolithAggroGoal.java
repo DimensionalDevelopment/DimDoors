@@ -8,6 +8,9 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
+import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import net.minecraft.entity.ai.TargetPredicate;
@@ -27,8 +30,6 @@ import static net.minecraft.predicate.entity.EntityPredicates.EXCEPT_SPECTATOR;
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
 public class MonolithAggroGoal extends Goal {
-	public static final Identifier MONOLITH_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_particle_packet");
-	public static final Identifier MONOLITH_TP_PARTICLE_PACKET = new Identifier("dimdoors", "monolith_tp_particle_packet");
 	protected final MonolithEntity mob;
     protected PlayerEntity target;
     protected final float range;
@@ -95,10 +96,7 @@ public class MonolithAggroGoal extends Goal {
                 // of the sounds that would usually play for a moment would
                 // keep playing constantly and would get very annoying.
                 this.mob.playSounds(this.target.getPos());
-
-                PacketByteBuf data = new PacketByteBuf(Unpooled.buffer());
-                data.writeInt(this.mob.getAggro());
-				ServerPlayNetworking.send((ServerPlayerEntity) this.target, MONOLITH_PARTICLE_PACKET, data);
+				ServerPacketHandler.get((ServerPlayerEntity) this.target).sendPacket(new MonolithAggroParticlesPacket(this.mob.getAggro()));
             }
 
             // Teleport the target player if various conditions are met
@@ -107,7 +105,7 @@ public class MonolithAggroGoal extends Goal {
 				this.target.teleport(this.target.getX(), this.target.getY() + 256, this.target.getZ());
                 this.target.world.playSound(null, new BlockPos(this.target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
                 this.target.incrementStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
-				ServerPlayNetworking.send((ServerPlayerEntity) this.target, MONOLITH_PARTICLE_PACKET, PacketByteBufs.empty());
+                ServerPacketHandler.get((ServerPlayerEntity) this.target).sendPacket(new MonolithTeleportParticlesPacket());
 			}
         }
     }

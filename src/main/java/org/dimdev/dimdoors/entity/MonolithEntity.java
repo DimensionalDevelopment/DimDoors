@@ -231,24 +231,20 @@ public class MonolithEntity extends MobEntity {
         return EYE_HEIGHT;
     }
 
-    public static void spawnParticles(PacketByteBuf data, MinecraftClient client) {
+    public static void spawnParticles(int aggro) {
 		PlayerEntity player = MinecraftClient.getInstance().player;
-		int aggro = data.readInt();
-
-		client.execute(() -> {
-			if (aggro < 120) {
-				return;
-			}
-			int count = 10 * aggro / MAX_AGGRO;
-			for (int i = 1; i < count; ++i) {
-				//noinspection ConstantConditions
-				player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,
-						player.getY() + random.nextDouble() * player.getHeight() - 0.75D,
-						player.getZ() + (random.nextDouble() - 0.5D) * player.getWidth(),
-						(random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
-						(random.nextDouble() - 0.5D) * 2.0D);
-			}
-		});
+		if (aggro < 120) {
+			return;
+		}
+		int count = 10 * aggro / MAX_AGGRO;
+		for (int i = 1; i < count; ++i) {
+			//noinspection ConstantConditions
+			player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,
+					player.getY() + random.nextDouble() * player.getHeight() - 0.75D,
+					player.getZ() + (random.nextDouble() - 0.5D) * player.getWidth(),
+					(random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
+					(random.nextDouble() - 0.5D) * 2.0D);
+		}
 	}
 
     public float getAggroProgress() {
