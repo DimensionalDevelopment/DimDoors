@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.entity.advancement;
+package org.dimdev.dimdoors.criteria;
 
 import com.google.gson.JsonObject;
 
@@ -9,8 +9,8 @@ import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
-public class PocketSpawnPointSetCondition extends AbstractCriterion<PocketSpawnPointSetCondition.Conditions> {
-	public static final Identifier ID = new Identifier("dimdoors", "pocket_spawn_point_set");
+public class RiftTrackedCriterion extends AbstractCriterion<RiftTrackedCriterion.Conditions> {
+	public static final Identifier ID = new Identifier("dimdoors", "rift_tracked");
 
 	@Override
 	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {

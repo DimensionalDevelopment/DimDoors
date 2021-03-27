@@ -6,6 +6,7 @@ import java.util.Random;
 import io.netty.buffer.Unpooled;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
@@ -105,6 +106,7 @@ public class MonolithAggroGoal extends Goal {
                 this.mob.setAggro(0);
 				this.target.teleport(this.target.getX(), this.target.getY() + 256, this.target.getZ());
                 this.target.world.playSound(null, new BlockPos(this.target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
+                this.target.incrementStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
 				ServerPlayNetworking.send((ServerPlayerEntity) this.target, MONOLITH_PARTICLE_PACKET, PacketByteBufs.empty());
 			}
         }

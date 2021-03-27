@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
-import org.dimdev.dimdoors.entity.advancement.ModCriteria;
+import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

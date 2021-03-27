@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.entity.advancement;
+package org.dimdev.dimdoors.criteria;
 
 import net.fabricmc.fabric.api.object.builder.v1.advancement.CriterionRegistry;
 

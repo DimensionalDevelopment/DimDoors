@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.api.util;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.EulerAngle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
@@ -15,7 +16,9 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
+import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 @SuppressWarnings("deprecation")
 public final class TeleportUtil {
@@ -37,6 +40,10 @@ public final class TeleportUtil {
 			entity.teleport(pos.x, pos.y, pos.z);
 
 			return entity;
+		}
+
+		if (entity.isPlayer() && world.getRegistryKey() == ModDimensions.DUNGEON) {
+			((PlayerEntity) entity).incrementStat(ModStats.TIMES_BEEN_TO_DUNGEON);
 		}
 
 		return FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), yaw, entity.getPitch(1.0F)));

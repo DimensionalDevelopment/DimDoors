@@ -5,16 +5,8 @@ import java.util.Collections;
 
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.door.data.condition.Condition;
-import org.dimdev.dimdoors.entity.advancement.ModCriteria;
+import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.modifier.Modifier;
-import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
-import org.dimdev.dimdoors.rift.targets.Targets;
-import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.data.DataGenerator;
