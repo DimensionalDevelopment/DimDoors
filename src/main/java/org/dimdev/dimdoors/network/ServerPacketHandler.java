@@ -134,7 +134,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 
 	@Override
 	public void onAttackBlock(HitBlockWithItemC2SPacket packet) {
-		server.execute(() -> {
+		getServer().execute(() -> {
 			Item item = getPlayer().getStackInHand(packet.getHand()).getItem();
 			if (item instanceof ModItem) {
 				((ModItem) item).onAttackBlock(getPlayer().world, getPlayer(), packet.getHand(), packet.getPos(), packet.getDirection());
