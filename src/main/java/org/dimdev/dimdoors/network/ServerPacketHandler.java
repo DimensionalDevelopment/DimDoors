@@ -35,7 +35,6 @@ public class ServerPacketHandler {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ServerPlayNetworkHandler networkHandler;
-	private final MinecraftServer server;
 	private final Set<Identifier> registeredChannels = new HashSet<>();
 	private boolean initialized = false;
 
@@ -62,7 +61,6 @@ public class ServerPacketHandler {
 
 	public ServerPacketHandler(ServerPlayNetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
-		this.server = ((ExtendedServerPlayNetworkHandler) networkHandler).dimdoorsGetServer();
 	}
 
 	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ServerPacketHandler>> supplier) {
@@ -86,12 +84,16 @@ public class ServerPacketHandler {
 		new HashSet<>(registeredChannels).forEach(this::unregisterReceiver);
 	}
 
+	public MinecraftServer getServer() {
+		return ((ExtendedServerPlayNetworkHandler) networkHandler).dimdoorsGetServer();
+	}
+
 	public ServerPlayerEntity getPlayer() {
 		return networkHandler.player;
 	}
 
 	public void onAttackBlock(Hand hand, BlockPos pos, Direction direction) {
-		server.execute(() -> {
+		getServer().execute(() -> {
 			Item item = getPlayer().getStackInHand(hand).getItem();
 			if (item instanceof ModItem) {
 				((ModItem) item).onAttackBlock(getPlayer().world, getPlayer(), hand, pos, direction);

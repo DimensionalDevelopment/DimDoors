@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -32,7 +31,6 @@ public class ClientPacketHandler {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ClientPlayNetworkHandler networkHandler;
-	private final MinecraftClient client;
 	private boolean initialized = false;
 
 	private final Set<Identifier> registeredChannels = new HashSet<>();
@@ -64,7 +62,6 @@ public class ClientPacketHandler {
 
 	public ClientPacketHandler(ClientPlayNetworkHandler networkHandler) {
 		this.networkHandler = networkHandler;
-		this.client = ((ExtendedClientPlayNetworkHandler) networkHandler).dimdoorsGetClient();
 	}
 
 	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ClientPacketHandler>> supplier) {
@@ -88,6 +85,10 @@ public class ClientPacketHandler {
 		new HashSet<>(registeredChannels).forEach(this::unregisterReceiver);
 	}
 
+	public MinecraftClient getClient() {
+		return ((ExtendedClientPlayNetworkHandler) networkHandler).dimdoorsGetClient();
+	}
+
 	public void onSyncPocketAddons(RegistryKey<World> world, int gridSize, int pocketId, int pocketRange, List<AutoSyncedAddon> addons) {
 		this.pocketWorld = world;
 		this.gridSize = gridSize;
@@ -97,8 +98,8 @@ public class ClientPacketHandler {
 	}
 
 	public void onPlayerInventorySlotUpdate(int slot, ItemStack stack) {
-		if (client.player != null) {
-			client.player.getInventory().setStack(slot, stack);
+		if (getClient().player != null) {
+			getClient().player.getInventory().setStack(slot, stack);
 		}
 	}
 
