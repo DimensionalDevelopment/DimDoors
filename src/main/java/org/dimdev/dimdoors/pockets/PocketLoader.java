@@ -31,6 +31,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private static final PocketLoader INSTANCE = new PocketLoader();
 	private SimpleTree<String, PocketGenerator> pocketGenerators = new SimpleTree<>(String.class);
 	private SimpleTree<String, VirtualPocket> pocketGroups = new SimpleTree<>(String.class);
+	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
 	private SimpleTree<String, Tag> dataTree = new SimpleTree<>(String.class);
 
@@ -41,21 +42,25 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	public void apply(ResourceManager manager) {
 		pocketGenerators.clear();
 		pocketGroups.clear();
+		virtualPockets.clear();
 		templates.clear();
 		dataTree.clear();
 
 		dataTree = loadResourcePathFromJsonToTree(manager, "pockets/json", t -> t).join();
 
 		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = loadResourcePathFromJsonToTree(manager, "pockets/generators", this::loadPocketGenerator);
-		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToTree(manager, "pockets/groups", this::loadPocketGroup);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToTree(manager, "pockets/groups", this::loadVirtualPocket);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = loadResourcePathFromJsonToTree(manager, "pockets/virtual", this::loadVirtualPocket);
 		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = loadResourcePathFromCompressedNbtToTree(manager, "pockets/schematic", ".schem", this::loadPocketTemplate);
 
 
 		pocketGenerators = futurePocketGeneratorMap.join();
 		pocketGroups = futurePocketGroups.join();
+		virtualPockets = futureVirtualPockets.join();
 		templates = futureTemplates.join();
 
-		pocketGroups.forEach((path, value) -> System.out.println(path.toString() + ": " + value.toString()));
+		pocketGroups.values().forEach(VirtualPocket::init);
+		virtualPockets.values().forEach(VirtualPocket::init);
 	}
 
 	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromJsonToTree(ResourceManager manager, String startingPath, Function<Tag, T> reader) {
@@ -126,7 +131,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		return NbtUtil.asCompoundTag(getDataTag(id), "Could not convert Tag \"" + id + "\" to CompoundTag!");
 	}
 
-	private VirtualPocket loadPocketGroup(Tag tag) {
+	private VirtualPocket loadVirtualPocket(Tag tag) {
 		return VirtualPocket.deserialize(tag);
 	}
 
@@ -160,6 +165,10 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 
 	public SimpleTree<String, VirtualPocket> getPocketGroups() {
 		return this.pocketGroups;
+	}
+
+	public SimpleTree<String, VirtualPocket> getVirtualPockets() {
+		return this.virtualPockets;
 	}
 
 	public PocketGenerator getGenerator(Identifier id) {

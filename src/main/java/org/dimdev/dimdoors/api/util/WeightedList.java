@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-public class WeightedList<T extends Weighted<P>, P> extends ArrayList<T> {
+public class WeightedList<T extends Weighted<C>, C> extends ArrayList<T> {
 	private final Random random = new Random();
 	private T peekedRandom;
 	private boolean peeked = false;
@@ -16,25 +16,24 @@ public class WeightedList<T extends Weighted<P>, P> extends ArrayList<T> {
 		super(c);
 	}
 
-	public T getNextRandomWeighted(P parameters) {
-		return this.getNextRandomWeighted(parameters, false);
+	public T getNextRandomWeighted(C context) {
+		return this.getNextRandomWeighted(context, false);
 	}
 
-	public T peekNextRandomWeighted(P parameters) {
-		return this.getNextRandomWeighted(parameters, true);
+	public T peekNextRandomWeighted(C context) {
+		return this.getNextRandomWeighted(context, true);
 	}
 
-	private T getNextRandomWeighted(P parameters, boolean peek) {
+	private T getNextRandomWeighted(C context, boolean peek) {
 		if (!this.peeked) {
-			double totalWeight = this.stream().mapToDouble(weighted -> weighted.getWeight(parameters)).sum();
-			double cursor = this.random.nextDouble() * totalWeight;
+			double cursor = this.random.nextDouble() * getTotalWeight(context);
 			if (cursor == 0) {
 				for (T weighted : this) {
-					if (weighted.getWeight(parameters) != 0) return weighted;
+					if (weighted.getWeight(context) != 0) return weighted;
 				}
 			}
 			for (T weighted : this) {
-				cursor -= weighted.getWeight(parameters);
+				cursor -= weighted.getWeight(context);
 				if (cursor <= 0) {
 					if (peek) {
 						this.peekedRandom = weighted;
@@ -51,5 +50,9 @@ public class WeightedList<T extends Weighted<P>, P> extends ArrayList<T> {
 		}
 		if (!peek) this.peeked = false;
 		return this.peekedRandom;
+	}
+
+	public double getTotalWeight(C context) {
+		return this.stream().mapToDouble(weighted -> weighted.getWeight(context)).sum();
 	}
 }

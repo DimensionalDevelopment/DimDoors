@@ -5,8 +5,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
-import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.api.util.math.Equation;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ConditionalSelector extends VirtualSingularPocket {
+public class ConditionalSelector implements AbstractVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "conditional";
 
@@ -35,7 +35,7 @@ public class ConditionalSelector extends VirtualSingularPocket {
 	}
 
 	@Override
-	public VirtualSingularPocket fromTag(CompoundTag tag) {
+	public AbstractVirtualPocket fromTag(CompoundTag tag) {
 		ListTag conditionalPockets = tag.getList("pockets", 10);
 		for (int i = 0; i < conditionalPockets.size(); i++) {
 			CompoundTag pocket = conditionalPockets.getCompound(i);
@@ -53,7 +53,7 @@ public class ConditionalSelector extends VirtualSingularPocket {
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
-		super.toTag(tag);
+		AbstractVirtualPocket.super.toTag(tag);
 
 		ListTag conditionalPockets = new ListTag();
 		pocketMap.forEach((condition, pocket) -> {
@@ -82,8 +82,13 @@ public class ConditionalSelector extends VirtualSingularPocket {
 	}
 
 	@Override
-	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
-		return VirtualSingularPocketType.CONDITIONAL_SELECTOR;
+	public void init() {
+		pocketMap.values().forEach(VirtualPocket::init);
+	}
+
+	@Override
+	public VirtualPocketType<? extends AbstractVirtualPocket> getType() {
+		return VirtualPocketType.CONDITIONAL_SELECTOR;
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-// TODO: add weight tha
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
 
 	public static VirtualPocketList deserialize(ListTag tag) {
@@ -36,20 +35,25 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 	}
 
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
-		return getNextPocketGeneratorReference(parameters).prepareAndPlacePocket(parameters);
+	public Pocket prepareAndPlacePocket(PocketGenerationContext context) {
+		return getNextPocketGeneratorReference(context).prepareAndPlacePocket(context);
 	}
 
-	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
-		return getNextRandomWeighted(parameters).getNextPocketGeneratorReference(parameters);
+	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext context) {
+		return getNextRandomWeighted(context).getNextPocketGeneratorReference(context);
 	}
 
-	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters) {
-		return peekNextRandomWeighted(parameters).peekNextPocketGeneratorReference(parameters);
+	public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext context) {
+		return peekNextRandomWeighted(context).peekNextPocketGeneratorReference(context);
 	}
 
 	@Override
-	public double getWeight(PocketGenerationContext parameters) {
-		return peekNextRandomWeighted(parameters).getWeight(parameters);
+	public void init() {
+		this.forEach(VirtualPocket::init);
+	}
+
+	@Override
+	public double getWeight(PocketGenerationContext context) {
+		return getTotalWeight(context);
 	}
 }

@@ -6,7 +6,7 @@ import com.google.common.base.MoreObjects;
 import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.virtual.VirtualSingularPocket;
+import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 
 public class IdReference extends PocketGeneratorReference {
@@ -15,7 +15,7 @@ public class IdReference extends PocketGeneratorReference {
 	private Identifier id;
 
 	@Override
-	public VirtualSingularPocket fromTag(CompoundTag tag) {
+	public AbstractVirtualPocket fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 
 		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
@@ -44,8 +44,8 @@ public class IdReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
-		return VirtualSingularPocketType.ID_REFERENCE;
+	public VirtualPocketType<? extends AbstractVirtualPocket> getType() {
+		return VirtualPocketType.ID_REFERENCE;
 	}
 
 	@Override

@@ -16,14 +16,14 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 		if (tag.getType() == NbtType.LIST) {
 			return VirtualPocketList.deserialize((ListTag) tag);
 		}
-		return VirtualSingularPocket.deserialize((CompoundTag) tag); // should be CompoundTag
+		return AbstractVirtualPocket.deserialize((CompoundTag) tag); // should be CompoundTag
 	}
 
 	static Tag serialize(VirtualPocket virtualPocket) {
 		if (virtualPocket instanceof VirtualPocketList) {
 			return VirtualPocketList.serialize((VirtualPocketList) virtualPocket);
 		}
-		return VirtualSingularPocket.serialize((VirtualSingularPocket) virtualPocket);
+		return AbstractVirtualPocket.serialize((AbstractVirtualPocket) virtualPocket);
 	}
 
 
@@ -32,4 +32,9 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 	PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters);
 
 	PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters);
+
+	// Override where needed
+	default void init() {
+
+	}
 }

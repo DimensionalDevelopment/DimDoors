@@ -14,40 +14,42 @@ import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.pockets.virtual.reference.TagReference;
 import org.dimdev.dimdoors.pockets.virtual.selection.ConditionalSelector;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.virtual.selection.PathSelector;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.function.Supplier;
 
-public abstract class VirtualSingularPocket implements VirtualPocket {
-	public static final Registry<VirtualSingularPocketType<? extends VirtualSingularPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualSingularPocketType<? extends VirtualSingularPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
+public interface AbstractVirtualPocket extends VirtualPocket {
+	Registry<VirtualPocketType<? extends AbstractVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends AbstractVirtualPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
 
-	public static VirtualSingularPocket deserialize(CompoundTag tag) {
+	static AbstractVirtualPocket deserialize(CompoundTag tag) {
 		Identifier id = Identifier.tryParse(tag.getString("type"));
-		VirtualSingularPocketType<?> type = REGISTRY.get(id);
-		return type != null ? type.fromTag(tag) : VirtualSingularPocketType.NONE.fromTag(tag);
+		VirtualPocketType<?> type = REGISTRY.get(id);
+		return type != null ? type.fromTag(tag) : VirtualPocketType.NONE.fromTag(tag);
 	}
 
-	public static CompoundTag serialize(VirtualSingularPocket virtualSingularPocket) {
-		return virtualSingularPocket.toTag(new CompoundTag());
+	static CompoundTag serialize(AbstractVirtualPocket abstractVirtualPocket) {
+		return abstractVirtualPocket.toTag(new CompoundTag());
 	}
 
-	public abstract VirtualSingularPocket fromTag(CompoundTag tag);
+	AbstractVirtualPocket fromTag(CompoundTag tag);
 
-	public CompoundTag toTag(CompoundTag tag) {
+	default CompoundTag toTag(CompoundTag tag) {
 		return this.getType().toTag(tag);
 	}
 
-	public abstract VirtualSingularPocketType<? extends VirtualSingularPocket> getType();
+	VirtualPocketType<? extends AbstractVirtualPocket> getType();
 
-	public abstract String getKey();
+	String getKey();
 
-	public interface VirtualSingularPocketType<T extends VirtualSingularPocket> {
-		VirtualSingularPocketType<NoneVirtualPocket> NONE = register(new Identifier("dimdoors", NoneVirtualPocket.KEY), () -> NoneVirtualPocket.NONE);
-		VirtualSingularPocketType<IdReference> ID_REFERENCE = register(new Identifier("dimdoors", IdReference.KEY), IdReference::new);
-		VirtualSingularPocketType<TagReference> TAG_REFERENCE = register(new Identifier("dimdoors", TagReference.KEY), TagReference::new);
-		VirtualSingularPocketType<ConditionalSelector> CONDITIONAL_SELECTOR = register(new Identifier("dimdoors", ConditionalSelector.KEY), ConditionalSelector::new);
+	interface VirtualPocketType<T extends AbstractVirtualPocket> {
+		VirtualPocketType<NoneVirtualPocket> NONE = register(new Identifier("dimdoors", NoneVirtualPocket.KEY), () -> NoneVirtualPocket.NONE);
+		VirtualPocketType<IdReference> ID_REFERENCE = register(new Identifier("dimdoors", IdReference.KEY), IdReference::new);
+		VirtualPocketType<TagReference> TAG_REFERENCE = register(new Identifier("dimdoors", TagReference.KEY), TagReference::new);
+		VirtualPocketType<ConditionalSelector> CONDITIONAL_SELECTOR = register(new Identifier("dimdoors", ConditionalSelector.KEY), ConditionalSelector::new);
+		VirtualPocketType<PathSelector> PATH_SELECTOR = register(new Identifier("dimdoors", PathSelector.KEY), PathSelector::new);
 
-		VirtualSingularPocket fromTag(CompoundTag tag);
+		AbstractVirtualPocket fromTag(CompoundTag tag);
 
 		CompoundTag toTag(CompoundTag tag);
 
@@ -55,10 +57,10 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerVirtualSingularPocketTypes(REGISTRY));
 		}
 
-		static <U extends VirtualSingularPocket> VirtualSingularPocketType<U> register(Identifier id, Supplier<U> factory) {
-			return Registry.register(REGISTRY, id, new VirtualSingularPocketType<U>() {
+		static <U extends AbstractVirtualPocket> VirtualPocketType<U> register(Identifier id, Supplier<U> factory) {
+			return Registry.register(REGISTRY, id, new VirtualPocketType<U>() {
 				@Override
-				public VirtualSingularPocket fromTag(CompoundTag tag) {
+				public AbstractVirtualPocket fromTag(CompoundTag tag) {
 					return factory.get().fromTag(tag);
 				}
 
@@ -72,7 +74,7 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 	}
 
 	// TODO: NoneReference instead?
-	public static class NoneVirtualPocket extends VirtualSingularPocket {
+	public static class NoneVirtualPocket implements AbstractVirtualPocket {
 		public static final String KEY = "none";
 		public static final NoneVirtualPocket NONE = new NoneVirtualPocket();
 
@@ -95,13 +97,13 @@ public abstract class VirtualSingularPocket implements VirtualPocket {
 		}
 
 		@Override
-		public VirtualSingularPocket fromTag(CompoundTag tag) {
+		public AbstractVirtualPocket fromTag(CompoundTag tag) {
 			return this;
 		}
 
 		@Override
-		public VirtualSingularPocketType<? extends VirtualSingularPocket> getType() {
-			return VirtualSingularPocketType.NONE;
+		public VirtualPocketType<? extends AbstractVirtualPocket> getType() {
+			return VirtualPocketType.NONE;
 		}
 
 		@Override

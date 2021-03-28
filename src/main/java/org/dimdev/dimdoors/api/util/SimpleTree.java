@@ -99,7 +99,7 @@ public class SimpleTree<K, T> implements Map<Path<K>, T> {
 	}
 
 
-	private interface Node<K, T> {
+	public interface Node<K, T> {
 		Node<K, T> getNode(Queue<K> path);
 
 		T get(Queue<K> path);
@@ -116,7 +116,7 @@ public class SimpleTree<K, T> implements Map<Path<K>, T> {
 
 		Set<Entry<Path<K>, T>> entrySet();
 
-		Set<T> values();
+		Collection<T> values();
 	}
 
 	private static class TreeNode<K, T> implements Node<K, T> {
@@ -193,8 +193,8 @@ public class SimpleTree<K, T> implements Map<Path<K>, T> {
 		}
 
 		@Override
-		public Set<T> values() {
-			return entries.values().stream().map(node -> node.values().stream()).reduce(Stream::concat).orElseGet(Stream::empty).collect(Collectors.toSet());
+		public Collection<T> values() {
+			return entries.values().stream().map(node -> node.values().stream()).reduce(Stream::concat).orElseGet(Stream::empty).collect(Collectors.toList());
 		}
 
 		public void clear() {
@@ -260,7 +260,7 @@ public class SimpleTree<K, T> implements Map<Path<K>, T> {
 		}
 
 		@Override
-		public Set<T> values() {
+		public Collection<T> values() {
 			return Collections.singleton(entry);
 		}
 	}
