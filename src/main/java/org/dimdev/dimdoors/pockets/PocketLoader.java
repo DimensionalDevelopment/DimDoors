@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -19,6 +18,8 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.NbtUtil;
+import org.dimdev.dimdoors.api.util.Path;
+import org.dimdev.dimdoors.api.util.SimpleTree;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.api.util.WeightedList;
@@ -28,64 +29,72 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
 	private static final PocketLoader INSTANCE = new PocketLoader();
-	private Map<Identifier, PocketGenerator> pocketGeneratorMap = new ConcurrentHashMap<>();
-	private Map<Identifier, VirtualPocket> pocketGroups = new ConcurrentHashMap<>();
-	private Map<Identifier, PocketTemplate> templates = new ConcurrentHashMap<>();
-	private Map<Identifier, Tag> dataMap = new ConcurrentHashMap<>();
+	private SimpleTree<String, PocketGenerator> pocketGenerators = new SimpleTree<>(String.class);
+	private SimpleTree<String, VirtualPocket> pocketGroups = new SimpleTree<>(String.class);
+	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
+	private SimpleTree<String, Tag> dataTree = new SimpleTree<>(String.class);
 
 	private PocketLoader() {
 	}
 
 	@Override
 	public void apply(ResourceManager manager) {
-		pocketGeneratorMap.clear();
+		pocketGenerators.clear();
 		pocketGroups.clear();
 		templates.clear();
-		dataMap.clear();
+		dataTree.clear();
 
-		dataMap = loadResourcePathFromJsonToMap(manager, "pockets/json", t -> t).join();
+		dataTree = loadResourcePathFromJsonToTree(manager, "pockets/json", t -> t).join();
 
-		CompletableFuture<Map<Identifier, PocketGenerator>> futurePocketGeneratorMap = loadResourcePathFromJsonToMap(manager, "pockets/generators", this::loadPocketGenerator);
-		CompletableFuture<Map<Identifier, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToMap(manager, "pockets/groups", this::loadPocketGroup);
-		CompletableFuture<Map<Identifier, PocketTemplate>> futureTemplates = loadResourcePathFromCompressedNbtToMap(manager, "pockets/schematic", ".schem", this::loadPocketTemplate);
+		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = loadResourcePathFromJsonToTree(manager, "pockets/generators", this::loadPocketGenerator);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = loadResourcePathFromJsonToTree(manager, "pockets/groups", this::loadPocketGroup);
+		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = loadResourcePathFromCompressedNbtToTree(manager, "pockets/schematic", ".schem", this::loadPocketTemplate);
 
 
-		pocketGeneratorMap = futurePocketGeneratorMap.join();
+		pocketGenerators = futurePocketGeneratorMap.join();
 		pocketGroups = futurePocketGroups.join();
 		templates = futureTemplates.join();
+
+		pocketGroups.forEach((path, value) -> System.out.println(path.toString() + ": " + value.toString()));
 	}
 
-	private <T> CompletableFuture<Map<Identifier, T>> loadResourcePathFromJsonToMap(ResourceManager manager, String startingPath, Function<Tag, T> reader) {
+	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromJsonToTree(ResourceManager manager, String startingPath, Function<Tag, T> reader) {
 		int sub = startingPath.endsWith("/") ? 0 : 1;
 
 		Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(".json"));
-		return CompletableFuture.supplyAsync(() ->
-				ids.parallelStream().unordered().collect(Collectors.toConcurrentMap(
-						id -> new Identifier(id.getNamespace(), id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub)),
-						id -> {
-							try {
-								JsonElement json = GSON.fromJson(new InputStreamReader(manager.getResource(id).getInputStream()), JsonElement.class);
-								return reader.apply(JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
-							} catch (IOException e) {
-								throw new RuntimeException("Error loading resource: " + id);
-							}
-						})));
+		return CompletableFuture.supplyAsync(() -> {
+			SimpleTree<String, T> tree = new SimpleTree<>(String.class);
+			tree.putAll(ids.parallelStream().unordered().collect(Collectors.toConcurrentMap(
+					id -> Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub)),
+					id -> {
+						try {
+							JsonElement json = GSON.fromJson(new InputStreamReader(manager.getResource(id).getInputStream()), JsonElement.class);
+							return reader.apply(JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json));
+						} catch (IOException e) {
+							throw new RuntimeException("Error loading resource: " + id);
+						}
+					})));
+			return tree;
+		});
 	}
 
-	private <T> CompletableFuture<Map<Identifier, T>> loadResourcePathFromCompressedNbtToMap(ResourceManager manager, String startingPath, String extension, Function<CompoundTag, T> reader) {
+	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromCompressedNbtToTree(ResourceManager manager, String startingPath, String extension, Function<CompoundTag, T> reader) {
 		int sub = startingPath.endsWith("/") ? 0 : 1;
 
 		Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(extension));
-		return CompletableFuture.supplyAsync(() ->
-				ids.parallelStream().unordered().collect(Collectors.toConcurrentMap(
-						id -> new Identifier(id.getNamespace(), id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub)),
-						id -> {
-							try {
-								return reader.apply(NbtIo.readCompressed(manager.getResource(id).getInputStream()));
-							} catch (IOException e) {
-								throw new RuntimeException("Error loading resource: " + id);
-							}
-						})));
+		return CompletableFuture.supplyAsync(() -> {
+			SimpleTree<String, T> tree = new SimpleTree<>(String.class);
+			tree.putAll(ids.parallelStream().unordered().collect(Collectors.toConcurrentMap(
+					id -> Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub)),
+					id -> {
+						try {
+							return reader.apply(NbtIo.readCompressed(manager.getResource(id).getInputStream()));
+						} catch (IOException e) {
+							throw new RuntimeException("Error loading resource: " + id);
+						}
+					})));
+			return tree;
+		});
 	}
 
 //    public void load() {
@@ -110,7 +119,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 //    }
 
 	public Tag getDataTag(String id) {
-		return this.dataMap.get(new Identifier(id));
+		return this.dataTree.get(Path.stringPath(id));
 	}
 
 	public CompoundTag getDataCompoundTag(String id) {
@@ -134,27 +143,27 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	}
 
 	public WeightedList<PocketGenerator, PocketGenerationContext> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
-		return new WeightedList<>(pocketGeneratorMap.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
+		return new WeightedList<>(pocketGenerators.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
 
 	public VirtualPocket getGroup(Identifier group) {
-		return pocketGroups.get(group);
+		return pocketGroups.get(Path.stringPath(group));
 	}
 
 	public static PocketLoader getInstance() {
 		return INSTANCE;
 	}
 
-	public Map<Identifier, PocketTemplate> getTemplates() {
+	public SimpleTree<String, PocketTemplate> getTemplates() {
 		return this.templates;
 	}
 
-	public Map<Identifier, VirtualPocket> getPocketGroups() {
+	public SimpleTree<String, VirtualPocket> getPocketGroups() {
 		return this.pocketGroups;
 	}
 
 	public PocketGenerator getGenerator(Identifier id) {
-		return pocketGeneratorMap.get(id);
+		return pocketGenerators.get(Path.stringPath(id));
 	}
 
 	@Override

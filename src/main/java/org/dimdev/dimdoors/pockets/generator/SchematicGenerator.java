@@ -9,6 +9,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
@@ -66,7 +67,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	@Override
 	public void generateChunk(LazyGenerationPocket pocket, Chunk chunk) {
-		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(templateID);
+		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 		template.place(pocket, chunk, origin, placementType);
 		setupChunk(pocket, chunk, isSetupLoot());
@@ -139,7 +140,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		ServerWorld world = parameters.getWorld();
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 
-		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(templateID);
+		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
@@ -169,7 +170,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	@Override
 	public Vec3i getSize(PocketGenerationContext parameters) {
-		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(templateID);
+		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 		Schematic schem = template.getSchematic();
 		return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());
