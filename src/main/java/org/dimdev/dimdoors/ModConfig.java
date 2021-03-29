@@ -21,6 +21,8 @@ import me.sargunvohra.mcmods.autoconfig1u.util.Utils;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import org.jetbrains.annotations.NotNull;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.EnvironmentInterface;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 
 import static me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.*;
@@ -133,6 +135,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public double riftJitter = 1;
 	}
 
+	@EnvironmentInterface(value = EnvType.CLIENT, itf = SelectionListEntry.Translatable.class)
 	public enum ExtendedResourcePackActivationType implements SelectionListEntry.Translatable {
 		NORMAL(ResourcePackActivationType.NORMAL, "resourcePackActivationType.normal"),
 		DEFAULT_ENABLED(ResourcePackActivationType.DEFAULT_ENABLED, "resourcePackActivationType.defaultEnabled"),
