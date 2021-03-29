@@ -9,11 +9,8 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.mixin.accessor.GenerationSettingsAccessor;
 import org.dimdev.dimdoors.world.feature.decorator.EternalFluidLakeDecorator;
 import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SandstonePillarsV2Gateway;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicV2Gateway;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicV2GatewayFeature;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicV2GatewayFeatureConfig;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.TwoPillarsV2Gateway;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.*;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGateway;
 
 import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.util.Identifier;
@@ -38,10 +35,10 @@ import net.fabricmc.loader.api.FabricLoader;
 // Do not remove deprecated stuff
 @SuppressWarnings("DeprecatedIsStillUsed")
 public final class ModFeatures {
-    public static final Feature<SchematicV2GatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = new SchematicV2GatewayFeature(SchematicV2GatewayFeatureConfig.CODEC);
+    public static final Feature<SchematicGatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC);
     public static final Feature<DefaultFeatureConfig> LIMBO_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "limbo_gateway"), new LimboGatewayFeature());
-    public static final SchematicV2Gateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsV2Gateway();
-    public static final SchematicV2Gateway TWO_PILLARS_GATEWAY = new TwoPillarsV2Gateway();
+    public static final SchematicGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
+    public static final SchematicGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
     @Deprecated public static final Decorator<ChanceDecoratorConfig> ETERNAL_FLUID_LAKE_DECORATOR = new EternalFluidLakeDecorator(ChanceDecoratorConfig.CODEC);
     public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> TWO_PILLARS_FEATURE;
@@ -79,8 +76,8 @@ public final class ModFeatures {
 
     static {
         int gatewayChance = FabricLoader.getInstance().isDevelopmentEnvironment() ? 20 : DimensionalDoorsInitializer.getConfig().getWorldConfig().gatewayGenChance;
-        SANDSTONE_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicV2GatewayFeatureConfig(SchematicV2Gateway.ID_SCHEMATIC_MAP.inverse().get(SANDSTONE_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
-        TWO_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicV2GatewayFeatureConfig(SchematicV2Gateway.ID_SCHEMATIC_MAP.inverse().get(TWO_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
+        SANDSTONE_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicGatewayFeatureConfig(SchematicGateway.ID_SCHEMATIC_MAP.inverse().get(SANDSTONE_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
+        TWO_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicGatewayFeatureConfig(SchematicGateway.ID_SCHEMATIC_MAP.inverse().get(TWO_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
         LIMBO_GATEWAY_CONFIGURED_FEATURE = LIMBO_GATEWAY_FEATURE.configure(DefaultFeatureConfig.INSTANCE).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
 		SOLID_STATIC_ORE = Feature.ORE.configure(new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.SOLID_STATIC.getDefaultState(), 4)).range(new RangeDecoratorConfig(YOffset.getBottom(), YOffset.getTop())).repeat(3);
     }
