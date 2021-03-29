@@ -35,9 +35,8 @@ public class ModBlockEntityTypes {
 		//just loads the class
 	}
 
-	@Environment(EnvType.CLIENT)
-	public static void initClient() {
-		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.ENTRANCE_RIFT, ctx -> new EntranceRiftBlockEntityRenderer());
-		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.DETACHED_RIFT, ctx -> new DetachedRiftBlockEntityRenderer());
-	}
+//	@Environment(EnvType.CLIENT)
+//	public static void initClient() {
+//
+//	}
 }
