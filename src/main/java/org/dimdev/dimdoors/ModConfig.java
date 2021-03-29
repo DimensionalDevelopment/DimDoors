@@ -10,12 +10,20 @@ import java.util.List;
 import blue.endless.jankson.Jankson;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Category;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.EnumHandler;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.RequiresRestart;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.Tooltip;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.sargunvohra.mcmods.autoconfig1u.serializer.ConfigSerializer;
 import me.sargunvohra.mcmods.autoconfig1u.util.Utils;
+import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
+import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+
+import static me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.*;
 
 @SuppressWarnings("FieldMayBeFinal")
 @Config(name = "dimdoors")
@@ -88,6 +96,8 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public int publicPocketSize = 1;
 		@Tooltip public String defaultWeightEquation = "5";
 		@Tooltip public int fallbackWeight = 5;
+		@Tooltip @EnumHandler(option = BUTTON) public ExtendedResourcePackActivationType classicPocketsResourcePackActivationType = ExtendedResourcePackActivationType.DEFAULT_ENABLED;
+		@Tooltip @EnumHandler(option = BUTTON) public ExtendedResourcePackActivationType defaultPocketsResourcePackActivationType = ExtendedResourcePackActivationType.DEFAULT_ENABLED;
 	}
 
 	public static class World {
@@ -121,6 +131,29 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public int highlightRiftCoreFor = 15000;
 		@Tooltip public double riftSize = 1;
 		@Tooltip public double riftJitter = 1;
+	}
+
+	public enum ExtendedResourcePackActivationType implements SelectionListEntry.Translatable {
+		NORMAL(ResourcePackActivationType.NORMAL, "resourcePackActivationType.normal"),
+		DEFAULT_ENABLED(ResourcePackActivationType.DEFAULT_ENABLED, "resourcePackActivationType.defaultEnabled"),
+		ALWAYS_ENABLED(ResourcePackActivationType.ALWAYS_ENABLED, "resourcePackActivationType.alwaysEnabled");
+
+		private final ResourcePackActivationType resourcePackActivationType;
+		private final String translationKey;
+
+		ExtendedResourcePackActivationType(ResourcePackActivationType resourcePackActivationType, String translationKey) {
+			this.resourcePackActivationType = resourcePackActivationType;
+			this.translationKey = translationKey;
+		}
+
+		public ResourcePackActivationType asResourcePackActivationType() {
+			return resourcePackActivationType;
+		}
+
+		@Override
+		public @NotNull String getKey() {
+			return translationKey;
+		}
 	}
 
 	public static class SubRootJanksonConfigSerializer<T extends ConfigData> implements ConfigSerializer<T> {
