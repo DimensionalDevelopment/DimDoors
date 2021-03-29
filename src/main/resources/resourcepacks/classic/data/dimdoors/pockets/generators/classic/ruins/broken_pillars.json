@@ -1,0 +1,20 @@
+{
+  "type": "dimdoors:schematic",
+  "setup_loot": true,
+  "id": "classic/ruins/broken_pillars",
+  "builder": {
+    "type": "dimdoors:lazy_gen_pocket"
+  },
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "dimdoors:rift_data/pocket_entrance"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [1],
+      "rift_data": "dimdoors:rift_data/default_dungeon"
+    }
+  ]
+}

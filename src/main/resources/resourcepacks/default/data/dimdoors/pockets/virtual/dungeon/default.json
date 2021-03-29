@@ -1,0 +1,94 @@
+[
+  {
+    "id": "dungeon/waiting_room",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/mob_prison",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/rising_hand",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/honey_parkour",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/stone_brick_bridge",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/upwards_pillars",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/party",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/monolith_cage",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/returning_eye",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/silverfish_bridge",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/upwards_t_treasure",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/trap_rib_tunnel",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/river_road_twin_bridges",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/white_fabric_maze",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/decaying_chain_tunnel",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/cage_monolithless",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/chain_t",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/line_walker",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/chain_crossing",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/smile_6",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/lantredom",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/lantredom_end",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/lantredom_red",
+    "type": "dimdoors:id"
+  }
+]

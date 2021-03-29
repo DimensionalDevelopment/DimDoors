@@ -1,0 +1,27 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "dungeon/cage_monolithless",
+  "setup_loot": true,
+  "builder": {
+    "type": "dimdoors:lazy_gen_pocket"
+  },
+  "modifiers": [
+    {
+      "layers": [
+        {
+          "block_state": "minecraft:barrier",
+          "thickness": "1"
+        }
+      ],
+      "type": "dimdoors:shell"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "dimdoors:rift_data/pocket_entrance"
+    }
+  ],
+  "offset_x": "1",
+  "offset_y": "1",
+  "offset_z": "1"
+}

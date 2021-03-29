@@ -117,7 +117,9 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		ModCriteria.init();
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
-		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default_pockets"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);
+		// TODO: make ResourcePackActivationType configurable, intended for modpack creators
+		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);
+		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "classic"), dimDoorsMod, ResourcePackActivationType.DEFAULT_ENABLED);
 
 		registerListeners();
 		apiSubscribers.forEach(DimensionalDoorsApi::postInitialize);

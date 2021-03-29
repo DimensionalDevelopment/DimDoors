@@ -1,0 +1,43 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "example/purpur_hallway",
+  "modifiers": [
+    {
+      "layers": [
+        {
+          "block_state": "dimdoors:pink_ancient_fabric",
+          "thickness": "1"
+        }
+      ],
+      "type": "dimdoors:shell"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "rift_data/pocket_entrance"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [4],
+      "rift_data": "rift_data/public_entrance"
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 1,
+      "point_b": 7
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 2,
+      "point_b": 6
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 3,
+      "point_b": 5
+    }
+  ],
+  "offset_x": "1",
+  "offset_y": "1",
+  "offset_z": "1"
+}
