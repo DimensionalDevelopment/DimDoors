@@ -12,10 +12,10 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 
-public class TwoPillarsV2Gateway extends SchematicV2Gateway {
+public class TwoPillarsGateway extends SchematicGateway {
 	private static final int GATEWAY_RADIUS = 4;
 
-	public TwoPillarsV2Gateway() {
+	public TwoPillarsGateway() {
 		super("two_pillars");
 	}
 

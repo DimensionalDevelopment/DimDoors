@@ -11,8 +11,8 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-public class SandstonePillarsV2Gateway extends SchematicV2Gateway {
-    public SandstonePillarsV2Gateway() {
+public class SandstonePillarsGateway extends SchematicGateway {
+    public SandstonePillarsGateway() {
         super("sandstone_pillars");
     }
 

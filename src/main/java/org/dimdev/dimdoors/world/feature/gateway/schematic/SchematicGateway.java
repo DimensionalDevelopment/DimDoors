@@ -18,19 +18,19 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
-public abstract class SchematicV2Gateway implements Gateway, BiPredicate<StructureWorldAccess, BlockPos> {
+public abstract class SchematicGateway implements Gateway, BiPredicate<StructureWorldAccess, BlockPos> {
 	private Schematic schematic;
 	private final String id;
-	public static final BiMap<String, SchematicV2Gateway> ID_SCHEMATIC_MAP = HashBiMap.create();
+	public static final BiMap<String, SchematicGateway> ID_SCHEMATIC_MAP = HashBiMap.create();
 	private boolean replaced;
 
-	public SchematicV2Gateway(String id) {
+	public SchematicGateway(String id) {
 		ID_SCHEMATIC_MAP.putIfAbsent(id, this);
 		this.id = id;
 	}
 
 	public void init() {
-		String schematicJarDirectory = "/data/dimdoors/gateways/v2/";
+		String schematicJarDirectory = "/data/dimdoors/gateways/";
 
 		try (InputStream stream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + this.id + ".schem")) {
 			if (stream == null) {
