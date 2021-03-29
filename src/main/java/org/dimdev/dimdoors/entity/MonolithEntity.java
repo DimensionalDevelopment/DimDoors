@@ -22,7 +22,6 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -231,6 +230,7 @@ public class MonolithEntity extends MobEntity {
         return EYE_HEIGHT;
     }
 
+    @Environment(EnvType.CLIENT)
     public static void spawnParticles(int aggro) {
 		PlayerEntity player = MinecraftClient.getInstance().player;
 		if (aggro < 120) {

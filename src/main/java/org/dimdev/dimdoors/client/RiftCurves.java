@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.poly2tri.Poly2Tri;
 import org.poly2tri.geometry.polygon.Polygon;
 import org.poly2tri.geometry.polygon.PolygonPoint;
@@ -25,6 +27,7 @@ import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 //   - - turn counter-clockwise by angle
 //   [ - save state (push to stack)
 //   ] - restore state (pop from stack)
+@Environment(EnvType.CLIENT)
 public final class RiftCurves {
     public static final List<PolygonInfo> CURVES = new ArrayList<>();
 

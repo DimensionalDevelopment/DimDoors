@@ -4,6 +4,8 @@ import java.util.Random;
 
 import com.flowpowered.math.vector.VectorNi;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.dimdev.dimdoors.api.client.RenderLayerFactory;
 import org.dimdev.dimdoors.mixin.client.accessor.RenderLayerAccessor;
 import org.lwjgl.opengl.GL11;
@@ -18,6 +20,7 @@ import net.minecraft.util.Identifier;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ZERO;
 
+@Environment(EnvType.CLIENT)
 public class MyRenderLayer extends RenderLayer {
     public static final Identifier WARP_PATH = new Identifier("dimdoors:textures/other/warp.png");
     public static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);

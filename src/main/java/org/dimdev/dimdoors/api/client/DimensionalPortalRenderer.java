@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.api.client;
 import java.util.Collections;
 import java.util.Random;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.dimdev.dimdoors.client.ModShaders;
 import org.dimdev.dimdoors.mixin.client.accessor.RenderLayerAccessor;
 
@@ -16,6 +18,7 @@ import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
+@Environment(EnvType.CLIENT)
 public final class DimensionalPortalRenderer {
 	public static final Identifier WARP_PATH;
 	private static final RenderPhase.class_5942 DIMENSIONAL_PORTAL_SHADER;

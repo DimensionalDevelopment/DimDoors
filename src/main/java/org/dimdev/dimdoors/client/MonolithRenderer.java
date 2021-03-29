@@ -7,6 +7,8 @@ import java.util.stream.Stream;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
 import net.minecraft.client.render.RenderLayer;
@@ -21,6 +23,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import org.jetbrains.annotations.Nullable;
 
+@Environment(EnvType.CLIENT)
 public class MonolithRenderer extends LivingEntityRenderer<MonolithEntity, MonolithModel> {
     public static final List<RenderLayer> MONOLITH_TEXTURES = Stream.of(
             new Identifier("dimdoors:textures/mob/monolith/monolith0.png"),
