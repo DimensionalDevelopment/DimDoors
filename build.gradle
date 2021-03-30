@@ -197,7 +197,7 @@ curseforge {
 test {
 	workingDir = file('test')
 
-	systemProperty('fabric.dli.config', System.getProperty('fabric.dli.config'))
+	systemProperty('fabric.dli.config', file('.gradle/loom-cache/launch.cfg').getAbsolutePath())
 	//useJUnitPlatform()
 }
 
