@@ -45,14 +45,10 @@ public class ShellModifier implements LazyModifier {
 		}
 		tag.put("layers", layersTag);
 		if (boxToDrawAround != null) {
-			tag.put("box_to_draw_around", toNbt(boxToDrawAround));
+			tag.put("box_to_draw_around", BlockBoxUtil.toNbt(boxToDrawAround));
 		}
 
 		return tag;
-	}
-
-	private static IntArrayTag toNbt(BlockBox box) {
-		return new IntArrayTag(new int[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ});
 	}
 
 	@Override
@@ -213,7 +209,7 @@ public class ShellModifier implements LazyModifier {
 			try {
 				this.thicknessEquation = Equation.parse(thickness);
 			} catch (Equation.EquationParseException e) {
-				LOGGER.error("Could not parse layer thickness equation");
+				LOGGER.error("Could not parse layer thickness equation. Defaulting to 1");
 				this.thicknessEquation = variableMap -> 1d;
 			}
 

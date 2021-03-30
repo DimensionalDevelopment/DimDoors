@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.api.util;
 
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.util.math.BlockBox;
 
 public class BlockBoxUtil {
@@ -10,5 +11,9 @@ public class BlockBoxUtil {
 
 	public static boolean isRealBox(BlockBox box) {
 		return box.minX <= box.maxX && box.minY <= box.maxY && box.minZ <= box.maxZ;
+	}
+
+	public static IntArrayTag toNbt(BlockBox box) {
+		return new IntArrayTag(new int[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ});
 	}
 }

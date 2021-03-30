@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.dimdoors.api.rift.target.DefaultTargets;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.rift.target.FluidTarget;
 import org.dimdev.dimdoors.api.rift.target.ItemTarget;

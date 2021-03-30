@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.registry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -111,7 +112,7 @@ public class LinkProperties {
 	public static class LinkPropertiesBuilder {
 		private float floatingWeight;
 		private float entranceWeight;
-		private Set<Integer> groups;
+		private Set<Integer> groups = Collections.emptySet();
 		private int linksRemaining;
 		private boolean oneWay;
 
