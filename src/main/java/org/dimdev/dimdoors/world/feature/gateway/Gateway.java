@@ -16,7 +16,7 @@ public interface Gateway {
     }
 
     default boolean isLocationValid(StructureWorldAccess world, BlockPos pos) {
-        return this.isBiomeValid(BuiltinRegistries.BIOME.getKey(world.getBiome(pos)).orElseThrow(NullPointerException::new));
+        return this.isBiomeValid(world.getBiomeKey(pos).orElseThrow(NullPointerException::new));
     }
 
     Set<RegistryKey<Biome>> getBiomes();
