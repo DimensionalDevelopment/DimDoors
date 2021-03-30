@@ -13,6 +13,10 @@ repositories {
 	mavenCentral()
 
 	maven {
+		url 'https://maven.legacyfabric.net/'
+	}
+
+	maven {
 		name = "Fabric maven"
 		url = "https://maven.fabricmc.net/"
 	}
@@ -102,7 +106,7 @@ minecraft {
 dependencies {
 	minecraft "com.mojang:minecraft:21w11a"
 	mappings "net.fabricmc:yarn:21w11a+build.4:v2"
-	modImplementation "net.fabricmc:fabric-loader:0.11.2"
+	modImplementation "net.fabricmc:fabric-loader:0.11.3"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:0.32.4+1.17"
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
@@ -142,7 +146,9 @@ dependencies {
 	datagenImplementation sourceSets.main.compileClasspath
 	datagenRuntimeOnly sourceSets.main.runtimeClasspath
 
-	testImplementation('org.junit.jupiter:junit-jupiter:5.5.2')
+	testImplementation('junit:junit:4.13.2')
+	//testImplementation('net.devtech:PotatoUnit-fabric:1.0.0')
+	testImplementation('net.devtech:PotatoUnit:1.0.2')
 }
 
 version = computeVersion(project.mod_version)
@@ -189,5 +195,14 @@ curseforge {
 }
 
 test {
-	useJUnitPlatform()
+	workingDir = file('build/test')
+
+	systemProperty('fabric.dli.config', System.getProperty('fabric.dli.config'))
+	//useJUnitPlatform()
+}
+
+tasks.test.doFirst {Test test ->
+	if (!test.workingDir.exists()) {
+		test.workingDir.mkdirs();
+	}
 }

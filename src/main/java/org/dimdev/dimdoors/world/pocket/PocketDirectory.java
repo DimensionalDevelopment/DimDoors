@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.jetbrains.annotations.TestOnly;
 
 public class PocketDirectory {
 	int gridSize; // Determines how much pockets in their dimension are spaced
@@ -32,6 +33,14 @@ public class PocketDirectory {
 
 	public PocketDirectory(RegistryKey<World> worldKey) {
 		this.gridSize = DimensionalDoorsInitializer.getConfig().getPocketsConfig().pocketGridSize;
+		this.worldKey = worldKey;
+		this.nextIDMap = new TreeMap<>();
+		this.pockets = new HashMap<>();
+	}
+
+	@TestOnly
+	public PocketDirectory(RegistryKey<World> worldKey, int gridSize) {
+		this.gridSize = gridSize;
 		this.worldKey = worldKey;
 		this.nextIDMap = new TreeMap<>();
 		this.pockets = new HashMap<>();
@@ -81,8 +90,8 @@ public class PocketDirectory {
 	 */
 	public <T extends Pocket> T newPocket(Pocket.PocketBuilder<?, T> builder) {
 		Vec3i size = builder.getExpectedSize();
-		int longest = Math.max(size.getX(), size.getZ());
-		longest = (longest / (gridSize * 16)) + 1;
+		int longest = Math.max(Math.max(size.getX(), size.getZ()), 1);
+		longest = (Math.floorDiv(longest - 1, gridSize * 16)) + 1;
 
 		int base3Size = 1;
 		while (longest > base3Size) {
@@ -149,7 +158,7 @@ public class PocketDirectory {
 	 */
 	public Pocket getPocket(int id) {
 		AbstractPocket<?> pocket = this.pockets.get(id);
-		return pocket == null ? null : pocket.getReferencedPocket();
+		return pocket == null ? null : pocket.getReferencedPocket(this);
 	}
 
 	public <P extends Pocket> P getPocket(int id, Class<P> clazz) {

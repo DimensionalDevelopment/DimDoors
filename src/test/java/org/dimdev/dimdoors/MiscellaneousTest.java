@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 public class MiscellaneousTest {
 	@Test
-	void runSomeTestStuff() {
+	public void runSomeTestStuff() {
 	}
 }

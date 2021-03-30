@@ -7,8 +7,8 @@ import org.dimdev.dimdoors.api.util.math.AbstractMatrixd;
 import java.util.function.Supplier;
 
 public class TestUtil {
-	public static Supplier<String> expectedActual(Object expected,Object actual) {
-		return () -> "\nexpected:\n" + expected + "\nactual:\n" + actual + "\n";
+	public static String expectedActual(Object expected,Object actual) {
+		return "\nexpected:\n" + expected + "\nactual:\n" + actual + "\n";
 	}
 
 	public static boolean closeEnough(Vec3d expected, Vec3d actual) {

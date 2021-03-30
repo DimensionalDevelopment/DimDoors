@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.world.pocket.type;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 	public static String KEY = "id_reference";
@@ -34,7 +35,12 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 
 	@Override
 	public Pocket getReferencedPocket() {
-		return DimensionalRegistry.getPocketDirectory(getWorld()).getPocket(referencedId);
+		return getReferencedPocket(DimensionalRegistry.getPocketDirectory(getWorld()));
+	}
+
+	@Override
+	public Pocket getReferencedPocket(PocketDirectory directory) {
+		return directory.getPocket(referencedId);
 	}
 
 	public static IdReferencePocketBuilder builder() {

@@ -11,6 +11,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -71,6 +72,11 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 	}
 
 	public abstract Pocket getReferencedPocket();
+
+	// for bypassing the world check in some cases
+	public Pocket getReferencedPocket(PocketDirectory directory) {
+		return getReferencedPocket();
+	}
 
 	public RegistryKey<World> getWorld() {
 		return world;
