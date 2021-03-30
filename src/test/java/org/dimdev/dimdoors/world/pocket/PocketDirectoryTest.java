@@ -9,10 +9,10 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-@RunWith(ServerTestRunner.class)
+//@RunWith(ServerTestRunner.class)
 public class PocketDirectoryTest {
 
-	@Test
+	//@Test
 	public void newPocket() {
 		PocketDirectory directory = new PocketDirectory(ModDimensions.DUNGEON, 13);//
 

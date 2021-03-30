@@ -1,6 +1,5 @@
-package org.dimdev.dimdoors.util.math;
+package org.dimdev.dimdoors.api.util.math;
 
-import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

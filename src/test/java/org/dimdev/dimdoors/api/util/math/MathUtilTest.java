@@ -1,10 +1,9 @@
-package org.dimdev.dimdoors.util.math;
+package org.dimdev.dimdoors.api.util.math;
 
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 
-import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.test.TestUtil;
 import org.junit.Test;
 
