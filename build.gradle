@@ -195,7 +195,7 @@ curseforge {
 }
 
 test {
-	workingDir = file('build/test')
+	workingDir = file('test')
 
 	systemProperty('fabric.dli.config', System.getProperty('fabric.dli.config'))
 	//useJUnitPlatform()
