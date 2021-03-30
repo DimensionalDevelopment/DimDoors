@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.api.rift.target;
 
-import org.dimdev.dimdoors.rift.targets.DefaultTargets;
-
 public interface Target {
 
 	// Allows a target to have a default case and forward everything

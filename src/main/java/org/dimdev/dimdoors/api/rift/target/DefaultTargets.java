@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.rift.targets;
+package org.dimdev.dimdoors.api.rift.target;
 
 import java.util.Optional;
 
