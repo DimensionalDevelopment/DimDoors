@@ -1,9 +1,10 @@
-4.0.0+beta.1
-- Update to 20w11a
-- Added Recipes, Loot Tables, Advancements and Tags
-- Pockets no longer hang the server
-- Changed dimensional door rendering
-- Block settings such has hardness and resistance have been tweaked
-- Added ability to add dungeons using a data pack
-- Added ability to make custom dimensional doors using custom rift data
-- Removed white fog from limbo
+4.0.0+beta.2
+- Added more dungeons, and split the dungeons data pack
+- Added a `pocket` command. Can be used to place schematics and/or load them into your worldedit clipboard
+- Added messages that are sent when you enter / exit limbo
+- Added WTHIT support for rift destinations
+- Added Solid Static (from 1.12)
+- Make Noise caves in Limbo not be filled with water
+- Added advancements
+- Fixed a crash on dedicated servers
+- Added more stats
