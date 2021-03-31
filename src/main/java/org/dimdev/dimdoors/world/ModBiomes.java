@@ -7,7 +7,6 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.client.sound.MusicType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
