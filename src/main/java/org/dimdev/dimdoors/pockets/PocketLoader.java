@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import com.google.gson.*;
@@ -83,17 +85,17 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		});
 	}
 
-	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromCompressedNbtToTree(ResourceManager manager, String startingPath, String extension, Function<CompoundTag, T> reader) {
+	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromCompressedNbtToTree(ResourceManager manager, String startingPath, String extension, BiFunction<CompoundTag, String, T> reader) {
 		int sub = startingPath.endsWith("/") ? 0 : 1;
-
+		Function<Identifier, Path<String>> normalizer = id -> Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub));
 		Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(extension));
 		return CompletableFuture.supplyAsync(() -> {
 			SimpleTree<String, T> tree = new SimpleTree<>(String.class);
 			tree.putAll(ids.parallelStream().unordered().collect(Collectors.toConcurrentMap(
-					id -> Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub)),
+					normalizer,
 					id -> {
 						try {
-							return reader.apply(NbtIo.readCompressed(manager.getResource(id).getInputStream()));
+							return reader.apply(NbtIo.readCompressed(manager.getResource(id).getInputStream()), normalizer.apply(id).reduce(String::concat).get());
 						} catch (IOException e) {
 							throw new RuntimeException("Error loading resource: " + id);
 						}
@@ -139,9 +141,9 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		return PocketGenerator.deserialize(NbtUtil.asCompoundTag(tag, "Could not load PocketGenerator since its json does not represent a CompoundTag!"));
 	}
 
-	private PocketTemplate loadPocketTemplate(CompoundTag tag) {
+	private PocketTemplate loadPocketTemplate(CompoundTag tag, String id) {
 		try {
-			return new PocketTemplate(Schematic.fromTag(tag));
+			return new PocketTemplate(Schematic.fromTag(tag), new Identifier(id));
 		} catch (Exception e) {
 			throw new RuntimeException("Error loading " + tag.toString(), e);
 		}

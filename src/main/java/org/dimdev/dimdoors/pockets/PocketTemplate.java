@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.pockets;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
@@ -21,10 +22,12 @@ public class PocketTemplate {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final boolean replacingPlaceholders = false;
     private final Schematic schematic;
+	private final Identifier id;
 
-    public PocketTemplate(Schematic schematic) {
+	public PocketTemplate(Schematic schematic, Identifier id) {
         this.schematic = schematic;
-    }
+		this.id = id;
+	}
 
     /*
     public void setup(Pocket pocket, VirtualTarget linkTo, LinkProperties linkProperties) {
@@ -87,4 +90,8 @@ public class PocketTemplate {
     public Schematic getSchematic() {
         return this.schematic;
     }
+
+	public Identifier getId() {
+		return id;
+	}
 }
