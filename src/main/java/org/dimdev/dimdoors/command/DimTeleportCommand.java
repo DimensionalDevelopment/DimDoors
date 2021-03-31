@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.api.util.math.MathUtil;
 
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
@@ -14,12 +15,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.gen.GenerationStep;
-
-import org.dimdev.dimdoors.api.util.math.MathUtil;
-
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 
 public class DimTeleportCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
