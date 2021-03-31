@@ -72,9 +72,7 @@ public class PocketCommand {
 	private static int load(ServerCommandSource source, PocketTemplate template) throws CommandSyntaxException {
 		ServerPlayerEntity player = source.getPlayer();
 		boolean async = DimensionalDoorsInitializer.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
-		Consumer<Text> messageSender = async ? t -> source.getMinecraftServer().execute(() -> {
-			source.sendFeedback(t, true);
-		}) : t -> source.sendFeedback(t, true);
+		Consumer<Runnable> taskAcceptor = async ? r -> source.getMinecraftServer().execute(r) : Runnable::run;
 		Runnable task = () -> {
 			CompoundTag tag = Schematic.toTag(template.getSchematic());
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -89,8 +87,10 @@ public class PocketCommand {
 			} catch (IOException e) {
 				throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayInputStream
 			}
-			WorldEdit.getInstance().getSessionManager().get(FabricAdapter.adaptPlayer(player)).setClipboard(new ClipboardHolder(clipboard));
-			messageSender.accept(new TranslatableText("commands.pocket.loadedSchem", template.getId()));
+			taskAcceptor.accept(() -> {
+				WorldEdit.getInstance().getSessionManager().get(FabricAdapter.adaptPlayer(player)).setClipboard(new ClipboardHolder(clipboard));
+				source.sendFeedback(new TranslatableText("commands.pocket.loadedSchem", template.getId()), true);
+			});
 		};
 		if (async) {
 			CompletableFuture.runAsync(task);
