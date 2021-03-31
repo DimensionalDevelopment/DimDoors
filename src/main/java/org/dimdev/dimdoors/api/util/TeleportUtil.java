@@ -23,30 +23,11 @@ import org.dimdev.dimdoors.world.ModDimensions;
 @SuppressWarnings("deprecation")
 public final class TeleportUtil {
 	public static  <E extends Entity> E teleport(E entity, World world, BlockPos pos, float yaw) {
-		if (world.isClient) {
-			throw new UnsupportedOperationException("Only supported on ServerWorld");
-		}
-
 		return teleport(entity, world, Vec3d.ofBottomCenter(pos), yaw);
 	}
 
 	public static  <E extends Entity> E teleport(E entity, World world, Vec3d pos, float yaw) {
-		if (world.isClient) {
-			throw new UnsupportedOperationException("Only supported on ServerWorld");
-		}
-
-		if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
-			entity.yaw = yaw;
-			entity.teleport(pos.x, pos.y, pos.z);
-
-			return entity;
-		}
-
-		if (entity.isPlayer() && world.getRegistryKey() == ModDimensions.DUNGEON) {
-			((PlayerEntity) entity).incrementStat(ModStats.TIMES_BEEN_TO_DUNGEON);
-		}
-
-		return FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, entity.getVelocity(), yaw, entity.getPitch(1.0F)));
+		return teleport(entity, world, pos, new EulerAngle(entity.pitch, yaw, 0), entity.getVelocity());
 	}
 
 	public static  <E extends Entity> E teleport(E entity, World world, Vec3d pos, EulerAngle angle, Vec3d velocity) {
@@ -64,6 +45,9 @@ public final class TeleportUtil {
 		}
 
 		if (entity instanceof ServerPlayerEntity) {
+			if (world.getRegistryKey() == ModDimensions.DUNGEON) {
+				((PlayerEntity) entity).incrementStat(ModStats.TIMES_BEEN_TO_DUNGEON);
+			}
 			((ExtendedServerPlayNetworkHandler) ((ServerPlayerEntity) entity).networkHandler).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos(pos));
 		}
 
