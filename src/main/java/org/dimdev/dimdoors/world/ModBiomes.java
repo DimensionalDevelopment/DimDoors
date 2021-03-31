@@ -7,6 +7,7 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.client.sound.MusicType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.util.Identifier;
@@ -50,7 +51,7 @@ public final class ModBiomes {
                 .skyColor(white ? 0xFFFFFF : 0x111111)
                 .grassColorModifier(BiomeEffects.GrassColorModifier.NONE);
         if (white) {
-            builder.loopSound(ModSoundEvents.WHITE_VOID);
+            builder.music(MusicType.createIngameMusic(ModSoundEvents.WHITE_VOID));
         }
         return builder.build();
     }
@@ -93,6 +94,7 @@ public final class ModBiomes {
                         .foliageColor(0)
                         .waterFogColor(0)
                         .moodSound(new BiomeMoodSound(ModSoundEvents.CRACK, 6000, 8, 2.0))
+						.music(MusicType.createIngameMusic(ModSoundEvents.CREEPY))
                         .loopSound(ModSoundEvents.CREEPY)
                         .skyColor(0x404040)
                         .grassColor(0)
