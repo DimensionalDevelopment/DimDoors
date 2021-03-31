@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ConditionalSelector implements AbstractVirtualPocket {
+public class ConditionalSelector implements ImplementedVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "conditional";
 
@@ -35,7 +35,7 @@ public class ConditionalSelector implements AbstractVirtualPocket {
 	}
 
 	@Override
-	public AbstractVirtualPocket fromTag(CompoundTag tag) {
+	public ImplementedVirtualPocket fromTag(CompoundTag tag) {
 		ListTag conditionalPockets = tag.getList("pockets", 10);
 		for (int i = 0; i < conditionalPockets.size(); i++) {
 			CompoundTag pocket = conditionalPockets.getCompound(i);
@@ -53,7 +53,7 @@ public class ConditionalSelector implements AbstractVirtualPocket {
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
-		AbstractVirtualPocket.super.toTag(tag);
+		ImplementedVirtualPocket.super.toTag(tag);
 
 		ListTag conditionalPockets = new ListTag();
 		pocketMap.forEach((condition, pocket) -> {
@@ -87,7 +87,7 @@ public class ConditionalSelector implements AbstractVirtualPocket {
 	}
 
 	@Override
-	public VirtualPocketType<? extends AbstractVirtualPocket> getType() {
+	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
 		return VirtualPocketType.CONDITIONAL_SELECTOR;
 	}
 

@@ -30,7 +30,7 @@ import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
-import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -126,7 +126,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
     public static void registerRegistries() {
 		Targets.registerDefaultTargets();
 		VirtualTarget.VirtualTargetType.register();
-		AbstractVirtualPocket.VirtualPocketType.register();
+		ImplementedVirtualPocket.VirtualPocketType.register();
 		Modifier.ModifierType.register();
 		PocketGenerator.PocketGeneratorType.register();
 		AbstractPocket.AbstractPocketType.register();

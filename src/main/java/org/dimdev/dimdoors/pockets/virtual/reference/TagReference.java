@@ -8,7 +8,7 @@ import net.minecraft.nbt.StringTag;
 import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.api.util.WeightedList;
 
@@ -25,7 +25,7 @@ public class TagReference extends PocketGeneratorReference{
 	private WeightedList<PocketGenerator, PocketGenerationContext> pockets;
 
 	@Override
-	public AbstractVirtualPocket fromTag(CompoundTag tag) {
+	public ImplementedVirtualPocket fromTag(CompoundTag tag) {
 		super.fromTag(tag);
 
 		if (tag.contains("required")) {
@@ -76,7 +76,7 @@ public class TagReference extends PocketGeneratorReference{
 
 
 	@Override
-	public VirtualPocketType<? extends AbstractVirtualPocket> getType() {
+	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
 		return VirtualPocketType.TAG_REFERENCE;
 	}
 

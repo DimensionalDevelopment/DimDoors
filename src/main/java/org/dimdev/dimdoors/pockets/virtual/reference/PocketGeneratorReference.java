@@ -20,7 +20,7 @@ import org.dimdev.dimdoors.pockets.modifier.LazyCompatibleModifier;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
-import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
@@ -30,7 +30,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 
-public abstract class PocketGeneratorReference implements AbstractVirtualPocket {
+public abstract class PocketGeneratorReference implements ImplementedVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	protected String weight;
@@ -56,7 +56,7 @@ public abstract class PocketGeneratorReference implements AbstractVirtualPocket 
 	}
 
 	@Override
-	public AbstractVirtualPocket fromTag(CompoundTag tag) {
+	public ImplementedVirtualPocket fromTag(CompoundTag tag) {
 		if (tag.contains("weight")) { // override referenced pockets weight
 			this.weight = tag.getString("weight");
 			parseWeight();
@@ -83,7 +83,7 @@ public abstract class PocketGeneratorReference implements AbstractVirtualPocket 
 
 	@Override
 	public CompoundTag toTag(CompoundTag tag) {
-		AbstractVirtualPocket.super.toTag(tag);
+		ImplementedVirtualPocket.super.toTag(tag);
 
 		if (weight != null) tag.putString("weight", weight);
 

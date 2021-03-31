@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.pockets.virtual.selection;
 import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.pockets.PocketLoader;
-import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 
 // TODO: Override equals
 public class PathSelector extends AbstractVirtualPocketList {
@@ -12,7 +12,7 @@ public class PathSelector extends AbstractVirtualPocketList {
 	private String path;
 
 	@Override
-	public AbstractVirtualPocket fromTag(CompoundTag tag) {
+	public ImplementedVirtualPocket fromTag(CompoundTag tag) {
 		this.path = tag.getString("path");
 
 		return this;
@@ -28,7 +28,7 @@ public class PathSelector extends AbstractVirtualPocketList {
 	}
 
 	@Override
-	public VirtualPocketType<? extends AbstractVirtualPocket> getType() {
+	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
 		return VirtualPocketType.PATH_SELECTOR;
 	}
 
