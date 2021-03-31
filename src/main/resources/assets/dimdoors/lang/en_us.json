@@ -118,7 +118,7 @@
 
   "fluid.dimdoors.eternal_fabric": "Eternal Fabric",
 
-  "entity.dimdoors.monolith": "",
+  "entity.dimdoors.monolith": "Monolith",
 
   "commands.dimteleport.usage": "/dimteleport <dimension> <x> <y> <z> [yaw] [pitch]",
   "commands.fabricconvert.usage": "/fabricconvert",
@@ -130,6 +130,10 @@
   "commands.dimdoors.saveschem.success": "Pocket %s has been successfully saved",
   "commands.generic.dimdoors.not_in_pocket_dim": "You must be in a pocket dimension to use this command.",
   "commands.generic.dimdoors.not_in_pocket": "You must be in a pocket to use this command.",
+  "commands.generic.unknownValue": "Unknown value '%s'",
+  "commands.pocket.unknownPocketTemplate": "Unknown Pocket Template '%s'",
+  "commands.pocket.placedSchem": "Placed schematic %s at %s in world %s",
+  "commands.pocket.loadedSchem": "Loaded schematic %s to clipboard. Paste it using //paste",
 
   "rifts.unlinked1": "This rift doesn't lead anywhere",
   "rifts.unlinked2": "This rift has closed",
@@ -183,7 +187,8 @@
   "text.autoconfig.dimdoors.option.pockets.classicPocketsResourcePackActivationType": "Classic Resource Pack Activation Type",
   "text.autoconfig.dimdoors.option.pockets.classicPocketsResourcePackActivationType@Tooltip": "Default - Disabled but can be enabled, Default Enabled - Enabled but can be disabled, Always Enabled - Can not be disabled",
   "text.autoconfig.dimdoors.option.pockets.defaultPocketsResourcePackActivationType": "Default Resource Pack Activation Type",
-  "text.autoconfig.dimdoors.option.pockets.defaultPocketsResourcePackActivationType@Tooltip": "Default - Disabled but can be enabled, Default Enabled - Enabled but can be disabled, Always Enabled - Can not be disabled.",
+  "text.autoconfig.dimdoors.option.pockets.asyncWorldEditPocketLoading": "Async WorldEdit Pocket Loading",
+  "text.autoconfig.dimdoors.option.pockets.asyncWorldEditPocketLoading@Tooltip": "Sets loading pockets to your WorldEdit clipboard asynchronous or synchronous. Only affects when WorldEdit is installed.",
   "dimdoors.pocket.dyeAlreadyAbsorbed": "The pocket is already that color, so the rift didn't absorb the dye.",
   "dimdoors.pocket.pocketHasBeenDyed": "The pocket has been dyed %s.",
   "dimdoors.pocket.remainingNeededDyes": "The pocket has %s/%s of the dyes needed to be colored %s.",

@@ -57,6 +57,14 @@ repositories {
 		name = 'TerraformersMC'
 		url = 'https://maven.terraformersmc.com/'
 	}
+
+	maven {
+		name = "Libs"
+		url = "./libs"
+		metadataSources {
+			artifact()
+		}
+	}
 }
 
 def includeCompile(group, artifact, version) {
@@ -137,6 +145,8 @@ dependencies {
 	}
 	modCompileOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
 	modRuntime "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
+	modCompileOnly "worldedit:worldedit:7.2.3"
+	modRuntime "worldedit:worldedit:7.2.3"
 
 	datagenImplementation sourceSets.main.output
 	datagenImplementation sourceSets.main.compileClasspath
