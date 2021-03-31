@@ -1,14 +1,13 @@
-package org.dimdev.dimdoors.util.math;
+package org.dimdev.dimdoors.api.util.math;
 
-import org.dimdev.dimdoors.api.util.math.GridUtil;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
-class GridUtilTest {
+public class GridUtilTest {
 
 	@Test
-	void idToGridPos() {
+	public void idToGridPos() {
 		GridUtil.GridPos pos;
 		// I scribbled the grid down so I could figure out these tests, lmao
 		pos = GridUtil.idToGridPos(86);
@@ -20,7 +19,7 @@ class GridUtilTest {
 	}
 
 	@Test
-	void conversionConsistencyTest() {
+	public void conversionConsistencyTest() {
 		for (int i = 0; i < 1000; i++) {
 			assertEquals(i, GridUtil.gridPosToID(GridUtil.idToGridPos(i)));
 		}
