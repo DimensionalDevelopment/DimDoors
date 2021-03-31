@@ -95,7 +95,6 @@ public final class ModBiomes {
                         .waterFogColor(0)
                         .moodSound(new BiomeMoodSound(ModSoundEvents.CRACK, 6000, 8, 2.0))
 						.music(MusicType.createIngameMusic(ModSoundEvents.CREEPY))
-                        .loopSound(ModSoundEvents.CREEPY)
                         .skyColor(0x404040)
                         .grassColor(0)
                         .build()
