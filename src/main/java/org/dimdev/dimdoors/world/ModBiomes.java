@@ -10,6 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.sound.MusicType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeMoodSound;
+import net.minecraft.sound.MusicSound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -51,7 +52,7 @@ public final class ModBiomes {
                 .skyColor(white ? 0xFFFFFF : 0x111111)
                 .grassColorModifier(BiomeEffects.GrassColorModifier.NONE);
         if (white) {
-            builder.music(MusicType.createIngameMusic(ModSoundEvents.WHITE_VOID));
+            builder.music(new MusicSound(ModSoundEvents.WHITE_VOID, 0, 0, true));
         }
         return builder.build();
     }
@@ -94,7 +95,7 @@ public final class ModBiomes {
                         .foliageColor(0)
                         .waterFogColor(0)
                         .moodSound(new BiomeMoodSound(ModSoundEvents.CRACK, 6000, 8, 2.0))
-						.music(MusicType.createIngameMusic(ModSoundEvents.CREEPY))
+						.music(new MusicSound(ModSoundEvents.CREEPY, 0, 0, true))
                         .skyColor(0x404040)
                         .grassColor(0)
                         .build()
