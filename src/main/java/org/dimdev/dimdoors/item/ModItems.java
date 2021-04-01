@@ -41,84 +41,8 @@ public final class ModItems {
 	@RegistryEntry("quartz_door")
 	public static final Item QUARTZ_DOOR = create(ModBlocks.QUARTZ_DOOR);
 
-//	@RegistryEntry("quartz_dimensional_door")
-//	public static final Item QUARTZ_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
-//			ModBlocks.QUARTZ_DIMENSIONAL_DOOR,
-//			new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-//			rift -> {
-//				if (ModDimensions.isPrivatePocketDimension(rift.getWorld())) {
-//					rift.setDestination(new PrivatePocketExitTarget()); // exit
-//				} else {
-//					rift.setDestination(new PrivatePocketTarget()); // entrances
-//				}
-//			}
-//	));
-
 	@RegistryEntry("gold_door")
 	public static final Item GOLD_DOOR = create(ModBlocks.GOLD_DOOR);
-
-//	@RegistryEntry("gold_dimensional_door")
-//	public static final Item GOLD_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
-//			ModBlocks.GOLD_DIMENSIONAL_DOOR,
-//			new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-//			rift -> {
-//				rift.setProperties(LinkProperties.builder()
-//						.groups(new HashSet<>(Arrays.asList(0, 1)))
-//						.linksRemaining(1).build());
-//
-//				rift.setDestination(RandomTarget.builder()
-//						.acceptedGroups(Collections.singleton(0))
-//						.coordFactor(1)
-//						.negativeDepthFactor(10000)
-//						.positiveDepthFactor(80)
-//						.weightMaximum(100)
-//						.noLink(false)
-//						.noLinkBack(false)
-//						.newRiftWeight(1).build());
-//			}
-//	));
-//
-//	@RegistryEntry("iron_dimensional_door")
-//	public static final Item IRON_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
-//			ModBlocks.IRON_DIMENSIONAL_DOOR,
-//			new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-//			rift -> {
-//				PublicPocketTarget destination = new PublicPocketTarget();
-//				rift.setDestination(destination);
-//			}
-//	));
-	/* TODO
-	@RegistryEntry("unstable_dimensional_door")
-    public static final Item UNSTABLE_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
-            ModBlocks.IRON_DIMENSIONAL_DOOR,
-            new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-            rift -> rift.setDestination(RandomTarget.builder()
-					.acceptedGroups(Collections.singleton(0))
-					.coordFactor(1)
-					.negativeDepthFactor(80)
-					.positiveDepthFactor(Double.MAX_VALUE)
-					.weightMaximum(100)
-					.noLink(false)
-					.noLinkBack(false)
-					.newRiftWeight(0.5F).build())
-    ));
-	*/
-//	@RegistryEntry("oak_dimensional_door")
-//	public static final Item OAK_DIMENSIONAL_DOOR = create(new DimensionalDoorItem(
-//			ModBlocks.OAK_DIMENSIONAL_DOOR,
-//			new Item.Settings().group(DIMENSIONAL_DOORS).maxCount(1),
-//			rift -> rift.setDestination(
-//					RandomTarget.builder()
-//							.acceptedGroups(Collections.singleton(0))
-//							.coordFactor(1)
-//							.negativeDepthFactor(80)
-//							.positiveDepthFactor(Double.MAX_VALUE)
-//							.weightMaximum(100)
-//							.noLink(false)
-//							.newRiftWeight(0)
-//							.build()
-//			)
-//	));
 
 	@RegistryEntry("wood_dimensional_trapdoor")
 	public static final Item OAK_DIMENSIONAL_TRAPDOOR = create(new DimensionalTrapdoorItem(

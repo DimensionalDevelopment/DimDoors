@@ -164,7 +164,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		if (ModDimensions.isLimboDimension(world)) {
 			this.setDestination(ESCAPE_TARGET);
 		} else {
-			this.setDestination(DefaultDungeonDestinations.GATEWAY_DESTINATION);
+			this.setDestination(DefaultDungeonDestinations.getGateway());
 			this.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 		}
 	}

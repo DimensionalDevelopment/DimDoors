@@ -135,27 +135,27 @@ public class TemplateUtils {
                 switch (blockEntityTag.getString("placeholder")) {
                     case "deeper_depth_door":
                         rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.DEEPER_DUNGEON_DESTINATION);
+                        rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
                         newTag = rift.writeNbt(newTag);
                         break;
                     case "less_deep_depth_door":
                         rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.SHALLOWER_DUNGEON_DESTINATION);
+                        rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
                         newTag = rift.writeNbt(newTag);
                         break;
                     case "overworld_door":
                         rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.OVERWORLD_DESTINATION);
+                        rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
                         newTag = rift.writeNbt(newTag);
                         break;
                     case "entrance_door":
                         rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.TWO_WAY_POCKET_ENTRANCE);
+                        rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
                         newTag = rift.writeNbt(newTag);
                         break;
                     case "gateway_portal":
                         rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.GATEWAY_DESTINATION);
+                        rift.setDestination(DefaultDungeonDestinations.getGateway());
                         newTag = rift.writeNbt(newTag);
                         break;
                     default:
