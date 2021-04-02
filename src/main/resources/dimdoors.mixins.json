@@ -12,6 +12,7 @@
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
+    "StructurePoolMixin",
     "accessor.BuiltinBiomesAccessor",
     "accessor.ChunkGeneratorAccessor",
     "accessor.DefaultParticleTypeAccessor",
