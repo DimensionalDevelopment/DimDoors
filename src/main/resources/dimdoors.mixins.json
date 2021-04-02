@@ -5,6 +5,7 @@
   "mixins": [
     "BlockMixin",
     "DefaultBiomeFeaturesMixin",
+    "EntityMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",
