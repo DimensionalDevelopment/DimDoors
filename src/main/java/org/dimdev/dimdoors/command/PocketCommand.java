@@ -29,7 +29,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -70,34 +69,11 @@ public class PocketCommand {
 	}
 
 	private static int load(ServerCommandSource source, PocketTemplate template) throws CommandSyntaxException {
-		ServerPlayerEntity player = source.getPlayer();
-		boolean async = DimensionalDoorsInitializer.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
-		Consumer<Runnable> taskAcceptor = async ? r -> source.getMinecraftServer().execute(r) : Runnable::run;
-		Runnable task = () -> {
-			CompoundTag tag = Schematic.toTag(template.getSchematic());
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			try {
-				NbtIo.writeCompressed(tag, stream);
-			} catch (IOException e) {
-				throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayOutputStream
-			}
-			Clipboard clipboard;
-			try {
-				clipboard = new SpongeSchematicReader(new NBTInputStream(new ByteArrayInputStream(stream.toByteArray()))).read();
-			} catch (IOException e) {
-				throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayInputStream
-			}
-			taskAcceptor.accept(() -> {
-				WorldEdit.getInstance().getSessionManager().get(FabricAdapter.adaptPlayer(player)).setClipboard(new ClipboardHolder(clipboard));
-				source.sendFeedback(new TranslatableText("commands.pocket.loadedSchem", template.getId()), true);
-			});
-		};
-		if (async) {
-			CompletableFuture.runAsync(task);
-		} else {
-			task.run();
+		try {
+			return WorldeditHelper.load(source, template);
+		} catch (NoClassDefFoundError e) {
+			return 0;
 		}
-		return Command.SINGLE_SUCCESS;
 	}
 
 	private static int place(ServerPlayerEntity source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
