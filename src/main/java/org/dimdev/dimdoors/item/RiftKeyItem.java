@@ -109,7 +109,7 @@ public class RiftKeyItem extends Item {
 				entranceRiftBlockEntity.markDirty();
 				EntityUtils.chat(player, new TranslatableText("rifts.locked"));
 				ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
-				return ActionResult.SUCCESS;
+ 				return ActionResult.SUCCESS;
 			}
 		}
 		return super.useOnBlock(context);
@@ -117,12 +117,12 @@ public class RiftKeyItem extends Item {
 
 	public static boolean tryRemove(ItemStack stack, UUID id) {
 		IntArrayTag arrayTag = new IntArrayTag(DynamicSerializableUuid.toIntArray(id));
-		return stack.getTag().getList("Ids", NbtType.LIST).remove(arrayTag);
+		return stack.getTag().getList("Ids", NbtType.INT_ARRAY).remove(arrayTag);
 	}
 
 	public static void add(ItemStack stack, UUID id) {
 		if (!has(stack, id)) {
-			stack.getOrCreateTag().getList("Ids", NbtType.LIST).add(new IntArrayTag(DynamicSerializableUuid.toIntArray(id)));
+			stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).add(new IntArrayTag(DynamicSerializableUuid.toIntArray(id)));
 		}
 	}
 
@@ -136,7 +136,7 @@ public class RiftKeyItem extends Item {
 
 	public static List<UUID> getIds(ItemStack stack) {
 		return stack.getOrCreateTag()
-				.getList("ids", NbtType.INT_ARRAY)
+				.getList("Ids", NbtType.INT_ARRAY)
 				.stream()
 				.map(IntArrayTag.class::cast)
 				.map(IntArrayTag::getIntArray)
