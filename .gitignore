@@ -31,4 +31,4 @@ logs
 *.hprof
 generated
 .vscode
-test
+/test
