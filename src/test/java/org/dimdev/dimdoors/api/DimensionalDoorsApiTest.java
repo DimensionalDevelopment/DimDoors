@@ -19,15 +19,7 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 @RunWith(ServerTestRunner.class)
-public class DimensionalDoorsApiTest implements DimensionalDoorsApi {
-	private static boolean hasCalledRegisterVirtualTargetTypes = false;
-	private static boolean hasCalledRegisterVirtualSingularPocketTypes = false;
-	private static boolean hasCalledRegisterModifierTypes = false;
-	private static boolean hasCalledRegisterPocketGeneratorTypes = false;
-	private static boolean hasCalledRegisterAbstractPocketTypes = false;
-	private static boolean hasCalledRegisterPocketAddonTypes = false;
-	private static boolean hasCalledRegisterConditionTypes = false;
-	private static boolean hasCalledPostInitialize = false;
+public class DimensionalDoorsApiTest {
 
 	@Test
 	public void apiTest() {
@@ -37,54 +29,70 @@ public class DimensionalDoorsApiTest implements DimensionalDoorsApi {
 				.map(DimensionalDoorsInitializer.class::cast)
 				.forEach(DimensionalDoorsInitializer::onInitialize);
 
-		assertTrue(hasCalledRegisterVirtualTargetTypes);
-		assertTrue(hasCalledRegisterVirtualSingularPocketTypes);
-		assertTrue(hasCalledRegisterModifierTypes);
-		assertTrue(hasCalledRegisterPocketGeneratorTypes);
-		assertTrue(hasCalledRegisterAbstractPocketTypes);
-		assertTrue(hasCalledRegisterPocketAddonTypes);
-		assertTrue(hasCalledRegisterConditionTypes);
-		assertTrue(hasCalledPostInitialize);
+		DimDoorsTestApi apiTest = FabricLoader.getInstance().getEntrypoints("dimdoors:api", DimensionalDoorsApi.class).stream()
+				.filter(DimDoorsTestApi.class::isInstance)
+				.map(DimDoorsTestApi.class::cast)
+				.findFirst()
+				.orElseThrow(RuntimeException::new);
+
+		assertTrue(apiTest.hasCalledRegisterVirtualTargetTypes);
+		assertTrue(apiTest.hasCalledRegisterVirtualSingularPocketTypes);
+		assertTrue(apiTest.hasCalledRegisterModifierTypes);
+		assertTrue(apiTest.hasCalledRegisterPocketGeneratorTypes);
+		assertTrue(apiTest.hasCalledRegisterAbstractPocketTypes);
+		assertTrue(apiTest.hasCalledRegisterPocketAddonTypes);
+		assertTrue(apiTest.hasCalledRegisterConditionTypes);
+		assertTrue(apiTest.hasCalledPostInitialize);
 	}
 
-	@Override
-	public void registerVirtualTargetTypes(Registry<VirtualTarget.VirtualTargetType<?>> registry) {
-		System.out.println("test1234");
-		hasCalledRegisterVirtualTargetTypes = true;
-	}
+	public static class DimDoorsTestApi implements DimensionalDoorsApi {
+		private boolean hasCalledRegisterVirtualTargetTypes = false;
+		private boolean hasCalledRegisterVirtualSingularPocketTypes = false;
+		private boolean hasCalledRegisterModifierTypes = false;
+		private boolean hasCalledRegisterPocketGeneratorTypes = false;
+		private boolean hasCalledRegisterAbstractPocketTypes = false;
+		private boolean hasCalledRegisterPocketAddonTypes = false;
+		private boolean hasCalledRegisterConditionTypes = false;
+		private boolean hasCalledPostInitialize = false;
 
-	@Override
-	public void registerVirtualSingularPocketTypes(Registry<ImplementedVirtualPocket.VirtualPocketType<?>> registry) {
-		hasCalledRegisterVirtualSingularPocketTypes = true;
-	}
+		@Override
+		public void registerVirtualTargetTypes(Registry<VirtualTarget.VirtualTargetType<?>> registry) {
+			hasCalledRegisterVirtualTargetTypes = true;
+		}
 
-	@Override
-	public void registerModifierTypes(Registry<Modifier.ModifierType<?>> registry) {
-		hasCalledRegisterModifierTypes = true;
-	}
+		@Override
+		public void registerVirtualSingularPocketTypes(Registry<ImplementedVirtualPocket.VirtualPocketType<?>> registry) {
+			hasCalledRegisterVirtualSingularPocketTypes = true;
+		}
 
-	@Override
-	public void registerPocketGeneratorTypes(Registry<PocketGenerator.PocketGeneratorType<?>> registry) {
-		hasCalledRegisterPocketGeneratorTypes = true;
-	}
+		@Override
+		public void registerModifierTypes(Registry<Modifier.ModifierType<?>> registry) {
+			hasCalledRegisterModifierTypes = true;
+		}
 
-	@Override
-	public void registerAbstractPocketTypes(Registry<AbstractPocket.AbstractPocketType<?>> registry) {
-		hasCalledRegisterAbstractPocketTypes = true;
-	}
+		@Override
+		public void registerPocketGeneratorTypes(Registry<PocketGenerator.PocketGeneratorType<?>> registry) {
+			hasCalledRegisterPocketGeneratorTypes = true;
+		}
 
-	@Override
-	public void registerPocketAddonTypes(Registry<PocketAddon.PocketAddonType<?>> registry) {
-		hasCalledRegisterPocketAddonTypes = true;
-	}
+		@Override
+		public void registerAbstractPocketTypes(Registry<AbstractPocket.AbstractPocketType<?>> registry) {
+			hasCalledRegisterAbstractPocketTypes = true;
+		}
 
-	@Override
-	public void registerConditionTypes(Registry<Condition.ConditionType<?>> registry) {
-		hasCalledRegisterConditionTypes= true;
-	}
+		@Override
+		public void registerPocketAddonTypes(Registry<PocketAddon.PocketAddonType<?>> registry) {
+			hasCalledRegisterPocketAddonTypes = true;
+		}
 
-	@Override
-	public void postInitialize() {
-		hasCalledPostInitialize = true;
+		@Override
+		public void registerConditionTypes(Registry<Condition.ConditionType<?>> registry) {
+			hasCalledRegisterConditionTypes= true;
+		}
+
+		@Override
+		public void postInitialize() {
+			hasCalledPostInitialize = true;
+		}
 	}
 }
