@@ -7,8 +7,11 @@ import java.util.function.Supplier;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -20,6 +23,7 @@ import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
+import org.dimdev.dimdoors.listener.ItemRegistryEntryAddedListener;
 import org.dimdev.dimdoors.listener.pocket.PlayerBlockBreakEventBeforeListener;
 import org.dimdev.dimdoors.listener.pocket.PocketAttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
@@ -114,6 +118,10 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModSoundEvents.init();
 		ModParticleTypes.init();
 		ModCriteria.init();
+
+		DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registry.BLOCK);
+		dimensionalDoorBlockRegistrar.init();
+		RegistryEntryAddedCallback.event(Registry.BLOCK).register(new ItemRegistryEntryAddedListener(dimensionalDoorBlockRegistrar));
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType());
