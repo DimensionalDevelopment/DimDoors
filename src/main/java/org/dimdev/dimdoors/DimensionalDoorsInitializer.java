@@ -70,6 +70,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootJanksonConfigSerializer::new);
 	private static MinecraftServer server;
 	private static ModContainer dimDoorsMod;
+	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
 
     @NotNull
     public static MinecraftServer getServer() {
@@ -79,7 +80,11 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         throw new UnsupportedOperationException("Accessed server too early!");
     }
 
-    public static ServerWorld getWorld(RegistryKey<World> key) {
+	public static DimensionalDoorBlockRegistrar getDimensionalDoorBlockRegistrar() {
+		return dimensionalDoorBlockRegistrar;
+	}
+
+	public static ServerWorld getWorld(RegistryKey<World> key) {
         return getServer().getWorld(key);
     }
 
@@ -119,7 +124,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		ModParticleTypes.init();
 		ModCriteria.init();
 
-		DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registry.BLOCK);
+		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registry.BLOCK);
 		dimensionalDoorBlockRegistrar.init();
 		RegistryEntryAddedCallback.event(Registry.BLOCK).register(new ItemRegistryEntryAddedListener(dimensionalDoorBlockRegistrar));
 

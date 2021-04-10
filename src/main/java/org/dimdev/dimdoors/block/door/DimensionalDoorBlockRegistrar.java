@@ -1,9 +1,14 @@
 package org.dimdev.dimdoors.block.door;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -13,9 +18,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class DimensionalDoorBlockRegistrar {
-	private static final String PREFIX = "autogen_";
+	private static final String PREFIX = "autogen_dimensional_";
 
 	private final Registry<Block> registry;
+
+	private final Map<Identifier, Identifier> mappedDoorBlocks = new HashMap<>();
 
 	public DimensionalDoorBlockRegistrar(Registry<Block> registry) {
 		this.registry = registry;
@@ -41,7 +48,21 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	private void register(Identifier identifier, Block block, Function<AbstractBlock.Settings, ? extends Block> constructor) {
-		Registry.register(registry, new Identifier("dimdoors", PREFIX + identifier.getNamespace() + "_dimdoors_" + identifier.getPath()), constructor.apply(AbstractBlock.Settings.copy(block)));
+		Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getPath());
+		Block newBlock = Registry.register(registry, gennedId, constructor.apply(FabricBlockSettings.copy(block)));
+		mappedDoorBlocks.put(gennedId, identifier);
+
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+			BlockRenderLayerMap.INSTANCE.putBlock(newBlock, RenderLayer.getCutout());
+		}
+	}
+
+	public Identifier get(Identifier identifier) {
+		return mappedDoorBlocks.get(identifier);
+	}
+
+	public boolean isMapped(Identifier identifier) {
+		return mappedDoorBlocks.containsKey(identifier);
 	}
 
 	// Just in case we want to support more Door classes in the future.

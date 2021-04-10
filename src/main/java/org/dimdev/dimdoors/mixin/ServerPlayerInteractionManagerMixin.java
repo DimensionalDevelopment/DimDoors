@@ -24,5 +24,4 @@ public class ServerPlayerInteractionManagerMixin {
 			info.cancel();
 		}
 	}
-
 }

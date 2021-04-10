@@ -6,17 +6,18 @@ import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.jetbrains.annotations.Nullable;
 
 public class DimensionalDoorModelVariantProvider implements ModelVariantProvider {
-	private static final String PREFIX = "autogen_";
-
 	@Override
 	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException {
-		String path = modelId.getPath();
-		if (!path.startsWith(PREFIX)) return null;
-		String[] separatedId = path.substring(PREFIX.length()).split("_dimdoors_");
-		ModelIdentifier newId = new ModelIdentifier(new Identifier(separatedId[0], separatedId[1]), modelId.getVariant());
+		Identifier identifier = new Identifier(modelId.getNamespace(), modelId.getPath());
+		DimensionalDoorBlockRegistrar registrar = DimensionalDoorsInitializer.getDimensionalDoorBlockRegistrar();
+		if (!registrar.isMapped(identifier)) return null;
+		Identifier mapped = registrar.get(identifier);
+		ModelIdentifier newId = new ModelIdentifier(mapped, modelId.getVariant());
 		return context.loadModel(newId);
 	}
 }
