@@ -39,14 +39,26 @@ public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, Monolith
             new Identifier("dimdoors:textures/mob/monolith/monolith18.png")
 	).map(MyRenderLayer::getMonolith).collect(Collectors.toList());
 
+    private static MonolithModel INSTANCE;
+
     public MonolithRenderer(EntityRendererFactory.Context ctx) {
-        super(ctx, new MonolithModel(), 0);
+        super(ctx, INSTANCE = new MonolithModel(ctx), 0);
+
+    }
+
+    public static MonolithModel getInstance() {
+        return INSTANCE;
     }
 
     @Nullable
     @Override
     protected RenderLayer getRenderLayer(MonolithEntity entity, boolean showBody, boolean translucent, boolean showOutline) {
         return MonolithRenderer.MONOLITH_TEXTURES.get(entity.getTextureState());
+    }
+
+    @Override
+    protected boolean hasLabel(MonolithEntity mobEntity) {
+        return false;
     }
 
     @Override
