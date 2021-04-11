@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3i;
@@ -41,7 +41,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	private static final int fallbackWeight = 5; // TODO: make config
 	protected final List<Modifier> modifierList = new ArrayList<>();
 
-	private CompoundTag builderTag;
+	private NbtCompound builderTag;
 	protected String weight = defaultWeightEquation;
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
@@ -55,7 +55,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		parseWeight();
 	}
 
-	public static PocketGenerator deserialize(CompoundTag tag) {
+	public static PocketGenerator deserialize(NbtCompound tag) {
 		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: return some NONE PocketGenerator if type cannot be found or deserialization fails.
 		PocketGeneratorType<? extends PocketGenerator> type = REGISTRY.get(id);
 		if (type == null) {
@@ -65,8 +65,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		return type.fromTag(tag);
 	}
 
-	public static CompoundTag serialize(PocketGenerator pocketGenerator) {
-		return pocketGenerator.toTag(new CompoundTag());
+	public static NbtCompound serialize(PocketGenerator pocketGenerator) {
+		return pocketGenerator.toTag(new NbtCompound());
 	}
 
 	private void parseWeight() {
@@ -83,7 +83,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		}
 	}
 
-	public PocketGenerator fromTag(CompoundTag tag) {
+	public PocketGenerator fromTag(NbtCompound tag) {
 		if (tag.contains("builder", NbtType.COMPOUND)) builderTag = tag.getCompound("builder");
 
 		this.weight = tag.contains("weight") ? tag.getString("weight") : defaultWeightEquation;
@@ -92,14 +92,14 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		if (tag.contains("setup_loot")) setupLoot = tag.getBoolean("setup_loot");
 
 		if (tag.contains("modifiers")) {
-			ListTag modifiersTag = tag.getList("modifiers", 10);
+			NbtList modifiersTag = tag.getList("modifiers", 10);
 			for (int i = 0; i < modifiersTag.size(); i++) {
 				modifierList.add(Modifier.deserialize(modifiersTag.getCompound(i)));
 			}
 		}
 
 		if (tag.contains("tags")) {
-			ListTag listTag = tag.getList("tags", NbtType.STRING);
+			NbtList listTag = tag.getList("tags", NbtType.STRING);
 			for (int i = 0; i < listTag.size(); i++) {
 				tags.add(listTag.getString(i));
 			}
@@ -107,7 +107,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		return this;
 	}
 
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		this.getType().toTag(tag);
 
 		if (builderTag != null) tag.put("builder", builderTag);
@@ -116,16 +116,16 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
 		if (setupLoot != null) tag.putBoolean("setup_loot", setupLoot);
 
-		ListTag modifiersTag = new ListTag();
+		NbtList modifiersTag = new NbtList();
 		for (Modifier modifier : modifierList) {
-			modifiersTag.add(modifier.toTag(new CompoundTag()));
+			modifiersTag.add(modifier.toTag(new NbtCompound()));
 		}
 		if (modifiersTag.size() > 0) tag.put("modifiers", modifiersTag);
 
 		if (tags.size() > 0) {
-			ListTag listTag = new ListTag();
+			NbtList listTag = new NbtList();
 			for (String tagString : tags) {
-				listTag.add(StringTag.of(tagString));
+				listTag.add(NbtString.of(tagString));
 			}
 			tag.put("tags", listTag);
 		}
@@ -225,9 +225,9 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		PocketGeneratorType<ChunkGenerator> CHUNK = register(new Identifier("dimdoors", ChunkGenerator.KEY), ChunkGenerator::new);
 		PocketGeneratorType<VoidGenerator> VOID = register(new Identifier("dimdoors", VoidGenerator.KEY), VoidGenerator::new);
 
-		PocketGenerator fromTag(CompoundTag tag);
+		PocketGenerator fromTag(NbtCompound tag);
 
-		CompoundTag toTag(CompoundTag tag);
+		NbtCompound toTag(NbtCompound tag);
 
 		static void register() {
 			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerPocketGeneratorTypes(REGISTRY));
@@ -236,12 +236,12 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		static <U extends PocketGenerator> PocketGeneratorType<U> register(Identifier id, Supplier<U> constructor) {
 			return Registry.register(REGISTRY, id, new PocketGeneratorType<U>() {
 				@Override
-				public PocketGenerator fromTag(CompoundTag tag) {
+				public PocketGenerator fromTag(NbtCompound tag) {
 					return constructor.get().fromTag(tag);
 				}
 
 				@Override
-				public CompoundTag toTag(CompoundTag tag) {
+				public NbtCompound toTag(NbtCompound tag) {
 					tag.putString("type", id.toString());
 					return tag;
 				}

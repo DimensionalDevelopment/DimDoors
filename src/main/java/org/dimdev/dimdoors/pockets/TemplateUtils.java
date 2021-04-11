@@ -29,14 +29,14 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
 public class TemplateUtils {
-    static void setupEntityPlaceholders(List<CompoundTag> entities, CompoundTag entityTag) {
+    static void setupEntityPlaceholders(List<NbtCompound> entities, NbtCompound entityTag) {
         if (entityTag.contains("placeholder")) {
             double x = entityTag.getDouble("x");
             double y = entityTag.getDouble("y");
@@ -44,13 +44,13 @@ public class TemplateUtils {
             float yaw = entityTag.getFloat("yaw");
             float pitch = entityTag.getFloat("pitch");
 
-            CompoundTag newTag;
+            NbtCompound newTag;
             if ("monolith".equals(entityTag.getString("placeholder"))) {
                 MonolithEntity monolith = Objects.requireNonNull(ModEntityTypes.MONOLITH.create(null));
                 monolith.setPos(x, y, z);
                 monolith.yaw = yaw;
                 monolith.pitch = pitch;
-                newTag = monolith.writeNbt(new CompoundTag());
+                newTag = monolith.writeNbt(new NbtCompound());
             } else {
                 throw new RuntimeException("Unknown entity placeholder: " + entityTag.getString("placeholder"));
             }
@@ -122,15 +122,15 @@ public class TemplateUtils {
 
     public static void replacePlaceholders(Schematic schematic, StructureWorldAccess world) {
         // Replace placeholders (some schematics will contain them)
-        List<CompoundTag> blockEntities = new ArrayList<>();
-        for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
+        List<NbtCompound> blockEntities = new ArrayList<>();
+        for (NbtCompound blockEntityTag : schematic.getBlockEntities()) {
             if (blockEntityTag.contains("placeholder")) {
                 int x = blockEntityTag.getInt("x");
                 int y = blockEntityTag.getInt("y");
                 int z = blockEntityTag.getInt("z");
                 BlockPos pos = new BlockPos(x, y, z);
 
-                CompoundTag newTag = new CompoundTag();
+                NbtCompound newTag = new NbtCompound();
                 EntranceRiftBlockEntity rift = new EntranceRiftBlockEntity(pos, Schematic.getBlockSample(schematic).getBlockState(pos));
                 switch (blockEntityTag.getString("placeholder")) {
                     case "deeper_depth_door":
@@ -169,8 +169,8 @@ public class TemplateUtils {
         }
         schematic.setBlockEntities(blockEntities);
 
-        List<CompoundTag> entities = new ArrayList<>();
-        for (CompoundTag entityTag : schematic.getEntities()) {
+        List<NbtCompound> entities = new ArrayList<>();
+        for (NbtCompound entityTag : schematic.getEntities()) {
             TemplateUtils.setupEntityPlaceholders(entities, entityTag);
         }
         schematic.setEntities(entities);

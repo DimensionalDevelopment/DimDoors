@@ -1,25 +1,25 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 
 public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 
-	static VirtualPocket deserialize(Tag tag) {
+	static VirtualPocket deserialize(NbtElement tag) {
 		if (tag.getType() == NbtType.LIST) {
-			return VirtualPocketList.deserialize((ListTag) tag);
+			return VirtualPocketList.deserialize((NbtList) tag);
 		}
-		return ImplementedVirtualPocket.deserialize((CompoundTag) tag); // should be CompoundTag
+		return ImplementedVirtualPocket.deserialize((NbtCompound) tag); // should be CompoundTag
 	}
 
-	static Tag serialize(VirtualPocket virtualPocket) {
+	static NbtElement serialize(VirtualPocket virtualPocket) {
 		if (virtualPocket instanceof VirtualPocketList) {
 			return VirtualPocketList.serialize((VirtualPocketList) virtualPocket);
 		}

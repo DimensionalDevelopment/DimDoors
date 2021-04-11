@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -35,7 +35,7 @@ public interface LazyCompatibleModifier extends Modifier {
 	}
 
 	@Override
-	default CompoundTag toTag(CompoundTag tag) {
+	default NbtCompound toTag(NbtCompound tag) {
 		return Modifier.super.toTag(tag);
 	}
 }

@@ -7,8 +7,7 @@ import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.api.util.RGBA;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.LiteralText;
 
 public class RiftData {
@@ -62,8 +61,8 @@ public class RiftData {
 		this.color = color;
 	}
 
-	public static CompoundTag toTag(RiftData data) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(RiftData data) {
+		NbtCompound tag = new NbtCompound();
 		if (data.destination != VirtualTarget.NoneTarget.INSTANCE) tag.put("destination", VirtualTarget.toTag(data.destination));
 		if (data.properties != null) tag.put("properties", LinkProperties.toTag(data.properties));
 		if (data.color != null) tag.put("color", RGBA.toTag(data.color));
@@ -72,7 +71,7 @@ public class RiftData {
 		return tag;
 	}
 
-	public static RiftData fromTag(CompoundTag tag) {
+	public static RiftData fromTag(NbtCompound tag) {
 		RiftData data = new RiftData();
 		data.destination = tag.contains("destination") ? VirtualTarget.fromTag(tag.getCompound("destination")) : VirtualTarget.NoneTarget.INSTANCE;
 		data.properties = tag.contains("properties") ? LinkProperties.fromTag(tag.getCompound("properties")) : null;

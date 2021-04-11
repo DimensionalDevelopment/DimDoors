@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import net.minecraft.nbt.CompoundTag;
-
 import com.google.common.base.MoreObjects;
+import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -22,12 +21,12 @@ public class PocketEntranceModifier implements Modifier {
 	}
 
 	@Override
-	public Modifier fromTag(CompoundTag tag) {
+	public Modifier fromTag(NbtCompound tag) {
 		return new PocketEntranceModifier(tag.getInt("id"));
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		Modifier.super.toTag(tag);
 
 		tag.putInt("id", id);

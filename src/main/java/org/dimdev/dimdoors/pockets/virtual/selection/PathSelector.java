@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
@@ -12,14 +12,14 @@ public class PathSelector extends AbstractVirtualPocketList {
 	private String path;
 
 	@Override
-	public ImplementedVirtualPocket fromTag(CompoundTag tag) {
+	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
 		this.path = tag.getString("path");
 
 		return this;
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		super.toTag(tag);
 
 		tag.putString("path", path);

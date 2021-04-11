@@ -63,7 +63,7 @@ public class WorldRendererMixin {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.depthMask(false);
-		RenderSystem.setShader(GameRenderer::method_34543);
+		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 
 		for(int i = 0; i < 6; ++i) {
@@ -98,7 +98,7 @@ public class WorldRendererMixin {
 		}
 
 		float s = 30.0F;
-		RenderSystem.setShader(GameRenderer::method_34542);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, SUN_RENDER_PATH);
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 		bufferBuilder.vertex(matrix4f, -s, 100.0F, -s).texture(0.0F, 0.0F).next();
@@ -125,7 +125,7 @@ public class WorldRendererMixin {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.depthMask(false);
-		RenderSystem.setShader(GameRenderer::method_34540);
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 

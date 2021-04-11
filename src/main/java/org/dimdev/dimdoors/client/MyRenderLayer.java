@@ -35,7 +35,7 @@ public class MyRenderLayer extends RenderLayer {
 			MultiPhaseParameters.builder()
 					.cull(DISABLE_CULLING)
 					.lightmap(RenderPhase.DISABLE_LIGHTMAP)
-					.method_34577(NO_TEXTURE)
+					.texture(NO_TEXTURE)
 					.transparency(new Transparency("crack_transparency",
 							() -> {
 								RenderSystem.enableBlend();
@@ -58,7 +58,7 @@ public class MyRenderLayer extends RenderLayer {
 			MultiPhaseParameters.builder()
 					.cull(DISABLE_CULLING)
 					.lightmap(RenderPhase.DISABLE_LIGHTMAP)
-					.method_34577(new Texture(DetachedRiftBlockEntityRenderer.TESSERACT_PATH,
+					.texture(new Texture(DetachedRiftBlockEntityRenderer.TESSERACT_PATH,
 							false,
 							false)
 					)
@@ -67,7 +67,7 @@ public class MyRenderLayer extends RenderLayer {
 	);
 
 	public static RenderLayer getMonolith(Identifier texture) {
-		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().method_34577(new RenderPhase.Texture(texture, false, false)).method_34578(new class_5942(GameRenderer::method_34508)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
+		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, false, false)).shader(new Shader(GameRenderer::getRenderTypeEntityTranslucentShader)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
 		return RenderLayerFactory.create("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, multiPhaseParameters);
 	}
 }

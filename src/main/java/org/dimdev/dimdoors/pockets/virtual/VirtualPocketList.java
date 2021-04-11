@@ -1,33 +1,33 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
-import net.minecraft.nbt.ListTag;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import net.minecraft.nbt.NbtList;
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
 
-	public static VirtualPocketList deserialize(ListTag tag) {
+	public static VirtualPocketList deserialize(NbtList tag) {
 		return new VirtualPocketList().fromTag(tag);
 	}
 
-	public static ListTag serialize(VirtualPocketList virtualPocketList) {
-		return virtualPocketList.toTag(new ListTag());
+	public static NbtList serialize(VirtualPocketList virtualPocketList) {
+		return virtualPocketList.toTag(new NbtList());
 	}
 
 	public VirtualPocketList() {
 		super();
 	}
 
-	public VirtualPocketList fromTag(ListTag tag) { // Keep in mind, this would add onto the list instead of overwriting it if called multiple times.
-		for (net.minecraft.nbt.Tag value : tag) {
+	public VirtualPocketList fromTag(NbtList tag) { // Keep in mind, this would add onto the list instead of overwriting it if called multiple times.
+		for (net.minecraft.nbt.NbtElement value : tag) {
 			this.add(VirtualPocket.deserialize(value));
 		}
 		return this;
 	}
 
-	public ListTag toTag(ListTag tag) {
+	public NbtList toTag(NbtList tag) {
 		for(VirtualPocket virtualPocket : this) {
 			tag.add(VirtualPocket.serialize(virtualPocket));
 		}

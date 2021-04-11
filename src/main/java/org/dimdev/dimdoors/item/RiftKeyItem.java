@@ -23,7 +23,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.NbtIntArray;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
@@ -116,18 +116,18 @@ public class RiftKeyItem extends Item {
 	}
 
 	public static boolean tryRemove(ItemStack stack, UUID id) {
-		IntArrayTag arrayTag = new IntArrayTag(DynamicSerializableUuid.toIntArray(id));
+		NbtIntArray arrayTag = new NbtIntArray(DynamicSerializableUuid.toIntArray(id));
 		return stack.getTag().getList("Ids", NbtType.INT_ARRAY).remove(arrayTag);
 	}
 
 	public static void add(ItemStack stack, UUID id) {
 		if (!has(stack, id)) {
-			stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).add(new IntArrayTag(DynamicSerializableUuid.toIntArray(id)));
+			stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).add(new NbtIntArray(DynamicSerializableUuid.toIntArray(id)));
 		}
 	}
 
 	public static boolean has(ItemStack stack, UUID id) {
-		return stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).contains(new IntArrayTag(DynamicSerializableUuid.toIntArray(id)));
+		return stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).contains(new NbtIntArray(DynamicSerializableUuid.toIntArray(id)));
 	}
 
 	public static boolean isEmpty(ItemStack stack) {
@@ -138,8 +138,8 @@ public class RiftKeyItem extends Item {
 		return stack.getOrCreateTag()
 				.getList("Ids", NbtType.INT_ARRAY)
 				.stream()
-				.map(IntArrayTag.class::cast)
-				.map(IntArrayTag::getIntArray)
+				.map(NbtIntArray.class::cast)
+				.map(NbtIntArray::getIntArray)
 				.map(DynamicSerializableUuid::toUuid)
 				.collect(Collectors.toList());
 	}

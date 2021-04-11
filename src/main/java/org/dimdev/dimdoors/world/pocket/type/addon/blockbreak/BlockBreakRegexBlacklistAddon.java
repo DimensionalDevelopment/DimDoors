@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.pocket.type.addon.blockbreak;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
@@ -13,13 +13,13 @@ import java.io.IOException;
 public class BlockBreakRegexBlacklistAddon implements AutoSyncedAddon, ContainedAddon { //TODO
 	@Override
 	public AutoSyncedAddon read(PacketByteBuf buf) throws IOException {
-		this.fromTag(buf.readCompoundTag());
+		this.fromTag(buf.readNbt());
 		return this;
 	}
 
 	@Override
 	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
-		buf.writeCompoundTag(this.toTag(new CompoundTag()));
+		buf.writeNbt(this.toTag(new NbtCompound()));
 		return buf;
 	}
 
@@ -29,7 +29,7 @@ public class BlockBreakRegexBlacklistAddon implements AutoSyncedAddon, Contained
 	}
 
 	@Override
-	public PocketAddon fromTag(CompoundTag tag) {
+	public PocketAddon fromTag(NbtCompound tag) {
 		return null;
 	}
 

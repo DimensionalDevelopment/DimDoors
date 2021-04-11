@@ -11,8 +11,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.Vec3i;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -46,37 +45,37 @@ public class PocketDirectory {
 		this.pockets = new HashMap<>();
 	}
 
-	public static PocketDirectory readFromNbt(String id, CompoundTag tag) {
-		PocketDirectory directory = new PocketDirectory(RegistryKey.of(Registry.DIMENSION, new Identifier(id)));
+	public static PocketDirectory readFromNbt(String id, NbtCompound tag) {
+		PocketDirectory directory = new PocketDirectory(RegistryKey.of(Registry.WORLD_KEY, new Identifier(id)));
 		// no need to parallelize
 		directory.gridSize = tag.getInt("grid_size");
 		directory.privatePocketSize = tag.getInt("private_pocket_size");
 		directory.publicPocketSize = tag.getInt("public_pocket_size");
 		// same thing, too short anyways
-		CompoundTag nextIdMapTag = tag.getCompound("next_id_map");
+		NbtCompound nextIdMapTag = tag.getCompound("next_id_map");
 		directory.nextIDMap.putAll(nextIdMapTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapTag::getInt)));
 
-		CompoundTag pocketsTag = tag.getCompound("pockets");
+		NbtCompound pocketsTag = tag.getCompound("pockets");
 		directory.pockets = pocketsTag.getKeys().stream().unordered().map(key -> {
-			CompoundTag pocketTag = pocketsTag.getCompound(key);
+			NbtCompound pocketTag = pocketsTag.getCompound(key);
 			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketTag)));
 		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight));
 
 		return directory;
 	}
 
-	public CompoundTag writeToNbt() {
-		CompoundTag tag = new CompoundTag();
+	public NbtCompound writeToNbt() {
+		NbtCompound tag = new NbtCompound();
 		tag.putInt("grid_size", this.gridSize);
 		tag.putInt("private_pocket_size", this.privatePocketSize);
 		tag.putInt("public_pocket_size", this.publicPocketSize);
 
-		CompoundTag nextIdMapTag = new CompoundTag();
+		NbtCompound nextIdMapTag = new NbtCompound();
 		this.nextIDMap.forEach((key, value) -> nextIdMapTag.putInt(key.toString(), value));
 		tag.put("next_id_map", nextIdMapTag);
 
-		CompoundTag pocketsTag = new CompoundTag();
-		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toTag(new CompoundTag()))))
+		NbtCompound pocketsTag = new NbtCompound();
+		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toTag(new NbtCompound()))))
 				.map(CompletableFuture::join).forEach(pair -> pocketsTag.put(pair.getLeft(), pair.getRight()));
 		tag.put("pockets", pocketsTag);
 

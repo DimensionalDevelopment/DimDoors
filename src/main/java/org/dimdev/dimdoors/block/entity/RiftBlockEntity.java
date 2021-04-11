@@ -28,7 +28,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
@@ -51,33 +51,33 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	@Override
-	public void readNbt(CompoundTag nbt) {
+	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 		this.deserialize(nbt);
 	}
 
-	public void deserialize(CompoundTag nbt) {
+	public void deserialize(NbtCompound nbt) {
 		this.data = RiftData.fromTag(nbt.getCompound("data"));
 	}
 
 	@Override
-	public CompoundTag writeNbt(CompoundTag tag) {
+	public NbtCompound writeNbt(NbtCompound tag) {
 		super.writeNbt(tag);
 		return this.serialize(tag);
 	}
 
-	public CompoundTag serialize(CompoundTag tag) {
+	public NbtCompound serialize(NbtCompound tag) {
 		tag.put("data", RiftData.toTag(this.data));
 		return tag;
 	}
 
 	@Override
-	public void fromClientTag(CompoundTag tag) {
+	public void fromClientTag(NbtCompound tag) {
 		this.deserialize(tag);
 	}
 
 	@Override
-	public CompoundTag toClientTag(CompoundTag tag) {
+	public NbtCompound toClientTag(NbtCompound tag) {
 		return this.serialize(tag);
 	}
 
@@ -113,7 +113,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	@Override
-	public CompoundTag toInitialChunkDataNbt() {
+	public NbtCompound toInitialChunkDataNbt() {
 		PlayerLookup.tracking(this).forEach(ModCriteria.RIFT_TRACKED::trigger);
 		return super.toInitialChunkDataNbt();
 	}

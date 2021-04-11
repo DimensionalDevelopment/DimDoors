@@ -21,8 +21,7 @@ import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
@@ -227,8 +226,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		return VirtualTargetType.AVAILABLE_LINK;
 	}
 
-	public static CompoundTag toTag(RandomTarget target) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(RandomTarget target) {
+		NbtCompound tag = new NbtCompound();
 		tag.putFloat("newRiftWeight", target.newRiftWeight);
 		tag.putDouble("weightMaximum", target.weightMaximum);
 		tag.putDouble("coordFactor", target.coordFactor);
@@ -241,7 +240,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		return tag;
 	}
 
-	public static RandomTarget fromTag(CompoundTag tag) {
+	public static RandomTarget fromTag(NbtCompound tag) {
 		return new RandomTarget(
 				tag.getFloat("newRiftWeight"),
 				tag.getDouble("weightMaximum"),

@@ -12,6 +12,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.*;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
@@ -21,8 +23,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ModifiableWorld;
@@ -39,8 +41,8 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	private final BiMap<Biome, Integer> biomePalette;
 	private final Map<BlockPos, BlockState> blockContainer;
 	private final Map<BlockPos, Biome> biomeContainer;
-	private final Map<BlockPos, CompoundTag> blockEntityContainer;
-	private final BiMap<CompoundTag, Vec3d> entityContainer;
+	private final Map<BlockPos, NbtCompound> blockEntityContainer;
+	private final BiMap<NbtCompound, Vec3d> entityContainer;
 
 	public RelativeBlockSample(Schematic schematic) {
 		this.schematic = schematic;
@@ -68,15 +70,15 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				}
 			}
 		}
-		for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
+		for (NbtCompound blockEntityTag : schematic.getBlockEntities()) {
 			int[] arr = blockEntityTag.getIntArray("Pos");
 			BlockPos position = new BlockPos(arr[0], arr[1], arr[2]);
 			this.blockEntityContainer.put(position, blockEntityTag);
 		}
 
 		this.entityContainer = HashBiMap.create();
-		for (CompoundTag entityTag : schematic.getEntities()) {
-			ListTag doubles = entityTag.getList("Pos", NbtType.DOUBLE);
+		for (NbtCompound entityTag : schematic.getEntities()) {
+			NbtList doubles = entityTag.getList("Pos", NbtType.DOUBLE);
 			this.entityContainer.put(entityTag, new Vec3d(doubles.getDouble(0), doubles.getDouble(1), doubles.getDouble(2)));
 		}
 	}
@@ -109,11 +111,11 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			world.setBlockState(actualPos, state, 0, 0);
 			if (placementType.shouldMarkForUpdate()) ((ServerWorld) world).getChunkManager().markForUpdate(actualPos);
 		});
-		for (Map.Entry<BlockPos, CompoundTag> entry : this.blockEntityContainer.entrySet()) {
+		for (Map.Entry<BlockPos, NbtCompound> entry : this.blockEntityContainer.entrySet()) {
 			BlockPos pos = entry.getKey();
 			BlockPos actualPos = origin.add(entry.getKey());
 
-			CompoundTag tag = entry.getValue();
+			NbtCompound tag = entry.getValue();
 			if(tag.contains("Id")) {
 				tag.put("id", tag.get("Id")); // boogers
 				tag.remove("Id");
@@ -124,9 +126,9 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				world.toServerWorld().addBlockEntity(blockEntity);
 			}
 		}
-		for (Map.Entry<CompoundTag, Vec3d> entry : this.entityContainer.entrySet()) {
-			CompoundTag tag = entry.getKey();
-			ListTag doubles = tag.getList("Pos", NbtType.DOUBLE);
+		for (Map.Entry<NbtCompound, Vec3d> entry : this.entityContainer.entrySet()) {
+			NbtCompound tag = entry.getKey();
+			NbtList doubles = tag.getList("Pos", NbtType.DOUBLE);
 			Vec3d vec = entry.getValue().add(origin.getX(), origin.getY(), origin.getZ());
 			doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
 			doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
@@ -139,10 +141,12 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 	public void place(BlockPos origin, ServerWorld world, Chunk chunk, BlockPlacementType placementType, boolean biomes) {
 		ChunkPos pos = chunk.getPos();
-		BlockBox chunkBox = BlockBox.create(pos.getStartX(), chunk.getBottomY(), pos.getStartZ(), pos.getEndX(), chunk.getTopY(), pos.getEndZ());
-		BlockBox schemBox = BlockBox.create(origin.getX(), origin.getY(), origin.getZ(), origin.getX() + schematic.getWidth() - 1, origin.getY() + schematic.getHeight() - 1, origin.getZ() + schematic.getLength() - 1);
-		BlockBox intersection = BlockBoxUtil.intersection(chunkBox, schemBox);
-		if (!BlockBoxUtil.isRealBox(intersection)) return;
+		BlockBox chunkBox = BlockBoxUtil.getBox(chunk);
+		Vec3i schemDimensions = new Vec3i(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
+		BlockBox intersection = BlockBox.create(origin, origin.add(schemDimensions).add(-1, -1, -1));
+		if (!intersection.intersects(chunkBox)) return;
+		intersection.intersection(chunkBox);
+
 
 		ServerChunkManager serverChunkManager = world.getChunkManager();
 
@@ -200,7 +204,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 		// TODO: is it ok if this is not executed with MinecraftServer#send?
 		this.entityContainer.forEach(((tag, vec3d) -> {
-			ListTag doubles = tag.getList("Pos", NbtType.DOUBLE);
+			NbtList doubles = tag.getList("Pos", NbtType.DOUBLE);
 			Vec3d vec = vec3d.add(origin.getX(), origin.getY(), origin.getZ());
 			if (intersection.contains(new Vec3i(vec.x, vec.y, vec.z))) {
 				doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
@@ -244,7 +248,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		return this.blockContainer;
 	}
 
-	public Map<BlockPos, CompoundTag> getBlockEntityContainer() {
+	public Map<BlockPos, NbtCompound> getBlockEntityContainer() {
 		return this.blockEntityContainer;
 	}
 

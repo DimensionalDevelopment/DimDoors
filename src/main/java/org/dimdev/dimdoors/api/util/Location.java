@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -88,17 +88,17 @@ public class Location {
 		return DimensionalDoorsInitializer.getServer().getWorld(this.world);
 	}
 
-	public static CompoundTag toTag(Location location) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(Location location) {
+		NbtCompound tag = new NbtCompound();
 		tag.putString("world", location.world.getValue().toString());
 		tag.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
 		return tag;
 	}
 
-	public static Location fromTag(CompoundTag tag) {
+	public static Location fromTag(NbtCompound tag) {
 		int[] pos = tag.getIntArray("pos");
 		return new Location(
-				RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("world"))),
+				RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("world"))),
 				new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}

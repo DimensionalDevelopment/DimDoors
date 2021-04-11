@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -26,16 +26,16 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 		return "PocketEntrancePointer(pocketDim=" + this.getWorld() + ", pocketId=" + this.pocketId + ")";
 	}
 
-	public static CompoundTag toTag(PocketEntrancePointer vertex) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(PocketEntrancePointer vertex) {
+		NbtCompound tag = new NbtCompound();
 		tag.putUuid("id", vertex.id);
 		tag.putString("pocketDim", vertex.getWorld().getValue().toString());
 		tag.putInt("pocketId", vertex.pocketId);
 		return tag;
 	}
 
-	public static PocketEntrancePointer fromTag(CompoundTag tag) {
-		PocketEntrancePointer pointer = new PocketEntrancePointer(RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("pocketDim"))), tag.getInt("pocketId"));
+	public static PocketEntrancePointer fromTag(NbtCompound tag) {
+		PocketEntrancePointer pointer = new PocketEntrancePointer(RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("pocketDim"))), tag.getInt("pocketId"));
 		pointer.id = tag.getUuid("id");
 		return pointer;
 	}

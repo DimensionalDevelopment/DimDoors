@@ -4,7 +4,7 @@ import dev.onyxstudios.cca.api.v3.component.Component;
 import org.dimdev.dimdoors.world.level.DimensionalDoorsComponents;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.chunk.Chunk;
 
 public class ChunkLazilyGeneratedComponent implements Component {
@@ -24,14 +24,14 @@ public class ChunkLazilyGeneratedComponent implements Component {
 	}
 
 	@Override
-	public void readFromNbt(CompoundTag tag) {
+	public void readFromNbt(NbtCompound tag) {
 		if (tag.contains("has_been_lazy_genned", NbtType.INT)) {
 			hasBeenLazyGenned = tag.getInt("has_been_lazy_genned") == 1;
 		}
 	}
 
 	@Override
-	public void writeToNbt(CompoundTag tag) {
+	public void writeToNbt(NbtCompound tag) {
 		if (hasBeenLazyGenned) {
 			tag.putInt("has_been_lazy_genned", 1);
 		}

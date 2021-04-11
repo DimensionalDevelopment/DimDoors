@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -17,19 +17,19 @@ import java.util.function.Supplier;
 public interface Modifier {
 	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<ModifierType<? extends Modifier>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "modifier_type")), Lifecycle.stable())).buildAndRegister();
 
-	static Modifier deserialize(CompoundTag tag) {
+	static Modifier deserialize(NbtCompound tag) {
 		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: return some NONE Modifier if type cannot be found or deserialization fails.
 		return REGISTRY.get(id).fromTag(tag);
 	}
 
-	static CompoundTag serialize(Modifier modifier) {
-		return modifier.toTag(new CompoundTag());
+	static NbtCompound serialize(Modifier modifier) {
+		return modifier.toTag(new NbtCompound());
 	}
 
 
-	Modifier fromTag(CompoundTag tag);
+	Modifier fromTag(NbtCompound tag);
 
-	default CompoundTag toTag(CompoundTag tag) {
+	default NbtCompound toTag(NbtCompound tag) {
 		return this.getType().toTag(tag);
 	}
 
@@ -50,9 +50,9 @@ public interface Modifier {
 		ModifierType<OffsetModifier> OFFSET_MODIFIER_TYPE = register(new Identifier("dimdoors", OffsetModifier.KEY), OffsetModifier::new);
 		ModifierType<AbsoluteRiftBlockEntityModifier> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(new Identifier("dimdoors", AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
 
-		Modifier fromTag(CompoundTag tag);
+		Modifier fromTag(NbtCompound tag);
 
-		CompoundTag toTag(CompoundTag tag);
+		NbtCompound toTag(NbtCompound tag);
 
 		static void register() {
 			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerModifierTypes(REGISTRY));
@@ -61,12 +61,12 @@ public interface Modifier {
 		static <U extends Modifier> ModifierType<U> register(Identifier id, Supplier<U> factory) {
 			return Registry.register(REGISTRY, id, new ModifierType<U>() {
 				@Override
-				public Modifier fromTag(CompoundTag tag) {
+				public Modifier fromTag(NbtCompound tag) {
 					return factory.get().fromTag(tag);
 				}
 
 				@Override
-				public CompoundTag toTag(CompoundTag tag) {
+				public NbtCompound toTag(NbtCompound tag) {
 					tag.putString("type", id.toString());
 					return tag;
 				}

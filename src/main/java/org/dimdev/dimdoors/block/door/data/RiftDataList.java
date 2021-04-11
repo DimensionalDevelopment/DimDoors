@@ -13,8 +13,7 @@ import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Pair;
 
@@ -59,8 +58,8 @@ public class RiftDataList {
 		private final Optional<LinkProperties> linkProperties;
 
 		public static OptRiftData fromJson(JsonObject json) {
-			Optional<VirtualTarget> destination = Optional.ofNullable(json.get("destination")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(CompoundTag.class::cast).map(VirtualTarget::fromTag);
-			Optional<LinkProperties> linkProperties = Optional.ofNullable(json.get("properties")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(CompoundTag.class::cast).map(LinkProperties::fromTag);
+			Optional<VirtualTarget> destination = Optional.ofNullable(json.get("destination")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(VirtualTarget::fromTag);
+			Optional<LinkProperties> linkProperties = Optional.ofNullable(json.get("properties")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(LinkProperties::fromTag);
 			return new OptRiftData(destination, linkProperties);
 		}
 

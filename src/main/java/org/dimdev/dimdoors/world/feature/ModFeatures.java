@@ -10,8 +10,6 @@ import org.dimdev.dimdoors.mixin.accessor.GenerationSettingsAccessor;
 import org.dimdev.dimdoors.world.feature.decorator.EternalFluidLakeDecorator;
 import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.*;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGateway;
-
 import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;

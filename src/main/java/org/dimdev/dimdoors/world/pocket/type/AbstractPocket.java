@@ -4,7 +4,7 @@ import com.mojang.serialization.Lifecycle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
@@ -34,28 +34,28 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		return id;
 	}
 
-	public static AbstractPocket<? extends AbstractPocket<?>> deserialize(CompoundTag tag) {
+	public static AbstractPocket<? extends AbstractPocket<?>> deserialize(NbtCompound tag) {
 		Identifier id = Identifier.tryParse(tag.getString("type"));
 		return REGISTRY.get(id).fromTag(tag);
 	}
 
-	public static AbstractPocketBuilder<?, ?> deserializeBuilder(CompoundTag tag) {
+	public static AbstractPocketBuilder<?, ?> deserializeBuilder(NbtCompound tag) {
 		Identifier id = Identifier.tryParse(tag.getString("type"));
 		return REGISTRY.get(id).builder().fromTag(tag);
 	}
 
-	public static CompoundTag serialize(AbstractPocket<?> pocket) {
-		return pocket.toTag(new CompoundTag());
+	public static NbtCompound serialize(AbstractPocket<?> pocket) {
+		return pocket.toTag(new NbtCompound());
 	}
 
-	public V fromTag(CompoundTag tag) {
+	public V fromTag(NbtCompound tag) {
 		this.id = tag.getInt("id");
-		this.world = RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("world")));
+		this.world = RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("world")));
 
 		return (V) this;
 	}
 
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		tag.putInt("id", id);
 		tag.putString("world", world.getValue().toString());
 
@@ -90,9 +90,9 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		AbstractPocketType<LazyGenerationPocket> LAZY_GENERATION_POCKET = register(new Identifier("dimdoors", LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
 
-		T fromTag(CompoundTag tag);
+		T fromTag(NbtCompound tag);
 
-		CompoundTag toTag(CompoundTag tag);
+		NbtCompound toTag(NbtCompound tag);
 
 		T instance();
 
@@ -105,12 +105,12 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> AbstractPocketType<U> register(Identifier id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
 			return Registry.register(REGISTRY, id, new AbstractPocketType<U>() {
 				@Override
-				public U fromTag(CompoundTag tag) {
+				public U fromTag(NbtCompound tag) {
 					return (U) supplier.get().fromTag(tag);
 				}
 
 				@Override
-				public CompoundTag toTag(CompoundTag tag) {
+				public NbtCompound toTag(NbtCompound tag) {
 					tag.putString("type", id.toString());
 					return tag;
 				}
@@ -165,9 +165,9 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 			return (P) this;
 		}
 
-		abstract public P fromTag(CompoundTag tag);
+		abstract public P fromTag(NbtCompound tag);
 
-		abstract public CompoundTag toTag(CompoundTag tag);
+		abstract public NbtCompound toTag(NbtCompound tag);
 
 		/*
 		public P fromTag(CompoundTag tag) {

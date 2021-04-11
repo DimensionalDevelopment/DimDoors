@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.TranslatableText;
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
@@ -61,15 +61,15 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 		return VirtualTargetType.POCKET_ENTRANCE;
 	}
 
-	public static CompoundTag toTag(PocketEntranceMarker target) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(PocketEntranceMarker target) {
+		NbtCompound tag = new NbtCompound();
 		tag.putFloat("weight", target.weight);
 		tag.put("ifDestination", VirtualTarget.toTag(target.ifDestination));
 		tag.put("otherwiseDestination", VirtualTarget.toTag(target.otherwiseDestination));
 		return tag;
 	}
 
-	public static PocketEntranceMarker fromTag(CompoundTag tag) {
+	public static PocketEntranceMarker fromTag(NbtCompound tag) {
 		return PocketEntranceMarker.builder()
 				.weight(tag.getFloat("weight"))
 				.ifDestination(tag.contains("ifDestination") ? VirtualTarget.fromTag(tag.getCompound("ifDestination")) : NoneTarget.INSTANCE)

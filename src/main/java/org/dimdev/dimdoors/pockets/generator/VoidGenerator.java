@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +50,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromTag(CompoundTag tag) {
+	public PocketGenerator fromTag(NbtCompound tag) {
 		super.fromTag(tag);
 
 		try {
@@ -69,7 +69,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		super.toTag(tag);
 
 		tag.putString("width", width);

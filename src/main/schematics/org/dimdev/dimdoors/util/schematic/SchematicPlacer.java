@@ -12,9 +12,9 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtDouble;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
@@ -89,9 +89,9 @@ public final class SchematicPlacer {
 	}
 
 	private static void placeEntities(int originX, int originY, int originZ, Schematic schematic, StructureWorldAccess world) {
-		List<CompoundTag> entityTags = schematic.getEntities();
-		for (CompoundTag tag : entityTags) {
-			ListTag listTag = Objects.requireNonNull(tag.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos tag!");
+		List<NbtCompound> entityTags = schematic.getEntities();
+		for (NbtCompound tag : entityTags) {
+			NbtList listTag = Objects.requireNonNull(tag.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos tag!");
 			SchematicPlacer.processPos(listTag, originX, originY, originZ, tag);
 
 			EntityType<?> entityType = EntityType.fromNbt(tag).orElseThrow(AssertionError::new);
@@ -104,7 +104,7 @@ public final class SchematicPlacer {
 		}
 	}
 
-	public static CompoundTag fixEntityId(CompoundTag tag) {
+	public static NbtCompound fixEntityId(NbtCompound tag) {
 		if (!tag.contains("Id") && tag.contains("id")) {
 			tag.putString("Id", tag.getString("id"));
 		} else if (tag.contains("Id") && !tag.contains("id")) {
@@ -118,13 +118,13 @@ public final class SchematicPlacer {
 		return tag;
 	}
 
-	private static void processPos(ListTag listTag, int originX, int originY, int originZ, CompoundTag tag) {
+	private static void processPos(NbtList listTag, int originX, int originY, int originZ, NbtCompound tag) {
 		double x = listTag.getDouble(0);
 		double y = listTag.getDouble(1);
 		double z = listTag.getDouble(2);
 		tag.remove("Pos");
-		tag.put("Pos", NbtOps.INSTANCE.createList(Stream.of(DoubleTag.of(x + originX),
-				DoubleTag.of(y + originY),
-				DoubleTag.of(z + originZ))));
+		tag.put("Pos", NbtOps.INSTANCE.createList(Stream.of(NbtDouble.of(x + originX),
+				NbtDouble.of(y + originY),
+				NbtDouble.of(z + originZ))));
 	}
 }

@@ -21,7 +21,7 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public final class DimensionalPortalRenderer {
 	public static final Identifier WARP_PATH;
-	private static final RenderPhase.class_5942 DIMENSIONAL_PORTAL_SHADER;
+	private static final RenderPhase.Shader DIMENSIONAL_PORTAL_SHADER;
 	private static final RenderLayer RENDER_LAYER;
 	private static final ModelPart MODEL;
 	private static final ModelPart TALL_MODEL;
@@ -42,7 +42,7 @@ public final class DimensionalPortalRenderer {
 
 	static {
 		WARP_PATH = new Identifier("dimdoors:textures/other/warp.png");
-		DIMENSIONAL_PORTAL_SHADER = new RenderPhase.class_5942(ModShaders::getDimensionalPortal);
+		DIMENSIONAL_PORTAL_SHADER = new RenderPhase.Shader(ModShaders::getDimensionalPortal);
 		RENDER_LAYER = RenderLayerFactory.create(
 				"dimensional_portal",
 				VertexFormats.POSITION,
@@ -51,12 +51,12 @@ public final class DimensionalPortalRenderer {
 				false,
 				false,
 				RenderLayer.MultiPhaseParameters.builder()
-						.method_34578(DIMENSIONAL_PORTAL_SHADER)
-						.method_34577(
-								RenderPhase.class_5940.method_34560()
-										.method_34563(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false)
-										.method_34563(WARP_PATH, false, false)
-										.method_34562()
+						.shader(DIMENSIONAL_PORTAL_SHADER)
+						.texture(
+								RenderPhase.Textures.create()
+										.add(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false)
+										.add(WARP_PATH, false, false)
+										.build()
 						)
 						.build(false)
 		);

@@ -8,8 +8,7 @@ import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import org.dimdev.dimdoors.world.level.registry.schema.Schema1;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Util;
 
@@ -22,7 +21,7 @@ public class RiftSchemas {
 		// TODO: add schemas if schema changes
 	}).build(Runnable::run);
 
-	public static CompoundTag update(int oldVersion, CompoundTag original) {
-		return (CompoundTag) DATA_FIXER.update(RIFT_DATA_TYPE_REF, new Dynamic<>( NbtOps.INSTANCE, original), oldVersion, RIFT_DATA_VERSION).getValue();
+	public static NbtCompound update(int oldVersion, NbtCompound original) {
+		return (NbtCompound) DATA_FIXER.update(RIFT_DATA_TYPE_REF, new Dynamic<>( NbtOps.INSTANCE, original), oldVersion, RIFT_DATA_VERSION).getValue();
 	}
 }

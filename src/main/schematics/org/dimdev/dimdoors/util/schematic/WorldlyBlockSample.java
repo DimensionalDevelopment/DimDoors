@@ -1,7 +1,10 @@
 package org.dimdev.dimdoors.util.schematic;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.world.Heightmap;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,6 +37,11 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 	}
 
 	@Override
+	public <T extends BlockEntity> Optional<T> getBlockEntity(BlockPos pos, BlockEntityType<T> type) {
+		 return Optional.ofNullable(type.get(this, pos));
+	}
+
+	@Override
 	public BlockState getBlockState(BlockPos pos) {
 		return this.relativeBlockSample.getBlockState(pos);
 	}
@@ -61,6 +69,16 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 	@Override
 	public boolean testBlockState(BlockPos pos, Predicate<BlockState> state) {
 		return state.test(this.getBlockState(pos));
+	}
+
+	@Override
+	public boolean testFluidState(BlockPos pos, Predicate<FluidState> state) {
+		throw new RuntimeException("Method Implementation missing!"); // FIXME
+	}
+
+	@Override
+	public BlockPos getTopPosition(Heightmap.Type type, BlockPos blockPos) {
+		throw new RuntimeException("Method Implementation missing!"); // FIXME
 	}
 
 	@Override

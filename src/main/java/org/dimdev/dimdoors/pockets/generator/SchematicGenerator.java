@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.pockets.generator;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -76,7 +76,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
-	public PocketGenerator fromTag(CompoundTag tag) {
+	public PocketGenerator fromTag(NbtCompound tag) {
 		super.fromTag(tag);
 
 		this.id = tag.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
@@ -91,7 +91,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		super.toTag(tag);
 
 		tag.putString("id", this.id);

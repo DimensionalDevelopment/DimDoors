@@ -16,7 +16,7 @@ public class WorldMatchCondition implements Condition {
 	}
 
 	public static WorldMatchCondition fromJson(JsonObject json) {
-		RegistryKey<World> key = RegistryKey.of(Registry.DIMENSION, new Identifier(json.getAsJsonPrimitive("world").getAsString()));
+		RegistryKey<World> key = RegistryKey.of(Registry.WORLD_KEY, new Identifier(json.getAsJsonPrimitive("world").getAsString()));
 		return new WorldMatchCondition(key);
 	}
 

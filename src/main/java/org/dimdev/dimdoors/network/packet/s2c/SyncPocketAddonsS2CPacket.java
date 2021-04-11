@@ -38,7 +38,7 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 
 	@Override
 	public SimplePacket<ClientPacketListener> read(PacketByteBuf buf) throws IOException {
-		this.world = RegistryKey.of(Registry.DIMENSION, buf.readIdentifier());
+		this.world = RegistryKey.of(Registry.WORLD_KEY, buf.readIdentifier());
 		this.gridSize = buf.readInt();
 		this.pocketId = buf.readInt();
 		this.pocketRange = buf.readInt();

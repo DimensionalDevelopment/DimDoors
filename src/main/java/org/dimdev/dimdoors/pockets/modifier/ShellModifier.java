@@ -36,10 +36,10 @@ public class ShellModifier implements LazyModifier {
 	private BlockBox boxToDrawAround;
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		LazyModifier.super.toTag(tag);
 
-		ListTag layersTag = new ListTag();
+		NbtList layersTag = new NbtList();
 		for (Layer layer : layers) {
 			layersTag.add(layer.toTag());
 		}
@@ -59,62 +59,74 @@ public class ShellModifier implements LazyModifier {
 			int thickness = layer.getThickness(pocket.toVariableMap(new HashMap<>()));
 			final BlockState blockState = layer.getBlockState();
 
-			ChunkPos pos = chunk.getPos();
-			BlockBox chunkBox = BlockBox.create(pos.getStartX(), chunk.getBottomY(), pos.getStartZ(), pos.getEndX(), chunk.getTopY(), pos.getEndZ());
+			BlockBox chunkBox = BlockBoxUtil.getBox(chunk);
 
 			BlockBox temp;
 
 
 			// x-planes
-			temp = BlockBox.create(boxToDrawAround.maxX + 1 + boxExpansion, boxToDrawAround.minY - thickness - boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion, boxToDrawAround.maxX + thickness + boxExpansion, boxToDrawAround.maxY + thickness + boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = BlockBoxUtil.intersection(temp, chunkBox);
-			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
-					.forEach(blockPos -> {
-						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
-					});
-			temp = BlockBox.create(boxToDrawAround.minX - 1 - boxExpansion, boxToDrawAround.minY - thickness - boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion, boxToDrawAround.minX - thickness - boxExpansion, boxToDrawAround.maxY + thickness + boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = BlockBoxUtil.intersection(temp, chunkBox);
-			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
-					.forEach(blockPos -> {
-						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
-					});
+			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMaxX() + 1 + boxExpansion, boxToDrawAround.getMinY() - thickness - boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + thickness + boxExpansion, boxToDrawAround.getMaxY() + thickness + boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
+			if (temp.intersects(chunkBox)) {
+				temp = temp.intersection(chunkBox);
+				BlockPos.stream(temp)
+						.forEach(blockPos -> {
+							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
+						});
+			}
+			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - 1 - boxExpansion, boxToDrawAround.getMinY() - thickness - boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion), new Vec3i(boxToDrawAround.getMinX() - thickness - boxExpansion, boxToDrawAround.getMaxY() + thickness + boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
+			if (temp.intersects(chunkBox)) {
+				temp = temp.intersection(chunkBox);
+				BlockPos.stream(temp)
+						.forEach(blockPos -> {
+							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
+						});
+			}
 
 			// y-planes
-			temp = BlockBox.create(boxToDrawAround.minX - boxExpansion, boxToDrawAround.maxY + 1 + boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion, boxToDrawAround.maxX + boxExpansion, boxToDrawAround.maxY + thickness + boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = BlockBoxUtil.intersection(temp, chunkBox);
-			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
-					.forEach(blockPos -> {
-						if(chunk.getBlockState(blockPos).getBlock() instanceof AirBlock) chunk.setBlockState(blockPos, blockState, false);
-					});
-			temp = BlockBox.create(boxToDrawAround.minX - boxExpansion, boxToDrawAround.minY - 1 - boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion, boxToDrawAround.maxX + boxExpansion, boxToDrawAround.minY - thickness - boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = BlockBoxUtil.intersection(temp, chunkBox);
-			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
-					.forEach(blockPos -> {
-						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
-					});
+			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - boxExpansion, boxToDrawAround.getMaxY() + 1 + boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + boxExpansion, boxToDrawAround.getMaxY() + thickness + boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
+			if (temp.intersects(chunkBox)) {
+				temp = temp.intersection(chunkBox);
+				BlockPos.stream(temp)
+						.forEach(blockPos -> {
+							if (chunk.getBlockState(blockPos).getBlock() instanceof AirBlock)
+								chunk.setBlockState(blockPos, blockState, false);
+						});
+			}
+			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - boxExpansion, boxToDrawAround.getMinY() - 1 - boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + boxExpansion, boxToDrawAround.getMinY() - thickness - boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
+			if (temp.intersects(chunkBox)) {
+				temp = temp.intersection(chunkBox);
+				BlockPos.stream(temp)
+						.forEach(blockPos -> {
+							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
+						});
+			}
 
 			// z-planes
-			temp = BlockBox.create(boxToDrawAround.minX - boxExpansion, boxToDrawAround.minY - boxExpansion, boxToDrawAround.minZ - 1 - boxExpansion, boxToDrawAround.maxX + boxExpansion, boxToDrawAround.maxY + boxExpansion, boxToDrawAround.minZ - thickness - boxExpansion);
-			temp = BlockBoxUtil.intersection(temp, chunkBox);
-			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
-					.forEach(blockPos -> {
-						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
-					});
-			temp = BlockBox.create(boxToDrawAround.minX - boxExpansion, boxToDrawAround.minY - boxExpansion, boxToDrawAround.maxZ + 1 + boxExpansion, boxToDrawAround.maxX + boxExpansion, boxToDrawAround.maxY + boxExpansion, boxToDrawAround.maxZ + thickness + boxExpansion);
-			temp = BlockBoxUtil.intersection(temp, chunkBox);
-			if (BlockBoxUtil.isRealBox(temp)) BlockPos.stream(temp)
-					.forEach(blockPos -> {
-						if(chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
-					});
+			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - boxExpansion, boxToDrawAround.getMinY() - boxExpansion, boxToDrawAround.getMinZ() - 1 - boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + boxExpansion, boxToDrawAround.getMaxY() + boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion));
+			if (temp.intersects(chunkBox)) {
+				temp = temp.intersection(chunkBox);
+				BlockPos.stream(temp)
+						.forEach(blockPos -> {
+							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
+						});
+			}
+			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - boxExpansion, boxToDrawAround.getMinY() - boxExpansion, boxToDrawAround.getMaxZ() + 1 + boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + boxExpansion, boxToDrawAround.getMaxY() + boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
+			if (temp.intersects(chunkBox)) {
+				temp = temp.intersection(chunkBox);
+				BlockPos.stream(temp)
+						.forEach(blockPos -> {
+							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
+						});
+			}
 
 			boxExpansion += thickness;
 		}
 	}
 
 	@Override
-	public Modifier fromTag(CompoundTag tag) {
-		for (Tag layerTag : tag.getList("layers", NbtType.COMPOUND)) {
-			CompoundTag compoundTag = (CompoundTag) layerTag;
+	public Modifier fromTag(NbtCompound tag) {
+		for (NbtElement layerTag : tag.getList("layers", NbtType.COMPOUND)) {
+			NbtCompound compoundTag = (NbtCompound) layerTag;
 			try {
 				Layer layer = Layer.fromTag(compoundTag);
 				layers.add(layer);
@@ -125,7 +137,7 @@ public class ShellModifier implements LazyModifier {
 
 		if (tag.contains("box_to_draw_around", NbtType.INT_ARRAY)) {
 			int[] box = tag.getIntArray("box_to_draw_around");
-			boxToDrawAround = BlockBox.create(box[0], box[1], box[2], box[3], box[4], box[5]);
+			boxToDrawAround = BlockBox.create(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
 		}
 
 		return this;
@@ -147,7 +159,7 @@ public class ShellModifier implements LazyModifier {
 		if (pocket instanceof LazyGenerationPocket) {
 			Map<String, Double> variableMap = pocket.toVariableMap(new HashMap<>());
 			BlockBox pocketBox = pocket.getBox();
-			boxToDrawAround = BlockBox.create(pocketBox.minX, pocketBox.minY, pocketBox.minZ, pocketBox.maxX, pocketBox.maxY, pocketBox.maxZ);
+			boxToDrawAround = BlockBox.create(new Vec3i(pocketBox.getMinX(), pocketBox.getMinY(), pocketBox.getMinZ()), new Vec3i(pocketBox.getMaxX(), pocketBox.getMaxY(), pocketBox.getMaxZ()));
 			layers.forEach(layer -> pocket.expand(layer.getThickness(variableMap)));
 		} else {
 			layers.forEach(layer -> drawLayer(layer, manager.getPocket(), parameters.getWorld()));
@@ -170,21 +182,21 @@ public class ShellModifier implements LazyModifier {
 		BlockBox pocketBox = pocket.getBox();
 
 		// x-planes
-		BlockPos.stream(BlockBox.create(pocketBox.maxX + 1, pocketBox.minY - thickness, pocketBox.minZ - thickness, pocketBox.maxX + thickness, pocketBox.maxY + thickness, pocketBox.maxZ + thickness))
+		BlockPos.stream(BlockBox.create(new Vec3i(pocketBox.getMaxX() + 1, pocketBox.getMinY() - thickness, pocketBox.getMinZ() - thickness), new Vec3i(pocketBox.getMaxX() + thickness, pocketBox.getMaxY() + thickness, pocketBox.getMaxZ() + thickness)))
 				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
-		BlockPos.stream(BlockBox.create(pocketBox.minX - 1, pocketBox.minY - thickness, pocketBox.minZ - thickness, pocketBox.minX - thickness, pocketBox.maxY + thickness, pocketBox.maxZ + thickness))
+		BlockPos.stream(BlockBox.create(new Vec3i(pocketBox.getMinX() - 1, pocketBox.getMinY() - thickness, pocketBox.getMinZ() - thickness), new Vec3i(pocketBox.getMinX() - thickness, pocketBox.getMaxY() + thickness, pocketBox.getMaxZ() + thickness)))
 				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
 
 		// y-planes
-		BlockPos.stream(BlockBox.create(pocketBox.minX, pocketBox.maxY + 1, pocketBox.minZ - thickness, pocketBox.maxX, pocketBox.maxY + thickness, pocketBox.maxZ + thickness))
+		BlockPos.stream(BlockBox.create(new Vec3i(pocketBox.getMinX(), pocketBox.getMaxY() + 1, pocketBox.getMinZ() - thickness), new Vec3i(pocketBox.getMaxX(), pocketBox.getMaxY() + thickness, pocketBox.getMaxZ() + thickness)))
 				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
-		BlockPos.stream(BlockBox.create(pocketBox.minX, pocketBox.minY - 1, pocketBox.minZ - thickness, pocketBox.maxX, pocketBox.minY - thickness, pocketBox.maxZ + thickness))
+		BlockPos.stream(BlockBox.create(new Vec3i(pocketBox.getMinX(), pocketBox.getMinY() - 1, pocketBox.getMinZ() - thickness), new Vec3i(pocketBox.getMaxX(), pocketBox.getMinY() - thickness, pocketBox.getMaxZ() + thickness)))
 				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
 
 		// z-planes
-		BlockPos.stream(BlockBox.create(pocketBox.minX, pocketBox.minY, pocketBox.minZ - 1, pocketBox.maxX, pocketBox.maxY, pocketBox.minZ - thickness))
+		BlockPos.stream(BlockBox.create(new Vec3i(pocketBox.getMinX(), pocketBox.getMinY(), pocketBox.getMinZ() - 1), new Vec3i(pocketBox.getMaxX(), pocketBox.getMaxY(), pocketBox.getMinZ() - thickness)))
 				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
-		BlockPos.stream(BlockBox.create(pocketBox.minX, pocketBox.minY, pocketBox.maxZ + 1, pocketBox.maxX, pocketBox.maxY, pocketBox.maxZ + thickness))
+		BlockPos.stream(BlockBox.create(new Vec3i(pocketBox.getMinX(), pocketBox.getMinY(), pocketBox.getMaxZ() + 1), new Vec3i(pocketBox.getMaxX(), pocketBox.getMaxY(), pocketBox.getMaxZ() + thickness)))
 				.forEach(blockPos -> world.setBlockState(blockPos, blockState));
 
 		pocket.expand(thickness);
@@ -224,14 +236,14 @@ public class ShellModifier implements LazyModifier {
 			return (int) thicknessEquation.apply(variableMap);
 		}
 
-		public CompoundTag toTag() {
-			CompoundTag tag = new CompoundTag();
+		public NbtCompound toTag() {
+			NbtCompound tag = new NbtCompound();
 			tag.putString("block_state", blockStateString);
 			tag.putString("thickness", thickness);
 			return tag;
 		}
 
-		public static Layer fromTag(CompoundTag tag) throws CommandSyntaxException {
+		public static Layer fromTag(NbtCompound tag) throws CommandSyntaxException {
 			return new Layer(tag.getString("block_state"), tag.getString("thickness"));
 		}
 	}

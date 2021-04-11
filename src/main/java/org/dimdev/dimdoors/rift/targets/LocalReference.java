@@ -2,8 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
 import org.dimdev.dimdoors.api.util.Location;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 
 public class LocalReference extends RiftReference {
@@ -29,13 +28,13 @@ public class LocalReference extends RiftReference {
 		return VirtualTargetType.LOCAL;
 	}
 
-	public static CompoundTag toTag(LocalReference localReference) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(LocalReference localReference) {
+		NbtCompound tag = new NbtCompound();
 		tag.putIntArray("target", new int[]{localReference.target.getX(), localReference.target.getY(), localReference.target.getZ()});
 		return tag;
 	}
 
-	public static LocalReference fromTag(CompoundTag tag) {
+	public static LocalReference fromTag(NbtCompound tag) {
 		int[] pos = tag.getIntArray("target");
 		return new LocalReference(
 				new BlockPos(pos[0], pos[1], pos[2])

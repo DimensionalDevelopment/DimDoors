@@ -13,7 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -89,7 +89,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public CompoundTag serialize(CompoundTag tag) {
+	public NbtCompound serialize(NbtCompound tag) {
 		super.serialize(tag);
 		tag.putBoolean("closing", this.closing);
 		tag.putBoolean("stablized", this.stabilized);
@@ -99,7 +99,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public void deserialize(CompoundTag tag) {
+	public void deserialize(NbtCompound tag) {
 		super.deserialize(tag);
 		this.closing = tag.getBoolean("closing");
 		this.stabilized = tag.getBoolean("stablized");

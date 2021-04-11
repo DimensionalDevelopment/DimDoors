@@ -2,11 +2,12 @@ package org.dimdev.dimdoors.world.pocket.type;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
+import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
@@ -25,8 +26,7 @@ public class LazyGenerationPocket extends Pocket {
 		ChunkLazilyGeneratedComponent lazyGenned = ChunkLazilyGeneratedComponent.get(chunk);
 		if (lazyGenned.hasBeenLazyGenned()) return;
 
-		ChunkPos pos = chunk.getPos();
-		BlockBox chunkBox = BlockBox.create(pos.getStartX(), chunk.getBottomY(), pos.getStartZ(), pos.getEndX(), chunk.getTopY(), pos.getEndZ());
+		BlockBox chunkBox = BlockBoxUtil.getBox(chunk);
 		if (!chunkBox.intersects(getBox())) return;
 
 		generator.generateChunk(this, chunk);
@@ -49,14 +49,14 @@ public class LazyGenerationPocket extends Pocket {
 	public void init() {
 		BlockBox box = getBox();
 
-		toBeGennedChunkCount = (Math.floorDiv(box.maxX, 16) - Math.floorDiv(box.minX, 16) + 1) * (Math.floorDiv(box.maxZ, 16) - Math.floorDiv(box.minZ, 16) + 1);
+		toBeGennedChunkCount = (Math.floorDiv(box.getMaxX(), 16) - Math.floorDiv(box.getMinX(), 16) + 1) * (Math.floorDiv(box.getMaxZ(), 16) - Math.floorDiv(box.getMinZ(), 16) + 1);
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		super.toTag(tag);
 
-		if (generator != null) tag.put("generator", generator.toTag(new CompoundTag()));
+		if (generator != null) tag.put("generator", generator.toTag(new NbtCompound()));
 		if (toBeGennedChunkCount > 0) tag.putInt("to_be_genned_chunks", toBeGennedChunkCount);
 
 		return tag;
@@ -72,7 +72,7 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	@Override
-	public Pocket fromTag(CompoundTag tag) {
+	public Pocket fromTag(NbtCompound tag) {
 		super.fromTag(tag);
 
 		if (tag.contains("generator", NbtType.COMPOUND)) generator = (LazyPocketGenerator) PocketGenerator.deserialize(tag.getCompound("generator"));

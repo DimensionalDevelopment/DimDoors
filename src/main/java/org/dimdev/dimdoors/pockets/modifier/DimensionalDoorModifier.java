@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -39,7 +39,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	private Direction facing;
 	private String doorTypeString;
 	private DimensionalDoorBlock doorType;
-	private CompoundTag doorData;
+	private NbtCompound doorData;
 	private String doorDataReference;
 
 	private String x;
@@ -50,7 +50,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	private Equation zEquation;
 
 	@Override
-	public Modifier fromTag(CompoundTag tag) {
+	public Modifier fromTag(NbtCompound tag) {
 		String facingString = tag.getString("facing");
 		facing = Direction.byName(tag.getString("facing"));
 		if (facing == null || facing.getAxis().isVertical()) {
@@ -85,7 +85,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		LazyCompatibleModifier.super.toTag(tag);
 
 		tag.putString("facing", facing.asString());
@@ -139,7 +139,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));
 		} else {
-			CompoundTag solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
+			NbtCompound solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
 			rift.setData(RiftData.fromTag(solvedDoorData));
 		}
 

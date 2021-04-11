@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 	@Override
@@ -33,13 +33,13 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 		return RegistryVertexType.RIFT_PLACEHOLDER;
 	}
 
-	public static CompoundTag toTag(RiftPlaceholder vertex) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(RiftPlaceholder vertex) {
+		NbtCompound tag = new NbtCompound();
 		tag.putUuid("id", vertex.id);
 		return tag;
 	}
 
-	public static RiftPlaceholder fromTag(CompoundTag tag) {
+	public static RiftPlaceholder fromTag(NbtCompound tag) {
 		RiftPlaceholder vertex = new RiftPlaceholder();
 		vertex.id = tag.getUuid("id");
 		return vertex;

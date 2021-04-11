@@ -6,10 +6,8 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+import net.minecraft.nbt.NbtCompound;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import net.minecraft.nbt.CompoundTag;
 
 public class LinkProperties {
 	public static final LinkProperties NONE = LinkProperties.builder().build();
@@ -69,8 +67,8 @@ public class LinkProperties {
 		return new LinkPropertiesBuilder().floatingWeight(this.floatingWeight).entranceWeight(this.entranceWeight).groups(this.groups).linksRemaining(this.linksRemaining).oneWay(this.oneWay);
 	}
 
-	public static CompoundTag toTag(LinkProperties properties) {
-		net.minecraft.nbt.CompoundTag tag = new net.minecraft.nbt.CompoundTag();
+	public static NbtCompound toTag(LinkProperties properties) {
+		net.minecraft.nbt.NbtCompound tag = new net.minecraft.nbt.NbtCompound();
 		tag.putFloat("floatingWeight", properties.floatingWeight);
 		tag.putFloat("entranceWeight", properties.entranceWeight);
 		tag.putIntArray("groups", new ArrayList<>(properties.groups));
@@ -79,7 +77,7 @@ public class LinkProperties {
 		return tag;
 	}
 
-	public static LinkProperties fromTag(CompoundTag tag) {
+	public static LinkProperties fromTag(NbtCompound tag) {
 		return LinkProperties.builder()
 				.floatingWeight(tag.getFloat("floatingWeight"))
 				.entranceWeight(tag.getFloat("entranceWeight"))

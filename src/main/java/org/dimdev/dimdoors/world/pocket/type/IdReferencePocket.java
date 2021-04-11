@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
@@ -11,7 +11,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 	protected int referencedId;
 
 	@Override
-	public IdReferencePocket fromTag(CompoundTag tag) {
+	public IdReferencePocket fromTag(NbtCompound tag) {
 		super.fromTag(tag);
 
 		this.referencedId = tag.getInt("referenced_id");
@@ -20,7 +20,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		tag = super.toTag(tag);
 
 		tag.putInt("referenced_id", referencedId);
@@ -62,13 +62,13 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 		}
 
 		@Override
-		public IdReferencePocketBuilder fromTag(CompoundTag tag) {
+		public IdReferencePocketBuilder fromTag(NbtCompound tag) {
 			if (tag.contains("referenced_id", NbtType.INT)) referencedId = tag.getInt("referenced_id");
 			return this;
 		}
 
 		@Override
-		public CompoundTag toTag(CompoundTag tag) {
+		public NbtCompound toTag(NbtCompound tag) {
 			if (referencedId != Integer.MIN_VALUE) tag.putInt("referenced_id", referencedId);
 			return tag;
 		}
