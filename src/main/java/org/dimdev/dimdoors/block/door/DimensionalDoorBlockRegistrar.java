@@ -22,7 +22,6 @@ import org.dimdev.dimdoors.listener.BlockRegistryEntryAddedListener;
 
 import java.util.ArrayList;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class DimensionalDoorBlockRegistrar {
 	private static final String PREFIX = "autogen_dimensional_";

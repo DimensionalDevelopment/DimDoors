@@ -54,7 +54,11 @@ public class DimensionalDoorItemRegistrar {
 			handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
 		} else if (item instanceof BlockItem) {
 			Block block = ((BlockItem) item).getBlock();
-			handleEntry(identifier, item, block, AutoGenDimensionalTrapdoorItem::new);
+			if (block instanceof DoorBlock) {
+				handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
+			} else {
+				handleEntry(identifier, item, block, AutoGenDimensionalTrapdoorItem::new);
+			}
 		}
 	}
 
