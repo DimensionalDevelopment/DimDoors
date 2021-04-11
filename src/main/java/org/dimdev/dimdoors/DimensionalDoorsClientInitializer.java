@@ -7,6 +7,7 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.client.DimensionalDoorModelVariantProvider;
 import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
+import org.dimdev.dimdoors.client.ModEntityModelLayers;
 import org.dimdev.dimdoors.client.ModSkyRendering;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
@@ -31,6 +32,7 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
 		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.ENTRANCE_RIFT, ctx -> new EntranceRiftBlockEntityRenderer());
 		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.DETACHED_RIFT, ctx -> new DetachedRiftBlockEntityRenderer());
         ModBlocks.initClient();
+		ModEntityModelLayers.initClient();
 		ModParticleTypes.initClient();
 
 		registerListeners();
