@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.item;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -13,7 +15,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.api.util.QuadFunction;
-import org.dimdev.dimdoors.block.door.DoorBlockClassCase;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
+import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.listener.ItemRegistryEntryAddedListener;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
@@ -45,45 +48,35 @@ public class DimensionalDoorItemRegistrar {
 	}
 
 	public void handleEntry(Identifier identifier, Item item) {
-		Block block;
-		switch (DoorItemClassCase.getCase(item)) {
-			case TALL_BLOCK_ITEM:
-				block = ((TallBlockItem) item).getBlock();
-				handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
-				break;
-			case BLOCK_ITEM:
-				block = ((BlockItem) item).getBlock();
-				handleEntry(identifier, item, block, AutoGenDimensionalTrapdoorItem::new);
-				break;
-			default:
-				// do nothing
-				break;
+		if (item instanceof TallBlockItem) {
+			Block block = ((TallBlockItem) item).getBlock();
+			handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
+		} else if (item instanceof BlockItem) {
+			Block block = ((BlockItem) item).getBlock();
+			handleEntry(identifier, item, block, AutoGenDimensionalTrapdoorItem::new);
 		}
 	}
 
 	private void handleEntry(Identifier identifier, Item item, Block block, QuadFunction<Block, Item.Settings, Consumer<? super EntranceRiftBlockEntity>, Item, ? extends Item> constructor) {
-		switch (DoorBlockClassCase.getCase(block)) {
-			case DOOR_BLOCK:
-			case TRAPDOOR_BLOCK:
-				Item.Settings settings = new FabricItemSettings()
-						.maxCount(item.getMaxCount())
-						.maxDamage(item.getMaxDamage())
-						.recipeRemainder(item.getRecipeRemainder())
-						.group(ModItems.DIMENSIONAL_DOORS);
-				if (item.isFireproof()) settings.fireproof();
 
-				Function<Block, Item> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, rift -> rift.setDestination(new PublicPocketTarget()), item);
+		if (!(block instanceof DimensionalDoorBlock)
+				&& !(block instanceof DimensionalTrapdoorBlock)
+				&& (block instanceof DoorBlock || block instanceof TrapdoorBlock)) {
+			Item.Settings settings = new FabricItemSettings()
+					.maxCount(item.getMaxCount())
+					.maxDamage(item.getMaxDamage())
+					.recipeRemainder(item.getRecipeRemainder())
+					.group(ModItems.DIMENSIONAL_DOORS);
+			if (item.isFireproof()) settings.fireproof();
 
-				if (!blocksAlreadyNotifiedAbout.containsKey(block)) {
-					toBeMapped.put(block, new Pair<>(identifier, dimItemConstructor));
-					return;
-				}
+			Function<Block, Item> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, rift -> rift.setDestination(new PublicPocketTarget()), item);
 
-				register(identifier, dimItemConstructor.apply(blocksAlreadyNotifiedAbout.get(block)));
-				break;
-			default:
-				// do nothing
-				break;
+			if (!blocksAlreadyNotifiedAbout.containsKey(block)) {
+				toBeMapped.put(block, new Pair<>(identifier, dimItemConstructor));
+				return;
+			}
+
+			register(identifier, dimItemConstructor.apply(blocksAlreadyNotifiedAbout.get(block)));
 		}
 	}
 
@@ -105,32 +98,6 @@ public class DimensionalDoorItemRegistrar {
 		//}
 	}
 
-
-
-	private enum DoorItemClassCase {
-		NONE(null),
-		TALL_BLOCK_ITEM(TallBlockItem.class),
-		BLOCK_ITEM(BlockItem.class);
-
-		private static final Map<Class<? extends Item>, DoorItemClassCase> CASE_MAP = new HashMap<>();
-
-		static {
-			for (DoorItemClassCase doorItemClassCase : DoorItemClassCase.values()) {
-				CASE_MAP.put(doorItemClassCase.doorClazz, doorItemClassCase);
-			}
-		}
-
-		public static DoorItemClassCase getCase(Item item) {
-			DoorItemClassCase doorItemClassCase = CASE_MAP.get(item.getClass());
-			return doorItemClassCase == null ? NONE : doorItemClassCase;
-		}
-
-		private final Class<? extends Item> doorClazz;
-
-		DoorItemClassCase(Class<? extends Item> doorClazz) {
-			this.doorClazz = doorClazz;
-		}
-	}
 
 	private static class AutoGenDimensionalDoorItem extends DimensionalDoorItem {
 		private final Item originalItem;

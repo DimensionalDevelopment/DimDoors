@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -41,16 +43,10 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	public void handleEntry(Identifier identifier, Block block) {
-		switch (DoorBlockClassCase.getCase(block)) {
-			case DOOR_BLOCK:
-				register(identifier, block, DimensionalDoorBlock::new);
-				break;
-			case TRAPDOOR_BLOCK:
-				register(identifier, block, DimensionalTrapdoorBlock::new);
-				break;
-			default:
-				// do nothing
-				break;
+		if (!(block instanceof DimensionalDoorBlock) && block instanceof DoorBlock) {
+			register(identifier, block, DimensionalDoorBlock::new);
+		} else if (!(block instanceof DimensionalTrapdoorBlock) && block instanceof TrapdoorBlock) {
+			register(identifier, block, DimensionalTrapdoorBlock::new);
 		}
 	}
 
