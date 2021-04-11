@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.api;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
@@ -23,6 +24,7 @@ public class DimensionalDoorsApiTest {
 
 	@Test
 	public void apiTest() {
+		SharedConstants.createGameVersion();
 		Bootstrap.initialize();
 		FabricLoader.getInstance().getEntrypoints("main", ModInitializer.class).stream()
 				.filter(DimensionalDoorsInitializer.class::isInstance)
