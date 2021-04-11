@@ -24,6 +24,7 @@ public class BlockBoxMixin {
 
 	/**
 	 * @author CreepyCre
+	 * @reason method is bugged, currently does the same as {@link net.minecraft.util.math.BlockBox#encompass(net.minecraft.util.math.BlockPos pos)}
 	 */
 	@Overwrite
 	public BlockBox intersection(BlockBox box) {
