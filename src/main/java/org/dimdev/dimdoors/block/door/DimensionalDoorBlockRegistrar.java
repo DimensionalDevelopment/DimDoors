@@ -12,6 +12,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -19,6 +21,7 @@ import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.listener.BlockRegistryEntryAddedListener;
 
 import java.util.ArrayList;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class DimensionalDoorBlockRegistrar {
@@ -44,15 +47,15 @@ public class DimensionalDoorBlockRegistrar {
 
 	public void handleEntry(Identifier identifier, Block block) {
 		if (!(block instanceof DimensionalDoorBlock) && block instanceof DoorBlock) {
-			register(identifier, block, DimensionalDoorBlock::new);
+			register(identifier, block, AutoGenDimensionalDoorBlock::new);
 		} else if (!(block instanceof DimensionalTrapdoorBlock) && block instanceof TrapdoorBlock) {
-			register(identifier, block, DimensionalTrapdoorBlock::new);
+			register(identifier, block, AutoGenDimensionalTrapdoorBlock::new);
 		}
 	}
 
-	private void register(Identifier identifier, Block block, Function<AbstractBlock.Settings, ? extends Block> constructor) {
+	private void register(Identifier identifier, Block block, BiFunction<AbstractBlock.Settings, Block, ? extends Block> constructor) {
 		Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getPath());
-		Block newBlock = Registry.register(registry, gennedId, constructor.apply(FabricBlockSettings.copy(block)));
+		Block newBlock = Registry.register(registry, gennedId, constructor.apply(FabricBlockSettings.copy(block), block));
 		ModBlockEntityTypes.ENTRANCE_RIFT_BLOCKS.add(newBlock);
 		mappedDoorBlocks.put(gennedId, identifier);
 		itemRegistrar.notifyBlockMapped(block, newBlock);
@@ -68,5 +71,34 @@ public class DimensionalDoorBlockRegistrar {
 
 	public boolean isMapped(Identifier identifier) {
 		return mappedDoorBlocks.containsKey(identifier);
+	}
+
+
+	private static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {
+		private final Block originalBlock;
+
+		public AutoGenDimensionalDoorBlock(Settings settings, Block originalBlock) {
+			super(settings);
+			this.originalBlock = originalBlock;
+		}
+
+		@Override
+		public MutableText getName() {
+			return new TranslatableText("dimdoors.autogen_block_prefix").append(originalBlock.getName());
+		}
+	}
+
+	private static class AutoGenDimensionalTrapdoorBlock extends DimensionalTrapdoorBlock {
+		private final Block originalBlock;
+
+		public AutoGenDimensionalTrapdoorBlock(Settings settings, Block originalBlock) {
+			super(settings);
+			this.originalBlock = originalBlock;
+		}
+
+		@Override
+		public MutableText getName() {
+			return new TranslatableText("dimdoors.autogen_block_prefix").append(originalBlock.getName());
+		}
 	}
 }

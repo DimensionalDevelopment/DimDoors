@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -109,12 +110,12 @@ public class DimensionalDoorItemRegistrar {
 
 		@Override
 		public Text getName(ItemStack stack) {
-			return new TranslatableText("dimdoors.autogen_item_prefix", originalItem.getName().asString());
+			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
 
 		@Override
 		public Text getName() {
-			return new TranslatableText("dimdoors.autogen_item_prefix", originalItem.getName().asString());
+			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
 	}
 
@@ -128,12 +129,12 @@ public class DimensionalDoorItemRegistrar {
 
 		@Override
 		public Text getName(ItemStack stack) {
-			return new TranslatableText("dimdoors.autogen_item_prefix", originalItem.getName().asString());
+			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
 
 		@Override
 		public Text getName() {
-			return new TranslatableText("dimdoors.autogen_item_prefix", originalItem.getName().asString());
+			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
 	}
 }

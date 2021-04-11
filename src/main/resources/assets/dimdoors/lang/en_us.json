@@ -1,6 +1,7 @@
 {
   "itemGroup.dimdoors.dimensional_doors": "Dimensional Doors",
 
+  "dimdoors.autogen_block_prefix": "Dimensional %s",
   "block.dimdoors.gold_door": "Gold Door",
   "block.dimdoors.quartz_door": "Quartz Door",
   "block.dimdoors.iron_dimensional_door": "Iron Dimensional Door",
