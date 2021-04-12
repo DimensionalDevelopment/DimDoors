@@ -17,7 +17,6 @@ import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.api.util.OptionalBool;
 import org.dimdev.dimdoors.block.door.data.condition.AlwaysTrueCondition;
 import org.dimdev.dimdoors.block.door.data.condition.InverseCondition;
 import org.dimdev.dimdoors.block.door.data.condition.WorldMatchCondition;
@@ -33,6 +32,8 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Util;
 
+import net.fabricmc.fabric.api.util.TriState;
+
 public class DoorDataReader {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().setLenient().create();
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -43,7 +44,7 @@ public class DoorDataReader {
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
-					OptionalBool.FALSE
+					TriState.FALSE
 					),
 			new DoorData.UnbakedBlockSettings(
 					"minecraft:iron_door",
@@ -57,7 +58,7 @@ public class DoorDataReader {
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
-					OptionalBool.FALSE
+					TriState.FALSE
 			),
 			new DoorData.UnbakedBlockSettings(
 					"dimdoors:gold_door",
@@ -71,7 +72,7 @@ public class DoorDataReader {
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
-					OptionalBool.FALSE
+					TriState.FALSE
 			),
 			new DoorData.UnbakedBlockSettings(
 					"minecraft:oak_door",
@@ -85,7 +86,7 @@ public class DoorDataReader {
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
-					OptionalBool.FALSE
+					TriState.FALSE
 			),
 			new DoorData.UnbakedBlockSettings(
 					"dimdoors:quartz_door",
@@ -103,7 +104,7 @@ public class DoorDataReader {
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
-					OptionalBool.FALSE
+					TriState.FALSE
 			),
 			new DoorData.UnbakedBlockSettings(
 					"minecraft:iron_door",

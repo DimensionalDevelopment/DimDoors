@@ -16,7 +16,6 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.DimensionalDoorItem;
 import org.dimdev.dimdoors.item.ItemExtensions;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.api.util.OptionalBool;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -26,6 +25,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.util.TriState;
 
 public final class DoorData implements AutoCloseable {
 	public static final List<Block> DOORS = new ArrayList<>();
@@ -99,7 +99,11 @@ public final class DoorData implements AutoCloseable {
 		this.itemSettings.maxCount.ifPresent(itemSettings::maxCount);
 		this.itemSettings.maxDamage.ifPresent(itemSettings::maxDamageIfAbsent);
 		this.itemSettings.rarity.ifPresent(itemSettings::rarity);
-		this.itemSettings.fireproof.ifPresentAndTrue(itemSettings::fireproof);
+		this.itemSettings.fireproof.map(b -> {
+			if (!b) return false;
+			itemSettings.fireproof();
+			return false;
+		});
 
 		FabricBlockSettings blockSettings = FabricBlockSettings.copyOf(Registry.BLOCK.get(new Identifier(this.blockSettings.parent)));
 		this.blockSettings.luminance.ifPresent(blockSettings::luminance);
@@ -124,18 +128,18 @@ public final class DoorData implements AutoCloseable {
 		private final OptionalInt maxCount;
 		private final OptionalInt maxDamage;
 		private final Optional<Rarity> rarity;
-		private final OptionalBool fireproof;
+		private final TriState fireproof;
 
 		public static UnbakedItemSettings fromJson(JsonObject json) {
 			Optional<String> parent = Optional.ofNullable(json.get("parent")).map(JsonElement::getAsString);
 			OptionalInt maxCount = Optional.ofNullable(json.get("maxCount")).map(JsonElement::getAsInt).map(OptionalInt::of).orElse(OptionalInt.empty());
 			OptionalInt maxDamage = Optional.ofNullable(json.get("maxDamage")).map(JsonElement::getAsInt).map(OptionalInt::of).orElse(OptionalInt.empty());
 			Optional<Rarity> rarity = Optional.ofNullable(json.get("rarity")).map(JsonElement::getAsString).map(String::toLowerCase).map(RARITIES::get).map(Objects::requireNonNull);
-			OptionalBool fireproof = Optional.ofNullable(json.get("fireproof")).map(JsonElement::getAsBoolean).map(OptionalBool::of).orElse(OptionalBool.empty());
+			TriState fireproof = Optional.ofNullable(json.get("fireproof")).map(JsonElement::getAsBoolean).map(TriState::of).orElse(TriState.DEFAULT);
 			return new UnbakedItemSettings(parent, maxCount, maxDamage, rarity, fireproof);
 		}
 
-		public UnbakedItemSettings(Optional<String> parent, OptionalInt maxCount, OptionalInt maxDamage, Optional<Rarity> rarity, OptionalBool fireproof) {
+		public UnbakedItemSettings(Optional<String> parent, OptionalInt maxCount, OptionalInt maxDamage, Optional<Rarity> rarity, TriState fireproof) {
 			this.parent = parent;
 			this.maxCount = maxCount;
 			this.maxDamage = maxDamage;
@@ -148,7 +152,10 @@ public final class DoorData implements AutoCloseable {
 			maxCount.ifPresent(s -> json.addProperty("maxCount", s));
 			maxDamage.ifPresent(s -> json.addProperty("maxDamage", s));
 			rarity.ifPresent(s -> json.addProperty("rarity", s.name().toLowerCase()));
-			fireproof.ifPresent(s -> json.addProperty("fireproof", s));
+			fireproof.map(b -> {
+				json.addProperty("fireproof", b);
+				return b;
+			});
 			return json;
 		}
 	}
