@@ -70,7 +70,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 	private static MinecraftServer server;
 	private static ModContainer dimDoorsMod;
 	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
-	public static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
+	private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
 
     @NotNull
     public static MinecraftServer getServer() {

@@ -18,18 +18,18 @@ public class RelativeReferenceModifier implements Modifier {
 	private int point_a, point_b;
 
 	@Override
-	public Modifier fromTag(NbtCompound tag) {
-		point_a = tag.getInt("point_a");
-		point_b = tag.getInt("point_b");
+	public Modifier fromNbt(NbtCompound nbt) {
+		point_a = nbt.getInt("point_a");
+		point_b = nbt.getInt("point_b");
 		return this;
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		Modifier.super.toTag(tag);
-		tag.putInt("point_a", point_a);
-		tag.putInt("point_b", point_b);
-		return tag;
+	public NbtCompound toNbt(NbtCompound nbt) {
+		Modifier.super.toNbt(nbt);
+		nbt.putInt("point_a", point_a);
+		nbt.putInt("point_b", point_b);
+		return nbt;
 	}
 
 	@Override

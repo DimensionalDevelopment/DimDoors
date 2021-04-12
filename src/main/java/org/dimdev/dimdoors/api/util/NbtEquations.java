@@ -10,15 +10,15 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 
-public class TagEquations {
+public class NbtEquations {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	public static NbtCompound solveCompoundTagEquations(NbtCompound tag, Map<String, Double> variableMap) {
+	public static NbtCompound solveNbtCompoundEquations(NbtCompound nbt, Map<String, Double> variableMap) {
 		NbtCompound solved = new NbtCompound();
-		for (String key : tag.getKeys()) {
-			if (tag.getType(key) == NbtType.STRING && key.startsWith("equation_")) {
+		for (String key : nbt.getKeys()) {
+			if (nbt.getType(key) == NbtType.STRING && key.startsWith("equation_")) {
 				try {
-					double solution = Equation.parse(tag.getString(key)).apply(variableMap);
+					double solution = Equation.parse(nbt.getString(key)).apply(variableMap);
 					key = key.substring(9);
 					if (key.startsWith("int_")) {
 						key = key.substring(4);
@@ -35,26 +35,26 @@ public class TagEquations {
 				} catch (Equation.EquationParseException e) {
 					LOGGER.error(e);
 				}
-			} else if (tag.getType(key) == NbtType.COMPOUND) {
-				solved.put(key, solveCompoundTagEquations(tag.getCompound(key), variableMap));
-			} else if (tag.getType(key) == NbtType.LIST) {
-				solved.put(key, solveListTagEquations((NbtList) tag.get(key), variableMap));
+			} else if (nbt.getType(key) == NbtType.COMPOUND) {
+				solved.put(key, solveNbtCompoundEquations(nbt.getCompound(key), variableMap));
+			} else if (nbt.getType(key) == NbtType.LIST) {
+				solved.put(key, solveNbtListEquations((NbtList) nbt.get(key), variableMap));
 			} else {
-				solved.put(key, tag.get(key));
+				solved.put(key, nbt.get(key));
 			}
 		}
 		return solved;
 	}
 
-	public static NbtList solveListTagEquations(NbtList listTag, Map<String, Double> variableMap) {
+	public static NbtList solveNbtListEquations(NbtList nbtList, Map<String, Double> variableMap) {
 		NbtList solved = new NbtList();
-		for (NbtElement tag : listTag) {
-			if (tag.getType() == NbtType.LIST) {
-				solved.add(solveListTagEquations((NbtList) tag, variableMap));
-			} else if (tag.getType() == NbtType.COMPOUND) {
-				solved.add(solveCompoundTagEquations((NbtCompound) tag, variableMap));
+		for (NbtElement nbt : nbtList) {
+			if (nbt.getType() == NbtType.LIST) {
+				solved.add(solveNbtListEquations((NbtList) nbt, variableMap));
+			} else if (nbt.getType() == NbtType.COMPOUND) {
+				solved.add(solveNbtCompoundEquations((NbtCompound) nbt, variableMap));
 			} else {
-				solved.add(tag);
+				solved.add(nbt);
 			}
 		}
 		return solved;

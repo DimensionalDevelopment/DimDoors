@@ -4,14 +4,18 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import blue.endless.jankson.Jankson;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Category;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.CollapsibleObject;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.EnumHandler;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.RequiresRestart;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.Tooltip;
@@ -51,6 +55,9 @@ public final class ModConfig implements ConfigData {
 	@TransitiveObject
 	@Category("graphics")
 	private Graphics graphics = new Graphics();
+	@TransitiveObject
+	@Category("doors")
+	private Doors doors = new Doors();
 
 	public General getGeneralConfig() {
 		return this.general;
@@ -80,8 +87,11 @@ public final class ModConfig implements ConfigData {
 		return this.graphics;
 	}
 
+	public Doors getDoorsConfig() {
+		return this.doors;
+	}
+
 	public static class General {
-		@Tooltip public boolean closeDoorBehind = false;
 		@Tooltip public double teleportOffset = 0.5;
 		@Tooltip public boolean riftBoundingBoxInCreative;
 		@Tooltip public double riftCloseSpeed = 0.005;
@@ -89,6 +99,33 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public int depthSpreadFactor = 20;
 		@Tooltip public double endermanSpawnChance = 0.001;
 		@Tooltip public double endermanAggressiveChance = 0.5;
+	}
+
+	public static class Doors {
+		@Tooltip public boolean closeDoorBehind = false;
+		@Tooltip @CollapsibleObject public DoorList doorList = new DoorList();
+
+		public static class DoorList {
+			@Tooltip public Mode mode = Mode.DISABLE;
+			@Tooltip public Set<String> doors = new HashSet<>();
+
+			@EnvironmentInterface(value = EnvType.CLIENT, itf = SelectionListEntry.Translatable.class)
+			public enum Mode implements SelectionListEntry.Translatable {
+				ENABLE("dimdoors.mode.enable"),
+				DISABLE("dimdoors.mode.disable");
+
+				private String translationKey;
+
+				Mode(String translationKey) {
+					this.translationKey = translationKey;
+				}
+
+				@Override
+				public @NotNull String getKey() {
+					return this.translationKey;
+				}
+			}
+		}
 	}
 
 	public static class Pockets {

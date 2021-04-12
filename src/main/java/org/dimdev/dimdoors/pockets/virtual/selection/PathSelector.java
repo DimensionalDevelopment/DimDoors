@@ -12,19 +12,19 @@ public class PathSelector extends AbstractVirtualPocketList {
 	private String path;
 
 	@Override
-	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
-		this.path = tag.getString("path");
+	public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+		this.path = nbt.getString("path");
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
-		tag.putString("path", path);
+		nbt.putString("path", path);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

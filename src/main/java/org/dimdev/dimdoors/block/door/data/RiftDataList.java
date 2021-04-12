@@ -58,8 +58,8 @@ public class RiftDataList {
 		private final Optional<LinkProperties> linkProperties;
 
 		public static OptRiftData fromJson(JsonObject json) {
-			Optional<VirtualTarget> destination = Optional.ofNullable(json.get("destination")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(VirtualTarget::fromTag);
-			Optional<LinkProperties> linkProperties = Optional.ofNullable(json.get("properties")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(LinkProperties::fromTag);
+			Optional<VirtualTarget> destination = Optional.ofNullable(json.get("destination")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(VirtualTarget::fromNbt);
+			Optional<LinkProperties> linkProperties = Optional.ofNullable(json.get("properties")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(LinkProperties::fromNbt);
 			return new OptRiftData(destination, linkProperties);
 		}
 
@@ -69,8 +69,8 @@ public class RiftDataList {
 		}
 
 		public JsonObject toJson(JsonObject json) {
-			this.destination.ifPresent(s -> json.add("destination", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, VirtualTarget.toTag(s))));
-			this.linkProperties.ifPresent(s -> json.add("properties", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, LinkProperties.toTag(s))));
+			this.destination.ifPresent(s -> json.add("destination", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, VirtualTarget.toNbt(s))));
+			this.linkProperties.ifPresent(s -> json.add("properties", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, LinkProperties.toNbt(s))));
 			return json;
 		}
 

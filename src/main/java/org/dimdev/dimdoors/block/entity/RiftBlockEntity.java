@@ -57,28 +57,28 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	public void deserialize(NbtCompound nbt) {
-		this.data = RiftData.fromTag(nbt.getCompound("data"));
+		this.data = RiftData.fromNbt(nbt.getCompound("data"));
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound tag) {
-		super.writeNbt(tag);
-		return this.serialize(tag);
+	public NbtCompound writeNbt(NbtCompound nbt) {
+		super.writeNbt(nbt);
+		return this.serialize(nbt);
 	}
 
-	public NbtCompound serialize(NbtCompound tag) {
-		tag.put("data", RiftData.toTag(this.data));
-		return tag;
-	}
-
-	@Override
-	public void fromClientTag(NbtCompound tag) {
-		this.deserialize(tag);
+	public NbtCompound serialize(NbtCompound nbt) {
+		nbt.put("data", RiftData.toNbt(this.data));
+		return nbt;
 	}
 
 	@Override
-	public NbtCompound toClientTag(NbtCompound tag) {
-		return this.serialize(tag);
+	public void fromClientTag(NbtCompound nbt) {
+		this.deserialize(nbt);
+	}
+
+	@Override
+	public NbtCompound toClientTag(NbtCompound nbt) {
+		return this.serialize(nbt);
 	}
 
 	public void setDestination(VirtualTarget destination) {

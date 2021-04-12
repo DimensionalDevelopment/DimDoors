@@ -26,17 +26,17 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 		return "PocketEntrancePointer(pocketDim=" + this.getWorld() + ", pocketId=" + this.pocketId + ")";
 	}
 
-	public static NbtCompound toTag(PocketEntrancePointer vertex) {
-		NbtCompound tag = new NbtCompound();
-		tag.putUuid("id", vertex.id);
-		tag.putString("pocketDim", vertex.getWorld().getValue().toString());
-		tag.putInt("pocketId", vertex.pocketId);
-		return tag;
+	public static NbtCompound toNbt(PocketEntrancePointer vertex) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putUuid("id", vertex.id);
+		nbt.putString("pocketDim", vertex.getWorld().getValue().toString());
+		nbt.putInt("pocketId", vertex.pocketId);
+		return nbt;
 	}
 
-	public static PocketEntrancePointer fromTag(NbtCompound tag) {
-		PocketEntrancePointer pointer = new PocketEntrancePointer(RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("pocketDim"))), tag.getInt("pocketId"));
-		pointer.id = tag.getUuid("id");
+	public static PocketEntrancePointer fromNbt(NbtCompound nbt) {
+		PocketEntrancePointer pointer = new PocketEntrancePointer(RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
+		pointer.id = nbt.getUuid("id");
 		return pointer;
 	}
 

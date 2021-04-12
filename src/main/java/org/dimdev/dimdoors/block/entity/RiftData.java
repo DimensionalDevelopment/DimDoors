@@ -61,23 +61,23 @@ public class RiftData {
 		this.color = color;
 	}
 
-	public static NbtCompound toTag(RiftData data) {
-		NbtCompound tag = new NbtCompound();
-		if (data.destination != VirtualTarget.NoneTarget.INSTANCE) tag.put("destination", VirtualTarget.toTag(data.destination));
-		if (data.properties != null) tag.put("properties", LinkProperties.toTag(data.properties));
-		if (data.color != null) tag.put("color", RGBA.toTag(data.color));
-		tag.putBoolean("alwaysDelete", data.alwaysDelete);
-		tag.putBoolean("forcedColor", data.forcedColor);
-		return tag;
+	public static NbtCompound toNbt(RiftData data) {
+		NbtCompound nbt = new NbtCompound();
+		if (data.destination != VirtualTarget.NoneTarget.INSTANCE) nbt.put("destination", VirtualTarget.toNbt(data.destination));
+		if (data.properties != null) nbt.put("properties", LinkProperties.toNbt(data.properties));
+		if (data.color != null) nbt.put("color", RGBA.toNbt(data.color));
+		nbt.putBoolean("alwaysDelete", data.alwaysDelete);
+		nbt.putBoolean("forcedColor", data.forcedColor);
+		return nbt;
 	}
 
-	public static RiftData fromTag(NbtCompound tag) {
+	public static RiftData fromNbt(NbtCompound nbt) {
 		RiftData data = new RiftData();
-		data.destination = tag.contains("destination") ? VirtualTarget.fromTag(tag.getCompound("destination")) : VirtualTarget.NoneTarget.INSTANCE;
-		data.properties = tag.contains("properties") ? LinkProperties.fromTag(tag.getCompound("properties")) : null;
-		data.alwaysDelete = tag.getBoolean("alwaysDelete");
-		data.forcedColor = tag.getBoolean("forcedColor");
-		data.color = tag.contains("color") ? RGBA.fromTag(tag.getCompound("color")) : RGBA.NONE;
+		data.destination = nbt.contains("destination") ? VirtualTarget.fromNbt(nbt.getCompound("destination")) : VirtualTarget.NoneTarget.INSTANCE;
+		data.properties = nbt.contains("properties") ? LinkProperties.fromNbt(nbt.getCompound("properties")) : null;
+		data.alwaysDelete = nbt.getBoolean("alwaysDelete");
+		data.forcedColor = nbt.getBoolean("forcedColor");
+		data.color = nbt.contains("color") ? RGBA.fromNbt(nbt.getCompound("color")) : RGBA.NONE;
 		return data;
 	}
 

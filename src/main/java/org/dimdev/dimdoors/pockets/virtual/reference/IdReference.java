@@ -14,22 +14,22 @@ public class IdReference extends PocketGeneratorReference {
 	private Identifier id;
 
 	@Override
-	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
 		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
-		id = new Identifier("dimdoors", tag.getString("id"));
+		id = new Identifier("dimdoors", nbt.getString("id"));
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
-		tag.putString("id", id.getPath());
+		nbt.putString("id", id.getPath());
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

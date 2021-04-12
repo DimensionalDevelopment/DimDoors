@@ -139,9 +139,9 @@ public class Schematic {
 
 	public void setEntities(Collection<? extends Entity> entities) {
 		this.setEntities(entities.stream().map((e) -> {
-			NbtCompound tag = new NbtCompound();
-			e.saveSelfNbt(tag);
-			return tag;
+			NbtCompound nbt = new NbtCompound();
+			e.saveSelfNbt(nbt);
+			return nbt;
 		}).collect(Collectors.toList()));
 	}
 
@@ -160,11 +160,11 @@ public class Schematic {
 		return schem.cachedBlockSample;
 	}
 
-	public static Schematic fromTag(NbtCompound tag) {
-		return CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(false, PRINT_TO_STDERR).getFirst();
+	public static Schematic fromNbt(NbtCompound nbt) {
+		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow(false, PRINT_TO_STDERR).getFirst();
 	}
 
-	public static NbtCompound toTag(Schematic schem) {
+	public static NbtCompound toNbt(Schematic schem) {
 		return (NbtCompound) CODEC.encodeStart(NbtOps.INSTANCE, schem).getOrThrow(false, PRINT_TO_STDERR);
 	}
 
@@ -201,7 +201,6 @@ public class Schematic {
 				.add("entities", this.entities)
 				.add("biomePalette", this.biomePalette)
 				.add("biomeData", this.biomeData)
-				.add("cachedBlockSample", this.cachedBlockSample)
 				.toString();
 	}
 
@@ -223,8 +222,7 @@ public class Schematic {
 				&& Objects.equals(this.blockEntities, schematic.blockEntities)
 				&& Objects.equals(this.entities, schematic.entities)
 				&& Objects.equals(this.biomePalette, schematic.biomePalette)
-				&& Objects.equals(this.biomeData, schematic.biomeData)
-				&& Objects.equals(this.cachedBlockSample, schematic.cachedBlockSample);
+				&& Objects.equals(this.biomeData, schematic.biomeData);
 	}
 
 	@Override
@@ -243,8 +241,7 @@ public class Schematic {
 				this.blockEntities,
 				this.entities,
 				this.biomePalette,
-				this.biomeData,
-				this.cachedBlockSample
+				this.biomeData
 		);
 	}
 }

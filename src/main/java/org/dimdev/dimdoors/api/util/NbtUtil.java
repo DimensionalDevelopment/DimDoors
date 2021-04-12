@@ -17,9 +17,9 @@ public class NbtUtil {
 		});
 	}
 
-	public static NbtCompound asCompoundTag(NbtElement tag, String error) {
-		if (tag == null || tag.getType() == NbtType.COMPOUND) {
-			return (NbtCompound) tag;
+	public static NbtCompound asNbtCompound(NbtElement nbt, String error) {
+		if (nbt == null || nbt.getType() == NbtType.COMPOUND) {
+			return (NbtCompound) nbt;
 		}
 
 		throw new RuntimeException(error);

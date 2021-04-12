@@ -136,21 +136,21 @@ public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> 
 		return color;
 	}
 
-	public static NbtCompound toTag(RGBA rgba) {
-		NbtCompound tag = new NbtCompound();
-		tag.putFloat("red", rgba.red);
-		tag.putFloat("green", rgba.green);
-		tag.putFloat("blue", rgba.blue);
-		tag.putFloat("alpha", rgba.alpha);
-		return tag;
+	public static NbtCompound toNbt(RGBA rgba) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putFloat("red", rgba.red);
+		nbt.putFloat("green", rgba.green);
+		nbt.putFloat("blue", rgba.blue);
+		nbt.putFloat("alpha", rgba.alpha);
+		return nbt;
 	}
 
-	public static RGBA fromTag(NbtCompound tag) {
+	public static RGBA fromNbt(NbtCompound nbt) {
 		return new RGBA(
-				tag.getFloat("red"),
-				tag.getFloat("green"),
-				tag.getFloat("blue"),
-				tag.getFloat("alpha")
+				nbt.getFloat("red"),
+				nbt.getFloat("green"),
+				nbt.getFloat("blue"),
+				nbt.getFloat("alpha")
 		);
 	}
 }

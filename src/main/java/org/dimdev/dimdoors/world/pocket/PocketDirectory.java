@@ -45,41 +45,41 @@ public class PocketDirectory {
 		this.pockets = new HashMap<>();
 	}
 
-	public static PocketDirectory readFromNbt(String id, NbtCompound tag) {
+	public static PocketDirectory readFromNbt(String id, NbtCompound nbt) {
 		PocketDirectory directory = new PocketDirectory(RegistryKey.of(Registry.WORLD_KEY, new Identifier(id)));
 		// no need to parallelize
-		directory.gridSize = tag.getInt("grid_size");
-		directory.privatePocketSize = tag.getInt("private_pocket_size");
-		directory.publicPocketSize = tag.getInt("public_pocket_size");
+		directory.gridSize = nbt.getInt("grid_size");
+		directory.privatePocketSize = nbt.getInt("private_pocket_size");
+		directory.publicPocketSize = nbt.getInt("public_pocket_size");
 		// same thing, too short anyways
-		NbtCompound nextIdMapTag = tag.getCompound("next_id_map");
-		directory.nextIDMap.putAll(nextIdMapTag.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapTag::getInt)));
+		NbtCompound nextIdMapNbt = nbt.getCompound("next_id_map");
+		directory.nextIDMap.putAll(nextIdMapNbt.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapNbt::getInt)));
 
-		NbtCompound pocketsTag = tag.getCompound("pockets");
-		directory.pockets = pocketsTag.getKeys().stream().unordered().map(key -> {
-			NbtCompound pocketTag = pocketsTag.getCompound(key);
-			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketTag)));
+		NbtCompound pocketsNbt = nbt.getCompound("pockets");
+		directory.pockets = pocketsNbt.getKeys().stream().unordered().map(key -> {
+			NbtCompound pocketNbt = pocketsNbt.getCompound(key);
+			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketNbt)));
 		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight));
 
 		return directory;
 	}
 
 	public NbtCompound writeToNbt() {
-		NbtCompound tag = new NbtCompound();
-		tag.putInt("grid_size", this.gridSize);
-		tag.putInt("private_pocket_size", this.privatePocketSize);
-		tag.putInt("public_pocket_size", this.publicPocketSize);
+		NbtCompound nbt = new NbtCompound();
+		nbt.putInt("grid_size", this.gridSize);
+		nbt.putInt("private_pocket_size", this.privatePocketSize);
+		nbt.putInt("public_pocket_size", this.publicPocketSize);
 
-		NbtCompound nextIdMapTag = new NbtCompound();
-		this.nextIDMap.forEach((key, value) -> nextIdMapTag.putInt(key.toString(), value));
-		tag.put("next_id_map", nextIdMapTag);
+		NbtCompound nextIdMapNbt = new NbtCompound();
+		this.nextIDMap.forEach((key, value) -> nextIdMapNbt.putInt(key.toString(), value));
+		nbt.put("next_id_map", nextIdMapNbt);
 
-		NbtCompound pocketsTag = new NbtCompound();
-		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toTag(new NbtCompound()))))
-				.map(CompletableFuture::join).forEach(pair -> pocketsTag.put(pair.getLeft(), pair.getRight()));
-		tag.put("pockets", pocketsTag);
+		NbtCompound pocketsNbt = new NbtCompound();
+		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toNbt(new NbtCompound()))))
+				.map(CompletableFuture::join).forEach(pair -> pocketsNbt.put(pair.getLeft(), pair.getRight()));
+		nbt.put("pockets", pocketsNbt);
 
-		return tag;
+		return nbt;
 	}
 
 	/**

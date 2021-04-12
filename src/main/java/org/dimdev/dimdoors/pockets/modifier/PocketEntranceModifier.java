@@ -21,17 +21,17 @@ public class PocketEntranceModifier implements Modifier {
 	}
 
 	@Override
-	public Modifier fromTag(NbtCompound tag) {
-		return new PocketEntranceModifier(tag.getInt("id"));
+	public Modifier fromNbt(NbtCompound nbt) {
+		return new PocketEntranceModifier(nbt.getInt("id"));
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		Modifier.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		Modifier.super.toNbt(nbt);
 
-		tag.putInt("id", id);
+		nbt.putInt("id", id);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

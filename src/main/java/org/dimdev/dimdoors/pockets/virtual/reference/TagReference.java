@@ -24,53 +24,53 @@ public class TagReference extends PocketGeneratorReference{
 	private WeightedList<PocketGenerator, PocketGenerationContext> pockets;
 
 	@Override
-	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
-		if (tag.contains("required")) {
-			NbtList listTag = tag.getList("required", NbtType.STRING);
-			for (int i = 0; i < listTag.size(); i++) {
-				required.add(listTag.getString(i));
+		if (nbt.contains("required")) {
+			NbtList listNbt = nbt.getList("required", NbtType.STRING);
+			for (int i = 0; i < listNbt.size(); i++) {
+				required.add(listNbt.getString(i));
 			}
 		}
 
-		if (tag.contains("blackList")) {
-			NbtList listTag = tag.getList("blackList", NbtType.STRING);
-			for (int i = 0; i < listTag.size(); i++) {
-				blackList.add(listTag.getString(i));
+		if (nbt.contains("blackList")) {
+			NbtList listNbt = nbt.getList("blackList", NbtType.STRING);
+			for (int i = 0; i < listNbt.size(); i++) {
+				blackList.add(listNbt.getString(i));
 			}
 		}
 
-		if (tag.contains("exact")) exact = tag.getBoolean("exact");
+		if (nbt.contains("exact")) exact = nbt.getBoolean("exact");
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
 		if (required.size() > 0) {
-			NbtList listTag = new NbtList();
-			for (String tagString : required) {
-				listTag.add(NbtString.of(tagString));
+			NbtList listNbt = new NbtList();
+			for (String nbtStr : required) {
+				listNbt.add(NbtString.of(nbtStr));
 			}
-			tag.put("required", listTag);
+			nbt.put("required", listNbt);
 		}
 
 		if (blackList.size() > 0) {
-			NbtList listTag = new NbtList();
-			for (String tagString : blackList) {
-				listTag.add(NbtString.of(tagString));
+			NbtList list = new NbtList();
+			for (String nbtStr : blackList) {
+				list.add(NbtString.of(nbtStr));
 			}
-			tag.put("blackList", listTag);
+			nbt.put("blackList", list);
 		}
 
 		if (exact != null) {
-			tag.putBoolean("exact", exact);
+			nbt.putBoolean("exact", exact);
 		}
 
-		return tag;
+		return nbt;
 	}
 
 

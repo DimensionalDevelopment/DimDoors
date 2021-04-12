@@ -262,10 +262,10 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        super.writeNbt(tag);
-        tag.putInt("Aggro", this.aggro);
-        return tag;
+    public NbtCompound writeNbt(NbtCompound nbt) {
+        super.writeNbt(nbt);
+        nbt.putInt("Aggro", this.aggro);
+        return nbt;
     }
 
     @Override

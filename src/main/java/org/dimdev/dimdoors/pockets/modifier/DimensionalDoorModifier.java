@@ -26,7 +26,7 @@ import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.api.util.TagEquations;
+import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
@@ -50,30 +50,30 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	private Equation zEquation;
 
 	@Override
-	public Modifier fromTag(NbtCompound tag) {
-		String facingString = tag.getString("facing");
-		facing = Direction.byName(tag.getString("facing"));
+	public Modifier fromNbt(NbtCompound nbt) {
+		String facingString = nbt.getString("facing");
+		facing = Direction.byName(nbt.getString("facing"));
 		if (facing == null || facing.getAxis().isVertical()) {
 			throw new RuntimeException("Could not interpret facing direction \"" + facingString + "\"");
 		}
 
-		doorTypeString = tag.getString("door_type");
+		doorTypeString = nbt.getString("door_type");
 		Block doorBlock = Registry.BLOCK.get(Identifier.tryParse(doorTypeString));
 		if (!(doorBlock instanceof DimensionalDoorBlock)) {
 			throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
 		}
 		doorType = (DimensionalDoorBlock) doorBlock;
 
-		if (tag.getType("rift_data") == NbtType.STRING) {
-			doorDataReference = tag.getString("rift_data");
-			doorData = PocketLoader.getInstance().getDataCompoundTag(doorDataReference);
+		if (nbt.getType("rift_data") == NbtType.STRING) {
+			doorDataReference = nbt.getString("rift_data");
+			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
-		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
+		else if (nbt.getType("rift_data") == NbtType.COMPOUND) doorData = nbt.getCompound("rift_data");
 
 		try {
-			x = tag.getString("x");
-			y = tag.getString("y");
-			z = tag.getString("z");
+			x = nbt.getString("x");
+			y = nbt.getString("y");
+			z = nbt.getString("z");
 
 			xEquation = Equation.parse(x);
 			yEquation = Equation.parse(y);
@@ -85,18 +85,18 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		LazyCompatibleModifier.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		LazyCompatibleModifier.super.toNbt(nbt);
 
-		tag.putString("facing", facing.asString());
-		tag.putString("door_type", doorTypeString);
-		if (doorDataReference != null) tag.putString("rift_data", doorDataReference);
-		else if (doorData != null) tag.put("rift_data", doorData);
-		tag.putString("x", x);
-		tag.putString("y", y);
-		tag.putString("z", z);
+		nbt.putString("facing", facing.asString());
+		nbt.putString("door_type", doorTypeString);
+		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
+		else if (doorData != null) nbt.put("rift_data", doorData);
+		nbt.putString("x", x);
+		nbt.putString("y", y);
+		nbt.putString("z", z);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override
@@ -139,8 +139,8 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));
 		} else {
-			NbtCompound solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
-			rift.setData(RiftData.fromTag(solvedDoorData));
+			NbtCompound solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
+			rift.setData(RiftData.fromNbt(solvedDoorData));
 		}
 
 		manager.add(rift);

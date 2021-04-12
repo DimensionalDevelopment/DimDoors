@@ -10,10 +10,10 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public abstract class AbstractVirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements ImplementedVirtualPocket {
 
-	public NbtCompound toTag(NbtCompound tag) {
-		ImplementedVirtualPocket.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		ImplementedVirtualPocket.super.toNbt(nbt);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

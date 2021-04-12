@@ -43,13 +43,13 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public PocketGenerator fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
-		if (tag.contains("lazy_modifiers")) {
-			NbtList modifiersTag = tag.getList("lazy_modifiers", 10);
-			for (int i = 0; i < modifiersTag.size(); i++) {
-				lazyModifierList.add((LazyModifier) Modifier.deserialize(modifiersTag.getCompound(i)));
+		if (nbt.contains("lazy_modifiers")) {
+			NbtList modifiersNbt = nbt.getList("lazy_modifiers", 10);
+			for (int i = 0; i < modifiersNbt.size(); i++) {
+				lazyModifierList.add((LazyModifier) Modifier.deserialize(modifiersNbt.getCompound(i)));
 			}
 		}
 
@@ -57,17 +57,17 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
 		if (lazyModifierList.size() > 0) {
-			List<NbtCompound> lazyModTags = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toTag(new NbtCompound())).collect(Collectors.toList());
-			NbtList lazyModifiersTag = new NbtList();
-			lazyModifiersTag.addAll(lazyModTags);
-			tag.put("lazy_modifiers", lazyModifiersTag);
+			List<NbtCompound> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new NbtCompound())).collect(Collectors.toList());
+			NbtList lazyModifiersNbt = new NbtList();
+			lazyModifiersNbt.addAll(lazyModNbts);
+			nbt.put("lazy_modifiers", lazyModifiersNbt);
 		}
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

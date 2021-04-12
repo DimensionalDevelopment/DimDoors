@@ -22,13 +22,13 @@ public class IdMarker extends VirtualTarget implements EntityTarget {
 		return VirtualTargetType.ID_MARKER;
 	}
 
-	public static NbtCompound toTag(IdMarker target) {
-		NbtCompound tag = new NbtCompound();
-		tag.putInt("id", target.id);
-		return tag;
+	public static NbtCompound toNbt(IdMarker target) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putInt("id", target.id);
+		return nbt;
 	}
 
-	public static IdMarker fromTag(NbtCompound nbt) {
+	public static IdMarker fromNbt(NbtCompound nbt) {
 		return new IdMarker(nbt.getInt("id"));
 	}
 

@@ -47,26 +47,26 @@ public class ChunkGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public PocketGenerator fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
-		this.dimensionID = new Identifier(tag.getString("dimension_id"));
+		this.dimensionID = new Identifier(nbt.getString("dimension_id"));
 
-		int[] temp = tag.getIntArray("size");
+		int[] temp = nbt.getIntArray("size");
 		this.size = new Vec3i(temp[0], temp[1], temp[2]);
 
-		this.virtualYOffset = tag.contains("virtual_y_offset") ? tag.getInt("virtual_y_offset") : 0;
+		this.virtualYOffset = nbt.contains("virtual_y_offset") ? nbt.getInt("virtual_y_offset") : 0;
 		return this;
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
-		tag.putString("dimension_id", dimensionID.toString());
-		tag.putIntArray("size", new int[]{this.size.getX(), this.size.getY(), this.size.getZ()});
-		tag.putInt("virtual_y_offset", this.virtualYOffset);
-		return tag;
+		nbt.putString("dimension_id", dimensionID.toString());
+		nbt.putIntArray("size", new int[]{this.size.getX(), this.size.getY(), this.size.getZ()});
+		nbt.putInt("virtual_y_offset", this.virtualYOffset);
+		return nbt;
 	}
 
 	@Override

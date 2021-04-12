@@ -35,8 +35,8 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 	}
 
 	@Override
-	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
-		NbtList conditionalPockets = tag.getList("pockets", 10);
+	public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+		NbtList conditionalPockets = nbt.getList("pockets", 10);
 		for (int i = 0; i < conditionalPockets.size(); i++) {
 			NbtCompound pocket = conditionalPockets.getCompound(i);
 			String condition = pocket.getString("condition");
@@ -52,8 +52,8 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		ImplementedVirtualPocket.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		ImplementedVirtualPocket.super.toNbt(nbt);
 
 		NbtList conditionalPockets = new NbtList();
 		pocketMap.forEach((condition, pocket) -> {
@@ -62,8 +62,8 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 			compound.put("pocket", VirtualPocket.serialize(pocket));
 			conditionalPockets.add(compound);
 		});
-		tag.put("pockets", conditionalPockets);
-		return tag;
+		nbt.put("pockets", conditionalPockets);
+		return nbt;
 	}
 
 	@Override

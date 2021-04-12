@@ -11,21 +11,21 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 	protected int referencedId;
 
 	@Override
-	public IdReferencePocket fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public IdReferencePocket fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
-		this.referencedId = tag.getInt("referenced_id");
+		this.referencedId = nbt.getInt("referenced_id");
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		tag = super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		nbt = super.toNbt(nbt);
 
-		tag.putInt("referenced_id", referencedId);
+		nbt.putInt("referenced_id", referencedId);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override
@@ -62,15 +62,15 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 		}
 
 		@Override
-		public IdReferencePocketBuilder fromTag(NbtCompound tag) {
-			if (tag.contains("referenced_id", NbtType.INT)) referencedId = tag.getInt("referenced_id");
+		public IdReferencePocketBuilder fromNbt(NbtCompound nbt) {
+			if (nbt.contains("referenced_id", NbtType.INT)) referencedId = nbt.getInt("referenced_id");
 			return this;
 		}
 
 		@Override
-		public NbtCompound toTag(NbtCompound tag) {
-			if (referencedId != Integer.MIN_VALUE) tag.putInt("referenced_id", referencedId);
-			return tag;
+		public NbtCompound toNbt(NbtCompound nbt) {
+			if (referencedId != Integer.MIN_VALUE) nbt.putInt("referenced_id", referencedId);
+			return nbt;
 		}
 
 		public IdReferencePocketBuilder referencedId(int referencedId) {

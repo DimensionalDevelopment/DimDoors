@@ -34,15 +34,15 @@ public class PlayerRiftPointer extends RegistryVertex {
 		return "PlayerRiftPointer(player=" + this.player + ")";
 	}
 
-	public static NbtCompound toTag(PlayerRiftPointer vertex) {
-		NbtCompound tag = new NbtCompound();
-		tag.putUuid("id", vertex.id);
-		tag.putUuid("player", vertex.player);
-		return tag;
+	public static NbtCompound toNbt(PlayerRiftPointer vertex) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putUuid("id", vertex.id);
+		nbt.putUuid("player", vertex.player);
+		return nbt;
 	}
 
-	public static PlayerRiftPointer fromTag(NbtCompound tag) {
-		return new PlayerRiftPointer(tag.getUuid("id"));
+	public static PlayerRiftPointer fromNbt(NbtCompound nbt) {
+		return new PlayerRiftPointer(nbt.getUuid("id"));
 	}
 
 	public UUID getPlayer() {

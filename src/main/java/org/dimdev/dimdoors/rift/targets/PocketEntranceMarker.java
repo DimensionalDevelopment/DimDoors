@@ -61,19 +61,19 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 		return VirtualTargetType.POCKET_ENTRANCE;
 	}
 
-	public static NbtCompound toTag(PocketEntranceMarker target) {
-		NbtCompound tag = new NbtCompound();
-		tag.putFloat("weight", target.weight);
-		tag.put("ifDestination", VirtualTarget.toTag(target.ifDestination));
-		tag.put("otherwiseDestination", VirtualTarget.toTag(target.otherwiseDestination));
-		return tag;
+	public static NbtCompound toNbt(PocketEntranceMarker target) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putFloat("weight", target.weight);
+		nbt.put("ifDestination", VirtualTarget.toNbt(target.ifDestination));
+		nbt.put("otherwiseDestination", VirtualTarget.toNbt(target.otherwiseDestination));
+		return nbt;
 	}
 
-	public static PocketEntranceMarker fromTag(NbtCompound tag) {
+	public static PocketEntranceMarker fromNbt(NbtCompound nbt) {
 		return PocketEntranceMarker.builder()
-				.weight(tag.getFloat("weight"))
-				.ifDestination(tag.contains("ifDestination") ? VirtualTarget.fromTag(tag.getCompound("ifDestination")) : NoneTarget.INSTANCE)
-				.otherwiseDestination(tag.contains("otherwiseDestination") ? VirtualTarget.fromTag(tag.getCompound("otherwiseDestination")) : NoneTarget.INSTANCE)
+				.weight(nbt.getFloat("weight"))
+				.ifDestination(nbt.contains("ifDestination") ? VirtualTarget.fromNbt(nbt.getCompound("ifDestination")) : NoneTarget.INSTANCE)
+				.otherwiseDestination(nbt.contains("otherwiseDestination") ? VirtualTarget.fromNbt(nbt.getCompound("otherwiseDestination")) : NoneTarget.INSTANCE)
 				.build();
 	}
 

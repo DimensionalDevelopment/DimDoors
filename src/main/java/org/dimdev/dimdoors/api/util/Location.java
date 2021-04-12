@@ -88,17 +88,17 @@ public class Location {
 		return DimensionalDoorsInitializer.getServer().getWorld(this.world);
 	}
 
-	public static NbtCompound toTag(Location location) {
-		NbtCompound tag = new NbtCompound();
-		tag.putString("world", location.world.getValue().toString());
-		tag.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
-		return tag;
+	public static NbtCompound toNbt(Location location) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putString("world", location.world.getValue().toString());
+		nbt.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
+		return nbt;
 	}
 
-	public static Location fromTag(NbtCompound tag) {
-		int[] pos = tag.getIntArray("pos");
+	public static Location fromNbt(NbtCompound nbt) {
+		int[] pos = nbt.getIntArray("pos");
 		return new Location(
-				RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("world"))),
+				RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world"))),
 				new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}

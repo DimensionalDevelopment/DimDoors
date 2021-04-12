@@ -76,30 +76,30 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
-	public PocketGenerator fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public PocketGenerator fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
-		this.id = tag.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
+		this.id = nbt.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
 		this.templateID = new Identifier("dimdoors", id);
-		if (tag.contains("origin", NbtType.INT_ARRAY)) {
-			int[] originInts = tag.getIntArray("origin");
+		if (nbt.contains("origin", NbtType.INT_ARRAY)) {
+			int[] originInts = nbt.getIntArray("origin");
 			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
 		}
-		if (tag.contains("placement_type", NbtType.STRING)) placementType = BlockPlacementType.getFromId(tag.getString("placement_type"));
+		if (nbt.contains("placement_type", NbtType.STRING)) placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
-		tag.putString("id", this.id);
-		if (placementType != BlockPlacementType.SECTION_NO_UPDATE) tag.putString("placement_type", placementType.getId());
+		nbt.putString("id", this.id);
+		if (placementType != BlockPlacementType.SECTION_NO_UPDATE) nbt.putString("placement_type", placementType.getId());
 
-		if (origin != null) tag.putIntArray("origin", new int[]{origin.getX(), origin.getY(), origin.getZ()});
+		if (origin != null) nbt.putIntArray("origin", new int[]{origin.getX(), origin.getY(), origin.getZ()});
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

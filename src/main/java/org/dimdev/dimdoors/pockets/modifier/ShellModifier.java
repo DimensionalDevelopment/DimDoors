@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.util.math.ChunkPos;
+
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
@@ -36,19 +36,19 @@ public class ShellModifier implements LazyModifier {
 	private BlockBox boxToDrawAround;
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		LazyModifier.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		LazyModifier.super.toNbt(nbt);
 
-		NbtList layersTag = new NbtList();
+		NbtList layersNbt = new NbtList();
 		for (Layer layer : layers) {
-			layersTag.add(layer.toTag());
+			layersNbt.add(layer.toNbt());
 		}
-		tag.put("layers", layersTag);
+		nbt.put("layers", layersNbt);
 		if (boxToDrawAround != null) {
-			tag.put("box_to_draw_around", BlockBoxUtil.toNbt(boxToDrawAround));
+			nbt.put("box_to_draw_around", BlockBoxUtil.toNbt(boxToDrawAround));
 		}
 
-		return tag;
+		return nbt;
 	}
 
 	@Override
@@ -124,19 +124,19 @@ public class ShellModifier implements LazyModifier {
 	}
 
 	@Override
-	public Modifier fromTag(NbtCompound tag) {
-		for (NbtElement layerTag : tag.getList("layers", NbtType.COMPOUND)) {
-			NbtCompound compoundTag = (NbtCompound) layerTag;
+	public Modifier fromNbt(NbtCompound nbt) {
+		for (NbtElement layerNbt : nbt.getList("layers", NbtType.COMPOUND)) {
+			NbtCompound nbtCompound = (NbtCompound) layerNbt;
 			try {
-				Layer layer = Layer.fromTag(compoundTag);
+				Layer layer = Layer.fromNbt(nbtCompound);
 				layers.add(layer);
 			} catch (CommandSyntaxException e) {
-				LOGGER.error("could not parse Layer: " + compoundTag.toString(), e);
+				LOGGER.error("could not parse Layer: " + nbtCompound, e);
 			}
 		}
 
-		if (tag.contains("box_to_draw_around", NbtType.INT_ARRAY)) {
-			int[] box = tag.getIntArray("box_to_draw_around");
+		if (nbt.contains("box_to_draw_around", NbtType.INT_ARRAY)) {
+			int[] box = nbt.getIntArray("box_to_draw_around");
 			boxToDrawAround = BlockBox.create(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
 		}
 
@@ -236,15 +236,15 @@ public class ShellModifier implements LazyModifier {
 			return (int) thicknessEquation.apply(variableMap);
 		}
 
-		public NbtCompound toTag() {
-			NbtCompound tag = new NbtCompound();
-			tag.putString("block_state", blockStateString);
-			tag.putString("thickness", thickness);
-			return tag;
+		public NbtCompound toNbt() {
+			NbtCompound nbt = new NbtCompound();
+			nbt.putString("block_state", blockStateString);
+			nbt.putString("thickness", thickness);
+			return nbt;
 		}
 
-		public static Layer fromTag(NbtCompound tag) throws CommandSyntaxException {
-			return new Layer(tag.getString("block_state"), tag.getString("thickness"));
+		public static Layer fromNbt(NbtCompound nbt) throws CommandSyntaxException {
+			return new Layer(nbt.getString("block_state"), nbt.getString("thickness"));
 		}
 	}
 }

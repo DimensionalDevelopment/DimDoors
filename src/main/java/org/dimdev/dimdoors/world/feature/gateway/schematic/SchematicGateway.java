@@ -37,7 +37,7 @@ public abstract class SchematicGateway implements Gateway, BiPredicate<Structure
 				throw new RuntimeException("Schematic '" + this.id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
 			}
 			try {
-				this.schematic = Schematic.fromTag(NbtIo.readCompressed(stream));
+				this.schematic = Schematic.fromNbt(NbtIo.readCompressed(stream));
 			} catch (IOException ex) {
 				throw new RuntimeException("Schematic file for " + this.id + " could not be read as a valid schematic NBT file.", ex);
 			}

@@ -13,13 +13,13 @@ import java.io.IOException;
 public class BlockBreakRegexBlacklistAddon implements AutoSyncedAddon, ContainedAddon { //TODO
 	@Override
 	public AutoSyncedAddon read(PacketByteBuf buf) throws IOException {
-		this.fromTag(buf.readNbt());
+		this.fromNbt(buf.readNbt());
 		return this;
 	}
 
 	@Override
 	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
-		buf.writeNbt(this.toTag(new NbtCompound()));
+		buf.writeNbt(this.toNbt(new NbtCompound()));
 		return buf;
 	}
 
@@ -29,7 +29,7 @@ public class BlockBreakRegexBlacklistAddon implements AutoSyncedAddon, Contained
 	}
 
 	@Override
-	public PocketAddon fromTag(NbtCompound tag) {
+	public PocketAddon fromNbt(NbtCompound nbt) {
 		return null;
 	}
 

@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.api.util.TagEquations;
+import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class RiftDataModifier implements Modifier {
@@ -26,14 +26,14 @@ public class RiftDataModifier implements Modifier {
 	private List<Integer> ids;
 
 	@Override
-	public Modifier fromTag(NbtCompound tag) {
-		if (tag.getType("rift_data") == NbtType.STRING) {
-			doorDataReference = tag.getString("rift_data");
-			doorData = PocketLoader.getInstance().getDataCompoundTag(doorDataReference);
+	public Modifier fromNbt(NbtCompound nbt) {
+		if (nbt.getType("rift_data") == NbtType.STRING) {
+			doorDataReference = nbt.getString("rift_data");
+			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
-		else if (tag.getType("rift_data") == NbtType.COMPOUND) doorData = tag.getCompound("rift_data");
+		else if (nbt.getType("rift_data") == NbtType.COMPOUND) doorData = nbt.getCompound("rift_data");
 
-		ids = stream(tag.getByteArray("ids")).boxed().collect(Collectors.toList());
+		ids = stream(nbt.getByteArray("ids")).boxed().collect(Collectors.toList());
 		return this;
 	}
 
@@ -51,13 +51,13 @@ public class RiftDataModifier implements Modifier {
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		Modifier.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		Modifier.super.toNbt(nbt);
 
-		if (doorDataReference != null) tag.putString("rift_data", doorDataReference);
-		else if (doorData != null) tag.put("rift_data", doorData);
-		tag.putByteArray("ids", toByteArray(ids.stream().mapToInt(Integer::intValue).toArray()));
-		return tag;
+		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
+		else if (doorData != null) nbt.put("rift_data", doorData);
+		nbt.putByteArray("ids", toByteArray(ids.stream().mapToInt(Integer::intValue).toArray()));
+		return nbt;
 	}
 
 	@Override
@@ -88,9 +88,9 @@ public class RiftDataModifier implements Modifier {
 		if (doorData == null) {
 			riftBlockEntityConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
 		} else {
-			NbtCompound solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
+			NbtCompound solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
 
-			riftBlockEntityConsumer = rift -> rift.setData(RiftData.fromTag(solvedDoorData));
+			riftBlockEntityConsumer = rift -> rift.setData(RiftData.fromNbt(solvedDoorData));
 		}
 
 		manager.foreachConsume((id, rift) -> {

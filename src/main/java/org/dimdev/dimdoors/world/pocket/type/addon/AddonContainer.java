@@ -30,11 +30,11 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 	}
 
 	@Override
-	public PocketAddon fromTag(NbtCompound tag) {
-		this.id = Identifier.tryParse(tag.getString("id"));
+	public PocketAddon fromNbt(NbtCompound nbt) {
+		this.id = Identifier.tryParse(nbt.getString("id"));
 
-		if (tag.contains("addons", NbtType.LIST)) {
-			for (NbtElement addonTag : tag.getList("addons", NbtType.COMPOUND)) {
+		if (nbt.contains("addons", NbtType.LIST)) {
+			for (NbtElement addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
 				addons.add((T) PocketAddon.deserialize((NbtCompound) addonTag));
 			}
 		}
@@ -43,14 +43,14 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		PocketAddon.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		PocketAddon.super.toNbt(nbt);
 
 		NbtList addonsTag = new NbtList();
 		for(T addon : addons) {
-			addonsTag.add(addon.toTag(new NbtCompound()));
+			addonsTag.add(addon.toNbt(new NbtCompound()));
 		}
-		tag.put("addons", addonsTag);
+		nbt.put("addons", addonsTag);
 
 		return null;
 	}

@@ -22,20 +22,20 @@ import java.util.function.Supplier;
 public interface ImplementedVirtualPocket extends VirtualPocket {
 	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
 
-	static ImplementedVirtualPocket deserialize(NbtCompound tag) {
-		Identifier id = Identifier.tryParse(tag.getString("type"));
+	static ImplementedVirtualPocket deserialize(NbtCompound nbt) {
+		Identifier id = Identifier.tryParse(nbt.getString("type"));
 		VirtualPocketType<?> type = REGISTRY.get(id);
-		return type != null ? type.fromTag(tag) : VirtualPocketType.NONE.fromTag(tag);
+		return type != null ? type.fromNbt(nbt) : VirtualPocketType.NONE.fromNbt(nbt);
 	}
 
 	static NbtCompound serialize(ImplementedVirtualPocket implementedVirtualPocket) {
-		return implementedVirtualPocket.toTag(new NbtCompound());
+		return implementedVirtualPocket.toNbt(new NbtCompound());
 	}
 
-	ImplementedVirtualPocket fromTag(NbtCompound tag);
+	ImplementedVirtualPocket fromNbt(NbtCompound nbt);
 
-	default NbtCompound toTag(NbtCompound tag) {
-		return this.getType().toTag(tag);
+	default NbtCompound toNbt(NbtCompound nbt) {
+		return this.getType().toNbt(nbt);
 	}
 
 	VirtualPocketType<? extends ImplementedVirtualPocket> getType();
@@ -49,9 +49,9 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 		VirtualPocketType<ConditionalSelector> CONDITIONAL_SELECTOR = register(new Identifier("dimdoors", ConditionalSelector.KEY), ConditionalSelector::new);
 		VirtualPocketType<PathSelector> PATH_SELECTOR = register(new Identifier("dimdoors", PathSelector.KEY), PathSelector::new);
 
-		ImplementedVirtualPocket fromTag(NbtCompound tag);
+		ImplementedVirtualPocket fromNbt(NbtCompound nbt);
 
-		NbtCompound toTag(NbtCompound tag);
+		NbtCompound toNbt(NbtCompound nbt);
 
 		static void register() {
 			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerVirtualSingularPocketTypes(REGISTRY));
@@ -60,14 +60,14 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 		static <U extends ImplementedVirtualPocket> VirtualPocketType<U> register(Identifier id, Supplier<U> factory) {
 			return Registry.register(REGISTRY, id, new VirtualPocketType<U>() {
 				@Override
-				public ImplementedVirtualPocket fromTag(NbtCompound tag) {
-					return factory.get().fromTag(tag);
+				public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+					return factory.get().fromNbt(nbt);
 				}
 
 				@Override
-				public NbtCompound toTag(NbtCompound tag) {
-					tag.putString("type", id.toString());
-					return tag;
+				public NbtCompound toNbt(NbtCompound nbt) {
+					nbt.putString("type", id.toString());
+					return nbt;
 				}
 			});
 		}
@@ -97,7 +97,7 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 		}
 
 		@Override
-		public ImplementedVirtualPocket fromTag(NbtCompound tag) {
+		public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
 			return this;
 		}
 

@@ -71,13 +71,13 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 		return VirtualTargetType.ESCAPE;
 	}
 
-	public static NbtCompound toTag(EscapeTarget virtualTarget) {
-		NbtCompound tag = new NbtCompound();
-		tag.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);
-		return tag;
+	public static NbtCompound toNbt(EscapeTarget virtualTarget) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);
+		return nbt;
 	}
 
-	public static EscapeTarget fromTag(NbtCompound nbt) {
+	public static EscapeTarget fromNbt(NbtCompound nbt) {
 		return new EscapeTarget(nbt.getBoolean("canEscapeLimbo"));
 	}
 }

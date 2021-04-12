@@ -28,14 +28,14 @@ public class LocalReference extends RiftReference {
 		return VirtualTargetType.LOCAL;
 	}
 
-	public static NbtCompound toTag(LocalReference localReference) {
-		NbtCompound tag = new NbtCompound();
-		tag.putIntArray("target", new int[]{localReference.target.getX(), localReference.target.getY(), localReference.target.getZ()});
-		return tag;
+	public static NbtCompound toNbt(LocalReference localReference) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putIntArray("target", new int[]{localReference.target.getX(), localReference.target.getY(), localReference.target.getZ()});
+		return nbt;
 	}
 
-	public static LocalReference fromTag(NbtCompound tag) {
-		int[] pos = tag.getIntArray("target");
+	public static LocalReference fromNbt(NbtCompound nbt) {
+		int[] pos = nbt.getIntArray("target");
 		return new LocalReference(
 				new BlockPos(pos[0], pos[1], pos[2])
 		);

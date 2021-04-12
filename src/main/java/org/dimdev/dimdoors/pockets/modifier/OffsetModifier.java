@@ -23,14 +23,14 @@ public class OffsetModifier implements Modifier {
 	private Equation offsetZEquation;
 
 	@Override
-	public Modifier fromTag(NbtCompound tag) {
+	public Modifier fromNbt(NbtCompound nbt) {
 
 		try {
-			offsetX = tag.contains("offset_x") ? tag.getString("offset_x") : "0";
+			offsetX = nbt.contains("offset_x") ? nbt.getString("offset_x") : "0";
 			offsetXEquation = Equation.parse(offsetX);
-			offsetY = tag.contains("offset_y") ? tag.getString("offset_y") : "0";
+			offsetY = nbt.contains("offset_y") ? nbt.getString("offset_y") : "0";
 			offsetYEquation = Equation.parse(offsetY);
-			offsetZ = tag.contains("offset_z") ? tag.getString("offset_z") : "0";
+			offsetZ = nbt.contains("offset_z") ? nbt.getString("offset_z") : "0";
 			offsetZEquation = Equation.parse(offsetZ);
 		} catch (Equation.EquationParseException e) {
 			LOGGER.error(e);
@@ -40,14 +40,14 @@ public class OffsetModifier implements Modifier {
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		Modifier.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		Modifier.super.toNbt(nbt);
 
-		if (!offsetX.equals("0")) tag.putString("offset_x", offsetX);
-		if (!offsetY.equals("0")) tag.putString("offset_y", offsetY);
-		if (!offsetZ.equals("0")) tag.putString("offset_z", offsetZ);
+		if (!offsetX.equals("0")) nbt.putString("offset_x", offsetX);
+		if (!offsetY.equals("0")) nbt.putString("offset_y", offsetY);
+		if (!offsetZ.equals("0")) nbt.putString("offset_z", offsetZ);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

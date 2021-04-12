@@ -82,24 +82,24 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public PocketAddon fromTag(NbtCompound tag) {
+	public PocketAddon fromNbt(NbtCompound nbt) {
 
-		this.dyeColor = PocketColor.from(tag.getInt("dyeColor"));
-		this.nextDyeColor = PocketColor.from(tag.getInt("nextDyeColor"));
-		this.count = tag.getInt("count");
+		this.dyeColor = PocketColor.from(nbt.getInt("dyeColor"));
+		this.nextDyeColor = PocketColor.from(nbt.getInt("nextDyeColor"));
+		this.count = nbt.getInt("count");
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		PocketAddon.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		PocketAddon.super.toNbt(nbt);
 
-		tag.putInt("dyeColor", this.dyeColor.getId());
-		tag.putInt("nextDyeColor", this.nextDyeColor.getId());
-		tag.putInt("count", this.count);
+		nbt.putInt("dyeColor", this.dyeColor.getId());
+		nbt.putInt("nextDyeColor", this.nextDyeColor.getId());
+		nbt.putInt("count", this.count);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override
@@ -139,19 +139,19 @@ public class DyeableAddon implements PocketAddon {
 		}
 
 		@Override
-		public PocketBuilderAddon<DyeableAddon> fromTag(NbtCompound tag) {
-			this.dyeColor = PocketColor.from(tag.getInt("dye_color"));
+		public PocketBuilderAddon<DyeableAddon> fromNbt(NbtCompound nbt) {
+			this.dyeColor = PocketColor.from(nbt.getInt("dye_color"));
 
 			return this;
 		}
 
 		@Override
-		public NbtCompound toTag(NbtCompound tag) {
-			PocketBuilderAddon.super.toTag(tag);
+		public NbtCompound toNbt(NbtCompound nbt) {
+			PocketBuilderAddon.super.toNbt(nbt);
 
-			tag.putInt("dye_color", dyeColor.getId());
+			nbt.putInt("dye_color", dyeColor.getId());
 
-			return tag;
+			return nbt;
 		}
 
 		@Override

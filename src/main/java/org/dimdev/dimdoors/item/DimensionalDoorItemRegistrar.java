@@ -67,12 +67,7 @@ public class DimensionalDoorItemRegistrar {
 		if (!(block instanceof DimensionalDoorBlock)
 				&& !(block instanceof DimensionalTrapdoorBlock)
 				&& (block instanceof DoorBlock || block instanceof TrapdoorBlock)) {
-			Item.Settings settings = new FabricItemSettings()
-					.maxCount(item.getMaxCount())
-					.maxDamage(item.getMaxDamage())
-					.recipeRemainder(item.getRecipeRemainder())
-					.group(ModItems.DIMENSIONAL_DOORS);
-			if (item.isFireproof()) settings.fireproof();
+			Item.Settings settings = ItemExtensions.getSettings(item).group(ModItems.DIMENSIONAL_DOORS);
 
 			Function<Block, Item> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, rift -> rift.setDestination(new PublicPocketTarget()), item);
 

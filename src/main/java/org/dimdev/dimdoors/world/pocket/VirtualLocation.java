@@ -41,21 +41,21 @@ public class VirtualLocation {
 		this.depth = depth;
 	}
 
-	public static NbtCompound toTag(VirtualLocation virtualLocation) {
-		NbtCompound tag = new NbtCompound();
-		tag.putString("world", virtualLocation.world.getValue().toString());
-		tag.putInt("x", virtualLocation.x);
-		tag.putInt("z", virtualLocation.z);
-		tag.putInt("depth", virtualLocation.depth);
-		return tag;
+	public static NbtCompound toNbt(VirtualLocation virtualLocation) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putString("world", virtualLocation.world.getValue().toString());
+		nbt.putInt("x", virtualLocation.x);
+		nbt.putInt("z", virtualLocation.z);
+		nbt.putInt("depth", virtualLocation.depth);
+		return nbt;
 	}
 
-	public static VirtualLocation fromTag(NbtCompound tag) {
+	public static VirtualLocation fromNbt(NbtCompound nbt) {
 		return new VirtualLocation(
-				RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("world"))),
-				tag.getInt("x"),
-				tag.getInt("z"),
-				tag.getInt("depth")
+				RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world"))),
+				nbt.getInt("x"),
+				nbt.getInt("z"),
+				nbt.getInt("depth")
 		);
 	}
 

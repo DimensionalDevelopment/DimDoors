@@ -18,18 +18,18 @@ import java.util.function.Supplier;
 public interface PocketAddon {
 	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketAddonType<? extends PocketAddon>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "pocket_applicable_addon_type")), Lifecycle.stable())).buildAndRegister();
 
-	static PocketAddon deserialize(NbtCompound tag) {
-		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: NONE PocketAddon type;
-		return REGISTRY.get(id).fromTag(tag);
+	static PocketAddon deserialize(NbtCompound nbt) {
+		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;
+		return REGISTRY.get(id).fromNbt(nbt);
 	}
 
-	static PocketBuilderAddon<?> deserializeBuilder(NbtCompound tag) {
-		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: NONE PocketAddon type;
-		return REGISTRY.get(id).builderAddonInstance().fromTag(tag);
+	static PocketBuilderAddon<?> deserializeBuilder(NbtCompound nbt) {
+		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;
+		return REGISTRY.get(id).builderAddonInstance().fromNbt(nbt);
 	}
 
 	static NbtCompound serialize(PocketAddon addon) {
-		return addon.toTag(new NbtCompound());
+		return addon.toNbt(new NbtCompound());
 	}
 
 
@@ -37,10 +37,10 @@ public interface PocketAddon {
 		return true;
 	}
 
-	PocketAddon fromTag(NbtCompound tag);
+	PocketAddon fromNbt(NbtCompound nbt);
 
-	default NbtCompound toTag(NbtCompound tag) {
-		return this.getType().toTag(tag);
+	default NbtCompound toNbt(NbtCompound nbt) {
+		return this.getType().toNbt(nbt);
 	}
 
 	PocketAddonType<? extends PocketAddon> getType();
@@ -71,10 +71,10 @@ public interface PocketAddon {
 
 		Identifier getId();
 
-		PocketBuilderAddon<T> fromTag(NbtCompound tag);
+		PocketBuilderAddon<T> fromNbt(NbtCompound nbt);
 
-		default NbtCompound toTag(NbtCompound tag) {
-			return this.getType().toTag(tag);
+		default NbtCompound toNbt(NbtCompound nbt) {
+			return this.getType().toNbt(nbt);
 		}
 
 		PocketAddonType<T> getType();
@@ -85,9 +85,9 @@ public interface PocketAddon {
 		PocketAddonType<PreventBlockModificationAddon> PREVENT_BLOCK_MODIFICATION_ADDON = register(PreventBlockModificationAddon.ID, PreventBlockModificationAddon::new, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon::new);
 		PocketAddonType<BlockBreakContainer> BLOCK_BREAK_CONTAINER = register(BlockBreakContainer.ID, BlockBreakContainer::new, null);
 
-		T fromTag(NbtCompound tag);
+		T fromNbt(NbtCompound nbt);
 
-		NbtCompound toTag(NbtCompound tag);
+		NbtCompound toNbt(NbtCompound nbt);
 
 		T instance();
 
@@ -102,14 +102,14 @@ public interface PocketAddon {
 		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {
 			return Registry.register(REGISTRY, id, new PocketAddonType<U>() {
 				@Override
-				public U fromTag(NbtCompound tag) {
-					return (U) factory.get().fromTag(tag);
+				public U fromNbt(NbtCompound nbt) {
+					return (U) factory.get().fromNbt(nbt);
 				}
 
 				@Override
-				public NbtCompound toTag(NbtCompound tag) {
-					tag.putString("type", id.toString());
-					return tag;
+				public NbtCompound toNbt(NbtCompound nbt) {
+					nbt.putString("type", id.toString());
+					return nbt;
 				}
 
 				@Override

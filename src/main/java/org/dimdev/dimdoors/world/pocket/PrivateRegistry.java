@@ -28,17 +28,17 @@ public class PrivateRegistry {
 			this.id = id;
 		}
 
-		public static NbtCompound toTag(PocketInfo info) {
-			NbtCompound tag = new NbtCompound();
-			tag.putString("world", info.world.getValue().toString());
-			tag.putInt("id", info.id);
-			return tag;
+		public static NbtCompound toNbt(PocketInfo info) {
+			NbtCompound nbt = new NbtCompound();
+			nbt.putString("world", info.world.getValue().toString());
+			nbt.putInt("id", info.id);
+			return nbt;
 		}
 
-		public static PocketInfo fromTag(NbtCompound tag) {
+		public static PocketInfo fromNbt(NbtCompound nbt) {
 			return new PocketInfo(
-					RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("world"))),
-					tag.getInt("id")
+					RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world"))),
+					nbt.getInt("id")
 			);
 		}
 	}
@@ -50,29 +50,29 @@ public class PrivateRegistry {
 	public PrivateRegistry() {
 	}
 
-	public void fromTag(NbtCompound tag) {
+	public void fromNbt(NbtCompound nbt) {
 		privatePocketMap.clear();
-		NbtCompound privatePocketMapTag = tag.getCompound("private_pocket_map");
+		NbtCompound privatePocketMapNbt = nbt.getCompound("private_pocket_map");
 		CompletableFuture<Map<UUID, PocketInfo>> futurePrivatePocketMap = CompletableFuture.supplyAsync(() ->
-				privatePocketMapTag.getKeys().stream().unordered().map(key -> {
-					NbtCompound pocketInfoTag = privatePocketMapTag.getCompound(key);
-					return CompletableFuture.supplyAsync(() -> new Pair<>(UUID.fromString(key), PocketInfo.fromTag(pocketInfoTag)));
+				privatePocketMapNbt.getKeys().stream().unordered().map(key -> {
+					NbtCompound pocketInfoNbt = privatePocketMapNbt.getCompound(key);
+					return CompletableFuture.supplyAsync(() -> new Pair<>(UUID.fromString(key), PocketInfo.fromNbt(pocketInfoNbt)));
 				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight)));
 
 		futurePrivatePocketMap.join().forEach(this.privatePocketMap::put);
 	}
 
-	public NbtCompound toTag(NbtCompound tag) {
-		CompletableFuture<NbtCompound> futurePrivatePocketMapTag = CompletableFuture.supplyAsync(() -> {
-			Map<String, NbtElement> privatePocketTagMap = this.privatePocketMap.entrySet().parallelStream().unordered().collect(Collectors.toConcurrentMap(entry -> entry.getKey().toString(), entry -> PocketInfo.toTag(entry.getValue())));
-			NbtCompound privatePocketMapTag = new NbtCompound();
-			privatePocketTagMap.forEach(privatePocketMapTag::put);
-			return privatePocketMapTag;
+	public NbtCompound toNbt(NbtCompound nbt) {
+		CompletableFuture<NbtCompound> futurePrivatePocketMapNbt = CompletableFuture.supplyAsync(() -> {
+			Map<String, NbtElement> privatePocketNbtMap = this.privatePocketMap.entrySet().parallelStream().unordered().collect(Collectors.toConcurrentMap(entry -> entry.getKey().toString(), entry -> PocketInfo.toNbt(entry.getValue())));
+			NbtCompound privatePocketMapNbt = new NbtCompound();
+			privatePocketNbtMap.forEach(privatePocketMapNbt::put);
+			return privatePocketMapNbt;
 		});
 
-		tag.put("private_pocket_map", futurePrivatePocketMapTag.join());
+		nbt.put("private_pocket_map", futurePrivatePocketMapNbt.join());
 
-		return tag;
+		return nbt;
 	}
 
 	public PrivatePocket getPrivatePocket(UUID playerUUID) {

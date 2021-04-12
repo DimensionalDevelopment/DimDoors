@@ -17,20 +17,20 @@ import java.util.function.Supplier;
 public interface Modifier {
 	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<ModifierType<? extends Modifier>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "modifier_type")), Lifecycle.stable())).buildAndRegister();
 
-	static Modifier deserialize(NbtCompound tag) {
-		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: return some NONE Modifier if type cannot be found or deserialization fails.
-		return REGISTRY.get(id).fromTag(tag);
+	static Modifier deserialize(NbtCompound nbt) {
+		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: return some NONE Modifier if type cannot be found or deserialization fails.
+		return REGISTRY.get(id).fromNbt(nbt);
 	}
 
 	static NbtCompound serialize(Modifier modifier) {
-		return modifier.toTag(new NbtCompound());
+		return modifier.toNbt(new NbtCompound());
 	}
 
 
-	Modifier fromTag(NbtCompound tag);
+	Modifier fromNbt(NbtCompound nbt);
 
-	default NbtCompound toTag(NbtCompound tag) {
-		return this.getType().toTag(tag);
+	default NbtCompound toNbt(NbtCompound nbt) {
+		return this.getType().toNbt(nbt);
 	}
 
 	ModifierType<? extends Modifier> getType();
@@ -50,9 +50,9 @@ public interface Modifier {
 		ModifierType<OffsetModifier> OFFSET_MODIFIER_TYPE = register(new Identifier("dimdoors", OffsetModifier.KEY), OffsetModifier::new);
 		ModifierType<AbsoluteRiftBlockEntityModifier> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(new Identifier("dimdoors", AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
 
-		Modifier fromTag(NbtCompound tag);
+		Modifier fromNbt(NbtCompound nbt);
 
-		NbtCompound toTag(NbtCompound tag);
+		NbtCompound toNbt(NbtCompound nbt);
 
 		static void register() {
 			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerModifierTypes(REGISTRY));
@@ -61,14 +61,14 @@ public interface Modifier {
 		static <U extends Modifier> ModifierType<U> register(Identifier id, Supplier<U> factory) {
 			return Registry.register(REGISTRY, id, new ModifierType<U>() {
 				@Override
-				public Modifier fromTag(NbtCompound tag) {
-					return factory.get().fromTag(tag);
+				public Modifier fromNbt(NbtCompound nbt) {
+					return factory.get().fromNbt(nbt);
 				}
 
 				@Override
-				public NbtCompound toTag(NbtCompound tag) {
-					tag.putString("type", id.toString());
-					return tag;
+				public NbtCompound toNbt(NbtCompound nbt) {
+					nbt.putString("type", id.toString());
+					return nbt;
 				}
 			});
 		}

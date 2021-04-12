@@ -67,23 +67,23 @@ public class LinkProperties {
 		return new LinkPropertiesBuilder().floatingWeight(this.floatingWeight).entranceWeight(this.entranceWeight).groups(this.groups).linksRemaining(this.linksRemaining).oneWay(this.oneWay);
 	}
 
-	public static NbtCompound toTag(LinkProperties properties) {
-		net.minecraft.nbt.NbtCompound tag = new net.minecraft.nbt.NbtCompound();
-		tag.putFloat("floatingWeight", properties.floatingWeight);
-		tag.putFloat("entranceWeight", properties.entranceWeight);
-		tag.putIntArray("groups", new ArrayList<>(properties.groups));
-		tag.putInt("linksRemaining", properties.linksRemaining);
-		tag.putBoolean("oneWay", properties.oneWay);
-		return tag;
+	public static NbtCompound toNbt(LinkProperties properties) {
+		net.minecraft.nbt.NbtCompound nbt = new net.minecraft.nbt.NbtCompound();
+		nbt.putFloat("floatingWeight", properties.floatingWeight);
+		nbt.putFloat("entranceWeight", properties.entranceWeight);
+		nbt.putIntArray("groups", new ArrayList<>(properties.groups));
+		nbt.putInt("linksRemaining", properties.linksRemaining);
+		nbt.putBoolean("oneWay", properties.oneWay);
+		return nbt;
 	}
 
-	public static LinkProperties fromTag(NbtCompound tag) {
+	public static LinkProperties fromNbt(NbtCompound nbt) {
 		return LinkProperties.builder()
-				.floatingWeight(tag.getFloat("floatingWeight"))
-				.entranceWeight(tag.getFloat("entranceWeight"))
-				.groups(Arrays.stream(tag.getIntArray("groups")).boxed().collect(Collectors.toSet()))
-				.linksRemaining(tag.getInt("linksRemaining"))
-				.oneWay(tag.getBoolean("oneWay"))
+				.floatingWeight(nbt.getFloat("floatingWeight"))
+				.entranceWeight(nbt.getFloat("entranceWeight"))
+				.groups(Arrays.stream(nbt.getIntArray("groups")).boxed().collect(Collectors.toSet()))
+				.linksRemaining(nbt.getInt("linksRemaining"))
+				.oneWay(nbt.getBoolean("oneWay"))
 				.build();
 	}
 

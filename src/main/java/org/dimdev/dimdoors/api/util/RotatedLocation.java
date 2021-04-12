@@ -18,21 +18,21 @@ public class RotatedLocation extends Location {
 	}
 
 	public static NbtCompound serialize(RotatedLocation location) {
-		NbtCompound tag = new NbtCompound();
-		tag.putString("world", location.world.getValue().toString());
-		tag.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
-		tag.putFloat("yaw", location.pitch);
-		tag.putFloat("pitch", location.pitch);
-		return tag;
+		NbtCompound nbt = new NbtCompound();
+		nbt.putString("world", location.world.getValue().toString());
+		nbt.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
+		nbt.putFloat("yaw", location.pitch);
+		nbt.putFloat("pitch", location.pitch);
+		return nbt;
 	}
 
-	public static RotatedLocation deserialize(NbtCompound tag) {
-		int[] pos = tag.getIntArray("pos");
+	public static RotatedLocation deserialize(NbtCompound nbt) {
+		int[] pos = nbt.getIntArray("pos");
 		return new RotatedLocation(
-				RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("world"))),
+				RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world"))),
 				new BlockPos(pos[0], pos[1], pos[2]),
-				tag.getFloat("yaw"),
-				tag.getFloat("pitch")
+				nbt.getFloat("yaw"),
+				nbt.getFloat("pitch")
 		);
 	}
 }

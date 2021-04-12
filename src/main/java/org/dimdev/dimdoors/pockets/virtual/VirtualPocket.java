@@ -12,11 +12,11 @@ import net.minecraft.nbt.NbtList;
 
 public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 
-	static VirtualPocket deserialize(NbtElement tag) {
-		if (tag.getType() == NbtType.LIST) {
-			return VirtualPocketList.deserialize((NbtList) tag);
+	static VirtualPocket deserialize(NbtElement nbt) {
+		if (nbt.getType() == NbtType.LIST) {
+			return VirtualPocketList.deserialize((NbtList) nbt);
 		}
-		return ImplementedVirtualPocket.deserialize((NbtCompound) tag); // should be CompoundTag
+		return ImplementedVirtualPocket.deserialize((NbtCompound) nbt); // should be NbtCompound
 	}
 
 	static NbtElement serialize(VirtualPocket virtualPocket) {

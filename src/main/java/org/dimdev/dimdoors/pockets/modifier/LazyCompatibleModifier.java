@@ -35,7 +35,7 @@ public interface LazyCompatibleModifier extends Modifier {
 	}
 
 	@Override
-	default NbtCompound toTag(NbtCompound tag) {
-		return Modifier.super.toTag(tag);
+	default NbtCompound toNbt(NbtCompound nbt) {
+		return Modifier.super.toNbt(nbt);
 	}
 }

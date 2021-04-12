@@ -41,7 +41,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	private static final int fallbackWeight = 5; // TODO: make config
 	protected final List<Modifier> modifierList = new ArrayList<>();
 
-	private NbtCompound builderTag;
+	private NbtCompound builderNbt;
 	protected String weight = defaultWeightEquation;
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
@@ -55,18 +55,18 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		parseWeight();
 	}
 
-	public static PocketGenerator deserialize(NbtCompound tag) {
-		Identifier id = Identifier.tryParse(tag.getString("type")); // TODO: return some NONE PocketGenerator if type cannot be found or deserialization fails.
+	public static PocketGenerator deserialize(NbtCompound nbt) {
+		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: return some NONE PocketGenerator if type cannot be found or deserialization fails.
 		PocketGeneratorType<? extends PocketGenerator> type = REGISTRY.get(id);
 		if (type == null) {
-			LOGGER.error("Could not deserialize PocketGenerator: " + tag.toString());
+			LOGGER.error("Could not deserialize PocketGenerator: " + nbt.toString());
 			return null;
 		}
-		return type.fromTag(tag);
+		return type.fromNbt(nbt);
 	}
 
 	public static NbtCompound serialize(PocketGenerator pocketGenerator) {
-		return pocketGenerator.toTag(new NbtCompound());
+		return pocketGenerator.toNbt(new NbtCompound());
 	}
 
 	private void parseWeight() {
@@ -83,55 +83,55 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		}
 	}
 
-	public PocketGenerator fromTag(NbtCompound tag) {
-		if (tag.contains("builder", NbtType.COMPOUND)) builderTag = tag.getCompound("builder");
+	public PocketGenerator fromNbt(NbtCompound nbt) {
+		if (nbt.contains("builder", NbtType.COMPOUND)) builderNbt = nbt.getCompound("builder");
 
-		this.weight = tag.contains("weight") ? tag.getString("weight") : defaultWeightEquation;
+		this.weight = nbt.contains("weight") ? nbt.getString("weight") : defaultWeightEquation;
 		parseWeight();
 
-		if (tag.contains("setup_loot")) setupLoot = tag.getBoolean("setup_loot");
+		if (nbt.contains("setup_loot")) setupLoot = nbt.getBoolean("setup_loot");
 
-		if (tag.contains("modifiers")) {
-			NbtList modifiersTag = tag.getList("modifiers", 10);
-			for (int i = 0; i < modifiersTag.size(); i++) {
-				modifierList.add(Modifier.deserialize(modifiersTag.getCompound(i)));
+		if (nbt.contains("modifiers")) {
+			NbtList modifiersNbt = nbt.getList("modifiers", 10);
+			for (int i = 0; i < modifiersNbt.size(); i++) {
+				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i)));
 			}
 		}
 
-		if (tag.contains("tags")) {
-			NbtList listTag = tag.getList("tags", NbtType.STRING);
-			for (int i = 0; i < listTag.size(); i++) {
-				tags.add(listTag.getString(i));
+		if (nbt.contains("tags")) {
+			NbtList nbtList = nbt.getList("tags", NbtType.STRING);
+			for (int i = 0; i < nbtList.size(); i++) {
+				tags.add(nbtList.getString(i));
 			}
 		}
 		return this;
 	}
 
-	public NbtCompound toTag(NbtCompound tag) {
-		this.getType().toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		this.getType().toNbt(nbt);
 
-		if (builderTag != null) tag.put("builder", builderTag);
+		if (builderNbt != null) nbt.put("builder", builderNbt);
 
-		if (!weight.equals(defaultWeightEquation)) tag.putString("weight", weight);
+		if (!weight.equals(defaultWeightEquation)) nbt.putString("weight", weight);
 
-		if (setupLoot != null) tag.putBoolean("setup_loot", setupLoot);
+		if (setupLoot != null) nbt.putBoolean("setup_loot", setupLoot);
 
-		NbtList modifiersTag = new NbtList();
+		NbtList modifiersNbt = new NbtList();
 		for (Modifier modifier : modifierList) {
-			modifiersTag.add(modifier.toTag(new NbtCompound()));
+			modifiersNbt.add(modifier.toNbt(new NbtCompound()));
 		}
-		if (modifiersTag.size() > 0) tag.put("modifiers", modifiersTag);
+		if (modifiersNbt.size() > 0) nbt.put("modifiers", modifiersNbt);
 
 		if (tags.size() > 0) {
-			NbtList listTag = new NbtList();
-			for (String tagString : tags) {
-				listTag.add(NbtString.of(tagString));
+			NbtList nbtList = new NbtList();
+			for (String nbtStr : tags) {
+				nbtList.add(NbtString.of(nbtStr));
 			}
-			tag.put("tags", listTag);
+			nbt.put("tags", nbtList);
 		}
 
 
-		return tag;
+		return nbt;
 	}
 
 	public abstract Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
@@ -205,11 +205,11 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	}
 
 	public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationContext parameters) { // TODO: PocketBuilder from json
-		if (builderTag == null){
+		if (builderNbt == null){
 			return Pocket.builder()
 					.expand(getSize(parameters));
 		}
-		AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.deserializeBuilder(builderTag);
+		AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.deserializeBuilder(builderNbt);
 		if (! (abstractBuilder instanceof Pocket.PocketBuilder)) {
 			return Pocket.builder()
 					.expand(getSize(parameters));
@@ -225,9 +225,9 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		PocketGeneratorType<ChunkGenerator> CHUNK = register(new Identifier("dimdoors", ChunkGenerator.KEY), ChunkGenerator::new);
 		PocketGeneratorType<VoidGenerator> VOID = register(new Identifier("dimdoors", VoidGenerator.KEY), VoidGenerator::new);
 
-		PocketGenerator fromTag(NbtCompound tag);
+		PocketGenerator fromNbt(NbtCompound nbt);
 
-		NbtCompound toTag(NbtCompound tag);
+		NbtCompound toNbt(NbtCompound nbt);
 
 		static void register() {
 			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerPocketGeneratorTypes(REGISTRY));
@@ -236,14 +236,14 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		static <U extends PocketGenerator> PocketGeneratorType<U> register(Identifier id, Supplier<U> constructor) {
 			return Registry.register(REGISTRY, id, new PocketGeneratorType<U>() {
 				@Override
-				public PocketGenerator fromTag(NbtCompound tag) {
-					return constructor.get().fromTag(tag);
+				public PocketGenerator fromNbt(NbtCompound nbt) {
+					return constructor.get().fromNbt(nbt);
 				}
 
 				@Override
-				public NbtCompound toTag(NbtCompound tag) {
-					tag.putString("type", id.toString());
-					return tag;
+				public NbtCompound toNbt(NbtCompound nbt) {
+					nbt.putString("type", id.toString());
+					return nbt;
 				}
 			});
 

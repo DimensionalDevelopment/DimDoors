@@ -55,7 +55,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 
 		if (doorState.getBlock() == this && doorState.get(DoorBlock.OPEN)) { // '== this' to check if not half-broken
 			this.getRift(world, pos, state).teleport(entity);
-			if (DimensionalDoorsInitializer.getConfig().getGeneralConfig().closeDoorBehind) {
+			if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().closeDoorBehind) {
 				world.setBlockState(top, world.getBlockState(top).with(DoorBlock.OPEN, false));
 				world.setBlockState(bottom, world.getBlockState(bottom).with(DoorBlock.OPEN, false));
 			}

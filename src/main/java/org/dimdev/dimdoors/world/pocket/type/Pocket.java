@@ -105,18 +105,18 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return this.box.getDimensions();
 	}
 
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
-		tag.putInt("range", range);
-		tag.putIntArray("box", IntStream.of(this.box.getMinX(), this.box.getMinY(), this.box.getMinZ(), this.box.getMaxX(), this.box.getMaxY(), this.box.getMaxZ()).toArray());
-		tag.put("virtualLocation", VirtualLocation.toTag(this.virtualLocation));
+		nbt.putInt("range", range);
+		nbt.putIntArray("box", IntStream.of(this.box.getMinX(), this.box.getMinY(), this.box.getMinZ(), this.box.getMaxX(), this.box.getMaxY(), this.box.getMaxZ()).toArray());
+		nbt.put("virtualLocation", VirtualLocation.toNbt(this.virtualLocation));
 
 		NbtList addonsTag = new NbtList();
-		addonsTag.addAll(addons.values().stream().map(addon -> addon.toTag(new NbtCompound())).collect(Collectors.toList()));
-		if (addonsTag.size() > 0) tag.put("addons", addonsTag);
+		addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new NbtCompound())).collect(Collectors.toList()));
+		if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override
@@ -124,16 +124,16 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return AbstractPocketType.POCKET;
 	}
 
-	public Pocket fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public Pocket fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
-		this.range = tag.getInt("range");
-		int[] box = tag.getIntArray("box");
+		this.range = nbt.getInt("range");
+		int[] box = nbt.getIntArray("box");
 		this.box = BlockBox.create(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
-		this.virtualLocation = VirtualLocation.fromTag(tag.getCompound("virtualLocation"));
+		this.virtualLocation = VirtualLocation.fromNbt(nbt.getCompound("virtualLocation"));
 
-		if (tag.contains("addons", NbtType.LIST)) {
-			for (NbtElement addonTag : tag.getList("addons", NbtType.COMPOUND)) {
+		if (nbt.contains("addons", NbtType.LIST)) {
+			for (NbtElement addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
 				PocketAddon addon = PocketAddon.deserialize((NbtCompound) addonTag);
 				addons.put(addon.getId(), addon);
 			}
@@ -204,9 +204,9 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		}
 
 		// TODO: actually utilize fromTag/ toTag methods + implement them
-		public P fromTag(NbtCompound tag) {
-			if (tag.contains("addons", NbtType.LIST)) {
-				for (NbtElement addonTag : tag.getList("addons", NbtType.COMPOUND)) {
+		public P fromNbt(NbtCompound nbt) {
+			if (nbt.contains("addons", NbtType.LIST)) {
+				for (NbtElement addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
 					PocketAddon.PocketBuilderAddon<?> addon = PocketAddon.deserializeBuilder((NbtCompound) addonTag);
 					addons.put(addon.getId(), addon);
 				}
@@ -215,12 +215,12 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 			return getSelf();
 		}
 
-		public NbtCompound toTag(NbtCompound tag) {
+		public NbtCompound toNbt(NbtCompound nbt) {
 			NbtList addonsTag = new NbtList();
-			addonsTag.addAll(addons.values().stream().map(addon -> addon.toTag(new NbtCompound())).collect(Collectors.toList()));
-			if (addonsTag.size() > 0) tag.put("addons", addonsTag);
+			addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new NbtCompound())).collect(Collectors.toList()));
+			if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
 
-			return tag;
+			return nbt;
 		}
 
 		public boolean hasAddon(Identifier id) {

@@ -62,7 +62,7 @@ public class PreventBlockModificationAddon implements AutoSyncedAddon, AttackBlo
 	}
 
 	@Override
-	public PocketAddon fromTag(NbtCompound tag) {
+	public PocketAddon fromNbt(NbtCompound nbt) {
 		return this;
 	}
 
@@ -89,7 +89,7 @@ public class PreventBlockModificationAddon implements AutoSyncedAddon, AttackBlo
 		}
 
 		@Override
-		public PocketBuilderAddon<PreventBlockModificationAddon> fromTag(NbtCompound tag) {
+		public PocketBuilderAddon<PreventBlockModificationAddon> fromNbt(NbtCompound nbt) {
 			return this;
 		}
 

@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,10 +30,10 @@ public class WorldeditHelper {
 		boolean async = DimensionalDoorsInitializer.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
 		Consumer<Runnable> taskAcceptor = async ? r -> source.getMinecraftServer().execute(r) : Runnable::run;
 		Runnable task = () -> {
-			CompoundTag tag = Schematic.toTag(template.getSchematic());
+			NbtCompound nbt = Schematic.toNbt(template.getSchematic());
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			try {
-				NbtIo.writeCompressed(tag, stream);
+				NbtIo.writeCompressed(nbt, stream);
 			} catch (IOException e) {
 				throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayOutputStream
 			}

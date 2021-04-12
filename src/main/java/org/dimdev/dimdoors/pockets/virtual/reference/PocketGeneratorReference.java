@@ -55,25 +55,25 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	}
 
 	@Override
-	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
-		if (tag.contains("weight")) { // override referenced pockets weight
-			this.weight = tag.getString("weight");
+	public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+		if (nbt.contains("weight")) { // override referenced pockets weight
+			this.weight = nbt.getString("weight");
 			parseWeight();
 		}
 
-		if (tag.contains("setup_loot")) setupLoot = tag.getBoolean("setup_loot");
+		if (nbt.contains("setup_loot")) setupLoot = nbt.getBoolean("setup_loot");
 
-		if (tag.contains("modifiers")) {
-			NbtList modifiersTag = tag.getList("modifiers", 10);
-			for (int i = 0; i < modifiersTag.size(); i++) {
-				modifierList.add(Modifier.deserialize(modifiersTag.getCompound(i)));
+		if (nbt.contains("modifiers")) {
+			NbtList modifiersNbt = nbt.getList("modifiers", 10);
+			for (int i = 0; i < modifiersNbt.size(); i++) {
+				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i)));
 			}
 		}
 
-		if (tag.contains("addons", NbtType.LIST)) {
-			NbtList modifiersTag = tag.getList("addons", 10);
-			for (int i = 0; i < modifiersTag.size(); i++) {
-				addons.add(modifiersTag.getCompound(i));
+		if (nbt.contains("addons", NbtType.LIST)) {
+			NbtList addonsNbt = nbt.getList("addons", 10);
+			for (int i = 0; i < addonsNbt.size(); i++) {
+				addons.add(addonsNbt.getCompound(i));
 			}
 		}
 
@@ -81,24 +81,24 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		ImplementedVirtualPocket.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		ImplementedVirtualPocket.super.toNbt(nbt);
 
-		if (weight != null) tag.putString("weight", weight);
+		if (weight != null) nbt.putString("weight", weight);
 
-		if (setupLoot != null) tag.putBoolean("setup_loot", setupLoot);
+		if (setupLoot != null) nbt.putBoolean("setup_loot", setupLoot);
 
-		NbtList modifiersTag = new NbtList();
+		NbtList modifiersNbt = new NbtList();
 		for (Modifier modifier : modifierList) {
-			modifiersTag.add(modifier.toTag(new NbtCompound()));
+			modifiersNbt.add(modifier.toNbt(new NbtCompound()));
 		}
-		if (modifiersTag.size() > 0) tag.put("modifiers", modifiersTag);
+		if (modifiersNbt.size() > 0) nbt.put("modifiers", modifiersNbt);
 
-		NbtList addonsTag = new NbtList();
-		addonsTag.addAll(addons);
-		if (addonsTag.size() > 0) tag.put("addons", addonsTag);
+		NbtList addonsNbt = new NbtList();
+		addonsNbt.addAll(addons);
+		if (addonsNbt.size() > 0) nbt.put("addons", addonsNbt);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

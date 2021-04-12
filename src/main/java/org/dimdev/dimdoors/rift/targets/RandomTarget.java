@@ -226,30 +226,30 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		return VirtualTargetType.AVAILABLE_LINK;
 	}
 
-	public static NbtCompound toTag(RandomTarget target) {
-		NbtCompound tag = new NbtCompound();
-		tag.putFloat("newRiftWeight", target.newRiftWeight);
-		tag.putDouble("weightMaximum", target.weightMaximum);
-		tag.putDouble("coordFactor", target.coordFactor);
-		tag.putDouble("positiveDepthFactor", target.positiveDepthFactor);
-		tag.putDouble("negativeDepthFactor", target.negativeDepthFactor);
-		tag.putIntArray("acceptedGroups", new ArrayList<>(target.acceptedGroups));
-		tag.putBoolean("noLink", target.noLink);
-		tag.putBoolean("noLinkBack", target.noLinkBack);
+	public static NbtCompound toNbt(RandomTarget target) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putFloat("newRiftWeight", target.newRiftWeight);
+		nbt.putDouble("weightMaximum", target.weightMaximum);
+		nbt.putDouble("coordFactor", target.coordFactor);
+		nbt.putDouble("positiveDepthFactor", target.positiveDepthFactor);
+		nbt.putDouble("negativeDepthFactor", target.negativeDepthFactor);
+		nbt.putIntArray("acceptedGroups", new ArrayList<>(target.acceptedGroups));
+		nbt.putBoolean("noLink", target.noLink);
+		nbt.putBoolean("noLinkBack", target.noLinkBack);
 
-		return tag;
+		return nbt;
 	}
 
-	public static RandomTarget fromTag(NbtCompound tag) {
+	public static RandomTarget fromNbt(NbtCompound nbt) {
 		return new RandomTarget(
-				tag.getFloat("newRiftWeight"),
-				tag.getDouble("weightMaximum"),
-				tag.getDouble("coordFactor"),
-				tag.getDouble("positiveDepthFactor"),
-				tag.getDouble("negativeDepthFactor"),
-				Arrays.stream(tag.getIntArray("acceptedGroups")).boxed().collect(Collectors.toSet()),
-				tag.getBoolean("noLink"),
-				tag.getBoolean("noLinkBack")
+				nbt.getFloat("newRiftWeight"),
+				nbt.getDouble("weightMaximum"),
+				nbt.getDouble("coordFactor"),
+				nbt.getDouble("positiveDepthFactor"),
+				nbt.getDouble("negativeDepthFactor"),
+				Arrays.stream(nbt.getIntArray("acceptedGroups")).boxed().collect(Collectors.toSet()),
+				nbt.getBoolean("noLink"),
+				nbt.getBoolean("noLinkBack")
 		);
 	}
 

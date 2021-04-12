@@ -34,16 +34,16 @@ public class RiftRegistry {
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
 	protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
 
-	public static RiftRegistry fromTag(Map<RegistryKey<World>, PocketDirectory> pocketRegistry, NbtCompound nbt) {
+	public static RiftRegistry fromNbt(Map<RegistryKey<World>, PocketDirectory> pocketRegistry, NbtCompound nbt) {
 		// Read rifts in this dimension
 
 		RiftRegistry riftRegistry = new RiftRegistry();
 
 		NbtList riftsNBT = nbt.getList("rifts", NbtType.COMPOUND);
-		CompletableFuture<List<Rift>> futureRifts = CompletableFuture.supplyAsync(() -> riftsNBT.parallelStream().unordered().map(NbtCompound.class::cast).map(Rift::fromTag).collect(Collectors.toList()));
+		CompletableFuture<List<Rift>> futureRifts = CompletableFuture.supplyAsync(() -> riftsNBT.parallelStream().unordered().map(NbtCompound.class::cast).map(Rift::fromNbt).collect(Collectors.toList()));
 
 		NbtList pocketsNBT = nbt.getList("pockets", NbtType.COMPOUND);
-		CompletableFuture<List<PocketEntrancePointer>> futurePockets = CompletableFuture.supplyAsync(() -> pocketsNBT.stream().map(NbtCompound.class::cast).map(PocketEntrancePointer::fromTag).collect(Collectors.toList()));
+		CompletableFuture<List<PocketEntrancePointer>> futurePockets = CompletableFuture.supplyAsync(() -> pocketsNBT.stream().map(NbtCompound.class::cast).map(PocketEntrancePointer::fromNbt).collect(Collectors.toList()));
 
 		futureRifts.join().forEach(rift -> {
 			riftRegistry.graph.addVertex(rift);
@@ -74,15 +74,15 @@ public class RiftRegistry {
 		return riftRegistry;
 	}
 
-	public NbtCompound toTag() {
-		NbtCompound tag = new NbtCompound();
+	public NbtCompound toNbt() {
+		NbtCompound nbt = new NbtCompound();
 		// Write rifts in this dimension
 		CompletableFuture<Pair<NbtList, NbtList>> futureRiftsAndPocketsNBT = CompletableFuture.supplyAsync(() -> {
 			Map<Boolean, List<RegistryVertex>> vertices = this.graph.vertexSet().parallelStream().unordered().filter(vertex -> vertex instanceof Rift || vertex instanceof PocketEntrancePointer)
 					.collect(Collectors.partitioningBy(Rift.class::isInstance));
 
-			CompletableFuture<List<NbtCompound>> futureRiftsNBT = CompletableFuture.supplyAsync(() -> vertices.get(true).parallelStream().map(RegistryVertex::toTag).collect(Collectors.toList()));
-			CompletableFuture<List<NbtCompound>> futurePocketsNBT = CompletableFuture.supplyAsync(() -> vertices.get(false).parallelStream().map(RegistryVertex::toTag).collect(Collectors.toList()));
+			CompletableFuture<List<NbtCompound>> futureRiftsNBT = CompletableFuture.supplyAsync(() -> vertices.get(true).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
+			CompletableFuture<List<NbtCompound>> futurePocketsNBT = CompletableFuture.supplyAsync(() -> vertices.get(false).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
 
 			NbtList riftsNBT = new NbtList();
 			NbtList pocketsNBT = new NbtList();
@@ -110,23 +110,23 @@ public class RiftRegistry {
 
 
 		// Subregistries are written automatically when the worlds are saved.
-		tag.put("last_private_pocket_entrances", this.writePlayerRiftPointers(this.lastPrivatePocketEntrances));
-		tag.put("last_private_pocket_exits", this.writePlayerRiftPointers(this.lastPrivatePocketExits));
-		tag.put("overworld_rifts", this.writePlayerRiftPointers(this.overworldRifts));
+		nbt.put("last_private_pocket_entrances", this.writePlayerRiftPointers(this.lastPrivatePocketEntrances));
+		nbt.put("last_private_pocket_exits", this.writePlayerRiftPointers(this.lastPrivatePocketExits));
+		nbt.put("overworld_rifts", this.writePlayerRiftPointers(this.overworldRifts));
 
 		Pair<NbtList, NbtList> riftsAndPocketsNBT = futureRiftsAndPocketsNBT.join();
-		tag.put("rifts", riftsAndPocketsNBT.getLeft());
-		tag.put("pockets", riftsAndPocketsNBT.getRight());
+		nbt.put("rifts", riftsAndPocketsNBT.getLeft());
+		nbt.put("pockets", riftsAndPocketsNBT.getRight());
 
-		tag.put("links", futureLinksNBT.join());
+		nbt.put("links", futureLinksNBT.join());
 
-		return tag;
+		return nbt;
 	}
 
 	// TODO: parallelization
-	private Map<UUID, PlayerRiftPointer> readPlayerRiftPointers(NbtList tag) {
+	private Map<UUID, PlayerRiftPointer> readPlayerRiftPointers(NbtList nbt) {
 		Map<UUID, PlayerRiftPointer> pointerMap = new HashMap<>();
-		for (NbtElement entryNBT : tag) {
+		for (NbtElement entryNBT : nbt) {
 			UUID player = ((NbtCompound) entryNBT).getUuid("player");
 			UUID rift = ((NbtCompound) entryNBT).getUuid("rift");
 			PlayerRiftPointer pointer = new PlayerRiftPointer(player);

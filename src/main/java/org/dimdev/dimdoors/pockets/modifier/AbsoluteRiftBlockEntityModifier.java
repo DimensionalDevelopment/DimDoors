@@ -6,7 +6,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -34,8 +33,8 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	}
 
 	@Override
-	public Modifier fromTag(NbtCompound tag) {
-		serializedRifts = tag.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(NbtCompound.class::cast)
+	public Modifier fromNbt(NbtCompound nbt) {
+		serializedRifts = nbt.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(NbtCompound.class::cast)
 				.collect(Collectors.toConcurrentMap(compound -> {
 					int[] ints = compound.getIntArray("Pos");
 					return new BlockPos(ints[0], ints[1], ints[2]);
@@ -45,19 +44,19 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		LazyModifier.super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		LazyModifier.super.toNbt(nbt);
 
-		NbtList riftsTag;
+		NbtList riftsNbt;
 		if (rifts != null) {
-			riftsTag = rifts.values().parallelStream().unordered().map(rift -> rift.writeNbt(new NbtCompound())).collect(Collectors.toCollection(NbtList::new));
+			riftsNbt = rifts.values().parallelStream().unordered().map(rift -> rift.writeNbt(new NbtCompound())).collect(Collectors.toCollection(NbtList::new));
 		} else {
-			riftsTag = new NbtList();
-			riftsTag.addAll(serializedRifts.values());
+			riftsNbt = new NbtList();
+			riftsNbt.addAll(serializedRifts.values());
 		}
-		tag.put("rifts", riftsTag);
+		nbt.put("rifts", riftsNbt);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override
@@ -95,9 +94,9 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 					});
 		} else {
 			serializedRifts.entrySet().stream().unordered().filter(entry -> chunkBox.contains(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-					.forEach((pos, riftTag) -> {
+					.forEach((pos, riftNbt) -> {
 						rifts.remove(pos);
-						chunk.setBlockEntity(BlockEntity.createFromNbt(pos, chunk.getBlockState(pos), riftTag));
+						chunk.setBlockEntity(BlockEntity.createFromNbt(pos, chunk.getBlockState(pos), riftNbt));
 					});
 		}
 	}

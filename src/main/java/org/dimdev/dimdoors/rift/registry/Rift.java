@@ -71,21 +71,21 @@ public class Rift extends RegistryVertex {
 		return RegistryVertexType.RIFT;
 	}
 
-	public static NbtCompound toTag(Rift rift) {
-		NbtCompound tag = new NbtCompound();
-		tag.putUuid("id", rift.id);
-		tag.put("location", Location.toTag(rift.location));
-		tag.putBoolean("isDetached", rift.isDetached);
-		if (rift.properties != null) tag.put("properties", LinkProperties.toTag(rift.properties));
-		return tag;
+	public static NbtCompound toNbt(Rift rift) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putUuid("id", rift.id);
+		nbt.put("location", Location.toNbt(rift.location));
+		nbt.putBoolean("isDetached", rift.isDetached);
+		if (rift.properties != null) nbt.put("properties", LinkProperties.toNbt(rift.properties));
+		return nbt;
 	}
 
-	public static Rift fromTag(NbtCompound tag) {
+	public static Rift fromNbt(NbtCompound nbt) {
 		Rift rift = new Rift();
-		rift.id = tag.getUuid("id");
-		rift.location = Location.fromTag(tag.getCompound("location"));
-		rift.isDetached = tag.getBoolean("isDetached");
-		if (tag.contains("properties")) rift.properties = LinkProperties.fromTag(tag.getCompound("properties"));
+		rift.id = nbt.getUuid("id");
+		rift.location = Location.fromNbt(nbt.getCompound("location"));
+		rift.isDetached = nbt.getBoolean("isDetached");
+		if (nbt.contains("properties")) rift.properties = LinkProperties.fromNbt(nbt.getCompound("properties"));
 		return rift;
 	}
 

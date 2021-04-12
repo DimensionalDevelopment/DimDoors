@@ -37,17 +37,17 @@ public abstract class RegistryVertex {
 		return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";
 	}
 
-	public static RegistryVertex fromTag(NbtCompound nbt) {
-		return Objects.requireNonNull(registry.get(new Identifier(nbt.getString("type")))).fromTag(nbt);
+	public static RegistryVertex fromNbt(NbtCompound nbt) {
+		return Objects.requireNonNull(registry.get(new Identifier(nbt.getString("type")))).fromNbt(nbt);
 	}
 
-	public static NbtCompound toTag(RegistryVertex registryVertex) {
+	public static NbtCompound toNbt(RegistryVertex registryVertex) {
 		String type = registry.getId(registryVertex.getType()).toString();
 
-		NbtCompound tag = registryVertex.getType().toTag(registryVertex);
-		tag.putString("type", type);
+		NbtCompound nbt = registryVertex.getType().toNbt(registryVertex);
+		nbt.putString("type", type);
 
-		return tag;
+		return nbt;
 	}
 
 	public UUID getId() {
@@ -67,25 +67,25 @@ public abstract class RegistryVertex {
 	}
 
 	public interface RegistryVertexType<T extends RegistryVertex> {
-		RegistryVertexType<PlayerRiftPointer> PLAYER = register("player", PlayerRiftPointer::fromTag, PlayerRiftPointer::toTag);
-		RegistryVertexType<Rift> RIFT = register("rift", Rift::fromTag, Rift::toTag);
-		RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer::fromTag, PocketEntrancePointer::toTag);
-		RegistryVertexType<RiftPlaceholder> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder::fromTag, RiftPlaceholder::toTag);
+		RegistryVertexType<PlayerRiftPointer> PLAYER = register("player", PlayerRiftPointer::fromNbt, PlayerRiftPointer::toNbt);
+		RegistryVertexType<Rift> RIFT = register("rift", Rift::fromNbt, Rift::toNbt);
+		RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer::fromNbt, PocketEntrancePointer::toNbt);
+		RegistryVertexType<RiftPlaceholder> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder::fromNbt, RiftPlaceholder::toNbt);
 
-		T fromTag(NbtCompound tag);
+		T fromNbt(NbtCompound nbt);
 
-		NbtCompound toTag(RegistryVertex virtualType);
+		NbtCompound toNbt(RegistryVertex virtualType);
 
-		static <T extends RegistryVertex> RegistryVertex.RegistryVertexType<T> register(String id, Function<NbtCompound, T> fromTag, Function<T, NbtCompound> toTag) {
+		static <T extends RegistryVertex> RegistryVertex.RegistryVertexType<T> register(String id, Function<NbtCompound, T> fromNbt, Function<T, NbtCompound> toNbt) {
 			return Registry.register(registry, id, new RegistryVertexType<T>() {
 				@Override
-				public T fromTag(NbtCompound tag) {
-					return fromTag.apply(tag);
+				public T fromNbt(NbtCompound nbt) {
+					return fromNbt.apply(nbt);
 				}
 
 				@Override
-				public NbtCompound toTag(RegistryVertex registryVertex) {
-					return toTag.apply((T) registryVertex);
+				public NbtCompound toNbt(RegistryVertex registryVertex) {
+					return toNbt.apply((T) registryVertex);
 				}
 			});
 		}

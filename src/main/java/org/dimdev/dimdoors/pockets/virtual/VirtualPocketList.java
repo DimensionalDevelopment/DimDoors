@@ -8,30 +8,30 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
 
-	public static VirtualPocketList deserialize(NbtList tag) {
-		return new VirtualPocketList().fromTag(tag);
+	public static VirtualPocketList deserialize(NbtList nbt) {
+		return new VirtualPocketList().fromNbt(nbt);
 	}
 
 	public static NbtList serialize(VirtualPocketList virtualPocketList) {
-		return virtualPocketList.toTag(new NbtList());
+		return virtualPocketList.toNbt(new NbtList());
 	}
 
 	public VirtualPocketList() {
 		super();
 	}
 
-	public VirtualPocketList fromTag(NbtList tag) { // Keep in mind, this would add onto the list instead of overwriting it if called multiple times.
-		for (net.minecraft.nbt.NbtElement value : tag) {
+	public VirtualPocketList fromNbt(NbtList nbt) { // Keep in mind, this would add onto the list instead of overwriting it if called multiple times.
+		for (net.minecraft.nbt.NbtElement value : nbt) {
 			this.add(VirtualPocket.deserialize(value));
 		}
 		return this;
 	}
 
-	public NbtList toTag(NbtList tag) {
+	public NbtList toNbt(NbtList nbt) {
 		for(VirtualPocket virtualPocket : this) {
-			tag.add(VirtualPocket.serialize(virtualPocket));
+			nbt.add(VirtualPocket.serialize(virtualPocket));
 		}
-		return tag;
+		return nbt;
 	}
 
 	@Override

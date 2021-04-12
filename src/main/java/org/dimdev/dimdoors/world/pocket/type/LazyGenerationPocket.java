@@ -5,7 +5,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
@@ -53,13 +52,13 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
-		if (generator != null) tag.put("generator", generator.toTag(new NbtCompound()));
-		if (toBeGennedChunkCount > 0) tag.putInt("to_be_genned_chunks", toBeGennedChunkCount);
+		if (generator != null) nbt.put("generator", generator.toNbt(new NbtCompound()));
+		if (toBeGennedChunkCount > 0) nbt.putInt("to_be_genned_chunks", toBeGennedChunkCount);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override
@@ -72,11 +71,11 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	@Override
-	public Pocket fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public Pocket fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
-		if (tag.contains("generator", NbtType.COMPOUND)) generator = (LazyPocketGenerator) PocketGenerator.deserialize(tag.getCompound("generator"));
-		if (tag.contains("to_be_genned_chunks", NbtType.INT)) toBeGennedChunkCount = tag.getInt("to_be_genned_chunks");
+		if (nbt.contains("generator", NbtType.COMPOUND)) generator = (LazyPocketGenerator) PocketGenerator.deserialize(nbt.getCompound("generator"));
+		if (nbt.contains("to_be_genned_chunks", NbtType.INT)) toBeGennedChunkCount = nbt.getInt("to_be_genned_chunks");
 
 		return this;
 	}

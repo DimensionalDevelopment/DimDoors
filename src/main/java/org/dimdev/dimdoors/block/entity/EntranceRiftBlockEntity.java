@@ -51,9 +51,9 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound tag) {
-		tag.putBoolean("locked", locked);
-		return super.writeNbt(tag);
+	public NbtCompound writeNbt(NbtCompound nbt) {
+		nbt.putBoolean("locked", locked);
+		return super.writeNbt(nbt);
 	}
 
 	@Override

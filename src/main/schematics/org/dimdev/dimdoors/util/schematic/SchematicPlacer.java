@@ -89,41 +89,41 @@ public final class SchematicPlacer {
 	}
 
 	private static void placeEntities(int originX, int originY, int originZ, Schematic schematic, StructureWorldAccess world) {
-		List<NbtCompound> entityTags = schematic.getEntities();
-		for (NbtCompound tag : entityTags) {
-			NbtList listTag = Objects.requireNonNull(tag.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos tag!");
-			SchematicPlacer.processPos(listTag, originX, originY, originZ, tag);
+		List<NbtCompound> entityNbts = schematic.getEntities();
+		for (NbtCompound nbt : entityNbts) {
+			NbtList nbtList = Objects.requireNonNull(nbt.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos nbt list!");
+			SchematicPlacer.processPos(nbtList, originX, originY, originZ, nbt);
 
-			EntityType<?> entityType = EntityType.fromNbt(tag).orElseThrow(AssertionError::new);
+			EntityType<?> entityType = EntityType.fromNbt(nbt).orElseThrow(AssertionError::new);
 			Entity e = entityType.create(world.toServerWorld());
 			// TODO: fail with an exception
 			if (e != null) {
-				e.readNbt(tag);
+				e.readNbt(nbt);
 				world.spawnEntityAndPassengers(e);
 			}
 		}
 	}
 
-	public static NbtCompound fixEntityId(NbtCompound tag) {
-		if (!tag.contains("Id") && tag.contains("id")) {
-			tag.putString("Id", tag.getString("id"));
-		} else if (tag.contains("Id") && !tag.contains("id")) {
-			tag.putString("id", tag.getString("Id"));
+	public static NbtCompound fixEntityId(NbtCompound nbt) {
+		if (!nbt.contains("Id") && nbt.contains("id")) {
+			nbt.putString("Id", nbt.getString("id"));
+		} else if (nbt.contains("Id") && !nbt.contains("id")) {
+			nbt.putString("id", nbt.getString("Id"));
 		}
-		if (!tag.contains("Id") || !tag.contains("id")) {
+		if (!nbt.contains("Id") || !nbt.contains("id")) {
 			System.err.println("An unexpected error occurred parsing this entity");
-			System.err.println(tag.toString());
-			throw new IllegalStateException("Entity did not have an 'Id' tag, nor an 'id' tag!");
+			System.err.println(nbt.toString());
+			throw new IllegalStateException("Entity did not have an 'Id' nbt string, nor an 'id' nbt string!");
 		}
-		return tag;
+		return nbt;
 	}
 
-	private static void processPos(NbtList listTag, int originX, int originY, int originZ, NbtCompound tag) {
-		double x = listTag.getDouble(0);
-		double y = listTag.getDouble(1);
-		double z = listTag.getDouble(2);
-		tag.remove("Pos");
-		tag.put("Pos", NbtOps.INSTANCE.createList(Stream.of(NbtDouble.of(x + originX),
+	private static void processPos(NbtList nbtList, int originX, int originY, int originZ, NbtCompound nbt) {
+		double x = nbtList.getDouble(0);
+		double y = nbtList.getDouble(1);
+		double z = nbtList.getDouble(2);
+		nbt.remove("Pos");
+		nbt.put("Pos", NbtOps.INSTANCE.createList(Stream.of(NbtDouble.of(x + originX),
 				NbtDouble.of(y + originY),
 				NbtDouble.of(z + originZ))));
 	}

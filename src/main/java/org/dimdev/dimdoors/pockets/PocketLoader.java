@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import com.google.gson.*;
@@ -125,27 +124,27 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 //		}
 //    }
 
-	public NbtElement getDataTag(String id) {
+	public NbtElement getDataNbt(String id) {
 		return this.dataTree.get(Path.stringPath(id));
 	}
 
-	public NbtCompound getDataCompoundTag(String id) {
-		return NbtUtil.asCompoundTag(getDataTag(id), "Could not convert Tag \"" + id + "\" to CompoundTag!");
+	public NbtCompound getDataNbtCompound(String id) {
+		return NbtUtil.asNbtCompound(getDataNbt(id), "Could not convert NbtElement \"" + id + "\" to NbtCompound!");
 	}
 
-	private VirtualPocket loadVirtualPocket(NbtElement tag) {
-		return VirtualPocket.deserialize(tag);
+	private VirtualPocket loadVirtualPocket(NbtElement nbt) {
+		return VirtualPocket.deserialize(nbt);
 	}
 
-	private PocketGenerator loadPocketGenerator(NbtElement tag) {
-		return PocketGenerator.deserialize(NbtUtil.asCompoundTag(tag, "Could not load PocketGenerator since its json does not represent a CompoundTag!"));
+	private PocketGenerator loadPocketGenerator(NbtElement nbt) {
+		return PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an NbtCompound!"));
 	}
 
-	private PocketTemplate loadPocketTemplate(NbtCompound tag, String id) {
+	private PocketTemplate loadPocketTemplate(NbtCompound nbt, String id) {
 		try {
-			return new PocketTemplate(Schematic.fromTag(tag), new Identifier(id));
+			return new PocketTemplate(Schematic.fromNbt(nbt), new Identifier(id));
 		} catch (Exception e) {
-			throw new RuntimeException("Error loading " + tag.toString(), e);
+			throw new RuntimeException("Error loading " + nbt.toString(), e);
 		}
 	}
 

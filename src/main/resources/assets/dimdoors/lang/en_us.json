@@ -359,5 +359,8 @@
 
   "resourcePackActivationType.normal": "Normal",
   "resourcePackActivationType.defaultEnabled": "Default Enabled",
-  "resourcePackActivationType.alwaysEnabled": "Always Enabled"
+  "resourcePackActivationType.alwaysEnabled": "Always Enabled",
+
+  "dimdoors.mode.enable": "Enable",
+  "dimdoors.mode.disable": "Disable"
 }

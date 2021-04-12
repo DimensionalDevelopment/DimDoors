@@ -33,15 +33,15 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 		return RegistryVertexType.RIFT_PLACEHOLDER;
 	}
 
-	public static NbtCompound toTag(RiftPlaceholder vertex) {
-		NbtCompound tag = new NbtCompound();
-		tag.putUuid("id", vertex.id);
-		return tag;
+	public static NbtCompound toNbt(RiftPlaceholder vertex) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putUuid("id", vertex.id);
+		return nbt;
 	}
 
-	public static RiftPlaceholder fromTag(NbtCompound tag) {
+	public static RiftPlaceholder fromNbt(NbtCompound nbt) {
 		RiftPlaceholder vertex = new RiftPlaceholder();
-		vertex.id = tag.getUuid("id");
+		vertex.id = nbt.getUuid("id");
 		return vertex;
 	}
 }

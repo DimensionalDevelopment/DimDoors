@@ -70,16 +70,16 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				}
 			}
 		}
-		for (NbtCompound blockEntityTag : schematic.getBlockEntities()) {
-			int[] arr = blockEntityTag.getIntArray("Pos");
+		for (NbtCompound blockEntityNbt : schematic.getBlockEntities()) {
+			int[] arr = blockEntityNbt.getIntArray("Pos");
 			BlockPos position = new BlockPos(arr[0], arr[1], arr[2]);
-			this.blockEntityContainer.put(position, blockEntityTag);
+			this.blockEntityContainer.put(position, blockEntityNbt);
 		}
 
 		this.entityContainer = HashBiMap.create();
-		for (NbtCompound entityTag : schematic.getEntities()) {
-			NbtList doubles = entityTag.getList("Pos", NbtType.DOUBLE);
-			this.entityContainer.put(entityTag, new Vec3d(doubles.getDouble(0), doubles.getDouble(1), doubles.getDouble(2)));
+		for (NbtCompound entityNbt : schematic.getEntities()) {
+			NbtList doubles = entityNbt.getList("Pos", NbtType.DOUBLE);
+			this.entityContainer.put(entityNbt, new Vec3d(doubles.getDouble(0), doubles.getDouble(1), doubles.getDouble(2)));
 		}
 	}
 
@@ -115,26 +115,26 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 			BlockPos pos = entry.getKey();
 			BlockPos actualPos = origin.add(entry.getKey());
 
-			NbtCompound tag = entry.getValue();
-			if(tag.contains("Id")) {
-				tag.put("id", tag.get("Id")); // boogers
-				tag.remove("Id");
+			NbtCompound nbt = entry.getValue();
+			if(nbt.contains("Id")) {
+				nbt.put("id", nbt.get("Id")); // boogers
+				nbt.remove("Id");
 			}
 
-			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(pos), tag);
+			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(pos), nbt);
 			if (blockEntity != null) {
 				world.toServerWorld().addBlockEntity(blockEntity);
 			}
 		}
 		for (Map.Entry<NbtCompound, Vec3d> entry : this.entityContainer.entrySet()) {
-			NbtCompound tag = entry.getKey();
-			NbtList doubles = tag.getList("Pos", NbtType.DOUBLE);
+			NbtCompound nbt = entry.getKey();
+			NbtList doubles = nbt.getList("Pos", NbtType.DOUBLE);
 			Vec3d vec = entry.getValue().add(origin.getX(), origin.getY(), origin.getZ());
 			doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
 			doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 			doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
-			tag.put("Pos", doubles);
-			Entity entity = EntityType.getEntityFromNbt(tag, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
+			nbt.put("Pos", doubles);
+			Entity entity = EntityType.getEntityFromNbt(nbt, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
 			world.spawnEntity(entity);
 		}
 	}
@@ -187,15 +187,15 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		serverChunkManager.getLightingProvider().light(chunk, false);
 
 		// TODO: depending on size of blockEntityContainer it might be faster to iterate over BlockPos.stream(intersection) instead
-		this.blockEntityContainer.forEach((blockPos, tag) -> {
+		this.blockEntityContainer.forEach((blockPos, nbt) -> {
 			BlockPos actualPos = blockPos.add(origin);
 			if (intersection.contains(actualPos)) {
-				if(tag.contains("Id")) {
-					tag.put("id", tag.get("Id")); // boogers
-					tag.remove("Id");
+				if(nbt.contains("Id")) {
+					nbt.put("id", nbt.get("Id")); // boogers
+					nbt.remove("Id");
 				}
 
-				BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(blockPos), tag);
+				BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(blockPos), nbt);
 				if (blockEntity != null && !(blockEntity instanceof RiftBlockEntity)) {
 					chunk.setBlockEntity(blockEntity);
 				}
@@ -203,16 +203,16 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		});
 
 		// TODO: is it ok if this is not executed with MinecraftServer#send?
-		this.entityContainer.forEach(((tag, vec3d) -> {
-			NbtList doubles = tag.getList("Pos", NbtType.DOUBLE);
+		this.entityContainer.forEach(((nbt, vec3d) -> {
+			NbtList doubles = nbt.getList("Pos", NbtType.DOUBLE);
 			Vec3d vec = vec3d.add(origin.getX(), origin.getY(), origin.getZ());
 			if (intersection.contains(new Vec3i(vec.x, vec.y, vec.z))) {
 				doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
 				doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 				doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
-				tag.put("Pos", doubles);
+				nbt.put("Pos", doubles);
 
-				Entity entity = EntityType.getEntityFromNbt(tag, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
+				Entity entity = EntityType.getEntityFromNbt(nbt, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
 				world.spawnEntity(entity);
 			}
 		}));
@@ -220,15 +220,15 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(BlockPos origin) {
 		Map<BlockPos, RiftBlockEntity> rifts = new HashMap<>();
-		this.blockEntityContainer.forEach( (blockPos, tag) ->  {
+		this.blockEntityContainer.forEach( (blockPos, nbt) ->  {
 			BlockPos actualPos = origin.add(blockPos);
 
-			if(tag.contains("Id")) {
-				tag.put("id", tag.get("Id")); // boogers
-				tag.remove("Id");
+			if(nbt.contains("Id")) {
+				nbt.put("id", nbt.get("Id")); // boogers
+				nbt.remove("Id");
 			}
 			BlockState state = getBlockState(blockPos);
-			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, state, tag);
+			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, state, nbt);
 			if (blockEntity instanceof RiftBlockEntity) {
 				rifts.put(actualPos, (RiftBlockEntity) blockEntity);
 			}

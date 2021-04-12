@@ -60,8 +60,12 @@ public class DimensionalDoorBlockRegistrar {
 		itemRegistrar.notifyBlockMapped(block, newBlock);
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			BlockRenderLayerMap.INSTANCE.putBlock(newBlock, RenderLayer.getCutout());
+			putCutout(block);
 		}
+	}
+
+	private void putCutout(Block block) {
+		BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
 	}
 
 	public Identifier get(Identifier identifier) {
@@ -71,7 +75,6 @@ public class DimensionalDoorBlockRegistrar {
 	public boolean isMapped(Identifier identifier) {
 		return mappedDoorBlocks.containsKey(identifier);
 	}
-
 
 	private static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {
 		private final Block originalBlock;

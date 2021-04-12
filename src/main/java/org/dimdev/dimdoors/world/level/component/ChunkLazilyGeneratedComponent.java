@@ -24,16 +24,16 @@ public class ChunkLazilyGeneratedComponent implements Component {
 	}
 
 	@Override
-	public void readFromNbt(NbtCompound tag) {
-		if (tag.contains("has_been_lazy_genned", NbtType.INT)) {
-			hasBeenLazyGenned = tag.getInt("has_been_lazy_genned") == 1;
+	public void readFromNbt(NbtCompound nbt) {
+		if (nbt.contains("has_been_lazy_genned", NbtType.INT)) {
+			hasBeenLazyGenned = nbt.getInt("has_been_lazy_genned") == 1;
 		}
 	}
 
 	@Override
-	public void writeToNbt(NbtCompound tag) {
+	public void writeToNbt(NbtCompound nbt) {
 		if (hasBeenLazyGenned) {
-			tag.putInt("has_been_lazy_genned", 1);
+			nbt.putInt("has_been_lazy_genned", 1);
 		}
 	}
 }

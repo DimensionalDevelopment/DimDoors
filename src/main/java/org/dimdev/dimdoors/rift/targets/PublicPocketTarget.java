@@ -43,17 +43,17 @@ public class PublicPocketTarget extends RestoringTarget {
 		return VirtualTargetType.PUBLIC_POCKET;
 	}
 
-	public static NbtCompound toTag(PublicPocketTarget target) {
-		NbtCompound tag = new NbtCompound();
+	public static NbtCompound toNbt(PublicPocketTarget target) {
+		NbtCompound nbt = new NbtCompound();
 		if (target.wrappedDestination != null)
-			tag.put("wrappedDestination", VirtualTarget.toTag(target.wrappedDestination));
-		return tag;
+			nbt.put("wrappedDestination", VirtualTarget.toNbt(target.wrappedDestination));
+		return nbt;
 	}
 
-	public static PublicPocketTarget fromTag(NbtCompound tag) {
+	public static PublicPocketTarget fromNbt(NbtCompound nbt) {
 		PublicPocketTarget target = new PublicPocketTarget();
-		if (tag.contains("wrappedDestination"))
-			target.wrappedDestination = VirtualTarget.fromTag(tag.getCompound("wrappedDestination"));
+		if (nbt.contains("wrappedDestination"))
+			target.wrappedDestination = VirtualTarget.fromNbt(nbt.getCompound("wrappedDestination"));
 		return target;
 	}
 }

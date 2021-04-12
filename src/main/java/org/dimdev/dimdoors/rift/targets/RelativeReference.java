@@ -25,14 +25,14 @@ public class RelativeReference extends RiftReference {
 		return VirtualTargetType.RELATIVE;
 	}
 
-	public static NbtCompound toTag(RelativeReference target) {
-		NbtCompound tag = new NbtCompound();
-		tag.putIntArray("offset", new int[]{target.offset.getX(), target.offset.getY(), target.offset.getZ()});
-		return tag;
+	public static NbtCompound toNbt(RelativeReference target) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.putIntArray("offset", new int[]{target.offset.getX(), target.offset.getY(), target.offset.getZ()});
+		return nbt;
 	}
 
-	public static RelativeReference fromTag(NbtCompound tag) {
-		int[] offset = tag.getIntArray("offset");
+	public static RelativeReference fromNbt(NbtCompound nbt) {
+		int[] offset = nbt.getIntArray("offset");
 		return new RelativeReference(new Vec3i(offset[0], offset[1], offset[2]));
 	}
 }

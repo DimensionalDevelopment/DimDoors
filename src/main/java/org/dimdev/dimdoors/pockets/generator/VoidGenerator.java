@@ -50,15 +50,15 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromTag(NbtCompound tag) {
-		super.fromTag(tag);
+	public PocketGenerator fromNbt(NbtCompound nbt) {
+		super.fromNbt(nbt);
 
 		try {
-			width = tag.getString("width");
+			width = nbt.getString("width");
 			widthEquation = Equation.parse(width);
-			height = tag.getString("height");
+			height = nbt.getString("height");
 			heightEquation = Equation.parse(height);
-			length = tag.getString("length");
+			length = nbt.getString("length");
 			lengthEquation = Equation.parse(length);
 
 		} catch (EquationParseException e) {
@@ -69,14 +69,14 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public NbtCompound toTag(NbtCompound tag) {
-		super.toTag(tag);
+	public NbtCompound toNbt(NbtCompound nbt) {
+		super.toNbt(nbt);
 
-		tag.putString("width", width);
-		tag.putString("height", height);
-		tag.putString("length", length);
+		nbt.putString("width", width);
+		nbt.putString("height", height);
+		nbt.putString("length", length);
 
-		return tag;
+		return nbt;
 	}
 
 	@Override

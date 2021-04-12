@@ -89,22 +89,22 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public NbtCompound serialize(NbtCompound tag) {
-		super.serialize(tag);
-		tag.putBoolean("closing", this.closing);
-		tag.putBoolean("stablized", this.stabilized);
-		tag.putInt("spawnedEnderManId", this.spawnedEndermanId);
-		tag.putFloat("size", this.size);
-		return tag;
+	public NbtCompound serialize(NbtCompound nbt) {
+		super.serialize(nbt);
+		nbt.putBoolean("closing", this.closing);
+		nbt.putBoolean("stablized", this.stabilized);
+		nbt.putInt("spawnedEnderManId", this.spawnedEndermanId);
+		nbt.putFloat("size", this.size);
+		return nbt;
 	}
 
 	@Override
-	public void deserialize(NbtCompound tag) {
-		super.deserialize(tag);
-		this.closing = tag.getBoolean("closing");
-		this.stabilized = tag.getBoolean("stablized");
-		this.spawnedEndermanId = tag.getInt("spawnedEnderManId");
-		this.size = tag.getFloat("size");
+	public void deserialize(NbtCompound nbt) {
+		super.deserialize(nbt);
+		this.closing = nbt.getBoolean("closing");
+		this.stabilized = nbt.getBoolean("stablized");
+		this.spawnedEndermanId = nbt.getInt("spawnedEnderManId");
+		this.size = nbt.getFloat("size");
 	}
 
 	@Override

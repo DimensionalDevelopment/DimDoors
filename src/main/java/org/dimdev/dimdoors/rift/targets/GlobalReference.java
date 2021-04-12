@@ -23,13 +23,13 @@ public class GlobalReference extends RiftReference {
 		return VirtualTargetType.GLOBAL;
 	}
 
-	public static NbtCompound toTag(GlobalReference virtualTarget) {
-		NbtCompound tag = new NbtCompound();
-		tag.put("target", Location.toTag(virtualTarget.getReferencedLocation()));
-		return tag;
+	public static NbtCompound toNbt(GlobalReference virtualTarget) {
+		NbtCompound nbt = new NbtCompound();
+		nbt.put("target", Location.toNbt(virtualTarget.getReferencedLocation()));
+		return nbt;
 	}
 
-	public static GlobalReference fromTag(NbtCompound nbt) {
-		return new GlobalReference(Location.fromTag(nbt.getCompound("target")));
+	public static GlobalReference fromNbt(NbtCompound nbt) {
+		return new GlobalReference(Location.fromNbt(nbt.getCompound("target")));
 	}
 }

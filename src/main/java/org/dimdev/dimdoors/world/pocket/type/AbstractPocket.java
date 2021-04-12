@@ -34,34 +34,34 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		return id;
 	}
 
-	public static AbstractPocket<? extends AbstractPocket<?>> deserialize(NbtCompound tag) {
-		Identifier id = Identifier.tryParse(tag.getString("type"));
-		return REGISTRY.get(id).fromTag(tag);
+	public static AbstractPocket<? extends AbstractPocket<?>> deserialize(NbtCompound nbt) {
+		Identifier id = Identifier.tryParse(nbt.getString("type"));
+		return REGISTRY.get(id).fromNbt(nbt);
 	}
 
-	public static AbstractPocketBuilder<?, ?> deserializeBuilder(NbtCompound tag) {
-		Identifier id = Identifier.tryParse(tag.getString("type"));
-		return REGISTRY.get(id).builder().fromTag(tag);
+	public static AbstractPocketBuilder<?, ?> deserializeBuilder(NbtCompound nbt) {
+		Identifier id = Identifier.tryParse(nbt.getString("type"));
+		return REGISTRY.get(id).builder().fromNbt(nbt);
 	}
 
 	public static NbtCompound serialize(AbstractPocket<?> pocket) {
-		return pocket.toTag(new NbtCompound());
+		return pocket.toNbt(new NbtCompound());
 	}
 
-	public V fromTag(NbtCompound tag) {
-		this.id = tag.getInt("id");
-		this.world = RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("world")));
+	public V fromNbt(NbtCompound nbt) {
+		this.id = nbt.getInt("id");
+		this.world = RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world")));
 
 		return (V) this;
 	}
 
-	public NbtCompound toTag(NbtCompound tag) {
-		tag.putInt("id", id);
-		tag.putString("world", world.getValue().toString());
+	public NbtCompound toNbt(NbtCompound nbt) {
+		nbt.putInt("id", id);
+		nbt.putString("world", world.getValue().toString());
 
-		getType().toTag(tag);
+		getType().toNbt(nbt);
 
-		return tag;
+		return nbt;
 	}
 
 	public abstract AbstractPocketType<?> getType();
@@ -90,9 +90,9 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		AbstractPocketType<LazyGenerationPocket> LAZY_GENERATION_POCKET = register(new Identifier("dimdoors", LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
 
-		T fromTag(NbtCompound tag);
+		T fromNbt(NbtCompound nbt);
 
-		NbtCompound toTag(NbtCompound tag);
+		NbtCompound toNbt(NbtCompound nbt);
 
 		T instance();
 
@@ -105,14 +105,14 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> AbstractPocketType<U> register(Identifier id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
 			return Registry.register(REGISTRY, id, new AbstractPocketType<U>() {
 				@Override
-				public U fromTag(NbtCompound tag) {
-					return (U) supplier.get().fromTag(tag);
+				public U fromNbt(NbtCompound nbt) {
+					return (U) supplier.get().fromNbt(nbt);
 				}
 
 				@Override
-				public NbtCompound toTag(NbtCompound tag) {
-					tag.putString("type", id.toString());
-					return tag;
+				public NbtCompound toNbt(NbtCompound nbt) {
+					nbt.putString("type", id.toString());
+					return nbt;
 				}
 
 				@Override
@@ -165,9 +165,9 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 			return (P) this;
 		}
 
-		abstract public P fromTag(NbtCompound tag);
+		abstract public P fromNbt(NbtCompound nbt);
 
-		abstract public NbtCompound toTag(NbtCompound tag);
+		abstract public NbtCompound toNbt(NbtCompound nbt);
 
 		/*
 		public P fromTag(CompoundTag tag) {
