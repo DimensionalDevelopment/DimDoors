@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -30,12 +30,12 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 	}
 
 	@Override
-	public PocketAddon fromTag(CompoundTag tag) {
+	public PocketAddon fromTag(NbtCompound tag) {
 		this.id = Identifier.tryParse(tag.getString("id"));
 
 		if (tag.contains("addons", NbtType.LIST)) {
-			for (Tag addonTag : tag.getList("addons", NbtType.COMPOUND)) {
-				addons.add((T) PocketAddon.deserialize((CompoundTag) addonTag));
+			for (NbtElement addonTag : tag.getList("addons", NbtType.COMPOUND)) {
+				addons.add((T) PocketAddon.deserialize((NbtCompound) addonTag));
 			}
 		}
 
@@ -43,12 +43,12 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		PocketAddon.super.toTag(tag);
 
-		ListTag addonsTag = new ListTag();
+		NbtList addonsTag = new NbtList();
 		for(T addon : addons) {
-			addonsTag.add(addon.toTag(new CompoundTag()));
+			addonsTag.add(addon.toTag(new NbtCompound()));
 		}
 		tag.put("addons", addonsTag);
 

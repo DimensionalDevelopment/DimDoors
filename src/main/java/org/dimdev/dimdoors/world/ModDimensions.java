@@ -15,10 +15,10 @@ import net.minecraft.world.dimension.DimensionType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public final class ModDimensions {
-    public static final RegistryKey<World> LIMBO = RegistryKey.of(Registry.DIMENSION, new Identifier("dimdoors:limbo"));
-    public static final RegistryKey<World> PERSONAL = RegistryKey.of(Registry.DIMENSION, new Identifier("dimdoors:personal_pockets"));
-    public static final RegistryKey<World> PUBLIC = RegistryKey.of(Registry.DIMENSION, new Identifier("dimdoors:public_pockets"));
-    public static final RegistryKey<World> DUNGEON = RegistryKey.of(Registry.DIMENSION, new Identifier("dimdoors:dungeon_pockets"));
+    public static final RegistryKey<World> LIMBO = RegistryKey.of(Registry.WORLD_KEY, new Identifier("dimdoors:limbo"));
+    public static final RegistryKey<World> PERSONAL = RegistryKey.of(Registry.WORLD_KEY, new Identifier("dimdoors:personal_pockets"));
+    public static final RegistryKey<World> PUBLIC = RegistryKey.of(Registry.WORLD_KEY, new Identifier("dimdoors:public_pockets"));
+    public static final RegistryKey<World> DUNGEON = RegistryKey.of(Registry.WORLD_KEY, new Identifier("dimdoors:dungeon_pockets"));
 
     public static final RegistryKey<DimensionType> LIMBO_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("dimdoors:limbo"));
     public static final RegistryKey<DimensionType> POCKET_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("dimdoors:personal_pockets"));

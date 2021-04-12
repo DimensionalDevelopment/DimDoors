@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import java.util.Optional;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 
 import com.google.common.base.MoreObjects;
@@ -19,14 +18,14 @@ public class RelativeReferenceModifier implements Modifier {
 	private int point_a, point_b;
 
 	@Override
-	public Modifier fromTag(CompoundTag tag) {
+	public Modifier fromTag(NbtCompound tag) {
 		point_a = tag.getInt("point_a");
 		point_b = tag.getInt("point_b");
 		return this;
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		Modifier.super.toTag(tag);
 		tag.putInt("point_a", point_a);
 		tag.putInt("point_b", point_b);

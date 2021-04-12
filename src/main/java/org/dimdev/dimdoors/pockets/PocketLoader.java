@@ -35,13 +35,13 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private SimpleTree<String, VirtualPocket> pocketGroups = new SimpleTree<>(String.class);
 	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
-	private SimpleTree<String, Tag> dataTree = new SimpleTree<>(String.class);
+	private SimpleTree<String, NbtElement> dataTree = new SimpleTree<>(String.class);
 
 	private PocketLoader() {
 	}
 
 	@Override
-	public void apply(ResourceManager manager) {
+	public void reload(ResourceManager manager) {
 		pocketGenerators.clear();
 		pocketGroups.clear();
 		virtualPockets.clear();
@@ -65,7 +65,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		virtualPockets.values().forEach(VirtualPocket::init);
 	}
 
-	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromJsonToTree(ResourceManager manager, String startingPath, Function<Tag, T> reader) {
+	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromJsonToTree(ResourceManager manager, String startingPath, Function<NbtElement, T> reader) {
 		int sub = startingPath.endsWith("/") ? 0 : 1;
 
 		Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(".json"));
@@ -85,7 +85,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		});
 	}
 
-	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromCompressedNbtToTree(ResourceManager manager, String startingPath, String extension, BiFunction<CompoundTag, String, T> reader) {
+	private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromCompressedNbtToTree(ResourceManager manager, String startingPath, String extension, BiFunction<NbtCompound, String, T> reader) {
 		int sub = startingPath.endsWith("/") ? 0 : 1;
 		Function<Identifier, Path<String>> normalizer = id -> Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub));
 		Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(extension));
@@ -125,23 +125,23 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 //		}
 //    }
 
-	public Tag getDataTag(String id) {
+	public NbtElement getDataTag(String id) {
 		return this.dataTree.get(Path.stringPath(id));
 	}
 
-	public CompoundTag getDataCompoundTag(String id) {
+	public NbtCompound getDataCompoundTag(String id) {
 		return NbtUtil.asCompoundTag(getDataTag(id), "Could not convert Tag \"" + id + "\" to CompoundTag!");
 	}
 
-	private VirtualPocket loadVirtualPocket(Tag tag) {
+	private VirtualPocket loadVirtualPocket(NbtElement tag) {
 		return VirtualPocket.deserialize(tag);
 	}
 
-	private PocketGenerator loadPocketGenerator(Tag tag) {
+	private PocketGenerator loadPocketGenerator(NbtElement tag) {
 		return PocketGenerator.deserialize(NbtUtil.asCompoundTag(tag, "Could not load PocketGenerator since its json does not represent a CompoundTag!"));
 	}
 
-	private PocketTemplate loadPocketTemplate(CompoundTag tag, String id) {
+	private PocketTemplate loadPocketTemplate(NbtCompound tag, String id) {
 		try {
 			return new PocketTemplate(Schematic.fromTag(tag), new Identifier(id));
 		} catch (Exception e) {

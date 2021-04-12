@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.particle.client;
 
-import org.dimdev.dimdoors.client.MonolithModel;
 import org.dimdev.dimdoors.client.MonolithRenderer;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,13 +22,11 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class MonolithParticle extends Particle {
-	private final MonolithModel model;
 	private final RenderLayer layer;
 
 	public MonolithParticle(ClientWorld world, double x, double y, double z) {
 		super(world, x, y, z);
 		this.maxAge = 30;
-		this.model = new MonolithModel();
 		this.layer = MonolithRenderer.MONOLITH_TEXTURES.get(14);
 	}
 
@@ -43,7 +40,7 @@ public class MonolithParticle extends Particle {
 		matrices.translate(0.0D, -1.1009999513626099D, 1.5D);
 		VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
 		VertexConsumer vertexConsumer2 = immediate.getBuffer(this.layer);
-		this.model.render(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+		MonolithRenderer.getInstance().render(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 		immediate.draw();
 	}
 

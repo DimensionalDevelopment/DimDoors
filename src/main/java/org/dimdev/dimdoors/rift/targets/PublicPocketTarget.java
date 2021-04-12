@@ -1,12 +1,11 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import org.dimdev.dimdoors.pockets.PocketGenerator;
+import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-
-import net.minecraft.nbt.CompoundTag;
 
 public class PublicPocketTarget extends RestoringTarget {
 	private VirtualTarget wrappedDestination = null;
@@ -44,14 +43,14 @@ public class PublicPocketTarget extends RestoringTarget {
 		return VirtualTargetType.PUBLIC_POCKET;
 	}
 
-	public static CompoundTag toTag(PublicPocketTarget target) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(PublicPocketTarget target) {
+		NbtCompound tag = new NbtCompound();
 		if (target.wrappedDestination != null)
 			tag.put("wrappedDestination", VirtualTarget.toTag(target.wrappedDestination));
 		return tag;
 	}
 
-	public static PublicPocketTarget fromTag(CompoundTag tag) {
+	public static PublicPocketTarget fromTag(NbtCompound tag) {
 		PublicPocketTarget target = new PublicPocketTarget();
 		if (tag.contains("wrappedDestination"))
 			target.wrappedDestination = VirtualTarget.fromTag(tag.getCompound("wrappedDestination"));

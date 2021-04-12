@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
@@ -71,13 +71,13 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 		return VirtualTargetType.ESCAPE;
 	}
 
-	public static CompoundTag toTag(EscapeTarget virtualTarget) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(EscapeTarget virtualTarget) {
+		NbtCompound tag = new NbtCompound();
 		tag.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);
 		return tag;
 	}
 
-	public static EscapeTarget fromTag(CompoundTag nbt) {
+	public static EscapeTarget fromTag(NbtCompound nbt) {
 		return new EscapeTarget(nbt.getBoolean("canEscapeLimbo"));
 	}
 }

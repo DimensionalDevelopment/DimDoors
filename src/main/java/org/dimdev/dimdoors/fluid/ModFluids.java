@@ -61,7 +61,7 @@ public class ModFluids {
 			 * Get the sprites from the block atlas when resources are reloaded
 			 */
 			@Override
-			public void apply(ResourceManager resourceManager) {
+			public void reload(ResourceManager resourceManager) {
 				final Function<Identifier, Sprite> atlas = MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 				fluidSprites[0] = atlas.apply(stillSpriteId);
 				fluidSprites[1] = atlas.apply(flowingSpriteId);

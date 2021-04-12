@@ -7,8 +7,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.world.ModDimensions;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -42,8 +41,8 @@ public class VirtualLocation {
 		this.depth = depth;
 	}
 
-	public static CompoundTag toTag(VirtualLocation virtualLocation) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(VirtualLocation virtualLocation) {
+		NbtCompound tag = new NbtCompound();
 		tag.putString("world", virtualLocation.world.getValue().toString());
 		tag.putInt("x", virtualLocation.x);
 		tag.putInt("z", virtualLocation.z);
@@ -51,9 +50,9 @@ public class VirtualLocation {
 		return tag;
 	}
 
-	public static VirtualLocation fromTag(CompoundTag tag) {
+	public static VirtualLocation fromTag(NbtCompound tag) {
 		return new VirtualLocation(
-				RegistryKey.of(Registry.DIMENSION, new Identifier(tag.getString("world"))),
+				RegistryKey.of(Registry.WORLD_KEY, new Identifier(tag.getString("world"))),
 				tag.getInt("x"),
 				tag.getInt("z"),
 				tag.getInt("depth")

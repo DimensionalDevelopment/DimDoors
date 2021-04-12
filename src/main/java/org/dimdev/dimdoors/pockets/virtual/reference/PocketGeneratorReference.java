@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
 import net.minecraft.util.math.BlockPos;
@@ -27,9 +29,6 @@ import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-
 public abstract class PocketGeneratorReference implements ImplementedVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -37,7 +36,7 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
 	protected final List<Modifier> modifierList = Lists.newArrayList();
-	protected final List<CompoundTag> addons = new ArrayList<>();
+	protected final List<NbtCompound> addons = new ArrayList<>();
 
 	private void parseWeight() {
 		try {
@@ -56,7 +55,7 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	}
 
 	@Override
-	public ImplementedVirtualPocket fromTag(CompoundTag tag) {
+	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
 		if (tag.contains("weight")) { // override referenced pockets weight
 			this.weight = tag.getString("weight");
 			parseWeight();
@@ -65,14 +64,14 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 		if (tag.contains("setup_loot")) setupLoot = tag.getBoolean("setup_loot");
 
 		if (tag.contains("modifiers")) {
-			ListTag modifiersTag = tag.getList("modifiers", 10);
+			NbtList modifiersTag = tag.getList("modifiers", 10);
 			for (int i = 0; i < modifiersTag.size(); i++) {
 				modifierList.add(Modifier.deserialize(modifiersTag.getCompound(i)));
 			}
 		}
 
 		if (tag.contains("addons", NbtType.LIST)) {
-			ListTag modifiersTag = tag.getList("addons", 10);
+			NbtList modifiersTag = tag.getList("addons", 10);
 			for (int i = 0; i < modifiersTag.size(); i++) {
 				addons.add(modifiersTag.getCompound(i));
 			}
@@ -82,20 +81,20 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		ImplementedVirtualPocket.super.toTag(tag);
 
 		if (weight != null) tag.putString("weight", weight);
 
 		if (setupLoot != null) tag.putBoolean("setup_loot", setupLoot);
 
-		ListTag modifiersTag = new ListTag();
+		NbtList modifiersTag = new NbtList();
 		for (Modifier modifier : modifierList) {
-			modifiersTag.add(modifier.toTag(new CompoundTag()));
+			modifiersTag.add(modifier.toTag(new NbtCompound()));
 		}
 		if (modifiersTag.size() > 0) tag.put("modifiers", modifiersTag);
 
-		ListTag addonsTag = new ListTag();
+		NbtList addonsTag = new NbtList();
 		addonsTag.addAll(addons);
 		if (addonsTag.size() > 0) tag.put("addons", addonsTag);
 

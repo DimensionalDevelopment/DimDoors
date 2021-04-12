@@ -7,8 +7,10 @@ import java.util.function.Supplier;
 
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
+import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -17,6 +19,7 @@ import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
@@ -66,6 +69,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootJanksonConfigSerializer::new);
 	private static MinecraftServer server;
 	private static ModContainer dimDoorsMod;
+	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
+	public static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
 
     @NotNull
     public static MinecraftServer getServer() {
@@ -75,7 +80,15 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         throw new UnsupportedOperationException("Accessed server too early!");
     }
 
-    public static ServerWorld getWorld(RegistryKey<World> key) {
+	public static DimensionalDoorBlockRegistrar getDimensionalDoorBlockRegistrar() {
+		return dimensionalDoorBlockRegistrar;
+	}
+
+	public static DimensionalDoorItemRegistrar getDimensionalDoorItemRegistrar() {
+		return dimensionalDoorItemRegistrar;
+	}
+
+	public static ServerWorld getWorld(RegistryKey<World> key) {
         return getServer().getWorld(key);
     }
 
@@ -114,6 +127,9 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModSoundEvents.init();
 		ModParticleTypes.init();
 		ModCriteria.init();
+
+		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(Registry.ITEM);
+		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registry.BLOCK, dimensionalDoorItemRegistrar);
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType());

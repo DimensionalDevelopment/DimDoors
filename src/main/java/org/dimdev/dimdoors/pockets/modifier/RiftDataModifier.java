@@ -7,11 +7,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import net.minecraft.nbt.CompoundTag;
-
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.nbt.NbtCompound;
 import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
@@ -24,12 +21,12 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 public class RiftDataModifier implements Modifier {
 	public static final String KEY = "rift_data";
 
-	private CompoundTag doorData;
+	private NbtCompound doorData;
 	private String doorDataReference;
 	private List<Integer> ids;
 
 	@Override
-	public Modifier fromTag(CompoundTag tag) {
+	public Modifier fromTag(NbtCompound tag) {
 		if (tag.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = tag.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataCompoundTag(doorDataReference);
@@ -54,7 +51,7 @@ public class RiftDataModifier implements Modifier {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		Modifier.super.toTag(tag);
 
 		if (doorDataReference != null) tag.putString("rift_data", doorDataReference);
@@ -91,7 +88,7 @@ public class RiftDataModifier implements Modifier {
 		if (doorData == null) {
 			riftBlockEntityConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
 		} else {
-			CompoundTag solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
+			NbtCompound solvedDoorData = TagEquations.solveCompoundTagEquations(doorData, variableMap);
 
 			riftBlockEntityConsumer = rift -> rift.setData(RiftData.fromTag(solvedDoorData));
 		}

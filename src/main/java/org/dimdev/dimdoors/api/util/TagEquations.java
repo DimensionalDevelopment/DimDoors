@@ -5,18 +5,16 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.math.Equation;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 
 public class TagEquations {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	public static CompoundTag solveCompoundTagEquations(CompoundTag tag, Map<String, Double> variableMap) {
-		CompoundTag solved = new CompoundTag();
+	public static NbtCompound solveCompoundTagEquations(NbtCompound tag, Map<String, Double> variableMap) {
+		NbtCompound solved = new NbtCompound();
 		for (String key : tag.getKeys()) {
 			if (tag.getType(key) == NbtType.STRING && key.startsWith("equation_")) {
 				try {
@@ -40,7 +38,7 @@ public class TagEquations {
 			} else if (tag.getType(key) == NbtType.COMPOUND) {
 				solved.put(key, solveCompoundTagEquations(tag.getCompound(key), variableMap));
 			} else if (tag.getType(key) == NbtType.LIST) {
-				solved.put(key, solveListTagEquations((ListTag) tag.get(key), variableMap));
+				solved.put(key, solveListTagEquations((NbtList) tag.get(key), variableMap));
 			} else {
 				solved.put(key, tag.get(key));
 			}
@@ -48,13 +46,13 @@ public class TagEquations {
 		return solved;
 	}
 
-	public static ListTag solveListTagEquations(ListTag listTag, Map<String, Double> variableMap) {
-		ListTag solved = new ListTag();
-		for (Tag tag : listTag) {
+	public static NbtList solveListTagEquations(NbtList listTag, Map<String, Double> variableMap) {
+		NbtList solved = new NbtList();
+		for (NbtElement tag : listTag) {
 			if (tag.getType() == NbtType.LIST) {
-				solved.add(solveListTagEquations((ListTag) tag, variableMap));
+				solved.add(solveListTagEquations((NbtList) tag, variableMap));
 			} else if (tag.getType() == NbtType.COMPOUND) {
-				solved.add(solveCompoundTagEquations((CompoundTag) tag, variableMap));
+				solved.add(solveCompoundTagEquations((NbtCompound) tag, variableMap));
 			} else {
 				solved.add(tag);
 			}

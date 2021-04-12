@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
 import com.google.common.collect.Maps;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
@@ -15,6 +13,8 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 
 public class ConditionalSelector implements ImplementedVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -35,10 +35,10 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 	}
 
 	@Override
-	public ImplementedVirtualPocket fromTag(CompoundTag tag) {
-		ListTag conditionalPockets = tag.getList("pockets", 10);
+	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
+		NbtList conditionalPockets = tag.getList("pockets", 10);
 		for (int i = 0; i < conditionalPockets.size(); i++) {
-			CompoundTag pocket = conditionalPockets.getCompound(i);
+			NbtCompound pocket = conditionalPockets.getCompound(i);
 			String condition = pocket.getString("condition");
 			if (pocketMap.containsKey(condition)) continue;
 			try {
@@ -52,12 +52,12 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		ImplementedVirtualPocket.super.toTag(tag);
 
-		ListTag conditionalPockets = new ListTag();
+		NbtList conditionalPockets = new NbtList();
 		pocketMap.forEach((condition, pocket) -> {
-			CompoundTag compound = new CompoundTag();
+			NbtCompound compound = new NbtCompound();
 			compound.putString("condition", condition);
 			compound.put("pocket", VirtualPocket.serialize(pocket));
 			conditionalPockets.add(compound);

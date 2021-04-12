@@ -4,7 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -47,7 +47,7 @@ public class ChunkGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromTag(CompoundTag tag) {
+	public PocketGenerator fromTag(NbtCompound tag) {
 		super.fromTag(tag);
 
 		this.dimensionID = new Identifier(tag.getString("dimension_id"));
@@ -60,7 +60,7 @@ public class ChunkGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		super.toTag(tag);
 
 		tag.putString("dimension_id", dimensionID.toString());
@@ -81,7 +81,7 @@ public class ChunkGenerator extends PocketGenerator {
 
 		LOGGER.info("Generating chunk pocket at location " + pocket.getOrigin());
 
-		ServerWorld genWorld = DimensionalDoorsInitializer.getWorld(RegistryKey.of(Registry.DIMENSION, dimensionID));
+		ServerWorld genWorld = DimensionalDoorsInitializer.getWorld(RegistryKey.of(Registry.WORLD_KEY, dimensionID));
 		net.minecraft.world.gen.chunk.ChunkGenerator genWorldChunkGenerator = genWorld.getChunkManager().getChunkGenerator();
 
 		ArrayList<Chunk> protoChunks = new ArrayList<>();

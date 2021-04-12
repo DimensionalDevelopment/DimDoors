@@ -14,6 +14,7 @@
       "aquifers_enabled": false,
       "disable_mob_generation": false,
       "sea_level": 32,
+      "min_surface_level": 16,
       "structures": {
         "structures": {}
       },

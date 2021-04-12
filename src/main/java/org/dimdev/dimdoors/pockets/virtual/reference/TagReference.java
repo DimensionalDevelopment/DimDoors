@@ -1,10 +1,9 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import com.google.common.base.MoreObjects;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -25,18 +24,18 @@ public class TagReference extends PocketGeneratorReference{
 	private WeightedList<PocketGenerator, PocketGenerationContext> pockets;
 
 	@Override
-	public ImplementedVirtualPocket fromTag(CompoundTag tag) {
+	public ImplementedVirtualPocket fromTag(NbtCompound tag) {
 		super.fromTag(tag);
 
 		if (tag.contains("required")) {
-			ListTag listTag = tag.getList("required", NbtType.STRING);
+			NbtList listTag = tag.getList("required", NbtType.STRING);
 			for (int i = 0; i < listTag.size(); i++) {
 				required.add(listTag.getString(i));
 			}
 		}
 
 		if (tag.contains("blackList")) {
-			ListTag listTag = tag.getList("blackList", NbtType.STRING);
+			NbtList listTag = tag.getList("blackList", NbtType.STRING);
 			for (int i = 0; i < listTag.size(); i++) {
 				blackList.add(listTag.getString(i));
 			}
@@ -48,21 +47,21 @@ public class TagReference extends PocketGeneratorReference{
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		super.toTag(tag);
 
 		if (required.size() > 0) {
-			ListTag listTag = new ListTag();
+			NbtList listTag = new NbtList();
 			for (String tagString : required) {
-				listTag.add(StringTag.of(tagString));
+				listTag.add(NbtString.of(tagString));
 			}
 			tag.put("required", listTag);
 		}
 
 		if (blackList.size() > 0) {
-			ListTag listTag = new ListTag();
+			NbtList listTag = new NbtList();
 			for (String tagString : blackList) {
-				listTag.add(StringTag.of(tagString));
+				listTag.add(NbtString.of(tagString));
 			}
 			tag.put("blackList", listTag);
 		}

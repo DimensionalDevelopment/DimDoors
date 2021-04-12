@@ -2,14 +2,15 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
@@ -22,7 +23,7 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	public static final String KEY = "block_entity";
 
 	private Map<BlockPos, RiftBlockEntity> rifts;
-	private Map<BlockPos, CompoundTag> serializedRifts;
+	private Map<BlockPos, NbtCompound> serializedRifts;
 
 	public AbsoluteRiftBlockEntityModifier() {
 	}
@@ -33,8 +34,8 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	}
 
 	@Override
-	public Modifier fromTag(CompoundTag tag) {
-		serializedRifts = tag.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
+	public Modifier fromTag(NbtCompound tag) {
+		serializedRifts = tag.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(NbtCompound.class::cast)
 				.collect(Collectors.toConcurrentMap(compound -> {
 					int[] ints = compound.getIntArray("Pos");
 					return new BlockPos(ints[0], ints[1], ints[2]);
@@ -44,14 +45,14 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		LazyModifier.super.toTag(tag);
 
-		ListTag riftsTag;
+		NbtList riftsTag;
 		if (rifts != null) {
-			riftsTag = rifts.values().parallelStream().unordered().map(rift -> rift.writeNbt(new CompoundTag())).collect(Collectors.toCollection(ListTag::new));
+			riftsTag = rifts.values().parallelStream().unordered().map(rift -> rift.writeNbt(new NbtCompound())).collect(Collectors.toCollection(NbtList::new));
 		} else {
-			riftsTag = new ListTag();
+			riftsTag = new NbtList();
 			riftsTag.addAll(serializedRifts.values());
 		}
 		tag.put("rifts", riftsTag);
@@ -84,8 +85,7 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 
 	@Override
 	public void applyToChunk(LazyGenerationPocket pocket, Chunk chunk) {
-		ChunkPos chunkPos = chunk.getPos();
-		BlockBox chunkBox = BlockBox.create(chunkPos.getStartX(), chunk.getBottomY(), chunkPos.getStartZ(), chunkPos.getEndX(), chunk.getTopY(), chunkPos.getEndZ());
+		BlockBox chunkBox = BlockBoxUtil.getBox(chunk);
 
 		if (rifts != null) {
 			rifts.entrySet().stream().unordered().filter(entry -> chunkBox.contains(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))

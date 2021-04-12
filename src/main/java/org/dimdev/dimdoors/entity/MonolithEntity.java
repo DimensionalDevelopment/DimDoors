@@ -21,7 +21,7 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -262,14 +262,14 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    public CompoundTag writeNbt(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         super.writeNbt(tag);
         tag.putInt("Aggro", this.aggro);
         return tag;
     }
 
     @Override
-    public void readNbt(CompoundTag nbt) {
+    public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
         this.aggro = nbt.getInt("Aggro");
     }

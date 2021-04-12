@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "dimdoors_test",
+  "version": "test",
+  "entrypoints": {
+    "dimdoors:api": [
+      "org.dimdev.dimdoors.api.DimensionalDoorsApiTest$DimDoorsTestApi"
+    ]
+  }
+}

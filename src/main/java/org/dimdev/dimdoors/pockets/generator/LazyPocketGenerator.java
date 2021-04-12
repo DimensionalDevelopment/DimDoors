@@ -3,8 +3,8 @@ package org.dimdev.dimdoors.pockets.generator;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
 import net.minecraft.util.math.BlockPos;
@@ -43,11 +43,11 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromTag(CompoundTag tag) {
+	public PocketGenerator fromTag(NbtCompound tag) {
 		super.fromTag(tag);
 
 		if (tag.contains("lazy_modifiers")) {
-			ListTag modifiersTag = tag.getList("lazy_modifiers", 10);
+			NbtList modifiersTag = tag.getList("lazy_modifiers", 10);
 			for (int i = 0; i < modifiersTag.size(); i++) {
 				lazyModifierList.add((LazyModifier) Modifier.deserialize(modifiersTag.getCompound(i)));
 			}
@@ -57,12 +57,12 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		super.toTag(tag);
 
 		if (lazyModifierList.size() > 0) {
-			List<CompoundTag> lazyModTags = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toTag(new CompoundTag())).collect(Collectors.toList());
-			ListTag lazyModifiersTag = new ListTag();
+			List<NbtCompound> lazyModTags = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toTag(new NbtCompound())).collect(Collectors.toList());
+			NbtList lazyModifiersTag = new NbtList();
 			lazyModifiersTag.addAll(lazyModTags);
 			tag.put("lazy_modifiers", lazyModifiersTag);
 		}

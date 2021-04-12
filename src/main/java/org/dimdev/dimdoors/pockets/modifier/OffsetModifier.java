@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +23,7 @@ public class OffsetModifier implements Modifier {
 	private Equation offsetZEquation;
 
 	@Override
-	public Modifier fromTag(CompoundTag tag) {
+	public Modifier fromTag(NbtCompound tag) {
 
 		try {
 			offsetX = tag.contains("offset_x") ? tag.getString("offset_x") : "0";
@@ -40,7 +40,7 @@ public class OffsetModifier implements Modifier {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		Modifier.super.toTag(tag);
 
 		if (!offsetX.equals("0")) tag.putString("offset_x", offsetX);

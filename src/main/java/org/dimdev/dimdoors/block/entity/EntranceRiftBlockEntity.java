@@ -23,7 +23,7 @@ import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
@@ -45,13 +45,13 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public void readNbt(CompoundTag nbt) {
+	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
 		locked = nbt.getBoolean("locked");
 	}
 
 	@Override
-	public CompoundTag writeNbt(CompoundTag tag) {
+	public NbtCompound writeNbt(NbtCompound tag) {
 		tag.putBoolean("locked", locked);
 		return super.writeNbt(tag);
 	}

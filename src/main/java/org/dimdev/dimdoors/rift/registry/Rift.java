@@ -1,14 +1,12 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import java.util.UUID;
-
+import net.minecraft.nbt.NbtCompound;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-
-import net.minecraft.nbt.CompoundTag;
 
 public class Rift extends RegistryVertex {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -73,8 +71,8 @@ public class Rift extends RegistryVertex {
 		return RegistryVertexType.RIFT;
 	}
 
-	public static CompoundTag toTag(Rift rift) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(Rift rift) {
+		NbtCompound tag = new NbtCompound();
 		tag.putUuid("id", rift.id);
 		tag.put("location", Location.toTag(rift.location));
 		tag.putBoolean("isDetached", rift.isDetached);
@@ -82,7 +80,7 @@ public class Rift extends RegistryVertex {
 		return tag;
 	}
 
-	public static Rift fromTag(CompoundTag tag) {
+	public static Rift fromTag(NbtCompound tag) {
 		Rift rift = new Rift();
 		rift.id = tag.getUuid("id");
 		rift.location = Location.fromTag(tag.getCompound("location"));

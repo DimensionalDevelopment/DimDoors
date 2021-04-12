@@ -17,7 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
@@ -106,7 +106,7 @@ public class RiftSignatureItem extends Item {
 	}
 
 	public static void setSource(ItemStack itemStack, RotatedLocation destination) {
-		if (!itemStack.hasTag()) itemStack.setTag(new CompoundTag());
+		if (!itemStack.hasTag()) itemStack.setTag(new NbtCompound());
 		itemStack.getTag().put("destination", RotatedLocation.serialize(destination));
 	}
 

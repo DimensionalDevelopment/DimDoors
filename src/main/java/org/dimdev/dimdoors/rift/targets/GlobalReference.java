@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.api.util.Location;
-
-import net.minecraft.nbt.CompoundTag;
 
 public class GlobalReference extends RiftReference {
 	public static Codec<GlobalReference> CODEC = Location.CODEC.fieldOf("location").xmap(GlobalReference::new, GlobalReference::getReferencedLocation).codec();
@@ -24,13 +23,13 @@ public class GlobalReference extends RiftReference {
 		return VirtualTargetType.GLOBAL;
 	}
 
-	public static CompoundTag toTag(GlobalReference virtualTarget) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(GlobalReference virtualTarget) {
+		NbtCompound tag = new NbtCompound();
 		tag.put("target", Location.toTag(virtualTarget.getReferencedLocation()));
 		return tag;
 	}
 
-	public static GlobalReference fromTag(CompoundTag nbt) {
+	public static GlobalReference fromTag(NbtCompound nbt) {
 		return new GlobalReference(Location.fromTag(nbt.getCompound("target")));
 	}
 }

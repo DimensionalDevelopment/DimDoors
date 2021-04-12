@@ -4,8 +4,7 @@ import java.util.UUID;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
 public class PlayerRiftPointer extends RegistryVertex {
@@ -35,14 +34,14 @@ public class PlayerRiftPointer extends RegistryVertex {
 		return "PlayerRiftPointer(player=" + this.player + ")";
 	}
 
-	public static CompoundTag toTag(PlayerRiftPointer vertex) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(PlayerRiftPointer vertex) {
+		NbtCompound tag = new NbtCompound();
 		tag.putUuid("id", vertex.id);
 		tag.putUuid("player", vertex.player);
 		return tag;
 	}
 
-	public static PlayerRiftPointer fromTag(CompoundTag tag) {
+	public static PlayerRiftPointer fromTag(NbtCompound tag) {
 		return new PlayerRiftPointer(tag.getUuid("id"));
 	}
 

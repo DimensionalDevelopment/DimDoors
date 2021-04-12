@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 
 public class IdMarker extends VirtualTarget implements EntityTarget {
@@ -22,13 +22,13 @@ public class IdMarker extends VirtualTarget implements EntityTarget {
 		return VirtualTargetType.ID_MARKER;
 	}
 
-	public static CompoundTag toTag(IdMarker target) {
-		CompoundTag tag = new CompoundTag();
+	public static NbtCompound toTag(IdMarker target) {
+		NbtCompound tag = new NbtCompound();
 		tag.putInt("id", target.id);
 		return tag;
 	}
 
-	public static IdMarker fromTag(CompoundTag nbt) {
+	public static IdMarker fromTag(NbtCompound nbt) {
 		return new IdMarker(nbt.getInt("id"));
 	}
 

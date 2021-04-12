@@ -1,19 +1,18 @@
 package org.dimdev.dimdoors.api.util;
 
-import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.NbtIntArray;
 import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.chunk.Chunk;
 
 public class BlockBoxUtil {
-	// intersection might be non real box, check with isRealBox
-	public static BlockBox intersection(BlockBox box1, BlockBox box2) {
-		return new BlockBox(Math.max(box1.minX, box2.minX), Math.max(box1.minY, box2.minY), Math.max(box1.minZ, box2.minZ), Math.min(box1.maxX, box2.maxX), Math.min(box1.maxY, box2.maxY), Math.min(box1.maxZ, box2.maxZ));
+	public static NbtIntArray toNbt(BlockBox box) {
+		return new NbtIntArray(new int[]{box.getMinX(), box.getMinY(), box.getMinZ(), box.getMaxX(), box.getMaxY(), box.getMaxZ()});
 	}
 
-	public static boolean isRealBox(BlockBox box) {
-		return box.minX <= box.maxX && box.minY <= box.maxY && box.minZ <= box.maxZ;
-	}
-
-	public static IntArrayTag toNbt(BlockBox box) {
-		return new IntArrayTag(new int[]{box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ});
+	public static BlockBox getBox(Chunk chunk) {
+		ChunkPos pos = chunk.getPos();
+		return BlockBox.create(new Vec3i(pos.getStartX(), chunk.getBottomY(), pos.getStartZ()), new Vec3i(pos.getEndX(), chunk.getTopY() - 1, pos.getEndZ()));
 	}
 }

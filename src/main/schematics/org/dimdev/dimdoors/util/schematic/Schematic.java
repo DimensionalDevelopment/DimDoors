@@ -23,7 +23,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.BuiltinRegistries;
@@ -42,8 +42,8 @@ public class Schematic {
 			Codec.INT.fieldOf("PaletteMax").forGetter(Schematic::getPaletteMax),
 			SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
 			Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
-			Codec.list(CompoundTag.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
-			Codec.list(CompoundTag.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities),
+			Codec.list(NbtCompound.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
+			Codec.list(NbtCompound.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities),
 			Codec.unboundedMap(BuiltinRegistries.BIOME, Codec.INT).optionalFieldOf("BiomePalette", Collections.emptyMap()).forGetter(Schematic::getBiomePalette),
 			Codec.BYTE_BUFFER.optionalFieldOf("BiomeData", ByteBuffer.wrap(new byte[0])).forGetter(Schematic::getBlockData)
 	).apply(instance, Schematic::new));
@@ -58,13 +58,13 @@ public class Schematic {
 	private final int paletteMax;
 	private final BiMap<BlockState, Integer> blockPalette;
 	private final ByteBuffer blockData;
-	private List<CompoundTag> blockEntities;
-	private List<CompoundTag> entities;
+	private List<NbtCompound> blockEntities;
+	private List<NbtCompound> entities;
 	private final BiMap<Biome, Integer> biomePalette;
 	private final ByteBuffer biomeData;
 	private RelativeBlockSample cachedBlockSample = null;
 
-	public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, ByteBuffer blockData, List<CompoundTag> blockEntities, List<CompoundTag> entities, Map<Biome, Integer> biomePalette, ByteBuffer biomeData) {
+	public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, ByteBuffer blockData, List<NbtCompound> blockEntities, List<NbtCompound> entities, Map<Biome, Integer> biomePalette, ByteBuffer biomeData) {
 		this.version = version;
 		this.dataVersion = dataVersion;
 		this.metadata = metadata;
@@ -121,7 +121,7 @@ public class Schematic {
 		return this.blockData;
 	}
 
-	public List<CompoundTag> getBlockEntities() {
+	public List<NbtCompound> getBlockEntities() {
 		return this.blockEntities;
 	}
 
@@ -133,23 +133,23 @@ public class Schematic {
 		return this.biomeData;
 	}
 
-	public void setBlockEntities(List<CompoundTag> blockEntities) {
+	public void setBlockEntities(List<NbtCompound> blockEntities) {
 		this.blockEntities = blockEntities.stream().map(SchematicPlacer::fixEntityId).collect(Collectors.toList());
 	}
 
 	public void setEntities(Collection<? extends Entity> entities) {
 		this.setEntities(entities.stream().map((e) -> {
-			CompoundTag tag = new CompoundTag();
-			e.saveSelfToTag(tag);
+			NbtCompound tag = new NbtCompound();
+			e.saveSelfNbt(tag);
 			return tag;
 		}).collect(Collectors.toList()));
 	}
 
-	public List<CompoundTag> getEntities() {
+	public List<NbtCompound> getEntities() {
 		return this.entities;
 	}
 
-	public void setEntities(List<CompoundTag> entities) {
+	public void setEntities(List<NbtCompound> entities) {
 		this.entities = entities;
 	}
 
@@ -160,12 +160,12 @@ public class Schematic {
 		return schem.cachedBlockSample;
 	}
 
-	public static Schematic fromTag(CompoundTag tag) {
+	public static Schematic fromTag(NbtCompound tag) {
 		return CODEC.decode(NbtOps.INSTANCE, tag).getOrThrow(false, PRINT_TO_STDERR).getFirst();
 	}
 
-	public static CompoundTag toTag(Schematic schem) {
-		return (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, schem).getOrThrow(false, PRINT_TO_STDERR);
+	public static NbtCompound toTag(Schematic schem) {
+		return (NbtCompound) CODEC.encodeStart(NbtOps.INSTANCE, schem).getOrThrow(false, PRINT_TO_STDERR);
 	}
 
 	public static Schematic fromJson(JsonObject json) {

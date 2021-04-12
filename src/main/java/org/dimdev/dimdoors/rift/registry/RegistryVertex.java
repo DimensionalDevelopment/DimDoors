@@ -3,8 +3,7 @@ package org.dimdev.dimdoors.rift.registry;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -38,14 +37,14 @@ public abstract class RegistryVertex {
 		return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";
 	}
 
-	public static RegistryVertex fromTag(CompoundTag nbt) {
+	public static RegistryVertex fromTag(NbtCompound nbt) {
 		return Objects.requireNonNull(registry.get(new Identifier(nbt.getString("type")))).fromTag(nbt);
 	}
 
-	public static CompoundTag toTag(RegistryVertex registryVertex) {
+	public static NbtCompound toTag(RegistryVertex registryVertex) {
 		String type = registry.getId(registryVertex.getType()).toString();
 
-		CompoundTag tag = registryVertex.getType().toTag(registryVertex);
+		NbtCompound tag = registryVertex.getType().toTag(registryVertex);
 		tag.putString("type", type);
 
 		return tag;
@@ -73,19 +72,19 @@ public abstract class RegistryVertex {
 		RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer::fromTag, PocketEntrancePointer::toTag);
 		RegistryVertexType<RiftPlaceholder> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder::fromTag, RiftPlaceholder::toTag);
 
-		T fromTag(CompoundTag tag);
+		T fromTag(NbtCompound tag);
 
-		CompoundTag toTag(RegistryVertex virtualType);
+		NbtCompound toTag(RegistryVertex virtualType);
 
-		static <T extends RegistryVertex> RegistryVertex.RegistryVertexType<T> register(String id, Function<CompoundTag, T> fromTag, Function<T, CompoundTag> toTag) {
+		static <T extends RegistryVertex> RegistryVertex.RegistryVertexType<T> register(String id, Function<NbtCompound, T> fromTag, Function<T, NbtCompound> toTag) {
 			return Registry.register(registry, id, new RegistryVertexType<T>() {
 				@Override
-				public T fromTag(CompoundTag tag) {
+				public T fromTag(NbtCompound tag) {
 					return fromTag.apply(tag);
 				}
 
 				@Override
-				public CompoundTag toTag(RegistryVertex registryVertex) {
+				public NbtCompound toTag(RegistryVertex registryVertex) {
 					return toTag.apply((T) registryVertex);
 				}
 			});

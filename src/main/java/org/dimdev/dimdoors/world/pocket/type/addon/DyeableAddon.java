@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
@@ -27,8 +27,8 @@ public class DyeableAddon implements PocketAddon {
 	private int count = 0;
 
 	private static int amountOfDyeRequiredToColor(Pocket pocket) {
-		int outerVolume = pocket.getBox().getBlockCountX() * pocket.getBox().getBlockCountY() * pocket.getBox().getBlockCountZ();
-		int innerVolume = (pocket.getBox().getBlockCountX() - 5) * (pocket.getBox().getBlockCountY() - 5) * (pocket.getBox().getBlockCountZ() - 5);
+		int outerVolume = pocket.getBox().getBlockCountY() * pocket.getBox().getBlockCountZ() * pocket.getBox().getBlockCountZ();
+		int innerVolume = (pocket.getBox().getBlockCountY() - 5) * (pocket.getBox().getBlockCountZ() - 5) * (pocket.getBox().getBlockCountZ() - 5);
 
 		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}
@@ -82,7 +82,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public PocketAddon fromTag(CompoundTag tag) {
+	public PocketAddon fromTag(NbtCompound tag) {
 
 		this.dyeColor = PocketColor.from(tag.getInt("dyeColor"));
 		this.nextDyeColor = PocketColor.from(tag.getInt("nextDyeColor"));
@@ -92,7 +92,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		PocketAddon.super.toTag(tag);
 
 		tag.putInt("dyeColor", this.dyeColor.getId());
@@ -139,14 +139,14 @@ public class DyeableAddon implements PocketAddon {
 		}
 
 		@Override
-		public PocketBuilderAddon<DyeableAddon> fromTag(CompoundTag tag) {
+		public PocketBuilderAddon<DyeableAddon> fromTag(NbtCompound tag) {
 			this.dyeColor = PocketColor.from(tag.getInt("dye_color"));
 
 			return this;
 		}
 
 		@Override
-		public CompoundTag toTag(CompoundTag tag) {
+		public NbtCompound toTag(NbtCompound tag) {
 			PocketBuilderAddon.super.toTag(tag);
 
 			tag.putInt("dye_color", dyeColor.getId());

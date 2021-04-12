@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public abstract class AbstractVirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements ImplementedVirtualPocket {
 
-	public CompoundTag toTag(CompoundTag tag) {
+	public NbtCompound toTag(NbtCompound tag) {
 		ImplementedVirtualPocket.super.toTag(tag);
 
 		return tag;

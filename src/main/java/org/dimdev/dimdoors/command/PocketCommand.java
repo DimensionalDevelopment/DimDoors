@@ -24,8 +24,7 @@ import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
