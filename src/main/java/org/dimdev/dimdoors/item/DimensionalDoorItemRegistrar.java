@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.item;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.TrapdoorBlock;
@@ -15,7 +15,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.api.util.QuadFunction;
+import org.dimdev.dimdoors.api.util.function.QuadFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;

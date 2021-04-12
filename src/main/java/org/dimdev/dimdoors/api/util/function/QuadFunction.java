@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.api.util;
+package org.dimdev.dimdoors.api.util.function;
 
 import java.util.Objects;
 import java.util.function.Function;
