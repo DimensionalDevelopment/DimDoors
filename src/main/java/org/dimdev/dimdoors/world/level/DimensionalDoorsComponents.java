@@ -12,7 +12,7 @@ import dev.onyxstudios.cca.api.v3.level.LevelComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
-import org.dimdev.dimdoors.world.level.component.CounterComponent;
+import org.dimdev.dimdoors.item.component.CounterComponent;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 @SuppressWarnings("UnstableApiUsage")

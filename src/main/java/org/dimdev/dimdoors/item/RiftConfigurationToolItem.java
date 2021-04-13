@@ -9,7 +9,7 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.api.util.EntityUtils;
-import org.dimdev.dimdoors.world.level.component.CounterComponent;
+import org.dimdev.dimdoors.item.component.CounterComponent;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.item.TooltipContext;
