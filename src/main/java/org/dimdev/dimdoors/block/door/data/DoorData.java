@@ -1,11 +1,6 @@
 package org.dimdev.dimdoors.block.door.data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableMap;
@@ -27,8 +22,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class DoorData implements AutoCloseable {
-	public static final List<Block> PARENT_BLOCKS = new ArrayList<>();
-	public static final List<Item> PARENT_ITEMS = new ArrayList<>();
+	public static final Set<Block> PARENT_BLOCKS = new HashSet<>();
+	public static final Set<Item> PARENT_ITEMS = new HashSet<>();
 	public static final List<Block> DOORS = new ArrayList<>();
 	private final String id;
 	private final UnbakedItemSettings itemSettings;

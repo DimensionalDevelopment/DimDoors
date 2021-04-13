@@ -40,7 +40,7 @@ public class DoorDataReader {
 	public static final DoorData DEFAULT_IRON_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:iron_dimensional_door",
 			new DoorData.UnbakedItemSettings(
-					Optional.empty(),
+					"minecraft:iron_door",
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
@@ -54,7 +54,7 @@ public class DoorDataReader {
 	public static final DoorData DEFAULT_GOLD_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:gold_dimensional_door",
 			new DoorData.UnbakedItemSettings(
-					Optional.empty(),
+					"dimdoors:gold_door",
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
@@ -68,7 +68,7 @@ public class DoorDataReader {
 	public static final DoorData DEFAULT_OAK_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:oak_dimensional_door",
 			new DoorData.UnbakedItemSettings(
-					Optional.empty(),
+					"minecraft:oak_door",
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
@@ -82,7 +82,7 @@ public class DoorDataReader {
 	public static final DoorData DEFAULT_QUARTZ_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:quartz_dimensional_door",
 			new DoorData.UnbakedItemSettings(
-					Optional.empty(),
+					"dimdoors:quartz_door",
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
@@ -100,7 +100,7 @@ public class DoorDataReader {
 	public static final DoorData DEFAULT_UNSTABLE_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:unstable_dimensional_door",
 			new DoorData.UnbakedItemSettings(
-					Optional.empty(),
+					"minecraft:iron_door",
 					OptionalInt.of(1),
 					OptionalInt.empty(),
 					Optional.of(Rarity.UNCOMMON),
