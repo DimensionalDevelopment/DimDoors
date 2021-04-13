@@ -156,8 +156,6 @@
   "tools.target_became_block": "Failed, there is now a block at the stored location",
   
   "text.autoconfig.dimdoors.category.general": "General Settings",
-  "text.autoconfig.dimdoors.option.general.closeDoorBehind": "Close Door Behind",
-  "text.autoconfig.dimdoors.option.general.closeDoorBehind@Tooltip": "When true, Dimensional Doors will automatically close when the player enters their portal.",
   "text.autoconfig.dimdoors.option.general.depthSpreadFactor": "Depth Spread Factor",
   "text.autoconfig.dimdoors.option.general.depthSpreadFactor@Tooltip": "The scale of the dispersion when escaping from a pocket or limbo, in blocks/depth. Limbo is treated as depth 50.",
   "text.autoconfig.dimdoors.option.general.riftCloseSpeed": "Rift Close Speed",
@@ -172,7 +170,17 @@
   "text.autoconfig.dimdoors.option.general.endermanSpawnChance@Tooltip": "The chance that an enderman spawns at a detached rift.",
   "text.autoconfig.dimdoors.option.general.endermanAggressiveChance": "Enderman aggressive chance",
   "text.autoconfig.dimdoors.option.general.endermanAggressiveChance@Tooltip": "The chance that an enderman spawned by a detached rift attacks the closest player.",
-  
+
+  "text.autoconfig.dimdoors.category.doors": "Doors Settings",
+  "text.autoconfig.dimdoors.option.general.closeDoorBehind": "Close Door Behind",
+  "text.autoconfig.dimdoors.option.general.closeDoorBehind@Tooltip": "When true, Dimensional Doors will automatically close when the player enters their portal.",
+  "text.autoconfig.dimdoors.option.general.doorList": "Doors",
+  "text.autoconfig.dimdoors.option.general.doorList@Tooltip": "Set overrides for enabling/disabling certain doors",
+  "text.autoconfig.dimdoors.option.general.doorList.mode": "Mode",
+  "text.autoconfig.dimdoors.option.general.doorList.mode@Tooltip": "Enable - Only generate dimensional variants of these doors. Disable - Prevent generating dimensional variants of these doors",
+  "text.autoconfig.dimdoors.option.general.doorList.doors": "Doors",
+  "text.autoconfig.dimdoors.option.general.doorList.doors@Tooltip": "A list of block ids for doors. If the door's item id is different than the block id, add that as well.",
+
   "text.autoconfig.dimdoors.category.pockets": "Pocket Settings",
   "text.autoconfig.dimdoors.option.pockets.pocketGridSize": "Pocket Grid Size",
   "text.autoconfig.dimdoors.option.pockets.pocketGridSize@Tooltip": "Sets how many chunks apart all pockets in any pocket dimensions should be placed.",
