@@ -15,7 +15,6 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.DimensionalDoorItem;
 import org.dimdev.dimdoors.item.ItemExtensions;
-import org.dimdev.dimdoors.item.ModItems;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -28,6 +27,8 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class DoorData implements AutoCloseable {
+	public static final List<Block> PARENT_BLOCKS = new ArrayList<>();
+	public static final List<Item> PARENT_ITEMS = new ArrayList<>();
 	public static final List<Block> DOORS = new ArrayList<>();
 	private final String id;
 	private final UnbakedItemSettings itemSettings;
@@ -90,12 +91,9 @@ public final class DoorData implements AutoCloseable {
 			throw new UnsupportedOperationException("Already Closed");
 		}
 
-		Item.Settings itemSettings;
-		if (this.itemSettings.parent.isPresent()) {
-			itemSettings = ItemExtensions.getSettings(Registry.ITEM.get(new Identifier(this.itemSettings.parent.get())));
-		} else {
-			itemSettings = new Item.Settings().group(ModItems.DIMENSIONAL_DOORS);
-		}
+		Item parentItem = Registry.ITEM.get(new Identifier(this.itemSettings.parent));
+		PARENT_ITEMS.add(parentItem);
+		Item.Settings itemSettings = ItemExtensions.getSettings(parentItem);
 		this.itemSettings.maxCount.ifPresent(itemSettings::maxCount);
 		this.itemSettings.maxDamage.ifPresent(itemSettings::maxDamageIfAbsent);
 		this.itemSettings.rarity.ifPresent(itemSettings::rarity);
@@ -105,7 +103,9 @@ public final class DoorData implements AutoCloseable {
 			return false;
 		});
 
-		FabricBlockSettings blockSettings = FabricBlockSettings.copyOf(Registry.BLOCK.get(new Identifier(this.blockSettings.parent)));
+		Block parentBlock = Registry.BLOCK.get(new Identifier(this.blockSettings.parent));
+		PARENT_BLOCKS.add(parentBlock);
+		FabricBlockSettings blockSettings = FabricBlockSettings.copyOf(parentBlock);
 		this.blockSettings.luminance.ifPresent(blockSettings::luminance);
 		Identifier id = new Identifier(this.id);
 		Block doorBlock = new DimensionalDoorBlock(blockSettings);
@@ -124,14 +124,14 @@ public final class DoorData implements AutoCloseable {
 				b.put(rarity.name().toLowerCase(), rarity);
 			}
 		}).build();
-		private final Optional<String> parent;
+		private final String parent;
 		private final OptionalInt maxCount;
 		private final OptionalInt maxDamage;
 		private final Optional<Rarity> rarity;
 		private final TriState fireproof;
 
 		public static UnbakedItemSettings fromJson(JsonObject json) {
-			Optional<String> parent = Optional.ofNullable(json.get("parent")).map(JsonElement::getAsString);
+			String parent = Optional.ofNullable(json.get("parent")).map(JsonElement::getAsString).get();
 			OptionalInt maxCount = Optional.ofNullable(json.get("maxCount")).map(JsonElement::getAsInt).map(OptionalInt::of).orElse(OptionalInt.empty());
 			OptionalInt maxDamage = Optional.ofNullable(json.get("maxDamage")).map(JsonElement::getAsInt).map(OptionalInt::of).orElse(OptionalInt.empty());
 			Optional<Rarity> rarity = Optional.ofNullable(json.get("rarity")).map(JsonElement::getAsString).map(String::toLowerCase).map(RARITIES::get).map(Objects::requireNonNull);
@@ -139,7 +139,7 @@ public final class DoorData implements AutoCloseable {
 			return new UnbakedItemSettings(parent, maxCount, maxDamage, rarity, fireproof);
 		}
 
-		public UnbakedItemSettings(Optional<String> parent, OptionalInt maxCount, OptionalInt maxDamage, Optional<Rarity> rarity, TriState fireproof) {
+		public UnbakedItemSettings(String parent, OptionalInt maxCount, OptionalInt maxDamage, Optional<Rarity> rarity, TriState fireproof) {
 			this.parent = parent;
 			this.maxCount = maxCount;
 			this.maxDamage = maxDamage;
@@ -148,7 +148,7 @@ public final class DoorData implements AutoCloseable {
 		}
 
 		public JsonObject toJson(JsonObject json) {
-			parent.ifPresent(s -> json.addProperty("parent", s));
+			json.addProperty("parent", parent);
 			maxCount.ifPresent(s -> json.addProperty("maxCount", s));
 			maxDamage.ifPresent(s -> json.addProperty("maxDamage", s));
 			rarity.ifPresent(s -> json.addProperty("rarity", s.name().toLowerCase()));

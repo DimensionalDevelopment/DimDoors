@@ -15,9 +15,12 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
+
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.api.util.function.QuadFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
+import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.listener.ItemRegistryEntryAddedListener;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
@@ -49,15 +52,17 @@ public class DimensionalDoorItemRegistrar {
 	}
 
 	public void handleEntry(Identifier identifier, Item item) {
-		if (item instanceof TallBlockItem) {
-			Block block = ((TallBlockItem) item).getBlock();
-			handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
-		} else if (item instanceof BlockItem) {
-			Block block = ((BlockItem) item).getBlock();
-			if (block instanceof DoorBlock) {
+		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().isAllowed(identifier) && !DoorData.PARENT_ITEMS.contains(item)) {
+			if (item instanceof TallBlockItem) {
+				Block block = ((TallBlockItem) item).getBlock();
 				handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
-			} else {
-				handleEntry(identifier, item, block, AutoGenDimensionalTrapdoorItem::new);
+			} else if (item instanceof BlockItem) {
+				Block block = ((BlockItem) item).getBlock();
+				if (block instanceof DoorBlock) {
+					handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
+				} else {
+					handleEntry(identifier, item, block, AutoGenDimensionalTrapdoorItem::new);
+				}
 			}
 		}
 	}

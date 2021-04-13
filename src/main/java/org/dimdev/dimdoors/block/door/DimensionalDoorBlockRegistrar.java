@@ -16,6 +16,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.listener.BlockRegistryEntryAddedListener;
@@ -45,10 +48,12 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	public void handleEntry(Identifier identifier, Block block) {
-		if (!(block instanceof DimensionalDoorBlock) && block instanceof DoorBlock) {
-			register(identifier, block, AutoGenDimensionalDoorBlock::new);
-		} else if (!(block instanceof DimensionalTrapdoorBlock) && block instanceof TrapdoorBlock) {
-			register(identifier, block, AutoGenDimensionalTrapdoorBlock::new);
+		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().isAllowed(identifier) && !DoorData.PARENT_BLOCKS.contains(block)) {
+			if (!(block instanceof DimensionalDoorBlock) && block instanceof DoorBlock) {
+				register(identifier, block, AutoGenDimensionalDoorBlock::new);
+			} else if (!(block instanceof DimensionalTrapdoorBlock) && block instanceof TrapdoorBlock) {
+				register(identifier, block, AutoGenDimensionalTrapdoorBlock::new);
+			}
 		}
 	}
 

@@ -25,6 +25,8 @@ import me.sargunvohra.mcmods.autoconfig1u.util.Utils;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
@@ -125,6 +127,13 @@ public final class ModConfig implements ConfigData {
 					return this.translationKey;
 				}
 			}
+		}
+
+		public boolean isAllowed(Identifier id) {
+			String idStr = id.toString();
+			boolean contains = doorList.doors.contains(idStr);
+
+			return (doorList.mode == DoorList.Mode.ENABLE) == contains;
 		}
 	}
 

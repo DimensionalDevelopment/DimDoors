@@ -94,6 +94,14 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 	}
 
 	@Override
+	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+		super.onBreak(world, pos, state, player);
+		if (state.get(HALF) == DoubleBlockHalf.LOWER) {
+
+		}
+	}
+
+	@Override
 	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
 		BlockEntity bottomEntity;
 		BlockEntity topEntity;
