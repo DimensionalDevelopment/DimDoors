@@ -137,10 +137,10 @@ dependencies {
 	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
 	includeCompile("dev.hephaestus", "seedy-behavior", "1.0.1")
 
-	modCompileOnly("com.terraformersmc:modmenu:2.0.0-beta.2") {
+	modCompileOnly("com.terraformersmc:modmenu:2.0.0-beta.4") {
 		exclude module: "fabric-api"
 	}
-	modRuntime("com.terraformersmc:modmenu:2.0.0-beta.2") {
+	modRuntime("com.terraformersmc:modmenu:2.0.0-beta.4") {
 		exclude module: "fabric-api"
 	}
 
