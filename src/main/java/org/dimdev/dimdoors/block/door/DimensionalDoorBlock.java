@@ -96,8 +96,7 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 	@Override
 	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
 		super.onBreak(world, pos, state, player);
-		if (state.get(HALF) == DoubleBlockHalf.LOWER) {
-
+		if (state.get(HALF) == DoubleBlockHalf.LOWER) { // TODO: place a detached rift
 		}
 	}
 
