@@ -97,10 +97,6 @@ public class DimensionalDoorItemRegistrar {
 	private void register(Identifier identifier, Item dimItem) {
 		Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getPath());
 		Registry.register(registry, gennedId, dimItem);
-
-		//if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			//BlockRenderLayerMap.INSTANCE.putBlock(newBlock, RenderLayer.getCutout());
-		//}
 	}
 
 

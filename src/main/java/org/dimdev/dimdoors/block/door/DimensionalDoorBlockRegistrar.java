@@ -60,7 +60,7 @@ public class DimensionalDoorBlockRegistrar {
 	private void register(Identifier identifier, Block block, BiFunction<AbstractBlock.Settings, Block, ? extends Block> constructor) {
 		Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getPath());
 		Block newBlock = Registry.register(registry, gennedId, constructor.apply(FabricBlockSettings.copy(block), block));
-		ModBlockEntityTypes.ENTRANCE_RIFT_BLOCKS.add(newBlock);
+		ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(newBlock);
 		mappedDoorBlocks.put(gennedId, identifier);
 		itemRegistrar.notifyBlockMapped(block, newBlock);
 

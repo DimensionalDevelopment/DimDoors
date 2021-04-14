@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.RiftProvider;
-import org.dimdev.dimdoors.block.door.data.DoorDataReader;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.Transformer;
 import org.dimdev.dimdoors.item.RiftKeyItem;

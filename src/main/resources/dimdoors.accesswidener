@@ -3,4 +3,5 @@ accessWidener v1 named
 # Because its package private
 accessible    class    net/minecraft/client/render/RenderLayer$MultiPhase
 
-accessible    class    net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
+# for MutableBlockEntityType
+extendable    class    net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
