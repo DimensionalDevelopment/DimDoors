@@ -6,6 +6,8 @@ import java.util.function.Consumer;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import net.minecraft.item.ItemGroup;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.DimensionalDoorItem;
@@ -21,13 +23,17 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.util.TriState;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.mixin.accessor.ItemGroupAccessor;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public final class DoorData implements AutoCloseable {
+	private static final Map<String, ItemGroup> itemGroupCache = new HashMap<>();
 	public static final Set<Block> PARENT_BLOCKS = new HashSet<>();
 	public static final Set<Item> PARENT_ITEMS = new HashSet<>();
 	public static final List<Block> DOORS = new ArrayList<>();
 	private final String id;
 	private final UnbakedItemSettings itemSettings;
+	private final Optional<String> itemGroup;
 	private final UnbakedBlockSettings blockSettings;
 	private final RiftDataList riftDataList;
 	private boolean closed = false;
@@ -35,14 +41,20 @@ public final class DoorData implements AutoCloseable {
 	public static DoorData fromJson(JsonObject json) {
 		String id = json.get("id").getAsString();
 		UnbakedItemSettings itemSettings = UnbakedItemSettings.fromJson(json.getAsJsonObject("itemSettings"));
+		Optional<String> itemGroup = Optional.ofNullable(json.getAsJsonPrimitive("itemGroup")).map(JsonPrimitive::getAsString);
 		UnbakedBlockSettings blockSettings = UnbakedBlockSettings.fromJson(json.getAsJsonObject("blockSettings"));
 		RiftDataList riftDataList = RiftDataList.fromJson(json.getAsJsonArray("riftData"));
-		return new DoorData(id, itemSettings, blockSettings, riftDataList);
+		return new DoorData(id, itemSettings, itemGroup, blockSettings, riftDataList);
 	}
 
 	public DoorData(String id, UnbakedItemSettings itemSettings, UnbakedBlockSettings blockSettings, RiftDataList riftDataList) {
+		this(id, itemSettings, Optional.empty(), blockSettings, riftDataList);
+	}
+
+	public DoorData(String id, UnbakedItemSettings itemSettings, Optional<String> itemGroup, UnbakedBlockSettings blockSettings, RiftDataList riftDataList) {
 		this.id = id;
 		this.itemSettings = itemSettings;
+		this.itemGroup = itemGroup;
 		this.blockSettings = blockSettings;
 		this.riftDataList = riftDataList;
 	}
@@ -50,6 +62,7 @@ public final class DoorData implements AutoCloseable {
 	public JsonObject toJson(JsonObject json) {
 		json.addProperty("id", this.id);
 		json.add("itemSettings", this.itemSettings.toJson(new JsonObject()));
+		itemGroup.ifPresent(s -> json.add("itemGroup", new JsonPrimitive(s)));
 		json.add("blockSettings", this.blockSettings.toJson(new JsonObject()));
 		json.add("riftData", this.riftDataList.toJson());
 		return json;
@@ -98,8 +111,22 @@ public final class DoorData implements AutoCloseable {
 			itemSettings.fireproof();
 			return false;
 		});
-		// TODO: make group configurable via json
-		itemSettings.group(ModItems.DIMENSIONAL_DOORS);
+		ItemGroup group = null;
+		if (itemGroup.isPresent()) {
+			String groupString = itemGroup.get();
+			if (itemGroupCache.containsKey(groupString)) {
+				group = itemGroupCache.get(groupString);
+			} else {
+				for (ItemGroup g : ItemGroup.GROUPS) {
+					if (((ItemGroupAccessor) g).getId().equals(groupString)) {
+						group = g;
+						itemGroupCache.put(groupString, group);
+						break;
+					}
+				}
+			}
+		}
+		itemSettings.group(group != null ? group : ModItems.DIMENSIONAL_DOORS);
 
 		Block parentBlock = Registry.BLOCK.get(new Identifier(this.blockSettings.parent));
 		PARENT_BLOCKS.add(parentBlock);

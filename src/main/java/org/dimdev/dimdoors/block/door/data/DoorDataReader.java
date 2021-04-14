@@ -142,6 +142,7 @@ public class DoorDataReader {
 				LOGGER.error("Error retrieving paths in directory " + doorDir, e);
 				return;
 			}
+
 			for (Path p : paths) {
 				if (!Files.isDirectory(p) && Files.isRegularFile(p)) {
 					String jsonStr;

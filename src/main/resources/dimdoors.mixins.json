@@ -20,6 +20,7 @@
     "accessor.DirectionAccessor",
     "accessor.EntityAccessor",
     "accessor.GenerationSettingsAccessor",
+    "accessor.ItemGroupAccessor",
     "accessor.ListTagAccessor",
     "accessor.RecipesProviderAccessor",
     "accessor.RedstoneWireBlockAccessor",
