@@ -20,6 +20,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.util.TriState;
+import org.dimdev.dimdoors.item.ModItems;
 
 public final class DoorData implements AutoCloseable {
 	public static final Set<Block> PARENT_BLOCKS = new HashSet<>();
@@ -97,6 +98,8 @@ public final class DoorData implements AutoCloseable {
 			itemSettings.fireproof();
 			return false;
 		});
+		// TODO: make group configurable via json
+		itemSettings.group(ModItems.DIMENSIONAL_DOORS);
 
 		Block parentBlock = Registry.BLOCK.get(new Identifier(this.blockSettings.parent));
 		PARENT_BLOCKS.add(parentBlock);
