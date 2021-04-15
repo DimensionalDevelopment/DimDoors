@@ -61,37 +61,37 @@ public class DimensionalDoorItemRegistrar {
 				.forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
 	}
 
-	public void handleEntry(Identifier identifier, Item item) {
+	public void handleEntry(Identifier identifier, Item original) {
 		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().isAllowed(identifier)) {
-			if (item instanceof TallBlockItem) {
-				Block block = ((TallBlockItem) item).getBlock();
-				handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
-			} else if (item instanceof BlockItem) {
-				Block block = ((BlockItem) item).getBlock();
-				if (block instanceof DoorBlock) {
-					handleEntry(identifier, item, block, AutoGenDimensionalDoorItem::new);
+			if (original instanceof TallBlockItem) {
+				Block block = ((TallBlockItem) original).getBlock();
+				handleEntry(identifier, original, block, AutoGenDimensionalDoorItem::new);
+			} else if (original instanceof BlockItem) {
+				Block originalBlock = ((BlockItem) original).getBlock();
+				if (originalBlock instanceof DoorBlock) {
+					handleEntry(identifier, original, originalBlock, AutoGenDimensionalDoorItem::new);
 				} else {
-					handleEntry(identifier, item, block, AutoGenDimensionalTrapdoorItem::new);
+					handleEntry(identifier, original, originalBlock, AutoGenDimensionalTrapdoorItem::new);
 				}
 			}
 		}
 	}
 
-	private void handleEntry(Identifier identifier, Item item, Block block, QuadFunction<Block, Item.Settings, Consumer<? super EntranceRiftBlockEntity>, Item, ? extends BlockItem> constructor) {
+	private void handleEntry(Identifier identifier, Item original, Block originalBlock, QuadFunction<Block, Item.Settings, Consumer<? super EntranceRiftBlockEntity>, Item, ? extends BlockItem> constructor) {
 
-		if (!(block instanceof DimensionalDoorBlock)
-				&& !(block instanceof DimensionalTrapdoorBlock)
-				&& (block instanceof DoorBlock || block instanceof TrapdoorBlock)) {
-			Item.Settings settings = ItemExtensions.getSettings(item).group(DoorData.PARENT_ITEMS.contains(item) || DoorData.PARENT_BLOCKS.contains(block) ? null : ModItems.DIMENSIONAL_DOORS);
+		if (!(originalBlock instanceof DimensionalDoorBlock)
+				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
+				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapdoorBlock)) {
+			Item.Settings settings = ItemExtensions.getSettings(original).group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS);
 
-			Function<Block, BlockItem> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, rift -> rift.setDestination(new PublicPocketTarget()), item);
+			Function<Block, BlockItem> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, rift -> rift.setDestination(new PublicPocketTarget()), original);
 
-			if (!blocksAlreadyNotifiedAbout.containsKey(block)) {
-				toBeMapped.put(block, new ImmutableTriple<>(identifier, item, dimItemConstructor));
+			if (!blocksAlreadyNotifiedAbout.containsKey(originalBlock)) {
+				toBeMapped.put(originalBlock, new ImmutableTriple<>(identifier, original, dimItemConstructor));
 				return;
 			}
 
-			register(identifier, item, dimItemConstructor.apply(blocksAlreadyNotifiedAbout.get(block)));
+			register(identifier, original, dimItemConstructor.apply(blocksAlreadyNotifiedAbout.get(originalBlock)));
 		}
 	}
 

@@ -47,30 +47,30 @@ public class DimensionalDoorBlockRegistrar {
 				.forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
 	}
 
-	public void handleEntry(Identifier identifier, Block block) {
+	public void handleEntry(Identifier identifier, Block original) {
 		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().isAllowed(identifier)) {
-			if (!(block instanceof DimensionalDoorBlock) && block instanceof DoorBlock) {
-				register(identifier, block, AutoGenDimensionalDoorBlock::new);
-			} else if (!(block instanceof DimensionalTrapdoorBlock) && block instanceof TrapdoorBlock) {
-				register(identifier, block, AutoGenDimensionalTrapdoorBlock::new);
+			if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock) {
+				register(identifier, original, AutoGenDimensionalDoorBlock::new);
+			} else if (!(original instanceof DimensionalTrapdoorBlock) && original instanceof TrapdoorBlock) {
+				register(identifier, original, AutoGenDimensionalTrapdoorBlock::new);
 			}
 		}
 	}
 
-	private void register(Identifier identifier, Block block, BiFunction<AbstractBlock.Settings, Block, ? extends Block> constructor) {
+	private void register(Identifier identifier, Block original, BiFunction<AbstractBlock.Settings, Block, ? extends Block> constructor) {
 		Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getPath());
-		Block newBlock = Registry.register(registry, gennedId, constructor.apply(FabricBlockSettings.copy(block), block));
-		ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(newBlock);
+		Block dimBlock = Registry.register(registry, gennedId, constructor.apply(FabricBlockSettings.copy(original), original));
+		ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(dimBlock);
 		mappedDoorBlocks.put(gennedId, identifier);
-		itemRegistrar.notifyBlockMapped(block, newBlock);
+		itemRegistrar.notifyBlockMapped(original, dimBlock);
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			putCutout(newBlock);
+			putCutout(dimBlock);
 		}
 	}
 
-	private void putCutout(Block block) {
-		BlockRenderLayerMap.INSTANCE.putBlock(block, RenderLayer.getCutout());
+	private void putCutout(Block original) {
+		BlockRenderLayerMap.INSTANCE.putBlock(original, RenderLayer.getCutout());
 	}
 
 	public Identifier get(Identifier identifier) {

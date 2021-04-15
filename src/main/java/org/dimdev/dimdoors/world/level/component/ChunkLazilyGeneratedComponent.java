@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.level.component;
 
 import dev.onyxstudios.cca.api.v3.component.Component;
-import org.dimdev.dimdoors.world.level.DimensionalDoorsComponents;
+import org.dimdev.dimdoors.DimensionalDoorsComponents;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.NbtCompound;

@@ -32,7 +32,7 @@
       "org.dimdev.dimdoors.client.config.ModMenuImpl"
     ],
     "cardinal-components": [
-      "org.dimdev.dimdoors.world.level.DimensionalDoorsComponents"
+      "org.dimdev.dimdoors.DimensionalDoorsComponents"
     ]
   },
   "mixins": [
