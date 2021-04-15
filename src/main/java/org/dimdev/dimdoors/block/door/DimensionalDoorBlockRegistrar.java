@@ -48,7 +48,7 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	public void handleEntry(Identifier identifier, Block block) {
-		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().isAllowed(identifier) && !DoorData.PARENT_BLOCKS.contains(block)) {
+		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().isAllowed(identifier)) {
 			if (!(block instanceof DimensionalDoorBlock) && block instanceof DoorBlock) {
 				register(identifier, block, AutoGenDimensionalDoorBlock::new);
 			} else if (!(block instanceof DimensionalTrapdoorBlock) && block instanceof TrapdoorBlock) {
@@ -65,7 +65,7 @@ public class DimensionalDoorBlockRegistrar {
 		itemRegistrar.notifyBlockMapped(block, newBlock);
 
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			putCutout(block);
+			putCutout(newBlock);
 		}
 	}
 

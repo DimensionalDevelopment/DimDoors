@@ -23,6 +23,7 @@ import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
+import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.PlayerBlockBreakEventBeforeListener;
 import org.dimdev.dimdoors.listener.pocket.PocketAttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
@@ -170,5 +171,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		UseItemCallback.EVENT.register(new UseItemCallbackListener());
 		UseItemOnBlockCallback.EVENT.register(new UseItemOnBlockCallbackListener());
 		UseBlockCallback.EVENT.register(new UseBlockCallbackListener());
+
+		// placing doors on rifts
+		UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());
 	}
 }
