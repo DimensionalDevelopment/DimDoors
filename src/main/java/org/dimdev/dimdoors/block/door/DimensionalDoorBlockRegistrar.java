@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.function.BiFunction;
 
 public class DimensionalDoorBlockRegistrar {
-	private static final String PREFIX = "autogen_dimensional_";
+	private static final String PREFIX = "block_ag_dim_";
 
 	private final Registry<Block> registry;
 	private final DimensionalDoorItemRegistrar itemRegistrar;

@@ -1,17 +1,22 @@
 package org.dimdev.dimdoors.item;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.*;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
+import net.minecraft.util.math.Quaternion;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.registry.Registry;
 
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -22,6 +27,7 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
 import org.dimdev.dimdoors.listener.ItemRegistryEntryAddedListener;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
 
@@ -32,7 +38,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class DimensionalDoorItemRegistrar {
-	private static final String PREFIX = "autogen_dimensional_";
+	public static final String PREFIX = "item_ag_dim_";
+	private static final UnderlaidChildItemRenderer renderer = new UnderlaidChildItemRenderer(Items.ENDER_PEARL);
 
 	private final Registry<Item> registry;
 
@@ -110,9 +117,12 @@ public class DimensionalDoorItemRegistrar {
 			Registry.register(registry, gennedId, dimItem);
 		}
 		placementFunctions.put(original, dimItem::place);
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+			BuiltinItemRendererRegistry.INSTANCE.register(dimItem, renderer);
+		}
 	}
 
-	private static class AutoGenDimensionalDoorItem extends DimensionalDoorItem {
+	private static class AutoGenDimensionalDoorItem extends DimensionalDoorItem implements ChildItem {
 		private final Item originalItem;
 
 		public AutoGenDimensionalDoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, Item originalItem) {
@@ -129,9 +139,20 @@ public class DimensionalDoorItemRegistrar {
 		public Text getName() {
 			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
+
+		@Override
+		public Item getOriginalItem() {
+			return originalItem;
+		}
+
+		@Override
+		public void transform(MatrixStack matrices) {
+			matrices.scale(0.68f, 0.68f, 1);
+			matrices.translate(0.05, 0.02, 0);
+		}
 	}
 
-	private static class AutoGenDimensionalTrapdoorItem extends DimensionalTrapdoorItem {
+	private static class AutoGenDimensionalTrapdoorItem extends DimensionalTrapdoorItem implements ChildItem {
 		private final Item originalItem;
 
 		public AutoGenDimensionalTrapdoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, Item originalItem) {
@@ -147,6 +168,25 @@ public class DimensionalDoorItemRegistrar {
 		@Override
 		public Text getName() {
 			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
+		}
+
+		@Override
+		public Item getOriginalItem() {
+			return originalItem;
+		}
+
+		@Override
+		public void transform(MatrixStack matrices) {
+			matrices.scale(0.55f, 0.55f, 0.6f);
+			matrices.translate(0.05, -0.05, 0.41);
+			matrices.multiply(Quaternion.method_35823(new Vec3f(90, 0, 0)));
+		}
+	}
+
+	public interface ChildItem {
+		Item getOriginalItem();
+
+		default void transform(MatrixStack matrices) {
 		}
 	}
 }
