@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.function.Consumer;
 
+import net.minecraft.item.BlockItem;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
@@ -13,13 +14,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.TallBlockItem;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class DimensionalDoorItem extends TallBlockItem {
+public class DimensionalDoorItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;
 
 	public DimensionalDoorItem(Block block, Item.Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
@@ -86,11 +86,6 @@ public class DimensionalDoorItem extends TallBlockItem {
 		}
 
 		return result;
-	}
-
-	@Override
-	protected boolean place(ItemPlacementContext context, BlockState state) {
-		return context.getWorld().setBlockState(context.getBlockPos(), state, 11);
 	}
 
 	public static boolean isRiftNear(World world, BlockPos pos) {

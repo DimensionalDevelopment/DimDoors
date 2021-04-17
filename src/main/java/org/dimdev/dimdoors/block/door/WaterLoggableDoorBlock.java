@@ -76,10 +76,7 @@ public class WaterLoggableDoorBlock extends DoorBlock implements Waterloggable {
 		}
 
 		BlockState newState = super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
-		if (state.getFluidState().getFluid() == Fluids.WATER) {
-			if (newState.isAir()) return Blocks.WATER.getDefaultState();
-			if (newState.getProperties().contains(WATERLOGGED)) return newState.with(WATERLOGGED, true);
-		}
+		if (newState.isAir() && state.getFluidState().getFluid() == Fluids.WATER) return Blocks.WATER.getDefaultState();
 		return newState;
 	}
 
