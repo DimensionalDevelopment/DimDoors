@@ -1,15 +1,13 @@
 package org.dimdev.dimdoors.block.door;
 
-import net.minecraft.util.math.Vec3d;
-
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.util.math.MathUtil;
+import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.api.util.math.MathUtil;
-import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -25,6 +23,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -87,16 +86,12 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 
 	@Override
 	public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState blockState, BlockEntity entity, ItemStack stack) {
-		if (entity instanceof EntranceRiftBlockEntity) {
+		if (player.isCreative() && !DimensionalDoorsInitializer.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
+			return;
+		}
+		if (entity instanceof EntranceRiftBlockEntity && blockState.get(HALF) == DoubleBlockHalf.LOWER) {
 			world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
 			((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) entity).getData());
-		}
-	}
-
-	@Override
-	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-		super.onBreak(world, pos, state, player);
-		if (state.get(HALF) == DoubleBlockHalf.LOWER) { // TODO: place a detached rift
 		}
 	}
 

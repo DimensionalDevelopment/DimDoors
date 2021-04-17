@@ -7,7 +7,16 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dimdoors:gold_dimensional_door"
+          "name": "dimdoors:gold_dimensional_door",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "dimdoors:gold_dimensional_door",
+              "properties": {
+                "half": "lower"
+              }
+            }
+          ]
         }
       ],
       "conditions": [
