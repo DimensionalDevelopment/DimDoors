@@ -88,6 +88,11 @@ public class DimensionalDoorItem extends TallBlockItem {
 		return result;
 	}
 
+	@Override
+	protected boolean place(ItemPlacementContext context, BlockState state) {
+		return context.getWorld().setBlockState(context.getBlockPos(), state, 11);
+	}
+
 	public static boolean isRiftNear(World world, BlockPos pos) {
 		for (int x = pos.getX() - 5; x < pos.getX() + 5; x++) {
 			for (int y = pos.getY() - 5; y < pos.getY() + 5; y++) {

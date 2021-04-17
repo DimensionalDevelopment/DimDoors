@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.block.door;
 
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.Vec3d;
 
+import net.minecraft.world.event.GameEvent;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -30,7 +32,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock {
+public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock {
 	public DimensionalDoorBlock(Settings settings) {
 		super(settings);
 	}
@@ -66,7 +68,11 @@ public class DimensionalDoorBlock extends DoorBlock implements RiftProvider<Entr
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
 		state = state.cycle(OPEN);
 		world.setBlockState(pos, state, 10);
+		if (!world.isClient && state.get(WATERLOGGED)) {
+			world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		}
 		world.syncWorldEvent(player, state.get(OPEN) ? this.material == Material.METAL ? 1005 : 1006 : this.material == Material.METAL ? 1011 : 1012, pos, 0);
+		world.emitGameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
 		return ActionResult.SUCCESS;
 	}
 
