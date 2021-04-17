@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.level;
+package org.dimdev.dimdoors;
 
 import dev.onyxstudios.cca.api.v3.chunk.ChunkComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.chunk.ChunkComponentInitializer;

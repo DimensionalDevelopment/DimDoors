@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.item.component;
 
 import dev.onyxstudios.cca.api.v3.item.ItemComponent;
-import org.dimdev.dimdoors.world.level.DimensionalDoorsComponents;
+import org.dimdev.dimdoors.DimensionalDoorsComponents;
 
 import net.minecraft.item.ItemStack;
 

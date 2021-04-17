@@ -1,11 +1,12 @@
 # Dimensional Doors
 [![CF Dl Count](http://cf.way2muchnoise.eu/full_dimensionaldoors_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/dimensionaldoors)
 [![MC Versions](http://cf.way2muchnoise.eu/versions/Minecraft_dimensionaldoors_all.svg)](https://www.curseforge.com/minecraft/mc-mods/dimensionaldoors)
-[![Last Commit](https://img.shields.io/github/last-commit/DimensionalDevelopment/DimDoors.svg)](https://github.com/DimensionalDevelopment/DimDoors/commits/1.16-fabric)
-[![Build Status](https://api.travis-ci.org/DimensionalDevelopment/DimDoors.svg)](https://travis-ci.org/DimensionalDevelopment/DimDoors/builds)
+[![Last Commit](https://img.shields.io/github/last-commit/DimensionalDevelopment/DimDoors.svg)](https://github.com/DimensionalDevelopment/DimDoors/commits/1.17)
 
 ## Overview
-This is the main repository for the rewrite of Dimensional Doors by StevenRS11. This repository contains the up-to-date code base and commits submitted.
+This is the main repository for the rewrite of Dimensional Doors by StevenRS11. This repository contains the up-to-date code base and commits submitted.  
+**This mod is for fabric**  
+**For a Forge Version, check [here](https://www.youtube.com/watch?v=dQw4w9WgXcQ)**
 
 ## Discord Server
 For the main bits, we have a Discord server made specifically for talking about Dimensional Doors. It's also the place where the devs meet to discuss current progress on certain aspects, and get feedback from the team.
