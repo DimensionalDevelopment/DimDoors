@@ -123,7 +123,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 
 			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(pos), nbt);
 			if (blockEntity != null) {
-				world.toServerWorld().addBlockEntity(blockEntity);
+				placementType.getBlockEntityPlacer().accept(world.toServerWorld(), blockEntity);
 			}
 		}
 		for (Map.Entry<NbtCompound, Vec3d> entry : this.entityContainer.entrySet()) {

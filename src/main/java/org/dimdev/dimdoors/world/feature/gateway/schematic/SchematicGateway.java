@@ -58,7 +58,7 @@ public abstract class SchematicGateway implements Gateway, BiPredicate<Structure
 			TemplateUtils.replacePlaceholders(this.schematic, world);
 			this.replaced = true;
 		}
-		SchematicPlacer.place(this.schematic, world, pos, BlockPlacementType.SECTION_NO_UPDATE);
+		SchematicPlacer.place(this.schematic, world, pos, BlockPlacementType.SECTION_NO_UPDATE_QUEUE_BLOCK_ENTITY);
 		this.generateRandomBits(world, pos);
 	}
 
