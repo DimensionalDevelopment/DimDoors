@@ -2,13 +2,17 @@ package org.dimdev.dimdoors.block;
 
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
@@ -84,5 +88,32 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 	@Override
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
 		((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setPortalDestination(world);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return Dummy.checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT, DimensionalPortalBlock::portalTick);
+	}
+
+	private static void portalTick(World world, BlockPos pos, BlockState state, EntranceRiftBlockEntity e) {
+		e.setPortalDestination(world);
+	}
+
+	private static final class Dummy extends BlockWithEntity {
+		protected Dummy(Settings settings) {
+			super(settings);
+		}
+
+		@Nullable
+		protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
+			return BlockWithEntity.checkType(givenType, expectedType, ticker);
+		}
+
+		@Nullable
+		@Override
+		public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+			return null;
+		}
 	}
 }
