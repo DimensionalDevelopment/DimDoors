@@ -48,6 +48,7 @@
   "block.dimdoors.rift": "Rift Scar",
   "block.dimdoors.eternal_fluid": "Eternal Fluid",
   "block.dimdoors.solid_static": "Solid Static",
+  "block.dimdoors.detached_rift": "Rift",
 
   "dimdoors.autogen_item_prefix": "Dimensional %s",
   "item.dimdoors.gold_door": "Gold Door",
