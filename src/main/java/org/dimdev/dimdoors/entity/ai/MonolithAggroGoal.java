@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.Random;
 
 import io.netty.buffer.Unpooled;
+import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.entity.stat.ModStats;
@@ -12,6 +13,7 @@ import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.world.level.component.PlayerModifiersComponent;
 
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
@@ -105,6 +107,7 @@ public class MonolithAggroGoal extends Goal {
 				this.target.teleport(this.target.getX(), this.target.getY() + 256, this.target.getZ());
                 this.target.world.playSound(null, new BlockPos(this.target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
                 this.target.incrementStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
+				PlayerModifiersComponent.incrementFray(this.target, DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.monolithTeleportationIncrement);
                 ServerPacketHandler.get((ServerPlayerEntity) this.target).sendPacket(new MonolithTeleportParticlesPacket());
 			}
         }

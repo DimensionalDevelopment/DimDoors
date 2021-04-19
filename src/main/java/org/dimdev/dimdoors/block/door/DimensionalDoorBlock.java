@@ -31,6 +31,9 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock {
 	public DimensionalDoorBlock(Settings settings) {
 		super(settings);
@@ -150,6 +153,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return true;
 	}
 
+	@Environment(EnvType.CLIENT)
 	@Override
 	public boolean isTall(BlockState cachedState) {
 		return true;

@@ -25,6 +25,9 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 public class DimensionalPortalBlock extends Block implements RiftProvider<EntranceRiftBlockEntity> {
 	public static DirectionProperty FACING = HorizontalFacingBlock.FACING;
 
@@ -80,6 +83,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 		return VoxelShapes.fullCube();
 	}
 
+	@Environment(EnvType.CLIENT)
 	@Override
 	public boolean isTall(BlockState cachedState) {
 		return true;

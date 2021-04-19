@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors;
+package org.dimdev.dimdoors.client;
 
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;

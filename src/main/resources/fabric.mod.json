@@ -26,7 +26,7 @@
       "org.dimdev.dimdoors.DimensionalDoorsInitializer"
     ],
     "client": [
-      "org.dimdev.dimdoors.DimensionalDoorsClientInitializer"
+      "org.dimdev.dimdoors.client.DimensionalDoorsClientInitializer"
     ],
     "modmenu": [
       "org.dimdev.dimdoors.client.config.ModMenuImpl"
@@ -47,7 +47,8 @@
     "cardinal-components": [
       "dimdoors:dimensional_registry",
       "dimdoors:counter",
-      "dimdoors:chunk_lazily_generated"
+      "dimdoors:chunk_lazily_generated",
+      "dimdoors:player_modifiers"
     ],
     "waila:plugins": {
       "id": "dimdoors:wthit_plugin",

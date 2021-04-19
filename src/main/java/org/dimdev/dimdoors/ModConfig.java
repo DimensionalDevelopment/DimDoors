@@ -14,6 +14,7 @@ import blue.endless.jankson.Jankson;
 import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
+import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.BoundedDiscrete;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Category;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.CollapsibleObject;
 import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.EnumHandler;
@@ -46,6 +47,9 @@ public final class ModConfig implements ConfigData {
 	@Category("world")
 	private World world = new World();
 	@TransitiveObject
+	@Category("player")
+	private Player player = new Player();
+	@TransitiveObject
 	@Category("dungeons")
 	private Dungeons dungeons = new Dungeons();
 	@TransitiveObject
@@ -71,6 +75,10 @@ public final class ModConfig implements ConfigData {
 
 	public World getWorldConfig() {
 		return this.world;
+	}
+
+	public Player getPlayerConfig() {
+		return this.player;
 	}
 
 	public Dungeons getDungeonsConfig() {
@@ -159,6 +167,22 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public List<String> clusterDimBlacklist = new LinkedList<>();
 		@RequiresRestart
 		@Tooltip public List<String> gatewayDimBlacklist = new LinkedList<>();
+	}
+
+	public static class Player {
+		@CollapsibleObject @Tooltip public Fray fray = new Fray();
+
+		public static class Fray {
+			@Tooltip public int maxFray = 200;
+			@Tooltip public int riftFrayIncrement = 5;
+			@Tooltip public int monolithTeleportationIncrement = 5;
+			@Tooltip public int eternalFluidFrayDecrease = 100;
+			@Tooltip public int nameplateGlitchFray = 80;
+			@Tooltip public int staticOverlayFray = 100;
+			@Tooltip public int armorDamageFray = 125;
+			@Tooltip public int grayScreenFray = 175;
+			@Tooltip public int unravelledStatueFray = 200;
+		}
 	}
 
 	public static class Dungeons {
