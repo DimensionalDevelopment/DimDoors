@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.item;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraft.util.hit.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -52,7 +53,8 @@ public class RiftRemoverItem extends Item {
 		}
 
 		if (RaycastHelper.hitsDetachedRift(hit, world)) {
-			DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
+			// casting to BlockHitResult is mostly safe since RaycastHelper#hitsDetachedRift already checks hit type
+			DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 			if (!Objects.requireNonNull(rift).closing) {
 				rift.setClosing(true);
 				world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
