@@ -112,7 +112,7 @@ public class DimensionalDoorItemRegistrar {
 	}
 
 	private void register(Identifier identifier, Item original, BlockItem dimItem) {
-		Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getPath());
+		Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
 		if (!DoorData.PARENT_ITEMS.contains(original)) {
 			Registry.register(registry, gennedId, dimItem);
 		}
