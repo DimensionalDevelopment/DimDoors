@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block;
 
+import net.minecraft.server.world.ServerWorld;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -91,7 +92,8 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 	@Override
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-		((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setPortalDestination(world);
+		if (world.isClient) return;
+		((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setPortalDestination((ServerWorld) world);
 	}
 
 	@Nullable
@@ -101,7 +103,8 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 	}
 
 	private static void portalTick(World world, BlockPos pos, BlockState state, EntranceRiftBlockEntity e) {
-		e.setPortalDestination(world);
+		if (world.isClient) return;
+		e.setPortalDestination((ServerWorld) world);
 	}
 
 	private static final class Dummy extends BlockWithEntity {

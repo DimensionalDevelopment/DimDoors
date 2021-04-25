@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
+import net.minecraft.server.world.ServerWorld;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.RiftProvider;
@@ -30,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -159,7 +159,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		this.locked = locked;
 	}
 
-	public void setPortalDestination(World world) {
+	public void setPortalDestination(ServerWorld world) {
 		if (ModDimensions.isLimboDimension(world)) {
 			this.setDestination(ESCAPE_TARGET);
 		} else {
