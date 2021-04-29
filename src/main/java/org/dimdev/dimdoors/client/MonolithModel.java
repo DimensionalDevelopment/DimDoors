@@ -22,13 +22,14 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
     private final ModelPart body;
 
     public MonolithModel(EntityRendererFactory.Context context) {
+        super(MyRenderLayer::getMonolith);
         this.body = context.getPart(ModEntityModelLayers.MONOLITH);
     }
 
     public static TexturedModelData getTexturedModelData() {
         ModelData modelData = new ModelData();
         ModelPartData modelPartData = modelData.getRoot();
-        modelPartData.addChild("body", ModelPartBuilder.create().uv(0, 0).cuboid(-23.5F, -23.5F, 0, 49.0F, 4.90F, 1.0F, false), ModelTransform.NONE);
+        modelPartData.addChild("body", ModelPartBuilder.create().uv(0, 0).cuboid(-23.5F, -23.5F, 0, 49.0F, 49.0F, 1.0F, false), ModelTransform.NONE);
         return TexturedModelData.of(modelData, 102, 51);
     }
 

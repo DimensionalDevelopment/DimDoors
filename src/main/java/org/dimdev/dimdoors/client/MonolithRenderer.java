@@ -6,18 +6,21 @@ import java.util.stream.Stream;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)
 public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, MonolithModel> {
-    public static final List<RenderLayer> MONOLITH_TEXTURES = Stream.of(
+    public static final List<Identifier> MONOLITH_TEXTURES = Stream.of(
             new Identifier("dimdoors:textures/mob/monolith/monolith0.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith1.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith2.png"),
@@ -37,7 +40,7 @@ public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, Monolith
             new Identifier("dimdoors:textures/mob/monolith/monolith16.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith17.png"),
             new Identifier("dimdoors:textures/mob/monolith/monolith18.png")
-	).map(MyRenderLayer::getMonolith).collect(Collectors.toList());
+	).collect(Collectors.toList());
 
     private static MonolithModel INSTANCE;
 
@@ -63,6 +66,6 @@ public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, Monolith
 
     @Override
     public Identifier getTexture(MonolithEntity entity) {
-        return null;
+        return MonolithRenderer.MONOLITH_TEXTURES.get(entity.getTextureState());
     }
 }
