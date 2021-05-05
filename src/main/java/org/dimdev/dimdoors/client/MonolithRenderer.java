@@ -46,17 +46,15 @@ public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, Monolith
 
     public MonolithRenderer(EntityRendererFactory.Context ctx) {
         super(ctx, INSTANCE = new MonolithModel(ctx), 0);
-
     }
 
     public static MonolithModel getInstance() {
         return INSTANCE;
     }
 
-    @Nullable
     @Override
-    protected RenderLayer getRenderLayer(MonolithEntity entity, boolean showBody, boolean translucent, boolean showOutline) {
-        return MonolithRenderer.MONOLITH_TEXTURES.get(entity.getTextureState());
+    public void render(MonolithEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
+        super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
     }
 
     @Override
