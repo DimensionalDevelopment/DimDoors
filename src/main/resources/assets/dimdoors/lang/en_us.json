@@ -154,6 +154,7 @@
   "rifts.entrances.cannot_be_placed_on_rift": "This type of door can't be placed on a rift.",
 
   "tools.rift_miss": "You can only use this item on a rift's core",
+  "tools.signature_blocked": "Usage of the signature was block",
   "tools.target_became_block": "Failed, there is now a block at the stored location",
   
   "text.autoconfig.dimdoors.category.general": "General Settings",

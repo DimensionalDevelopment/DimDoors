@@ -2,13 +2,16 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 
+import net.fabricmc.api.ModInitializer;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
+import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.item.TooltipContext;
@@ -23,6 +26,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -63,6 +67,11 @@ public class RiftSignatureItem extends Item {
 
 		if (world.isClient) {
 			return ActionResult.SUCCESS;
+		}
+
+		if(ModDimensions.isPrivatePocketDimension(world) && !DimensionalDoorsInitializer.getConfig().getPocketsConfig().canUseRiftSignatureInPrivatePockets) {
+			player.sendMessage(new TranslatableText("tools.signature_blocked").formatted(Formatting.BLACK), true);
+			return ActionResult.FAIL;
 		}
 
 		RotatedLocation target = getSource(stack);

@@ -156,6 +156,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip @EnumHandler(option = BUTTON) public ExtendedResourcePackActivationType classicPocketsResourcePackActivationType = ExtendedResourcePackActivationType.DEFAULT_ENABLED;
 		@Tooltip @EnumHandler(option = BUTTON) public ExtendedResourcePackActivationType defaultPocketsResourcePackActivationType = ExtendedResourcePackActivationType.DEFAULT_ENABLED;
 		@Tooltip public boolean asyncWorldEditPocketLoading = true;
+		@Tooltip public boolean canUseRiftSignatureInPrivatePockets = true;
 	}
 
 	public static class World {
