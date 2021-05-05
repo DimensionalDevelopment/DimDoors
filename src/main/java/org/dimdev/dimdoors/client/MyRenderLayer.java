@@ -46,6 +46,7 @@ public class MyRenderLayer extends RenderLayer {
 								RenderSystem.defaultBlendFunc();
 							})
 					)
+					.shader(RenderPhase.COLOR_SHADER)
 					.build(false)
 	);
 
@@ -63,6 +64,7 @@ public class MyRenderLayer extends RenderLayer {
 							false)
 					)
 //					.alpha(Alpha.HALF_ALPHA)
+					.shader(RenderPhase.POSITION_COLOR_TEXTURE_SHADER)
 					.build(false)
 	);
 
