@@ -86,6 +86,7 @@ public abstract class VirtualTarget implements Target {
 
 	public interface VirtualTargetType<T extends VirtualTarget> {
 		VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("dimdoors:available_link", RandomTarget::fromNbt, RandomTarget::toNbt, VirtualTarget.COLOR);
+		VirtualTargetType<RandomTarget> DUNGEON = register("dimdoors:dungeon", DungeonTarget::fromNbt, DungeonTarget::toNbt, VirtualTarget.COLOR);
 		VirtualTargetType<EscapeTarget> ESCAPE = register("dimdoors:escape", EscapeTarget::fromNbt, EscapeTarget::toNbt, VirtualTarget.COLOR);
 		VirtualTargetType<GlobalReference> GLOBAL = register("dimdoors:global", GlobalReference::fromNbt, GlobalReference::toNbt, VirtualTarget.COLOR);
 		VirtualTargetType<LimboTarget> LIMBO = register("dimdoors:limbo", a -> LimboTarget.INSTANCE, a -> new NbtCompound(), VirtualTarget.COLOR);

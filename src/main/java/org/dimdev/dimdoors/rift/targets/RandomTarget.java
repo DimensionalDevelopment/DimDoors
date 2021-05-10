@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -173,6 +174,10 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		}
 	}
 
+	protected Pocket generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
+		return PocketGenerator.generateDungeonPocketV2(location, linkTo, props);
+	}
+
 	private static void linkRifts(Location from, Location to) {
 		RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
 		RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
@@ -254,14 +259,14 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 	}
 
 	public static class RandomTargetBuilder {
-		private float newRiftWeight;
-		private double weightMaximum;
-		private double coordFactor;
-		private double positiveDepthFactor;
-		private double negativeDepthFactor;
-		private Set<Integer> acceptedGroups;
-		private boolean noLink;
-		private boolean noLinkBack;
+		protected float newRiftWeight;
+		protected double weightMaximum;
+		protected double coordFactor;
+		protected double positiveDepthFactor;
+		protected double negativeDepthFactor;
+		protected Set<Integer> acceptedGroups = Collections.emptySet();
+		protected boolean noLink;
+		protected boolean noLinkBack;
 
 		RandomTargetBuilder() {
 		}

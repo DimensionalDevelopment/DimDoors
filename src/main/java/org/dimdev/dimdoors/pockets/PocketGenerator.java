@@ -16,6 +16,15 @@ import net.minecraft.server.world.ServerWorld;
 public final class PocketGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public static final Identifier ALL_DUNGEONS = new Identifier("dimdoors", "dungeon");
+    public static final Identifier NETHER_DUNGEONS = new Identifier("dimdoors", "nether");
+	public static final Identifier RUINS_DUNGEONS = new Identifier("dimdoors", "ruins");
+	public static final Identifier ATLANTIS_DUNGEONS = new Identifier("dimdoors", "atlantis");
+	public static final Identifier JUNGLE_DUNGEONS = new Identifier("dimdoors", "jungle");
+	public static final Identifier SNOW_DUNGEONS = new Identifier("dimdoors", "snow");
+	public static final Identifier PYRAMID_DUNGEONS = new Identifier("dimdoors", "pyramid");
+	public static final Identifier END_DUNGEONS = new Identifier("dimdoors", "end");
+
     /*
     private static Pocket prepareAndPlacePocket(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
         LOGGER.info("Generating pocket from template " + pocketTemplate.getId() + " at virtual location " + virtualLocation);
@@ -47,6 +56,10 @@ public final class PocketGenerator {
 
 	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
 		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), new Identifier("dimdoors", "dungeon"), virtualLocation, linkTo, linkProperties);
+	}
+
+	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, Identifier group) {
+		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), group, virtualLocation, linkTo, linkProperties);
 	}
 
 	/*
