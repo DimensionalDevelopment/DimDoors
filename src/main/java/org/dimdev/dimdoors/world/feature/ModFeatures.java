@@ -18,6 +18,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.decorator.ChanceDecoratorConfig;
+import net.minecraft.world.gen.decorator.Decoratable;
 import net.minecraft.world.gen.decorator.Decorator;
 import net.minecraft.world.gen.decorator.RangeDecoratorConfig;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -42,6 +43,8 @@ public final class ModFeatures {
     public static final ConfiguredFeature<?, ?> TWO_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> LIMBO_GATEWAY_CONFIGURED_FEATURE;
     public static final ConfiguredFeature<?, ?> SOLID_STATIC_ORE;
+    public static final ConfiguredFeature<?, ?> DECAYED_BLOCK_ORE;
+
     @Deprecated public static final ConfiguredFeature<?, ?> ETERNAL_FLUID_LAKE = Feature.LAKE.configure(new SingleStateFeatureConfig(ModBlocks.ETERNAL_FLUID.getDefaultState())).decorate(ETERNAL_FLUID_LAKE_DECORATOR.configure(new ChanceDecoratorConfig(20)));
 
     public static void init() {
@@ -78,5 +81,7 @@ public final class ModFeatures {
         TWO_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicGatewayFeatureConfig(SchematicGateway.ID_SCHEMATIC_MAP.inverse().get(TWO_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
         LIMBO_GATEWAY_CONFIGURED_FEATURE = LIMBO_GATEWAY_FEATURE.configure(DefaultFeatureConfig.INSTANCE).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
 		SOLID_STATIC_ORE = Feature.ORE.configure(new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.SOLID_STATIC.getDefaultState(), 4)).range(new RangeDecoratorConfig(YOffset.getBottom(), YOffset.getTop())).repeat(3);
+        DECAYED_BLOCK_ORE = Feature.ORE.configure(new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.DECAYED_BLOCK.getDefaultState(), 64)).rangeOf(YOffset.fixed(0), YOffset.fixed(79)).repeat(2);
+
     }
 }

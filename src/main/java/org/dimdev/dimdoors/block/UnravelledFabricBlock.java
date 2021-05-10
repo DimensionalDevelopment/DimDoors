@@ -42,9 +42,4 @@ public class UnravelledFabricBlock extends Block {
 		}
 		return state;
 	}
-
-	@Override
-	public boolean hasRandomTicks(BlockState state) {
-		return true;
-	}
 }

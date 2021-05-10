@@ -55,6 +55,13 @@ public class WorldRendererMixin {
 		}
 	}
 
+	@Inject(method = "renderClouds(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FDDD)V", at = @At("HEAD"), cancellable = true)
+	public void beforeRendererCloud(MatrixStack matrices, Matrix4f matrix4f, float f, double d, double e, double g, CallbackInfo ci) {
+		if (ModDimensions.isLimboDimension(this.world) || ModDimensions.isPrivatePocketDimension(this.world) || ModDimensions.isPocketDimension(this.world)) {
+			ci.cancel();
+		}
+	}
+
 	@Unique
 	private void renderLimboSky(MatrixStack matrices) {
 		Matrix4f matrix4f = matrices.peek().getModel();

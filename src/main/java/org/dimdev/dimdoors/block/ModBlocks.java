@@ -149,6 +149,18 @@ public final class ModBlocks {
 	@RegistryEntry("eternal_fluid")
 	public static final Block ETERNAL_FLUID = register(new EternalFluidBlock(FabricBlockSettings.of(Material.STONE, MapColor.RED).luminance(15)));
 
+	@RegistryEntry("decayed_block")
+	public static final Block DECAYED_BLOCK = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+
+	@RegistryEntry("unfolded_block")
+	public static final Block UNFOLDED_BLOCK = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+
+	@RegistryEntry("unwarped_block")
+	public static final Block UNWARPED_BLOCK = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+
+	@RegistryEntry("unravelled_block")
+	public static final Block UNRAVELLED_BLOCK = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+
 	@RegistryEntry("unravelled_fabric")
 	public static final Block UNRAVELLED_FABRIC = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
 

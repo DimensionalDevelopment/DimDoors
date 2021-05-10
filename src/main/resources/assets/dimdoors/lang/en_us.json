@@ -44,6 +44,10 @@
   "block.dimdoors.green_ancient_fabric": "Green Altered Ancient Fabric",
   "block.dimdoors.red_ancient_fabric": "Red Altered Ancient Fabric",
   "block.dimdoors.eternal_fabric": "Eternal Fabric",
+  "block.dimdoors.decayed_block": "Decayed Block",
+  "block.dimdoors.unfolded_block": "Unfolded Block",
+  "block.dimdoors.unwarped_block": "Unwarped Block",
+  "block.dimdoors.unravelled_block": "Unraveled Block",
   "block.dimdoors.unravelled_fabric": "Unraveled Fabric",
   "block.dimdoors.rift": "Rift Scar",
   "block.dimdoors.eternal_fluid": "Eternal Fluid",
@@ -154,6 +158,7 @@
   "rifts.entrances.cannot_be_placed_on_rift": "This type of door can't be placed on a rift.",
 
   "tools.rift_miss": "You can only use this item on a rift's core",
+  "tools.signature_blocked": "Usage of the signature was block",
   "tools.target_became_block": "Failed, there is now a block at the stored location",
   
   "text.autoconfig.dimdoors.category.general": "General Settings",

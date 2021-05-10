@@ -89,7 +89,7 @@ public final class ModBiomes {
                 .depth(0.1f)
                 .downfall(0.0f)
                 .effects(new BiomeEffects.Builder()
-                        .fogColor(0x000000)
+                        .fogColor(0x404040)
                         .waterColor(0x101010)
                         .foliageColor(0)
                         .waterFogColor(0)
@@ -108,11 +108,13 @@ public final class ModBiomes {
 								GenerationStep.Feature.UNDERGROUND_ORES,
 								ModFeatures.SOLID_STATIC_ORE
 						)
+						.feature(GenerationStep.Feature.UNDERGROUND_ORES,
+								ModFeatures.DECAYED_BLOCK_ORE)
                         .surfaceBuilder(
                         		SurfaceBuilder.DEFAULT.withConfig(
                         				new TernarySurfaceConfig(
-                        						ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
-												ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
+                        						ModBlocks.UNFOLDED_BLOCK.getDefaultState(),
+												ModBlocks.UNWARPED_BLOCK.getDefaultState(),
 												ModBlocks.ETERNAL_FLUID.getDefaultState()
 										)
 								))

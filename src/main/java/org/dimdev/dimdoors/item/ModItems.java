@@ -2,7 +2,9 @@ package org.dimdev.dimdoors.item;
 
 import java.util.Collections;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.UnravelledFabricBlock;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
@@ -12,6 +14,8 @@ import org.dimdev.matrix.Registrar;
 import org.dimdev.matrix.RegistryEntry;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.Material;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
@@ -202,6 +206,17 @@ public final class ModItems {
 	@RegistryEntry("black_ancient_fabric")
 	public static final Item BLACK_ANCIENT_FABRIC = create(ModBlocks.BLACK_ANCIENT_FABRIC);
 
+	@RegistryEntry("decayed_block")
+	public static final Item DECAYED_BLOCK = create(ModBlocks.DECAYED_BLOCK);
+
+	@RegistryEntry("unfolded_block")
+	public static final Item UNFOLDED_BLOCK = create(ModBlocks.UNFOLDED_BLOCK);
+
+	@RegistryEntry("unwarped_block")
+	public static final Item UNWARPED_BLOCK = create(ModBlocks.UNWARPED_BLOCK);
+
+	@RegistryEntry("unravelled_block")
+	public static final Item UNRAVELLED_BLOCK = create(ModBlocks.UNRAVELLED_BLOCK);
 
 	@RegistryEntry("unravelled_fabric")
 	public static final Item UNRAVELLED_FABRIC = create(ModBlocks.UNRAVELLED_FABRIC);
