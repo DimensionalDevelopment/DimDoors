@@ -359,7 +359,7 @@
   "limbo.death.attack.badRespawnPoint.message": "%1$s was killed by %2$s and was sent by Limbo",
   "limbo.death.attack.badRespawnPoint.link": "Intentional Game Design",
   "limbo.death.attack.sweetBerryBush": "%1$s poked a hole in reality",
-  "limbo.death.attack.sweetBerryBush.player": "%1$s was poked to death by a sweet berry bush whilst trying to escape %2$s and was sent to Limbo",
+  "limbo.death.attack.sweetBerryBush.player": "%1$s poked a hole in reality whilst trying to escape %2$s",
   "limbo.death.attack.sting": "%1$s bugged out to Limbo",
   "limbo.death.attack.sting.player": "%1$s bugged out to Limbo by %2$s",
   "limbo.death.attack.freeze": "%1$s froze into Limbo",
