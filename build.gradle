@@ -158,6 +158,8 @@ dependencies {
 	modCompileOnly "worldedit:worldedit:7.2.3"
 	modRuntime "worldedit:worldedit:7.2.3"
 
+	modImplementation "geckolib:geckolib:3.0.31"
+
 	datagenImplementation sourceSets.main.output
 	datagenImplementation sourceSets.main.compileClasspath
 	datagenRuntimeOnly sourceSets.main.runtimeClasspath
