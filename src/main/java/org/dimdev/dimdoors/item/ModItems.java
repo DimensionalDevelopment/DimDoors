@@ -106,6 +106,8 @@ public final class ModItems {
 	@RegistryEntry("world_thread_boots")
 	public static final Item WORLD_THREAD_BOOTS = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.FEET, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
+	@RegistryEntry("mask_wand")
+	public static final Item MASK_WAND = create(new MaskWandItem(new Item.Settings().maxCount(100).group(DIMENSIONAL_DOORS)));
 
 	@RegistryEntry("stable_fabric")
 	public static final Item STABLE_FABRIC = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
