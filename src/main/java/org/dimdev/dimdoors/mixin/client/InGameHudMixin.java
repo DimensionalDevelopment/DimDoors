@@ -17,10 +17,10 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-	@Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShader(Ljava/util/function/Supplier;)V"), method = "renderVignetteOverlay(Lnet/minecraft/entity/Entity;)V")
-	public void renderVignetteOverlay(Entity entity, CallbackInfo info) {
-		if (ModDimensions.isLimboDimension(entity.world)) {
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		}
-	}
+//	@Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShader(Ljava/util/function/Supplier;)V"), method = "renderVignetteOverlay(Lnet/minecraft/entity/Entity;)V")
+//	public void renderVignetteOverlay(Entity entity, CallbackInfo info) {
+//		if (ModDimensions.isLimboDimension(entity.world)) {
+//			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+//		}
+//	}
 }

@@ -5,9 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigHolder;
 import net.minecraft.util.registry.Registry;
+
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigHolder;
 import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;

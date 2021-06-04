@@ -10,19 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import blue.endless.jankson.Jankson;
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.BoundedDiscrete;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Category;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.CollapsibleObject;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.EnumHandler;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.RequiresRestart;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.Tooltip;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.TransitiveObject;
-import me.sargunvohra.mcmods.autoconfig1u.serializer.ConfigSerializer;
-import me.sargunvohra.mcmods.autoconfig1u.util.Utils;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
+import me.shedaniel.autoconfig.serializer.ConfigSerializer;
+import me.shedaniel.autoconfig.util.Utils;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,7 +25,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 
-import static me.sargunvohra.mcmods.autoconfig1u.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.*;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.*;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.*;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
 
 @SuppressWarnings("FieldMayBeFinal")
 @Config(name = "dimdoors")

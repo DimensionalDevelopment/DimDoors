@@ -187,7 +187,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		// Attempt a teleport
 		try {
 			Vec3d relativePos = new Vec3d(0, 0, 0);
-			EulerAngle relativeAngle = new EulerAngle(entity.pitch, entity.yaw, 0);
+			EulerAngle relativeAngle = new EulerAngle(entity.getPitch(), entity.getYaw(), 0);
 			Vec3d relativeVelocity = entity.getVelocity();
 			EntityTarget target = this.getTarget().as(Targets.ENTITY);
 

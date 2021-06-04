@@ -48,8 +48,8 @@ public class TemplateUtils {
             if ("monolith".equals(entityTag.getString("placeholder"))) {
                 MonolithEntity monolith = Objects.requireNonNull(ModEntityTypes.MONOLITH.create(null));
                 monolith.setPos(x, y, z);
-                monolith.yaw = yaw;
-                monolith.pitch = pitch;
+                monolith.setYaw(yaw);
+                monolith.setPitch(pitch);
                 newTag = monolith.writeNbt(new NbtCompound());
             } else {
                 throw new RuntimeException("Unknown entity placeholder: " + entityTag.getString("placeholder"));

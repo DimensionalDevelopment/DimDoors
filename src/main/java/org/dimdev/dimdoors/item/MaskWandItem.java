@@ -30,7 +30,7 @@ import net.minecraft.world.World;
 import net.fabricmc.api.Environment;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.entity.MaskEntity;
+//import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.component.CounterComponent;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
@@ -56,8 +56,8 @@ import static net.minecraft.util.math.Direction.*;
 			return TypedActionResult.fail(stack);
 		} else {
 			if(hit.getType().equals(HitResult.Type.BLOCK)) {
-				MaskEntity mask = ModEntityTypes.MASK.create((ServerWorld) world, null, LiteralText.EMPTY, player, ((BlockHitResult) hit).getBlockPos(), SpawnReason.SPAWNER, true, false);
-				world.spawnEntity(mask);
+//				MaskEntity mask = ModEntityTypes.MASK.create((ServerWorld) world, null, LiteralText.EMPTY, player, ((BlockHitResult) hit).getBlockPos(), SpawnReason.SPAWNER, true, false);
+//				world.spawnEntity(mask);
 			}
 		}
 

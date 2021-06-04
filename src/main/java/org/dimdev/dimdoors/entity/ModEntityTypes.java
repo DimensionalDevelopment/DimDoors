@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.entity;
 
-import org.dimdev.dimdoors.client.MaskRenderer;
+//import org.dimdev.dimdoors.client.MaskRenderer;
 import org.dimdev.dimdoors.client.MonolithRenderer;
 
 import net.minecraft.entity.Entity;
@@ -22,21 +22,21 @@ public class ModEntityTypes {
             3, 3
     );
 
-    public static final EntityType<MaskEntity> MASK = register(
-            "dimdoors:mask",
-            MaskEntity::new,
-            0.9375f, 0.9375f
-    );
+//    public static final EntityType<MaskEntity> MASK = register(
+//            "dimdoors:mask",
+//            MaskEntity::new,
+//            0.9375f, 0.9375f
+//    );
 
     public static void init() {
         FabricDefaultAttributeRegistry.register(MONOLITH, MonolithEntity.createMobAttributes());
-        FabricDefaultAttributeRegistry.register(MASK, MonolithEntity.createMobAttributes());
+        //FabricDefaultAttributeRegistry.register(MASK, MonolithEntity.createMobAttributes());
     }
 
     @Environment(EnvType.CLIENT)
     public static void initClient() {
         EntityRendererRegistry.INSTANCE.register(MONOLITH, MonolithRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
+        //EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
     }
 
     private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, float width, float height) {

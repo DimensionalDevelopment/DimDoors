@@ -27,7 +27,7 @@ public class BlockBoxMixin {
 	 * @reason method is bugged, currently does the same as {@link net.minecraft.util.math.BlockBox#encompass(net.minecraft.util.math.BlockPos pos)}
 	 */
 	@Overwrite
-	public BlockBox intersection(BlockBox box) {
+	public BlockBox encompass(BlockBox box) {
 		this.minX = Math.max(this.minX, box.getMinX());
 		this.minY = Math.max(this.minY, box.getMinY());
 		this.minZ = Math.max(this.minZ, box.getMinZ());

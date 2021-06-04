@@ -1,9 +1,5 @@
 package org.dimdev.dimdoors.block.entity;
 
-import io.github.cottonmc.cotton.gui.widget.WBox;
-import io.github.cottonmc.cotton.gui.widget.WToggleButton;
-import io.github.cottonmc.cotton.gui.widget.WWidget;
-import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.api.util.RGBA;
@@ -79,18 +75,5 @@ public class RiftData {
 		data.forcedColor = nbt.getBoolean("forcedColor");
 		data.color = nbt.contains("color") ? RGBA.fromNbt(nbt.getCompound("color")) : RGBA.NONE;
 		return data;
-	}
-
-	public WWidget widget() {
-		WBox box = new WBox(Axis.VERTICAL);
-		WToggleButton alwaysDelete = new WToggleButton().setLabel(new LiteralText("Always Delete")).setOnToggle(this::setAlwaysDelete);
-		alwaysDelete.setToggle(this.alwaysDelete);
-		WToggleButton forcedColor = new WToggleButton().setLabel(new LiteralText("Forced Color")).setOnToggle(this::setForcedColor);
-		forcedColor.setToggle(this.forcedColor);
-
-		box.add(alwaysDelete);
-		box.add(forcedColor);
-
-		return box;
 	}
 }

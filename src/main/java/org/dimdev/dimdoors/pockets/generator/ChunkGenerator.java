@@ -195,7 +195,7 @@ public class ChunkGenerator extends PocketGenerator {
 
 	private static class ChunkRegionHack extends ChunkRegion { // Please someone tell me if there is a better way
 		ChunkRegionHack(ServerWorld world, List<Chunk> chunks) {
-			super(world, chunks);
+			super(world, chunks, ChunkStatus.EMPTY, 0);
 		}
 
 		@Override

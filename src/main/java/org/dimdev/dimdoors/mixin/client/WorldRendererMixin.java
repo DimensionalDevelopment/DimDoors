@@ -42,7 +42,7 @@ public class WorldRendererMixin {
 	private static Identifier END_SKY;
 
 	@Inject(method = "renderSky", at = @At("HEAD"), cancellable = true)
-	public void beforeRenderSky(MatrixStack matrices, Matrix4f matrix4f, float f, CallbackInfo ci) {
+	public void beforeRenderSky(MatrixStack matrices, Matrix4f matrix4f, float f, Runnable runnable, CallbackInfo ci) {
 		if (ModDimensions.isLimboDimension(this.world)) {
 			renderLimboSky(matrices);
 			ci.cancel();

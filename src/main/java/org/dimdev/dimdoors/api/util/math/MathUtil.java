@@ -36,7 +36,7 @@ public final class MathUtil {
 	}
 
 	public static EulerAngle entityEulerAngle(Entity entity) {
-		return new EulerAngle(entity.pitch, entity.yaw, 0);
+		return new EulerAngle(entity.getPitch(), entity.getYaw(), 0);
 	}
 
 	public static float yaw(Vec3d vector) {

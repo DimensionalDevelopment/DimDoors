@@ -27,7 +27,7 @@ public final class TeleportUtil {
 	}
 
 	public static  <E extends Entity> E teleport(E entity, World world, Vec3d pos, float yaw) {
-		return teleport(entity, world, pos, new EulerAngle(entity.pitch, yaw, 0), entity.getVelocity());
+		return teleport(entity, world, pos, new EulerAngle(entity.getPitch(), yaw, 0), entity.getVelocity());
 	}
 
 	public static  <E extends Entity> E teleport(E entity, World world, Vec3d pos, EulerAngle angle, Vec3d velocity) {
@@ -36,8 +36,8 @@ public final class TeleportUtil {
 		}
 
 		if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
-			entity.yaw = angle.getYaw();
-			entity.pitch = angle.getPitch();
+			entity.setYaw(angle.getYaw());
+			entity.setPitch(angle.getPitch());
 			entity.teleport(pos.x, pos.y, pos.z);
 			entity.setVelocity(velocity);
 		} else {
@@ -78,7 +78,7 @@ public final class TeleportUtil {
 						.subtract(0, entity.getY(), 0)
 						.add(0, y, 0)
 						.multiply(scale, 1, scale),
-				entity.yaw
+				entity.getYaw()
 		);
 	}
 
@@ -88,7 +88,7 @@ public final class TeleportUtil {
 				entity,
 				world,
 				entity.getPos().multiply(actualScale, 1, actualScale),
-				entity.yaw
+				entity.getYaw()
 		);
 	}
 
@@ -101,7 +101,7 @@ public final class TeleportUtil {
 						.subtract(0, entity.getPos().getY(), 0)
 						.add(0, y, 0)
 						.multiply(actualScale, 1, actualScale),
-				entity.yaw
+				entity.getYaw()
 		);
 	}
 }

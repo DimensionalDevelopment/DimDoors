@@ -64,7 +64,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 
 		if (target == null) {
 			// The link signature has not been used. Store its current target as the first location.
-			setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.yaw, 0));
+			setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.getYaw(), 0));
 			player.sendMessage(new TranslatableText(this.getTranslationKey() + ".stored"), true);
 			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
 		} else {

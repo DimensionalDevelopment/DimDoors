@@ -19,6 +19,7 @@ import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -41,7 +42,7 @@ public class MonolithAggroGoal extends Goal {
         this.mob = mobEntity;
         this.range = f;
         this.setControls(EnumSet.of(Goal.Control.LOOK));
-        this.targetPredicate = (new TargetPredicate()).setBaseMaxDistance(this.range).includeTeammates().includeInvulnerable().ignoreEntityTargetRules().setPredicate(EXCEPT_SPECTATOR::test);
+        this.targetPredicate = (TargetPredicate.createAttackable()).setBaseMaxDistance(this.range).setPredicate(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR::test);
     }
 
     private PlayerEntity getTarget() {

@@ -35,7 +35,7 @@ public class DimTeleportCommand {
 										.argument("yaw", FloatArgumentType.floatArg())
 										.executes( ctx -> {
 											ServerPlayerEntity player = ctx.getSource().getPlayer();
-											return teleport(player, DimensionArgumentType.getDimensionArgument(ctx, "dimension"), Vec3ArgumentType.getVec3(ctx, "coordinates"), new EulerAngle(player.pitch, FloatArgumentType.getFloat(ctx, "yaw"), 0));
+											return teleport(player, DimensionArgumentType.getDimensionArgument(ctx, "dimension"), Vec3ArgumentType.getVec3(ctx, "coordinates"), new EulerAngle(player.getPitch(), FloatArgumentType.getFloat(ctx, "yaw"), 0));
 										})
 										.then(CommandManager
 												.argument("pitch", FloatArgumentType.floatArg())

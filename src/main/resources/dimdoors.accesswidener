@@ -1,7 +1,12 @@
 accessWidener v1 named
 
 # Because its package private
-accessible    class    net/minecraft/client/render/RenderLayer$MultiPhase
+accessible	    class		net/minecraft/client/render/RenderLayer$MultiPhase
+accessible		class		net/minecraft/client/render/RenderLayer$MultiPhaseParameters
+accessible class net/minecraft/client/render/RenderPhase$Shader
+accessible class net/minecraft/client/render/RenderPhase$Textures
+accessible class net/minecraft/world/gen/feature/ConfiguredFeatures$Decorators
+accessible method net/minecraft/entity/Entity setRotation (FF)V
 
 # for MutableBlockEntityType
 extendable    class    net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
