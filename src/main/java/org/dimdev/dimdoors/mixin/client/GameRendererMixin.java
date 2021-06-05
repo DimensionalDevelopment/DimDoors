@@ -32,6 +32,6 @@ public abstract class GameRendererMixin {
 
 	@Inject(method = "loadShaders", at = @At(value = "INVOKE", shift = At.Shift.AFTER, ordinal = 1, target = "java/util/List.add(Ljava/lang/Object;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
 	public void onReload(ResourceManager manager, CallbackInfo ci, List list, List list2) throws IOException {
-		list2.add(Pair.of(this.loadShader(manager, "dimensional_portal", VertexFormats.POSITION), (Consumer<Shader>) ModShaders::setDimensionalPortal));
+		list2.add(Pair.of(new Shader(manager, "dimensional_portal", VertexFormats.POSITION), (Consumer<Shader>) ModShaders::setDimensionalPortal));
 	}
 }
