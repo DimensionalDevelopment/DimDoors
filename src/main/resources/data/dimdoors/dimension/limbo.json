@@ -12,6 +12,8 @@
       "noise_caves_enabled": true,
       "deepslate_enabled": false,
       "aquifers_enabled": false,
+      "noodle_caves_enabled": false,
+      "ore_veins_enabled": false,
       "disable_mob_generation": false,
       "sea_level": 32,
       "min_surface_level": 16,
