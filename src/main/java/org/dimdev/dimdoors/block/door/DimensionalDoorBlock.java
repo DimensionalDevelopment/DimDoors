@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block.door;
 
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
@@ -94,17 +95,6 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
 	@Override
-	public void afterBreak(World world, PlayerEntity player, BlockPos pos, BlockState blockState, BlockEntity entity, ItemStack stack) {
-		if (player.isCreative() && !DimensionalDoorsInitializer.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
-			return;
-		}
-		if (entity instanceof EntranceRiftBlockEntity && blockState.get(HALF) == DoubleBlockHalf.LOWER) {
-			world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
-			((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) entity).getData());
-		}
-	}
-
-	@Override
 	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
 		BlockEntity bottomEntity;
 		BlockEntity topEntity;
@@ -157,5 +147,17 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	@Override
 	public boolean isTall(BlockState cachedState) {
 		return true;
+	}
+
+	static {
+		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
+			if (player.isCreative() && !DimensionalDoorsInitializer.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
+				return;
+			}
+			if (blockEntity instanceof EntranceRiftBlockEntity && state.get(HALF) == DoubleBlockHalf.LOWER) {
+				world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
+				((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
+			}
+		});
 	}
 }
