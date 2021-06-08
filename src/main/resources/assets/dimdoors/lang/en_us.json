@@ -107,6 +107,8 @@
   "item.dimdoors.dimensional_eraser": "Dimensional Eraser",
   "item.dimdoors.dimensional_eraser.desc": "Erases entities",
   "item.dimdoors.monolith_spawner": "Monolith Spawner",
+  "item.dimdoors.mask_wand": "Mask Wand",
+
 
   "dimdoors.virtualTarget.dimdoors.available_link": "Random",
   "dimdoors.virtualTarget.dimdoors.escape": "Escape",
