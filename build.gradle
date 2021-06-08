@@ -155,8 +155,8 @@ dependencies {
 	}
 	modCompileOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
 	modRuntime "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
-//	modCompileOnly "worldedit:worldedit:7.2.3"
-//	modRuntime "worldedit:worldedit:7.2.3"
+	modCompileOnly "worldedit:worldedit:7.2.6"
+	modRuntime "worldedit:worldedit:7.2.6"
 
 //	modImplementation "geckolib:geckolib:3.0.31"
 
