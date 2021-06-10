@@ -27,8 +27,7 @@ import net.fabricmc.api.Environment;
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin{
 	private int frame = 0;
-	private static final float OVERLAY_OPACITY_ADJUSTEMENT = 3F;
-	private static final float FRAMING_ADJUSTEMENT = 1F;
+	private static final float OVERLAY_OPACITY_ADJUSTEMENT = 1.5F;
 	private ModConfig.Player config = DimensionalDoorsInitializer.getConfig().getPlayerConfig();
 	@Shadow
 	private int scaledHeight;
@@ -46,7 +45,7 @@ public abstract class InGameHudMixin{
 //	}
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	public void renderOverlayMixin(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-		float overlayOpacity = (config.fray.grayScreenFray - PlayerModifiersComponent.getFray(getCameraPlayer()))/(config.fray.grayScreenFray - (float)config.fray.maxFray) / OVERLAY_OPACITY_ADJUSTEMENT;
+		float overlayOpacity = (config.fray.grayScreenFray - PlayerModifiersComponent.getFray(getCameraPlayer()))/(config.fray.grayScreenFray - (float)config.fray.maxFray);
 		if (PlayerModifiersComponent.getFray(getCameraPlayer()) > config.fray.grayScreenFray) {
 			System.out.println(overlayOpacity);
 			this.renderOverlay(new Identifier("dimdoors", "textures/other/static.png"), overlayOpacity);
@@ -56,8 +55,8 @@ public abstract class InGameHudMixin{
 		frame++;
 		if(frame > 6)
 			frame = 0;
-		float frameAdjustment = FRAMING_ADJUSTEMENT*(opacity);
-		frameAdjustment -= 1;
+		float frameAdjustment = (opacity);
+		opacity /= OVERLAY_OPACITY_ADJUSTEMENT;
 		float amountMoved = ((float)frame)/6F;
 		float up = amountMoved;
 		float down = 1*amountMoved + 1f/6f;
@@ -67,8 +66,9 @@ public abstract class InGameHudMixin{
 		up = up+frameAdjustment;
 
 		down = down-frameAdjustment;
-
 		 */
+
+
 
 		RenderSystem.disableDepthTest();
 		RenderSystem.depthMask(false);
