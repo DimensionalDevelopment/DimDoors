@@ -41,17 +41,27 @@ public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponen
 		return fray;
 	}
 
+	public void resetFray() {fray = 0;}
+
 	public int incrementFray(int amount) {
-		return (fray = MathHelper.clamp(fray - amount, 0, DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.maxFray));
+		return (fray = MathHelper.clamp(fray + amount, 0, DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.maxFray));
 	}
 
 	public static PlayerModifiersComponent get(PlayerEntity player) {
 		return DimensionalDoorsComponents.PLAYER_MODIFIERS_COMPONENT_KEY.get(player);
 	}
 
+	public static void resetFray(PlayerEntity player) {
+		get(player).resetFray();
+	}
+
 	public static int incrementFray(PlayerEntity player, int amount) {
 		int v = get(player).incrementFray(amount);
 		PlayerModifiersComponent.sync(player);
+		if(getFray(player) == DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.maxFray) {
+			System.out.println("kill player and make statue");
+		}
+		System.out.println("fray amount is : " + getFray(player));
 		return v;
 	}
 
