@@ -1,4 +1,11 @@
 {
-  "parent": "block/cube_all",
-  "textures": { "all": "dimdoors:block/unfolded_block" }
+  "parent": "block/cube",
+  "textures": {
+    "down": "dimdoors:block/unfolded_block_down",
+    "up": "dimdoors:block/unfolded_block_up",
+    "north": "dimdoors:block/unfolded_block_north",
+    "south": "dimdoors:block/unfolded_block_south",
+    "west": "dimdoors:block/unfolded_block_west",
+    "east": "dimdoors:block/unfolded_block_east"
+  }
 }
