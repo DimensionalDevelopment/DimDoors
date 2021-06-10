@@ -1,10 +1,14 @@
 package org.dimdev.dimdoors.mixin;
 
+import net.minecraft.item.ItemStack;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.level.component.PlayerModifiersComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,10 +23,65 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 @Mixin(value = ServerPlayerEntity.class, priority = 900)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
+	private static final int RANDOM_ACTION_BOUND = 100;
+	private static final int CHANCE_TO_DECREASE_ARMOR_DURABILITY = 20;
+	private static final int CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC = 10;
+	Random random = new Random();
+
 	public ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
+	}
+
+	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+	public void mobTickMixin(CallbackInfo ci) {
+		if (PlayerModifiersComponent.getFray(this) >= 125) {
+			if (random.nextInt(RANDOM_ACTION_BOUND) == 0) {
+				doRandomFunction(this);
+			}
+		}
+	}
+
+	private void doRandomFunction(LivingEntity player) {
+		switch (random.nextInt(2)) {
+			case 0:
+				decreaseArmorDurability((PlayerEntity) player);
+				break;
+			case 1:
+				addRandomUnravledFabric((PlayerEntity) player);
+				break;
+			default:
+		}
+
+	}
+
+	private void addRandomUnravledFabric(PlayerEntity player) {
+		if(PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
+			return;
+		if(random.nextInt(CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC) != 0)
+			return;
+
+		int slot = random.nextInt(player.getInventory().main.size());
+
+		if(!player.getInventory().main.get(slot).isEmpty() && ! (player.getInventory().main.get(slot).getItem() == ModItems.UNRAVELLED_FABRIC))
+			return;
+		if (player.getInventory().main.get(slot).getCount() >= 64)
+			return;
+		player.getInventory().main.set(slot, new ItemStack(ModItems.UNRAVELLED_FABRIC, 1 + player.getInventory().main.get(slot).getCount()));
+
+	}
+
+	private void decreaseArmorDurability(PlayerEntity player) {
+		if(PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
+			return;
+		for (int i = 0; i < player.getInventory().armor.size(); i++)
+			if (random.nextInt(CHANCE_TO_DECREASE_ARMOR_DURABILITY) == 0)
+				player.getArmorItems().forEach((itemStack) -> {
+					itemStack.setDamage(itemStack.getDamage() + 1);
+				});
 	}
 
 	@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
