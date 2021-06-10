@@ -10,6 +10,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.MathHelper;
+import org.dimdev.dimdoors.block.ModBlocks;
 
 public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponent {
 	private int fray = 0;
@@ -55,15 +56,7 @@ public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponen
 		get(player).resetFray();
 	}
 
-	public static int incrementFray(PlayerEntity player, int amount) {
-		int v = get(player).incrementFray(amount);
-		PlayerModifiersComponent.sync(player);
-		if(getFray(player) == DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.maxFray) {
-			System.out.println("kill player and make statue");
-		}
-		System.out.println("fray amount is : " + getFray(player));
-		return v;
-	}
+
 
 	public static int getFray(PlayerEntity player) {
 		return get(player).getFray();
@@ -71,5 +64,23 @@ public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponen
 
 	public static void sync(PlayerEntity player) {
 		DimensionalDoorsComponents.PLAYER_MODIFIERS_COMPONENT_KEY.sync(player);
+	}
+
+	public static int incrementFray(PlayerEntity player, int amount) {
+		int v = get(player).incrementFray(amount);
+		PlayerModifiersComponent.sync(player);
+		if(getFray(player) == DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.maxFray) {
+			killPlayer(player);
+		}
+		System.out.println("fray amount is : " + getFray(player));
+		return v;
+	}
+
+	private static void killPlayer(PlayerEntity player) {
+		player.kill();
+		//Fray should be reset by mixinging into the player class and changing the kill event or some other funciton that happens when a player dies.
+		//This is just temporary
+		resetFray(player);
+		player.getEntityWorld().setBlockState(player.getBlockPos(), ModBlocks.STONE_PLAYER.getDefaultState(), 3);
 	}
 }
