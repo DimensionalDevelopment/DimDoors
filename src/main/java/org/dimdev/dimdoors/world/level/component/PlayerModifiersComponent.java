@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.world.level.component;
 
 import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import net.minecraft.entity.LivingEntity;
 import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
@@ -58,8 +59,8 @@ public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponen
 
 
 
-	public static int getFray(PlayerEntity player) {
-		return get(player).getFray();
+	public static int getFray(LivingEntity player) {
+		return get((PlayerEntity) player).getFray();
 	}
 
 	public static void sync(PlayerEntity player) {
