@@ -108,6 +108,7 @@
   "item.dimdoors.dimensional_eraser.desc": "Erases entities",
   "item.dimdoors.monolith_spawner": "Monolith Spawner",
   "item.dimdoors.mask_wand": "Mask Wand",
+  "item.dimdoors.mask_shard": "Mask Shard",
 
 
   "dimdoors.virtualTarget.dimdoors.available_link": "Random",

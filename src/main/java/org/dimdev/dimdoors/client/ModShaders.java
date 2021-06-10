@@ -15,4 +15,14 @@ public class ModShaders {
 	public static Shader getDimensionalPortal() {
 		return DIMENSIONAL_PORTAL;
 	}
+
+	private static Shader STATIC = null;
+
+	public static void setStaticShader(Shader dimensionalPortal) {
+		STATIC = dimensionalPortal;
+	}
+
+	public static Shader getStaticShader() {
+		return STATIC;
+	}
 }

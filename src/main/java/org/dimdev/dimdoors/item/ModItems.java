@@ -244,6 +244,9 @@ public final class ModItems {
 	@RegistryEntry("solid_static")
 	public static final Item SOLID_STATIC = create(ModBlocks.SOLID_STATIC);
 
+	@RegistryEntry("mask_shard")
+	public static final Item MASK_SHARD = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
 	private static Item create(Block block) {
 		return create(new BlockItem(block, (new Item.Settings()).group(DIMENSIONAL_DOORS)));
 	}
