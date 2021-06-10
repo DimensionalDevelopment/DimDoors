@@ -25,9 +25,9 @@ import java.util.Random;
 
 @Mixin(value = PlayerEntity.class, priority = 900)
 public abstract class PlayerEntityMixin extends LivingEntity {
-	private static final int RANDOM_ACTION_BOUND = 200;
-	private static final int CHANCE_TO_DECREASE_ARMOR_DURABILITY = 10;
-	private static final int CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC = 30;
+	private static final int RANDOM_ACTION_BOUND = 400;
+	private static final int CHANCE_TO_DECREASE_ARMOR_DURABILITY = 20;
+	private static final int CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC = 10;
 	Random random = new Random();
 
 	@Shadow
@@ -60,16 +60,24 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	}
 
 	private void addRandomUnravledFabric(PlayerEntity player) {
-		if(random.nextInt(CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC) == 0) {
-			int slot = random.nextInt(player.getInventory().main.size());
-			if(player.getInventory().main.get(slot).isEmpty() || player.getInventory().main.get(slot).getItem() == ModItems.UNRAVELLED_FABRIC) {
-				if(player.getInventory().main.get(slot).getCount() < 64)
-					player.getInventory().main.set(slot, new ItemStack(ModItems.UNRAVELLED_FABRIC, 1+player.getInventory().main.get(slot).getCount()));
-			}
-		}
+		if(PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
+			return;
+		if(random.nextInt(CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC) != 0)
+			return;
+
+		int slot = random.nextInt(player.getInventory().main.size());
+
+		if(!player.getInventory().main.get(slot).isEmpty() && ! (player.getInventory().main.get(slot).getItem() == ModItems.UNRAVELLED_FABRIC))
+			return;
+		if (player.getInventory().main.get(slot).getCount() >= 64)
+			return;
+		player.getInventory().main.set(slot, new ItemStack(ModItems.UNRAVELLED_FABRIC, 1 + player.getInventory().main.get(slot).getCount()));
+
 	}
 
 	private void decreaseArmorDurability(PlayerEntity player) {
+		if(PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
+			return;
 		for (int i = 0; i < player.getInventory().armor.size(); i++)
 			if (random.nextInt(CHANCE_TO_DECREASE_ARMOR_DURABILITY) == 0)
 				player.getArmorItems().forEach((itemStack) -> {

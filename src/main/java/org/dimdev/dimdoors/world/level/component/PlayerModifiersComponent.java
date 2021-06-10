@@ -81,6 +81,7 @@ public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponen
 		player.kill();
 		//Fray should be reset by mixinging into the player class and changing the kill event or some other funciton that happens when a player dies.
 		//This is just temporary
+		//On second thought, this should get rid of fray, and fray should stay with the player otherwise, that way they have to actively try to get rid of it without just like, dying.
 		resetFray(player);
 		player.getEntityWorld().setBlockState(player.getBlockPos(), ModBlocks.STONE_PLAYER.getDefaultState(), 3);
 	}
