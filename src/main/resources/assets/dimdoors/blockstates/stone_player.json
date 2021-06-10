@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "dimdoors:block/stone_player"
+    }
+  }
+}

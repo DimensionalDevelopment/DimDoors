@@ -31,6 +31,9 @@ public final class ModBlocks {
 	public static final Map<DyeColor, Block> FABRIC_BLOCKS = new HashMap<>();
 	private static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
 
+	@RegistryEntry("stone_player")
+	public static final Block STONE_PLAYER = register(new Block(FabricBlockSettings.of(Material.STONE).strength(0.5F).breakByHand(true).breakByTool(FabricToolTags.PICKAXES).nonOpaque()));
+
 	@RegistryEntry("gold_door")
 	public static final Block GOLD_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).breakByHand(false).breakByTool(FabricToolTags.PICKAXES).nonOpaque()));
 

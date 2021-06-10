@@ -42,6 +42,9 @@ public final class ModItems {
 			.icon(() -> new ItemStack(ModItems.RIFT_BLADE))
 			.build();
 
+	@RegistryEntry("stone_player")
+	public static final Item STONE_PLAYER = create(ModBlocks.STONE_PLAYER);
+
 	@RegistryEntry("quartz_door")
 	public static final Item QUARTZ_DOOR = create(ModBlocks.QUARTZ_DOOR);
 
