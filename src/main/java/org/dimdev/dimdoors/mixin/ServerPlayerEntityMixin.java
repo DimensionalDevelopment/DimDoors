@@ -1,12 +1,17 @@
 package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;
+import net.minecraft.server.MinecraftServer;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
+import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.component.PlayerModifiersComponent;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,9 +32,9 @@ import java.util.Random;
 
 @Mixin(value = ServerPlayerEntity.class, priority = 900)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
-	private static final int RANDOM_ACTION_BOUND = 100;
+	private static final int RANDOM_ACTION_BOUND = 1;
 	private static final int CHANCE_TO_DECREASE_ARMOR_DURABILITY = 20;
-	private static final int CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC = 10;
+	private static final int CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC = 1;
 	Random random = new Random();
 
 	public ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
@@ -58,6 +63,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 
 	}
 
+	//TODO: Fix this shit so it syncs.
 	private void addRandomUnravledFabric(PlayerEntity player) {
 		if(PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
 			return;
@@ -70,8 +76,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 			return;
 		if (player.getInventory().main.get(slot).getCount() >= 64)
 			return;
-		player.getInventory().main.set(slot, new ItemStack(ModItems.UNRAVELLED_FABRIC, 1 + player.getInventory().main.get(slot).getCount()));
-
+		ItemStack stack = new ItemStack(ModItems.UNRAVELLED_FABRIC, 1 + player.getInventory().main.get(slot).getCount());
+		player.getInventory().main.set(slot, stack);
+		((ExtendedServerPlayNetworkHandler)(Object)((ServerPlayerEntity)(Object)this).networkHandler).getDimDoorsPacketHandler().sendPacket(new PlayerInventorySlotUpdateS2CPacket(slot, stack));
 	}
 
 	private void decreaseArmorDurability(PlayerEntity player) {
@@ -104,4 +111,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 			ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayerEntity) (Object) this);
 		}
 	}
+
+
 }
