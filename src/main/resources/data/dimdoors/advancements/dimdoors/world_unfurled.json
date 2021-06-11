@@ -22,7 +22,7 @@
       "conditions": {
         "items": [
           {
-            "item": "dimdoors:unravelled_fabric"
+            "items": ["dimdoors:unravelled_fabric"]
           }
         ]
       }
