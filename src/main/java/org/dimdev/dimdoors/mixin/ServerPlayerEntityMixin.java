@@ -1,10 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;
-import net.minecraft.server.MinecraftServer;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.jmx.Server;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
@@ -80,7 +76,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 			return;
 		}
 		ItemStack stack = player.getInventory().getStack(slot);
-		stack.addEnchantment(ModEnchants.FRAYED_ENCHAMENT, 1);
+		stack.addEnchantment(ModEnchants.FRAYED_ENCHANTMENT, 1);
 		player.getInventory().setStack(slot, stack);
 		((ExtendedServerPlayNetworkHandler) (Object) ((ServerPlayerEntity) (Object) this).networkHandler).getDimDoorsPacketHandler().sendPacket(new PlayerInventorySlotUpdateS2CPacket(slot, stack));
 

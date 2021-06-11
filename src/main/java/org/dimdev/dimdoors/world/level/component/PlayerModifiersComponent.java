@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.world.level.component;
 
 import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -12,6 +14,10 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.MathHelper;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.enchantment.ModEnchants;
+
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponent {
 	private int fray = 0;
@@ -68,6 +74,11 @@ public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponen
 	}
 
 	public static int incrementFray(PlayerEntity player, int amount) {
+		for(int i = 0; i < player.getInventory().armor.size(); i++) {
+			if(EnchantmentHelper.getLevel(ModEnchants.STRING_THEORY_ENCHANTMENT, player.getInventory().armor.get(i)) > 0) {
+				amount *= 0.85;
+			}
+		}
 		int v = get(player).incrementFray(amount);
 		PlayerModifiersComponent.sync(player);
 		if(getFray(player) == DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.maxFray) {
