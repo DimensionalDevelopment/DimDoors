@@ -32,9 +32,9 @@ import java.util.Random;
 
 @Mixin(value = ServerPlayerEntity.class, priority = 900)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
-	private static final int RANDOM_ACTION_BOUND = 1;
-	private static final int CHANCE_TO_DECREASE_ARMOR_DURABILITY = 20;
-	private static final int CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC = 1;
+	private static final float RANDOM_ACTION_CHANCE = 0.1F;
+	private static final float CHANCE_TO_DECREASE_ARMOR_DURABILITY = 0.03F;
+	private static final float CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC = 0.005F;
 	Random random = new Random();
 
 	public ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
@@ -44,7 +44,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	public void mobTickMixin(CallbackInfo ci) {
 		if (PlayerModifiersComponent.getFray(this) >= 125) {
-			if (random.nextInt(RANDOM_ACTION_BOUND) == 0) {
+			if (random.nextFloat() <= RANDOM_ACTION_CHANCE) {
 				doRandomFunction(this);
 			}
 		}
@@ -67,7 +67,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	private void addRandomUnravledFabric(PlayerEntity player) {
 		if(PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
 			return;
-		if(random.nextInt(CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC) != 0)
+		if(!(random.nextFloat() <= CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC))
 			return;
 
 		int slot = random.nextInt(player.getInventory().main.size());
@@ -85,7 +85,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 		if(PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
 			return;
 		for (int i = 0; i < player.getInventory().armor.size(); i++)
-			if (random.nextInt(CHANCE_TO_DECREASE_ARMOR_DURABILITY) == 0)
+			if(random.nextFloat() <= CHANCE_TO_DECREASE_ARMOR_DURABILITY)
 				player.getArmorItems().forEach((itemStack) -> {
 					itemStack.setDamage(itemStack.getDamage() + 1);
 				});
