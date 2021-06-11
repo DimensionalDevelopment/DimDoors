@@ -89,8 +89,19 @@ public class VirtualLocation {
 		float spread = DimensionalDoorsInitializer.getConfig().getGeneralConfig().depthSpreadFactor * this.depth;
 		int newX = (int) (this.x + spread * 2 * (Math.random() - 0.5));
 		int newZ = (int) (this.z + spread * 2 * (Math.random() - 0.5));
-		BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 0, newZ));
+		//BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 1, newZ));
+		BlockPos pos = getTopPos(world, new BlockPos(newX, 255, newZ));
 		return new Location(world, pos);
+	}
+	private static BlockPos getTopPos(World world, BlockPos pos) {
+		while(world.getBlockState(pos).isAir()) {
+			pos = pos.down();
+		}
+		while(world.getBlockState(pos).isSolidBlock(world, pos)) {
+			pos = pos.up();
+		}
+		pos = pos.up(2);
+		return pos;
 	}
 
 	public RegistryKey<World> getWorld() {

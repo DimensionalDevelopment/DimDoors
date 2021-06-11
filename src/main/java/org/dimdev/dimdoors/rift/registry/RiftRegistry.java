@@ -5,10 +5,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Pair;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.GraphUtils;
@@ -33,7 +35,9 @@ public class RiftRegistry {
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketEntrances = new HashMap<>(); // Player UUID -> last rift used to exit pocket
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
 	protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
-
+	//I know this is sorta hacky, but overworldRifts can't be set for some reason it doesn't think that the rift location exists.
+	//TODO: Fix this shit so that u can use overworldRifts instead of overworldLocations. NVM this is better cause we can teleport to locations that aren't rifts.
+	protected Map<UUID, Location> overworldLocations = new HashMap<>();
 	public static RiftRegistry fromNbt(Map<RegistryKey<World>, PocketDirectory> pocketRegistry, NbtCompound nbt) {
 		// Read rifts in this dimension
 
@@ -354,14 +358,27 @@ public class RiftRegistry {
 	}
 
 	public Location getOverworldRift(UUID playerUUID) {
+		/*
 		PlayerRiftPointer entrancePointer = this.overworldRifts.get(playerUUID);
 		Rift rift = (Rift) GraphUtils.followPointer(this.graph, entrancePointer);
+		for (int i = 0; i < 10; i++) {
+			if (rift == null) {
+				LOGGER.log(Level.ERROR, "rift is null for getOverworldRift");
+			} else {
+				LOGGER.log(Level.INFO, "rift location " + rift.getLocation().getWorld() + " and pos " + rift.getLocation().pos.toString());
+			}
+		}
 		return rift != null ? rift.getLocation() : null;
+		 */
+		return overworldLocations.get(playerUUID);
 	}
 
 	public void setOverworldRift(UUID playerUUID, Location rift) {
-		LOGGER.debug("Setting last used overworld rift for " + playerUUID + " at " + rift);
+		/*
+		LOGGER.log(Level.INFO, "Setting last used overworld rift for " + playerUUID + " at " + rift.getWorld() + " pos at " + rift.getBlockPos());
 		this.setPlayerRiftPointer(playerUUID, rift, this.overworldRifts);
+		 */
+		overworldLocations.put(playerUUID, rift);
 	}
 
 	public Collection<Rift> getRifts() {

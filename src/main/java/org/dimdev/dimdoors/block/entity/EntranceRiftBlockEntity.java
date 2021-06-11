@@ -2,12 +2,19 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.Transformer;
+import org.dimdev.dimdoors.item.DimensionalDoorItem;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.Rift;
@@ -34,9 +41,11 @@ import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
+	private static final Logger LOGGER = LogManager.getLogger();
 	private boolean locked;
 
 	public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
@@ -57,6 +66,8 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
 	@Override
 	public boolean teleport(Entity entity) {
+		//Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the netrance of the rift that took them into dungeons.
+
 		if (this.isLocked()) {
 			if (entity instanceof LivingEntity) {
 				ItemStack stack = ((LivingEntity) entity).getStackInHand(((LivingEntity) entity).getActiveHand());
@@ -89,7 +100,13 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		BlockState state = this.getWorld().getBlockState(this.getPos());
 		Block block = state.getBlock();
 		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.getConfig().getGeneralConfig().teleportOffset + 0.5));
-
+		/*
+		Unused code that needs to be edited if there are other ways to get to limbo
+		But if it is only dimteleport and going through rifts then this code isn't nessecary
+		if(DimensionalRegistry.getRiftRegistry().getOverworldRift(entity.getUuid()) == null) {
+			DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUuid(), new Location(World.OVERWORLD, ((ServerPlayerEntity)entity).getSpawnPointPosition()));
+		}
+		 */
 		if (block instanceof CoordinateTransformerBlock) {
 			CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
 

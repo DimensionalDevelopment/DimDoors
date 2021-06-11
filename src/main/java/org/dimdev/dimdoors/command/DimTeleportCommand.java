@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import net.minecraft.entity.player.PlayerEntity;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 
@@ -15,6 +17,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 public class DimTeleportCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -51,6 +54,9 @@ public class DimTeleportCommand {
     }
 
     private static int teleport(Entity entity, ServerWorld dimension, Vec3d pos, EulerAngle angle) {
+    	if(entity instanceof PlayerEntity) {
+			DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUuid(), new Location((ServerWorld) entity.getEntityWorld(), entity.getBlockPos()));
+		}
 		TeleportUtil.teleport(entity, dimension, pos, angle, entity.getVelocity());
         return Command.SINGLE_SUCCESS;
     }
