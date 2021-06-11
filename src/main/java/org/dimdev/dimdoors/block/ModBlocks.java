@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.block;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.block.door.data.DoorDataReader;
@@ -30,6 +29,7 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 public final class ModBlocks {
 	public static final Map<DyeColor, Block> FABRIC_BLOCKS = new HashMap<>();
 	private static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
+
 
 	@RegistryEntry("stone_player")
 	public static final Block STONE_PLAYER = register(new Block(FabricBlockSettings.of(Material.STONE).strength(0.5F).breakByHand(true).breakByTool(FabricToolTags.PICKAXES).nonOpaque()));
@@ -148,24 +148,25 @@ public final class ModBlocks {
 	@RegistryEntry("black_ancient_fabric")
 	public static final Block BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
 
+	private static final FabricBlockSettings UNRAVELLED_FABRIC_BLOCK_SETTINGS = FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15).strength(0.3F, 0.3F);
 
 	@RegistryEntry("eternal_fluid")
 	public static final Block ETERNAL_FLUID = register(new EternalFluidBlock(FabricBlockSettings.of(Material.STONE, MapColor.RED).luminance(15)));
 
 	@RegistryEntry("decayed_block")
-	public static final Block DECAYED_BLOCK = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+	public static final Block DECAYED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	@RegistryEntry("unfolded_block")
-	public static final Block UNFOLDED_BLOCK = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+	public static final Block UNFOLDED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	@RegistryEntry("unwarped_block")
-	public static final Block UNWARPED_BLOCK = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+	public static final Block UNWARPED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	@RegistryEntry("unravelled_block")
-	public static final Block UNRAVELLED_BLOCK = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+	public static final Block UNRAVELLED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	@RegistryEntry("unravelled_fabric")
-	public static final Block UNRAVELLED_FABRIC = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE, MapColor.BLACK).ticksRandomly().luminance(15)));
+	public static final Block UNRAVELLED_FABRIC = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	@RegistryEntry("marking_plate")
 	public static final Block MARKING_PLATE = register(new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).nonOpaque()));
