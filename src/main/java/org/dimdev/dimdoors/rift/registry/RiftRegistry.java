@@ -370,6 +370,7 @@ public class RiftRegistry {
 		}
 		return rift != null ? rift.getLocation() : null;
 		 */
+
 		return overworldLocations.get(playerUUID);
 	}
 
