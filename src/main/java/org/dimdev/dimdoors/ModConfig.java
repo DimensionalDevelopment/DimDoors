@@ -99,7 +99,7 @@ public final class ModConfig implements ConfigData {
 	public static class General {
 		@Tooltip public double teleportOffset = 0.5;
 		@Tooltip public boolean riftBoundingBoxInCreative;
-		@Tooltip public double riftCloseSpeed = 0.005;
+		@Tooltip public double riftCloseSpeed = 0.01;
 		@Tooltip public double riftGrowthSpeed = 1;
 		@Tooltip public int depthSpreadFactor = 20;
 		@Tooltip public double endermanSpawnChance = 0.001;
