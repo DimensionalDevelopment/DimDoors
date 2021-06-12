@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.registry.Registry;
 
 import me.shedaniel.autoconfig.AutoConfig;
@@ -15,6 +18,8 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
+import org.dimdev.dimdoors.enchantment.FrayedEnchantment;
+import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.stat.ModStats;
@@ -129,7 +134,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
         ModSoundEvents.init();
 		ModParticleTypes.init();
 		ModCriteria.init();
-
+		ModEnchants.init();
 		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(Registry.ITEM);
 		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registry.BLOCK, dimensionalDoorItemRegistrar);
 

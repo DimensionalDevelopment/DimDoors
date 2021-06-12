@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.block;
 
 import net.minecraft.server.world.ServerWorld;
+import org.apache.logging.log4j.Level;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -65,6 +68,10 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 		world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
 		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
+
+		DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUuid(), new Location((ServerWorld) world, pos));
+		LOGGER.log(Level.INFO, "Set overworld rift location");
+
 	}
 
 	public BlockState rotate(BlockState state, BlockRotation rotation) {

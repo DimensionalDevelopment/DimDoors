@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.block.door;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.block.*;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
@@ -11,9 +12,6 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.Entity;
@@ -41,7 +39,8 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
 	@Override
-	@SuppressWarnings("deprecation") // TODO: change from onEntityCollision to some method for checking if player crossed portal plane
+	@SuppressWarnings("deprecation")
+	// TODO: change from onEntityCollision to some method for checking if player crossed portal plane
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		if (world.isClient) {
 			return;
@@ -121,6 +120,34 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
 	@Override
+	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
+		DoubleBlockHalf doubleBlockHalf = state.get(HALF);
+		BlockPos blockPos = pos;
+		BlockState blockState = world.getBlockState(pos);
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
+			blockPos = pos.down();
+			blockState = world.getBlockState(blockPos);
+			blockEntity = world.getBlockEntity(blockPos);
+			if (blockState.isOf(state.getBlock()) && blockState.get(HALF) == DoubleBlockHalf.LOWER) {
+				world.setBlockState(blockPos, world.getFluidState(blockPos).getFluid() == Fluids.WATER ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), 35);
+				world.syncWorldEvent(player, 2001, blockPos, Block.getRawIdFromState(blockState));
+			}
+			if (blockEntity instanceof EntranceRiftBlockEntity
+					&& blockState.get(HALF) == DoubleBlockHalf.LOWER
+					&& !(player.isCreative()
+						&& !DimensionalDoorsInitializer.getConfig().getDoorsConfig().placeRiftsInCreativeMode
+						)
+			) {
+				world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState());
+				((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
+			}
+		}
+		super.onBreak(world, pos, state, player);
+
+	}
+
+	@Override
 	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
 		return VoxelShapes.fullCube();
 	}
@@ -137,6 +164,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return TransformationMatrix3d.builder()
 				.inverseRotate(MathUtil.directionEulerAngle(state.get(DoorBlock.FACING).getOpposite()));
 	}
+
 
 	@Override
 	public boolean isExitFlipped() {

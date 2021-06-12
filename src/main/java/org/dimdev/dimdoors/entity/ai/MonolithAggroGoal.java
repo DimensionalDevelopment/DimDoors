@@ -108,7 +108,7 @@ public class MonolithAggroGoal extends Goal {
 				this.target.teleport(this.target.getX(), this.target.getY() + 256, this.target.getZ());
                 this.target.world.playSound(null, new BlockPos(this.target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
                 this.target.incrementStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
-				PlayerModifiersComponent.incrementFray(this.target, DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.monolithTeleportationIncrement);
+				PlayerModifiersComponent.incrementFray(this.target, -DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.monolithTeleportationIncrement);
                 ServerPacketHandler.get((ServerPlayerEntity) this.target).sendPacket(new MonolithTeleportParticlesPacket());
 			}
         }

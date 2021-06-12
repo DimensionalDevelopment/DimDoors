@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.world;
 
+import net.minecraft.world.biome.*;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.mixin.accessor.BuiltinBiomesAccessor;
+import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 
@@ -14,10 +16,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
 import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
@@ -97,6 +95,7 @@ public final class ModBiomes {
 						.music(new MusicSound(ModSoundEvents.CREEPY, 0, 0, true))
                         .skyColor(0x404040)
                         .grassColor(0)
+						.particleConfig(new BiomeParticleConfig(new RiftParticleEffect(0.2f, 2000), 0.003F))
                         .build()
 				)
                 .generationSettings(new GenerationSettings.Builder()

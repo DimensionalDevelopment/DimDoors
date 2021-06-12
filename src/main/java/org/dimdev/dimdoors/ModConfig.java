@@ -178,6 +178,8 @@ public final class ModConfig implements ConfigData {
 			@Tooltip public int armorDamageFray = 125;
 			@Tooltip public int grayScreenFray = 175;
 			@Tooltip public int unravelledStatueFray = 200;
+			@Tooltip public int minFrayForTickFray = 125;
+			@Tooltip public int unravledFabricInInventoryFray = 150;
 		}
 	}
 

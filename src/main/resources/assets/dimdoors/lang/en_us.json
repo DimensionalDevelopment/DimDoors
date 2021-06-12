@@ -410,5 +410,7 @@
   "resourcePackActivationType.alwaysEnabled": "Always Enabled",
 
   "dimdoors.mode.enable": "Enable",
-  "dimdoors.mode.disable": "Disable"
+  "dimdoors.mode.disable": "Disable",
+
+  "enchantment.dimdoors.frayed" : "Frayed"
 }

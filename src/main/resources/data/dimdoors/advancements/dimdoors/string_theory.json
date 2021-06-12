@@ -22,7 +22,7 @@
       "conditions": {
         "items": [
           {
-            "item": "dimdoors:world_thread"
+            "items": ["dimdoors:world_thread"]
           }
         ]
       }

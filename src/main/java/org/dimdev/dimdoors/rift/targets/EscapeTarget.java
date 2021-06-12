@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -47,6 +48,8 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 		UUID uuid = entity.getUuid();
 		if (uuid != null) {
 			Location destLoc = DimensionalRegistry.getRiftRegistry().getOverworldRift(uuid);
+			//This right here is changed to work with a slightly diff system where we just store where we want to player to go, after they leave limbo.
+			/*
 			if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || this.canEscapeLimbo) {
 				Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
 				TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
@@ -60,6 +63,24 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 					TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
 				}
 			}
+			 */
+			if(destLoc != null && this.canEscapeLimbo) {
+				Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false);
+				TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
+				BlockPos.iterateOutwards(location.pos.add(0, -4, 0), 3, 2, 3).forEach((pos1 -> {
+					location.getWorld().setBlockState(pos1, ModBlocks.UNRAVELLED_FABRIC.getDefaultState());
+				}));
+			}
+			else {
+			if (destLoc == null) {
+				chat(entity, new TranslatableText("rifts.destinations.escape.did_not_use_rift"));
+			} else {
+				chat(entity, new TranslatableText("rifts.destinations.escape.rift_has_closed"));
+			}
+			if (ModDimensions.LIMBO_DIMENSION != null) {
+				TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
+			}
+		}
 			return true;
 		} else {
 			return false; // No escape info for that entity

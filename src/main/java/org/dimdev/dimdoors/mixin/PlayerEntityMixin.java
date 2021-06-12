@@ -1,8 +1,11 @@
 package org.dimdev.dimdoors.mixin;
 
+import net.minecraft.item.ItemStack;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.mixin.accessor.EntityAccessor;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.level.component.PlayerModifiersComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -18,8 +21,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 @Mixin(value = PlayerEntity.class, priority = 900)
 public abstract class PlayerEntityMixin extends LivingEntity {
+
 	@Shadow
 	public abstract void incrementStat(Identifier stat);
 
@@ -27,9 +33,10 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 		super(entityType, world);
 	}
 
+
 	@Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
 	public void handleLimboFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
-		if(this.world.getDimension().equals(ModDimensions.LIMBO_DIMENSION.getDimension())) {
+		if (ModDimensions.isLimboDimension(world)) {
 			cir.setReturnValue(false);
 		}
 	}
