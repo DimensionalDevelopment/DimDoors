@@ -39,12 +39,16 @@ public final class DoorData implements AutoCloseable {
 	private boolean closed = false;
 
 	public static DoorData fromJson(JsonObject json) {
-		String id = json.get("id").getAsString();
-		UnbakedItemSettings itemSettings = UnbakedItemSettings.fromJson(json.getAsJsonObject("itemSettings"));
-		Optional<String> itemGroup = Optional.ofNullable(json.getAsJsonPrimitive("itemGroup")).map(JsonPrimitive::getAsString);
-		UnbakedBlockSettings blockSettings = UnbakedBlockSettings.fromJson(json.getAsJsonObject("blockSettings"));
-		RiftDataList riftDataList = RiftDataList.fromJson(json.getAsJsonArray("riftData"));
-		return new DoorData(id, itemSettings, itemGroup, blockSettings, riftDataList);
+		try {
+			String id = json.get("id").getAsString();
+			UnbakedItemSettings itemSettings = UnbakedItemSettings.fromJson(json.getAsJsonObject("itemSettings"));
+			Optional<String> itemGroup = Optional.ofNullable(json.getAsJsonPrimitive("itemGroup")).map(JsonPrimitive::getAsString);
+			UnbakedBlockSettings blockSettings = UnbakedBlockSettings.fromJson(json.getAsJsonObject("blockSettings"));
+			RiftDataList riftDataList = RiftDataList.fromJson(json.getAsJsonArray("riftData"));
+			return new DoorData(id, itemSettings, itemGroup, blockSettings, riftDataList);
+		} catch (RuntimeException e) {
+			throw new RuntimeException("Caught exception while deserializing " + json.toString(), e);
+		}
 	}
 
 	public DoorData(String id, UnbakedItemSettings itemSettings, UnbakedBlockSettings blockSettings, RiftDataList riftDataList) {
@@ -156,7 +160,7 @@ public final class DoorData implements AutoCloseable {
 		private final TriState fireproof;
 
 		public static UnbakedItemSettings fromJson(JsonObject json) {
-			String parent = Optional.ofNullable(json.get("parent")).map(JsonElement::getAsString).get();
+			String parent = Optional.ofNullable(json.get("parent")).map(JsonElement::getAsString).orElseThrow(() -> new RuntimeException("Missing parent key in " + json.toString()));
 			OptionalInt maxCount = Optional.ofNullable(json.get("maxCount")).map(JsonElement::getAsInt).map(OptionalInt::of).orElse(OptionalInt.empty());
 			OptionalInt maxDamage = Optional.ofNullable(json.get("maxDamage")).map(JsonElement::getAsInt).map(OptionalInt::of).orElse(OptionalInt.empty());
 			Optional<Rarity> rarity = Optional.ofNullable(json.get("rarity")).map(JsonElement::getAsString).map(String::toLowerCase).map(RARITIES::get).map(Objects::requireNonNull);

@@ -147,7 +147,7 @@ public class DoorDataReader {
 				if (!Files.isDirectory(p) && Files.isRegularFile(p)) {
 					String jsonStr;
 					try {
-						jsonStr = new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
+						jsonStr = Files.readString(p);
 					} catch (IOException e) {
 						LOGGER.error("Error reading " + p, e);
 						return;
@@ -178,7 +178,7 @@ public class DoorDataReader {
 		}
 		String json = GSON.toJson(doorData.toJson(new JsonObject()));
 		try {
-			Files.write(path, json.getBytes(StandardCharsets.UTF_8));
+			Files.writeString(path, json);
 		} catch (IOException e) {
 			LOGGER.error("Error writing to " + path, e);
 		}
