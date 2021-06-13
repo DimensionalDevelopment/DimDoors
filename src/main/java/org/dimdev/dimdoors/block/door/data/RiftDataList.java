@@ -18,34 +18,36 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Pair;
 
 public class RiftDataList {
-	private final LinkedList<Pair<OptRiftData, Condition>> riftDataConditions;
+	private final LinkedList<Pair<JsonObject, Condition>> riftDataConditions;
 
 	public static RiftDataList fromJson(JsonArray jsonArray) {
-		LinkedList<Pair<OptRiftData, Condition>> riftDataConditions = new LinkedList<>();
+		LinkedList<Pair<JsonObject, Condition>> riftDataConditions = new LinkedList<>();
 		for (JsonElement json : jsonArray) {
 			JsonObject jsonObject = json.getAsJsonObject();
-			OptRiftData riftData = OptRiftData.fromJson(jsonObject.getAsJsonObject("data"));
+			//OptRiftData riftData = OptRiftData.fromJson(jsonObject.getAsJsonObject("data"));
+			JsonObject unbakedRiftData = jsonObject.getAsJsonObject("data");
 			Condition condition = Condition.fromJson(jsonObject.getAsJsonObject("condition"));
-			riftDataConditions.add(new Pair<>(riftData, condition));
+			riftDataConditions.add(new Pair<>(unbakedRiftData, condition));
 		}
 		return new RiftDataList(riftDataConditions);
 	}
 
-	public RiftDataList(LinkedList<Pair<OptRiftData, Condition>> riftDataConditions) {
+	public RiftDataList(LinkedList<Pair<JsonObject, Condition>> riftDataConditions) {
 		this.riftDataConditions = riftDataConditions;
 	}
 
 	public OptRiftData getRiftData(EntranceRiftBlockEntity rift) {
-		return riftDataConditions.stream().filter(pair -> pair.getRight().matches(rift)).findFirst().orElseThrow(() -> new RuntimeException("Could not find any matching rift data")).getLeft();
+		JsonObject unbakedRiftData = riftDataConditions.stream().filter(pair -> pair.getRight().matches(rift)).findFirst().orElseThrow(() -> new RuntimeException("Could not find any matching rift data")).getLeft();
+		return OptRiftData.fromJson(unbakedRiftData);
 	}
 
 	public JsonArray toJson() {
 		JsonArray jsonArray = new JsonArray();
-		for (Map.Entry<OptRiftData, Condition> entry : this.riftDataConditions.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)).entrySet()) {
-			OptRiftData riftData = entry.getKey();
+		for (Map.Entry<JsonObject, Condition> entry : this.riftDataConditions.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)).entrySet()) {
+			JsonObject unbakedRiftData = entry.getKey();
 			Condition condition = entry.getValue();
 			JsonObject jsonInner = new JsonObject();
-			jsonInner.add("data", riftData.toJson(new JsonObject()));
+			jsonInner.add("data", unbakedRiftData);
 			jsonInner.add("condition", condition.toJson(new JsonObject()));
 			jsonArray.add(jsonInner);
 		}
