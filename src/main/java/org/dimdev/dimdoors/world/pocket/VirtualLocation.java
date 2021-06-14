@@ -93,7 +93,7 @@ public class VirtualLocation {
 		BlockPos pos = getTopPos(world, new BlockPos(newX, 255, newZ));
 		return new Location(world, pos);
 	}
-	private static BlockPos getTopPos(World world, BlockPos pos) {
+	public static BlockPos getTopPos(World world, BlockPos pos) {
 		while(world.getBlockState(pos).isAir()) {
 			pos = pos.down();
 		}
