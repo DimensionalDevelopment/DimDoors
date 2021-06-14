@@ -2,18 +2,16 @@ package org.dimdev.dimdoors.block;
 
 import java.util.Random;
 
+import net.minecraft.block.*;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.Properties;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
@@ -26,12 +24,12 @@ import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-public class DetachedRiftBlock extends BlockWithEntity implements RiftProvider<DetachedRiftBlockEntity> {
+public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements RiftProvider<DetachedRiftBlockEntity>, Waterloggable {
 	public static final String ID = "rift";
-
 	public DetachedRiftBlock(Block.Settings settings) {
 		super(settings);
 	}
+
 
 	@Override
 	public MapColor getDefaultMapColor() {
