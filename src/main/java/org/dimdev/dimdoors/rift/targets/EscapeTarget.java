@@ -4,6 +4,14 @@ import java.util.UUID;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.sk89q.worldedit.util.formatting.text.BlockNbtComponent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.World;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
@@ -24,6 +32,8 @@ import net.minecraft.util.math.Vec3d;
 import static org.dimdev.dimdoors.api.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public static final Codec<EscapeTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
 	).apply(instance, EscapeTarget::new));
@@ -44,15 +54,28 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			chat(entity, new TranslatableText("rifts.destinations.escape.cannot_escape_limbo"));
 			return false;
 		}
-
+		if(entity.getEntityWorld().isClient)
+			return false;
 		UUID uuid = entity.getUuid();
 		if (uuid != null) {
-			Location destLoc = DimensionalRegistry.getRiftRegistry().getOverworldRift(uuid);
-			//This right here is changed to work with a slightly diff system where we just store where we want to player to go, after they leave limbo.
-			/*
+			//Location destLoc = DimensionalRegistry.getRiftRegistry().getOverworldRift(uuid);
+			if(entity.world.getPlayerByUuid(uuid) == null) {
+				LOGGER.log(Level.ERROR, "Tried to get player for escape target from uuid, but player does not exist, uh oh");
+				return false;
+			}
+			LOGGER.log(Level.INFO, "sending player from limbo to their spawnpoint, good luck!");
+			Location destLoc;
+			if(((ServerPlayerEntity)entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition() != null) {
+				destLoc = new Location(((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointDimension(), ((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition());
+			} else {
+				destLoc = new Location(World.OVERWORLD, new BlockPos(0, 0, 0));
+				destLoc = new Location(destLoc.getWorld(), destLoc.getWorld().getSpawnPos());
+			}
+
+
 			if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || this.canEscapeLimbo) {
-				Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
-				TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
+				//Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
+				TeleportUtil.teleport(entity, destLoc.getWorld(), destLoc.getBlockPos(), relativeAngle, relativeVelocity);
 			} else {
 				if (destLoc == null) {
 					chat(entity, new TranslatableText("rifts.destinations.escape.did_not_use_rift"));
@@ -63,7 +86,8 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 					TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
 				}
 			}
-			 */
+
+
 			if(destLoc != null && this.canEscapeLimbo) {
 				Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false);
 				TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
@@ -82,6 +106,8 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			}
 		}
 			return true;
+
+
 		} else {
 			return false; // No escape info for that entity
 		}
