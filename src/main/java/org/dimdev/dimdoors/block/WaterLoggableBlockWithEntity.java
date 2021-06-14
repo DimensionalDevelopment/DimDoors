@@ -24,6 +24,8 @@ public abstract class WaterLoggableBlockWithEntity extends BlockWithEntity imple
 	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 	protected WaterLoggableBlockWithEntity(Settings settings) {
 		super(settings);
+		setDefaultState(this.stateManager.getDefaultState().with(WATERLOGGED, false));
+
 	}
 	@Override
 	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
