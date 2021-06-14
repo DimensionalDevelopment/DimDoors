@@ -102,7 +102,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public double riftCloseSpeed = 0.01;
 		@Tooltip public double riftGrowthSpeed = 1;
 		@Tooltip public int depthSpreadFactor = 20;
-		@Tooltip public double endermanSpawnChance = 0.001;
+		@Tooltip public double endermanSpawnChance = 0.00005;
 		@Tooltip public double endermanAggressiveChance = 0.5;
 	}
 
