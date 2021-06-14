@@ -102,7 +102,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public double riftCloseSpeed = 0.01;
 		@Tooltip public double riftGrowthSpeed = 1;
 		@Tooltip public int depthSpreadFactor = 20;
-		@Tooltip public double endermanSpawnChance = 0.001;
+		@Tooltip public double endermanSpawnChance = 0.00005;
 		@Tooltip public double endermanAggressiveChance = 0.5;
 	}
 
@@ -196,6 +196,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public boolean universalLimbo = false;
 		@Tooltip public boolean hardcoreLimbo = false;
 		@Tooltip public double decaySpreadChance = 0.5;
+		@Tooltip public float limboBlocksCorruptingOverworldAmount = 5;
 	}
 
 	public static class Graphics {

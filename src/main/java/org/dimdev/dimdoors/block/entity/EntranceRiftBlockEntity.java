@@ -66,7 +66,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
 	@Override
 	public boolean teleport(Entity entity) {
-		//Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the netrance of the rift that took them into dungeons.
+		//Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the entrance of the rift that took them into dungeons.
 
 		if (this.isLocked()) {
 			if (entity instanceof LivingEntity) {

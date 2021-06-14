@@ -69,8 +69,12 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 		world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
 		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
+		/*
+		New plan, we use players spawn points as the exit points from limbo, this code will no longer be used.
 		DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUuid(), new Location((ServerWorld) world, pos));
 		LOGGER.log(Level.INFO, "Set overworld rift location");
+
+		 */
 
 	}
 

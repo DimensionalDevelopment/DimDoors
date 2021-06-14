@@ -111,7 +111,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		if (blockEntity instanceof EntranceRiftBlockEntity
 				&& blockState.get(HALF) == DoubleBlockHalf.LOWER) {
-			world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState());
+			world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, blockState.get(WATERLOGGED)));
 			((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 		}
 	}
@@ -175,7 +175,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 						&& !DimensionalDoorsInitializer.getConfig().getDoorsConfig().placeRiftsInCreativeMode
 						)
 			) {
-				world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState());
+				world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, blockState.get(WATERLOGGED)));
 				((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 			}
 		}
@@ -219,7 +219,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 				return;
 			}
 			if (blockEntity instanceof EntranceRiftBlockEntity && state.get(HALF) == DoubleBlockHalf.LOWER) {
-				world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
+				world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, state.get(WATERLOGGED)));
 				((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 			}
 		});
