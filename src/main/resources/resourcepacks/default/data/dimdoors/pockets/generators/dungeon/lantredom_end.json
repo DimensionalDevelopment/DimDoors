@@ -2,7 +2,13 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/lantredom_end",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:lazy_gen_pocket",
+    "addons": [
+      {
+        "type": "dimdoors:sky",
+        "world": "minecraft:the_end"
+      }
+    ]
   },
   "modifiers": [
     {

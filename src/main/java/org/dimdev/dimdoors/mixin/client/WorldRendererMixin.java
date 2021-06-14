@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.mixin.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,6 +32,8 @@ import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import java.util.List;
+
 @Mixin(WorldRenderer.class)
 @Environment(EnvType.CLIENT)
 public abstract class WorldRendererMixin {
@@ -51,10 +52,32 @@ public abstract class WorldRendererMixin {
 	@Final
 	private static Identifier END_SKY;
 
-	@Shadow protected abstract void renderEndSky(MatrixStack matrices);
+	@Shadow
+	protected abstract void renderEndSky(MatrixStack matrices);
 
 	@Inject(method = "renderSky", at = @At("HEAD"), cancellable = true)
 	public void beforeRenderSky(MatrixStack matrices, Matrix4f matrix4f, float f, Runnable runnable, CallbackInfo ci) {
+		List<SkyAddon> skyAddons = PocketListenerUtil.applicableAddonsClient(SkyAddon.class, this.world, this.client.gameRenderer.getCamera().getBlockPos());
+		SkyAddon skyAddon = null;
+		if (skyAddons.size() > 0) {
+			// There should really only be one of these.
+			// If anyone needs to use multiple SkyAddons then go ahead and change this.
+			skyAddon = skyAddons.get(0);
+		}
+
+		if (skyAddon != null) {
+			RegistryKey<World> world = skyAddon.getWorld();
+
+			if (world.equals(World.END)) {
+				this.renderEndSky(matrices);
+				ci.cancel();
+				return;
+			} else if (world.equals(ModDimensions.LIMBO)) {
+				this.renderLimboSky(matrices);
+				ci.cancel();
+				return;
+			}
+		}
 		if (ModDimensions.isLimboDimension(this.world)) {
 			renderLimboSky(matrices);
 			ci.cancel();
@@ -62,23 +85,6 @@ public abstract class WorldRendererMixin {
 			this.renderPocketSky(matrices, 255, 255, 255);
 			ci.cancel();
 		} else if (ModDimensions.isPocketDimension(this.world)) {
-			Pocket pocket = DimensionalRegistry.getPocketDirectory(this.world.getRegistryKey()).getPocketAt(client.player.getBlockPos());
-
-			if(pocket != null && pocket.hasAddon(SkyAddon.ID)) {
-				RegistryKey<World> world = pocket.<SkyAddon>getAddon(SkyAddon.ID).getWorld();
-
-				if(world.equals(World.END)) {
-					this.renderEndSky(matrices);
-					ci.cancel();
-				} else if(world.equals(ModDimensions.LIMBO)) {
-					this.renderLimboSky(matrices);
-					ci.cancel();
-				} else if(ModDimensions.isPocketDimension(world)) {
-					this.renderPocketSky(matrices, 255, 255, 255);
-					ci.cancel();
-				}
-			}
-
 			this.renderPocketSky(matrices, 0, 0, 0);
 			ci.cancel();
 		}
@@ -102,7 +108,7 @@ public abstract class WorldRendererMixin {
 		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 
-		for(int i = 0; i < 6; ++i) {
+		for (int i = 0; i < 6; ++i) {
 			matrices.push();
 			if (i == 1) {
 				matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));
@@ -165,7 +171,7 @@ public abstract class WorldRendererMixin {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
 
-		for(int i = 0; i < 6; ++i) {
+		for (int i = 0; i < 6; ++i) {
 			matrices.push();
 			if (i == 1) {
 				matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90.0F));

@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import java.io.IOException;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -11,17 +10,11 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class SkyAddon implements AutoSyncedAddon {
 	public static Identifier ID = new Identifier("dimdoors", "sky");
 
 	private RegistryKey<World> world;
-
-	@Override
-	public boolean applicable(Pocket pocket) {
-		return pocket instanceof PrivatePocket;
-	}
 
 	public boolean setWorld(RegistryKey<World> world) {
 		this.world = world;
@@ -82,7 +75,6 @@ public class SkyAddon implements AutoSyncedAddon {
 	public static class SkyBuilderAddon implements PocketBuilderAddon<SkyAddon> {
 
 		private RegistryKey<World> world = World.OVERWORLD;
-		// TODO: add some Pocket#init so that we can have boolean shouldRepaintOnInit
 
 		@Override
 		public void apply(Pocket pocket) {
