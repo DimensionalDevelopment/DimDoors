@@ -16,8 +16,8 @@ public final class GridUtil {
 		}
 
 		public GridPos(BlockPos pos, int gridSize) {
-			this.x = pos.getX() / gridSize / 16;
-			this.z = pos.getZ() / gridSize / 16;
+			this.x = Math.floorDiv(Math.floorDiv(pos.getX(), gridSize), 16);
+			this.z = Math.floorDiv(Math.floorDiv(pos.getZ(), gridSize), 16);
 		}
 
 		@Override
