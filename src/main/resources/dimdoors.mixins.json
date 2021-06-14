@@ -6,6 +6,7 @@
     "BlockBoxMixin",
     "BlockMixin",
     "DefaultBiomeFeaturesMixin",
+    "ExplosionMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",

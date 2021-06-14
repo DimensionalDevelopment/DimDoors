@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.block.door;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.*;
+import net.minecraft.world.explosion.Explosion;
+import org.apache.logging.log4j.Level;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
@@ -93,6 +95,40 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return new EntranceRiftBlockEntity(pos, state);
 	}
 
+	public void createDetachedRift(World world, BlockPos pos) {
+		createDetachedRift(world, pos, world.getBlockState(pos));
+	}
+
+	public void createDetachedRift(World world, BlockPos pos, BlockState state) {
+		DoubleBlockHalf doubleBlockHalf = state.get(HALF);
+		BlockPos blockPos = pos;
+		BlockState blockState = world.getBlockState(pos);
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
+			blockPos = pos.down();
+			blockState = world.getBlockState(blockPos);
+			blockEntity = world.getBlockEntity(blockPos);
+		}
+		if (blockEntity instanceof EntranceRiftBlockEntity
+				&& blockState.get(HALF) == DoubleBlockHalf.LOWER) {
+			world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState());
+			((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
+		}
+	}
+
+	@Override
+	public void onDestroyedByExplosion(World world, BlockPos pos, Explosion explosion) {
+		if(world.getBlockState(pos).isAir()) {
+			//LOGGER.log(Level.ERROR, "IS AIR");
+			return;
+		}
+		if(world.isClient()) {
+			return;
+		}
+		//LOGGER.log(Level.ERROR, "WAS DESTROYED BY EXPLOSION");
+		BlockState state = world.getBlockState(pos);
+		super.onDestroyedByExplosion(world, pos, explosion);
+	}
 	@Override
 	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
 		BlockEntity bottomEntity;
