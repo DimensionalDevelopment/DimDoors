@@ -49,7 +49,7 @@ public class DoorDataReader {
 			new DoorData.UnbakedBlockSettings(
 					"minecraft:iron_door",
 					OptionalInt.of(10)
-			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PublicPocketTarget()), Optional.empty()), AlwaysTrueCondition.INSTANCE)))
+			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PublicPocketTarget()), Optional.empty()).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
 	));
 	public static final DoorData DEFAULT_GOLD_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:gold_dimensional_door",
@@ -63,7 +63,7 @@ public class DoorDataReader {
 			new DoorData.UnbakedBlockSettings(
 					"dimdoors:gold_door",
 					OptionalInt.of(10)
-			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(DefaultDungeonDestinations.getDeeperDungeonDestination()), Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)), AlwaysTrueCondition.INSTANCE)))
+			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(DefaultDungeonDestinations.getDeeperDungeonDestination()), Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
 	));
 	public static final DoorData DEFAULT_OAK_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:oak_dimensional_door",
@@ -77,7 +77,7 @@ public class DoorDataReader {
 			new DoorData.UnbakedBlockSettings(
 					"minecraft:oak_door",
 					OptionalInt.of(10)
-			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(DefaultDungeonDestinations.getShallowerDungeonDestination()), Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)), AlwaysTrueCondition.INSTANCE)))
+			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(DefaultDungeonDestinations.getShallowerDungeonDestination()), Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
 	));
 	public static final DoorData DEFAULT_QUARTZ_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:quartz_dimensional_door",
@@ -93,8 +93,8 @@ public class DoorDataReader {
 					OptionalInt.of(10)
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> {
 				WorldMatchCondition condition = new WorldMatchCondition(ModDimensions.PERSONAL);
-				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketExitTarget()), Optional.empty()), condition));
-				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketTarget()), Optional.empty()), new InverseCondition(condition)));
+				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketExitTarget()), Optional.empty()).toJson(new JsonObject()), condition));
+				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketTarget()), Optional.empty()).toJson(new JsonObject()), new InverseCondition(condition)));
 	})
 	));
 	public static final DoorData DEFAULT_UNSTABLE_DIMENSIONAL_DOOR = new DoorData(
@@ -109,7 +109,7 @@ public class DoorDataReader {
 			new DoorData.UnbakedBlockSettings(
 					"minecraft:iron_door",
 					OptionalInt.of(10)
-			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new UnstableTarget()), Optional.of(LinkProperties.builder().linksRemaining(1).groups(IntStream.of(0, 1).boxed().collect(Collectors.toSet())).build())), AlwaysTrueCondition.INSTANCE)))
+			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new UnstableTarget()), Optional.of(LinkProperties.builder().linksRemaining(1).groups(IntStream.of(0, 1).boxed().collect(Collectors.toSet())).build())).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
 	));
 
 	public static void read() {
@@ -147,7 +147,7 @@ public class DoorDataReader {
 				if (!Files.isDirectory(p) && Files.isRegularFile(p)) {
 					String jsonStr;
 					try {
-						jsonStr = new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
+						jsonStr = Files.readString(p);
 					} catch (IOException e) {
 						LOGGER.error("Error reading " + p, e);
 						return;
@@ -178,7 +178,7 @@ public class DoorDataReader {
 		}
 		String json = GSON.toJson(doorData.toJson(new JsonObject()));
 		try {
-			Files.write(path, json.getBytes(StandardCharsets.UTF_8));
+			Files.writeString(path, json);
 		} catch (IOException e) {
 			LOGGER.error("Error writing to " + path, e);
 		}
