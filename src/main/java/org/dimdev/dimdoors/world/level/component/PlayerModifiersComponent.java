@@ -5,6 +5,7 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
+import org.apache.logging.log4j.Level;
 import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
@@ -18,6 +19,8 @@ import org.dimdev.dimdoors.enchantment.ModEnchants;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.dimdev.dimdoors.util.schematic.SchematicPlacer.LOGGER;
 
 public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponent {
 	private int fray = 0;
@@ -84,7 +87,9 @@ public class PlayerModifiersComponent implements ComponentV3, AutoSyncedComponen
 		if(getFray(player) == DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.maxFray) {
 			killPlayer(player);
 		}
-		System.out.println("fray amount is : " + getFray(player));
+		if(false) {
+			LOGGER.log(Level.INFO, "fray amount is : " + getFray(player));
+		}
 		return v;
 	}
 

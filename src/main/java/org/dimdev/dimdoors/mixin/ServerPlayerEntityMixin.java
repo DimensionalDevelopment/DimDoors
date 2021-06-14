@@ -63,7 +63,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	public void playerTickMixin(CallbackInfo ci) {
 		if (random.nextFloat() <= RANDOM_ACTION_CHANCE) {
-			if(random.nextFloat() <= RANDOM_INCREMENT_FRAY_CHANCE && PlayerModifiersComponent.getFray((PlayerEntity) (Object)this) < 180) {
+			if(random.nextFloat() <= RANDOM_INCREMENT_FRAY_CHANCE && PlayerModifiersComponent.getFray((PlayerEntity) (Object)this) < 180 && ModDimensions.isLimboDimension((((PlayerEntity)(Object)(this)).getEntityWorld()))) {
 				PlayerModifiersComponent.incrementFray((PlayerEntity) (Object)this, 1);
 			}
 			if (PlayerModifiersComponent.getFray(this) >= 125) {

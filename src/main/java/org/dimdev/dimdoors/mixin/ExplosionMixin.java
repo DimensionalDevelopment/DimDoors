@@ -104,14 +104,16 @@ public class ExplosionMixin {
 					this.world.getProfiler().push("explosion_blocks");
 					if (block.shouldDropItemsOnExplosion((Explosion) (Object) this) && this.world instanceof ServerWorld) {
 						//TODO: Change this to work with trapdoors as well, when we implement trapdoors.
-						if (block instanceof DimensionalDoorBlock) {
-							LOGGER.log(Level.INFO, "Creating Detached Rift From Explosion of Door");
-							((DimensionalDoorBlock) block).createDetachedRift(this.world, blockPos2);
-							continue;
-						}
-						else if(world.getBlockState(blockPos2).getBlock() == DETACHED_RIFT) {
-							continue;
-						}
+						//This is the only changed code
+								if (block instanceof DimensionalDoorBlock) {
+									LOGGER.log(Level.INFO, "Creating Detached Rift From Explosion of Door");
+									((DimensionalDoorBlock) block).createDetachedRift(this.world, blockPos2);
+									continue;
+								}
+								else if(world.getBlockState(blockPos2).getBlock() == DETACHED_RIFT) {
+									continue;
+								}
+						//Normal code below
 						BlockEntity blockEntity = blockState.hasBlockEntity() ? this.world.getBlockEntity(blockPos) : null;
 						LootContext.Builder builder = (new LootContext.Builder((ServerWorld) this.world)).random(this.world.random).parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(blockPos)).parameter(LootContextParameters.TOOL, ItemStack.EMPTY).optionalParameter(LootContextParameters.BLOCK_ENTITY, blockEntity).optionalParameter(LootContextParameters.THIS_ENTITY, this.entity);
 						if (this.destructionType == Explosion.DestructionType.DESTROY) {
