@@ -196,6 +196,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public boolean universalLimbo = false;
 		@Tooltip public boolean hardcoreLimbo = false;
 		@Tooltip public double decaySpreadChance = 0.5;
+		@Tooltip public float limboBlocksCorruptingOverworldAmount = 5;
 	}
 
 	public static class Graphics {

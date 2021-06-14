@@ -1,10 +1,12 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.Random;
 import java.util.UUID;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.sk89q.worldedit.util.formatting.text.BlockNbtComponent;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -12,10 +14,13 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.UnravelUtil;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -91,8 +96,16 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			if(destLoc != null && this.canEscapeLimbo) {
 				Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false);
 				TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
+				Random random = new Random();
 				BlockPos.iterateOutwards(location.pos.add(0, -4, 0), 3, 2, 3).forEach((pos1 -> {
-					location.getWorld().setBlockState(pos1, ModBlocks.UNRAVELLED_FABRIC.getDefaultState());
+					if(random.nextFloat() < (1/((float)location.pos.getSquaredDistance(pos1)))*  DimensionalDoorsInitializer.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
+						Block block = location.getWorld().getBlockState(pos1).getBlock();
+						if(UnravelUtil.unravelBlocksMap.containsKey(block))
+							location.getWorld().setBlockState(pos1, UnravelUtil.unravelBlocksMap.get(block).getDefaultState());
+						else if(UnravelUtil.whitelistedBlocksForLimboRemoval.contains(block)) {
+							location.getWorld().setBlockState(pos1, ModBlocks.UNRAVELLED_FABRIC.getDefaultState());
+						}
+					}
 				}));
 			}
 			else {
