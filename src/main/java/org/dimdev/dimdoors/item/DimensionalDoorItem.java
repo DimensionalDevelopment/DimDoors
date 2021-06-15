@@ -1,19 +1,29 @@
 package org.dimdev.dimdoors.item;
 
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.BlockItem;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.client.ToolTipHelper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
@@ -21,10 +31,24 @@ import net.minecraft.world.World;
 
 public class DimensionalDoorItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;
+	private boolean hasToolTip = false;
 
-	public DimensionalDoorItem(Block block, Item.Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
+	public DimensionalDoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
+		this(block, settings, setupFunction, false);
+	}
+
+	public DimensionalDoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, boolean hasToolTip) {
 		super(block, settings);
 		this.setupFunction = setupFunction;
+		this.hasToolTip = hasToolTip;
+	}
+
+	@Environment(EnvType.CLIENT)
+	@Override
+	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
+		if(hasToolTip) {
+			ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".info");
+		}
 	}
 
 	@Override

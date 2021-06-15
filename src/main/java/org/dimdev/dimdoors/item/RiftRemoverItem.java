@@ -7,6 +7,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.client.ToolTipHelper;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import net.minecraft.client.item.TooltipContext;
@@ -36,7 +37,7 @@ public class RiftRemoverItem extends Item {
 	@Environment(EnvType.CLIENT)
 	@Override
 	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
-		list.add(new TranslatableText(this.getTranslationKey() + ".info"));
+		ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".info");
 	}
 
 	@Override

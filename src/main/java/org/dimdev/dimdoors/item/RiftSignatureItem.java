@@ -7,6 +7,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.client.ToolTipHelper;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.api.util.Location;
@@ -138,9 +139,10 @@ public class RiftSignatureItem extends Item {
 	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
 		RotatedLocation transform = getSource(itemStack);
 		if (transform != null) {
-			list.add(new TranslatableText(this.getTranslationKey() + ".bound.info", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId()));
+			list.add(new TranslatableText(this.getTranslationKey() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().getValue()));
+			list.add(new TranslatableText(this.getTranslationKey() + ".bound.info1", transform.getWorldId().getValue()));
 		} else {
-			list.add(new TranslatableText(this.getTranslationKey() + ".unbound.info"));
+			ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".unbound.info");
 		}
 	}
 }

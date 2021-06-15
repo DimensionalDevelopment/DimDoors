@@ -36,6 +36,7 @@ public final class DoorData implements AutoCloseable {
 	private final Optional<String> itemGroup;
 	private final UnbakedBlockSettings blockSettings;
 	private final RiftDataList riftDataList;
+	private final boolean hasToolTip;
 	private boolean closed = false;
 
 	public static DoorData fromJson(JsonObject json) {
@@ -45,22 +46,28 @@ public final class DoorData implements AutoCloseable {
 			Optional<String> itemGroup = Optional.ofNullable(json.getAsJsonPrimitive("itemGroup")).map(JsonPrimitive::getAsString);
 			UnbakedBlockSettings blockSettings = UnbakedBlockSettings.fromJson(json.getAsJsonObject("blockSettings"));
 			RiftDataList riftDataList = RiftDataList.fromJson(json.getAsJsonArray("riftData"));
-			return new DoorData(id, itemSettings, itemGroup, blockSettings, riftDataList);
+			boolean hasToolTip = json.has("hasToolTip") && json.getAsJsonPrimitive("hasToolTip").getAsBoolean();
+			return new DoorData(id, itemSettings, itemGroup, blockSettings, riftDataList, hasToolTip);
 		} catch (RuntimeException e) {
 			throw new RuntimeException("Caught exception while deserializing " + json.toString(), e);
 		}
 	}
 
 	public DoorData(String id, UnbakedItemSettings itemSettings, UnbakedBlockSettings blockSettings, RiftDataList riftDataList) {
-		this(id, itemSettings, Optional.empty(), blockSettings, riftDataList);
+		this(id, itemSettings, Optional.empty(), blockSettings, riftDataList, false);
 	}
 
-	public DoorData(String id, UnbakedItemSettings itemSettings, Optional<String> itemGroup, UnbakedBlockSettings blockSettings, RiftDataList riftDataList) {
+	public DoorData(String id, UnbakedItemSettings itemSettings, UnbakedBlockSettings blockSettings, RiftDataList riftDataList, boolean hasToolTip) {
+		this(id, itemSettings, Optional.empty(), blockSettings, riftDataList, hasToolTip);
+	}
+
+	public DoorData(String id, UnbakedItemSettings itemSettings, Optional<String> itemGroup, UnbakedBlockSettings blockSettings, RiftDataList riftDataList, boolean hasToolTip) {
 		this.id = id;
 		this.itemSettings = itemSettings;
 		this.itemGroup = itemGroup;
 		this.blockSettings = blockSettings;
 		this.riftDataList = riftDataList;
+		this.hasToolTip = hasToolTip;
 	}
 
 	public JsonObject toJson(JsonObject json) {
@@ -69,6 +76,7 @@ public final class DoorData implements AutoCloseable {
 		itemGroup.ifPresent(s -> json.add("itemGroup", new JsonPrimitive(s)));
 		json.add("blockSettings", this.blockSettings.toJson(new JsonObject()));
 		json.add("riftData", this.riftDataList.toJson());
+		json.addProperty("hasToolTip", this.hasToolTip);
 		return json;
 	}
 
@@ -96,6 +104,10 @@ public final class DoorData implements AutoCloseable {
 
 	public RiftDataList getRiftDataList() {
 		return riftDataList;
+	}
+
+	public boolean hasToolTip() {
+		return hasToolTip;
 	}
 
 	@Override
@@ -138,7 +150,7 @@ public final class DoorData implements AutoCloseable {
 		this.blockSettings.luminance.ifPresent(blockSettings::luminance);
 		Identifier id = new Identifier(this.id);
 		Block doorBlock = new DimensionalDoorBlock(blockSettings);
-		Item doorItem = new DimensionalDoorItem(doorBlock, itemSettings, createSetupFunction());
+		Item doorItem = new DimensionalDoorItem(doorBlock, itemSettings, createSetupFunction(), hasToolTip);
 		Registry.register(Registry.BLOCK, id, doorBlock);
 		Registry.register(Registry.ITEM, id, doorItem);
 		DOORS.add(doorBlock);

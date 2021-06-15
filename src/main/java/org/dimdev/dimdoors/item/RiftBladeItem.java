@@ -1,18 +1,24 @@
 package org.dimdev.dimdoors.item;
 
+import java.util.List;
 import java.util.Objects;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.client.ToolTipHelper;
 
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -28,7 +34,12 @@ public class RiftBladeItem extends SwordItem {
 
 	public RiftBladeItem(Settings settings) {
 		super(ToolMaterials.IRON, 3, -2.4F, settings);
+	}
 
+	@Environment(EnvType.CLIENT)
+	@Override
+	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
+		ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".info");
 	}
 
 	@Override

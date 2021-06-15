@@ -50,7 +50,8 @@ public class DoorDataReader {
 					"minecraft:iron_door",
 					OptionalInt.of(10)
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PublicPocketTarget()), Optional.empty()).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
-	));
+
+	), true);
 	public static final DoorData DEFAULT_GOLD_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:gold_dimensional_door",
 			new DoorData.UnbakedItemSettings(
@@ -64,7 +65,7 @@ public class DoorDataReader {
 					"dimdoors:gold_door",
 					OptionalInt.of(10)
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(DefaultDungeonDestinations.getDeeperDungeonDestination()), Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
-	));
+	), true);
 	public static final DoorData DEFAULT_OAK_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:oak_dimensional_door",
 			new DoorData.UnbakedItemSettings(
@@ -78,7 +79,7 @@ public class DoorDataReader {
 					"minecraft:oak_door",
 					OptionalInt.of(10)
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(DefaultDungeonDestinations.getShallowerDungeonDestination()), Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
-	));
+	), true);
 	public static final DoorData DEFAULT_QUARTZ_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:quartz_dimensional_door",
 			new DoorData.UnbakedItemSettings(
@@ -95,8 +96,8 @@ public class DoorDataReader {
 				WorldMatchCondition condition = new WorldMatchCondition(ModDimensions.PERSONAL);
 				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketExitTarget()), Optional.empty()).toJson(new JsonObject()), condition));
 				list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new PrivatePocketTarget()), Optional.empty()).toJson(new JsonObject()), new InverseCondition(condition)));
-	})
-	));
+			})
+	), true);
 	public static final DoorData DEFAULT_UNSTABLE_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:unstable_dimensional_door",
 			new DoorData.UnbakedItemSettings(
@@ -110,7 +111,7 @@ public class DoorDataReader {
 					"minecraft:iron_door",
 					OptionalInt.of(10)
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new UnstableTarget()), Optional.of(LinkProperties.builder().linksRemaining(1).groups(IntStream.of(0, 1).boxed().collect(Collectors.toSet())).build())).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
-	));
+	), true);
 
 	public static void read() {
 		Path doorDir = DimensionalDoorsInitializer.getConfigRoot().resolve("doors");
