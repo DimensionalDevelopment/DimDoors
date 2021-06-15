@@ -60,9 +60,9 @@ public final class DimensionalPortalRenderer {
 						)
 						.build(false)
 		);
-		ModelPart.Cuboid small = new ModelPart.Cuboid(0, 0, 0, 0, 0, 16, 16, 0.2F, 0, 0, 0, false, 1024, 1024);
+		ModelPart.Cuboid small = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 15.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
 		MODEL = new ModelPart(Collections.singletonList(small), Collections.emptyMap());
-		ModelPart.Cuboid big = new ModelPart.Cuboid(0, 0, 0, 0, 0, 16, 32, 0.2F, 0, 0, 0, false, 1024, 1024);
+		ModelPart.Cuboid big = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
 		TALL_MODEL = new ModelPart(Collections.singletonList(big), Collections.emptyMap());
 	}
 }
