@@ -1,5 +1,8 @@
 {
     "variants": {
-        "normal":  { "model": "dimdoors:block/no_texture" }
+        "facing=east":  { "model": "dimdoors:block/no_texture" },
+        "facing=west":  { "model": "dimdoors:block/no_texture" },
+        "facing=south":  { "model": "dimdoors:block/no_texture" },
+        "facing=north":  { "model": "dimdoors:block/no_texture" }
     }
 }
