@@ -404,6 +404,10 @@
   "limbo.exit.eternal_fluid": "%1$s bathed in reality",
   "limbo.exit.generic": "%1$s escaped Limbo",
   "limbo.exit.rift": "%1$s found a rift leading out of Limbo",
+  "stat.dimdoors.deaths_in_pocket": "Deaths in Pocket",
+  "stat.dimdoors.times_been_to_dungeon": "Times been to Dungeon",
+  "stat.dimdoors.times_sent_to_limbo": "Times sent to Limbo",
+  "stat.dimdoors.times_teleported_by_monolith": "Times teleported by Monolith",
 
   "resourcePackActivationType.normal": "Normal",
   "resourcePackActivationType.defaultEnabled": "Default Enabled",
