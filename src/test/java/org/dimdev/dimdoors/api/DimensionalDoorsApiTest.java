@@ -24,27 +24,27 @@ public class DimensionalDoorsApiTest {
 
 	@Test
 	public void apiTest() {
-//		SharedConstants.createGameVersion();
-//		Bootstrap.initialize();
-//		FabricLoader.getInstance().getEntrypoints("main", ModInitializer.class).stream()
-//				.filter(DimensionalDoorsInitializer.class::isInstance)
-//				.map(DimensionalDoorsInitializer.class::cast)
-//				.forEach(DimensionalDoorsInitializer::onInitialize);
-//
-//		DimDoorsTestApi apiTest = FabricLoader.getInstance().getEntrypoints("dimdoors:api", DimensionalDoorsApi.class).stream()
-//				.filter(DimDoorsTestApi.class::isInstance)
-//				.map(DimDoorsTestApi.class::cast)
-//				.findFirst()
-//				.orElseThrow(RuntimeException::new);
-//
-//		assertTrue(apiTest.hasCalledRegisterVirtualTargetTypes);
-//		assertTrue(apiTest.hasCalledRegisterVirtualSingularPocketTypes);
-//		assertTrue(apiTest.hasCalledRegisterModifierTypes);
-//		assertTrue(apiTest.hasCalledRegisterPocketGeneratorTypes);
-//		assertTrue(apiTest.hasCalledRegisterAbstractPocketTypes);
-//		assertTrue(apiTest.hasCalledRegisterPocketAddonTypes);
-//		assertTrue(apiTest.hasCalledRegisterConditionTypes);
-//		assertTrue(apiTest.hasCalledPostInitialize);
+		SharedConstants.createGameVersion();
+		Bootstrap.initialize();
+		FabricLoader.getInstance().getEntrypoints("main", ModInitializer.class).stream()
+				.filter(DimensionalDoorsInitializer.class::isInstance)
+				.map(DimensionalDoorsInitializer.class::cast)
+				.forEach(DimensionalDoorsInitializer::onInitialize);
+
+		DimDoorsTestApi apiTest = FabricLoader.getInstance().getEntrypoints("dimdoors:api", DimensionalDoorsApi.class).stream()
+				.filter(DimDoorsTestApi.class::isInstance)
+				.map(DimDoorsTestApi.class::cast)
+				.findFirst()
+				.orElseThrow(RuntimeException::new);
+
+		assertTrue(apiTest.hasCalledRegisterVirtualTargetTypes);
+		assertTrue(apiTest.hasCalledRegisterVirtualSingularPocketTypes);
+		assertTrue(apiTest.hasCalledRegisterModifierTypes);
+		assertTrue(apiTest.hasCalledRegisterPocketGeneratorTypes);
+		assertTrue(apiTest.hasCalledRegisterAbstractPocketTypes);
+		assertTrue(apiTest.hasCalledRegisterPocketAddonTypes);
+		assertTrue(apiTest.hasCalledRegisterConditionTypes);
+		assertTrue(apiTest.hasCalledPostInitialize);
 	}
 
 	public static class DimDoorsTestApi implements DimensionalDoorsApi {
