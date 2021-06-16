@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import net.minecraft.client.gl.Uniform;
 import net.minecraft.client.render.Shader;
 
 @Environment(EnvType.CLIENT)
@@ -14,15 +16,5 @@ public class ModShaders {
 
 	public static Shader getDimensionalPortal() {
 		return DIMENSIONAL_PORTAL;
-	}
-
-	private static Shader STATIC = null;
-
-	public static void setStaticShader(Shader dimensionalPortal) {
-		STATIC = dimensionalPortal;
-	}
-
-	public static Shader getStaticShader() {
-		return STATIC;
 	}
 }

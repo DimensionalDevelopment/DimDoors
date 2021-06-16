@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.mixin.client;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -33,6 +32,5 @@ public abstract class GameRendererMixin {
 	@Inject(method = "loadShaders", at = @At(value = "INVOKE", shift = At.Shift.AFTER, ordinal = 1, target = "java/util/List.add(Ljava/lang/Object;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
 	public void onReload(ResourceManager manager, CallbackInfo ci, List list, List list2) throws IOException {
 		list2.add(Pair.of(new Shader(manager, "dimensional_portal", VertexFormats.POSITION), (Consumer<Shader>) ModShaders::setDimensionalPortal));
-		list2.add(Pair.of(new Shader(manager, "static", VertexFormats.POSITION), (Consumer<Shader>) ModShaders::setStaticShader));
 	}
 }

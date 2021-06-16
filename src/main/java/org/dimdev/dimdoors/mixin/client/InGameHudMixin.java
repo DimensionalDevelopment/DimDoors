@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.client.ModShaders;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.component.PlayerModifiersComponent;
@@ -45,49 +46,5 @@ public abstract class InGameHudMixin{
 //	}
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	public void renderOverlayMixin(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-		float overlayOpacity = (config.fray.grayScreenFray - PlayerModifiersComponent.getFray(getCameraPlayer()))/(config.fray.grayScreenFray - (float)config.fray.maxFray);
-		if (PlayerModifiersComponent.getFray(getCameraPlayer()) > config.fray.grayScreenFray) {
-			System.out.println(overlayOpacity);
-			this.renderOverlay(new Identifier("dimdoors", "textures/other/static.png"), overlayOpacity);
-		}
-	}
-	private void renderOverlay(Identifier texture, float opacity) {
-		frame++;
-		if(frame > 6)
-			frame = 0;
-		float frameAdjustment = (opacity);
-		opacity /= OVERLAY_OPACITY_ADJUSTEMENT;
-		float amountMoved = ((float)frame)/6F;
-		float up = amountMoved;
-		float down = 1*amountMoved + 1f/6f;
-		float left = frameAdjustment;
-		float right = 1-frameAdjustment;
-		/*
-		up = up+frameAdjustment;
-
-		down = down-frameAdjustment;
-		 */
-
-
-
-		RenderSystem.disableDepthTest();
-		RenderSystem.depthMask(false);
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, opacity);
-		RenderSystem.setShaderTexture(0, texture);
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-		bufferBuilder.vertex(0.0D, (double)this.scaledHeight, -90.0D).texture(left, up).next(); //Upper left hand corner
-		bufferBuilder.vertex((double)this.scaledWidth, (double)this.scaledHeight, -90.0D).texture(right, up).next(); //Upper right hand corner
-		bufferBuilder.vertex((double)this.scaledWidth, 0.0D, -90.0D).texture(right, down).next(); //Lower left hand corner
-		bufferBuilder.vertex(0.0D, 0.0D, -90.0D).texture(left, down).next();//Lower right hand corner.
-		tessellator.draw();
-		RenderSystem.depthMask(true);
-		RenderSystem.enableDepthTest();
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.disableBlend();
 	}
 }
