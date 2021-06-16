@@ -6,6 +6,8 @@ import net.minecraft.client.gl.PostProcessShader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.world.level.component.PlayerModifiersComponent;
@@ -22,17 +24,15 @@ public class PostProcessShaderMixin {
 
 	@Shadow @Final private JsonEffectGlShader program;
 
-	@Inject(method = "Lnet/minecraft/client/gl/PostProcessShader;render(F)V", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "render(F)V", at = @At("HEAD"), cancellable = true)
 	public void render(float time, CallbackInfo cir) {
-		if(program.getName().equals("fray")) {
+		program.getUniformByNameOrDummy("GameTime").set(RenderSystem.getShaderGameTime());
 
-			if (PlayerModifiersComponent.getFray(getCameraPlayer()) > config.fray.grayScreenFray) {
-				float overlayOpacity = (config.fray.grayScreenFray - PlayerModifiersComponent.getFray(getCameraPlayer())) / (config.fray.grayScreenFray - (float) config.fray.maxFray);
-				program.getUniformByNameOrDummy("FrayIntensity").set(overlayOpacity);
-			} else {
-				program.getUniformByNameOrDummy("FrayIntensity").set(0.0f);
-			}
-
+		if (PlayerModifiersComponent.getFray(getCameraPlayer()) > config.fray.grayScreenFray) {
+			float overlayOpacity = (config.fray.grayScreenFray - PlayerModifiersComponent.getFray(getCameraPlayer())) / (config.fray.grayScreenFray - (float) config.fray.maxFray);
+			program.getUniformByNameOrDummy("FrayIntensity").set(overlayOpacity);
+		} else {
+			program.getUniformByNameOrDummy("FrayIntensity").set(0.0f);
 		}
 	}
 
