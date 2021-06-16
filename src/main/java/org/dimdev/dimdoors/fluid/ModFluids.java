@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.fluid;
 
 import java.util.function.Function;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FlowableFluid;
@@ -36,6 +38,7 @@ public class ModFluids {
 		setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, new Identifier("dimdoors:eternal_fluid"));
 	}
 
+	@Environment(EnvType.CLIENT)
 	private static void setupFluidRendering(Fluid still, Fluid flowing, final Identifier textureFluidId) {
 		final Identifier stillSpriteId = new Identifier(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_still");
 		final Identifier flowingSpriteId = new Identifier(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_flow");
