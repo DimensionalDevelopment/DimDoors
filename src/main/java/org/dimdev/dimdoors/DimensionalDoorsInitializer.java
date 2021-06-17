@@ -18,6 +18,7 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
+import org.dimdev.dimdoors.command.PocketCommand;
 import org.dimdev.dimdoors.enchantment.FrayedEnchantment;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -164,6 +165,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 			((ExtendedServerPlayNetworkHandler) handler).getDimDoorsPacketHandler().unregister();
+			PocketCommand.logSetting.remove(handler.getPlayer().getUuid());
 		});
 
 		ServerChunkEvents.CHUNK_LOAD.register(new ChunkLoadListener()); // lazy pocket gen

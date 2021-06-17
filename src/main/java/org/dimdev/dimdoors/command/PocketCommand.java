@@ -17,11 +17,18 @@ import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.loader.api.FabricLoader;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class PocketCommand {
 	private static final Logger LOGGER = LogManager.getLogger();
+
+	// TODO: probably move somewhere else
+	public static final Map<UUID, ServerCommandSource> logSetting = new HashMap<>();
 
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
 		dispatcher.register(
@@ -48,6 +55,26 @@ public class PocketCommand {
 																		.executes(ctx -> load(ctx.getSource(), PocketTemplateArgumentType.getValue(ctx, "pocket_template")))
 														)
 										)
+						)
+						.then(
+								literal("log")
+										// TODO: make command toggle logging of pocket creation to console if used from console
+										.then(literal("creation")
+												.requires(commandSource -> commandSource.getEntity() instanceof ServerPlayerEntity)
+												.executes(ctx -> {
+													ServerCommandSource commandSource = ctx.getSource();
+													UUID playerUUID = commandSource.getPlayer().getUuid();
+													if (logSetting.containsKey(playerUUID)) {
+														logSetting.remove(playerUUID);
+														commandSource.sendFeedback(new TranslatableText("commands.pocket.log.creation.off"), false);
+													} else {
+														logSetting.put(playerUUID, commandSource);
+														commandSource.sendFeedback(new TranslatableText("commands.pocket.log.creation.on"), false);
+													}
+													return Command.SINGLE_SUCCESS;
+												})
+										)
+
 						)
 		);
 	}

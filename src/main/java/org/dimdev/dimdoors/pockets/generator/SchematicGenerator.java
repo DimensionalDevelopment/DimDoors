@@ -1,8 +1,19 @@
 package org.dimdev.dimdoors.pockets.generator;
 
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.ServerPlayerInteractionManager;
+import net.minecraft.server.world.ServerEntityManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -11,6 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.command.PocketCommand;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.modifier.AbsoluteRiftBlockEntityModifier;
@@ -144,7 +156,10 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
-		LOGGER.info("Generating pocket from template " + templateID + " at location " + pocket.getOrigin());
+		BlockPos origin = pocket.getOrigin();
+		LOGGER.info("Generating pocket from template " + templateID + " at location " + origin);
+		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendFeedback(new TranslatableText("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ()), false));
+
 
 		if (pocket instanceof LazyGenerationPocket) {
 			Map<BlockPos, RiftBlockEntity> absoluteRifts = template.getAbsoluteRifts(pocket);

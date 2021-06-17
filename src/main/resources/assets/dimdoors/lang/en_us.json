@@ -160,6 +160,9 @@
   "commands.pocket.unknownPocketTemplate": "Unknown Pocket Template '%s'",
   "commands.pocket.placedSchem": "Placed schematic %s at %s in world %s",
   "commands.pocket.loadedSchem": "Loaded schematic %s to clipboard. Paste it using //paste",
+  "commands.pocket.log.creation.off": "Toggled logging of pocket creation off.",
+  "commands.pocket.log.creation.on": "Toggled logging of pocket creation on.",
+  "commands.pocket.log.creation.generating": "Generating pocket from template '%s' at location %s %s %s",
 
   "rifts.unlinked1": "This rift doesn't lead anywhere",
   "rifts.unlinked2": "This rift has closed",
