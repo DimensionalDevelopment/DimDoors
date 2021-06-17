@@ -219,7 +219,7 @@ test {
 	//useJUnitPlatform()
 }
 
-tasks.test.doFirst {Test test ->
+tasks.test.doFirst {test ->
 	if (!test.workingDir.exists()) {
 		test.workingDir.mkdirs();
 	}
