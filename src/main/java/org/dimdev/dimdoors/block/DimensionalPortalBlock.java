@@ -114,7 +114,9 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 	}
 
 	private static void portalTick(World world, BlockPos pos, BlockState state, EntranceRiftBlockEntity e) {
-		if (world.isClient) return;
+		if (world.isClient || e.getDestination() != null) {
+			return;
+		}
 		e.setPortalDestination((ServerWorld) world);
 	}
 
