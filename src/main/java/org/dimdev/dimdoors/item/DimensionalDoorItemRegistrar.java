@@ -124,7 +124,13 @@ public class DimensionalDoorItemRegistrar {
 
 	@Environment(EnvType.CLIENT)
 	private void registerItemRenderer(BlockItem dimItem) {
-		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, UnderlaidChildItemRenderer.RENDERER);
+		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, Renderer.RENDERER);
+	}
+
+	// extract renderer to inner interface so it can be removed in server environment via annotation
+	@Environment(EnvType.CLIENT)
+	private interface Renderer {
+		UnderlaidChildItemRenderer RENDERER = new UnderlaidChildItemRenderer(Items.ENDER_PEARL);
 	}
 
 	private static class AutoGenDimensionalDoorItem extends DimensionalDoorItem implements ChildItem {

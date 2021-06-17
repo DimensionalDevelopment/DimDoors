@@ -15,11 +15,8 @@ import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 
 @Environment(EnvType.CLIENT)
 public class UnderlaidChildItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
-
-	//Dirty hack? IDK this is the only instance of the class, fix later?
-	public final static UnderlaidChildItemRenderer RENDERER = new UnderlaidChildItemRenderer(Items.ENDER_PEARL);
-
 	private final ItemStack underlay;
+
 	public UnderlaidChildItemRenderer(Item underlay) {
 		this.underlay = new ItemStack(underlay);
 	}
