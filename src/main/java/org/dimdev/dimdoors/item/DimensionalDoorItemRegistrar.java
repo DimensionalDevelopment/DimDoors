@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.item;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
@@ -39,7 +40,6 @@ import java.util.function.Function;
 
 public class DimensionalDoorItemRegistrar {
 	public static final String PREFIX = "item_ag_dim_";
-	private static final UnderlaidChildItemRenderer renderer = new UnderlaidChildItemRenderer(Items.ENDER_PEARL);
 
 	private final Registry<Item> registry;
 
@@ -118,8 +118,13 @@ public class DimensionalDoorItemRegistrar {
 		}
 		placementFunctions.put(original, dimItem::place);
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			BuiltinItemRendererRegistry.INSTANCE.register(dimItem, renderer);
+			registerItemRenderer(dimItem);
 		}
+	}
+
+	@Environment(EnvType.CLIENT)
+	private void registerItemRenderer(BlockItem dimItem) {
+		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, UnderlaidChildItemRenderer.RENDERER);
 	}
 
 	private static class AutoGenDimensionalDoorItem extends DimensionalDoorItem implements ChildItem {
