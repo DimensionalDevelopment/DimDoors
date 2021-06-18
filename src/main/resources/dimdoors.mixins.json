@@ -15,6 +15,7 @@
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
     "StructurePoolMixin",
+    "WorldMixin",
     "accessor.BuiltinBiomesAccessor",
     "accessor.ChunkGeneratorAccessor",
     "accessor.DefaultParticleTypeAccessor",
@@ -33,9 +34,9 @@
     "client.ExtendedClientPlayNetworkHandlerMixin",
     "client.GameRendererMixin",
     "client.InGameHudMixin",
+    "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",
-    "client.accessor.RenderLayerAccessor",
-    "client.PostProcessShaderMixin"
+    "client.accessor.RenderLayerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

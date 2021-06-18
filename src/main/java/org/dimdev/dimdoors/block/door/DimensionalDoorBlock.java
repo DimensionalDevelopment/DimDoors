@@ -2,16 +2,23 @@ package org.dimdev.dimdoors.block.door;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.*;
+import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.util.Pair;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.explosion.Explosion;
 import org.apache.logging.log4j.Level;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.block.CustomBreakBlock;
+import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftData;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
@@ -35,7 +42,9 @@ import net.minecraft.world.event.GameEvent;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock {
+import java.util.function.Consumer;
+
+public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, CustomBreakBlock {
 	public DimensionalDoorBlock(Settings settings) {
 		super(settings);
 	}
@@ -99,6 +108,11 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		createDetachedRift(world, pos, world.getBlockState(pos));
 	}
 
+	/*
+	 TODO: rewrite so it can only be used from the lower door block.
+	  I fear this method may be called twice otherwise.
+	  ~CreepyCre
+	 */
 	public void createDetachedRift(World world, BlockPos pos, BlockState state) {
 		DoubleBlockHalf doubleBlockHalf = state.get(HALF);
 		BlockPos blockPos = pos;
@@ -223,5 +237,30 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 				((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 			}
 		});
+	}
+
+	@Override
+	public ActionResult explode(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+		if (blockEntity == null) {
+			return ActionResult.PASS;
+		}
+		createDetachedRift(world, pos, state);
+		return ActionResult.SUCCESS;
+	}
+
+	@Override
+	public PistonBehavior getPistonBehavior(BlockState state) {
+		return state.get(HALF) == DoubleBlockHalf.LOWER ? PistonBehavior.BLOCK : super.getPistonBehavior(state);
+	}
+
+	@Override
+	public TypedActionResult<Pair<BlockState, Consumer<BlockEntity>>> customBreakBlock(World world, BlockPos pos, BlockState blockState, Entity breakingEntity) {
+		if (blockState.get(HALF) != DoubleBlockHalf.LOWER) {
+			return TypedActionResult.pass(null);
+		}
+		RiftData data = ((EntranceRiftBlockEntity) world.getBlockEntity(pos)).getData();
+		return TypedActionResult.success(new Pair<>(ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, blockState.get(WATERLOGGED)), blockEntity -> {
+			((EntranceRiftBlockEntity) blockEntity).setData(data);
+		}));
 	}
 }

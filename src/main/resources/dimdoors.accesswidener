@@ -10,3 +10,8 @@ accessible method net/minecraft/entity/Entity setRotation (FF)V
 
 # for MutableBlockEntityType
 extendable    class    net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
+
+# for HackyFluidState
+extendable    class    net/minecraft/fluid/FluidState
+accessible    field    net/minecraft/state/State    codec    Lcom/mojang/serialization/MapCodec;
+#Lnet/minecraft/state/State;codec:Lcom/mojang/serialization/MapCodec;
