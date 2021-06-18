@@ -52,7 +52,8 @@ public abstract class WorldMixin {
 			locals = LocalCapture.CAPTURE_FAILHARD,
 			at = @At(value = "INVOKE",
 					target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z",
-					ordinal = 0))
+					ordinal = 0,
+					shift = At.Shift.AFTER))
 	private void applyBlockEntityModification(BlockPos pos, boolean drop, Entity breakingEntity, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir, BlockState blockState, FluidState fluidState) {
 		if (!(fluidState instanceof CustomBreakBlock.HackyFluidState)) {
 			return;

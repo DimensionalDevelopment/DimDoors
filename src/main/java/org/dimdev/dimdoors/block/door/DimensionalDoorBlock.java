@@ -260,7 +260,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		RiftData data = ((EntranceRiftBlockEntity) world.getBlockEntity(pos)).getData();
 		return TypedActionResult.success(new Pair<>(ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, blockState.get(WATERLOGGED)), blockEntity -> {
-			((EntranceRiftBlockEntity) blockEntity).setData(data);
+			((DetachedRiftBlockEntity) blockEntity).setData(data);
 		}));
 	}
 }
