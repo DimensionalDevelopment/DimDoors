@@ -200,8 +200,9 @@ curseforge {
 		changelog = file('changelog.txt').text
 		releaseType = 'beta'
 		addGameVersion '1.17'
+		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[21w11a] Dimensional Doors ${version}"
+			displayName = "[1.17] Dimensional Doors ${version}"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")
