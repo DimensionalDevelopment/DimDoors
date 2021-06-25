@@ -3,7 +3,6 @@
   "package": "org.dimdev.dimdoors.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "BlockBoxMixin",
     "BlockMixin",
     "DefaultBiomeFeaturesMixin",
     "ExplosionMixin",

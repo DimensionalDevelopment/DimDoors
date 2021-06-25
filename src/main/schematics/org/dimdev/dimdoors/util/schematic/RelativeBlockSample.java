@@ -143,10 +143,9 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		ChunkPos pos = chunk.getPos();
 		BlockBox chunkBox = BlockBoxUtil.getBox(chunk);
 		Vec3i schemDimensions = new Vec3i(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
-		BlockBox intersection = BlockBox.create(origin, origin.add(schemDimensions).add(-1, -1, -1));
-		if (!intersection.intersects(chunkBox)) return;
-		intersection.encompass(chunkBox);
-
+		BlockBox schemBox = BlockBox.create(origin, origin.add(schemDimensions).add(-1, -1, -1));
+		if (!schemBox.intersects(chunkBox)) return;
+		BlockBox intersection = BlockBoxUtil.intersect(schemBox, chunkBox);
 
 		ServerChunkManager serverChunkManager = world.getChunkManager();
 

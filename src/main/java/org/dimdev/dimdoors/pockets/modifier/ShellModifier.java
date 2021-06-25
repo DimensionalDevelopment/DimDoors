@@ -67,7 +67,7 @@ public class ShellModifier implements LazyModifier {
 			// x-planes
 			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMaxX() + 1 + boxExpansion, boxToDrawAround.getMinY() - thickness - boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + thickness + boxExpansion, boxToDrawAround.getMaxY() + thickness + boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
 			if (temp.intersects(chunkBox)) {
-				temp = temp.encompass(chunkBox);
+				temp = BlockBoxUtil.intersect(temp, chunkBox);
 				BlockPos.stream(temp)
 						.forEach(blockPos -> {
 							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
@@ -75,7 +75,7 @@ public class ShellModifier implements LazyModifier {
 			}
 			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - 1 - boxExpansion, boxToDrawAround.getMinY() - thickness - boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion), new Vec3i(boxToDrawAround.getMinX() - thickness - boxExpansion, boxToDrawAround.getMaxY() + thickness + boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
 			if (temp.intersects(chunkBox)) {
-				temp = temp.encompass(chunkBox);
+				temp = BlockBoxUtil.intersect(temp, chunkBox);
 				BlockPos.stream(temp)
 						.forEach(blockPos -> {
 							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
@@ -85,7 +85,7 @@ public class ShellModifier implements LazyModifier {
 			// y-planes
 			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - boxExpansion, boxToDrawAround.getMaxY() + 1 + boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + boxExpansion, boxToDrawAround.getMaxY() + thickness + boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
 			if (temp.intersects(chunkBox)) {
-				temp = temp.encompass(chunkBox);
+				temp = BlockBoxUtil.intersect(temp, chunkBox);
 				BlockPos.stream(temp)
 						.forEach(blockPos -> {
 							if (chunk.getBlockState(blockPos).getBlock() instanceof AirBlock)
@@ -94,7 +94,7 @@ public class ShellModifier implements LazyModifier {
 			}
 			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - boxExpansion, boxToDrawAround.getMinY() - 1 - boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + boxExpansion, boxToDrawAround.getMinY() - thickness - boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
 			if (temp.intersects(chunkBox)) {
-				temp = temp.encompass(chunkBox);
+				temp = BlockBoxUtil.intersect(temp, chunkBox);
 				BlockPos.stream(temp)
 						.forEach(blockPos -> {
 							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
@@ -104,7 +104,7 @@ public class ShellModifier implements LazyModifier {
 			// z-planes
 			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - boxExpansion, boxToDrawAround.getMinY() - boxExpansion, boxToDrawAround.getMinZ() - 1 - boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + boxExpansion, boxToDrawAround.getMaxY() + boxExpansion, boxToDrawAround.getMinZ() - thickness - boxExpansion));
 			if (temp.intersects(chunkBox)) {
-				temp = temp.encompass(chunkBox);
+				temp = BlockBoxUtil.intersect(temp, chunkBox);
 				BlockPos.stream(temp)
 						.forEach(blockPos -> {
 							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);
@@ -112,7 +112,7 @@ public class ShellModifier implements LazyModifier {
 			}
 			temp = BlockBox.create(new Vec3i(boxToDrawAround.getMinX() - boxExpansion, boxToDrawAround.getMinY() - boxExpansion, boxToDrawAround.getMaxZ() + 1 + boxExpansion), new Vec3i(boxToDrawAround.getMaxX() + boxExpansion, boxToDrawAround.getMaxY() + boxExpansion, boxToDrawAround.getMaxZ() + thickness + boxExpansion));
 			if (temp.intersects(chunkBox)) {
-				temp = temp.encompass(chunkBox);
+				temp = BlockBoxUtil.intersect(temp, chunkBox);
 				BlockPos.stream(temp)
 						.forEach(blockPos -> {
 							if (chunk.getBlockState(blockPos).isAir()) chunk.setBlockState(blockPos, blockState, false);

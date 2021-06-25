@@ -29,7 +29,7 @@ public abstract class WorldMixin {
 	since then a large part of the method would need to be canceled. This is rather hacky, but it should fulfill the purpose best
 	~CreepyCre
 	 */
-	@ModifyVariable(method = "Lnet/minecraft/world/World;breakBlock(Lnet/minecraft/util/math/BlockPos;ZLnet/minecraft/entity/Entity;I)Z",
+	@ModifyVariable(method = "breakBlock(Lnet/minecraft/util/math/BlockPos;ZLnet/minecraft/entity/Entity;I)Z",
 			at = @At(value = "INVOKE_ASSIGN",
 					target = "Lnet/minecraft/world/World;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;",
 					ordinal = 0))
@@ -48,7 +48,7 @@ public abstract class WorldMixin {
 		return new CustomBreakBlock.HackyFluidState(pair.getLeft(), pair.getRight());
 	}
 
-	@Inject(method = "Lnet/minecraft/world/World;breakBlock(Lnet/minecraft/util/math/BlockPos;ZLnet/minecraft/entity/Entity;I)Z",
+	@Inject(method = "breakBlock(Lnet/minecraft/util/math/BlockPos;ZLnet/minecraft/entity/Entity;I)Z",
 			locals = LocalCapture.CAPTURE_FAILHARD,
 			at = @At(value = "INVOKE",
 					target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z",
