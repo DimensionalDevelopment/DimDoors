@@ -71,13 +71,14 @@ public class WaterLoggableDoorBlock extends DoorBlock implements Waterloggable {
 
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
-		// commented out code is redundant with the very odd implementations of Block#replace and World#breakBlock
-		// please keep it anyways in case it is needed in the future
-		//if (state.get(WATERLOGGED)) {
-		//	world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
-		//}
+		if (state.get(WATERLOGGED)) {
+			world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		}
 
 		BlockState newState = super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
+
+		// commented out code is redundant with the very odd implementations of Block#replace and World#breakBlock
+		// please keep it anyways in case it is needed in the future
 		//if (newState.isAir() && state.getFluidState().getFluid() == Fluids.WATER) return Blocks.WATER.getDefaultState();
 		return newState;
 	}
