@@ -13,6 +13,7 @@
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
     "ServerPlayerInteractionManagerMixin",
+    "ServerPlayNetworkHandlerMixin",
     "StructurePoolMixin",
     "WorldMixin",
     "accessor.BuiltinBiomesAccessor",

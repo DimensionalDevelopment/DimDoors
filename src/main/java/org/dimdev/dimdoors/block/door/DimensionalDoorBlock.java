@@ -3,17 +3,18 @@ package org.dimdev.dimdoors.block.door;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.explosion.Explosion;
-import org.apache.logging.log4j.Level;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
 import org.dimdev.dimdoors.api.block.CustomBreakBlock;
 import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -27,7 +28,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -44,7 +44,7 @@ import net.fabricmc.api.Environment;
 
 import java.util.function.Consumer;
 
-public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, CustomBreakBlock {
+public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, CustomBreakBlock, AfterMoveCollidableBlock {
 	public DimensionalDoorBlock(Settings settings) {
 		super(settings);
 	}
@@ -53,10 +53,18 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	@SuppressWarnings("deprecation")
 	// TODO: change from onEntityCollision to some method for checking if player crossed portal plane
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (world.isClient) {
+		if (world.isClient || entity instanceof ServerPlayerEntity) {
 			return;
 		}
+		onCollision(state, world, pos, entity);
+	}
 
+	@Override
+	public void onAfterMovePlayerCollision(BlockState state, ServerWorld world, BlockPos pos, ServerPlayerEntity player) {
+		onCollision(state, world, pos, player);
+	}
+
+	private void onCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		// TODO: replace with dimdoor cooldown?
 		if (entity.hasNetherPortalCooldown()) {
 			entity.resetNetherPortalCooldown();

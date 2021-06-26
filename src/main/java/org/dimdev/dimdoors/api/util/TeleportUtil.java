@@ -3,14 +3,14 @@ package org.dimdev.dimdoors.api.util;
 import java.util.concurrent.ThreadLocalRandom;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.EulerAngle;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.server.world.ChunkTicketType;
+import net.minecraft.util.math.*;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
@@ -35,21 +35,37 @@ public final class TeleportUtil {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
 
-		if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
-			entity.setYaw(angle.getYaw());
-			entity.setPitch(angle.getPitch());
-			entity.teleport(pos.x, pos.y, pos.z);
-			entity.setVelocity(velocity);
-		} else {
-			entity = FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, velocity, angle.getYaw(), angle.getPitch()));
-		}
+		// Some insurance
+		float yaw = MathHelper.wrapDegrees(angle.getYaw());
+		float pitch = MathHelper.clamp(MathHelper.wrapDegrees(angle.getPitch()), -90.0F, 90.0F);
 
 		if (entity instanceof ServerPlayerEntity) {
+			// This is what the vanilla tp command does. Let's hope this works.
+			ChunkPos chunkPos = new ChunkPos(new BlockPos(pos));
+			((ServerWorld) world).getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
+			entity.stopRiding();
+
+
+			if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
+				((ServerPlayerEntity) entity).networkHandler.requestTeleport(pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+			} else {
+				entity = FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, velocity, yaw, pitch));
+			}
+
+			((ServerPlayerEntity) entity).networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(entity.getId(), velocity));
+			((ExtendedServerPlayNetworkHandler) ((ServerPlayerEntity) entity).networkHandler).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos(pos));
+
 			if (world.getRegistryKey() == ModDimensions.DUNGEON) {
 				((PlayerEntity) entity).incrementStat(ModStats.TIMES_BEEN_TO_DUNGEON);
 			}
-			((ExtendedServerPlayNetworkHandler) ((ServerPlayerEntity) entity).networkHandler).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos(pos));
+		} else {
+			if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
+				entity.refreshPositionAndAngles(pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
+			} else {
+				entity = FabricDimensions.teleport(entity, (ServerWorld) world, new TeleportTarget(pos, velocity, yaw, pitch));
+			}
 		}
+		entity.setVelocity(velocity);
 
 		return entity;
 	}
