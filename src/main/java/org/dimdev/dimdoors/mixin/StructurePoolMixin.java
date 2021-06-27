@@ -24,7 +24,7 @@ public class StructurePoolMixin {
 	private static List<Pair<Function<StructurePool.Projection, ? extends StructurePoolElement>, Integer>> thing(List<Pair<Function<StructurePool.Projection, ? extends StructurePoolElement>, Integer>> list, Identifier id, Identifier terminatorsId, List<Pair<Function<StructurePool.Projection, ? extends StructurePoolElement>, Integer>> elementCounts, StructurePool.Projection projection) {
 		if (id.equals(HOUSES_ID)) {
 			List<Pair<Function<StructurePool.Projection, ? extends StructurePoolElement>, Integer>> copy = new ArrayList<>(list);
-			copy.add(Pair.of(StructurePoolElement.method_30435("dimdoors:bastion/treasure/houses/bastion_gateway", StructureProcessorLists.TREASURE_ROOMS), 1));
+			copy.add(Pair.of(StructurePoolElement.ofProcessedSingle("dimdoors:bastion/treasure/houses/bastion_gateway", StructureProcessorLists.TREASURE_ROOMS), 1));
 			return copy;
 		}
 		return list;
