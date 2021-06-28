@@ -7,7 +7,6 @@ public final class ModCommands {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             DimTeleportCommand.register(dispatcher);
             PocketCommand.register(dispatcher);
-            FrayCommand.register(dispatcher);
         });
     }
 }
