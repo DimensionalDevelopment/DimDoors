@@ -21,10 +21,10 @@ repositories {
 		url = "https://maven.fabricmc.net/"
 	}
 
-	maven {
-		name = "Haven's Maven"
-		url = "https://hephaestus.dev/release"
-	}
+//	maven {
+//		name = "Haven's Maven"
+//		url = "https://hephaestus.dev/release"
+//	}
 
 	maven {
 		url = "https://www.cursemaven.com"
@@ -136,7 +136,7 @@ dependencies {
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-world", "3.0.0-nightly.1.17-pre2")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-chunk", "3.0.0-nightly.1.17-pre2")
 //	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
-	includeCompile("dev.hephaestus", "seedy-behavior", "1.0.1")
+//	includeCompile("dev.hephaestus", "seedy-behavior", "1.0.1")
 
 	modCompileOnly("com.terraformersmc:modmenu:2.0.0-beta.7") {
 		exclude module: "fabric-api"
