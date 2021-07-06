@@ -1,8 +1,10 @@
 {
   "type": "dimdoors:limbo",
   "generator": {
+    "seed": 0,
     "type": "minecraft:noise",
     "biome_source": {
+      "seed": 0,
       "type": "minecraft:fixed",
       "biome": "dimdoors:limbo"
     },
