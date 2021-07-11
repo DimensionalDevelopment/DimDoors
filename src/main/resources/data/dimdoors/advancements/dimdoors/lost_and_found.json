@@ -24,7 +24,8 @@
           "dimension": "dimdoors:dungeon_pockets",
           "block": {
             "blocks": [
-              "minecraft:chest"
+              "minecraft:chest",
+              "minecraft:trapped_chest"
             ]
           }
         },
