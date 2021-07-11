@@ -266,28 +266,6 @@
   "text.autoconfig.dimdoors.option.limbo.decaySpreadChance": "Decay Spread Chance",
   "text.autoconfig.dimdoors.option.limbo.decaySpreadChance.@Tooltip": "To be filled out.",
 
-  "text.autoconfig.dimdoors.category.player": "Player",
-  "text.autoconfig.dimdoors.option.player.fray": "Fray",
-  "text.autoconfig.dimdoors.option.player.fray.@Tooltip": "To be filled out.",
-  "text.autoconfig.dimdoors.option.player.fray.maxFray": "Max Fray",
-  "text.autoconfig.dimdoors.option.player.fray.maxFray.@Tooltip": "Title",
-  "text.autoconfig.dimdoors.option.player.fray.riftFrayIncrement": "Rift Fray Increment",
-  "text.autoconfig.dimdoors.option.player.fray.riftFrayIncrement.@Tooltip": "Title",
-  "text.autoconfig.dimdoors.option.player.fray.monolithTeleportationIncrement": "Monolith Teleportation Increment",
-  "text.autoconfig.dimdoors.option.player.fray.monolithTeleportationIncrement.@Tooltip": "Title",
-  "text.autoconfig.dimdoors.option.player.fray.eternalFluidFrayDecrease": "Eternal Fluid Fray Decrease",
-  "text.autoconfig.dimdoors.option.player.fray.eternalFluidFrayDecrease.@Tooltip": "Title",
-  "text.autoconfig.dimdoors.option.player.fray.nameplateGlitchFray": "Nameplate Glitch Fray",
-  "text.autoconfig.dimdoors.option.player.fray.nameplateGlitchFray.@Tooltip": "Amount of fray needed for nameplate to glitch.",
-  "text.autoconfig.dimdoors.option.player.fray.staticOverlayFray": "Static Overlay Fray",
-  "text.autoconfig.dimdoors.option.player.fray.staticOverlayFray.@Tooltip": "Amount of fray needed for screen to start having static",
-  "text.autoconfig.dimdoors.option.player.fray.armorDamageFray": "Armor Damage Fray",
-  "text.autoconfig.dimdoors.option.player.fray.armorDamageFray.@Tooltip": "Amount of fray needed for your armor to start taking damage",
-  "text.autoconfig.dimdoors.option.player.fray.grayScreenFray": "Gray Screen Fray",
-  "text.autoconfig.dimdoors.option.player.fray.grayScreenFray.@Tooltip": "Title",
-  "text.autoconfig.dimdoors.option.player.fray.unravelledStatueFray": "Unravelled Statue Fray",
-  "text.autoconfig.dimdoors.option.player.fray.unravelledStatueFray.@Tooltip": "Title",
-
   "text.autoconfig.dimdoors.category.graphics": "Graphics Settings",
   "text.autoconfig.dimdoors.option.graphics.highlightRiftCoreFor": "Time to Highlight Rift Core",
   "text.autoconfig.dimdoors.option.graphics.highlightRiftCoreFor.@Tooltip": "How long, in milliseconds, the rift's core (tesseract animation) should be shown for when attempting to place a door near a large rift but not directly on it. Set to -1 to disable.",
@@ -433,7 +411,5 @@
   "resourcePackActivationType.alwaysEnabled": "Always Enabled",
 
   "dimdoors.mode.enable": "Enable",
-  "dimdoors.mode.disable": "Disable",
-
-  "enchantment.dimdoors.frayed" : "Frayed"
+  "dimdoors.mode.disable": "Disable"
 }
