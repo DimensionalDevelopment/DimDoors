@@ -23,7 +23,10 @@
         "location": {
           "dimension": "dimdoors:dungeon_pockets",
           "block": {
-            "block": "minecraft:chest"
+            "blocks": [
+              "minecraft:chest",
+              "minecraft:trapped_chest"
+            ]
           }
         },
         "item": {}

@@ -22,7 +22,7 @@
       "conditions": {
         "items": [
           {
-            "tag": ["dimdoors:fabric"]
+            "tag": "dimdoors:fabric"
           }
         ]
       }

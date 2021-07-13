@@ -113,7 +113,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 										ModDimensions.DUNGEON,
 										null,
 										LightPredicate.ANY,
-										BlockPredicate.Builder.create().blocks(Blocks.CHEST).build(),
+										BlockPredicate.Builder.create().blocks(Blocks.CHEST, Blocks.TRAPPED_CHEST).build(),
 								FluidPredicate.ANY
 								),
 								new ItemPredicate(
