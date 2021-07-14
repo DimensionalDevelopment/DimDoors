@@ -6,6 +6,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,6 +115,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 	}
 
 	private static void portalTick(World world, BlockPos pos, BlockState state, EntranceRiftBlockEntity e) {
+		RiftBlockEntity.tick(world, pos, state, e);
 		if (world.isClient || e.getDestination() != null) {
 			return;
 		}

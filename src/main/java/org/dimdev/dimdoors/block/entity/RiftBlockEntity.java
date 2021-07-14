@@ -50,6 +50,17 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		super(type, pos, state);
 	}
 
+	public static void tick(World world, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
+		if (!world.isClient) {
+				if (blockEntity instanceof RiftBlockEntity) {
+					PlayerLookup.tracking(blockEntity).forEach(player -> {
+						if (blockPos.isWithinDistance(player.getPos(), 32))
+							ModCriteria.RIFT_TRACKED.trigger(player);
+					});
+				}
+			}
+	}
+
 	@Override
 	public void readNbt(NbtCompound nbt) {
 		super.readNbt(nbt);
@@ -110,12 +121,6 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		this.data.setProperties(properties);
 		this.updateProperties();
 		this.markDirty();
-	}
-
-	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		PlayerLookup.tracking(this).forEach(ModCriteria.RIFT_TRACKED::trigger);
-		return super.toInitialChunkDataNbt();
 	}
 
 	public void markStateChanged() {
