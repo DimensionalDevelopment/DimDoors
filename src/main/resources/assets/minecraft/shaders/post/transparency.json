@@ -59,11 +59,6 @@
 					"id": "weather:depth"
 				}
 			]
-		},
-		{
-			"name": "fray",
-			"intarget": "final",
-			"outtarget": "minecraft:main"
 		}
 	]
 }

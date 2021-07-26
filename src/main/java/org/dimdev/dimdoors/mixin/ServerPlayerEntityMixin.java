@@ -1,15 +1,12 @@
 package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerRecipeBook;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.UnravelledFabricBlock;
 import org.dimdev.dimdoors.criteria.ModCriteria;
-import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
@@ -17,7 +14,6 @@ import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.component.PlayerModifiersComponent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -46,11 +42,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	public abstract void readCustomDataFromNbt(NbtCompound nbt);
 
 	private static final float RANDOM_ACTION_CHANCE = 0.1F;
-	private static final float CHANCE_TO_DECREASE_ARMOR_DURABILITY = 0.03F;
-	private static final float CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC = 0.005F;
-	private static final float CHANCE_TO_ENCHANT_WITH_FRAY = 0.01F;
 	private static final float CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS = 0.1F;
-	private static final float RANDOM_INCREMENT_FRAY_CHANCE = 0.1F;
 	private static final int CHUNK_SIZES = 25;
 	private static final int POSITION_AWAY = 50;
 	private static final float RANDOM_LIQUID_CHANCE = 0.7F;
@@ -63,14 +55,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	public void playerTickMixin(CallbackInfo ci) {
 		if (random.nextFloat() <= RANDOM_ACTION_CHANCE) {
-			if(random.nextFloat() <= RANDOM_INCREMENT_FRAY_CHANCE && PlayerModifiersComponent.getFray((PlayerEntity) (Object)this) < 180 && ModDimensions.isLimboDimension((((PlayerEntity)(Object)(this)).getEntityWorld()))) {
-				PlayerModifiersComponent.incrementFray((PlayerEntity) (Object)this, 1);
-			}
-			if (PlayerModifiersComponent.getFray(this) >= 125) {
-				doRandomFunction(this);
-			}
 			if(ModDimensions.isLimboDimension(((PlayerEntity)(Object)(this)).getEntityWorld())) {
-				tryAddingFrayEnchantment((PlayerEntity) (Object)this);
 				tryMakingLimboLikeOtherDimensions((PlayerEntity)(Object)this);
 			}
 		}
@@ -146,62 +131,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 			case 1 : makeLimboLikeNether(player); break;
 			case 2 : makeLimboLikeEnd(player); break;
 		}
-	}
-
-	private void doRandomFunction(LivingEntity player) {
-		switch (random.nextInt(2)) {
-			case 0:
-				decreaseArmorDurability((PlayerEntity) player);
-				break;
-			case 1:
-				addRandomUnravledFabric((PlayerEntity) player);
-				break;
-			default:
-		}
-
-	}
-
-	private void tryAddingFrayEnchantment(PlayerEntity player) {
-		if (!(random.nextFloat() <= CHANCE_TO_ENCHANT_WITH_FRAY)) {
-			return;
-		}
-		int slot = random.nextInt(player.getInventory().size());
-		if (!player.getInventory().getStack(slot).isEnchantable()) {
-			return;
-		}
-		ItemStack stack = player.getInventory().getStack(slot);
-		stack.addEnchantment(ModEnchants.FRAYED_ENCHANTMENT, 1);
-		player.getInventory().setStack(slot, stack);
-		((ExtendedServerPlayNetworkHandler) (Object) ((ServerPlayerEntity) (Object) this).networkHandler).getDimDoorsPacketHandler().sendPacket(new PlayerInventorySlotUpdateS2CPacket(slot, stack));
-
-	}
-
-	//TODO: Fix this shit so it syncs.
-	private void addRandomUnravledFabric(PlayerEntity player) {
-		if (PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
-			return;
-		if (!(random.nextFloat() <= CHANCE_TO_REPLACE_ITEMSLOT_WITH_UNRAVLED_FABRIC))
-			return;
-
-		int slot = random.nextInt(player.getInventory().main.size());
-
-		if (!player.getInventory().main.get(slot).isEmpty() && !(player.getInventory().main.get(slot).getItem() == ModItems.UNRAVELLED_FABRIC))
-			return;
-		if (player.getInventory().main.get(slot).getCount() >= 64)
-			return;
-		ItemStack stack = new ItemStack(ModItems.UNRAVELLED_FABRIC, 1 + player.getInventory().main.get(slot).getCount());
-		player.getInventory().main.set(slot, stack);
-		((ExtendedServerPlayNetworkHandler) (Object) ((ServerPlayerEntity) (Object) this).networkHandler).getDimDoorsPacketHandler().sendPacket(new PlayerInventorySlotUpdateS2CPacket(slot, stack));
-	}
-
-	private void decreaseArmorDurability(PlayerEntity player) {
-		if (PlayerModifiersComponent.getFray(player) < DimensionalDoorsInitializer.getConfig().getPlayerConfig().fray.unravledFabricInInventoryFray)
-			return;
-		for (int i = 0; i < player.getInventory().armor.size(); i++)
-			if (random.nextFloat() <= CHANCE_TO_DECREASE_ARMOR_DURABILITY)
-				player.getArmorItems().forEach((itemStack) -> {
-					itemStack.setDamage(itemStack.getDamage() + 1);
-				});
 	}
 
 	@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
