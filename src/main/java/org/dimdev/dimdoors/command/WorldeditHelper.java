@@ -28,7 +28,7 @@ public class WorldeditHelper {
 	static int load(ServerCommandSource source, PocketTemplate template) throws CommandSyntaxException {
 		ServerPlayerEntity player = source.getPlayer();
 		boolean async = DimensionalDoorsInitializer.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
-		Consumer<Runnable> taskAcceptor = async ? r -> source.getMinecraftServer().execute(r) : Runnable::run;
+		Consumer<Runnable> taskAcceptor = async ? r -> source.getServer().execute(r) : Runnable::run;
 		Runnable task = () -> {
 			NbtCompound nbt = Schematic.toNbt(template.getSchematic());
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();

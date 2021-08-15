@@ -25,7 +25,7 @@ public class TagBlockBreakCriteria extends AbstractCriterion<TagBlockBreakCriter
 	}
 
 	public void trigger(ServerPlayerEntity player, Block block) {
-		this.test(player, c -> c.getBlockTag().contains(block));
+		this.trigger(player, c -> c.getBlockTag().contains(block));
 	}
 
 	@Override

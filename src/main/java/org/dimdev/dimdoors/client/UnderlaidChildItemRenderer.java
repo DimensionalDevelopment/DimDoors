@@ -43,7 +43,7 @@ public class UnderlaidChildItemRenderer implements BuiltinItemRendererRegistry.D
 		ItemStack originalItemStack = new ItemStack(
 				childItem.getOriginalItem(),
 				stack.getCount());
-		originalItemStack.setTag(stack.getTag());
+		originalItemStack.setNbt(stack.getNbt());
 
 		matrices.push();
 		childItem.transform(matrices);

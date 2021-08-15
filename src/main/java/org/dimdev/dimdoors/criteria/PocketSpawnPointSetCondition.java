@@ -18,7 +18,7 @@ public class PocketSpawnPointSetCondition extends AbstractCriterion<PocketSpawnP
 	}
 
 	public void trigger(ServerPlayerEntity player) {
-		this.test(player, t -> true);
+		this.trigger(player, t -> true);
 	}
 
 	@Override

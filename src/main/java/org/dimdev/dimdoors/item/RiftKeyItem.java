@@ -58,8 +58,8 @@ public class RiftKeyItem extends Item {
 	}
 
 	@Override
-	public boolean shouldSyncTagToClient() {
-		return super.shouldSyncTagToClient();
+	public boolean isNbtSynced() {
+		return super.isNbtSynced();
 	}
 
 	@Override
@@ -69,13 +69,13 @@ public class RiftKeyItem extends Item {
 
 	@Override
 	public void onCraft(ItemStack stack, World world, PlayerEntity player) {
-		stack.setTag(this.getDefaultStack().getTag());
+		stack.setNbt(this.getDefaultStack().getNbt());
 	}
 
 	@Override
 	public ItemStack getDefaultStack() {
 		ItemStack stack = super.getDefaultStack();
-		stack.putSubTag("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) NbtType.INT_ARRAY));
+		stack.setSubNbt("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) NbtType.INT_ARRAY));
 		return stack;
 	}
 
@@ -117,25 +117,25 @@ public class RiftKeyItem extends Item {
 
 	public static boolean tryRemove(ItemStack stack, UUID id) {
 		NbtIntArray arrayTag = new NbtIntArray(DynamicSerializableUuid.toIntArray(id));
-		return stack.getTag().getList("Ids", NbtType.INT_ARRAY).remove(arrayTag);
+		return stack.getNbt().getList("Ids", NbtType.INT_ARRAY).remove(arrayTag);
 	}
 
 	public static void add(ItemStack stack, UUID id) {
 		if (!has(stack, id)) {
-			stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).add(new NbtIntArray(DynamicSerializableUuid.toIntArray(id)));
+			stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).add(new NbtIntArray(DynamicSerializableUuid.toIntArray(id)));
 		}
 	}
 
 	public static boolean has(ItemStack stack, UUID id) {
-		return stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).contains(new NbtIntArray(DynamicSerializableUuid.toIntArray(id)));
+		return stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).contains(new NbtIntArray(DynamicSerializableUuid.toIntArray(id)));
 	}
 
 	public static boolean isEmpty(ItemStack stack) {
-		return stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).isEmpty();
+		return stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).isEmpty();
 	}
 
 	public static List<UUID> getIds(ItemStack stack) {
-		return stack.getOrCreateTag()
+		return stack.getOrCreateNbt()
 				.getList("Ids", NbtType.INT_ARRAY)
 				.stream()
 				.map(NbtIntArray.class::cast)

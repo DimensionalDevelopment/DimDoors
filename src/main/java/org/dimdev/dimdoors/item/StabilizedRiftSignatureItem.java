@@ -39,7 +39,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 
 	@Override
 	public boolean hasGlint(ItemStack stack) {
-		return stack.getTag() != null && stack.getTag().contains("destination");
+		return stack.getNbt() != null && stack.getNbt().contains("destination");
 	}
 
 	@Override
@@ -101,19 +101,19 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 	}
 
 	public static void setSource(ItemStack itemStack, RotatedLocation destination) {
-		if (!itemStack.hasTag()) itemStack.setTag(new NbtCompound());
-		itemStack.getTag().put("destination", RotatedLocation.serialize(destination));
+		if (!itemStack.hasNbt()) itemStack.setNbt(new NbtCompound());
+		itemStack.getNbt().put("destination", RotatedLocation.serialize(destination));
 	}
 
 	public static void clearSource(ItemStack itemStack) {
-		if (itemStack.hasTag()) {
-			itemStack.getTag().remove("destination");
+		if (itemStack.hasNbt()) {
+			itemStack.getNbt().remove("destination");
 		}
 	}
 
 	public static RotatedLocation getTarget(ItemStack itemStack) {
-		if (itemStack.hasTag() && itemStack.getTag().contains("destination")) {
-			return RotatedLocation.deserialize(itemStack.getTag().getCompound("destination"));
+		if (itemStack.hasNbt() && itemStack.getNbt().contains("destination")) {
+			return RotatedLocation.deserialize(itemStack.getNbt().getCompound("destination"));
 		} else {
 			return null;
 		}

@@ -18,7 +18,7 @@ public class EternalFluidLakeDecorator extends Decorator<ChanceDecoratorConfig> 
 	@Override
 	public Stream<BlockPos> getPositions(DecoratorContext context, Random random, ChanceDecoratorConfig config, BlockPos pos) {
 		if (random.nextInt(config.chance) == 0) {
-			return Stream.of(new BlockPos(random.nextInt(16) + pos.getX(), random.nextInt(context.getMaxY()), random.nextInt(16) + pos.getZ()));
+			return Stream.of(new BlockPos(random.nextInt(16) + pos.getX(), random.nextInt(context.getHeight()), random.nextInt(16) + pos.getZ()));
 		}
 
 		return Stream.empty();
