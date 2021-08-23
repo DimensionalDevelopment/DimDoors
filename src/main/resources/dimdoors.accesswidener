@@ -15,3 +15,6 @@ extendable    class    net/minecraft/block/entity/BlockEntityType$BlockEntityFac
 extendable    class    net/minecraft/fluid/FluidState
 accessible    field    net/minecraft/state/State    codec    Lcom/mojang/serialization/MapCodec;
 #Lnet/minecraft/state/State;codec:Lcom/mojang/serialization/MapCodec;
+
+# for lazy pocket gen/ getting all currently loaded chunks
+accessible method net/minecraft/server/world/ThreadedAnvilChunkStorage entryIterator ()Ljava/lang/Iterable;
