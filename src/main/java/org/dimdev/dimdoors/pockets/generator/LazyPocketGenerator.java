@@ -49,6 +49,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 		if (nbt.contains("lazy_modifiers")) {
 			NbtList modifiersNbt = nbt.getList("lazy_modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
+				// TODO: skip deserialization of single Modifiers on Exception.
 				lazyModifierList.add((LazyModifier) Modifier.deserialize(modifiersNbt.getCompound(i)));
 			}
 		}

@@ -76,7 +76,7 @@ public class PocketDirectory {
 
 		NbtCompound pocketsNbt = new NbtCompound();
 		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toNbt(new NbtCompound()))))
-				.map(CompletableFuture::join).forEach(pair -> pocketsNbt.put(pair.getLeft(), pair.getRight()));
+				.map(CompletableFuture::join).sequential().forEach(pair -> pocketsNbt.put(pair.getLeft(), pair.getRight()));
 		nbt.put("pockets", pocketsNbt);
 
 		return nbt;
