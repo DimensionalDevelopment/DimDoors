@@ -236,7 +236,10 @@ public interface Equation {
 			@Override
 			public Optional<Equation> tryParse(String toParse) throws EquationParseException {
 				if (!toParse.startsWith(this.functionString) || !toParse.endsWith(")")) return Optional.empty();
-				String[] arguments = toParse.substring(this.functionString.length(), toParse.length() - 1).split(",");
+				String[] arguments = toParse.substring(this.functionString.length(), toParse.length() - 1).split(",", -1);
+				if (arguments.length == 1 && arguments[0].equals("") && this.minArguments == 0) {
+					return Optional.of(stringDoubleMap -> this.function.apply(stringDoubleMap, new Equation[0]));
+				}
 				if (this.minArguments > arguments.length || (this.maxArguments < arguments.length && this.maxArguments != -1))
 					return Optional.empty();
 				final Equation[] argumentEquations = new Equation[arguments.length];
