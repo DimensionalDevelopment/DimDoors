@@ -1,9 +1,11 @@
 package org.dimdev.dimdoors.world;
 
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.world.biome.*;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.mixin.accessor.BuiltinBiomesAccessor;
+import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
@@ -96,7 +98,7 @@ public final class ModBiomes {
 						.music(new MusicSound(ModSoundEvents.CREEPY, 0, 0, true))
                         .skyColor(0x404040)
                         .grassColor(0)
-						.particleConfig(new BiomeParticleConfig(new RiftParticleEffect(0.2f, 2000), 0.003F))
+						.particleConfig(new BiomeParticleConfig(ModParticleTypes.LIMBO_ASH, 0.118093334F))
                         .build()
 				)
                 .generationSettings(new GenerationSettings.Builder()
@@ -128,7 +130,7 @@ public final class ModBiomes {
 								SpawnGroup.MONSTER,
 								new SpawnSettings.SpawnEntry(
 										ModEntityTypes.MONOLITH,
-										1,
+										100,
 										1,
 										1
 								)
