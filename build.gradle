@@ -192,7 +192,7 @@ curseforge {
 		id = '284876'
 		changelog = file('changelog.txt').text
 		releaseType = 'beta'
-		addGameVersion '1.17'
+		addGameVersion '1.17.1'
 		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[1.17] Dimensional Doors ${version}"
