@@ -56,6 +56,8 @@ public final class ModFeatures {
         Registry.register(Registry.FEATURE, new Identifier("dimdoors", "schematic_gateway"), SCHEMATIC_GATEWAY_FEATURE);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, SANDSTONE_PILLARS_KEY.getValue(), SANDSTONE_PILLARS_FEATURE);
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, TWO_PILLARS_KEY.getValue(), TWO_PILLARS_FEATURE);
+		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "solid_static_ore"), SOLID_STATIC_ORE);
+		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "decayed_block_ore"), DECAYED_BLOCK_ORE);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "limbo_gateway"), LIMBO_GATEWAY_CONFIGURED_FEATURE);
         Registry.register(Registry.DECORATOR, new Identifier("dimdoors", "eternal_fluid_lake"), ETERNAL_FLUID_LAKE_DECORATOR);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "eternal_fluid_lake"), ETERNAL_FLUID_LAKE);
