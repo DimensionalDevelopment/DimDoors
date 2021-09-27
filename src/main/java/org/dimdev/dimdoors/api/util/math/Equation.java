@@ -126,6 +126,9 @@ public interface Equation {
 			// clamp
 			parseRules.add(new FunctionParser("clamp", 3, 3, (stringDoubleMap, equations) -> MathHelper.clamp(equations[0].apply(stringDoubleMap), equations[1].apply(stringDoubleMap), equations[2].apply(stringDoubleMap))));
 
+			// rand
+			parseRules.add(new FunctionParser("random", 0,0, ((stringDoubleMap, equations) -> Math.random())));
+
 			// variable replacer
 			parseRules.add(new VariableReplacer());
 		}
