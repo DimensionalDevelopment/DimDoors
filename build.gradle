@@ -112,8 +112,8 @@ sourceSets {
 	datagen
 }
 
-minecraft {
-	accessWidener = file('src/main/resources/dimdoors.accesswidener')
+loom {
+	accessWidenerPath = file('src/main/resources/dimdoors.accesswidener')
 }
 
 dependencies {
@@ -125,8 +125,6 @@ dependencies {
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
 	includeCompile("com.github.DimensionalDevelopment", "Matrix", "1.0.0")
-//	includeCompile("io.github.BoogieMonster1O1", "OpenWorlds", "c57e3ef")
-//	includeCompile("io.github.cottonmc", "LibGui", "4.0.0-alpha.1+21w11a")
 	includeCompile("me.shedaniel.cloth", "cloth-config-fabric", "5.0.34")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-base", "3.0.0-nightly.1.17-pre2")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-item", "3.0.0-nightly.1.17-pre2")
@@ -135,8 +133,6 @@ dependencies {
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-util", "3.0.0-nightly.1.17-pre2")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-world", "3.0.0-nightly.1.17-pre2")
 	includeCompile("io.github.onyxstudios.Cardinal-Components-API", "cardinal-components-chunk", "3.0.0-nightly.1.17-pre2")
-//	includeCompile("me.sargunvohra.mcmods", "autoconfig1u", "3.3.1")
-//	includeCompile("dev.hephaestus", "seedy-behavior", "1.0.1")
 
 	modCompileOnly("com.terraformersmc:modmenu:2.0.0-beta.7") {
 		exclude module: "fabric-api"
@@ -158,14 +154,11 @@ dependencies {
 	modCompileOnly "worldedit:worldedit:7.2.6"
 	modRuntime "worldedit:worldedit:7.2.6"
 
-//	modImplementation "geckolib:geckolib:3.0.31"
-
 	datagenImplementation sourceSets.main.output
 	datagenImplementation sourceSets.main.compileClasspath
 	datagenRuntimeOnly sourceSets.main.runtimeClasspath
 
 	testImplementation('junit:junit:4.13.2')
-	//testImplementation('net.devtech:PotatoUnit-fabric:1.0.0')
 	testImplementation('net.devtech:PotatoUnit:1.0.2')
 }
 
