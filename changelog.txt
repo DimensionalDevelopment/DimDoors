@@ -1,10 +1,5 @@
-4.0.0+beta.2
-- Added more dungeons, and split the dungeons data pack
-- Added a `pocket` command. Can be used to place schematics and/or load them into your worldedit clipboard
-- Added messages that are sent when you enter / exit limbo
-- Added WTHIT support for rift destinations
-- Added Solid Static (from 1.12)
-- Make Noise caves in Limbo not be filled with water
-- Added advancements
-- Fixed a crash on dedicated servers
-- Added more stats
+4.0.0+beta.3
+Bug Fixes
+- Fixed gateways not generating in modded biomes
+- Fixed incorrect particle shown on unfolded block
+- Added registration of features
