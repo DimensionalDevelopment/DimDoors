@@ -14,14 +14,14 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.tag.TagRegistry;
+import net.fabricmc.fabric.api.tag.TagFactory;
 
 public class TagBlockBreakCriteria extends AbstractCriterion<TagBlockBreakCriteria.Conditions> {
 	public static final Identifier ID = new Identifier("dimdoors", "tag_block_break");
 
 	@Override
 	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
-		return new Conditions(playerPredicate, TagRegistry.block(Identifier.tryParse(obj.get("tag").getAsString())));
+		return new Conditions(playerPredicate, TagFactory.BLOCK.create(Identifier.tryParse(obj.get("tag").getAsString())));
 	}
 
 	public void trigger(ServerPlayerEntity player, Block block) {
