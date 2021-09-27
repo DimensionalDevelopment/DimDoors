@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "BlockMixin",
-    "DefaultBiomeFeaturesMixin",
     "ExplosionMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",
