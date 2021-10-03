@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.item.ModItems;
 
 import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
 
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
@@ -24,6 +25,7 @@ public class DatagenInitializer implements PreLaunchEntrypoint {
 	@Override
 	public void onPreLaunch() {
 		try {
+			SharedConstants.createGameVersion();
 			Bootstrap.initialize();
 			DimensionalDoorsInitializer.registerRegistries();
 			ModBlocks.init();
@@ -35,6 +37,7 @@ public class DatagenInitializer implements PreLaunchEntrypoint {
 			dataGenerator.install(new LootTableProvider(dataGenerator));
 			dataGenerator.install(RECIPE_CONSUMER = new RecipeConsumer(dataGenerator));
 			dataGenerator.install(LOOT_TABLE_CONSUMER = new LootTableConsumer(dataGenerator));
+			dataGenerator.install(new LimboDecayProvider(dataGenerator));
 			dataGenerator.run();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

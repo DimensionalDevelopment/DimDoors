@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:cobblestone"
+  },
+  "processor": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:end_stone",
+    "entropy": 1
+  }
+}

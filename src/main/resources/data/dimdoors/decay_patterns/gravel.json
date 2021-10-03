@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:gravel"
+  },
+  "processor": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:sand",
+    "entropy": 1
+  }
+}

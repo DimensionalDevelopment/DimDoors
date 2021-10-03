@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:jungle_log"
+  },
+  "processor": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:jungle_planks",
+    "entropy": 1
+  }
+}

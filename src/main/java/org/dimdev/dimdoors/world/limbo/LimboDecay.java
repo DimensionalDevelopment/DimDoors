@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -17,15 +18,18 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
-import org.apache.commons.lang3.ArrayUtils;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+
+import net.minecraft.resource.ResourceManager;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.block.door.data.DoorData;
+import org.dimdev.dimdoors.world.decay.DecayLoader;
+import org.dimdev.dimdoors.world.decay.DecayPattern;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -34,7 +38,6 @@ import net.minecraft.world.World;
 import static net.minecraft.block.Blocks.ACACIA_LOG;
 import static net.minecraft.block.Blocks.ACACIA_PLANKS;
 import static net.minecraft.block.Blocks.ACACIA_WOOD;
-import static net.minecraft.block.Blocks.AIR;
 import static net.minecraft.block.Blocks.ANDESITE;
 import static net.minecraft.block.Blocks.BIRCH_LOG;
 import static net.minecraft.block.Blocks.BIRCH_PLANKS;
@@ -85,10 +88,6 @@ import static net.minecraft.block.Blocks.SPRUCE_PLANKS;
 import static net.minecraft.block.Blocks.SPRUCE_WOOD;
 import static net.minecraft.block.Blocks.STONE;
 import static net.minecraft.block.Blocks.STONE_BRICKS;
-import static org.dimdev.dimdoors.block.ModBlocks.DETACHED_RIFT;
-import static org.dimdev.dimdoors.block.ModBlocks.ETERNAL_FLUID;
-import static org.dimdev.dimdoors.block.ModBlocks.GOLD_DOOR;
-import static org.dimdev.dimdoors.block.ModBlocks.QUARTZ_DOOR;
 import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
 
 /**
@@ -97,55 +96,8 @@ import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
  */
 public final class LimboDecay {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private static final UnboundedMapCodec<Block, Block> CODEC = Codec.unboundedMap(Identifier.CODEC.xmap(Registry.BLOCK::get, Registry.BLOCK::getId), Registry.BLOCK);
-	private static final Consumer<String> STDERR = System.err::println;
-	private static final Map<Block, Block> DECAY_SEQUENCE = new HashMap<>();
-	private static final Map<Block, Block> DEFAULT_VALUES;
-	private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
-	private static final Path CONFIG_PATH = DimensionalDoorsInitializer.getConfigRoot().resolve("limbo_decay.json");
-
-	public static void init() {
-		try {
-			JsonObject configObject = null;
-			if (Files.isDirectory(CONFIG_PATH)) {
-				Files.delete(CONFIG_PATH);
-			}
-			if (!Files.exists(CONFIG_PATH)) {
-				Files.createFile(CONFIG_PATH);
-				JsonObject jsonObject = CODEC.encodeStart(JsonOps.INSTANCE, DEFAULT_VALUES).getOrThrow(false, STDERR).getAsJsonObject();
-				configObject = jsonObject;
-				String json = GSON.toJson(jsonObject);
-				Files.write(CONFIG_PATH, json.getBytes());
-				DECAY_SEQUENCE.clear();
-				DECAY_SEQUENCE.putAll(DEFAULT_VALUES);
-			}
-			if (configObject == null) {
-				try (BufferedReader reader = Files.newBufferedReader(CONFIG_PATH)) {
-					configObject = GSON.fromJson(reader, JsonObject.class);
-					Map<Block, Block> blocks = CODEC.decode(JsonOps.INSTANCE, configObject).getOrThrow(false, STDERR).getFirst();
-					DECAY_SEQUENCE.clear();
-					DECAY_SEQUENCE.putAll(blocks);
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	private static final Random RANDOM = new Random();
-	private static Block[] blocksImmuneToDecay = null;
-
-	public static Map<Block, Block> getDecaySequence() {
-		return DECAY_SEQUENCE;
-	}
-
-	public static Block[] getBlocksImmuneToDecay() {
-		if (blocksImmuneToDecay == null) {
-			blocksImmuneToDecay = ArrayUtils.addAll(DoorData.DOORS.toArray(new Block[0]), UNRAVELLED_FABRIC, ETERNAL_FLUID, DETACHED_RIFT, GOLD_DOOR, QUARTZ_DOOR);
-		}
-
-		return blocksImmuneToDecay;
-	}
 
 	/**
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
@@ -173,94 +125,14 @@ public final class LimboDecay {
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
 	private static boolean decayBlock(World world, BlockPos pos) {
-		BlockState state = world.getBlockState(pos);
+		@NotNull Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns();
 
-		if (canDecayBlock(state, world, pos)) {
-			//Loop over the block IDs that decay can go through.
-			//Find an index matching the current blockID, if any.
+		if(patterns.isEmpty()) return false;
 
-			if (getDecaySequence().containsKey(state.getBlock())) {
-				Block decay = getDecaySequence().get(state.getBlock());
-				world.setBlockState(pos, decay.getDefaultState());
-			} else if (!state.isFullCube(world, pos)) {
-				world.setBlockState(pos, AIR.getDefaultState());
-			}
-			return true;
+		for (DecayPattern pattern : DecayLoader.getInstance().getPatterns()) {
+			if(pattern.run(world, pos)) return true;
 		}
 
 		return false;
 	}
-
-	/**
-	 * Checks if a block can decay. We will not decay air, certain DD blocks, or containers.
-	 */
-	private static boolean canDecayBlock(BlockState state, World world, BlockPos pos) {
-		if (world.isAir(pos)) {
-			return false;
-		}
-
-		for (int k = 0; k < getBlocksImmuneToDecay().length; k++) {
-			if (state.getBlock().equals(getBlocksImmuneToDecay()[k])) {
-				return false;
-			}
-		}
-
-		return !(state.getBlock() instanceof BlockWithEntity);
-	}
-
-	static {
-		ImmutableMap.Builder<Block, Block> builder = ImmutableMap.builder();
-		BiConsumer<Block, Block> blockBiConsumer = builder::put;
-
-		blockBiConsumer.accept(STONE, COBBLESTONE);
-		blockBiConsumer.accept(COBBLESTONE, END_STONE);
-		blockBiConsumer.accept(GRAVEL, SAND);
-		blockBiConsumer.accept(SAND, UNRAVELLED_FABRIC);
-		blockBiConsumer.accept(GLASS, SAND);
-		blockBiConsumer.accept(GRASS_BLOCK, DIRT);
-		blockBiConsumer.accept(DIRT, SAND);
-		blockBiConsumer.accept(REDSTONE_BLOCK, REDSTONE_ORE);
-		blockBiConsumer.accept(REDSTONE_ORE, STONE);
-		blockBiConsumer.accept(EMERALD_BLOCK, EMERALD_ORE);
-		blockBiConsumer.accept(EMERALD_ORE, STONE);
-		blockBiConsumer.accept(COAL_BLOCK, COAL_ORE);
-		blockBiConsumer.accept(COAL_ORE, STONE);
-		blockBiConsumer.accept(IRON_BLOCK, IRON_ORE);
-		blockBiConsumer.accept(IRON_ORE, STONE);
-		blockBiConsumer.accept(LAPIS_BLOCK, LAPIS_ORE);
-		blockBiConsumer.accept(LAPIS_ORE, STONE);
-		blockBiConsumer.accept(GOLD_BLOCK, GOLD_ORE);
-		blockBiConsumer.accept(GOLD_ORE, STONE);
-		blockBiConsumer.accept(SANDSTONE, SAND);
-		blockBiConsumer.accept(END_STONE_BRICKS, END_STONE);
-		blockBiConsumer.accept(DIRT_PATH, DIRT);
-		blockBiConsumer.accept(POLISHED_GRANITE, GRANITE);
-		blockBiConsumer.accept(POLISHED_ANDESITE, ANDESITE);
-		blockBiConsumer.accept(ANDESITE, DIORITE);
-		blockBiConsumer.accept(POLISHED_DIORITE, DIORITE);
-		blockBiConsumer.accept(GRANITE, DIORITE);
-		blockBiConsumer.accept(DIORITE, COBBLESTONE);
-		blockBiConsumer.accept(POLISHED_BLACKSTONE, BLACKSTONE);
-		blockBiConsumer.accept(BLACKSTONE, COBBLESTONE);
-		blockBiConsumer.accept(PODZOL, DIRT);
-		blockBiConsumer.accept(FARMLAND, DIRT);
-		blockBiConsumer.accept(STONE_BRICKS, CRACKED_STONE_BRICKS);
-		blockBiConsumer.accept(CRACKED_STONE_BRICKS, DIORITE);
-		blockBiConsumer.accept(END_STONE, SAND);
-		blockBiConsumer.accept(OAK_LOG, OAK_PLANKS);
-		blockBiConsumer.accept(BIRCH_LOG, BIRCH_PLANKS);
-		blockBiConsumer.accept(SPRUCE_LOG, SPRUCE_PLANKS);
-		blockBiConsumer.accept(JUNGLE_LOG, JUNGLE_PLANKS);
-		blockBiConsumer.accept(ACACIA_LOG, ACACIA_PLANKS);
-		blockBiConsumer.accept(DARK_OAK_LOG, DARK_OAK_PLANKS);
-		blockBiConsumer.accept(OAK_WOOD, OAK_LOG);
-		blockBiConsumer.accept(BIRCH_WOOD, BIRCH_LOG);
-		blockBiConsumer.accept(SPRUCE_WOOD, SPRUCE_LOG);
-		blockBiConsumer.accept(JUNGLE_WOOD, JUNGLE_LOG);
-		blockBiConsumer.accept(ACACIA_WOOD, ACACIA_LOG);
-		blockBiConsumer.accept(DARK_OAK_WOOD, DARK_OAK_LOG);
-
-		DEFAULT_VALUES = builder.build();
-	}
-
 }

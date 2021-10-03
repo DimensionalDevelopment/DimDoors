@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:birch_wood"
+  },
+  "processor": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:birch_log",
+    "entropy": 1
+  }
+}

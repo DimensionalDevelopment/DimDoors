@@ -5,9 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.registry.Registry;
 
 import me.shedaniel.autoconfig.AutoConfig;
@@ -44,8 +41,11 @@ import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.world.decay.DecayLoader;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.decay.DecayPredicate;
+import org.dimdev.dimdoors.world.decay.DecayProcessor;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -139,6 +139,7 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registry.BLOCK, dimensionalDoorItemRegistrar);
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(DecayLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType());
 		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("dimdoors", "classic"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().classicPocketsResourcePackActivationType.asResourcePackActivationType());
 
@@ -155,6 +156,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		AbstractPocket.AbstractPocketType.register();
 		PocketAddon.PocketAddonType.register();
 		Condition.ConditionType.register();
+		DecayPredicate.DecayPredicateType.register();
+		DecayProcessor.DecayProcessorType.register();
 	}
 
     private void registerListeners() {

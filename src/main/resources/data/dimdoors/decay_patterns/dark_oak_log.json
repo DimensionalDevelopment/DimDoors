@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:dark_oak_log"
+  },
+  "processor": {
+    "type": "dimdoors:simple",
+    "block": "minecraft:dark_oak_planks",
+    "entropy": 1
+  }
+}
