@@ -4,8 +4,6 @@
     "block": "minecraft:sand"
   },
   "processor": {
-    "type": "dimdoors:simple",
-    "block": "dimdoors:unravelled_fabric",
-    "entropy": 1
+    "type": "dimdoors:self"
   }
 }

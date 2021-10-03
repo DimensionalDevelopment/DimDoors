@@ -53,6 +53,7 @@ import static net.minecraft.block.Blocks.SPRUCE_PLANKS;
 import static net.minecraft.block.Blocks.SPRUCE_WOOD;
 import static net.minecraft.block.Blocks.STONE;
 import static net.minecraft.block.Blocks.STONE_BRICKS;
+import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_BLOCK;
 import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
 
 import com.google.gson.Gson;
@@ -60,10 +61,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.decay.DecayPattern;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
+import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
 
 import net.minecraft.block.Block;
@@ -106,7 +109,7 @@ public class LimboDecayProvider implements DataProvider {
         createSimplePattern(new Identifier("dimdoors:stone"), STONE, COBBLESTONE).run(consumer);
         createSimplePattern(new Identifier("dimdoors:cobblestone"), COBBLESTONE, END_STONE).run(consumer);
         createSimplePattern(new Identifier("dimdoors:gravel"), GRAVEL, SAND).run(consumer);
-        createSimplePattern(new Identifier("dimdoors:sand"), SAND, UNRAVELLED_FABRIC).run(consumer);
+        turnIntoSelf(new Identifier("dimdoors:sand"), SAND).run(consumer);
         createSimplePattern(new Identifier("dimdoors:glass"), GLASS, SAND).run(consumer);
         createSimplePattern(new Identifier("dimdoors:grass_block"), GRASS_BLOCK, DIRT).run(consumer);
         createSimplePattern(new Identifier("dimdoors:dirt"), DIRT, SAND).run(consumer);
@@ -150,6 +153,10 @@ public class LimboDecayProvider implements DataProvider {
         createSimplePattern(new Identifier("dimdoors:jungle_wood"), JUNGLE_WOOD, JUNGLE_LOG).run(consumer);
         createSimplePattern(new Identifier("dimdoors:acacia_wood"), ACACIA_WOOD, ACACIA_LOG).run(consumer);
         createSimplePattern(new Identifier("dimdoors:dark_oak_wood"), DARK_OAK_WOOD, DARK_OAK_LOG).run(consumer);
+    }
+
+    private DecayPatternData turnIntoSelf(Identifier identifier, Block before) {
+        return new DecayPatternData(identifier, SimpleDecayPredicate.builder().block(before).create(), SelfDecayProcessor.instance());
     }
 
 

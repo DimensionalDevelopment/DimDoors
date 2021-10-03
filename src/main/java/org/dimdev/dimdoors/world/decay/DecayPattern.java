@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.world.decay;
 
 import com.google.gson.JsonObject;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -31,9 +30,9 @@ public class DecayPattern {
         return DecayPattern.builder().predicate(predicate).processor(processor).create();
     }
 
-    public boolean run(World world, BlockPos pos) {
-        if(predicate.test(world, pos)) {
-            ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos));
+    public boolean run(World world, BlockPos pos, BlockState origin, BlockState target) {
+        if(predicate.test(world, pos, origin, target)) {
+            ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos, origin, target));
             return true;
         }
 

@@ -2,9 +2,9 @@ package org.dimdev.dimdoors.world.decay.processors;
 
 import com.google.gson.JsonObject;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -51,7 +51,7 @@ public class SimpleDecayProcesor implements DecayProcessor {
     }
 
     @Override
-    public int process(World world, BlockPos pos) {
+    public int process(World world, BlockPos pos, BlockState origin, BlockState target) {
         world.setBlockState(pos, block.getDefaultState());
         return entropy;
     }

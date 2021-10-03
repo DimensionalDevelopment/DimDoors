@@ -46,7 +46,7 @@ public class SimpleDecayPredicate implements DecayPredicate {
     }
 
     @Override
-    public boolean test(World world, BlockPos pos) {
+    public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
         BlockState state = world.getBlockState(pos);
 
         return state.getBlock() == block;

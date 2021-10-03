@@ -5,20 +5,10 @@ import java.util.function.Supplier;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Lifecycle;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.modifier.AbsoluteRiftBlockEntityModifier;
-import org.dimdev.dimdoors.pockets.modifier.DimensionalDoorModifier;
-import org.dimdev.dimdoors.pockets.modifier.OffsetModifier;
-import org.dimdev.dimdoors.pockets.modifier.PocketEntranceModifier;
-import org.dimdev.dimdoors.pockets.modifier.RelativeReferenceModifier;
-import org.dimdev.dimdoors.pockets.modifier.RiftDataModifier;
-import org.dimdev.dimdoors.pockets.modifier.RiftManager;
-import org.dimdev.dimdoors.pockets.modifier.ShellModifier;
+import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -48,7 +38,7 @@ public interface DecayProcessor {
         }
 
         @Override
-        public int process(World world, BlockPos pos) {
+        public int process(World world, BlockPos pos, BlockState origin, BlockState target) {
             return 0;
         }
 
@@ -75,11 +65,12 @@ public interface DecayProcessor {
 
     String getKey();
 
-    int process(World world, BlockPos pos);
+    int process(World world, BlockPos pos, BlockState origin, BlockState target);
 
     interface DecayProcessorType<T extends DecayProcessor> {
         DecayProcessorType<SimpleDecayProcesor> SIMPLE_PROCESSOR_TYPE = register(new Identifier("dimdoors", SimpleDecayProcesor.KEY), SimpleDecayProcesor::new);
         DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(new Identifier("dimdoors", "none"), () -> DUMMY);
+        DecayProcessorType<SelfDecayProcessor> SELF = register(new Identifier("dimdoors", SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
 
         DecayProcessor fromJson(JsonObject nbt);
 

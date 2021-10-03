@@ -8,6 +8,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
 import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -39,7 +40,7 @@ public interface DecayPredicate {
         }
 
         @Override
-        public boolean test(World world, BlockPos pos) {
+        public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
             return false;
         }
     };
@@ -64,7 +65,7 @@ public interface DecayPredicate {
 
     String getKey();
 
-    boolean test(World world, BlockPos pos);
+    boolean test(World world, BlockPos pos, BlockState origin, BlockState target);
 
     interface DecayPredicateType<T extends DecayPredicate> {
         DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(new Identifier("dimdoors", "none"), () -> DUMMY);
