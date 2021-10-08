@@ -67,6 +67,8 @@ repositories {
 		url = 'https://maven.terraformersmc.com/'
 	}
 
+	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+
 	maven {
 		name = "Libs"
 		url = "./libs"
@@ -153,6 +155,8 @@ dependencies {
 	modRuntime "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
 	modCompileOnly "worldedit:worldedit:7.2.6"
 	modRuntime "worldedit:worldedit:7.2.6"
+
+	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.17:3.0.13:dev'
 
 	datagenImplementation sourceSets.main.output
 	datagenImplementation sourceSets.main.compileClasspath

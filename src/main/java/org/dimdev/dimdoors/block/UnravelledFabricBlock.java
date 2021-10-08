@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.block;
 import java.util.Random;
 
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.limbo.LimboDecay;
+import org.dimdev.dimdoors.world.decay.LimboDecay;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
