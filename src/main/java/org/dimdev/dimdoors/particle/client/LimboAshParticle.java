@@ -13,9 +13,10 @@ public class LimboAshParticle extends AscendingParticle {
 
 	protected LimboAshParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float scaleMultiplier, SpriteProvider spriteProvider) {
 		super(world, x, y, z, 0.1F, 0.1F, 0.01F, velocityX, velocityY, velocityZ, scaleMultiplier, spriteProvider, 0.0F, 20, 0.0125F, false);
-		this.colorRed = 0.167F;
-		this.colorGreen = 0.141F;
-		this.colorBlue = 0.192F;
+		this.colorRed = 0.0431F;
+		this.colorGreen = 0.0353F;
+		this.colorBlue = 0.0352F;
+		this.gravityStrength = -gravityStrength;
 	}
 
 	@Environment(EnvType.CLIENT)
