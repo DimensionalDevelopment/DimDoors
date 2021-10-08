@@ -8,7 +8,7 @@ import net.minecraft.util.math.Vec3d;
 @Environment(EnvType.CLIENT)
 public class LimboSkyProperties extends SkyProperties {
     public LimboSkyProperties() {
-        super(Float.NaN, true, SkyType.NORMAL, true, true);
+        super(Float.NaN, true, SkyType.NONE, false, true);
     }
 
     @Override
@@ -18,6 +18,6 @@ public class LimboSkyProperties extends SkyProperties {
 
     @Override
     public boolean useThickFog(int camX, int camY) {
-        return false;
+        return true;
     }
 }

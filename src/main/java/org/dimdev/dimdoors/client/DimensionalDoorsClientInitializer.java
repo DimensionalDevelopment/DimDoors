@@ -11,6 +11,7 @@ import org.dimdev.dimdoors.client.ModEntityModelLayers;
 import org.dimdev.dimdoors.client.ModSkyRendering;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.mixin.client.accessor.SkyPropertiesAccessor;
 import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 
@@ -18,6 +19,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClientInitializer implements ClientModInitializer {
@@ -36,6 +38,8 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
 		ModParticleTypes.initClient();
 
 		registerListeners();
+
+		SkyPropertiesAccessor.getIdMap().put(ModDimensions.LIMBO_TYPE_KEY.getValue(), new LimboSkyProperties());
     }
 
     private void registerListeners() {

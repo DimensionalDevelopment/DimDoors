@@ -35,7 +35,8 @@
     "client.InGameHudMixin",
     "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",
-    "client.accessor.RenderLayerAccessor"
+    "client.accessor.RenderLayerAccessor",
+    "client.accessor.SkyPropertiesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
