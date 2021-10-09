@@ -2,7 +2,11 @@ package org.dimdev.dimdoors.world.decay;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
@@ -84,7 +88,7 @@ public final class LimboDecay {
 		private static final Logger LOGGER = LogManager.getLogger();
 		private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
 		private static final DecayLoader INSTANCE = new DecayLoader();
-		private SimpleTree<String, DecayPattern> patterns = new SimpleTree<>(String.class);
+		private List<DecayPattern> patterns = new ArrayList<>();
 
 		private DecayLoader() {
 		}
@@ -96,7 +100,7 @@ public final class LimboDecay {
 		@Override
 		public void reload(ResourceManager manager) {
 			patterns.clear();
-			CompletableFuture<SimpleTree<String, DecayPattern>> futurePatternMap = loadResourcePathFromJsonToTree(manager, "decay_patterns", this::loadPattern);
+			CompletableFuture<List<DecayPattern>> futurePatternMap = loadResourcePathFromJsonToTree(manager, "decay_patterns", this::loadPattern);
 			patterns = futurePatternMap.join();
 		}
 
@@ -104,14 +108,11 @@ public final class LimboDecay {
 			return DecayPattern.deserialize(object);
 		}
 
-		private <T> CompletableFuture<SimpleTree<String, T>> loadResourcePathFromJsonToTree(ResourceManager manager, String startingPath, Function<JsonObject, T> reader) {
-			int sub = startingPath.endsWith("/") ? 0 : 1;
-
+		private <T> CompletableFuture<List<T>> loadResourcePathFromJsonToTree(ResourceManager manager, String startingPath, Function<JsonObject, T> reader) {
 			Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(".json"));
 			return CompletableFuture.supplyAsync(() -> {
-				SimpleTree<String, T> tree = new SimpleTree<>(String.class);
-				tree.putAll(ids.parallelStream().unordered().collect(Collectors.toConcurrentMap(
-						id -> Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + sub)),
+				List<T> tree = new ArrayList<>();
+				ids.parallelStream().unordered().<T>map(
 						id -> {
 							try {
 								JsonElement json = GSON.fromJson(new InputStreamReader(manager.getResource(id).getInputStream()), JsonElement.class);
@@ -119,13 +120,13 @@ public final class LimboDecay {
 							} catch (IOException e) {
 								throw new RuntimeException("Error loading resource: " + id);
 							}
-						})));
+						}).forEach(tree::add);
 				return tree;
 			});
 		}
 
 		public @NotNull Collection<DecayPattern> getPatterns() {
-			return patterns.values();
+			return patterns;
 		}
 
 		@Override
