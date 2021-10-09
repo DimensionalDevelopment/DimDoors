@@ -70,7 +70,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.build(advancementConsumer, "dimdoors:dimdoors/string_theory");
 		Advancement holeInTheSky = Advancement.Task.create()
 				.display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL, "hole_in_the_sky"))
-				.criterion("encounter_rift", new RiftTrackedCriterion.Conditions(EntityPredicate.Extended.EMPTY))
+				.criterion("encounter_rift", new RiftTrackedCriterion.Conditions(EntityPredicate.Extended.EMPTY, NumberRange.FloatRange.atMost(8.0)))
 				.parent(root)
 				.build(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
 		Advancement darkOstiology = Advancement.Task.create()

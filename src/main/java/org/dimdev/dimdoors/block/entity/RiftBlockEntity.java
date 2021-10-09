@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block.entity;
 import java.util.Objects;
 
 import net.minecraft.block.Block;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
@@ -114,7 +115,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 
 	@Override
 	public NbtCompound toInitialChunkDataNbt() {
-		PlayerLookup.tracking(this).forEach(ModCriteria.RIFT_TRACKED::trigger);
+		for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) {
+			ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity, this.getPos());
+		}
 		return super.toInitialChunkDataNbt();
 	}
 
