@@ -116,7 +116,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	@Override
 	public NbtCompound toInitialChunkDataNbt() {
 		for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) {
-			ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity, this.getPos());
+			ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
 		}
 		return super.toInitialChunkDataNbt();
 	}

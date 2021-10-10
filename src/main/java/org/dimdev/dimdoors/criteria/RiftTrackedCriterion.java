@@ -18,12 +18,11 @@ public class RiftTrackedCriterion extends AbstractCriterion<RiftTrackedCriterion
 
 	@Override
 	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
-		NumberRange.FloatRange distancePredicate = NumberRange.FloatRange.fromJson(obj.get("distance"));
-		return new Conditions(playerPredicate, distancePredicate);
+		return new Conditions(playerPredicate);
 	}
 
-	public void trigger(ServerPlayerEntity player, BlockPos riftPos) {
-		this.trigger(player, t -> t.matches(player, new Vec3d(riftPos.getX() + 0.5, riftPos.getY() + 0.5, riftPos.getZ() + 0.5)));
+	public void trigger(ServerPlayerEntity player) {
+		this.trigger(player, t -> true);
 	}
 
 	@Override
@@ -32,20 +31,8 @@ public class RiftTrackedCriterion extends AbstractCriterion<RiftTrackedCriterion
 	}
 
 	public static class Conditions extends AbstractCriterionConditions {
-		private NumberRange.FloatRange distance;
-		public Conditions(EntityPredicate.Extended playerPredicate, NumberRange.FloatRange distance) {
+		public Conditions(EntityPredicate.Extended playerPredicate) {
 			super(ID, playerPredicate);
-			this.distance = distance;
-		}
-
-		public boolean matches(ServerPlayerEntity player, Vec3d pos) {
-			return this.distance.testSqrt(player.getPos().squaredDistanceTo(pos));
-		}
-
-		public JsonObject toJson(AdvancementEntityPredicateSerializer predicateSerializer) {
-			JsonObject jsonObject = super.toJson(predicateSerializer);
-			jsonObject.add("distance", this.distance.toJson());
-			return jsonObject;
 		}
 	}
 }

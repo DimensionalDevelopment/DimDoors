@@ -1,3 +1,4 @@
+{
   "parent": "dimdoors:dimdoors/root",
   "display": {
     "icon": {
@@ -19,11 +20,7 @@
   "criteria": {
     "encounter_rift": {
       "trigger": "dimdoors:rift_tracked",
-      "conditions": {
-        "distance": {
-          "max": 8.0
-        }
-      }
+      "conditions": {}
     }
   },
   "requirements": [
