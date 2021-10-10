@@ -30,13 +30,12 @@ public class DecayPattern {
         return DecayPattern.builder().predicate(predicate).processor(processor).create();
     }
 
-    public boolean run(World world, BlockPos pos, BlockState origin, BlockState target) {
-        if(predicate.test(world, pos, origin, target)) {
-            ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos, origin, target));
-            return true;
-        }
+    public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
+        return predicate.test(world, pos, origin, target);
+    }
 
-        return false;
+    public void process(World world, BlockPos pos, BlockState origin, BlockState target) {
+        ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos, origin, target));
     }
 
     public static DecayPattern.Builder builder() {

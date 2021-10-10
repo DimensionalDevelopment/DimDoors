@@ -54,38 +54,29 @@ public final class LimboDecay {
 			BlockState origin = world.getBlockState(pos);
 
 			//Apply decay to the blocks above, below, and on all four sides.
-			//World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world/*
-			/*boolean flag = */decayBlock(world, pos.up(), origin);
-			/*flag = flag && */decayBlock(world, pos.down(), origin);
-			/*flag = flag && */decayBlock(world, pos.north(), origin);
-			/*flag = flag && */decayBlock(world, pos.south(), origin);
-			/*flag = flag && */decayBlock(world, pos.west(), origin);
-			/*flag = flag && */decayBlock(world, pos.east(), origin);
-//			if (flag) {
-//				LOGGER.debug("Applied limbo decay to block at all six sides at position {} in dimension {}", pos, world.getRegistryKey().getValue());
-//			}
+			decayBlock(world, pos.up(), origin);
+			decayBlock(world, pos.down(), origin);
+			decayBlock(world, pos.north(), origin);
+			decayBlock(world, pos.south(), origin);
+			decayBlock(world, pos.west(), origin);
+			decayBlock(world, pos.east(), origin);
 		}
 	}
 
 	/**
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
-	private static boolean decayBlock(World world, BlockPos pos, BlockState origin) {
+	private static void decayBlock(World world, BlockPos pos, BlockState origin) {
 		@NotNull Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns();
 
-		if(patterns.isEmpty()) return false;
+		if(patterns.isEmpty()) return;
 
 		BlockState target = world.getBlockState(pos);
 
-		for (DecayPattern pattern : DecayLoader.getInstance().getPatterns()) {
-			if(pattern.run(world, pos, origin, target)) return true;
-		}
-
-		return false;
+		patterns.stream().filter(decayPattern -> decayPattern.test(world, pos, origin, target)).findAny().ifPresent(pattern -> pattern.process(world, pos, origin, target));
 	}
 
 	public static class DecayLoader implements SimpleSynchronousResourceReloadListener {
-		private static final Logger LOGGER = LogManager.getLogger();
 		private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
 		private static final DecayLoader INSTANCE = new DecayLoader();
 		private List<DecayPattern> patterns = new ArrayList<>();
@@ -112,7 +103,7 @@ public final class LimboDecay {
 			Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(".json"));
 			return CompletableFuture.supplyAsync(() -> {
 				List<T> tree = new ArrayList<>();
-				ids.parallelStream().unordered().<T>map(
+				ids.parallelStream().unordered().map(
 						id -> {
 							try {
 								JsonElement json = GSON.fromJson(new InputStreamReader(manager.getResource(id).getInputStream()), JsonElement.class);
@@ -120,7 +111,7 @@ public final class LimboDecay {
 							} catch (IOException e) {
 								throw new RuntimeException("Error loading resource: " + id);
 							}
-						}).forEach(tree::add);
+						}).sequential().forEach(tree::add);
 				return tree;
 			});
 		}

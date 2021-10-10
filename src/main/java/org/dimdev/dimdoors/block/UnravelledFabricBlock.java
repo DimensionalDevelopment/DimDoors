@@ -22,24 +22,9 @@ public class UnravelledFabricBlock extends Block {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
 		if (ModDimensions.isLimboDimension(world)) {
 			LimboDecay.applySpreadDecay(world, pos);
 		}
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-		this.scheduledTick(state, world, pos, random);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
-		if (world instanceof ServerWorld) {
-			world.getBlockTickScheduler().schedule(pos, this, 10, TickPriority.NORMAL);
-		}
-		return state;
 	}
 }
