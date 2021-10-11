@@ -2,8 +2,8 @@ package org.dimdev.dimdoors.world.decay;
 
 import java.util.function.Supplier;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Lifecycle;
+import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
 import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
@@ -25,7 +25,7 @@ public interface DecayPredicate {
         private static final String ID = "none";
 
         @Override
-        public DecayPredicate fromJson(JsonObject json) {
+        public DecayPredicate fromNbt(NbtCompound nbt) {
             return this;
         }
 
@@ -45,20 +45,20 @@ public interface DecayPredicate {
         }
     };
 
-    static DecayPredicate deserialize(JsonObject nbt) {
-        Identifier id = Identifier.tryParse(nbt.get("type").getAsString());
-        return REGISTRY.getOrEmpty(id).orElse(DecayPredicateType.NONE_PREDICATE_TYPE).fromJson(nbt);
+    static DecayPredicate deserialize(NbtCompound nbt) {
+        Identifier id = Identifier.tryParse(nbt.getString("type"));
+        return REGISTRY.getOrEmpty(id).orElse(DecayPredicateType.NONE_PREDICATE_TYPE).fromNbt(nbt);
     }
 
-    static JsonObject serialize(DecayPredicate modifier) {
-        return modifier.toJson(new JsonObject());
+    static NbtCompound serialize(DecayPredicate modifier) {
+        return modifier.toNbt(new NbtCompound());
     }
 
 
-    DecayPredicate fromJson(JsonObject json);
+    DecayPredicate fromNbt(NbtCompound nbt);
 
-    default JsonObject toJson(JsonObject json) {
-        return this.getType().toJson(json);
+    default NbtCompound toNbt(NbtCompound nbt) {
+        return this.getType().toNbt(nbt);
     }
 
     DecayPredicate.DecayPredicateType<? extends DecayPredicate> getType();
@@ -71,9 +71,9 @@ public interface DecayPredicate {
         DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(new Identifier("dimdoors", "none"), () -> DUMMY);
         DecayPredicateType<SimpleDecayPredicate> SIMPLE_PREDICATE_TYPE = register(new Identifier("dimdoors", SimpleDecayProcesor.KEY), SimpleDecayPredicate::new);
 
-        DecayPredicate fromJson(JsonObject nbt);
+        DecayPredicate fromNbt(NbtCompound nbt);
 
-        JsonObject toJson(JsonObject nbt);
+		NbtCompound toNbt(NbtCompound nbt);
 
         static void register() {
             DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerDecayPredicates(REGISTRY));
@@ -82,14 +82,14 @@ public interface DecayPredicate {
         static <U extends DecayPredicate> DecayPredicateType<U> register(Identifier id, Supplier<U> factory) {
             return Registry.register(REGISTRY, id, new DecayPredicateType<U>() {
                 @Override
-                public DecayPredicate fromJson(JsonObject json) {
-                    return factory.get().fromJson(json);
+                public DecayPredicate fromNbt(NbtCompound nbt) {
+                    return factory.get().fromNbt(nbt);
                 }
 
                 @Override
-                public JsonObject toJson(JsonObject json) {
-                    json.addProperty("type", id.toString());
-                    return json;
+                public NbtCompound toNbt(NbtCompound nbt) {
+					nbt.putString("type", id.toString());
+                    return nbt;
                 }
             });
         }

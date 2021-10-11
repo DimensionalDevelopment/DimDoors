@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
-import com.google.gson.JsonElement;
-
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.resource.ResourceManager;
 
 import org.apache.logging.log4j.LogManager;
@@ -88,12 +88,12 @@ public final class LimboDecay {
 		@Override
 		public void reload(ResourceManager manager) {
 			patterns.clear();
-			CompletableFuture<List<DecayPattern>> futurePatternMap = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(this::loadPattern));
+			CompletableFuture<List<DecayPattern>> futurePatternMap = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.NBT_READER.andThenReader(this::loadPattern));
 			patterns = futurePatternMap.join();
 		}
 
-		private DecayPattern loadPattern(JsonElement object, Identifier ignored) {
-			return DecayPattern.deserialize(object.getAsJsonObject());
+		private DecayPattern loadPattern(NbtElement nbt, Identifier ignored) {
+			return DecayPattern.deserialize((NbtCompound) nbt);
 		}
 
 		public @NotNull Collection<DecayPattern> getPatterns() {

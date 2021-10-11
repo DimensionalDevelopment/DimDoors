@@ -2,8 +2,8 @@ package org.dimdev.dimdoors.world.decay;
 
 import java.util.function.Supplier;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Lifecycle;
+import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
@@ -23,7 +23,7 @@ public interface DecayProcessor {
 
     DecayProcessor DUMMY = new DecayProcessor() {
         @Override
-        public DecayProcessor fromJson(JsonObject json) {
+        public DecayProcessor fromNbt(NbtCompound nbt) {
             return this;
         }
 
@@ -45,20 +45,20 @@ public interface DecayProcessor {
         private static final String ID = "none";
     };
 
-    static DecayProcessor deserialize(JsonObject nbt) {
-        Identifier id = Identifier.tryParse(nbt.get("type").getAsString());
-        return REGISTRY.getOrEmpty(id).orElse(DecayProcessorType.NONE_PROCESSOR_TYPE).fromJson(nbt);
+    static DecayProcessor deserialize(NbtCompound nbt) {
+        Identifier id = Identifier.tryParse(nbt.getString("type"));
+        return REGISTRY.getOrEmpty(id).orElse(DecayProcessorType.NONE_PROCESSOR_TYPE).fromNbt(nbt);
     }
 
-    static JsonObject serialize(DecayProcessor modifier) {
-        return modifier.toJson(new JsonObject());
+    static NbtCompound serialize(DecayProcessor modifier) {
+        return modifier.toNbt(new NbtCompound());
     }
 
 
-    DecayProcessor fromJson(JsonObject json);
+    DecayProcessor fromNbt(NbtCompound nbt);
 
-    default JsonObject toJson(JsonObject json) {
-        return this.getType().toJson(json);
+    default NbtCompound toNbt(NbtCompound nbt) {
+        return this.getType().toNbt(nbt);
     }
 
     DecayProcessor.DecayProcessorType<? extends DecayProcessor> getType();
@@ -72,9 +72,9 @@ public interface DecayProcessor {
         DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(new Identifier("dimdoors", "none"), () -> DUMMY);
         DecayProcessorType<SelfDecayProcessor> SELF = register(new Identifier("dimdoors", SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
 
-        DecayProcessor fromJson(JsonObject nbt);
+        DecayProcessor fromNbt(NbtCompound nbt);
 
-        JsonObject toJson(JsonObject nbt);
+		NbtCompound toNbt(NbtCompound nbt);
 
         static void register() {
             DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerDecayProcessors(REGISTRY));
@@ -83,14 +83,14 @@ public interface DecayProcessor {
         static <U extends DecayProcessor> DecayProcessorType<U> register(Identifier id, Supplier<U> factory) {
             return Registry.register(REGISTRY, id, new DecayProcessorType<U>() {
                 @Override
-                public DecayProcessor fromJson(JsonObject json) {
-                    return factory.get().fromJson(json);
+                public DecayProcessor fromNbt(NbtCompound nbt) {
+                    return factory.get().fromNbt(nbt);
                 }
 
                 @Override
-                public JsonObject toJson(JsonObject json) {
-                    json.addProperty("type", id.toString());
-                    return json;
+                public NbtCompound toNbt(NbtCompound nbt) {
+                    nbt.putString("type", id.toString());
+                    return nbt;
                 }
             });
         }

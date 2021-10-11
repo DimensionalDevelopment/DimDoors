@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.world.decay;
 
-import com.google.gson.JsonObject;
-
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -24,9 +23,9 @@ public class DecayPattern {
         this.processor = processor;
     }
 
-    public static DecayPattern deserialize(JsonObject nbt) {
-        DecayPredicate predicate = DecayPredicate.deserialize(nbt.getAsJsonObject("predicate"));
-        DecayProcessor processor = DecayProcessor.deserialize(nbt.getAsJsonObject("processor"));
+    public static DecayPattern deserialize(NbtCompound nbt) {
+        DecayPredicate predicate = DecayPredicate.deserialize(nbt.getCompound("predicate"));
+        DecayProcessor processor = DecayProcessor.deserialize(nbt.getCompound("processor"));
         return DecayPattern.builder().predicate(predicate).processor(processor).create();
     }
 
