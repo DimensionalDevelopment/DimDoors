@@ -1,33 +1,22 @@
 package org.dimdev.dimdoors.world.decay;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.resource.ResourceManager;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.api.util.SimpleTree;
-import org.dimdev.dimdoors.world.decay.DecayPattern;
+import org.dimdev.dimdoors.util.ResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.util.Identifier;
@@ -77,7 +66,7 @@ public final class LimboDecay {
 	}
 
 	public static class DecayLoader implements SimpleSynchronousResourceReloadListener {
-		private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
+		private static final Logger LOGGER = LogManager.getLogger();
 		private static final DecayLoader INSTANCE = new DecayLoader();
 		private List<DecayPattern> patterns = new ArrayList<>();
 
@@ -91,29 +80,12 @@ public final class LimboDecay {
 		@Override
 		public void reload(ResourceManager manager) {
 			patterns.clear();
-			CompletableFuture<List<DecayPattern>> futurePatternMap = loadResourcePathFromJsonToTree(manager, "decay_patterns", this::loadPattern);
+			CompletableFuture<List<DecayPattern>> futurePatternMap = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.NBT_READER.andThenReader(this::loadPattern));
 			patterns = futurePatternMap.join();
 		}
 
-		private DecayPattern loadPattern(JsonObject object) {
-			return DecayPattern.deserialize(object);
-		}
-
-		private <T> CompletableFuture<List<T>> loadResourcePathFromJsonToTree(ResourceManager manager, String startingPath, Function<JsonObject, T> reader) {
-			Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(".json"));
-			return CompletableFuture.supplyAsync(() -> {
-				List<T> tree = new ArrayList<>();
-				ids.parallelStream().unordered().map(
-						id -> {
-							try {
-								JsonElement json = GSON.fromJson(new InputStreamReader(manager.getResource(id).getInputStream()), JsonElement.class);
-								return reader.apply(json.getAsJsonObject());
-							} catch (IOException e) {
-								throw new RuntimeException("Error loading resource: " + id);
-							}
-						}).sequential().forEach(tree::add);
-				return tree;
-			});
+		private DecayPattern loadPattern(NbtElement nbt, Identifier ignored) {
+			return DecayPattern.deserialize((NbtCompound) nbt);
 		}
 
 		public @NotNull Collection<DecayPattern> getPatterns() {
