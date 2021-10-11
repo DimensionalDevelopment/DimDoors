@@ -6,6 +6,8 @@ import org.dimdev.dimdoors.world.decay.DecayPredicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -23,16 +25,16 @@ public class SimpleDecayPredicate implements DecayPredicate {
     }
 
     @Override
-    public DecayPredicate fromJson(JsonObject json) {
-        block = Registry.BLOCK.get(Identifier.tryParse(json.get("block").getAsString()));
+    public DecayPredicate fromNbt(NbtCompound nbt) {
+        block = Registry.BLOCK.get(Identifier.tryParse(nbt.getString("block")));
         return this;
     }
 
     @Override
-    public JsonObject toJson(JsonObject json) {
-        DecayPredicate.super.toJson(json);
-        json.addProperty("block", Registry.BLOCK.getId(block).toString());
-        return json;
+    public NbtCompound toNbt(NbtCompound nbt) {
+        DecayPredicate.super.toNbt(nbt);
+        nbt.putString("block", Registry.BLOCK.getId(block).toString());
+        return nbt;
     }
 
     @Override

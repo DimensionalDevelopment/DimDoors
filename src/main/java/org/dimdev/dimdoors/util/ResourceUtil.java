@@ -29,6 +29,8 @@ public class ResourceUtil {
 
 	public static final ComposableFunction<JsonElement, NbtElement> JSON_TO_NBT = json -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json);
 
+	public static final ComposableFunction<NbtElement, JsonElement> NBT_TO_JSON = json -> NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, json);
+
 	public static final ComposableFunction<InputStream, JsonElement> JSON_READER = inputStream -> GSON.fromJson(new InputStreamReader(inputStream), JsonElement.class);
 	public static final ComposableFunction<InputStream, NbtElement> NBT_READER = JSON_READER.andThenComposable(JSON_TO_NBT);
 	public static final ComposableFunction<InputStream, NbtCompound> COMPRESSED_NBT_READER = inputStream -> {

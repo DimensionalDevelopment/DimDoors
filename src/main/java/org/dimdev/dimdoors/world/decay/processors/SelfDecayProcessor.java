@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -19,7 +21,7 @@ public class SelfDecayProcessor implements DecayProcessor {
     }
 
     @Override
-    public DecayProcessor fromJson(JsonObject json) {
+    public DecayProcessor fromNbt(NbtCompound nbt) {
         return this;
     }
 

@@ -62,6 +62,7 @@ import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.util.ResourceUtil;
 import org.dimdev.dimdoors.world.decay.DecayPattern;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
@@ -75,6 +76,7 @@ import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.loot.LootManager;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
@@ -186,8 +188,8 @@ public class LimboDecayProvider implements DataProvider {
 
         public void run(BiConsumer<Identifier, JsonObject> consumer) {
             JsonObject object = new JsonObject();
-            object.add("predicate", predicate.toJson(new JsonObject()));
-            object.add("processor", processor.toJson(new JsonObject()));
+            object.add("predicate", ResourceUtil.NBT_TO_JSON.apply(predicate.toNbt(new NbtCompound())));
+            object.add("processor", ResourceUtil.NBT_TO_JSON.apply(processor.toNbt(new NbtCompound())));
 
             consumer.accept(id, object);
         }

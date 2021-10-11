@@ -6,6 +6,7 @@ import org.dimdev.dimdoors.world.decay.DecayProcessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -26,18 +27,18 @@ public class SimpleDecayProcesor implements DecayProcessor {
     }
 
     @Override
-    public DecayProcessor fromJson(JsonObject json) {
-        block = Registry.BLOCK.get(Identifier.tryParse(json.get("block").getAsString()));
-        entropy = json.get("entropy").getAsInt();
+    public DecayProcessor fromNbt(NbtCompound json) {
+        block = Registry.BLOCK.get(Identifier.tryParse(json.getString("block")));
+        entropy = json.getInt("entropy");
         return this;
     }
 
     @Override
-    public JsonObject toJson(JsonObject json) {
-        DecayProcessor.super.toJson(json);
-        json.addProperty("block", Registry.BLOCK.getId(block).toString());
-        json.addProperty("entropy", entropy);
-        return json;
+    public NbtCompound toNbt(NbtCompound nbt) {
+        DecayProcessor.super.toNbt(nbt);
+        nbt.putString("block", Registry.BLOCK.getId(block).toString());
+        nbt.putInt("entropy", entropy);
+        return nbt;
     }
 
     @Override
