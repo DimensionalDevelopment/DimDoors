@@ -54,10 +54,15 @@ public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, Monolith
 
     @Override
     public void render(MonolithEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
+    	super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
     }
 
-    @Override
+	@Override
+	protected void scale(MonolithEntity entity, MatrixStack matrices, float amount) {
+		matrices.scale(entity.getScale(), entity.getScale(), entity.getScale());
+	}
+
+	@Override
     protected boolean hasLabel(MonolithEntity mobEntity) {
         return false;
     }

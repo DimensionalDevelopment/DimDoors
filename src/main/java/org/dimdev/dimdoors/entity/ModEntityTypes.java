@@ -19,13 +19,13 @@ public class ModEntityTypes {
     public static final EntityType<MonolithEntity> MONOLITH = register(
             "dimdoors:monolith",
             MonolithEntity::new,
-            3, 3
+			2f, 2.7f, false
     );
 
     public static final EntityType<MaskEntity> MASK = register(
             "dimdoors:mask",
             MaskEntity::new,
-            0.9375f, 0.9375f
+            0.9375f, 0.9375f, true
     );
 
     public static void init() {
@@ -39,7 +39,7 @@ public class ModEntityTypes {
         EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
     }
 
-    private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, float width, float height) {
-        return Registry.register(Registry.ENTITY_TYPE, id, FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, factory).dimensions(EntityDimensions.fixed(width, height)).spawnableFarFromPlayer().fireImmune().build());
+    private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, float width, float height, boolean fixed) {
+        return Registry.register(Registry.ENTITY_TYPE, id, FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, factory).dimensions(new EntityDimensions(width, height, fixed)).spawnableFarFromPlayer().fireImmune().build());
     }
 }

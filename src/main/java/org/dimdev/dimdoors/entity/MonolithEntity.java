@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.entity;
 
 import java.util.Random;
 
+import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.util.math.Box;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
@@ -34,8 +36,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public class MonolithEntity extends MobEntity {
-    public final EntityDimensions DIMENSIONS = EntityDimensions.fixed(3f, 6f);
-
     public static final int MAX_AGGRO = 250;
     private static final int MAX_AGGRO_CAP = 100;
     private static final int MIN_AGGRO_CAP = 25;
@@ -43,11 +43,12 @@ public class MonolithEntity extends MobEntity {
     private static final int MAX_SOUND_COOLDOWN = 200;
     public static final int MAX_AGGRO_RANGE = 35;
     private static final TrackedData<Integer> AGGRO = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final float EYE_HEIGHT = 1.5f;
-    private static Random random;
+    private static final TrackedData<Float> SCALE = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.FLOAT);
+	private static final TrackedData<Float> PITCH = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.FLOAT);
+    private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
+    @Environment(EnvType.CLIENT)
+    private static final Random clientRandom = new Random();
 
-    public float pitchLevel;
-    private int aggro = 0;
     private int soundTime = 0;
     private final int aggroCap;
 
@@ -57,7 +58,6 @@ public class MonolithEntity extends MobEntity {
 
     public MonolithEntity(EntityType<? extends MonolithEntity> type, World world) {
         super(ModEntityTypes.MONOLITH, world);
-        random = this.getRandom();
         this.noClip = true;
         this.aggroCap = MathHelper.nextInt(this.getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
         this.setNoGravity(true);
@@ -71,10 +71,6 @@ public class MonolithEntity extends MobEntity {
         this.setInvulnerable(true);
     }
 
-    public EntityDimensions getDimensions(EntityPose entityPose) {
-        return this.DIMENSIONS;
-    }
-
     public boolean isDangerous() {
         return DimensionalDoorsInitializer.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || DimensionalDoorsInitializer.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
     }
@@ -82,7 +78,7 @@ public class MonolithEntity extends MobEntity {
     @Override
     public boolean damage(DamageSource source, float amount) {
         if (source != DamageSource.IN_WALL) {
-            this.aggro = MAX_AGGRO;
+            setAggro(MAX_AGGRO);
         }
         return false;
     }
@@ -122,6 +118,9 @@ public class MonolithEntity extends MobEntity {
         super.initDataTracker();
         // Add a short for the aggro level
         this.dataTracker.startTracking(AGGRO, 0);
+		this.dataTracker.startTracking(SCALE, 1f);
+		this.dataTracker.startTracking(PITCH, 1f);
+		this.calculateDimensions();
     }
 
     @Override
@@ -210,8 +209,9 @@ public class MonolithEntity extends MobEntity {
      */
     public void playSounds(Vec3d pos) {
         float aggroPercent = this.getAggroProgress();
+        float pitch = getPitch();
         if (this.soundTime <= 0) {
-            this.playSound(ModSoundEvents.MONK, 1F, 1F);
+            this.playSound(ModSoundEvents.MONK, 1F, pitch);
             this.soundTime = 100;
         }
         if (aggroPercent > 0.70 && this.soundTime < 100) {
@@ -219,7 +219,7 @@ public class MonolithEntity extends MobEntity {
             this.soundTime = 100 + this.getRandom().nextInt(75);
         }
         if (aggroPercent > 0.80 && this.soundTime < MAX_SOUND_COOLDOWN) {
-            this.world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 7, 1F);
+            this.world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 7, 1);
             this.soundTime = 250;
         }
         this.soundTime--;
@@ -227,10 +227,15 @@ public class MonolithEntity extends MobEntity {
 
     @Override
     public float getEyeHeight(EntityPose entityPose) {
-        return EYE_HEIGHT;
+        return getDimensions(entityPose).height * EYE_HEIGHT_PERCENTAGE;
     }
 
-    @Environment(EnvType.CLIENT)
+	@Override
+	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
+	}
+
+	@Environment(EnvType.CLIENT)
     public static void spawnParticles(int aggro) {
 		PlayerEntity player = MinecraftClient.getInstance().player;
 		if (aggro < 120) {
@@ -239,16 +244,16 @@ public class MonolithEntity extends MobEntity {
 		int count = 10 * aggro / MAX_AGGRO;
 		for (int i = 1; i < count; ++i) {
 			//noinspection ConstantConditions
-			player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (random.nextDouble() - 0.5D) * 3.0,
-					player.getY() + random.nextDouble() * player.getHeight() - 0.75D,
-					player.getZ() + (random.nextDouble() - 0.5D) * player.getWidth(),
-					(random.nextDouble() - 0.5D) * 2.0D, -random.nextDouble(),
-					(random.nextDouble() - 0.5D) * 2.0D);
+			player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (clientRandom.nextDouble() - 0.5D) * 3.0,
+					player.getY() + clientRandom.nextDouble() * player.getHeight() - 0.75D,
+					player.getZ() + (clientRandom.nextDouble() - 0.5D) * player.getWidth(),
+					(clientRandom.nextDouble() - 0.5D) * 2.0D, -clientRandom.nextDouble(),
+					(clientRandom.nextDouble() - 0.5D) * 2.0D);
 		}
 	}
 
     public float getAggroProgress() {
-        return (float) this.aggro / MAX_AGGRO;
+        return ((float) getAggro()) / MAX_AGGRO;
     }
 
     @Override
@@ -262,19 +267,26 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
-        super.writeNbt(nbt);
-        nbt.putInt("Aggro", this.aggro);
-        return nbt;
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
+        nbt.putInt("Aggro", getAggro());
+        nbt.putFloat("scale", getScale());
+        nbt.putFloat("pitch", getPitch());
     }
 
     @Override
-    public void readNbt(NbtCompound nbt) {
-        super.readNbt(nbt);
-        this.aggro = nbt.getInt("Aggro");
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        setAggro(nbt.getInt("Aggro"));
+        if (nbt.contains("scale", NbtType.FLOAT)) {
+        	setScale(nbt.getFloat("scale"));
+		}
+        if (nbt.contains("pitch", NbtType.FLOAT)) {
+			setPitch(nbt.getFloat("pitch"));
+		}
     }
 
-    public int getAggro() {
+	public int getAggro() {
         return this.dataTracker.get(AGGRO);
     }
 
@@ -282,7 +294,44 @@ public class MonolithEntity extends MobEntity {
         this.dataTracker.set(AGGRO, aggro);
     }
 
-    @Override
+	@Override
+	public float getScaleFactor() {
+		return getScale();
+	}
+
+	public float getScale() {
+    	return this.dataTracker.get(SCALE);
+	}
+
+    public void setScale(float scale) {
+    	this.dataTracker.set(SCALE, scale);
+    	calculateDimensions();
+	}
+
+	public float getPitch() {
+    	return this.dataTracker.get(PITCH);
+	}
+
+	public void setPitch(float pitch) {
+    	this.dataTracker.set(PITCH, pitch);
+	}
+
+	@Override
+	public Box getBoundingBox(EntityPose pose) {
+    	float scale = getScale();
+		return super.getBoundingBox(pose).stretch(scale, scale, scale);
+	}
+
+	@Override
+	public void onTrackedDataSet(TrackedData<?> data) {
+		if (SCALE.equals(data)) {
+			this.calculateDimensions();
+		}
+
+		super.onTrackedDataSet(data);
+	}
+
+	@Override
     public boolean canSpawn(WorldAccess world, SpawnReason spawnReason) {
         if (spawnReason == SpawnReason.CHUNK_GENERATION) {
             return super.canSpawn(world, spawnReason);
