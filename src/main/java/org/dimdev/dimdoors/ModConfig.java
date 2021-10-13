@@ -88,7 +88,7 @@ public final class ModConfig implements ConfigData {
 	}
 
 	public static class General {
-		@Tooltip public double teleportOffset = 0.5;
+		@Tooltip public double teleportOffset = 0;
 		@Tooltip public boolean riftBoundingBoxInCreative;
 		@Tooltip public double riftCloseSpeed = 0.01;
 		@Tooltip public double riftGrowthSpeed = 1;

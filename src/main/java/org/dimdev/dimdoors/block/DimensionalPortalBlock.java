@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+// TODO: copy over all the necessary bits from DimensionalDoorBlock
 public class DimensionalPortalBlock extends Block implements RiftProvider<EntranceRiftBlockEntity> {
 	public static DirectionProperty FACING = HorizontalFacingBlock.FACING;
 

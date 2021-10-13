@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "BlockMixin",
+    "EntityMixin",
     "ExplosionMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",

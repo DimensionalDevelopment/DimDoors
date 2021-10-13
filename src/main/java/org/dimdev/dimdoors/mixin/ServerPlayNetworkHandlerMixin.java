@@ -18,6 +18,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ServerPlayNetworkHandlerMixin {
 	@Shadow
 	public ServerPlayerEntity player;
+	@Shadow
+	private double lastTickX;
+	@Shadow
+	private double lastTickY;
+	@Shadow
+	private double lastTickZ;
 
 	@Inject(method = "onPlayerMove", at = @At("TAIL"))
 	protected void checkBlockCollision(PlayerMoveC2SPacket packet, CallbackInfo ci) {
@@ -28,16 +34,26 @@ public class ServerPlayNetworkHandlerMixin {
 		if (player.world.isRegionLoaded(blockPos, blockPos2)) {
 			BlockPos.Mutable mutable = new BlockPos.Mutable();
 
+			boolean done = false;
 			for(int i = blockPos.getX(); i <= blockPos2.getX(); ++i) {
 				for(int j = blockPos.getY(); j <= blockPos2.getY(); ++j) {
 					for(int k = blockPos.getZ(); k <= blockPos2.getZ(); ++k) {
 						mutable.set(i, j, k);
 						BlockState blockState = player.world.getBlockState(mutable);
 						Block block = blockState.getBlock();
-						if (block instanceof AfterMoveCollidableBlock) {
-							((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.getServerWorld(), mutable, player);
+						if (block instanceof AfterMoveCollidableBlock && ((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.getServerWorld(), mutable, player, player.getPos().subtract(lastTickX, lastTickY, lastTickZ)).isAccepted()) {
+							done = true;
+						}
+						if (done) {
+							break;
 						}
 					}
+					if (done) {
+						break;
+					}
+				}
+				if (done) {
+					break;
 				}
 			}
 		}

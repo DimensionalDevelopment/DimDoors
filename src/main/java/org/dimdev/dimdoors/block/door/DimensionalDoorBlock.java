@@ -12,6 +12,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
 import org.dimdev.dimdoors.api.block.CustomBreakBlock;
 import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock;
+import org.dimdev.dimdoors.api.entity.LastPositionProvider;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
@@ -51,38 +52,78 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	@Override
 	@SuppressWarnings("deprecation")
-	// TODO: change from onEntityCollision to some method for checking if player crossed portal plane
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
 		if (world.isClient || entity instanceof ServerPlayerEntity) {
 			return;
 		}
-		onCollision(state, world, pos, entity);
+		onCollision(state, world, pos, entity, entity.getPos().subtract(((LastPositionProvider) entity).getLastPos()));
+		super.onEntityCollision(state, world, pos, entity);
 	}
 
 	@Override
-	public void onAfterMovePlayerCollision(BlockState state, ServerWorld world, BlockPos pos, ServerPlayerEntity player) {
-		onCollision(state, world, pos, player);
+	public ActionResult onAfterMovePlayerCollision(BlockState state, ServerWorld world, BlockPos pos, ServerPlayerEntity player, Vec3d positionChange) {
+		return onCollision(state, world, pos, player, positionChange);
 	}
 
-	private void onCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		// TODO: replace with dimdoor cooldown?
-		if (entity.hasNetherPortalCooldown()) {
-			entity.resetNetherPortalCooldown();
-			return;
-		}
-		entity.resetNetherPortalCooldown();
-
+	private ActionResult onCollision(BlockState state, World world, BlockPos pos, Entity entity, Vec3d positionChange) {
 		BlockPos top = state.get(HALF) == DoubleBlockHalf.UPPER ? pos : pos.up();
 		BlockPos bottom = top.down();
 		BlockState doorState = world.getBlockState(bottom);
 
-		if (doorState.getBlock() == this && doorState.get(DoorBlock.OPEN)) { // '== this' to check if not half-broken
-			this.getRift(world, pos, state).teleport(entity);
-			if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().closeDoorBehind) {
-				world.setBlockState(top, world.getBlockState(top).with(DoorBlock.OPEN, false));
-				world.setBlockState(bottom, world.getBlockState(bottom).with(DoorBlock.OPEN, false));
-			}
+		// TODO: decide whether door should need to be open for teleportation
+		if (doorState.getBlock() != this || !doorState.get(DoorBlock.OPEN)) { // '== this' to check if not half-broken
+			return ActionResult.PASS;
 		}
+		Vec3d currentPos = entity.getPos();
+		Vec3d previousPos = currentPos.subtract(positionChange);
+
+		// TODO: rewrite this to be usable more universally
+		// check whether portal plane was traversed
+		double portalHalfWidth = 0.5;
+		double portalHeight = 2;
+		// check in DefaultTransformation for the correct offset of the portal planes
+		double portalOffsetFromCenter = 0.31;
+		Vec3d portalNormal = Vec3d.of(state.get(FACING).getOpposite().getVector());
+		Vec3d origin = Vec3d.ofBottomCenter(bottom);
+		Vec3d bottomMiddlePortalPoint = origin.add(portalNormal.multiply(portalOffsetFromCenter));
+
+		double dotCurrent = portalNormal.dotProduct(currentPos.subtract(bottomMiddlePortalPoint));
+		double dotPrevious = portalNormal.dotProduct(previousPos.subtract(bottomMiddlePortalPoint));
+		if (!(dotCurrent <= 0 && dotPrevious >= 0) && !(dotCurrent >= 0 && dotPrevious <= 0) || (dotCurrent == 0 && dotPrevious == 0)) {
+			// start and end point of movement are on same side of the portal plane or both inside the plane
+			return ActionResult.PASS;
+		}
+
+		Vec3d yVec = new Vec3d(0, 1, 0);
+		Vec3d xzVec = portalNormal.crossProduct(yVec);
+
+		Vec3d vecFromPreviousPosToPortalPlane = bottomMiddlePortalPoint.subtract(previousPos);
+		Vec3d normalizedPositionChange = positionChange.normalize();
+		Vec3d pointOfIntersection = previousPos.add(normalizedPositionChange.multiply(vecFromPreviousPosToPortalPlane.dotProduct(normalizedPositionChange) / normalizedPositionChange.dotProduct(normalizedPositionChange)));
+
+		// figure out whether the point of Intersection is actually inside the portal plane;
+		Vec3d intersectionRelativeToPortalPlane = pointOfIntersection.subtract(bottomMiddlePortalPoint);
+		double relativeIntersectionHeight = intersectionRelativeToPortalPlane.dotProduct(yVec);
+		double relativeIntersectionWidth = intersectionRelativeToPortalPlane.dotProduct(xzVec);
+		if (relativeIntersectionHeight < 0 || relativeIntersectionHeight > portalHeight || Math.abs(relativeIntersectionWidth) > portalHalfWidth) {
+			// intersection is outside of plane width/ height
+			return ActionResult.PASS;
+		}
+
+		// TODO: replace with dimdoor cooldown?
+		if (entity.hasNetherPortalCooldown()) {
+			entity.resetNetherPortalCooldown();
+			return ActionResult.PASS;
+		}
+		entity.resetNetherPortalCooldown();
+
+
+		this.getRift(world, pos, state).teleport(entity);
+		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().closeDoorBehind) {
+			world.setBlockState(top, world.getBlockState(top).with(DoorBlock.OPEN, false));
+			world.setBlockState(bottom, world.getBlockState(bottom).with(DoorBlock.OPEN, false));
+		}
+		return ActionResult.SUCCESS;
 	}
 
 	@Override
@@ -213,7 +254,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	@Override
 	public TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder(BlockState state, BlockPos pos) {
 		return TransformationMatrix3d.builder()
-				.inverseTranslate(Vec3d.ofCenter(pos).add(Vec3d.of(state.get(DoorBlock.FACING).getVector()).multiply(-0.5)))
+				.inverseTranslate(Vec3d.ofCenter(pos).add(Vec3d.of(state.get(DoorBlock.FACING).getVector()).multiply(-0.31)))
 				.inverseRotate(MathUtil.directionEulerAngle(state.get(DoorBlock.FACING).getOpposite()));
 	}
 

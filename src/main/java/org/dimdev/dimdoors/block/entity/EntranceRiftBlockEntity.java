@@ -2,19 +2,14 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.Transformer;
-import org.dimdev.dimdoors.item.DimensionalDoorItem;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.Rift;
@@ -31,8 +26,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -41,7 +34,6 @@ import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
@@ -99,7 +91,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
 		BlockState state = this.getWorld().getBlockState(this.getPos());
 		Block block = state.getBlock();
-		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.getConfig().getGeneralConfig().teleportOffset + 0.5));
+		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
 		/*
 		Unused code that needs to be edited if there are other ways to get to limbo
 		But if it is only dimteleport and going through rifts then this code isn't nessecary
@@ -118,14 +110,14 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				relativeVelocity = flipper.transform(relativeVelocity);
 			}
 
-			relativePos = relativePos.add(new Vec3d(0, 0, 1).multiply(0.6)); // TODO: skip this for Immersive Portals
-
 			TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getPos());
 			TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getPos());
 			targetPos = transformer.transformOut(transformationBuilder, relativePos);
 			relativeAngle = transformer.rotateOut(rotatorBuilder, relativeAngle);
 			relativeVelocity = transformer.rotateOut(rotatorBuilder, relativeVelocity);
 		}
+
+		// TODO: open door
 
 		TeleportUtil.teleport(entity, this.world, targetPos, relativeAngle, relativeVelocity);
 
