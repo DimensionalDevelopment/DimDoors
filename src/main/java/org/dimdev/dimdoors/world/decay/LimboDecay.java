@@ -1,21 +1,30 @@
 package org.dimdev.dimdoors.world.decay;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.network.packet.s2c.play.BlockBreakingProgressS2CPacket;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.resource.ResourceManager;
 
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.RegistryKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
+import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.ResourceUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +38,9 @@ import net.minecraft.world.World;
  */
 public final class LimboDecay {
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Map<RegistryKey<World>, Set<DecayTask>> DECAY_QUEUE = new HashMap<>();
+	// TODO: config
+	private static final int DECAY_DELAY = 40;
 
 	private static final Random RANDOM = new Random();
 
@@ -36,33 +48,58 @@ public final class LimboDecay {
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
 	 * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
 	 */
-	public static void applySpreadDecay(World world, BlockPos pos) {
+	public static void applySpreadDecay(ServerWorld world, BlockPos pos) {
 		//Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
 		//full spread decay checks, which can also shift its performance impact on the game.
 		if (RANDOM.nextDouble() < DimensionalDoorsInitializer.getConfig().getLimboConfig().decaySpreadChance) {
 			BlockState origin = world.getBlockState(pos);
 
 			//Apply decay to the blocks above, below, and on all four sides.
-			decayBlock(world, pos.up(), origin);
-			decayBlock(world, pos.down(), origin);
-			decayBlock(world, pos.north(), origin);
-			decayBlock(world, pos.south(), origin);
-			decayBlock(world, pos.west(), origin);
-			decayBlock(world, pos.east(), origin);
+			// TODO: make max amount configurable
+			int decayAmount = RANDOM.nextInt(5) + 1;
+			List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
+			for (int i = 0; i < decayAmount; i++) {
+				decayBlock(world, pos.offset(directions.remove(RANDOM.nextInt(5 - i))), origin);
+			}
 		}
 	}
 
 	/**
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
-	private static void decayBlock(World world, BlockPos pos, BlockState origin) {
+	private static void decayBlock(ServerWorld world, BlockPos pos, BlockState origin) {
 		@NotNull Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns();
 
 		if(patterns.isEmpty()) return;
 
 		BlockState target = world.getBlockState(pos);
 
-		patterns.stream().filter(decayPattern -> decayPattern.test(world, pos, origin, target)).findAny().ifPresent(pattern -> pattern.process(world, pos, origin, target));
+		patterns.stream().filter(decayPattern -> decayPattern.test(world, pos, origin, target)).findAny().ifPresent(pattern -> {
+			world.getPlayers(EntityPredicates.maxDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
+				ExtendedServerPlayNetworkHandler.get(player.networkHandler).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, 5));
+			});
+			world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), ModSoundEvents.TEARING, SoundCategory.BLOCKS, 0.5f, 1f);
+			queueDecay(world, pos, origin, pattern, DECAY_DELAY);
+		});
+	}
+
+	public static void queueDecay(ServerWorld world, BlockPos pos, BlockState origin, DecayPattern pattern, int delay) {
+		DecayTask task = new DecayTask(pos, origin, pattern, delay);
+		if (delay <= 0) {
+			task.process(world);
+		} else {
+			DECAY_QUEUE.computeIfAbsent(world.getRegistryKey(), k -> new HashSet<>()).add(task);
+		}
+	}
+
+	public static void tick(ServerWorld world) {
+		RegistryKey<World> key = world.getRegistryKey();
+		if (DECAY_QUEUE.containsKey(key)) {
+			Set<DecayTask> tasks = DECAY_QUEUE.get(key);
+			Set<DecayTask> tasksToRun = tasks.stream().filter(DecayTask::reduceDelayIsDone).collect(Collectors.toSet());
+			tasks.removeAll(tasksToRun);
+			tasksToRun.forEach(task -> task.process(world));
+		}
 	}
 
 	public static class DecayLoader implements SimpleSynchronousResourceReloadListener {
@@ -95,6 +132,36 @@ public final class LimboDecay {
 		@Override
 		public Identifier getFabricId() {
 			return new Identifier("dimdoors", "decay_pattern");
+		}
+	}
+
+	private static class DecayTask {
+		private final BlockPos pos;
+		private final BlockState origin;
+		private final DecayPattern processor;
+		private int delay;
+
+
+		public DecayTask(BlockPos pos, BlockState origin, DecayPattern processor, int delay) {
+			this.pos = pos;
+			this.origin = origin;
+			this.processor = processor;
+			this.delay = delay;
+		}
+
+		public boolean reduceDelayIsDone() {
+			return --delay <= 0;
+		}
+
+		public void process(ServerWorld world) {
+			BlockState target = world.getBlockState(pos);
+			if (world.isChunkLoaded(pos) && processor.test(world, pos, origin, target)) {
+				world.getPlayers(EntityPredicates.maxDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
+					ExtendedServerPlayNetworkHandler.get(player.networkHandler).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, -1));
+				});
+				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), target.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 0.5f, 1f);
+				processor.process(world, pos, origin, world.getBlockState(pos));
+			}
 		}
 	}
 }

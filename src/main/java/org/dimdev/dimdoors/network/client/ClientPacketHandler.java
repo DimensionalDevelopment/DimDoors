@@ -7,21 +7,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import net.minecraft.client.render.WorldRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
-import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
-import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
-import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
-import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket;
+import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -30,7 +29,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 @Environment(EnvType.CLIENT)
 public class ClientPacketHandler implements ClientPacketListener {
@@ -54,6 +52,7 @@ public class ClientPacketHandler implements ClientPacketListener {
 		registerReceiver(SyncPocketAddonsS2CPacket.ID, SyncPocketAddonsS2CPacket::new);
 		registerReceiver(MonolithAggroParticlesPacket.ID, MonolithAggroParticlesPacket::new);
 		registerReceiver(MonolithTeleportParticlesPacket.ID, MonolithTeleportParticlesPacket::new);
+		registerReceiver(RenderBreakBlockS2CPacket.ID, RenderBreakBlockS2CPacket::new);
 
 		sendPacket(new NetworkHandlerInitializedC2SPacket());
 	}
@@ -140,5 +139,12 @@ public class ClientPacketHandler implements ClientPacketListener {
 		MinecraftClient client = MinecraftClient.getInstance();
 		//noinspection ConstantConditions
 		client.execute(() -> client.particleManager.addParticle(new MonolithParticle(client.world, client.player.getX(), client.player.getY(), client.player.getZ())));
+	}
+
+	@Override
+	public void onRenderBreakBlock(RenderBreakBlockS2CPacket packet) {
+		MinecraftClient.getInstance().executeTask(() -> {
+			CustomBreakBlockHandler.customBreakBlock(packet.getPos(), packet.getStage(), ((WorldRendererAccessor) MinecraftClient.getInstance().worldRenderer).getTicks());
+		});
 	}
 }
