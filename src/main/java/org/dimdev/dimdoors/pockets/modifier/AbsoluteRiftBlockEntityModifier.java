@@ -8,6 +8,8 @@ import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
+	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "block_entity";
 
 	private Map<BlockPos, RiftBlockEntity> rifts;
@@ -35,6 +38,13 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	@Override
 	public Modifier fromNbt(NbtCompound nbt) {
 		serializedRifts = nbt.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(NbtCompound.class::cast)
+				.filter(compound -> {
+					if (compound.contains("Pos")) {
+						return true;
+					}
+					LOGGER.error("Discarding rift on deserialization since \"Pos\" tag was not set.");
+					return false;
+				})
 				.collect(Collectors.toConcurrentMap(compound -> {
 					int[] ints = compound.getIntArray("Pos");
 					return new BlockPos(ints[0], ints[1], ints[2]);

@@ -154,8 +154,13 @@ public class DoorDataReader {
 						return;
 					}
 					JsonObject json = GSON.fromJson(jsonStr, JsonObject.class);
-					try (DoorData ignored = DoorData.fromJson(json)) {
-						LOGGER.info("Loaded door json from {} with id {}", p.toAbsolutePath().toString(), ignored.getId());
+					// TODO: someone check whether this makes sense.
+					try {
+						try (DoorData ignored = DoorData.fromJson(json)) {
+							LOGGER.info("Loaded door json from {} with id {}", p.toAbsolutePath().toString(), ignored.getId());
+						}
+					} catch (Exception e) {
+						LOGGER.error("Error trying to load door json from path " + p.toAbsolutePath().toString(), e);
 					}
 				}
 			}
