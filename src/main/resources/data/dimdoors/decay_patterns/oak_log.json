@@ -1,11 +1,11 @@
 {
   "predicate": {
-    "type": "dimdoors:simple",
-    "block": "minecraft:oak_log"
+    "block": "minecraft:oak_log",
+    "type": "dimdoors:simple"
   },
   "processor": {
-    "type": "dimdoors:simple",
+    "entropy": 1,
     "block": "minecraft:oak_planks",
-    "entropy": 1
+    "type": "dimdoors:simple"
   }
 }

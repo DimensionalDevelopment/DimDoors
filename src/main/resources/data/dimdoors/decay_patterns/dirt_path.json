@@ -1,11 +1,11 @@
 {
   "predicate": {
-    "type": "dimdoors:simple",
-    "block": "minecraft:dirt_path"
+    "block": "minecraft:dirt_path",
+    "type": "dimdoors:simple"
   },
   "processor": {
-    "type": "dimdoors:simple",
+    "entropy": 1,
     "block": "minecraft:dirt",
-    "entropy": 1
+    "type": "dimdoors:simple"
   }
 }

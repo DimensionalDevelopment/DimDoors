@@ -1,11 +1,11 @@
 {
   "predicate": {
-    "type": "dimdoors:simple",
-    "block": "minecraft:polished_diorite"
+    "block": "minecraft:polished_diorite",
+    "type": "dimdoors:simple"
   },
   "processor": {
-    "type": "dimdoors:simple",
+    "entropy": 1,
     "block": "minecraft:diorite",
-    "entropy": 1
+    "type": "dimdoors:simple"
   }
 }

@@ -1,11 +1,11 @@
 {
   "predicate": {
-    "type": "dimdoors:simple",
-    "block": "minecraft:gold_block"
+    "block": "minecraft:gold_block",
+    "type": "dimdoors:simple"
   },
   "processor": {
-    "type": "dimdoors:simple",
+    "entropy": 1,
     "block": "minecraft:gold_ore",
-    "entropy": 1
+    "type": "dimdoors:simple"
   }
 }
