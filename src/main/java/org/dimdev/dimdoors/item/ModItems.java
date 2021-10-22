@@ -70,6 +70,12 @@ public final class ModItems {
 	@RegistryEntry("world_thread")
 	public static final Item WORLD_THREAD = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
 
+	@RegistryEntry("infrangible_fiber")
+	public static final Item INFRANGIBLE_FIBER = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
+	@RegistryEntry("frayed_filament")
+	public static final Item FRAYED_FILAMENT = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
 	@RegistryEntry("rift_configuration_tool")
 	public static final Item RIFT_CONFIGURATION_TOOL = create(new RiftConfigurationToolItem());
 
