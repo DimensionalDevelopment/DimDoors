@@ -143,8 +143,6 @@ public class ClientPacketHandler implements ClientPacketListener {
 
 	@Override
 	public void onRenderBreakBlock(RenderBreakBlockS2CPacket packet) {
-		MinecraftClient.getInstance().executeTask(() -> {
-			CustomBreakBlockHandler.customBreakBlock(packet.getPos(), packet.getStage(), ((WorldRendererAccessor) MinecraftClient.getInstance().worldRenderer).getTicks());
-		});
+		CustomBreakBlockHandler.customBreakBlock(packet.getPos(), packet.getStage(), ((WorldRendererAccessor) MinecraftClient.getInstance().worldRenderer).getTicks());
 	}
 }
