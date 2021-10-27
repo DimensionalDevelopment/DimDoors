@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world.pocket.type;
 
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
 
-public class PrivatePocket extends Pocket implements DyeableAddon.DyeablePocket {
+public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.DyeablePocket {
 	public static String KEY = "private_pocket";
 
 	public static PrivatePocketBuilder<?, PrivatePocket> builderPrivatePocket() {

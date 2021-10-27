@@ -172,7 +172,7 @@ public final class ModBlocks {
 	public static final Block MARKING_PLATE = register(new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).nonOpaque()));
 
 	@RegistryEntry("solid_static")
-	public static final Block SOLID_STATIC = register(new Block(FabricBlockSettings.of(Material.STONE).strength(7, 25).breakByTool(FabricToolTags.PICKAXES, 3).breakByHand(false).sounds(BlockSoundGroup.SAND)));
+	public static final Block SOLID_STATIC = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE).strength(7, 25).ticksRandomly().breakByTool(FabricToolTags.PICKAXES, 3).breakByHand(false).sounds(BlockSoundGroup.SAND)));
 
 	private static Block register(Block block) {
 		return block;

@@ -4,6 +4,7 @@ import static net.minecraft.block.Blocks.ACACIA_LOG;
 import static net.minecraft.block.Blocks.ACACIA_PLANKS;
 import static net.minecraft.block.Blocks.ACACIA_WOOD;
 import static net.minecraft.block.Blocks.ANDESITE;
+import static net.minecraft.block.Blocks.BEDROCK;
 import static net.minecraft.block.Blocks.BIRCH_LOG;
 import static net.minecraft.block.Blocks.BIRCH_PLANKS;
 import static net.minecraft.block.Blocks.BIRCH_WOOD;
@@ -53,6 +54,7 @@ import static net.minecraft.block.Blocks.SPRUCE_PLANKS;
 import static net.minecraft.block.Blocks.SPRUCE_WOOD;
 import static net.minecraft.block.Blocks.STONE;
 import static net.minecraft.block.Blocks.STONE_BRICKS;
+import static org.dimdev.dimdoors.block.ModBlocks.SOLID_STATIC;
 import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_BLOCK;
 import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
 
@@ -109,7 +111,7 @@ public class LimboDecayProvider implements DataProvider {
         };
 
         createSimplePattern(new Identifier("dimdoors:stone"), STONE, COBBLESTONE).run(consumer);
-        createSimplePattern(new Identifier("dimdoors:cobblestone"), COBBLESTONE, END_STONE).run(consumer);
+        createSimplePattern(new Identifier("dimdoors:cobblestone"), COBBLESTONE, GRAVEL).run(consumer);
         createSimplePattern(new Identifier("dimdoors:gravel"), GRAVEL, SAND).run(consumer);
         turnIntoSelf(new Identifier("dimdoors:sand"), SAND).run(consumer);
         createSimplePattern(new Identifier("dimdoors:glass"), GLASS, SAND).run(consumer);
@@ -142,7 +144,7 @@ public class LimboDecayProvider implements DataProvider {
         createSimplePattern(new Identifier("dimdoors:farmland"), FARMLAND, DIRT).run(consumer);
         createSimplePattern(new Identifier("dimdoors:stone_bricks"), STONE_BRICKS, CRACKED_STONE_BRICKS).run(consumer);
         createSimplePattern(new Identifier("dimdoors:cracked_stone_bricks"), CRACKED_STONE_BRICKS, DIORITE).run(consumer);
-        createSimplePattern(new Identifier("dimdoors:end_stone"), END_STONE, SAND).run(consumer);
+        createSimplePattern(new Identifier("dimdoors:end_stone"), END_STONE, SANDSTONE).run(consumer);
         createSimplePattern(new Identifier("dimdoors:oak_log"), OAK_LOG, OAK_PLANKS).run(consumer);
         createSimplePattern(new Identifier("dimdoors:birch_log"), BIRCH_LOG, BIRCH_PLANKS).run(consumer);
         createSimplePattern(new Identifier("dimdoors:spruce_log"), SPRUCE_LOG, SPRUCE_PLANKS).run(consumer);
@@ -155,6 +157,7 @@ public class LimboDecayProvider implements DataProvider {
         createSimplePattern(new Identifier("dimdoors:jungle_wood"), JUNGLE_WOOD, JUNGLE_LOG).run(consumer);
         createSimplePattern(new Identifier("dimdoors:acacia_wood"), ACACIA_WOOD, ACACIA_LOG).run(consumer);
         createSimplePattern(new Identifier("dimdoors:dark_oak_wood"), DARK_OAK_WOOD, DARK_OAK_LOG).run(consumer);
+        createSimplePattern(new Identifier("dimdoors:bedrock"), BEDROCK, SOLID_STATIC).run(consumer);
     }
 
     private DecayPatternData turnIntoSelf(Identifier identifier, Block before) {

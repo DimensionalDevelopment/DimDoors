@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public class DecayPattern {
-    public static final Event<EntropyEvent> ENTROPY_EVENT = EventFactory.createArrayBacked(EntropyEvent.class, (world, pos, entorpy) -> { System.out.println("Entorpy value of " + entorpy + " at " + pos + " in " + world.getRegistryKey().getValue()); }, entropyEvents -> (world, pos, entorpy) -> {
+    public static final Event<EntropyEvent> ENTROPY_EVENT = EventFactory.createArrayBacked(EntropyEvent.class, (world, pos, entorpy) -> {}, entropyEvents -> (world, pos, entorpy) -> {
         for (EntropyEvent event : entropyEvents) event.entropy(world, pos, entorpy);
     });
 
