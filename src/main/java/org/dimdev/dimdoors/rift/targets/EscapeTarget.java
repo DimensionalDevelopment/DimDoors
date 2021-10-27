@@ -59,18 +59,18 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			chat(entity, new TranslatableText("rifts.destinations.escape.cannot_escape_limbo"));
 			return false;
 		}
-		if(entity.getEntityWorld().isClient)
+		if (entity.getEntityWorld().isClient)
 			return false;
 		UUID uuid = entity.getUuid();
 		if (uuid != null) {
 			//Location destLoc = DimensionalRegistry.getRiftRegistry().getOverworldRift(uuid);
-			if(entity.world.getPlayerByUuid(uuid) == null) {
+			if (entity.world.getPlayerByUuid(uuid) == null) {
 				LOGGER.log(Level.ERROR, "Tried to get player for escape target from uuid, but player does not exist, uh oh");
 				return false;
 			}
 			LOGGER.log(Level.INFO, "sending player from limbo to their spawnpoint, good luck!");
 			Location destLoc;
-			if(((ServerPlayerEntity)entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition() != null) {
+			if (((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition() != null) {
 				destLoc = new Location(((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointDimension(), ((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition());
 			} else {
 				destLoc = new Location(World.OVERWORLD, new BlockPos(0, 0, 0));
@@ -78,6 +78,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			}
 
 
+			/*
 			if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || this.canEscapeLimbo) {
 				//Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
 				TeleportUtil.teleport(entity, destLoc.getWorld(), destLoc.getBlockPos(), relativeAngle, relativeVelocity);
@@ -91,33 +92,35 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 					TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
 				}
 			}
+			 */
 
 
-			if(destLoc != null && this.canEscapeLimbo) {
+			if (destLoc != null && this.canEscapeLimbo) {
 				Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false);
-				TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
+				entity = TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
+				entity.fallDistance = 0;
 				Random random = new Random();
 				BlockPos.iterateOutwards(location.pos.add(0, -4, 0), 3, 2, 3).forEach((pos1 -> {
-					if(random.nextFloat() < (1/((float)location.pos.getSquaredDistance(pos1)))*  DimensionalDoorsInitializer.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
+					if (random.nextFloat() < (1 / ((float) location.pos.getSquaredDistance(pos1))) * DimensionalDoorsInitializer.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
 						Block block = location.getWorld().getBlockState(pos1).getBlock();
-						if(UnravelUtil.unravelBlocksMap.containsKey(block))
+						if (UnravelUtil.unravelBlocksMap.containsKey(block))
 							location.getWorld().setBlockState(pos1, UnravelUtil.unravelBlocksMap.get(block).getDefaultState());
-						else if(UnravelUtil.whitelistedBlocksForLimboRemoval.contains(block)) {
+						else if (UnravelUtil.whitelistedBlocksForLimboRemoval.contains(block)) {
 							location.getWorld().setBlockState(pos1, ModBlocks.UNRAVELLED_FABRIC.getDefaultState());
 						}
 					}
 				}));
-			}
-			else {
-			if (destLoc == null) {
-				chat(entity, new TranslatableText("rifts.destinations.escape.did_not_use_rift"));
 			} else {
-				chat(entity, new TranslatableText("rifts.destinations.escape.rift_has_closed"));
+				if (destLoc == null) {
+					chat(entity, new TranslatableText("rifts.destinations.escape.did_not_use_rift"));
+				} else {
+					chat(entity, new TranslatableText("rifts.destinations.escape.rift_has_closed"));
+				}
+				if (ModDimensions.LIMBO_DIMENSION != null) {
+					entity = TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
+					entity.fallDistance = 0;
+				}
 			}
-			if (ModDimensions.LIMBO_DIMENSION != null) {
-				TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
-			}
-		}
 			return true;
 
 
