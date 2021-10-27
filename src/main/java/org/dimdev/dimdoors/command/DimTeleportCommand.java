@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 public class DimTeleportCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("dimteleport")
+				.requires(source -> source.hasPermissionLevel(4))
                 .then(CommandManager
                         .argument("dimension", DimensionArgumentType.dimension())
                         .executes(ctx -> {
