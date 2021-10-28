@@ -157,7 +157,6 @@ public class LimboDecayProvider implements DataProvider {
         createSimplePattern(new Identifier("dimdoors:jungle_wood"), JUNGLE_WOOD, JUNGLE_LOG).run(consumer);
         createSimplePattern(new Identifier("dimdoors:acacia_wood"), ACACIA_WOOD, ACACIA_LOG).run(consumer);
         createSimplePattern(new Identifier("dimdoors:dark_oak_wood"), DARK_OAK_WOOD, DARK_OAK_LOG).run(consumer);
-        createSimplePattern(new Identifier("dimdoors:bedrock"), BEDROCK, SOLID_STATIC).run(consumer);
     }
 
     private DecayPatternData turnIntoSelf(Identifier identifier, Block before) {

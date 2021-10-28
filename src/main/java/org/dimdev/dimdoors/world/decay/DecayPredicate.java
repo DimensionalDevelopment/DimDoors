@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.world.decay;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Lifecycle;
+import net.minecraft.block.Block;
 import net.minecraft.nbt.NbtCompound;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
@@ -43,7 +45,12 @@ public interface DecayPredicate {
         public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
             return false;
         }
-    };
+
+		@Override
+		public Set<Block> constructApplicableBlocks() {
+			return Set.of();
+		}
+	};
 
     static DecayPredicate deserialize(NbtCompound nbt) {
         Identifier id = Identifier.tryParse(nbt.getString("type"));
@@ -66,6 +73,8 @@ public interface DecayPredicate {
     String getKey();
 
     boolean test(World world, BlockPos pos, BlockState origin, BlockState target);
+
+    Set<Block> constructApplicableBlocks();
 
     interface DecayPredicateType<T extends DecayPredicate> {
         DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(new Identifier("dimdoors", "none"), () -> DUMMY);

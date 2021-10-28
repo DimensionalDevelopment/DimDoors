@@ -6,17 +6,15 @@ import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.network.packet.s2c.play.BlockBreakingProgressS2CPacket;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.resource.ResourceManager;
 
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.RegistryKey;
 import org.apache.logging.log4j.LogManager;
@@ -26,7 +24,6 @@ import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.ResourceUtil;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -68,11 +65,14 @@ public final class LimboDecay {
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
 	private static void decayBlock(ServerWorld world, BlockPos pos, BlockState origin) {
-		@NotNull Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns();
-
-		if(patterns.isEmpty()) return;
-
 		BlockState target = world.getBlockState(pos);
+
+		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(target.getBlock());
+
+		if(patterns == null || patterns.isEmpty()) {
+			return;
+		}
+
 
 		for(DecayPattern pattern : patterns) {
 			if (!pattern.test(world, pos, origin, target)) {
@@ -109,7 +109,7 @@ public final class LimboDecay {
 	public static class DecayLoader implements SimpleSynchronousResourceReloadListener {
 		private static final Logger LOGGER = LogManager.getLogger();
 		private static final DecayLoader INSTANCE = new DecayLoader();
-		private List<DecayPattern> patterns = new ArrayList<>();
+		private final Map<Block, List<DecayPattern>> patterns = new HashMap();
 
 		private DecayLoader() {
 		}
@@ -121,16 +121,21 @@ public final class LimboDecay {
 		@Override
 		public void reload(ResourceManager manager) {
 			patterns.clear();
-			CompletableFuture<List<DecayPattern>> futurePatternMap = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.NBT_READER.andThenReader(this::loadPattern));
-			patterns = futurePatternMap.join();
+			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.NBT_READER.andThenReader(this::loadPattern));
+			for (DecayPattern pattern : futurePatternList.join()) {
+				for (Block block : pattern.constructApplicableBlocks()) {
+					patterns.computeIfAbsent(block, (b) -> new ArrayList<>());
+					patterns.get(block).add(pattern);
+				}
+			}
 		}
 
 		private DecayPattern loadPattern(NbtElement nbt, Identifier ignored) {
 			return DecayPattern.deserialize((NbtCompound) nbt);
 		}
 
-		public @NotNull Collection<DecayPattern> getPatterns() {
-			return patterns;
+		public Collection<DecayPattern> getPatterns(Block block) {
+			return patterns.get(block);
 		}
 
 		@Override

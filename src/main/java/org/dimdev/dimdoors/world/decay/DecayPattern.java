@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.decay;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
@@ -7,6 +8,8 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+
+import java.util.Set;
 
 public class DecayPattern {
     public static final Event<EntropyEvent> ENTROPY_EVENT = EventFactory.createArrayBacked(EntropyEvent.class, (world, pos, entorpy) -> {}, entropyEvents -> (world, pos, entorpy) -> {
@@ -36,6 +39,10 @@ public class DecayPattern {
     public void process(World world, BlockPos pos, BlockState origin, BlockState target) {
         ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos, origin, target));
     }
+
+	public Set<Block> constructApplicableBlocks() {
+		return predicate.constructApplicableBlocks();
+	}
 
     public static DecayPattern.Builder builder() {
         return new DecayPattern.Builder();

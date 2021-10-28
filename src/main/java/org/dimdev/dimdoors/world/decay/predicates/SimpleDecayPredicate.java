@@ -13,6 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
+import java.util.Set;
+
 public class SimpleDecayPredicate implements DecayPredicate {
     public static final String KEY = "simple";
 
@@ -54,7 +56,12 @@ public class SimpleDecayPredicate implements DecayPredicate {
         return state.getBlock() == block;
     }
 
-    public static Builder builder() {
+	@Override
+	public Set<Block> constructApplicableBlocks() {
+		return Set.of(block);
+	}
+
+	public static Builder builder() {
         return new Builder();
     }
 
