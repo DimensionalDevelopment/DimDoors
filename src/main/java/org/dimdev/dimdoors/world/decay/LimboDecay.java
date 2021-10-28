@@ -74,13 +74,17 @@ public final class LimboDecay {
 
 		BlockState target = world.getBlockState(pos);
 
-		patterns.stream().filter(decayPattern -> decayPattern.test(world, pos, origin, target)).findAny().ifPresent(pattern -> {
+		for(DecayPattern pattern : patterns) {
+			if (!pattern.test(world, pos, origin, target)) {
+				continue;
+			}
 			world.getPlayers(EntityPredicates.maxDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
 				ExtendedServerPlayNetworkHandler.get(player.networkHandler).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, 5));
 			});
 			world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), ModSoundEvents.TEARING, SoundCategory.BLOCKS, 0.5f, 1f);
 			queueDecay(world, pos, origin, pattern, DECAY_DELAY);
-		});
+			break;
+		}
 	}
 
 	public static void queueDecay(ServerWorld world, BlockPos pos, BlockState origin, DecayPattern pattern, int delay) {
