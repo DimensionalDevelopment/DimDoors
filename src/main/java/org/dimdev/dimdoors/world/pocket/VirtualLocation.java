@@ -3,6 +3,9 @@ package org.dimdev.dimdoors.world.pocket;
 import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.ChunkSectionPos;
+import net.minecraft.world.chunk.Chunk;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.api.util.Location;
@@ -90,18 +93,14 @@ public class VirtualLocation {
 		int newX = (int) (this.x + spread * 2 * (Math.random() - 0.5));
 		int newZ = (int) (this.z + spread * 2 * (Math.random() - 0.5));
 		//BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 1, newZ));
-		BlockPos pos = getTopPos(world, new BlockPos(newX, 255, newZ));
+		BlockPos pos = getTopPos(world, newX, newZ).up();
 		return new Location(world, pos);
 	}
-	public static BlockPos getTopPos(World world, BlockPos pos) {
-		while(world.getBlockState(pos).isAir()) {
-			pos = pos.down();
-		}
-		while(world.getBlockState(pos).isSolidBlock(world, pos)) {
-			pos = pos.up();
-		}
-		pos = pos.up(2);
-		return pos;
+
+	public static BlockPos getTopPos(World world, int x, int z) {
+		int topHeight =	world.getChunk(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z)) // guarantees WorldChunk
+				.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
+		return new BlockPos(x, topHeight, z);
 	}
 
 	public RegistryKey<World> getWorld() {

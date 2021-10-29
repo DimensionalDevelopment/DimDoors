@@ -36,10 +36,10 @@ public class DimensionalEraserItem extends Item {
 		if (hit != null && hit.getType() == HitResult.Type.ENTITY) {
 			if(((EntityHitResult) hit).getEntity() instanceof ServerPlayerEntity) {
 				BlockPos teleportPos = ((EntityHitResult) hit).getEntity().getBlockPos();
-				while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos)).getBlock() == ModBlocks.ETERNAL_FLUID) {
+				while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
 					teleportPos = teleportPos.add(1, 0, 1);
 				}
-				TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.add(0, 255-((EntityHitResult) hit).getEntity().getBlockY(), 0), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getVelocity());
+				TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.withY(255), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getVelocity());
 			}
 
 			((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);

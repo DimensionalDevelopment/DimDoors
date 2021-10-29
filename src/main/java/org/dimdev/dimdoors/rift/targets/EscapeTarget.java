@@ -100,7 +100,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				entity = TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
 				entity.fallDistance = 0;
 				Random random = new Random();
-				BlockPos.iterateOutwards(location.pos.add(0, -4, 0), 3, 2, 3).forEach((pos1 -> {
+				BlockPos.iterateOutwards(location.pos.add(0, -3, 0), 3, 2, 3).forEach((pos1 -> {
 					if (random.nextFloat() < (1 / ((float) location.pos.getSquaredDistance(pos1))) * DimensionalDoorsInitializer.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
 						Block block = location.getWorld().getBlockState(pos1).getBlock();
 						if (UnravelUtil.unravelBlocksMap.containsKey(block))
