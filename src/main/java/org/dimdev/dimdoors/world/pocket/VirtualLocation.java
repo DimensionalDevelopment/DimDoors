@@ -99,7 +99,7 @@ public class VirtualLocation {
 
 	public static BlockPos getTopPos(World world, int x, int z) {
 		int topHeight =	world.getChunk(ChunkSectionPos.getSectionCoord(x), ChunkSectionPos.getSectionCoord(z)) // guarantees WorldChunk
-				.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
+				.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING, x, z);
 		return new BlockPos(x, topHeight, z);
 	}
 
