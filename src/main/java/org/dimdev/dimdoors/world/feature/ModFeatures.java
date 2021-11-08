@@ -42,9 +42,9 @@ public final class ModFeatures {
     @Deprecated public static final Decorator<ChanceDecoratorConfig> ETERNAL_FLUID_LAKE_DECORATOR = new EternalFluidLakeDecorator(ChanceDecoratorConfig.CODEC);
     public static final ConfiguredFeature<?, ?> SANDSTONE_PILLARS_FEATURE;
     public static final ConfiguredFeature<?, ?> TWO_PILLARS_FEATURE;
-    public static final ConfiguredFeature<?, ?> LIMBO_GATEWAY_CONFIGURED_FEATURE;
-    public static final ConfiguredFeature<?, ?> SOLID_STATIC_ORE;
-    public static final ConfiguredFeature<?, ?> DECAYED_BLOCK_ORE;
+//    public static final ConfiguredFeature<?, ?> LIMBO_GATEWAY_CONFIGURED_FEATURE;
+//    public static final ConfiguredFeature<?, ?> SOLID_STATIC_ORE;
+//    public static final ConfiguredFeature<?, ?> DECAYED_BLOCK_ORE;
     public static final RegistryKey<ConfiguredFeature<?, ?>> SANDSTONE_PILLARS_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier("dimdoors", "sandstone_pillars"));
     public static final RegistryKey<ConfiguredFeature<?, ?>> TWO_PILLARS_KEY = RegistryKey.of(Registry.CONFIGURED_FEATURE_KEY, new Identifier("dimdoors", "two_pillars"));
 
@@ -56,9 +56,9 @@ public final class ModFeatures {
         Registry.register(Registry.FEATURE, new Identifier("dimdoors", "schematic_gateway"), SCHEMATIC_GATEWAY_FEATURE);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, SANDSTONE_PILLARS_KEY.getValue(), SANDSTONE_PILLARS_FEATURE);
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, TWO_PILLARS_KEY.getValue(), TWO_PILLARS_FEATURE);
-		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "solid_static_ore"), SOLID_STATIC_ORE);
-		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "decayed_block_ore"), DECAYED_BLOCK_ORE);
-        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "limbo_gateway"), LIMBO_GATEWAY_CONFIGURED_FEATURE);
+//		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "solid_static_ore"), SOLID_STATIC_ORE);
+//		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "decayed_block_ore"), DECAYED_BLOCK_ORE);
+//        Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "limbo_gateway"), LIMBO_GATEWAY_CONFIGURED_FEATURE);
         Registry.register(Registry.DECORATOR, new Identifier("dimdoors", "eternal_fluid_lake"), ETERNAL_FLUID_LAKE_DECORATOR);
         Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, new Identifier("dimdoors", "eternal_fluid_lake"), ETERNAL_FLUID_LAKE);
 
@@ -78,8 +78,8 @@ public final class ModFeatures {
         int gatewayChance = /*FabricLoader.getInstance().isDevelopmentEnvironment() ? 20 : */DimensionalDoorsInitializer.getConfig().getWorldConfig().gatewayGenChance;
         SANDSTONE_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicGatewayFeatureConfig(SchematicGateway.ID_SCHEMATIC_MAP.inverse().get(SANDSTONE_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
         TWO_PILLARS_FEATURE = SCHEMATIC_GATEWAY_FEATURE.configure(new SchematicGatewayFeatureConfig(SchematicGateway.ID_SCHEMATIC_MAP.inverse().get(TWO_PILLARS_GATEWAY))).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
-        LIMBO_GATEWAY_CONFIGURED_FEATURE = LIMBO_GATEWAY_FEATURE.configure(DefaultFeatureConfig.INSTANCE).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
-		SOLID_STATIC_ORE = Feature.ORE.configure(new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.SOLID_STATIC.getDefaultState(), 4)).uniformRange(YOffset.getBottom(), YOffset.getTop()).repeat(3);
-        DECAYED_BLOCK_ORE = Feature.ORE.configure(new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.DECAYED_BLOCK.getDefaultState(), 64)).uniformRange(YOffset.fixed(0), YOffset.fixed(79)).repeat(2);
+//        LIMBO_GATEWAY_CONFIGURED_FEATURE = LIMBO_GATEWAY_FEATURE.configure(DefaultFeatureConfig.INSTANCE).decorate(ConfiguredFeatures.Decorators.SQUARE_TOP_SOLID_HEIGHTMAP.applyChance(gatewayChance));
+//		SOLID_STATIC_ORE = Feature.ORE.configure(new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.SOLID_STATIC.getDefaultState(), 4)).uniformRange(YOffset.getBottom(), YOffset.getTop()).repeat(3);
+//        DECAYED_BLOCK_ORE = Feature.ORE.configure(new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.DECAYED_BLOCK.getDefaultState(), 64)).uniformRange(YOffset.fixed(0), YOffset.fixed(79)).repeat(2);
     }
 }

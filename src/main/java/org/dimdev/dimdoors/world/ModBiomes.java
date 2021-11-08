@@ -102,14 +102,14 @@ public final class ModBiomes {
                         .build()
 				)
                 .generationSettings(new GenerationSettings.Builder()
-						.feature(
-								GenerationStep.Feature.SURFACE_STRUCTURES,
-								ModFeatures.LIMBO_GATEWAY_CONFIGURED_FEATURE
-						)
-						.feature(
-								GenerationStep.Feature.UNDERGROUND_ORES,
-								ModFeatures.SOLID_STATIC_ORE
-						)
+//						.feature(
+//								GenerationStep.Feature.SURFACE_STRUCTURES,
+//								ModFeatures.LIMBO_GATEWAY_CONFIGURED_FEATURE
+//						)
+//						.feature(
+//								GenerationStep.Feature.UNDERGROUND_ORES,
+//								ModFeatures.SOLID_STATIC_ORE
+//						)
                         .surfaceBuilder(
                         		SurfaceBuilder.DEFAULT.withConfig(
                         				new TernarySurfaceConfig(
