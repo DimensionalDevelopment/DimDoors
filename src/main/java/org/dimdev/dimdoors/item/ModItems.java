@@ -68,13 +68,13 @@ public final class ModItems {
 	));
 
 	@RegistryEntry("world_thread")
-	public static final Item WORLD_THREAD = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WORLD_THREAD = create(new Item(new Item.Settings()/*.group(DIMENSIONAL_DOORS)*/));
 
 	@RegistryEntry("infrangible_fiber")
-	public static final Item INFRANGIBLE_FIBER = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item INFRANGIBLE_FIBER = create(new Item(new Item.Settings()/*.group(DIMENSIONAL_DOORS)*/));
 
 	@RegistryEntry("frayed_filament")
-	public static final Item FRAYED_FILAMENT = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item FRAYED_FILAMENT = create(new Item(new Item.Settings()/*.group(DIMENSIONAL_DOORS)*/));
 
 	@RegistryEntry("rift_configuration_tool")
 	public static final Item RIFT_CONFIGURATION_TOOL = create(new RiftConfigurationToolItem());
@@ -116,7 +116,7 @@ public final class ModItems {
 	public static final Item WORLD_THREAD_BOOTS = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.FEET, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryEntry("mask_wand")
-	public static final Item MASK_WAND = create(new MaskWandItem(new Item.Settings().maxCount(100).group(DIMENSIONAL_DOORS)));
+	public static final Item MASK_WAND = create(new MaskWandItem(new Item.Settings().maxCount(100)/*.group(DIMENSIONAL_DOORS)*/));
 
 	@RegistryEntry("stable_fabric")
 	public static final Item STABLE_FABRIC = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
@@ -218,16 +218,16 @@ public final class ModItems {
 	public static final Item BLACK_ANCIENT_FABRIC = create(ModBlocks.BLACK_ANCIENT_FABRIC);
 
 	@RegistryEntry("decayed_block")
-	public static final Item DECAYED_BLOCK = create(ModBlocks.DECAYED_BLOCK);
+	public static final Item DECAYED_BLOCK = createWithoutItemGroup(ModBlocks.DECAYED_BLOCK);
 
 	@RegistryEntry("unfolded_block")
-	public static final Item UNFOLDED_BLOCK = create(ModBlocks.UNFOLDED_BLOCK);
+	public static final Item UNFOLDED_BLOCK = createWithoutItemGroup(ModBlocks.UNFOLDED_BLOCK);
 
 	@RegistryEntry("unwarped_block")
-	public static final Item UNWARPED_BLOCK = create(ModBlocks.UNWARPED_BLOCK);
+	public static final Item UNWARPED_BLOCK = createWithoutItemGroup(ModBlocks.UNWARPED_BLOCK);
 
 	@RegistryEntry("unravelled_block")
-	public static final Item UNRAVELLED_BLOCK = create(ModBlocks.UNRAVELLED_BLOCK);
+	public static final Item UNRAVELLED_BLOCK = createWithoutItemGroup(ModBlocks.UNRAVELLED_BLOCK);
 
 	@RegistryEntry("unravelled_fabric")
 	public static final Item UNRAVELLED_FABRIC = create(ModBlocks.UNRAVELLED_FABRIC);
@@ -239,19 +239,23 @@ public final class ModItems {
 	public static final Item WHITE_VOID_RECORD = create(new MusicDiscItem(10, ModSoundEvents.WHITE_VOID, new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryEntry("marking_plate")
-	public static final Item MARKING_PLATE = create(ModBlocks.MARKING_PLATE);
+	public static final Item MARKING_PLATE = createWithoutItemGroup(ModBlocks.MARKING_PLATE);
 
-	@RegistryEntry("eternal_fluid")
-	public static final Item ETERNAL_FLUID = create(ModBlocks.ETERNAL_FLUID);
+//	@RegistryEntry("eternal_fluid")
+//	public static final Item ETERNAL_FLUID = create(ModBlocks.ETERNAL_FLUID);
 
 	@RegistryEntry("eternal_fluid_bucket")
 	public static final Item ETERNAL_FLUID_BUCKET = create(new BucketItem(ModFluids.ETERNAL_FLUID, new Item.Settings().group(DIMENSIONAL_DOORS).recipeRemainder(Items.BUCKET).maxCount(1)));
 
 	@RegistryEntry("solid_static")
-	public static final Item SOLID_STATIC = create(ModBlocks.SOLID_STATIC);
+	public static final Item SOLID_STATIC = createWithoutItemGroup(ModBlocks.SOLID_STATIC);
 
 	@RegistryEntry("mask_shard")
-	public static final Item MASK_SHARD = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item MASK_SHARD = create(new Item(new Item.Settings()/*.group(DIMENSIONAL_DOORS)*/));
+
+	private static Item createWithoutItemGroup(Block block) {
+		return create(new BlockItem(block, (new Item.Settings())));
+	}
 
 	private static Item create(Block block) {
 		return create(new BlockItem(block, (new Item.Settings()).group(DIMENSIONAL_DOORS)));
