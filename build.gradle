@@ -156,7 +156,7 @@ dependencies {
 	modCompileOnly "worldedit:worldedit:7.2.6"
 	modRuntime "worldedit:worldedit:7.2.6"
 
-	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.17:3.0.13:dev'
+//	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.17:3.0.13:dev'
 
 	datagenImplementation sourceSets.main.output
 	datagenImplementation sourceSets.main.compileClasspath

@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.entity;
 
-import org.dimdev.dimdoors.client.MaskRenderer;
+//import org.dimdev.dimdoors.client.MaskRenderer;
 import org.dimdev.dimdoors.client.MonolithRenderer;
 
 import net.minecraft.entity.Entity;
@@ -36,7 +36,7 @@ public class ModEntityTypes {
     @Environment(EnvType.CLIENT)
     public static void initClient() {
         EntityRendererRegistry.INSTANCE.register(MONOLITH, MonolithRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
+//        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
     }
 
     private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, float width, float height, boolean fixed) {
