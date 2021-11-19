@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "0.9-SNAPSHOT"
+	id "fabric-loom" version "0.10-SNAPSHOT"
 	id "maven-publish"
 	id 'com.matthewprenger.cursegradle' version "1.4.0"
 }
@@ -199,7 +199,7 @@ curseforge {
 		addGameVersion '1.17.1'
 		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[1.17] Dimensional Doors ${version}"
+			displayName = "[1.17.1] Dimensional Doors ${version}"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")
