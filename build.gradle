@@ -54,9 +54,12 @@ repositories {
 		url = "https://maven.shedaniel.me/"
 	}
 
-//	maven {
-//		url = "https://bai.jfrog.io/artifactory/maven"
-//	}
+	maven {
+		url = "https://maven.bai.lol"
+		content {
+			includeGroup "mcp.mobius.waila"
+		}
+	}
 
 	maven {
 		url = "https://jitpack.io"
@@ -68,14 +71,6 @@ repositories {
 	}
 
 	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-
-	maven {
-		name = "Libs"
-		url = "./libs"
-		metadataSources {
-			artifact()
-		}
-	}
 }
 
 def includeCompile(group, artifact, version) {
@@ -83,7 +78,7 @@ def includeCompile(group, artifact, version) {
 		modCompileOnly("$group:$artifact:$version") {
 			exclude module: "fabric-api"
 		}
-		modRuntime("$group:$artifact:$version") {
+		modRuntimeOnly("$group:$artifact:$version") {
 			exclude module: "fabric-api"
 		}
 		include("$group:$artifact:$version")
@@ -139,22 +134,22 @@ dependencies {
 	modCompileOnly("com.terraformersmc:modmenu:2.0.0-beta.7") {
 		exclude module: "fabric-api"
 	}
-	modRuntime("com.terraformersmc:modmenu:2.0.0-beta.7") {
+	modRuntimeOnly("com.terraformersmc:modmenu:2.0.0-beta.7") {
 		exclude module: "fabric-api"
 	}
 
-	modCompileOnly('mcp.mobius.waila:wthit-fabric:3.5.1') {
+	modCompileOnly('mcp.mobius.waila:wthit:fabric-3.11.2') {
 		exclude module: "modmenu"
 		exclude module: "fabric-api"
 	}
-	modRuntime('mcp.mobius.waila:wthit-fabric:3.5.1') {
+	modRuntimeOnly('mcp.mobius.waila:wthit:fabric-3.11.2') {
 		exclude module: "modmenu"
 		exclude module: "fabric-api"
 	}
 	modCompileOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
-	modRuntime "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
-	modCompileOnly "worldedit:worldedit:7.2.6"
-	modRuntime "worldedit:worldedit:7.2.6"
+	modRuntimeOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:2.0.0"
+	modCompileOnly "curse.maven:worldedit-225608:3502100"
+	modRuntimeOnly "curse.maven:worldedit-225608:3502100"
 
 //	modImplementation 'software.bernie.geckolib:geckolib-fabric-1.17:3.0.13:dev'
 
