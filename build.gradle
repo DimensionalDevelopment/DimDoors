@@ -117,7 +117,7 @@ dependencies {
 	minecraft "com.mojang:minecraft:1.17.1"
 	mappings "net.fabricmc:yarn:1.17.1+build.38:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.11.6"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.37.2+1.17"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.42.1+1.17"
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
