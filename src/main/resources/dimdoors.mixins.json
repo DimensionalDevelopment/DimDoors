@@ -38,6 +38,7 @@
     "client.InGameHudMixin",
     "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",
+    "client.BackgroundRendererMixin",
     "client.accessor.RenderLayerAccessor",
     "client.accessor.SkyPropertiesAccessor"
   ],

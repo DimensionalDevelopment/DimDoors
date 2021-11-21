@@ -18,3 +18,5 @@ accessible    field    net/minecraft/state/State    codec    Lcom/mojang/seriali
 
 # for lazy pocket gen/ getting all currently loaded chunks
 accessible method net/minecraft/server/world/ThreadedAnvilChunkStorage entryIterator ()Ljava/lang/Iterable;
+
+accessible method net/minecraft/client/render/WorldRenderer renderEndSky (Lnet/minecraft/client/util/math/MatrixStack;)V
