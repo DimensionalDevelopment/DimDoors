@@ -38,6 +38,7 @@ public class DatagenInitializer implements PreLaunchEntrypoint {
 			dataGenerator.install(RECIPE_CONSUMER = new RecipeConsumer(dataGenerator));
 			dataGenerator.install(LOOT_TABLE_CONSUMER = new LootTableConsumer(dataGenerator));
 			dataGenerator.install(new LimboDecayProvider(dataGenerator));
+			dataGenerator.install(new UnravelBlocksTagsProvider(dataGenerator));
 			dataGenerator.run();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

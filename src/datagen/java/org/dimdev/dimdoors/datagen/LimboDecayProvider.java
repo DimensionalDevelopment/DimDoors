@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.datagen;
 import static net.minecraft.block.Blocks.ACACIA_LOG;
 import static net.minecraft.block.Blocks.ACACIA_PLANKS;
 import static net.minecraft.block.Blocks.ACACIA_WOOD;
+import static net.minecraft.block.Blocks.AIR;
 import static net.minecraft.block.Blocks.ANDESITE;
 import static net.minecraft.block.Blocks.BEDROCK;
 import static net.minecraft.block.Blocks.BIRCH_LOG;
@@ -12,6 +13,7 @@ import static net.minecraft.block.Blocks.BLACKSTONE;
 import static net.minecraft.block.Blocks.COAL_BLOCK;
 import static net.minecraft.block.Blocks.COAL_ORE;
 import static net.minecraft.block.Blocks.COBBLESTONE;
+import static net.minecraft.block.Blocks.COBWEB;
 import static net.minecraft.block.Blocks.CRACKED_STONE_BRICKS;
 import static net.minecraft.block.Blocks.DARK_OAK_LOG;
 import static net.minecraft.block.Blocks.DARK_OAK_PLANKS;
@@ -109,6 +111,10 @@ public class LimboDecayProvider implements DataProvider {
                 LOGGER.error("Couldn't save decay pattern {}", outputPath, var6);
         }
         };
+
+        createSimplePattern(new Identifier("dimdoors:cobweb"), COBWEB, AIR);
+        createSimplePattern(new Identifier("dimdoors:wool"), COBWEB, AIR);
+        createSimplePattern(new Identifier("dimdoors:cobweb"), COBWEB, AIR);
 
         createSimplePattern(new Identifier("dimdoors:stone"), STONE, COBBLESTONE).run(consumer);
         createSimplePattern(new Identifier("dimdoors:cobblestone"), COBBLESTONE, GRAVEL).run(consumer);
