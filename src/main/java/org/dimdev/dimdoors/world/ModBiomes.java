@@ -20,7 +20,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
+//import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 
 public final class ModBiomes {
     public static final RegistryKey<Biome> PERSONAL_WHITE_VOID_KEY;
@@ -60,21 +60,22 @@ public final class ModBiomes {
     static {
         Biome.Builder voidBiomeBuilder = new Biome.Builder()
 				.category(Biome.Category.NONE)
-				.depth(0)
+//				.depth(0)
 				.downfall(0)
-				.generationSettings(new GenerationSettings.Builder().surfaceBuilder(
-										SurfaceBuilder.DEFAULT.withConfig(
-												new TernarySurfaceConfig(
-														Blocks.AIR.getDefaultState(),
-														Blocks.AIR.getDefaultState(),
-														Blocks.VOID_AIR.getDefaultState()
-												)
-										)
-						)
+				.generationSettings(new GenerationSettings.Builder()
+//                        .surfaceBuilder(
+//										SurfaceBuilder.DEFAULT.withConfig(
+//												new TernarySurfaceConfig(
+//														Blocks.AIR.getDefaultState(),
+//														Blocks.AIR.getDefaultState(),
+//														Blocks.VOID_AIR.getDefaultState()
+//												)
+//										)
+//						)
 						.build()
 				)
 				.precipitation(Biome.Precipitation.NONE)
-				.scale(0)
+//				.scale(0)
 				.spawnSettings(new SpawnSettings.Builder().build())
 				.temperature(0.8f)
 				.temperatureModifier(Biome.TemperatureModifier.NONE);
@@ -87,7 +88,7 @@ public final class ModBiomes {
         DUNGEON_DANGEROUS_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
         LIMBO_BIOME = new Biome.Builder()
                 .category(Biome.Category.NONE)
-                .depth(0.1f)
+//                .depth(0.1f)
                 .downfall(0.0f)
                 .effects(new BiomeEffects.Builder()
                         .fogColor(0x404040)
@@ -110,18 +111,18 @@ public final class ModBiomes {
 //								GenerationStep.Feature.UNDERGROUND_ORES,
 //								ModFeatures.SOLID_STATIC_ORE
 //						)
-                        .surfaceBuilder(
-                        		SurfaceBuilder.DEFAULT.withConfig(
-                        				new TernarySurfaceConfig(
-                        						ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
-												ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
-												ModBlocks.ETERNAL_FLUID.getDefaultState()
-										)
-								))
+//                        .surfaceBuilder(
+//                        		SurfaceBuilder.DEFAULT.withConfig(
+//                        				new TernarySurfaceConfig(
+//                        						ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
+//												ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
+//												ModBlocks.ETERNAL_FLUID.getDefaultState()
+//										)
+//								))
                         .build()
 				)
                 .precipitation(Biome.Precipitation.NONE)
-                .scale(2F)
+//                .scale(2F)
                 .spawnSettings(new SpawnSettings.Builder()
 						.creatureSpawnProbability(0.02f)
 						.spawn(

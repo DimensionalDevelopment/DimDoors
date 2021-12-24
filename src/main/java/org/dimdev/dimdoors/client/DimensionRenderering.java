@@ -75,7 +75,7 @@ public class DimensionRenderering {
     }
 
     private static void renderLimboSky(MatrixStack matrices) {
-        Matrix4f matrix4f = matrices.peek().getModel();
+        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
         RenderSystem.enableBlend();

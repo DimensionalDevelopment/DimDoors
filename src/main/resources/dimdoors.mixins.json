@@ -4,11 +4,13 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "BlockMixin",
+    "DimensionTypeMixin",
     "EntityMixin",
     "ExplosionMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",
+    "NetherPieceMixin",
     "PlayerEntityMixin",
     "RegistryKeyMixin",
     "ServerPlayerEntityMixin",
@@ -31,6 +33,7 @@
     "client.accessor.WorldRendererAccessor"
   ],
   "client": [
+    "client.BackgroundRendererMixin",
     "client.ClientPlayerInteractionManagerMixin",
     "client.ClientPlayNetworkHandlerMixin",
     "client.ExtendedClientPlayNetworkHandlerMixin",
@@ -38,7 +41,6 @@
     "client.InGameHudMixin",
     "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",
-    "client.BackgroundRendererMixin",
     "client.accessor.RenderLayerAccessor",
     "client.accessor.SkyPropertiesAccessor"
   ],

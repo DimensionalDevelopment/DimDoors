@@ -3,6 +3,9 @@ package org.dimdev.dimdoors.block.entity;
 import java.util.Objects;
 
 import net.minecraft.block.Block;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
@@ -24,6 +27,7 @@ import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -35,10 +39,9 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
-public abstract class RiftBlockEntity extends BlockEntity implements BlockEntityClientSerializable, Target, EntityTarget {
+public abstract class RiftBlockEntity extends BlockEntity implements Target, EntityTarget {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static long showRiftCoreUntil = 0;
 
@@ -62,9 +65,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound nbt) {
+	public void writeNbt(NbtCompound nbt) {
 		super.writeNbt(nbt);
-		return this.serialize(nbt);
+		this.serialize(nbt);
 	}
 
 	public NbtCompound serialize(NbtCompound nbt) {
@@ -72,15 +75,21 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 		return nbt;
 	}
 
+//	@Override
+//	public void fromClientTag(NbtCompound nbt) {
+//		this.deserialize(nbt);super.toUpdatePacket()
+//	}
+
+	@Nullable
 	@Override
-	public void fromClientTag(NbtCompound nbt) {
-		this.deserialize(nbt);
+	public Packet<ClientPlayPacketListener> toUpdatePacket() {
+		return BlockEntityUpdateS2CPacket.create(this, a -> ((RiftBlockEntity) a).serialize(new NbtCompound()));
 	}
 
-	@Override
-	public NbtCompound toClientTag(NbtCompound nbt) {
-		return this.serialize(nbt);
-	}
+//	@Override
+//	public NbtCompound toClientTag(NbtCompound nbt) {
+//		return this.serialize(nbt);
+//	}
 
 	public void setDestination(VirtualTarget destination) {
 		if (LOGGER.isDebugEnabled()) {

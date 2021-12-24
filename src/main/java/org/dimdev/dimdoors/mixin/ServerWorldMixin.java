@@ -12,7 +12,7 @@ import java.util.function.BooleanSupplier;
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
 
-	@Inject(method = "tick(Ljava/util/function/BooleanSupplier;)V", at = @At(target = "Lnet/minecraft/server/world/ServerWorld;fluidTickScheduler:Lnet/minecraft/server/world/ServerTickScheduler;", value = "FIELD", ordinal = 0, shift = At.Shift.AFTER))
+	@Inject(method = "tick(Ljava/util/function/BooleanSupplier;)V", at = @At(target = "Lnet/minecraft/server/world/ServerWorld;fluidTickScheduler:Lnet/minecraft/world/tick/WorldTickScheduler;", value = "FIELD", ordinal = 0, shift = At.Shift.AFTER))
 	public void afterScheduledTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
 		LimboDecay.tick((ServerWorld) (Object) this);
 	}

@@ -90,7 +90,7 @@ public class PocketCommand {
 	private static int place(ServerPlayerEntity source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
 		SchematicPlacer.place(
 				template.getSchematic(),
-				source.getServerWorld(),
+				source.getWorld(),
 				source.getBlockPos(),
 				blockPlacementType
 		);

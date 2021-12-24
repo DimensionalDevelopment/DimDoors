@@ -2,11 +2,12 @@ package org.dimdev.dimdoors.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.SkyProperties;
+
+import net.minecraft.client.render.DimensionEffects;
 import net.minecraft.util.math.Vec3d;
 
 @Environment(EnvType.CLIENT)
-public class LimboSkyProperties extends SkyProperties {
+public class LimboSkyProperties extends DimensionEffects {
     public LimboSkyProperties() {
         super(Float.NaN, true, SkyType.NONE, false, true);
     }

@@ -12,9 +12,11 @@ import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.data.DataGenerator;
 
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 
-public class DatagenInitializer implements PreLaunchEntrypoint {
+public class DatagenInitializer implements DataGeneratorEntrypoint {
 	public static RecipeConsumer RECIPE_CONSUMER;
 	public static LootTableConsumer LOOT_TABLE_CONSUMER;
 
@@ -22,27 +24,38 @@ public class DatagenInitializer implements PreLaunchEntrypoint {
 	// - Duplicate the Minecraft Client run config
 	// - Change the module from DimensionalDoors.main to DimensionalDoors.datagen
 	// - Profit
+//	@Override
+//	public void onPreLaunch() {
+//		try {
+//			SharedConstants.createGameVersion();
+//			Bootstrap.initialize();
+//			DimensionalDoorsInitializer.registerRegistries();
+//			ModBlocks.init();
+//			ModItems.init();
+//			ModCriteria.init();
+//			DataGenerator dataGenerator = new DataGenerator(Paths.get("./generated"), Collections.emptyList());
+//			dataGenerator.install(new FabricRecipeProvider(dataGenerator));
+//			dataGenerator.install(new AdvancementProvider(dataGenerator));
+//			dataGenerator.install(new LootTableProvider(dataGenerator));
+//			dataGenerator.install(RECIPE_CONSUMER = new RecipeConsumer(dataGenerator));
+//			dataGenerator.install(LOOT_TABLE_CONSUMER = new LootTableConsumer(dataGenerator));
+//			dataGenerator.install(new LimboDecayProvider(dataGenerator));
+//			dataGenerator.install(new UnravelBlocksTagsProvider(dataGenerator));
+//			dataGenerator.run();
+//		} catch (Exception e) {
+//			throw new RuntimeException(e);
+//		}
+//		System.exit(0);
+//	}
+
 	@Override
-	public void onPreLaunch() {
-		try {
-			SharedConstants.createGameVersion();
-			Bootstrap.initialize();
-			DimensionalDoorsInitializer.registerRegistries();
-			ModBlocks.init();
-			ModItems.init();
-			ModCriteria.init();
-			DataGenerator dataGenerator = new DataGenerator(Paths.get("./generated"), Collections.emptyList());
-			dataGenerator.install(new FabricRecipeProvider(dataGenerator));
-			dataGenerator.install(new AdvancementProvider(dataGenerator));
-			dataGenerator.install(new LootTableProvider(dataGenerator));
-			dataGenerator.install(RECIPE_CONSUMER = new RecipeConsumer(dataGenerator));
-			dataGenerator.install(LOOT_TABLE_CONSUMER = new LootTableConsumer(dataGenerator));
-			dataGenerator.install(new LimboDecayProvider(dataGenerator));
-			dataGenerator.install(new UnravelBlocksTagsProvider(dataGenerator));
-			dataGenerator.run();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		System.exit(0);
+	public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
+		fabricDataGenerator.addProvider(new FabricRecipeProvider(fabricDataGenerator));
+		fabricDataGenerator.addProvider(new AdvancementProvider(fabricDataGenerator));
+		fabricDataGenerator.addProvider(new LootTableProvider(fabricDataGenerator));
+		fabricDataGenerator.addProvider(RECIPE_CONSUMER = new RecipeConsumer(fabricDataGenerator));
+		fabricDataGenerator.addProvider(LOOT_TABLE_CONSUMER = new LootTableConsumer(fabricDataGenerator));
+		fabricDataGenerator.addProvider(new LimboDecayProvider(fabricDataGenerator));
+		fabricDataGenerator.addProvider(new UnravelBlocksTagsProvider(fabricDataGenerator));
 	}
 }

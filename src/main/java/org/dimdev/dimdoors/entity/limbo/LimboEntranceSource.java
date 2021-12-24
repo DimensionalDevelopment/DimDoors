@@ -12,7 +12,7 @@ public abstract class LimboEntranceSource {
 	public abstract Text getMessage(PlayerEntity player);
 
 	public void broadcast(PlayerEntity player, MinecraftServer server) {
-		server.getPlayerManager().broadcastChatMessage(this.getMessage(player), MessageType.SYSTEM, Util.NIL_UUID);
+		server.getPlayerManager().broadcast(this.getMessage(player), MessageType.SYSTEM, Util.NIL_UUID);
 	}
 
 	public static LimboDeathEntranceSource ofDamageSource(DamageSource source) {

@@ -13,6 +13,6 @@
   "height": 256,
   "logical_height": 256,
   "infiniburn": "minecraft:infiniburn_overworld",
-  "ambient_light": 0.1,
+  "ambient_light": -1,
   "effects": "dimdoors:limbo"
 }

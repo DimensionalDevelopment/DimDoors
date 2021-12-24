@@ -76,7 +76,7 @@ public abstract class WorldRendererMixin {
 				matrices.push();
 				matrices.translate((double) pos.getX() - d, (double) pos.getY() - e, (double) pos.getZ() - f);
 				MatrixStack.Entry entry3 = matrices.peek();
-				VertexConsumer vertexConsumer2 = new OverlayVertexConsumer(this.bufferBuilders.getEffectVertexConsumers().getBuffer((RenderLayer) ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.get(stage)), entry3.getModel(), entry3.getNormal());
+				VertexConsumer vertexConsumer2 = new OverlayVertexConsumer(this.bufferBuilders.getEffectVertexConsumers().getBuffer((RenderLayer) ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.get(stage)), entry3.getPositionMatrix(), entry3.getNormalMatrix());
 				this.client.getBlockRenderManager().renderDamage(this.world.getBlockState(pos), pos, this.world, matrices, vertexConsumer2);
 				matrices.pop();
 			}

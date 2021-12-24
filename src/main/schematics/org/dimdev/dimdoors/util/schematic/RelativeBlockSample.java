@@ -10,6 +10,8 @@ import net.minecraft.block.*;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.*;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import org.apache.logging.log4j.LogManager;
@@ -159,7 +161,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				int sectionY = chunk.getSectionIndex(blockPos.getY());
 				ChunkSection section = sections[sectionY];
 				if (section == null) {
-					section = new ChunkSection(sectionY);
+					section = new ChunkSection(sectionY, world.getRegistryManager().get(Registry.BIOME_KEY));
 					sections[sectionY] = section;
 				}
 				if(section.getBlockState(x, y, z).isAir()) {

@@ -20,41 +20,46 @@ public class RiftData {
 		return this.destination;
 	}
 
-	public void setDestination(VirtualTarget destination) {
+	public RiftData setDestination(VirtualTarget destination) {
 		this.destination = destination;
+		return this;
 	}
 
 	public LinkProperties getProperties() {
 		return this.properties;
 	}
 
-	public void setProperties(LinkProperties properties) {
+	public RiftData setProperties(LinkProperties properties) {
 		this.properties = properties;
+		return this;
 	}
 
 	public boolean isAlwaysDelete() {
 		return this.alwaysDelete;
 	}
 
-	public void setAlwaysDelete(boolean alwaysDelete) {
+	public RiftData setAlwaysDelete(boolean alwaysDelete) {
 		this.alwaysDelete = alwaysDelete;
+		return this;
 	}
 
 	public boolean isForcedColor() {
 		return this.forcedColor;
 	}
 
-	public void setForcedColor(boolean forcedColor) {
+	public RiftData setForcedColor(boolean forcedColor) {
 		this.forcedColor = forcedColor;
+		return this;
 	}
 
 	public RGBA getColor() {
 		return this.color;
 	}
 
-	public void setColor(RGBA color) {
+	public RiftData setColor(RGBA color) {
 		this.forcedColor = color != null;
 		this.color = color;
+		return this;
 	}
 
 	public static NbtCompound toNbt(RiftData data) {

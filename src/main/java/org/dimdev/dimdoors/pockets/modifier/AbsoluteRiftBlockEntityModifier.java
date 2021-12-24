@@ -59,7 +59,11 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 
 		NbtList riftsNbt;
 		if (rifts != null) {
-			riftsNbt = rifts.values().parallelStream().unordered().map(rift -> rift.writeNbt(new NbtCompound())).collect(Collectors.toCollection(NbtList::new));
+			riftsNbt = rifts.values().parallelStream().unordered().map(rift -> {
+				NbtCompound compound = new NbtCompound();
+				rift.writeNbt(compound);
+				return compound;
+			}).collect(Collectors.toCollection(NbtList::new));
 		} else {
 			riftsNbt = new NbtList();
 			riftsNbt.addAll(serializedRifts.values());

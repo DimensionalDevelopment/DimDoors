@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import org.dimdev.dimdoors.mixin.accessor.BuiltinBiomesAccessor;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
@@ -45,7 +47,7 @@ public class TwoPillarsGateway extends SchematicGateway {
 
 	@Override
 	public Set<RegistryKey<Biome>> getBiomes() {
-		return BuiltinBiomesAccessor.getIdMap().int2ObjectEntrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+		return BuiltinRegistries.BIOME.stream().map(BuiltinRegistries.BIOME::getKey).flatMap(Optional::stream).collect(Collectors.toSet());
 	}
 
 	@Override

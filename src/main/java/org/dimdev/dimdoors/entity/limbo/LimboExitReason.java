@@ -18,6 +18,6 @@ public enum LimboExitReason implements StringIdentifiable {
 
 	public void broadcast(PlayerEntity player) {
 		//noinspection ConstantConditions
-		player.getServer().getPlayerManager().broadcastChatMessage(new TranslatableText(asString(), player.getGameProfile().getName()), MessageType.SYSTEM, Util.NIL_UUID);
+		player.getServer().getPlayerManager().broadcast(new TranslatableText(asString(), player.getGameProfile().getName()), MessageType.SYSTEM, Util.NIL_UUID);
 	}
 }
