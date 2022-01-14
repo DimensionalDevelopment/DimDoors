@@ -12,7 +12,6 @@ public abstract class AbstractVirtualPocketList extends WeightedList<VirtualPock
 
 	public NbtCompound toNbt(NbtCompound nbt) {
 		ImplementedVirtualPocket.super.toNbt(nbt);
-
 		return nbt;
 	}
 

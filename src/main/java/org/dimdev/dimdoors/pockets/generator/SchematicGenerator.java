@@ -1,55 +1,39 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.util.NbtType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.network.ServerInfo;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
+import org.dimdev.dimdoors.api.util.Path;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.command.PocketCommand;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.PocketLoader;
+import org.dimdev.dimdoors.pockets.PocketTemplate;
+import org.dimdev.dimdoors.pockets.modifier.AbsoluteRiftBlockEntityModifier;
+import org.dimdev.dimdoors.pockets.modifier.RiftManager;
+import org.dimdev.dimdoors.util.schematic.Schematic;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.ServerPlayerInteractionManager;
-import net.minecraft.server.world.ServerEntityManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.Chunk;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.command.PocketCommand;
-import org.dimdev.dimdoors.pockets.PocketLoader;
-import org.dimdev.dimdoors.pockets.PocketTemplate;
-import org.dimdev.dimdoors.pockets.modifier.AbsoluteRiftBlockEntityModifier;
-import org.dimdev.dimdoors.pockets.modifier.RiftManager;
-import org.dimdev.dimdoors.api.util.BlockPlacementType;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.util.schematic.Schematic;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import net.fabricmc.fabric.api.util.NbtType;
 
 public class SchematicGenerator extends LazyPocketGenerator{
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "schematic";
-
-	/*
-	public static final Codec<SchematicGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.INT.fieldOf("size").forGetter(SchematicGenerator::getSize),
-			Codec.STRING.fieldOf("id").forGetter(SchematicGenerator::getName),
-			Codec.INT.optionalFieldOf("weight", 5).forGetter(schematicGenerator -> schematicGenerator.getWeight(null))
-	).apply(instance, SchematicGenerator::new));
-	*/
 
 	private String id;
 	private Identifier templateID;
@@ -149,7 +133,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		ServerWorld world = parameters.getWorld();
+		ServerWorld world = parameters.world();
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 
 		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));

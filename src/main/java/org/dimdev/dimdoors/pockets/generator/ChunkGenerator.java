@@ -10,14 +10,16 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.*;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.*;
 import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.chunk.Blender;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -71,8 +73,8 @@ public class ChunkGenerator extends PocketGenerator {
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		ServerWorld world = parameters.getWorld();
-		VirtualLocation sourceVirtualLocation = parameters.getSourceVirtualLocation();
+		ServerWorld world = parameters.world();
+		VirtualLocation sourceVirtualLocation = parameters.sourceVirtualLocation();
 
 		int chunkSizeX = ((this.size.getX() >> 4) + (this.size.getX() % 16 == 0 ? 0 : 1));
 		int chunkSizeZ = ((this.size.getZ() >> 4) + (this.size.getZ() % 16 == 0 ? 0 : 1));
@@ -87,7 +89,7 @@ public class ChunkGenerator extends PocketGenerator {
 		ArrayList<Chunk> protoChunks = new ArrayList<>();
 		for (int z = 0; z < chunkSizeZ; z++) {
 			for (int x = 0; x < chunkSizeX; x++) {
-				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA, world);
+				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA, world, genWorld.getRegistryManager().get(Registry.BIOME_KEY), null);
 				protoChunk.setLightingProvider(genWorld.getLightingProvider());
 				protoChunks.add(protoChunk);
 			}
@@ -102,24 +104,24 @@ public class ChunkGenerator extends PocketGenerator {
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_REFERENCES);
 		}
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.populateBiomes(BuiltinRegistries.BIOME, protoChunk);
+			genWorldChunkGenerator.populateBiomes(genWorld.getRegistryManager().get(Registry.BIOME_KEY), Util.getMainWorkerExecutor(), Blender.getNoBlending(), genWorld.getStructureAccessor(), protoChunk);
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.BIOMES);
 		}
 		for (Chunk protoChunk : protoChunks) {
 			try {
-				genWorldChunkGenerator.populateNoise(Util.getMainWorkerExecutor(), genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk).get();
+				genWorldChunkGenerator.populateNoise(Util.getMainWorkerExecutor(), Blender.getNoBlending(), genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk).get();
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.NOISE);
 		}
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.buildSurface(protoRegion, protoChunk);
+			genWorldChunkGenerator.buildSurface(protoRegion, genWorld.getStructureAccessor(), protoChunk);
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.SURFACE);
 		}
 		for (GenerationStep.Carver carver : GenerationStep.Carver.values()) {
 			for (Chunk protoChunk : protoChunks) {
-				genWorldChunkGenerator.carve(genWorld.getSeed(), genWorld.getBiomeAccess(), protoChunk, carver);
+				genWorldChunkGenerator.carve(protoRegion, genWorld.getSeed(), genWorld.getBiomeAccess(), genWorld.getStructureAccessor(), protoChunk, carver);
 				ProtoChunk pChunk = ((ProtoChunk) protoChunk);
 				if (pChunk.getStatus() == ChunkStatus.SURFACE) pChunk.setStatus(ChunkStatus.CARVERS);
 				else pChunk.setStatus(ChunkStatus.LIQUID_CARVERS);
@@ -127,7 +129,7 @@ public class ChunkGenerator extends PocketGenerator {
 		}
 		for (Chunk protoChunk : protoChunks) {
 			ChunkRegion tempRegion = new ChunkRegionHack(genWorld, ChunkPos.stream(protoChunk.getPos(), 10).map(chunkPos -> protoRegion.getChunk(chunkPos.x, chunkPos.z)).collect(Collectors.toList()));
-			genWorldChunkGenerator.generateFeatures(tempRegion, genWorld.getStructureAccessor().forRegion(tempRegion));
+			genWorldChunkGenerator.generateFeatures(tempRegion, protoChunk, genWorld.getStructureAccessor().forRegion(tempRegion));
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.FEATURES);
 		}
 		for (Chunk protoChunk : protoChunks) { // likely only necessary for spawn step since we copy over anyways
@@ -201,15 +203,15 @@ public class ChunkGenerator extends PocketGenerator {
 		@Override
 		public Chunk getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
 			Chunk chunk = super.getChunk(chunkX, chunkZ, leastStatus, false);
-			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA, this) : chunk;
+			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA, this, this.getRegistryManager().get(Registry.BIOME_KEY)) : chunk;
 		}
 
 		// TODO: Override getSeed()
 	}
 
 	private static class ProtoChunkHack extends ProtoChunk { // exists solely to make some calls in the non utilized chunks faster
-		public ProtoChunkHack(ChunkPos pos, UpgradeData upgradeData, HeightLimitView world) {
-			super(pos, upgradeData, world);
+		public ProtoChunkHack(ChunkPos pos, UpgradeData upgradeData, HeightLimitView world, Registry<Biome> biomeRegistry) {
+			super(pos, upgradeData, world, biomeRegistry, null);
 		}
 
 		@Override

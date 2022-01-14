@@ -26,7 +26,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.getWorld().getRegistryKey()).newPocket(builder);
+		Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.world().getRegistryKey()).newPocket(builder);
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		pocket.setSize((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
 

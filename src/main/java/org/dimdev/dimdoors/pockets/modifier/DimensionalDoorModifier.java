@@ -156,7 +156,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 				chunk.setBlockState(pos.up(), upper, false);
 			});
 		} else {
-			ServerWorld world = parameters.getWorld();
+			ServerWorld world = parameters.world();
 
 			world.setBlockState(pos, lower);
 			world.setBlockState(pos.up(), upper);

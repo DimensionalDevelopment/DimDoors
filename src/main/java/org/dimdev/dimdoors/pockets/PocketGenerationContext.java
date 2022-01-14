@@ -9,35 +9,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import java.util.Map;
 
-public class PocketGenerationContext {
-	private final ServerWorld world;
-	private final VirtualLocation sourceVirtualLocation;
-	private final VirtualTarget linkTo;
-	private final LinkProperties linkProperties;
-
-	public PocketGenerationContext(ServerWorld world, VirtualLocation sourceVirtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		this.world = world;
-		this.sourceVirtualLocation = sourceVirtualLocation;
-		this.linkTo = linkTo;
-		this.linkProperties = linkProperties;
-	}
-
-	public ServerWorld getWorld() {
-		return this.world;
-	}
-
-	public VirtualLocation getSourceVirtualLocation() {
-		return this.sourceVirtualLocation;
-	}
-
-	public VirtualTarget getLinkTo() {
-		return this.linkTo;
-	}
-
-	public LinkProperties getLinkProperties() {
-		return this.linkProperties;
-	}
-
+public record PocketGenerationContext(ServerWorld world, VirtualLocation sourceVirtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
 	public Map<String, Double> toVariableMap(Map<String, Double> stringDoubleMap) {
 		stringDoubleMap.put("depth", (double) this.sourceVirtualLocation.getDepth());
 		stringDoubleMap.put("public_size", (double) DimensionalDoorsInitializer.getConfig().getPocketsConfig().publicPocketSize);

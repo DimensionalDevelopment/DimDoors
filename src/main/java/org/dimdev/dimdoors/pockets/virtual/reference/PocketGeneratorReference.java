@@ -130,14 +130,14 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 
 
 		Pocket.PocketBuilder<?, ?> builder = generator.pocketBuilder(parameters)
-				.virtualLocation(parameters.getSourceVirtualLocation()); // TODO: virtualLocation thing still makes little sense
+				.virtualLocation(parameters.sourceVirtualLocation()); // TODO: virtualLocation thing still makes little sense
 		generator.applyModifiers(parameters, builder);
 		this.applyModifiers(parameters, builder);
 
 		LazyPocketGenerator.currentlyGenerating = true;
 		// ensure we aren't missing any chunks that were already loaded previously
 		// for lazy gen
-		Set<Chunk> alreadyLoadedChunks = StreamSupport.stream(parameters.getWorld().getChunkManager().threadedAnvilChunkStorage.entryIterator().spliterator(), false).map(ChunkHolder::getWorldChunk).filter(Objects::nonNull).collect(Collectors.toSet());
+		Set<Chunk> alreadyLoadedChunks = StreamSupport.stream(parameters.world().getChunkManager().threadedAnvilChunkStorage.entryIterator().spliterator(), false).map(ChunkHolder::getWorldChunk).filter(Objects::nonNull).collect(Collectors.toSet());
 
 		Pocket pocket = generator.prepareAndPlacePocket(parameters, builder);
 		BlockPos originalOrigin = pocket.getOrigin();

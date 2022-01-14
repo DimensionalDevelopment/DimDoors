@@ -1,6 +1,10 @@
 package org.dimdev.dimdoors.listener;
 
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
@@ -9,10 +13,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 
 public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallback {
 	@Override

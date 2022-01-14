@@ -1,16 +1,8 @@
 package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.dimdev.dimdoors.mixin.accessor.BuiltinBiomesAccessor;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.biome.Biome;
 
 public class TwoPillarsGateway extends SchematicGateway {
 	private static final int GATEWAY_RADIUS = 4;

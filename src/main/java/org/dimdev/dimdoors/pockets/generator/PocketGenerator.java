@@ -162,7 +162,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	}
 
 	public void setup(Pocket pocket, RiftManager manager, PocketGenerationContext parameters, boolean setupLootTables) {
-		ServerWorld world = parameters.getWorld();
+		ServerWorld world = parameters.world();
 
 		if (!(pocket instanceof LazyGenerationPocket)) { // should not iterate over that which does not exist & area may be massive, getBlockEntities() might force generation
 			if (setupLootTables) // temp
@@ -181,7 +181,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 				});
 		}
 		manager.getRifts().forEach(rift -> rift.getDestination().setLocation(new Location(world, rift.getPos())));
-		TemplateUtils.registerRifts(manager.getRifts(), parameters.getLinkTo(), parameters.getLinkProperties(), pocket);
+		TemplateUtils.registerRifts(manager.getRifts(), parameters.linkTo(), parameters.linkProperties(), pocket);
 	}
 
 	public RiftManager getRiftManager(Pocket pocket) {

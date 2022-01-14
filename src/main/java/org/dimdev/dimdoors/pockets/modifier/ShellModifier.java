@@ -162,7 +162,7 @@ public class ShellModifier implements LazyModifier {
 			boxToDrawAround = BlockBox.create(new Vec3i(pocketBox.getMinX(), pocketBox.getMinY(), pocketBox.getMinZ()), new Vec3i(pocketBox.getMaxX(), pocketBox.getMaxY(), pocketBox.getMaxZ()));
 			layers.forEach(layer -> pocket.expand(layer.getThickness(variableMap)));
 		} else {
-			layers.forEach(layer -> drawLayer(layer, manager.getPocket(), parameters.getWorld()));
+			layers.forEach(layer -> drawLayer(layer, manager.getPocket(), parameters.world()));
 		}
 	}
 
