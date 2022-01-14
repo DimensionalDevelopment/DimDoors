@@ -11,7 +11,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 
@@ -35,7 +35,7 @@ public class ModEntityTypes {
 
     @Environment(EnvType.CLIENT)
     public static void initClient() {
-        EntityRendererRegistry.INSTANCE.register(MONOLITH, MonolithRenderer::new);
+        EntityRendererRegistry.register(MONOLITH, MonolithRenderer::new);
 //        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
     }
 

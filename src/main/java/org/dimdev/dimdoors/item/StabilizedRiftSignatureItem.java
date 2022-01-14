@@ -118,17 +118,4 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 			return null;
 		}
 	}
-
-	@Override
-	@Environment(EnvType.CLIENT)
-	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
-		RotatedLocation transform = getTarget(itemStack);
-
-		if (transform != null) {
-			list.add(new TranslatableText(this.getTranslationKey() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().getValue()));
-			list.add(new TranslatableText(this.getTranslationKey() + ".bound.info1", transform.getWorldId().getValue()));
-		} else {
-			ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".unbound.info");
-		}
-	}
 }

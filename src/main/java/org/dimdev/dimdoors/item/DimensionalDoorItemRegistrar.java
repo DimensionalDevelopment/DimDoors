@@ -190,7 +190,7 @@ public class DimensionalDoorItemRegistrar {
 		public void transform(MatrixStack matrices) {
 			matrices.scale(0.55f, 0.55f, 0.6f);
 			matrices.translate(0.05, -0.05, 0.41);
-			matrices.multiply(Quaternion.method_35823(new Vec3f(90, 0, 0)));
+			matrices.multiply(Quaternion.fromEulerXyzDegrees(new Vec3f(90, 0, 0)));
 		}
 	}
 
