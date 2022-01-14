@@ -132,35 +132,34 @@ public class TemplateUtils {
 
                 NbtCompound newTag = new NbtCompound();
                 EntranceRiftBlockEntity rift = new EntranceRiftBlockEntity(pos, Schematic.getBlockSample(schematic).getBlockState(pos));
-                switch (blockEntityTag.getString("placeholder")) {
-                    case "deeper_depth_door":
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
-                        newTag = rift.writeNbt(newTag);
-                        break;
-                    case "less_deep_depth_door":
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
-                        newTag = rift.writeNbt(newTag);
-                        break;
-                    case "overworld_door":
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
-                        newTag = rift.writeNbt(newTag);
-                        break;
-                    case "entrance_door":
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
-                        newTag = rift.writeNbt(newTag);
-                        break;
-                    case "gateway_portal":
-                        rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getGateway());
-                        newTag = rift.writeNbt(newTag);
-                        break;
-                    default:
-                        throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
-                }
+				switch (blockEntityTag.getString("placeholder")) {
+					case "deeper_depth_door" -> {
+						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+						rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
+						rift.writeNbt(newTag);
+					}
+					case "less_deep_depth_door" -> {
+						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+						rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
+						rift.writeNbt(newTag);
+					}
+					case "overworld_door" -> {
+						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+						rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
+						rift.writeNbt(newTag);
+					}
+					case "entrance_door" -> {
+						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+						rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
+						rift.writeNbt(newTag);
+					}
+					case "gateway_portal" -> {
+						rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
+						rift.setDestination(DefaultDungeonDestinations.getGateway());
+						rift.writeNbt(newTag);
+					}
+					default -> throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
+				}
 				rift.setWorld(world.toServerWorld());
                 blockEntities.add(newTag);
             } else {
