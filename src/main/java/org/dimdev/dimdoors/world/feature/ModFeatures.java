@@ -113,6 +113,11 @@ public final class ModFeatures {
 					GenerationStep.Feature.SURFACE_STRUCTURES,
 					SANDSTONE_PILLARS_PLACED_FEATURE_KEY
 			);
+			PlacedFeatures.register(SANDSTONE_PILLARS_PLACED_FEATURE_KEY.getValue().toString(), SANDSTONE_PILLARS_PLACED_FEATURE);
+			PlacedFeatures.register(TWO_PILLARS_PLACED_FEATURE_KEY.getValue().toString(), TWO_PILLARS_PLACED_FEATURE);
+			PlacedFeatures.register("dimdoors:eternal_fluid_spring", ETERNAL_FLUID_SPRING_PLACED_FEATURE);
+			PlacedFeatures.register("dimdoors:solid_static_ore", SOLID_STATIC_ORE_PLACED_FEATURE);
+			PlacedFeatures.register("dimdoors:decayed_block_ore", DECAYED_BLOCK_ORE_PLACED_FEATURE);
 		}
 
 		static {
