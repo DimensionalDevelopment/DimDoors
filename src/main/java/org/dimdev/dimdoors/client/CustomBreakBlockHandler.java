@@ -20,8 +20,7 @@ public class CustomBreakBlockHandler {
 		lock.lock();
 		Set<BlockPos> expired = customBreakBlockMap.entrySet().stream().filter(entry -> ticks - entry.getValue().getLastUpdateTick() > 400).map(entry -> entry.getKey()).collect(Collectors.toSet());
 		expired.forEach(customBreakBlockMap::remove);
-		Map<BlockPos, BreakBlockInfo> copy = new HashMap<>();
-		copy.putAll(customBreakBlockMap);
+		Map<BlockPos, BreakBlockInfo> copy = new HashMap<>(customBreakBlockMap);
 		lock.unlock();
 		return copy;
 	}

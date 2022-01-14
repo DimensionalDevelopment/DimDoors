@@ -1,16 +1,10 @@
 package org.dimdev.dimdoors.world;
 
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.world.biome.*;
-import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.mixin.accessor.BuiltinBiomesAccessor;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
-import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
@@ -18,9 +12,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeEffects;
+import net.minecraft.world.biome.BiomeParticleConfig;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
-import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
 
 public final class ModBiomes {
     public static final RegistryKey<Biome> PERSONAL_WHITE_VOID_KEY;
@@ -61,19 +58,8 @@ public final class ModBiomes {
         Biome.Builder voidBiomeBuilder = new Biome.Builder()
 				.category(Biome.Category.NONE)
 				.downfall(0)
-				.generationSettings(new GenerationSettings.Builder().surfaceBuilder(
-										SurfaceBuilder.DEFAULT.withConfig(
-												new TernarySurfaceConfig(
-														Blocks.AIR.getDefaultState(),
-														Blocks.AIR.getDefaultState(),
-														Blocks.VOID_AIR.getDefaultState()
-												)
-										)
-						)
-						.build()
-				)
+				.generationSettings(new GenerationSettings.Builder().build())
 				.precipitation(Biome.Precipitation.NONE)
-				.scale(0)
 				.spawnSettings(new SpawnSettings.Builder().build())
 				.temperature(0.8f)
 				.temperatureModifier(Biome.TemperatureModifier.NONE);
@@ -100,26 +86,21 @@ public final class ModBiomes {
                         .build()
 				)
                 .generationSettings(new GenerationSettings.Builder()
-//						.feature(
-//								GenerationStep.Feature.SURFACE_STRUCTURES,
-//								ModFeatures.LIMBO_GATEWAY_CONFIGURED_FEATURE
-//						)
-//						.feature(
-//								GenerationStep.Feature.UNDERGROUND_ORES,
-//								ModFeatures.SOLID_STATIC_ORE
-//						)
-                        .surfaceBuilder(
-                        		SurfaceBuilder.DEFAULT.withConfig(
-                        				new TernarySurfaceConfig(
-                        						ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
-												ModBlocks.UNRAVELLED_FABRIC.getDefaultState(),
-												ModBlocks.ETERNAL_FLUID.getDefaultState()
-										)
-								))
+						.feature(
+								GenerationStep.Feature.SURFACE_STRUCTURES,
+								ModFeatures.Placed.LIMBO_GATEWAY_PLACED_FEATURE
+						)
+						.feature(
+								GenerationStep.Feature.UNDERGROUND_ORES,
+								ModFeatures.Placed.SOLID_STATIC_ORE_PLACED_FEATURE
+						)
+						.feature(
+								GenerationStep.Feature.UNDERGROUND_ORES,
+								ModFeatures.Placed.DECAYED_BLOCK_ORE_PLACED_FEATURE
+						)
                         .build()
 				)
                 .precipitation(Biome.Precipitation.NONE)
-                .scale(2F)
                 .spawnSettings(new SpawnSettings.Builder()
 						.creatureSpawnProbability(0.02f)
 						.spawn(

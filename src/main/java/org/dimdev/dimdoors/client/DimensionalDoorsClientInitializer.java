@@ -21,7 +21,6 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider((manager) -> new DimensionalDoorModelVariantProvider());
 
         ModEntityTypes.initClient();
-        ModSkyRendering.initClient();
 		ModFluids.initClient();
 //        ModBlockEntityTypes.initClient();
 		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.ENTRANCE_RIFT, ctx -> new EntranceRiftBlockEntityRenderer());

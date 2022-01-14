@@ -18,7 +18,6 @@ import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public class MonolithModel extends EntityModel<MonolithEntity> {
-
     private final ModelPart body;
 
     public MonolithModel(EntityRendererFactory.Context context) {
@@ -43,5 +42,4 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
         this.body.yaw = netHeadYaw * 0.017453292F;
         this.body.pitch = headPitch * 0.017453292F;
     }
-
 }

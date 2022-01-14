@@ -9,15 +9,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class ExceptionHandlingCollector<T, A, R> implements Collector<T, A, R> {
-	private final Collector<T, A, R> collector;
-	private final TriConsumer<A, T, Exception> exceptionalAccumulator;
-
-	public ExceptionHandlingCollector(Collector<T, A, R> collector, TriConsumer<A, T, Exception> exceptionalAccumulator) {
-		this.collector = collector;
-		this.exceptionalAccumulator = exceptionalAccumulator;
-	}
-
+public record ExceptionHandlingCollector<T, A, R>(Collector<T, A, R> collector, TriConsumer<A, T, Exception> exceptionalAccumulator) implements Collector<T, A, R> {
 	@Override
 	public Supplier<A> supplier() {
 		return collector.supplier();

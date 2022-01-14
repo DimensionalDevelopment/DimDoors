@@ -20,6 +20,5 @@ public interface Target {
 				return DefaultTargets.getDefaultTarget(type);
 			}
 		}
-		// TODO: .as(ModTargets.CUSTOM_WRAPPER)
 	}
 }

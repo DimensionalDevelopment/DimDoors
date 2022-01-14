@@ -30,7 +30,6 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 		super(settings);
 	}
 
-
 	@Override
 	public MapColor getDefaultMapColor() {
 		return MapColor.BLACK;

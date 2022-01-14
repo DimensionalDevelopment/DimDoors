@@ -47,7 +47,7 @@ public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvi
 		world.setBlockState(pos, state, 2);
 
 		if (state.get(WATERLOGGED)) {
-			world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
 
 		this.playToggleSound(player, world, pos, state.get(OPEN));

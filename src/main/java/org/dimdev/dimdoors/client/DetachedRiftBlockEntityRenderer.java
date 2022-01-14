@@ -43,7 +43,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
         matrices.push();
         matrices.translate(0.5, 0.5, 0.5);
-        RiftCrackRenderer.drawCrack(matrices.peek().getModel(), vc, 0, CURVE, DimensionalDoorsInitializer.getConfig().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
+        RiftCrackRenderer.drawCrack(matrices.peek().getPositionMatrix(), vc, 0, CURVE, DimensionalDoorsInitializer.getConfig().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
         matrices.pop();
     }
 
@@ -59,7 +59,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
         matrices.translate(0.5, 0.5, 0.5);
         matrices.scale(0.25f, 0.25f, 0.25f);
 
-        TESSERACT.draw(matrices.peek().getModel(), vc, color, radian);
+        TESSERACT.draw(matrices.peek().getPositionMatrix(), vc, color, radian);
 
         matrices.pop();
     }

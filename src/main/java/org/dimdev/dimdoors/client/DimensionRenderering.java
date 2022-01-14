@@ -4,12 +4,9 @@ import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
-import org.dimdev.dimdoors.mixin.client.WorldRendererMixin;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
-import org.spongepowered.asm.mixin.Unique;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
@@ -20,7 +17,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
@@ -75,7 +71,7 @@ public class DimensionRenderering {
     }
 
     private static void renderLimboSky(MatrixStack matrices) {
-        Matrix4f matrix4f = matrices.peek().getModel();
+        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
         RenderSystem.enableBlend();

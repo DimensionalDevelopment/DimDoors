@@ -62,9 +62,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements BlockEntity
 	}
 
 	@Override
-	public NbtCompound writeNbt(NbtCompound nbt) {
+	public void writeNbt(NbtCompound nbt) {
 		super.writeNbt(nbt);
-		return this.serialize(nbt);
+		this.serialize(nbt);
 	}
 
 	public NbtCompound serialize(NbtCompound nbt) {

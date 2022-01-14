@@ -3,12 +3,7 @@ package org.dimdev.dimdoors.block.door.data.condition;
 import com.google.gson.JsonObject;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
-public class InverseCondition implements Condition {
-	private final Condition condition;
-
-	public InverseCondition(Condition condition) {
-		this.condition = condition;
-	}
+public record InverseCondition(Condition condition) implements Condition {
 
 	@Override
 	public void toJsonInner(JsonObject json) {
