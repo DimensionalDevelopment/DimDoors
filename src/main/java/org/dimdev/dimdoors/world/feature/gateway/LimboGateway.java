@@ -45,9 +45,4 @@ public enum LimboGateway implements Gateway {
     private void placePortal(StructureWorldAccess world, BlockPos pos, Direction facing) {
         world.setBlockState(pos, ModBlocks.DIMENSIONAL_PORTAL.getDefaultState(), 2);
     }
-
-    @Override
-    public Set<RegistryKey<Biome>> getBiomes() {
-        return ImmutableSet.of(ModBiomes.LIMBO_KEY);
-    }
 }

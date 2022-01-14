@@ -31,13 +31,13 @@ public final class ModBlocks {
 	private static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
 
 	@RegistryEntry("stone_player")
-	public static final Block STONE_PLAYER = register(new Block(FabricBlockSettings.of(Material.STONE).strength(0.5F).breakByHand(true).breakByTool(FabricToolTags.PICKAXES).nonOpaque()));
+	public static final Block STONE_PLAYER = register(new Block(FabricBlockSettings.of(Material.STONE).strength(0.5F).breakByHand(true).nonOpaque()));
 
 	@RegistryEntry("gold_door")
-	public static final Block GOLD_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).breakByHand(false).breakByTool(FabricToolTags.PICKAXES).nonOpaque()));
+	public static final Block GOLD_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).breakByHand(false).nonOpaque()));
 
 	@RegistryEntry("quartz_door")
-	public static final Block QUARTZ_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).strength(5.0F).breakByHand(false).breakByTool(FabricToolTags.PICKAXES).nonOpaque()));
+	public static final Block QUARTZ_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).strength(5.0F).breakByHand(false).nonOpaque()));
 
 	@RegistryEntry("wood_dimensional_trapdoor")
 	public static final Block OAK_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorBlock(FabricBlockSettings.copyOf(Blocks.OAK_TRAPDOOR).luminance(state -> 10)));
@@ -171,7 +171,7 @@ public final class ModBlocks {
 	public static final Block MARKING_PLATE = register(new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).nonOpaque()));
 
 	@RegistryEntry("solid_static")
-	public static final Block SOLID_STATIC = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE).strength(7, 25).ticksRandomly().breakByTool(FabricToolTags.PICKAXES, 3).breakByHand(false).sounds(BlockSoundGroup.SAND)));
+	public static final Block SOLID_STATIC = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE).strength(7, 25).ticksRandomly().breakByHand(false).sounds(BlockSoundGroup.SAND)));
 
 	private static Block register(Block block) {
 		return block;
