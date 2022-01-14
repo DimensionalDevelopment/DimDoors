@@ -106,10 +106,7 @@ dependencies {
 	minecraft "com.mojang:minecraft:1.18.1"
 	mappings "net.fabricmc:yarn:1.18.1+build.1:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.12.12"
-	modImplementation("net.fabricmc.fabric-api:fabric-api:0.44.0+1.18") {
-		exclude module: "fabric-data-generation-api-v1"
-		exclude module: "fabric-gametest-api-v1"
-	}
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.45.2+1.18"
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
@@ -137,8 +134,12 @@ dependencies {
 		exclude module: "modmenu"
 		exclude module: "fabric-api"
 	}
-	modCompileOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55"
-	modRuntimeOnly "me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55"
+	modCompileOnly("me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55") {
+		exclude module: "fabric-api"
+	}
+	modRuntimeOnly("me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55") {
+		exclude module: "fabric-api"
+	}
 	modCompileOnly "curse.maven:worldedit-225608:3559499"
 	modRuntimeOnly "curse.maven:worldedit-225608:3559499"
 
