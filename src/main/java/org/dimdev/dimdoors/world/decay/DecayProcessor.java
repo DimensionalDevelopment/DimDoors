@@ -21,7 +21,7 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 public interface DecayProcessor {
     Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "decay_processor_type")), Lifecycle.stable())).buildAndRegister();
 
-    DecayProcessor DUMMY = new DecayProcessor() {
+    DecayProcessor NONE = new DecayProcessor() {
         @Override
         public DecayProcessor fromNbt(NbtCompound nbt) {
             return this;
@@ -69,7 +69,7 @@ public interface DecayProcessor {
 
     interface DecayProcessorType<T extends DecayProcessor> {
         DecayProcessorType<SimpleDecayProcesor> SIMPLE_PROCESSOR_TYPE = register(new Identifier("dimdoors", SimpleDecayProcesor.KEY), SimpleDecayProcesor::new);
-        DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(new Identifier("dimdoors", "none"), () -> DUMMY);
+        DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(new Identifier("dimdoors", "none"), () -> NONE);
         DecayProcessorType<SelfDecayProcessor> SELF = register(new Identifier("dimdoors", SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
 
         DecayProcessor fromNbt(NbtCompound nbt);

@@ -17,9 +17,13 @@ import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.biome.source.util.MultiNoiseUtil;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
@@ -51,7 +55,28 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void buildSurface(ChunkRegion region, Chunk chunk) {
+	public MultiNoiseUtil.MultiNoiseSampler getMultiNoiseSampler() {
+		return null;
+	}
+
+	@Override
+	public void carve(ChunkRegion chunkRegion, long seed, BiomeAccess biomeAccess, StructureAccessor structureAccessor, Chunk chunk, GenerationStep.Carver generationStep) {
+
+	}
+
+	@Override
+	public void buildSurface(ChunkRegion region, StructureAccessor structures, Chunk chunk) {
+
+	}
+
+	@Override
+	public void populateEntities(ChunkRegion region) {
+
+	}
+
+	@Override
+	public int getWorldHeight() {
+		return 0;
 	}
 
 	@Override
@@ -63,8 +88,18 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
+	public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
 		return CompletableFuture.supplyAsync(() -> chunk);
+	}
+
+	@Override
+	public int getSeaLevel() {
+		return 0;
+	}
+
+	@Override
+	public int getMinimumY() {
+		return 0;
 	}
 
 	@Override

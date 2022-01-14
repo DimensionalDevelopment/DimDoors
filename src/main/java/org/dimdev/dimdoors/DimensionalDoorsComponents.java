@@ -36,5 +36,4 @@ public class DimensionalDoorsComponents implements LevelComponentInitializer, It
 	public void registerChunkComponentFactories(ChunkComponentFactoryRegistry registry) {
 		registry.register(CHUNK_LAZILY_GENERATED_COMPONENT_KEY, chunk -> new ChunkLazilyGeneratedComponent());
 	}
-
 }

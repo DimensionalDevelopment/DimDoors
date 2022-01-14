@@ -23,7 +23,7 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.util.ResourceUtil;
+import org.dimdev.dimdoors.api.util.ResourceUtil;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;

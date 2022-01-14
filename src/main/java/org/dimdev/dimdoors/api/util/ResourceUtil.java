@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.util;
+package org.dimdev.dimdoors.api.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

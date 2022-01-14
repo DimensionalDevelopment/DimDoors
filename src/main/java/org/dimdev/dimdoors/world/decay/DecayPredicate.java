@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 public interface DecayPredicate {
     Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "decay_predicate_type")), Lifecycle.stable())).buildAndRegister();
 
-    DecayPredicate DUMMY = new DecayPredicate() {
+    DecayPredicate NONE = new DecayPredicate() {
         private static final String ID = "none";
 
         @Override
@@ -77,7 +77,7 @@ public interface DecayPredicate {
     Set<Block> constructApplicableBlocks();
 
     interface DecayPredicateType<T extends DecayPredicate> {
-        DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(new Identifier("dimdoors", "none"), () -> DUMMY);
+        DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(new Identifier("dimdoors", "none"), () -> NONE);
         DecayPredicateType<SimpleDecayPredicate> SIMPLE_PREDICATE_TYPE = register(new Identifier("dimdoors", SimpleDecayProcesor.KEY), SimpleDecayPredicate::new);
 
         DecayPredicate fromNbt(NbtCompound nbt);

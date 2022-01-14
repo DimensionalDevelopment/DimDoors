@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.api.util.SimpleTree;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.api.util.WeightedList;
-import org.dimdev.dimdoors.util.ResourceUtil;
+import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
 public class PocketLoader implements SimpleSynchronousResourceReloadListener {

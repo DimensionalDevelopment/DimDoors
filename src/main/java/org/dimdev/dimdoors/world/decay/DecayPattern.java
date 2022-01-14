@@ -49,8 +49,8 @@ public class DecayPattern {
     }
 
     public static class Builder {
-        private DecayPredicate predicate = DecayPredicate.DUMMY;
-        private DecayProcessor processor = DecayProcessor.DUMMY;
+        private DecayPredicate predicate = DecayPredicate.NONE;
+        private DecayProcessor processor = DecayProcessor.NONE;
 
         public Builder predicate(DecayPredicate predicate) {
             this.predicate = predicate;

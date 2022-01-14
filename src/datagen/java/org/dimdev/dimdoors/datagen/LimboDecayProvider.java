@@ -4,7 +4,6 @@ import static net.minecraft.block.Blocks.ACACIA_LOG;
 import static net.minecraft.block.Blocks.ACACIA_PLANKS;
 import static net.minecraft.block.Blocks.ACACIA_WOOD;
 import static net.minecraft.block.Blocks.ANDESITE;
-import static net.minecraft.block.Blocks.BEDROCK;
 import static net.minecraft.block.Blocks.BIRCH_LOG;
 import static net.minecraft.block.Blocks.BIRCH_PLANKS;
 import static net.minecraft.block.Blocks.BIRCH_WOOD;
@@ -54,18 +53,13 @@ import static net.minecraft.block.Blocks.SPRUCE_PLANKS;
 import static net.minecraft.block.Blocks.SPRUCE_WOOD;
 import static net.minecraft.block.Blocks.STONE;
 import static net.minecraft.block.Blocks.STONE_BRICKS;
-import static org.dimdev.dimdoors.block.ModBlocks.SOLID_STATIC;
-import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_BLOCK;
-import static org.dimdev.dimdoors.block.ModBlocks.UNRAVELLED_FABRIC;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.util.ResourceUtil;
-import org.dimdev.dimdoors.world.decay.DecayPattern;
+import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
@@ -73,18 +67,15 @@ import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.loot.LootManager;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class LimboDecayProvider implements DataProvider {
     private static final Logger LOGGER = LogManager.getLogger();
