@@ -17,7 +17,6 @@
     "ServerWorldMixin",
     "StructurePoolMixin",
     "WorldMixin",
-    "accessor.BuiltinBiomesAccessor",
     "accessor.ChunkGeneratorAccessor",
     "accessor.DefaultParticleTypeAccessor",
     "accessor.DirectionAccessor",
@@ -40,7 +39,6 @@
     "client.WorldRendererMixin",
     "client.BackgroundRendererMixin",
     "client.accessor.RenderLayerAccessor",
-    "client.accessor.SkyPropertiesAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
