@@ -11,13 +11,7 @@ import net.minecraft.world.biome.Biome;
 public interface Gateway {
     void generate(StructureWorldAccess world, BlockPos pos);
 
-    default boolean isBiomeValid(RegistryKey<Biome> biome) {
-        return this.getBiomes().contains(biome);
-    }
-
     default boolean isLocationValid(StructureWorldAccess world, BlockPos pos) {
-        return this.isBiomeValid(world.getBiomeKey(pos).orElseThrow(NullPointerException::new));
+        return true;
     }
-
-    Set<RegistryKey<Biome>> getBiomes();
 }

@@ -4,14 +4,8 @@ import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
-import org.dimdev.dimdoors.client.DimensionalDoorModelVariantProvider;
-import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
-import org.dimdev.dimdoors.client.ModEntityModelLayers;
-import org.dimdev.dimdoors.client.ModSkyRendering;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.mixin.client.accessor.SkyPropertiesAccessor;
 import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 
@@ -19,10 +13,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-
-import org.dimdev.dimdoors.world.ModDimensions;
 
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClientInitializer implements ClientModInitializer {

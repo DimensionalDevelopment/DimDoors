@@ -149,7 +149,7 @@ public final class ModConfig implements ConfigData {
 		@RequiresRestart
 		@Tooltip public double clusterGenChance = 20000;
 		@RequiresRestart
-		@Tooltip public int gatewayGenChance = 100;
+		@Tooltip public int gatewayGenChance = 500;
 		@RequiresRestart
 		@Tooltip public List<String> clusterDimBlacklist = new LinkedList<>();
 		@RequiresRestart

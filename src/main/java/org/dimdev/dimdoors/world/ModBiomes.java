@@ -60,7 +60,6 @@ public final class ModBiomes {
     static {
         Biome.Builder voidBiomeBuilder = new Biome.Builder()
 				.category(Biome.Category.NONE)
-				.depth(0)
 				.downfall(0)
 				.generationSettings(new GenerationSettings.Builder().surfaceBuilder(
 										SurfaceBuilder.DEFAULT.withConfig(
@@ -87,7 +86,6 @@ public final class ModBiomes {
         DUNGEON_DANGEROUS_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
         LIMBO_BIOME = new Biome.Builder()
                 .category(Biome.Category.NONE)
-                .depth(0.1f)
                 .downfall(0.0f)
                 .effects(new BiomeEffects.Builder()
                         .fogColor(0x404040)
