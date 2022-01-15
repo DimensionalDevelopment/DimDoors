@@ -5,8 +5,8 @@ plugins {
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
 	mavenCentral()
@@ -104,12 +104,9 @@ loom {
 
 dependencies {
 	minecraft "com.mojang:minecraft:1.18.1"
-	mappings "net.fabricmc:yarn:1.18.1+build.1:v2"
+	mappings "net.fabricmc:yarn:1.18.1+build.18:v2"
 	modImplementation "net.fabricmc:fabric-loader:0.12.12"
-	modImplementation("net.fabricmc.fabric-api:fabric-api:0.45.2+1.18") {
-		exclude module: "fabric-gametest-api-v1"
-		exclude module: "fabric-data-generation-api-v1"
-	}
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.46.0+1.18"
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
@@ -172,6 +169,20 @@ processResources {
 	}
 
 	inputs.property "version", project.version
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+java {
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
 }
 
 artifacts {
