@@ -134,12 +134,12 @@ dependencies {
 		exclude module: "modmenu"
 		exclude module: "fabric-api"
 	}
-	modCompileOnly("me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55") {
-		exclude module: "fabric-api"
-	}
-	modRuntimeOnly("me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55") {
-		exclude module: "fabric-api"
-	}
+//	modCompileOnly("me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55") {
+//		exclude module: "fabric-api"
+//	}
+//	modRuntimeOnly("me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55") {
+//		exclude module: "fabric-api"
+//	}
 	modCompileOnly "curse.maven:worldedit-225608:3559499"
 	modRuntimeOnly "curse.maven:worldedit-225608:3559499"
 
