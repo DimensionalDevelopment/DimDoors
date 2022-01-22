@@ -13,6 +13,7 @@
       "bedrock_roof_position": -2147483648,
       "noise_caves_enabled": true,
       "deepslate_enabled": false,
+      "legacy_random_source": false,
       "aquifers_enabled": false,
       "noodle_caves_enabled": false,
       "ore_veins_enabled": false,
@@ -39,6 +40,11 @@
           "xz_factor": 60,
           "y_factor": 240
         },
+        "terrain_shaper": {
+          "offset": -0.26875,
+          "factor": 1,
+          "jaggedness": 1.5
+        },
         "bottom_slide": {
           "target": -30,
           "size": 0,
@@ -57,6 +63,12 @@
         "Name": "dimdoors:eternal_fluid",
         "Properties": {
           "level": "8"
+        }
+      },
+      "surface_rule": {
+        "type": "minecraft:block",
+        "result_state": {
+          "Name": "dimdoors:unravelled_fabric"
         }
       }
     }
