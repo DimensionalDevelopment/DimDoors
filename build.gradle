@@ -122,18 +122,18 @@ dependencies {
 	modCompileOnly("com.terraformersmc:modmenu:3.0.1") {
 		exclude module: "fabric-api"
 	}
-	modRuntimeOnly("com.terraformersmc:modmenu:3.0.1") {
-		exclude module: "fabric-api"
-	}
+//	modRuntimeOnly("com.terraformersmc:modmenu:3.0.1") {
+//		exclude module: "fabric-api"
+//	}
 
 	modCompileOnly("mcp.mobius.waila:wthit:fabric-4.4.1") {
 		exclude module: "modmenu"
 		exclude module: "fabric-api"
 	}
-	modRuntimeOnly("mcp.mobius.waila:wthit:fabric-4.4.1") {
-		exclude module: "modmenu"
-		exclude module: "fabric-api"
-	}
+//	modRuntimeOnly("mcp.mobius.waila:wthit:fabric-4.4.1") {
+//		exclude module: "modmenu"
+//		exclude module: "fabric-api"
+//	}
 //	modCompileOnly("me.shedaniel.cloth.api:cloth-datagen-api-v1:3.0.55") {
 //		exclude module: "fabric-api"
 //	}
@@ -141,7 +141,7 @@ dependencies {
 //		exclude module: "fabric-api"
 //	}
 	modCompileOnly "curse.maven:worldedit-225608:3559499"
-	modRuntimeOnly "curse.maven:worldedit-225608:3559499"
+//	modRuntimeOnly "curse.maven:worldedit-225608:3559499"
 
 //	modImplementation "software.bernie.geckolib:geckolib-fabric-1.17:3.0.13:dev"
 
