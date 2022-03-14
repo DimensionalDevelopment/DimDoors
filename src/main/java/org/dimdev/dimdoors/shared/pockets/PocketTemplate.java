@@ -7,6 +7,9 @@ import lombok.Setter;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityDispenser;
@@ -138,9 +141,7 @@ public class PocketTemplate {
                 NBTTagCompound newNBT;
                 switch (entitiesNBT.getString("placeholder")) {
                     case "monolith":
-                        EntityMonolith monolith = new EntityMonolith(null);
-                        monolith.setLocationAndAngles(x, y, z, yaw, pitch);
-                        newNBT = monolith.serializeNBT();
+                        newNBT = defaultMonolith(x, y, z, yaw, pitch);
                         break;
                     default:
                         throw new RuntimeException("Unknown entity placeholder: " + entitiesNBT.getString("placeholder"));
@@ -153,6 +154,40 @@ public class PocketTemplate {
         }
         schematic.entities = entities;
         isReplacingPlaceholders = false;
+    }
+
+    private static NBTTagCompound defaultMonolith(double x, double y, double z, float yaw, float pitch) {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setString("id", "dimdoors:mob_monolith");
+        compound.setTag("Pos", newDoubleNBTList(x, y, z));
+        compound.setTag("Motion", newDoubleNBTList(0, 0, 0));
+        compound.setTag("Rotation", newFloatNBTList(yaw, pitch));
+        compound.setFloat("FallDistance", 0);
+        compound.setShort("Fire", (short) 0);
+        compound.setShort("Air", (short) 300);
+        compound.setBoolean("OnGround", false);
+        compound.setInteger("Dimension", 0);
+        compound.setBoolean("Invulnerable", false);
+        compound.setInteger("PortalCooldown", 0);
+        compound.setUniqueId("UUID", UUID.randomUUID());
+        compound.setInteger("Aggro", 0);
+        return compound;
+    }
+
+    private static NBTTagList newDoubleNBTList(double... numbers) {
+        NBTTagList nbttaglist = new NBTTagList();
+        for (double d0 : numbers) {
+            nbttaglist.appendTag(new NBTTagDouble(d0));
+        }
+        return nbttaglist;
+    }
+
+    private static NBTTagList newFloatNBTList(float... numbers) {
+        NBTTagList nbttaglist = new NBTTagList();
+        for (float d0 : numbers) {
+            nbttaglist.appendTag(new NBTTagFloat(d0));
+        }
+        return nbttaglist;
     }
 
     public void place(Pocket pocket, boolean setup) {
