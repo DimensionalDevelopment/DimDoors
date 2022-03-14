@@ -7,6 +7,6 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(ChunkGenerator.class)
 public interface ChunkGeneratorAccessor {
-	@Accessor
+	@Accessor("field_37261")
 	long getWorldSeed();
 }

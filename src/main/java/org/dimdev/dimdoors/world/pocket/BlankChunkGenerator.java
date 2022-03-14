@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.pocket;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -10,6 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.structure.StructureManager;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
@@ -41,7 +43,7 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	}
 
 	private BlankChunkGenerator(BiomeSource biomeSource) {
-		super(biomeSource, new StructuresConfig(Optional.empty(), Collections.emptyMap()));
+		super(biomeSource, Optional.empty()));
 	}
 
 	@Override
@@ -110,5 +112,10 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	@Override
 	public VerticalBlockSample getColumnSample(int x, int z, HeightLimitView world) {
 		return new VerticalBlockSample(0, new BlockState[0]);
+	}
+
+	@Override
+	public void getDebugHudText(List<String> text, BlockPos pos) {
+
 	}
 }

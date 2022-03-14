@@ -83,20 +83,21 @@ public abstract class WorldRendererMixin {
 		}
 	}
 
-	@ModifyConstant(
-			method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FLjava/lang/Runnable;)V",
-			constant = @Constant(doubleValue = 0.0, ordinal = 0),
-			slice = @Slice(
-					from = @At(
-							value = "INVOKE",
-							target = "Lnet/minecraft/client/world/ClientWorld$Properties;getSkyDarknessHeight(Lnet/minecraft/world/HeightLimitView;)D"
-					)
-			)
-	)
-	private double modifyVoidBackgroundCondition(double zero) {
-		if(ModDimensions.isPrivatePocketDimension(world)) {
-			zero = Double.NEGATIVE_INFINITY;
-		}
-		return zero;
-	}
+//	TODO:Fix or find out alternative.
+//	@ModifyConstant(
+//			method = "renderSky(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/math/Matrix4f;FLjava/lang/Runnable;)V",
+//			constant = @Constant(doubleValue = 0.0, ordinal = 0),
+//			slice = @Slice(
+//					from = @At(
+//							value = "INVOKE",
+//							target = "Lnet/minecraft/client/world/ClientWorld$Properties;getSkyDarknessHeight(Lnet/minecraft/world/HeightLimitView;)D"
+//					)
+//			)
+//	)
+//	private double modifyVoidBackgroundCondition(double zero) {
+//		if(ModDimensions.isPrivatePocketDimension(world)) {
+//			zero = Double.NEGATIVE_INFINITY;
+//		}
+//		return zero;
+//	}
 }
