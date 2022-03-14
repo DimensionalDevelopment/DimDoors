@@ -29,6 +29,7 @@
     "accessor.StatsAccessor"
   ],
   "client": [
+    "client.BackgroundRendererMixin",
     "client.ClientPlayerInteractionManagerMixin",
     "client.ClientPlayNetworkHandlerMixin",
     "client.ExtendedClientPlayNetworkHandlerMixin",
@@ -36,7 +37,6 @@
     "client.InGameHudMixin",
     "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",
-    "client.BackgroundRendererMixin",
     "client.accessor.RenderLayerAccessor",
     "client.accessor.WorldRendererAccessor"
   ],

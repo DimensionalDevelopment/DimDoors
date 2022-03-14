@@ -98,7 +98,7 @@ public class DimensionalDoorItemRegistrar {
 				return;
 			}
 
-			register(identifier, original, dimItemConstructor.apply(blocksAlreadyNotifiedAbout.get(originalBlock)));
+			register(identifier, original, blocksAlreadyNotifiedAbout.get(originalBlock), dimItemConstructor);
 		}
 	}
 
@@ -108,17 +108,17 @@ public class DimensionalDoorItemRegistrar {
 			return;
 		}
 		Triple<Identifier, Item, Function<Block, BlockItem>> triple = toBeMapped.get(original);
-		register(triple.getLeft(), triple.getMiddle(), triple.getRight().apply(dimBlock));
+		register(triple.getLeft(), triple.getMiddle(), dimBlock, triple.getRight());
 	}
 
-	private void register(Identifier identifier, Item original, BlockItem dimItem) {
-		Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+	private void register(Identifier identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
 		if (!DoorData.PARENT_ITEMS.contains(original)) {
-			Registry.register(registry, gennedId, dimItem);
-		}
-		placementFunctions.put(original, dimItem::place);
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			registerItemRenderer(dimItem);
+			Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+			BlockItem item = Registry.register(registry, gennedId, dimItem.apply(block));
+			placementFunctions.put(original, item::place);
+			if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+				registerItemRenderer(item);
+			}
 		}
 	}
 
