@@ -23,3 +23,4 @@ accessible method net/minecraft/client/render/WorldRenderer renderEndSky (Lnet/m
 
 accessible method net/minecraft/world/biome/Biome getCategory ()Lnet/minecraft/world/biome/Biome$Category;
 
+accessible field net/minecraft/block/Block LOGGER Lorg/slf4j/Logger;

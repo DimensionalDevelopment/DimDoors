@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 public interface DecayProcessor {
-    Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "decay_processor_type")), Lifecycle.stable())).buildAndRegister();
+    Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "decay_processor_type")), Lifecycle.stable(), null)).buildAndRegister();
 
     DecayProcessor NONE = new DecayProcessor() {
         @Override

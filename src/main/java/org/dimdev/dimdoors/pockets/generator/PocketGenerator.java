@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext> {
 	private static final Logger LOGGER = LogManager.getLogger();
-	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketGeneratorType<? extends PocketGenerator>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "pocket_generator_type")), Lifecycle.stable())).buildAndRegister();
+	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketGeneratorType<? extends PocketGenerator>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "pocket_generator_type")), Lifecycle.stable(), null)).buildAndRegister();
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
 	private static final int fallbackWeight = 5; // TODO: make config

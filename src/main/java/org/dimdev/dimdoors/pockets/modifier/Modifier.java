@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.function.Supplier;
 
 public interface Modifier {
-	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<ModifierType<? extends Modifier>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "modifier_type")), Lifecycle.stable())).buildAndRegister();
+	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<ModifierType<? extends Modifier>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "modifier_type")), Lifecycle.stable(), null)).buildAndRegister();
 
 	static Modifier deserialize(NbtCompound nbt) {
 		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: return some NONE Modifier if type cannot be found or deserialization fails.

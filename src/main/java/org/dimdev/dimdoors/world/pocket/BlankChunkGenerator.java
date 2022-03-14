@@ -6,13 +6,17 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import com.mojang.datafixers.kinds.Applicative;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.structure.StructureManager;
+import net.minecraft.structure.StructureSet;
+import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
@@ -27,23 +31,22 @@ import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 
 public class BlankChunkGenerator extends ChunkGenerator {
 	public static final Codec<BlankChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
-			instance.group(
+			BlankChunkGenerator.method_41042(instance).and(
 					BiomeSource.CODEC.fieldOf("biome_source")
 							.forGetter((generator) -> generator.biomeSource)
 			).apply(instance, instance.stable(BlankChunkGenerator::of))
 	);
 
-	public static BlankChunkGenerator of(BiomeSource biomeSource) {
-		return new BlankChunkGenerator(biomeSource);
+	private static BlankChunkGenerator of(Registry<StructureSet> structureSets, BiomeSource biomeSource) {
+		return new BlankChunkGenerator(structureSets, biomeSource);
 	}
 
-	private BlankChunkGenerator(BiomeSource biomeSource) {
-		super(biomeSource, Optional.empty()));
+	private BlankChunkGenerator(Registry<StructureSet> structureSets, BiomeSource biomeSource) {
+		super(structureSets, Optional.empty(), biomeSource);
 	}
 
 	@Override

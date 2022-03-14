@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public interface PocketAddon {
-	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketAddonType<? extends PocketAddon>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "pocket_applicable_addon_type")), Lifecycle.stable())).buildAndRegister();
+	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketAddonType<? extends PocketAddon>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "pocket_applicable_addon_type")), Lifecycle.stable(), null)).buildAndRegister();
 
 	static PocketAddon deserialize(NbtCompound nbt) {
 		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;

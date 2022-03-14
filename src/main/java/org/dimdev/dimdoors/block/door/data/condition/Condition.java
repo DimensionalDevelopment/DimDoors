@@ -16,7 +16,7 @@ import net.minecraft.util.registry.SimpleRegistry;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 public interface Condition {
-	Registry<ConditionType<?>> REGISTRY = FabricRegistryBuilder.<ConditionType<?>, SimpleRegistry<ConditionType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "rift_data_condition")), Lifecycle.stable())).buildAndRegister();
+	Registry<ConditionType<?>> REGISTRY = FabricRegistryBuilder.<ConditionType<?>, SimpleRegistry<ConditionType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "rift_data_condition")), Lifecycle.stable(), null)).buildAndRegister();
 
 	boolean matches(EntranceRiftBlockEntity rift);
 

@@ -32,12 +32,12 @@ public class DatagenInitializer implements PreLaunchEntrypoint {
 			ModItems.init();
 			ModCriteria.init();
 			DataGenerator dataGenerator = new DataGenerator(Paths.get("./generated"), Collections.emptyList());
-			dataGenerator.install(new FabricRecipeProvider(dataGenerator));
-			dataGenerator.install(new AdvancementProvider(dataGenerator));
-			dataGenerator.install(new LootTableProvider(dataGenerator));
-			dataGenerator.install(RECIPE_CONSUMER = new RecipeConsumer(dataGenerator));
-			dataGenerator.install(LOOT_TABLE_CONSUMER = new LootTableConsumer(dataGenerator));
-			dataGenerator.install(new LimboDecayProvider(dataGenerator));
+			dataGenerator.addProvider(new FabricRecipeProvider(dataGenerator));
+			dataGenerator.addProvider(new AdvancementProvider(dataGenerator));
+			dataGenerator.addProvider(new LootTableProvider(dataGenerator));
+			dataGenerator.addProvider(RECIPE_CONSUMER = new RecipeConsumer(dataGenerator));
+			dataGenerator.addProvider(LOOT_TABLE_CONSUMER = new LootTableConsumer(dataGenerator));
+			dataGenerator.addProvider(new LimboDecayProvider(dataGenerator));
 			dataGenerator.run();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

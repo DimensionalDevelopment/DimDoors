@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.datagen;
 
 import java.util.function.Consumer;
 
+import net.minecraft.tag.TagKey;
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
 import org.dimdev.dimdoors.item.ModItems;
@@ -30,8 +31,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.tag.TagRegistry;
-
 public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey) {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
@@ -59,46 +58,46 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 
 	@Override
 	public void accept(Consumer<Advancement> advancementConsumer) {
-		Advancement root = Advancement.Task.create()
+		Advancement root = Advancement.Builder.create()
 				.display(makeDisplay(ModItems.RIFT_BLADE, "root"))
 				.criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.ENDER_PEARL))
 				.build(advancementConsumer, "dimdoors:dimdoors/root");
-		Advancement.Task.create()
+		Advancement.Builder.create()
 				.display(makeDisplay(ModItems.WORLD_THREAD, "string_theory"))
 				.criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.WORLD_THREAD))
 				.parent(root)
 				.build(advancementConsumer, "dimdoors:dimdoors/string_theory");
-		Advancement holeInTheSky = Advancement.Task.create()
+		Advancement holeInTheSky = Advancement.Builder.create()
 				.display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL, "hole_in_the_sky"))
 				.criterion("encounter_rift", new RiftTrackedCriterion.Conditions(EntityPredicate.Extended.EMPTY))
 				.parent(root)
 				.build(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
-		Advancement darkOstiology = Advancement.Task.create()
+		Advancement darkOstiology = Advancement.Builder.create()
 				.display(makeDisplay(Registry.BLOCK.get(new Identifier("dimdoors:oak_dimensional_door")), "dark_ostiology"))
 				.criterion("place_door", PlacedBlockCriterion.Conditions.block(Registry.BLOCK.get(new Identifier("dimdoors:oak_dimensional_door"))))
 				.parent(holeInTheSky)
 				.build(advancementConsumer, "dimdoors:dimdoors/dark_ostiology");
-		Advancement.Task.create()
+		Advancement.Builder.create()
 				.display(makeDisplay(Registry.BLOCK.get(new Identifier("dimdoors:iron_dimensional_door")), "public_pocket"))
 				.parent(darkOstiology)
 				.criterion("public_pocket", ChangedDimensionCriterion.Conditions.to(ModDimensions.PUBLIC))
 				.build(advancementConsumer, "dimdoors:dimdoors/public_pocket");
-		Advancement.Task.create()
+		Advancement.Builder.create()
 				.display(makeDisplay(Registry.BLOCK.get(new Identifier("dimdoors:iron_dimensional_door")), "home_away_from_home"))
 				.parent(darkOstiology)
 				.criterion("private_pocket", ChangedDimensionCriterion.Conditions.to(ModDimensions.PERSONAL))
 				.build(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
-		Advancement.Task.create()
+		Advancement.Builder.create()
 				.display(makeDisplay(Blocks.RESPAWN_ANCHOR, "out_of_time"))
 				.criterion("spawn", new PocketSpawnPointSetCondition.Conditions(EntityPredicate.Extended.EMPTY))
 				.parent(darkOstiology)
 				.build(advancementConsumer, "dimdoors:dimdoors/out_of_time");
-		Advancement doorToAdventure = Advancement.Task.create()
+		Advancement doorToAdventure = Advancement.Builder.create()
 				.display(makeDisplay(Registry.BLOCK.get(new Identifier("dimdoors:gold_dimensional_door")), "door_to_adventure"))
 				.parent(holeInTheSky)
 				.criterion("enter_dungeon", ChangedDimensionCriterion.Conditions.to(ModDimensions.DUNGEON))
 				.build(advancementConsumer, "dimdoors:dimdoors/door_to_adventure");
-		Advancement.Task.create()
+		Advancement.Builder.create()
 				.display(makeDisplay(Items.CHEST, "lost_and_found"))
 				.parent(doorToAdventure)
 				.criterion("open_chest", new ItemUsedOnBlockCriterion.Conditions
@@ -129,17 +128,17 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 						)
 				)
 				.build(advancementConsumer, "dimdoors:dimdoors/lost_and_found");
-		Advancement.Task.create()
+		Advancement.Builder.create()
 				.display(makeDisplay(ModItems.BLACK_FABRIC, "darklight"))
 				.parent(doorToAdventure)
-				.criterion("get_fabric", InventoryChangedCriterion.Conditions.items(ItemPredicate.Builder.create().tag(TagRegistry.item(new Identifier("dimdoors", "fabric"))).build()))
+				.criterion("get_fabric", InventoryChangedCriterion.Conditions.items(ItemPredicate.Builder.create().tag(TagKey.of(Registry.ITEM_KEY, new Identifier("dimdoors", "fabric"))).build()))
 				.build(advancementConsumer, "dimdoors:dimdoors/darklight");
-		Advancement enterLimbo = Advancement.Task.create()
+		Advancement enterLimbo = Advancement.Builder.create()
 				.display(makeDisplay(ModItems.MONOLITH_SPAWNER, "enter_limbo"))
 				.parent(doorToAdventure)
 				.criterion("enter_limbo", ChangedDimensionCriterion.Conditions.to(ModDimensions.LIMBO))
 				.build(advancementConsumer, "dimdoors:dimdoors/enter_limbo");
-		Advancement.Task.create()
+		Advancement.Builder.create()
 				.display(makeDisplay(ModItems.UNRAVELLED_FABRIC, "world_unfurled"))
 				.parent(enterLimbo)
 				.criterion("get_fabric", InventoryChangedCriterion.Conditions.items(ModItems.UNRAVELLED_FABRIC))

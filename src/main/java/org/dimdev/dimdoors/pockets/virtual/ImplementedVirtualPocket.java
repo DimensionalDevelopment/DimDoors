@@ -20,7 +20,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.function.Supplier;
 
 public interface ImplementedVirtualPocket extends VirtualPocket {
-	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable())).buildAndRegister();
+	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_pocket_type")), Lifecycle.stable(), null)).buildAndRegister();
 
 	static ImplementedVirtualPocket deserialize(NbtCompound nbt) {
 		Identifier id = Identifier.tryParse(nbt.getString("type"));

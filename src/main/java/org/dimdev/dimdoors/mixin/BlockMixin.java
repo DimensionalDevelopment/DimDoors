@@ -18,7 +18,7 @@ public class BlockMixin {
 	@Inject(method = "onBreak", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/block/Block;spawnBreakParticles(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"))
 	public void triggerTagBlockBreak(World world, BlockPos pos, BlockState state, PlayerEntity player, CallbackInfo ci) {
 		if (!world.isClient()) {
-			ModCriteria.TAG_BLOCK_BREAK.trigger((ServerPlayerEntity) player, state.getBlock());
+			ModCriteria.TAG_BLOCK_BREAK.trigger((ServerPlayerEntity) player, state);
 		}
 	}
 }

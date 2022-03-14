@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 public interface DecayPredicate {
-    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "decay_predicate_type")), Lifecycle.stable())).buildAndRegister();
+    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "decay_predicate_type")), Lifecycle.stable(), null)).buildAndRegister();
 
     DecayPredicate NONE = new DecayPredicate() {
         private static final String ID = "none";

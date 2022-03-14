@@ -43,7 +43,7 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	private void init() {
-		new ArrayList<>(registry.getEntries())
+		new ArrayList<>(registry.getEntrySet())
 				.forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
 	}
 

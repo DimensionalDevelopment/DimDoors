@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {
-	public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, SimpleRegistry<VirtualTargetType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_type")), Lifecycle.stable())).buildAndRegister();
+	public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, SimpleRegistry<VirtualTargetType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_type")), Lifecycle.stable(), null)).buildAndRegister();
 	public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
 	protected Location location;
