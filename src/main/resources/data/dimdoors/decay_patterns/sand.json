@@ -1,9 +1,0 @@
-{
-  "predicate": {
-    "block": "minecraft:sand",
-    "type": "dimdoors:simple"
-  },
-  "processor": {
-    "type": "dimdoors:self"
-  }
-}

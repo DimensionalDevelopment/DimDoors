@@ -8,9 +8,6 @@ import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 public class MonolithTeleportParticlesPacket implements SimplePacket<ClientPacketListener> {
 	public static final Identifier ID = new Identifier("dimdoors", "monolith_tp_particles");
 

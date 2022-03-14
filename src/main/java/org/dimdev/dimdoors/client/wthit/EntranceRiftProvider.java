@@ -6,16 +6,10 @@ import java.util.Objects;
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IDataAccessor;
 import mcp.mobius.waila.api.IPluginConfig;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TextColor;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 

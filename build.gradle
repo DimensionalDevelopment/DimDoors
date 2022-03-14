@@ -97,14 +97,30 @@ sourceSets {
 		java {
 			srcDir "src/main/schematics"
 			srcDir "src/main/config"
+			srcDirs "src/main/datagen"		}
+		resources {
+			srcDirs "src/main/generated"
 		}
 	}
-	datagen
 }
 
 loom {
 	accessWidenerPath = file("src/main/resources/dimdoors.accesswidener")
+
+	runs {
+		datagen {
+			server()
+
+			name "Minecraft Data"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+
+			runDir "build/datagen"
+		}
+	}
 }
+
+assemble.dependsOn runDatagen
 
 dependencies {
 	minecraft "com.mojang:minecraft:1.18.2"
@@ -134,10 +150,6 @@ dependencies {
 	}
 
 	modCompileOnly "curse.maven:worldedit-225608:3559499"
-
-	datagenImplementation sourceSets.main.output
-	datagenImplementation sourceSets.main.compileClasspath
-	datagenRuntimeOnly sourceSets.main.runtimeClasspath
 
 	testImplementation("junit:junit:4.13.2")
 	testImplementation("net.devtech:PotatoUnit:1.0.2")

@@ -17,7 +17,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.Category;
 import net.minecraft.world.gen.GenerationStep;
