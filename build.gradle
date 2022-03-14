@@ -2,10 +2,10 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url = "http://repo.spongepowered.org/maven" }
+        maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
     }
 }
 
@@ -14,8 +14,10 @@ plugins {
     id 'java'
 }
 
-apply plugin: 'java'
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
 repositories {
     maven { url = "https://jitpack.io" }
@@ -27,25 +29,18 @@ configurations {
     implementation.extendsFrom(embed)
 }
 
-dependencies {
-    embed 'com.flowpowered:flow-math:1.0.3'
-    embed 'org.jgrapht:jgrapht-core:1.1.0'
-    embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
-    compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
-    compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
-}
-
 // Minecraft, MCP, Forge, and Java versions
 sourceCompatibility = targetCompatibility = "1.8"
 ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.4.2707"
-String mcpversion = "snapshot_20180703"
 
 // Mod version
 version = "3.0.9"
 boolean isBeta = false
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 // Build number
 String fullVersion = ext.mcversion + "-" + version
@@ -61,14 +56,36 @@ String jarVersion = fullVersion.replace("+", "-") // Github/Travis doesn't seem 
 
 // Configuration
 minecraft {
-    version = "$mcversion-$forgeversion"
-    runDir = "run"
-    mappings = mcpversion
-    replace '${version}', fullVersion
-    makeObfSourceJar = false
-    ext.args = [
-            "-Dfml.noGrab=false"
-    ]
+	mappings channel: 'snapshot', version: '20180703-1.12'
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+
+        server {
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+dependencies {
+	embed 'com.flowpowered:flow-math:1.0.3'
+    embed 'org.jgrapht:jgrapht-core:1.1.0'
+    embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
+    compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
+    compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
+	minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 }
 
 // Tasks
@@ -83,25 +100,17 @@ jar {
     }
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    archiveName = archivesBaseName + "-" + jarVersion + "-sources.jar"
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives sourcesJar
-}
+jar.finalizedBy('reobfJar') 
 
 processResources {
     // This will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property "mcversion", "1.12.2"
 
     // Replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': project.minecraft.version
+        expand 'version': project.version, 'mcversion': "1.12.2"
     }
 
     // Copy everything else except mcmod.info
