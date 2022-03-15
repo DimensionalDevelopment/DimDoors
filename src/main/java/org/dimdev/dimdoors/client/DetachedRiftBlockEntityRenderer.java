@@ -3,6 +3,11 @@ package org.dimdev.dimdoors.client;
 import java.util.Objects;
 
 import com.flowpowered.math.TrigMath;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -17,6 +22,8 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.rift.targets.IdMarker;
 
 @Environment(EnvType.CLIENT)
 public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<DetachedRiftBlockEntity> {
@@ -28,6 +35,15 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 
     @Override
     public void render(DetachedRiftBlockEntity rift, float tickDelta, MatrixStack matrices, VertexConsumerProvider vcs, int breakProgress, int alpha) {
+		if(MinecraftClient.getInstance().player != null && MinecraftClient.getInstance().player.getStackInHand(Hand.MAIN_HAND).isOf(ModItems.RIFT_CONFIGURATION_TOOL) && rift.getData().getDestination() instanceof IdMarker idMarker) {
+			matrices.push();
+			matrices.translate(0.5, 0.5, 0.5);
+
+			MinecraftClient.getInstance().textRenderer.draw(Text.of(String.valueOf(idMarker.getId())), 0f,0f, 0xffffffff, false, matrices.peek().getPositionMatrix(), vcs, true, 0x000000, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+
+			matrices.pop();
+		}
+
     	if (DimensionalDoorsInitializer.getConfig().getGraphicsConfig().showRiftCore) {
             this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
