@@ -1,0 +1,28 @@
+{
+      "argument1": {
+        "argument": {
+          "argument1": 0.64,
+          "argument2": {
+            "argument": {
+              "argument": {
+                "argument": 
+
+                {"type":"max",
+                "argument1":-1,
+                "argument2":"dimdoors:limbo/terrain"
+                
+              },
+
+                "type": "minecraft:slide"
+              },
+              "type": "minecraft:blend_density"
+            },
+            "type": "minecraft:interpolated"
+          },
+          "type": "minecraft:mul"
+        },
+        "type": "minecraft:squeeze"
+      },
+      "argument2": "dimdoors:limbo/strand",
+      "type": "minecraft:max"
+    }
