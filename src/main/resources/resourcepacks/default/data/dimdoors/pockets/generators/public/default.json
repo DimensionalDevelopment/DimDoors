@@ -23,8 +23,8 @@
       "door_type": "dimdoors:iron_dimensional_door",
       "x": "width/2",
       "facing": "north",
-      "y": "5",
-      "z": "4",
+      "y": "0",
+      "z": "-1",
       "type": "dimdoors:door",
       "rift_data": {
         "destination": {
