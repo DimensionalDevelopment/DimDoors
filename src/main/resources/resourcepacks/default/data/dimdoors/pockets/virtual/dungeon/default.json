@@ -90,5 +90,89 @@
   {
     "id": "dungeon/lantredom_red",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/void_path_of_fear",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_diamond_tnt_trap_b",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_multiple_warppoints",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_lava_trap",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/freeroam_graveyard",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_small_pressure_plate_maze",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_diamond_tnt_trap_a",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_elevator_tnt_trap",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_stairs_up_down_warp",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_corrupted_endportal",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_mansion_combination_puzzle",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/lava_trap",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/long_corridor",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_long_stairwell_down",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_stairwell_up",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_push_into_void_trap",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_sprike_traps",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_target_practise",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_camp_station",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/freeroam_empty_street",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_caged_warps",
+    "type": "dimdoors:id"
   }
 ]
