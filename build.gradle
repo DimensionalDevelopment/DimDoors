@@ -199,7 +199,7 @@ curseforge {
 		id = "284876"
 		changelog = file("changelog.txt").text
 		releaseType = "beta"
-		addGameVersion "1.18.1"
+		addGameVersion "1.18.2"
 		addGameVersion "Fabric"
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[1.18.1] Dimensional Doors ${version}"
@@ -213,15 +213,15 @@ curseforge {
 	}
 }
 
-test {
-	workingDir = file("test")
-
-	systemProperty("fabric.dli.config", file(".gradle/loom-cache/launch.cfg").getAbsolutePath())
-	//useJUnitPlatform()
-}
-
-tasks.test.doFirst {test ->
-	if (!test.workingDir.exists()) {
-		test.workingDir.mkdirs();
-	}
-}
+//test {
+//	workingDir = file("test")
+//
+//	systemProperty("fabric.dli.config", file(".gradle/loom-cache/launch.cfg").getAbsolutePath())
+//	//useJUnitPlatform()
+//}
+//
+//tasks.test.doFirst {test ->
+//	if (!test.workingDir.exists()) {
+//		test.workingDir.mkdirs();
+//	}
+//}
