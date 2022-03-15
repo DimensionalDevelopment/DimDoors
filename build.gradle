@@ -151,8 +151,8 @@ dependencies {
 
 	modCompileOnly "curse.maven:worldedit-225608:3559499"
 
-	testImplementation("junit:junit:4.13.2")
-	testImplementation("net.devtech:PotatoUnit:1.0.2")
+//	testImplementation("junit:junit:4.13.2")
+//	testImplementation("net.devtech:PotatoUnit:1.0.2")
 }
 
 version = computeVersion(project.mod_version)
