@@ -174,5 +174,109 @@
   {
     "id": "dungeon/ruins_caged_warps",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_deepslatebricks_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_river",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_ice_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/void_whyless",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_items4life",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_simple_door",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_fire_charge_timing",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/schopophobia",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/random_arrow_chance",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_simple_door_troll",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_prismarine_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_endbrick_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_deepslate_hub",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/jungle_riddle_fixed",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_sandstone_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_purpurbricks_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/void_railroad_b",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_pressure_plate_riddle",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/break_block_boom",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/void_why",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/ruins_simple_door_trap",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/string_field",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_netherbricks_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/void_railroad_a",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/beach",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dungeon/small_red_sandstone_hallway",
+    "type": "dimdoors:id"
   }
 ]

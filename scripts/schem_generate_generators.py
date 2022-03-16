@@ -50,7 +50,7 @@ for name in walk_through_files(folder):
         if (id.value == "dimdoors:entrance_rift"):
             dest = be["data"]["destination"]
             thing_id = dest["id"]
-            if thing_id == 0:
+            if thing_id.value == 0:
                 modifiers.append({
                     "type": "dimdoors:rift_data",
                     "ids": [0],
@@ -65,4 +65,4 @@ for name in walk_through_files(folder):
     stuff["id"] = "dungeon/" + thing_name
     stuff["modifiers"] = modifiers
     file = open(f"./generated/{thing_name}.json", "x")
-    file.write(json.dumps(stuff, indent = 2))
+    file.write(json.dumps(stuff, indent=2))
