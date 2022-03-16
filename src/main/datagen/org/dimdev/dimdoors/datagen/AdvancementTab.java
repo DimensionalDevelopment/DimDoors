@@ -141,8 +141,20 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		Advancement.Builder.create()
 				.display(makeDisplay(ModItems.UNRAVELLED_FABRIC, "world_unfurled"))
 				.parent(enterLimbo)
-				.criterion("get_fabric", InventoryChangedCriterion.Conditions.items(ModItems.UNRAVELLED_FABRIC))
+				.criterion("get_the_unravelled", InventoryChangedCriterion.Conditions.items(ModItems.UNRAVELLED_FABRIC))
 				.build(advancementConsumer, "dimdoors:dimdoors/world_unfurled");
+
+		Advancement.Builder.create()
+				.display(makeDisplay(ModItems.INFRANGIBLE_FIBER, "unravelled_but_immutable"))
+				.parent(enterLimbo)
+				.criterion("get_the_immutable", InventoryChangedCriterion.Conditions.items(ModItems.INFRANGIBLE_FIBER))
+				.build(advancementConsumer, "dimdoors:dimdoors/unravelled_but_immutable");
+
+		Advancement.Builder.create()
+				.display(makeDisplay(ModItems.FRAYED_FILAMENT, "fuzzy_unreality"))
+				.parent(enterLimbo)
+				.criterion("get_the_immutable", InventoryChangedCriterion.Conditions.items(ModItems.FRAYED_FILAMENT))
+				.build(advancementConsumer, "dimdoors:dimdoors/fuzzy_unreality");
 
 //		Advancement.Task.create()
 //				.display(makeDisplay(ModItems.IRON_DIMENSIONAL_DOOR, "public_pocket"))

@@ -306,6 +306,10 @@
   "dimdoors.advancement.string_theory.desc": "Collect World Thread",
   "dimdoors.advancement.world_unfurled": "World Unfurled",
   "dimdoors.advancement.world_unfurled.desc": "Collect Unravelled Fabric",
+  "dimdoors.advancement.unravelled_but_immutable": "Unravelled But Immutable",
+  "dimdoors.advancement.unravelled_but_immutable.desc": "Obtain Infrangible Fiber",
+  "dimdoors.advancement.fuzzy_unreality": "Fuzzy Unreality",
+  "dimdoors.advancement.fuzzy_unreality.desc": "Obtain Frayed Filament",
 
   "biome.dimdoors.black_void": "Black void (Public Pockets)",
   "biome.dimdoors.dangerous_black_void": "Dangerous Black void (Dungeon Pockets)",

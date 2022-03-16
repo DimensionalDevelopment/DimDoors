@@ -13,10 +13,6 @@ public class AdvancementProvider extends FabricAdvancementProvider {
 		super(dataGenerator);
 	}
 
-	private static Path getOutput(Path root, Advancement advancement) {
-		return root.resolve("data/" + advancement.getId().getNamespace() + "/advancements/" + advancement.getId().getPath() + ".json");
-	}
-
 	@Override
 	public void generateAdvancement(Consumer<Advancement> consumer) {
 		new AdvancementTab().accept(consumer);
