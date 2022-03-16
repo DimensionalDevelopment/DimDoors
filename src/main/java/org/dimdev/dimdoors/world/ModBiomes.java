@@ -94,10 +94,10 @@ public final class ModBiomes {
 								GenerationStep.Feature.UNDERGROUND_ORES,
 								ModFeatures.Placed.SOLID_STATIC_ORE_PLACED_FEATURE
 						)
-						.feature(
-								GenerationStep.Feature.UNDERGROUND_ORES,
-								ModFeatures.Placed.DECAYED_BLOCK_ORE_PLACED_FEATURE
-						)
+//						.feature(
+//								GenerationStep.Feature.UNDERGROUND_ORES,
+//								ModFeatures.Placed.DECAYED_BLOCK_ORE_PLACED_FEATURE
+//						)
                         .build()
 				)
                 .precipitation(Biome.Precipitation.NONE)
