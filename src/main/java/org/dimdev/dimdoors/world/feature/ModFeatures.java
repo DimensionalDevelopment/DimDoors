@@ -35,6 +35,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import java.util.List;
 
 import static net.minecraft.world.gen.feature.Feature.*;
+import static net.minecraft.world.gen.feature.OrePlacedFeatures.modifiersWithCount;
 
 public final class ModFeatures {
 	public static final SchematicGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
@@ -66,7 +67,7 @@ public final class ModFeatures {
 		public static final RegistryEntry<PlacedFeature> SANDSTONE_PILLARS_PLACED_FEATURE = PlacedFeatures.register("dimdoors:sandstone_pillars", Configured.SANDSTONE_PILLARS_CONFIGURED_FEATURE, List.of(RarityFilterPlacementModifier.of(DimensionalDoorsInitializer.getConfig().getWorldConfig().gatewayGenChance), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of()));
 		public static final RegistryEntry<PlacedFeature> TWO_PILLARS_PLACED_FEATURE = PlacedFeatures.register("dimdoors:two_pillars", Configured.TWO_PILLARS_CONFIGURED_FEATURE, List.of(RarityFilterPlacementModifier.of(DimensionalDoorsInitializer.getConfig().getWorldConfig().gatewayGenChance), SquarePlacementModifier.of(), PlacedFeatures.WORLD_SURFACE_WG_HEIGHTMAP, BiomePlacementModifier.of()));
 		public static final RegistryEntry<PlacedFeature> LIMBO_GATEWAY_PLACED_FEATURE = PlacedFeatures.register("dimdoors:limbo_gateway", Configured.LIMBO_GATEWAY_CONFIGURED_FEATURE, List.of(RarityFilterPlacementModifier.of(DimensionalDoorsInitializer.getConfig().getWorldConfig().gatewayGenChance), SquarePlacementModifier.of(), PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, BiomePlacementModifier.of()));
-		public static final RegistryEntry<PlacedFeature> SOLID_STATIC_ORE_PLACED_FEATURE = PlacedFeatures.register("dimdoors:solid_static_ore", Configured.SOLID_STATIC_ORE_CONFIGURED_FEATURE, List.of(CountPlacementModifier.of(1), HeightRangePlacementModifier.uniform(YOffset.getBottom(), YOffset.getTop()), SquarePlacementModifier.of(), BiomePlacementModifier.of()));
+		public static final RegistryEntry<PlacedFeature> SOLID_STATIC_ORE_PLACED_FEATURE = PlacedFeatures.register("dimdoors:solid_static_ore", Configured.SOLID_STATIC_ORE_CONFIGURED_FEATURE, List.of(CountPlacementModifier.of(3), HeightRangePlacementModifier.uniform(YOffset.getBottom(), YOffset.getTop()), SquarePlacementModifier.of(), BiomePlacementModifier.of()));
 		public static final RegistryEntry<PlacedFeature> DECAYED_BLOCK_ORE_PLACED_FEATURE = PlacedFeatures.register("dimdoors:decayed_block_ore", Configured.DECAYED_BLOCK_ORE_CONFIGURED_FEATURE, List.of(CountPlacementModifier.of(4), HeightRangePlacementModifier.uniform(YOffset.fixed(0), YOffset.fixed(79)), SquarePlacementModifier.of(), BiomePlacementModifier.of()));
 		public static final RegistryEntry<PlacedFeature> ETERNAL_FLUID_SPRING_PLACED_FEATURE = PlacedFeatures.register("dimdoors:eternal_fluid_spring", Configured.ETERNAL_FLUID_SPRING_CONFIGURED_FEATURE, List.of(CountPlacementModifier.of(25), SquarePlacementModifier.of(), HeightRangePlacementModifier.uniform(YOffset.getBottom(), YOffset.fixed(192)), BiomePlacementModifier.of()));
 

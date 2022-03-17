@@ -63,9 +63,33 @@
     "vein_gap": 0
   },
   "surface_rule": {
-    "type": "minecraft:block",
-    "result_state": {
-      "Name": "dimdoors:unravelled_fabric"
-    }
+    "type":"minecraft:sequence",
+    "sequence":[
+      {
+        "if_true": {
+          "random_name": "dimdoors:floor",
+          "true_at_and_below": {
+            "above_bottom": 0
+          },
+          "false_at_and_above": {
+            "above_bottom": 5
+          },
+          "type": "minecraft:vertical_gradient"
+        },
+        "then_run": {
+          "result_state": {
+            "Name": "dimdoors:black_ancient_fabric"
+          },
+          "type": "minecraft:block"
+        },
+        "type": "minecraft:condition"
+      },
+      {
+        "result_state": {
+          "Name": "dimdoors:unravelled_fabric"
+        },
+        "type": "minecraft:block"
+      }
+    ]
   }
 }
