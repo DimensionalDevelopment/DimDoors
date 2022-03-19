@@ -22,10 +22,7 @@ import org.dimdev.dimdoors.block.door.data.condition.InverseCondition;
 import org.dimdev.dimdoors.block.door.data.condition.WorldMatchCondition;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.targets.PrivatePocketExitTarget;
-import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget;
-import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
-import org.dimdev.dimdoors.rift.targets.UnstableTarget;
+import org.dimdev.dimdoors.rift.targets.*;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.util.Pair;
@@ -78,7 +75,13 @@ public class DoorDataReader {
 			new DoorData.UnbakedBlockSettings(
 					"minecraft:oak_door",
 					OptionalInt.of(10)
-			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(DefaultDungeonDestinations.getShallowerDungeonDestination()), Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
+			), new RiftDataList(
+					Util.make(new LinkedList<>(), list ->
+							list.add(new Pair<>(
+									new RiftDataList.OptRiftData(Optional.of(
+											new EscapeTarget(true)),
+											Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES))
+											.toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
 	), true);
 	public static final DoorData DEFAULT_QUARTZ_DIMENSIONAL_DOOR = new DoorData(
 			"dimdoors:quartz_dimensional_door",
