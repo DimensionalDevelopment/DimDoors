@@ -73,8 +73,8 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			if (((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition() != null) {
 				destLoc = new Location(((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointDimension(), ((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition());
 			} else {
-				destLoc = new Location(World.OVERWORLD, new BlockPos(0, 0, 0));
-				destLoc = new Location(destLoc.getWorld(), destLoc.getWorld().getSpawnPos());
+				destLoc = new Location(DimensionalDoorsInitializer.getServer().getOverworld(), DimensionalDoorsInitializer.getServer().getOverworld().getSpawnPos());
+
 			}
 
 
@@ -96,7 +96,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 
 
 			if (destLoc != null && this.canEscapeLimbo) {
-				Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false);
+				Location location = destLoc; //VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false); //TODO Fix world projection.
 				entity = TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
 				entity.fallDistance = 0;
 				Random random = new Random();

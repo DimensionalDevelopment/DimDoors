@@ -86,7 +86,7 @@ public class VirtualLocation {
 		ServerWorld world = DimensionalDoorsInitializer.getServer().getWorld(this.world);
 
 		if (!acceptLimbo && ModDimensions.isLimboDimension(world)) {
-			world = world.getServer().getWorld(OVERWORLD);
+			world = world.getServer().getOverworld();
 		}
 
 		float spread = DimensionalDoorsInitializer.getConfig().getGeneralConfig().depthSpreadFactor * this.depth;
