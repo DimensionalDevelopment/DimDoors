@@ -80,7 +80,7 @@ public class DoorDataReader {
 							list.add(new Pair<>(
 									new RiftDataList.OptRiftData(Optional.of(
 											new EscapeTarget(true)),
-											Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES))
+											Optional.empty())
 											.toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
 	), true);
 	public static final DoorData DEFAULT_QUARTZ_DIMENSIONAL_DOOR = new DoorData(
