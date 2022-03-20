@@ -167,10 +167,10 @@ static def computeVersion(String version) {
 
 processResources {
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": project.mod_version
 	}
 
-	inputs.property "version", project.version
+	inputs.property "version", project.mod_version
 }
 
 tasks.withType(JavaCompile).configureEach {
