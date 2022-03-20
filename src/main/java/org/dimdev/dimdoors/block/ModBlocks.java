@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.block.door.data.DoorDataReader;
@@ -35,19 +36,20 @@ public final class ModBlocks {
 	@RegistryEntry("gold_door")
 	public static final Block GOLD_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).requiresTool().nonOpaque()));
 
+	@RegistryEntry("stone_door")
+	public static final Block STONE_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.OAK_TAN).strength(5.0F).requiresTool().nonOpaque()));
+
 	@RegistryEntry("quartz_door")
 	public static final Block QUARTZ_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).strength(5.0F).requiresTool().nonOpaque()));
 
 	@RegistryEntry("wood_dimensional_trapdoor")
 	public static final Block OAK_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorBlock(FabricBlockSettings.copyOf(Blocks.OAK_TRAPDOOR).luminance(state -> 10)));
 
-
 	@RegistryEntry("dimensional_portal")
 	public static final Block DIMENSIONAL_PORTAL = register(new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).strength(-1.0F, 3600000.0F).nonOpaque().dropsNothing().luminance(10)));
 
 	@RegistryEntry("detached_rift")
 	public static final Block DETACHED_RIFT = register(new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).strength(-1.0F, 3600000.0F).noCollision().nonOpaque()));
-
 
 	@RegistryEntry("white_fabric")
 	public static final Block WHITE_FABRIC = registerFabric(DyeColor.WHITE);

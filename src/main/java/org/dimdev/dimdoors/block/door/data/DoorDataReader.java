@@ -116,6 +116,21 @@ public class DoorDataReader {
 			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(new UnstableTarget()), Optional.of(LinkProperties.builder().linksRemaining(1).groups(IntStream.of(0, 1).boxed().collect(Collectors.toSet())).build())).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
 	), true);
 
+	public static final DoorData DEFAULT_DUNGEON_DOOR = new DoorData(
+			"dimdoors:dungeon_door",
+			new DoorData.UnbakedItemSettings(
+					"dimdoors:stone_door",
+					OptionalInt.of(1),
+					OptionalInt.empty(),
+					Optional.of(Rarity.UNCOMMON),
+					TriState.FALSE
+			),
+			new DoorData.UnbakedBlockSettings(
+					"dimdoors:stone_door",
+					OptionalInt.empty()
+			), new RiftDataList(Util.make(new LinkedList<>(), list -> list.add(new Pair<>(new RiftDataList.OptRiftData(Optional.of(DefaultDungeonDestinations.getShallowerDungeonDestination()), Optional.of(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES)).toJson(new JsonObject()), AlwaysTrueCondition.INSTANCE)))
+	), true);
+
 	public static void read() {
 		Path doorDir = DimensionalDoorsInitializer.getConfigRoot().resolve("doors");
 
@@ -175,6 +190,7 @@ public class DoorDataReader {
 		writeDefault(root.resolve("gold_dimensional_door.json"), DEFAULT_GOLD_DIMENSIONAL_DOOR);
 		writeDefault(root.resolve("oak_dimensional_door.json"), DEFAULT_OAK_DIMENSIONAL_DOOR);
 		writeDefault(root.resolve("quartz_dimensional_door.json"), DEFAULT_QUARTZ_DIMENSIONAL_DOOR);
+		writeDefault(root.resolve("dungeon_door.json"), DEFAULT_DUNGEON_DOOR);
 //		writeDefault(root.resolve("unstable_dimensional_door.json"), DEFAULT_UNSTABLE_DIMENSIONAL_DOOR);
 	}
 

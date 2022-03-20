@@ -77,7 +77,8 @@ public final class ModFeatures {
 						return biome.getCategory() != Category.NONE &&
 								biome.getCategory() != Category.THEEND &&
 								biome.getCategory() != Category.DESERT &&
-								biome.getCategory() != Category.NETHER;
+								biome.getCategory() != Category.NETHER &&
+								biome.getCategory() != Category.OCEAN;
 						},
 					GenerationStep.Feature.SURFACE_STRUCTURES,
 					TWO_PILLARS_PLACED_FEATURE.getKey().get()

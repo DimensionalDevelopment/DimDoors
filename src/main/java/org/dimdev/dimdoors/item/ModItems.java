@@ -47,6 +47,9 @@ public final class ModItems {
 	@RegistryEntry("gold_door")
 	public static final Item GOLD_DOOR = create(ModBlocks.GOLD_DOOR);
 
+	@RegistryEntry("stone_door")
+	public static final Item STONE_DOOR = create(ModBlocks.STONE_DOOR);
+
 	@RegistryEntry("wood_dimensional_trapdoor")
 	public static final Item OAK_DIMENSIONAL_TRAPDOOR = create(new DimensionalTrapdoorItem(
 			ModBlocks.OAK_DIMENSIONAL_TRAPDOOR,
