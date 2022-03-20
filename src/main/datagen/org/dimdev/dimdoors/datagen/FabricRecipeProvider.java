@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -23,6 +24,15 @@ public class FabricRecipeProvider extends net.fabricmc.fabric.api.datagen.v1.pro
 
 	@Override
 	protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
+		ShapedRecipeJsonBuilder.create(ModBlocks.STONE_DOOR)
+				.group("stone_door")
+				.pattern("XX")
+				.pattern("XX")
+				.pattern("XX")
+				.input('X', Blocks.STONE)
+				.criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Blocks.STONE))
+				.offerTo(exporter, new Identifier("dimdoors", "stone_door"));
+
 		for (Map.Entry<DyeColor, Block> entry : ModBlocks.FABRIC_BLOCKS.entrySet()) {
 			DyeColor dyeColor = entry.getKey();
 			Block block = entry.getValue();

@@ -155,7 +155,7 @@ dependencies {
 //	testImplementation("net.devtech:PotatoUnit:1.0.2")
 }
 
-version = computeVersion(project.mod_version)
+version = computeVersion(project.mod_version) + "-" + project.minecraft_version
 archivesBaseName = "DimensionalDoors"
 
 static def computeVersion(String version) {
