@@ -140,14 +140,16 @@ dependencies {
 	includeCompile("curse.maven", "cardinal_world-318449", "${project.cardinal_components_world}")
 	includeCompile("curse.maven", "cardinal_chunk-318449", "${project.cardinal_components_chunk}")
 
+	includeCompile("curse.maven", "wthit-3707010", "${project.wthit}")
+
 	modCompileOnly("com.terraformersmc:modmenu:3.1.0") {
 		exclude module: "fabric-api"
 	}
 
-	modCompileOnly("mcp.mobius.waila:wthit:fabric-4.7.3") {
-		exclude module: "modmenu"
-		exclude module: "fabric-api"
-	}
+//	modCompileOnly("mcp.mobius.waila:wthit:fabric-4.7.3") {
+//		exclude module: "modmenu"
+//		exclude module: "fabric-api"
+//	}
 
 	modCompileOnly "curse.maven:worldedit-225608:3559499"
 
