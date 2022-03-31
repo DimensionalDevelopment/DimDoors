@@ -37,7 +37,6 @@ public class TwoPillarsGateway extends SchematicGateway {
 
 	@Override
 	public boolean test(StructureWorldAccess structureWorldAccess, BlockPos blockPos) {
-		System.out.println("Testing the door test test.");
-		return true;
+		return !structureWorldAccess.getBlockState(blockPos).isOf(Blocks.WATER);
 	}
 }
