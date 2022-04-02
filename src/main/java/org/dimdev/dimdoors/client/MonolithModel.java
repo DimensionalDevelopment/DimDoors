@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraft.util.math.Direction;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
 import net.minecraft.client.model.ModelData;
@@ -34,7 +35,43 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
 
     @Override
     public void render(MatrixStack matrixStack, VertexConsumer consumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        this.body.render(matrixStack, consumer, packedLight, packedOverlay);
+		matrixStack.push();
+		matrixStack.scale(3.0625f, 3.0625f, 3.0625f);
+
+		MatrixStack.Entry entry = matrixStack.peek();
+
+		consumer.vertex(entry.getPositionMatrix(), -1, -0.5f, 0)
+				.color(red, green, blue, alpha)
+				.texture(0,0)
+				.overlay(packedOverlay)
+				.light(packedLight)
+				.normal(entry.getNormalMatrix(), 0, 0, 1)
+				.next();
+		consumer.vertex(entry.getPositionMatrix(), -1, 0.5f, 0)
+				.color(red, green, blue, alpha)
+				.texture(0, 1)
+				.overlay(packedOverlay)
+				.light(packedLight)
+				.normal(entry.getNormalMatrix(), 0, 0, 1)
+				.next();
+		consumer.vertex(entry.getPositionMatrix(), 1, 0.5f, 0)
+				.color(red, green, blue, alpha)
+				.texture(1,1)
+				.overlay(packedOverlay)
+				.light(packedLight)
+				.normal(entry.getNormalMatrix(), 0, 0, 1)
+				.next();
+		consumer.vertex(entry.getPositionMatrix(), 1, -0.5f, 0)
+				.color(red, green, blue, alpha)
+				.texture(1, 0)
+				.overlay(packedOverlay)
+				.light(packedLight)
+				.normal(entry.getNormalMatrix(), 0, 0, 1)
+				.next();
+
+		matrixStack.pop();
+
+//        this.body.render(matrixStack, consumer, packedLight, packedOverlay);
     }
 
     @Override
