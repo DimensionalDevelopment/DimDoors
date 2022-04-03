@@ -151,7 +151,8 @@ dependencies {
 //		exclude module: "fabric-api"
 //	}
 
-	modCompileOnly "curse.maven:worldedit-225608:3559499"
+	modCompileOnly "curse.maven:worldedit-225608:3697298"
+	modCompileOnly "curse.maven:wthit-440979:3707010"
 
 //	testImplementation("junit:junit:4.13.2")
 //	testImplementation("net.devtech:PotatoUnit:1.0.2")
