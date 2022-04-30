@@ -4,10 +4,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemColored;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 
 import static org.dimdev.dimdoors.shared.sound.ModSounds.CREEPY;
@@ -28,8 +26,8 @@ public final class ModItems {
     // Crafting ingredients
     private static final String WORLD_THREAD_ID = "world_thread";
     private static final String STABLE_FABRIC_ID = "stable_fabric";
-    public static final Item WORLD_THREAD = new Item().setUnlocalizedName(WORLD_THREAD_ID).setFull3D().setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, WORLD_THREAD_ID));
-    public static final Item STABLE_FABRIC = new Item().setUnlocalizedName(STABLE_FABRIC_ID).setFull3D().setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB).setRegistryName(new ResourceLocation(DimDoors.MODID, STABLE_FABRIC_ID));
+    public static final Item WORLD_THREAD = new ItemGeneric(WORLD_THREAD_ID);
+    public static final Item STABLE_FABRIC = new ItemGeneric(STABLE_FABRIC_ID);
 
     // Tools
     public static final ItemRiftConfigurationTool RIFT_CONFIGURATION_TOOL = new ItemRiftConfigurationTool();

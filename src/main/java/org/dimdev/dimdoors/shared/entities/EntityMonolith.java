@@ -4,6 +4,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
+import org.dimdev.dimdoors.shared.world.ModDimensions;
 import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 import org.dimdev.dimdoors.shared.world.pocketdimension.WorldProviderDungeonPocket;
 import net.minecraft.entity.Entity;
@@ -148,8 +149,17 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 // Teleport the target player if various conditions are met
                 if (aggro >= MAX_AGGRO && !world.isRemote && ModConfig.monoliths.monolithTeleportation && !player.isCreative() && isDangerous()) {
                     aggro = 0;
-                    Location destination = WorldProviderLimbo.getLimboSkySpawn(player);
-                    TeleportUtils.teleport(player, destination, 0, 0);
+                    Location destination;
+                    if(player.world.provider instanceof WorldProviderLimbo) {
+                        destination = WorldProviderLimbo.getLimboSkySpawn(player);
+                        TeleportUtils.teleport(player, destination, 0, 0);
+                    } else {
+                        //If teleport the player to limbo if the player is not already there
+                        //This should fix the crash related to dangerousLimboMonoliths and monolithTeleportation
+                        double x = player.posX + MathHelper.clamp(player.world.rand.nextDouble(), 100, 100);
+                        double z = player.posZ + MathHelper.clamp(player.world.rand.nextDouble(), -100, 100);
+                        TeleportUtils.teleport(player, ModDimensions.getLimboDim(),x,700,z,player.rotationYaw,player.rotationPitch);
+                    }
                     player.world.playSound(null, player.getPosition(), ModSounds.CRACK, SoundCategory.HOSTILE, 13, 1);
                 }
             }

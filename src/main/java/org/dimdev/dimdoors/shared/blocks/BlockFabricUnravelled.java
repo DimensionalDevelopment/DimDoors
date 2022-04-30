@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 import org.dimdev.dimdoors.shared.world.limbo.LimboDecay;
 import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
@@ -34,7 +35,7 @@ public class BlockFabricUnravelled extends BlockEmptyDrops {
     @Override
     public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
         // Spread decay in Limbo
-        if (world.provider instanceof WorldProviderLimbo) {
+        if (world.provider instanceof WorldProviderLimbo && ModConfig.limbo.enableLimboDecay) {
             LimboDecay.applySpreadDecay(world, pos);
         }
     }
