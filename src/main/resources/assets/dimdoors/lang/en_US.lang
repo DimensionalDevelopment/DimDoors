@@ -147,6 +147,11 @@ dimdoors.general.teleportOffset=Teleport Offset
 dimdoors.general.teleportOffset.tooltip=Distance in blocks to teleport the player in front of the dimensional door.
 dimdoors.general.riftBoundingBoxInCreative=Rift Bounding Box in Creative
 dimdoors.general.riftBoundingBoxInCreative.tooltip=When true, shows the bounding boxes of floating rifts when the player is in creative.
+dimdoors.general.enableRiftDecay=Enable Rift Decay
+dimdoors.general.enableRiftDecay.tooltip=When true, floating rifts will eat nearby placed blocks, dropping world string
+dimdoors.general.blockRiftDecayBlackList=Block Decay Blacklist
+dimdoors.general.blockRiftDecayBlackList.tooltip=A list of blocks that will be blacklisted from rift decay
+
 
 dimdoors.pockets=Pocket Dimension Settings
 dimdoors.pockets.tooltip=Settings that determine the spacing and maximum size of pockets in the pocket world
@@ -192,6 +197,10 @@ dimdoors.limbo.universalLimbo=Universal Limbo
 dimdoors.limbo.universalLimbo.tooltip=When true, players are also teleported to Limbo when they die in any non-Pocket Dimension (except Limbo itself). Otherwise, players only go to Limbo if they die in a Pocket Dimension.
 dimdoors.limbo.hardcoreLimbo=Hardcore Limbo
 dimdoors.limbo.hardcoreLimbo.tooltip=When true, a player dying in Limbo will respawn in Limbo, making Eternal Fluid or Golden Dimensional Doors the only way to escape Limbo.
+dimdoors.limbo.enableLimboDecay=Enable Decay
+dimdoors.limbo.enableLimboDecay.tooltip=When false, decay spreading from unravelled fabric in Limbo will be disabled
+dimdoors.limbo.blockLimboDecayBlackList=Block Decay Blacklist
+dimdoors.limbo.blockLimboDecayBlackList.tooltip=A list of blocks that will be blacklisted from Limbo decay
 
 dimdoors.graphics=Graphics Settings
 dimdoors.graphics.tooltip=Settings that control the appearance of dimdoors, such as the rift animation.

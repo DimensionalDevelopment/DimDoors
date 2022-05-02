@@ -4,14 +4,19 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -29,7 +34,7 @@ public final class LimboDecay {
     private static IBlockState[] decaySequence = null;
 
     private static final Random random = new Random();
-    private static Block[] blocksImmuneToDecay = null;
+    public static Block[] blocksImmuneToDecay = null;
 
     public static IBlockState[] getDecaySequence() {
         if (decaySequence == null) {
@@ -46,17 +51,22 @@ public final class LimboDecay {
 
     public static Block[] getBlocksImmuneToDecay() {
         if (blocksImmuneToDecay == null) {
-            blocksImmuneToDecay = new Block[]{
-                    ModBlocks.UNRAVELLED_FABRIC,
-                    ModBlocks.ETERNAL_FABRIC,
-                    ModBlocks.DIMENSIONAL_PORTAL,
-                    ModBlocks.IRON_DIMENSIONAL_DOOR,
-                    ModBlocks.WARP_DIMENSIONAL_DOOR,
-                    ModBlocks.RIFT,
-                    ModBlocks.GOLD_DOOR,
-                    ModBlocks.QUARTZ_DOOR,
-                    ModBlocks.GOLD_DIMENSIONAL_DOOR
-            };
+            ArrayList<Block> temp = new ArrayList<>();
+            temp.add(ModBlocks.UNRAVELLED_FABRIC);
+            temp.add(ModBlocks.ETERNAL_FABRIC);
+            temp.add(ModBlocks.DIMENSIONAL_PORTAL);
+            temp.add(ModBlocks.IRON_DIMENSIONAL_DOOR);
+            temp.add(ModBlocks.WARP_DIMENSIONAL_DOOR);
+            temp.add(ModBlocks.RIFT);
+            temp.add(ModBlocks.GOLD_DOOR);
+            temp.add(ModBlocks.QUARTZ_DOOR);
+            temp.add(ModBlocks.GOLD_DIMENSIONAL_DOOR);
+            for(String blocked : ModConfig.limbo.blockDecayLimboBlackList) {
+                Block fromString = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blocked));
+                if(fromString!=null) temp.add(fromString);
+                else DimDoors.log.error("Invalid block name for limbo decay blacklist! \""+blocked+"\"");
+            }
+            blocksImmuneToDecay = temp.toArray(new Block[0]);
         }
 
         return blocksImmuneToDecay;
@@ -159,7 +169,7 @@ public final class LimboDecay {
     }
 
     /**
-     * Checks if a block can decay. We will not decay air, certain DD blocks, or containers.
+     * Checks if a block can decay. We will not decay air, certain DD blocks, containers, or blacklisted blocks.
      */
     private static boolean canDecayBlock(IBlockState state, World world, BlockPos pos) {
         if (world.isAirBlock(pos)) {

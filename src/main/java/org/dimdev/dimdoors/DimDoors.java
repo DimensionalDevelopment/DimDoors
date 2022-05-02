@@ -47,8 +47,8 @@ public class DimDoors {
     public static final String MODID = "dimdoors";
     public static final String MODNAME = "Dimensional Doors";
     public static final String MCVERSIONS = "[1.12,1.13)";
-    public static final String VERSION = "3.0.9";
-    public static final String DEPENDENCIES = "required-after:forge@[14.21.0.2320,)";
+    public static final String VERSION = "3.0.10";
+    public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,)";
 
     @Mod.Instance(DimDoors.MODID)
     public static DimDoors instance;

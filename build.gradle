@@ -1,11 +1,10 @@
 buildscript {
     repositories {
-        jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
         maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:4.1.10'
     }
 }
 
@@ -22,6 +21,10 @@ apply plugin: 'maven-publish'
 repositories {
     maven { url = "https://jitpack.io" }
     maven { url = 'http://oss.sonatype.org/content/repositories/public/' }
+    maven {
+        url 'https://repo.maven.apache.org/maven2'
+        name 'Maven Central'
+    }
 }
 
 configurations {
@@ -32,11 +35,11 @@ configurations {
 // Minecraft, MCP, Forge, and Java versions
 sourceCompatibility = targetCompatibility = "1.8"
 ext.mcversion = "1.12.2"
-ext.forgeversion = "14.23.4.2707"
+ext.forgeversion = "14.23.5.2860"
 
 // Mod version
-version = "3.0.9"
-boolean isBeta = false
+version = "3.0.10"
+boolean isBeta = true
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"
 
@@ -44,11 +47,6 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 // Build number
 String fullVersion = ext.mcversion + "-" + version
-if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
-    fullVersion += "+${System.getenv("TRAVIS_BUILD_NUMBER")}"
-} else {
-    fullVersion += "+UNOFFICIAL"
-}
 if (isBeta) {
     fullVersion += "-b"
 }
@@ -56,24 +54,17 @@ String jarVersion = fullVersion.replace("+", "-") // Github/Travis doesn't seem 
 
 // Configuration
 minecraft {
-	mappings channel: 'snapshot', version: '20180703-1.12'
+    mappings channel: 'snapshot', version: '20171003-1.12'
+    accessTransformer = file('src/main/resources/META-INF/musictriggers_at.cfg')
     runs {
         client {
             workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
         }
 
         server {
-
-            // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
         }
     }
@@ -85,6 +76,8 @@ dependencies {
     embed 'com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT'
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
     compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
 	minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
 }
 
@@ -100,7 +93,9 @@ jar {
     }
 }
 
-jar.finalizedBy('reobfJar') 
+jar.finalizedBy('reobfJar')
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 processResources {
     // This will ensure that this task is redone when the versions change.

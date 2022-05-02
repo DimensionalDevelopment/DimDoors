@@ -5,6 +5,8 @@ import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.world.RiftDecay;
+import org.dimdev.dimdoors.shared.world.limbo.LimboDecay;
 
 import static net.minecraftforge.common.config.Config.*;
 
@@ -54,6 +56,14 @@ public final class ModConfig {
         @Name("useEnderPearlsInCrafting")
         @LangKey("dimdoors.general.useEnderPearlsInCrafting")
         public boolean useEnderPearlsInCrafting = false;
+
+        @Name("enableRiftDecay")
+        @LangKey("dimdoors.world.enableDecay")
+        public boolean enableRiftDecay = true;
+
+        @Name("blockRiftDecayBlackList")
+        @LangKey("dimdoors.world.blockDecayBlackList")
+        public String[] blockRiftDecayBlackList = {};
     }
 
     public static class Pockets {
@@ -131,6 +141,14 @@ public final class ModConfig {
         @Name("hardcoreLimbo")
         @LangKey("dimdoors.limbo.hardcoreLimbo")
         public boolean hardcoreLimbo = false;
+
+        @Name("enableLimboDecay")
+        @LangKey("dimdoors.limbo.enableLimboDecay")
+        public boolean enableLimboDecay = true;
+
+        @Name("blockLimboDecayBlackList")
+        @LangKey("dimdoors.limbo.blockLimboDecayBlackList")
+        public String[] blockDecayLimboBlackList = {};
     }
 
     public static class Graphics {
@@ -159,6 +177,8 @@ public final class ModConfig {
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(DimDoors.MODID)) {
             ConfigManager.sync(event.getModID(), Type.INSTANCE); // Sync config values
+            LimboDecay.blocksImmuneToDecay = null; //reset immune blocks to update the blacklist
+            RiftDecay.blocksImmuneToDecay = null;
         }
     }
 }

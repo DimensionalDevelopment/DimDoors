@@ -23,6 +23,7 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.blocks.BlockFloatingRift;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
+import org.dimdev.dimdoors.shared.world.RiftDecay;
 
 import java.util.List;
 import java.util.Random;
@@ -88,6 +89,8 @@ import java.util.Random;
                 // TODO: growthSpeed and growthSize config options
                 size += 1F / (size + 1);
             }
+            //Make blocks around the rift have a random chance of being "unwoven" into world thread
+            if(!world.isRemote && ModConfig.general.enableRiftDecay) RiftDecay.applySpreadDecay(this.world,this.pos,this);
         }
     }
 
