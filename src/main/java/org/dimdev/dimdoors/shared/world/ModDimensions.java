@@ -45,6 +45,10 @@ public final class ModDimensions {
         return id == privateDim || id == publicDim || id == dungeonDim;
     }
 
+    public static boolean isDimDoorsDimension(int id) {
+        return id == privateDim || id == publicDim || id == dungeonDim || id == limboDim || id == dungeonMakingDim;
+    }
+
     public static boolean isDimDoorsPocketDimension(World world) {
         return world.provider instanceof WorldProviderPublicPocket
                || world.provider instanceof WorldProviderPersonalPocket

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import org.apache.commons.io.IOUtils;
@@ -77,6 +78,8 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
             try {
                 String jsonString = IOUtils.toString(file.toURI(), StandardCharsets.UTF_8);
                 templates.addAll(loadTemplatesFromJson(jsonString));
+            } catch (MalformedJsonException e) {
+                DimDoors.log.error("Malformed JSON file for schematic " + file.getName() + ": " + e);
             } catch (IOException e) {
                 DimDoors.log.error("Error reading file " + file.toURI() + ". The following exception occured: ", e);
             }
@@ -92,6 +95,8 @@ public class SchematicHandler { // TODO: parts of this should be moved to the or
                     Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new ByteArrayInputStream (schematicBytecode)));
                     PocketTemplate template = new PocketTemplate(SAVED_POCKETS_GROUP_NAME, file.getName(), null, null, null, null, schematicBytecode, -1, 0);
                     templates.add(template);
+                } catch (MalformedJsonException e) {
+                    DimDoors.log.error("Malformed JSON file for schematic " + file.getName() + ": " + e);
                 } catch (IOException e) {
                     DimDoors.log.error("Error reading schematic " + file.getName() + ": " + e);
                 }

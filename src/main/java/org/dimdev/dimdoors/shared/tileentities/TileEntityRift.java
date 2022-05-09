@@ -153,7 +153,12 @@ import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
 
     public void updateType() {
         if (!isRegistered()) return;
-        Rift rift = RiftRegistry.instance().getRift(new Location(world, pos));
+        Location loc = new Location(world, pos);
+        if(RiftRegistry.instance().isRiftAt(loc)) {
+            DimDoors.log.error("No rift at location "+loc+" to update!");
+            return;
+        }
+        Rift rift = RiftRegistry.instance().getRift(loc);
         rift.isFloating = isFloating();
         rift.markDirty();
     }

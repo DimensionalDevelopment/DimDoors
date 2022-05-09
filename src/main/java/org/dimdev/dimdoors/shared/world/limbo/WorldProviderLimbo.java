@@ -96,7 +96,7 @@ public class WorldProviderLimbo extends WorldProvider {
     public static Location getLimboSkySpawn(Entity entity) { // TODO: move this somewhere else
         int x = (int) entity.posX + MathHelper.clamp(entity.world.rand.nextInt(), 100, 100);
         int z = (int) entity.posZ + MathHelper.clamp(entity.world.rand.nextInt(), -100, 100);
-        return new Location(ModDimensions.LIMBO.getId(), x, 700, z);
+        return new Location(ModDimensions.getLimboDim(), x, 700, z);
     }
 
     @Override

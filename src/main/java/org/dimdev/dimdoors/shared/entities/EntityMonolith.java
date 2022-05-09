@@ -150,11 +150,11 @@ public class EntityMonolith extends EntityFlying implements IMob {
                 if (aggro >= MAX_AGGRO && !world.isRemote && ModConfig.monoliths.monolithTeleportation && !player.isCreative() && isDangerous()) {
                     aggro = 0;
                     Location destination;
-                    if(player.world.provider instanceof WorldProviderLimbo) {
+                    if(player.world.provider instanceof WorldProviderLimbo && world.provider instanceof WorldProviderLimbo) {
                         destination = WorldProviderLimbo.getLimboSkySpawn(player);
                         TeleportUtils.teleport(player, destination, 0, 0);
                     } else {
-                        //If teleport the player to limbo if the player is not already there
+                        //Teleport the player to limbo if the player is not already there
                         //This should fix the crash related to dangerousLimboMonoliths and monolithTeleportation
                         double x = player.posX + MathHelper.clamp(player.world.rand.nextDouble(), 100, 100);
                         double z = player.posZ + MathHelper.clamp(player.world.rand.nextDouble(), -100, 100);

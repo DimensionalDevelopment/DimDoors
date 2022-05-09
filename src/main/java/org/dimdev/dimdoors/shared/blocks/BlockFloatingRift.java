@@ -55,7 +55,7 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
 
     @Override
     public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess world, BlockPos pos) {
-        if (ModConfig.general.riftBoundingBoxInCreative) {
+        if (ModConfig.rifts.riftBoundingBoxInCreative) {
             EntityPlayer player = DimDoors.proxy.getLocalPlayer();
             if (player != null && player.isCreative()) {
                 return blockState.getBoundingBox(world, pos);

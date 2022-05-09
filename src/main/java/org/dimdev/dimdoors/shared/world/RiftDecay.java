@@ -5,6 +5,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -38,7 +39,7 @@ public class RiftDecay {
             temp.add(ModBlocks.GOLD_DOOR);
             temp.add(ModBlocks.QUARTZ_DOOR);
             temp.add(ModBlocks.GOLD_DIMENSIONAL_DOOR);
-            for(String blocked : ModConfig.general.blockRiftDecayBlackList) {
+            for(String blocked : ModConfig.rifts.blockRiftDecayBlackList) {
                 Block fromString = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blocked));
                 if(fromString!=null) temp.add(fromString);
                 else DimDoors.log.error("Invalid block name for rift decay blacklist! \""+blocked+"\"");
@@ -50,39 +51,29 @@ public class RiftDecay {
     }
 
     /**
-     * Checks the blocks orthogonally around the location of the floating rift.
+     * Checks the blocks around the location of the floating rift and applies the decay
      */
     public static void applySpreadDecay(World world, BlockPos pos, TileEntityFloatingRift rift) {
         //Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
         //full spread decay checks, which can also shift its performance impact on the game.
         float chance = rift.size/100f;
-        if (random.nextInt(MAX_DECAY_CHANCE) <= chance) {
-            //Apply decay to the block the rift occupies
+        if ((random.nextFloat()*MAX_DECAY_CHANCE) <= chance) {
+            BlockPos selected = getRandomPosInRange(pos,chance/2f);
+            //Apply decay to a random block around the rift and the rift itself just in case
             //World.getBlockId() implements bounds checking, so we don't have to worry about reaching out of the world
-            if(rift.size<10000f) {
-                decayBlock(world, pos);
-                //Once the rift grows beyond a certain point, it can begin breaking blocks around it as well
-                //This helps with the image of the rift growing more unstable as it is left to do as it pleases in the world
-                //Yeah, I know the random stuff shouldn't be hardcoded like this. I will make it a real formula soon
-                int rand = random.nextInt(6);
-                if (rand < 1) decayBlock(world, pos.up());
-                else if (rand < 2) decayBlock(world, pos.down());
-                else if (rand < 3) decayBlock(world, pos.north());
-                else if (rand < 4) decayBlock(world, pos.south());
-                else if (rand < 5) decayBlock(world, pos.west());
-                else decayBlock(world, pos.east());
-            } else {
-                //TODO - try and account for larger areas around the rift as it grows even larger without impacting performance
-                //This is just a copy & paste for now
-                int rand = random.nextInt(6);
-                if(rand<1) decayBlock(world, pos.up());
-                else if(rand<2) decayBlock(world, pos.down());
-                else if(rand<3) decayBlock(world, pos.north());
-                else if(rand<4) decayBlock(world, pos.south());
-                else if(rand<5) decayBlock(world, pos.west());
-                else decayBlock(world, pos.east());
-            }
+            decayBlock(world, selected);
+            decayBlock(world, pos);
         }
+    }
+
+    /**
+     * Gets a random block pos around the input.
+     */
+    private static BlockPos getRandomPosInRange(BlockPos center, float range) {
+        double x = (random.nextDouble()-0.5d)*range;
+        double y = (random.nextDouble()-0.5d)*range;
+        double z = (random.nextDouble()-0.5d)*range;
+        return center.add((x > 0) ? Math.ceil(x) : Math.floor(x),(y > 0) ? Math.ceil(y) : Math.floor(y),(z > 0) ? Math.ceil(z) : Math.floor(z));
     }
 
     /**
@@ -94,7 +85,7 @@ public class RiftDecay {
         if (canDecayBlock(block, world, pos)) {
             //change block to air and spawn a new world thread item
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
-            world.spawnEntity(new EntityItem(world,pos.getX(),pos.getY(),pos.getZ(),ModItems.WORLD_THREAD.getDefaultInstance()));
+            world.spawnEntity(new EntityItem(world,pos.getX(),pos.getY(),pos.getZ(),new ItemStack(ModItems.WORLD_THREAD)));
             return true;
         }
         return false;

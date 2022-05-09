@@ -47,7 +47,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
         MapStorage storage = world.getPerWorldStorage();
         PocketRegistry instance = (PocketRegistry) storage.getOrLoadData(PocketRegistry.class, DATA_NAME);
 
-        if (instance == null) {
+        if (instance == null || instance.pockets==null) {
             instance = new PocketRegistry();
             instance.initNewRegistry();
             storage.setData(DATA_NAME, instance);

@@ -141,16 +141,22 @@ dimdoors.general.closeDoorBehind=Close Door Behind
 dimdoors.general.closeDoorBehind.tooltip=When true, Dimensional Doors will automatically close when the player enters their portal.
 dimdoors.general.depthSpreadFactor=Depth Spread Factor
 dimdoors.general.depthSpreadFactor.tooltip=The scale of the dispersion when escaping from a pocket or limbo, in blocks/depth. It is important to remember that by default, limbo is treated as depth 50.
-dimdoors.general.riftCloseSpeed=Rift Close Speed
-dimdoors.general.riftCloseSpeed.tooltip=The speed at which rifts close when using the rift remover, in units of rift size per tick.
 dimdoors.general.teleportOffset=Teleport Offset
 dimdoors.general.teleportOffset.tooltip=Distance in blocks to teleport the player in front of the dimensional door.
-dimdoors.general.riftBoundingBoxInCreative=Rift Bounding Box in Creative
-dimdoors.general.riftBoundingBoxInCreative.tooltip=When true, shows the bounding boxes of floating rifts when the player is in creative.
-dimdoors.general.enableRiftDecay=Enable Rift Decay
-dimdoors.general.enableRiftDecay.tooltip=When true, floating rifts will eat nearby placed blocks, dropping world string
-dimdoors.general.blockRiftDecayBlackList=Block Decay Blacklist
-dimdoors.general.blockRiftDecayBlackList.tooltip=A list of blocks that will be blacklisted from rift decay
+
+
+dimdoors.rifts.riftCloseSpeed=Rift Close Speed
+dimdoors.rifts.riftCloseSpeed.tooltip=The speed at which rifts close when using the rift remover, in units of rift size per tick.
+dimdoors.rifts.riftBoundingBoxInCreative=Rift Bounding Box in Creative
+dimdoors.rifts.riftBoundingBoxInCreative.tooltip=When true, shows the bounding boxes of floating rifts when the player is in creative.
+dimdoors.rifts.enableRiftDecay=Enable Rift Decay
+dimdoors.rifts.enableRiftDecay.tooltip=When true, floating rifts will eat nearby placed blocks, dropping world string
+dimdoors.rifts.blockRiftDecayBlackList=Block Decay Blacklist
+dimdoors.rifts.blockRiftDecayBlackList.tooltip=A list of blocks that will be blacklisted from rift decay
+dimdoors.rifts.maxRiftSize=Maximum Rift Size
+dimdoors.rifts.maxRiftSize.tooltip=The maximum size a wild rift can achieve. Set to -1 to ignore. Note that rifts grow logarithmically
+dimdoors.rifts.enableWildRifts=Enable
+dimdoors.rifts.enableWildRifts.tooltip=Determines whether or not wild rifts are enabled
 
 
 dimdoors.pockets=Pocket Dimension Settings
