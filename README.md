@@ -20,7 +20,7 @@ You can report any bugs you find on [the issues page](https://github.com/Dimensi
  - Your forge version (different versions can experience bugs that are not available in others)
  - A list of other mods you're using, if the issue does not happen with only Dimensional Doors installed
  - A crash report, or preferably a full log (latest.log and debug.log). We have a paste site at https://paste.dimdev.org/
- 
+
 ### Suggestions
 For suggestions, please join [our discord server](https://discord.gg/f27hdrM), or [create a Github issue](https://github.com/DimensionalDevelopment/DimDoors/issues). Please include a detailed description with what you would like to see in the mod and explain how it can fit into the mods lore.
 
