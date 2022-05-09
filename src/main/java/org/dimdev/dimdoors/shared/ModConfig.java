@@ -14,6 +14,7 @@ import static net.minecraftforge.common.config.Config.*;
 public final class ModConfig {
 
     public static General general = new General();
+    public static Rifts rifts = new Rifts();
     public static Pockets pockets = new Pockets();
     public static World world = new World();
     public static Dungeons dungeons = new Dungeons();
@@ -40,6 +41,16 @@ public final class ModConfig {
         @RangeDouble(min = 0, max = 3)
         public double teleportOffset = 0.5;
 
+        @Name("depthSpreadFactor")
+        @LangKey("dimdoors.general.depthSpreadFactor")
+        public int depthSpreadFactor = 20;
+
+        @Name("useEnderPearlsInCrafting")
+        @LangKey("dimdoors.general.useEnderPearlsInCrafting")
+        public boolean useEnderPearlsInCrafting = false;
+    }
+
+    public static class Rifts {
         @Name("riftBoundingBoxInCreative")
         @LangKey("dimdoors.general.riftBoundingBoxInCreative")
         public boolean riftBoundingBoxInCreative;
@@ -48,15 +59,6 @@ public final class ModConfig {
         @LangKey("dimdoors.general.riftCloseSpeed")
         @RangeDouble(min = 0)
         public float riftCloseSpeed = 1f;
-
-        @Name("depthSpreadFactor")
-        @LangKey("dimdoors.general.depthSpreadFactor")
-        public int depthSpreadFactor = 20;
-
-        @Name("useEnderPearlsInCrafting")
-        @LangKey("dimdoors.general.useEnderPearlsInCrafting")
-        public boolean useEnderPearlsInCrafting = false;
-
         @Name("enableRiftDecay")
         @LangKey("dimdoors.world.enableDecay")
         public boolean enableRiftDecay = true;
@@ -64,6 +66,14 @@ public final class ModConfig {
         @Name("blockRiftDecayBlackList")
         @LangKey("dimdoors.world.blockDecayBlackList")
         public String[] blockRiftDecayBlackList = {};
+
+        @Name("maxRiftSize")
+        @LangKey("dimdoors.world.maxRiftSize")
+        public int maxRiftSize = -1;
+
+        @Name("enableRifts")
+        @LangKey("dimdoors.world.enableRifts")
+        public boolean enableRifts = true;
     }
 
     public static class Pockets {

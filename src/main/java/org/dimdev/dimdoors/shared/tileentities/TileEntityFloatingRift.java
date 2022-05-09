@@ -66,32 +66,34 @@ import java.util.Random;
             invalidate();
             return;
         }
-
-        if (updateTimer >= UPDATE_PERIOD) {
-            spawnEndermen();
-            updateTimer = 0;
-        } else if (updateTimer == UPDATE_PERIOD / 2) {
-            updateNearestRift();
-        }
-        updateTimer++;
-
-        // Check if this rift should render white closing particles and
-        // spread the closing effect to other rifts nearby.
-        if (closing) {
-            if (size > 0) {
-                size -= ModConfig.general.riftCloseSpeed;
-            } else {
-                world.setBlockToAir(pos);
+        if(ModConfig.rifts.enableRifts) {
+            if (updateTimer >= UPDATE_PERIOD) {
+                spawnEndermen();
+                updateTimer = 0;
+            } else if (updateTimer == UPDATE_PERIOD / 2) {
+                updateNearestRift();
             }
-        } else if (!stabilized) {
-            // Logarithmic growth
-            for (int n = 0; n < 10; n++) {
-                // TODO: growthSpeed and growthSize config options
-                size += 1F / (size + 1);
+            updateTimer++;
+
+            // Check if this rift should render white closing particles and
+            // spread the closing effect to other rifts nearby.
+            if (closing) {
+                if (size > 0) {
+                    size -= ModConfig.rifts.riftCloseSpeed;
+                } else {
+                    world.setBlockToAir(pos);
+                }
+            } else if (!stabilized) {
+                // Logarithmic growth
+                for (int n = 0; n < 10; n++) {
+                    // TODO: growthSpeed and growthSize config options
+                    size += 1F / (size + 1);
+                }
+                //Make blocks around the rift have a random chance of being "unwoven" into world thread
+                if (!world.isRemote && ModConfig.rifts.enableRiftDecay)
+                    RiftDecay.applySpreadDecay(this.world, this.pos, this);
             }
-            //Make blocks around the rift have a random chance of being "unwoven" into world thread
-            if(!world.isRemote && ModConfig.general.enableRiftDecay) RiftDecay.applySpreadDecay(this.world,this.pos,this);
-        }
+        } else world.setBlockToAir(pos);
     }
 
     private void spawnEndermen() {
@@ -222,7 +224,7 @@ import java.util.Random;
         if (curveId < numCurves && curveId >= 0) {
             curve = LSystem.curves.get(curveId);
         } else {
-            // Don't crash if the server sends an invaild curve ID
+            // Don't crash if the server sends an invalid curve ID
             DimDoors.log.error("Curve ID out of bounds (ID: " + curveId + ", number of curves: " + numCurves + ")");
             curve = LSystem.curves.get(0);
         }

@@ -38,8 +38,7 @@ ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.5.2860"
 
 // Mod version
-version = "3.0.10"
-boolean isBeta = true
+version = "3.0.11"
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"
 
@@ -47,9 +46,6 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 // Build number
 String fullVersion = ext.mcversion + "-" + version
-if (isBeta) {
-    fullVersion += "-b"
-}
 String jarVersion = fullVersion.replace("+", "-") // Github/Travis doesn't seem to support + in filenames
 
 // Configuration

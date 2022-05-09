@@ -287,19 +287,21 @@ public class RiftRegistry extends WorldSavedData {
     public void removeRift(Location location) {
         DimDoors.log.debug("Removing rift at " + location);
 
-        Rift rift = getRift(location);
+        if(isRiftAt(location)) {
+            Rift rift = getRift(location);
 
-        Set<DefaultEdge> incomingEdges = graph.incomingEdgesOf(rift);
-        Set<DefaultEdge> outgoingEdges = graph.outgoingEdgesOf(rift);
+            Set<DefaultEdge> incomingEdges = graph.incomingEdgesOf(rift);
+            Set<DefaultEdge> outgoingEdges = graph.outgoingEdgesOf(rift);
 
-        graph.removeVertex(rift);
-        locationMap.remove(location);
-        uuidMap.remove(rift.id);
-        markSubregistryDirty(rift.dim);
+            graph.removeVertex(rift);
+            locationMap.remove(location);
+            uuidMap.remove(rift.id);
+            markSubregistryDirty(rift.dim);
 
-        // Notify the adjacent vertices of the change
-        for (DefaultEdge edge : incomingEdges) graph.getEdgeSource(edge).targetGone(rift);
-        for (DefaultEdge edge : outgoingEdges) graph.getEdgeTarget(edge).sourceGone(rift);
+            // Notify the adjacent vertices of the change
+            for (DefaultEdge edge : incomingEdges) graph.getEdgeSource(edge).targetGone(rift);
+            for (DefaultEdge edge : outgoingEdges) graph.getEdgeTarget(edge).sourceGone(rift);
+        } else DimDoors.log.debug("No rift to remove at " + location);
     }
 
     private void addEdge(RegistryVertex from, RegistryVertex to) {
@@ -346,21 +348,25 @@ public class RiftRegistry extends WorldSavedData {
     public void removeLink(Location locationFrom, Location locationTo) {
         DimDoors.log.debug("Removing link " + locationFrom + " -> " + locationTo);
 
-        Rift from = getRift(locationFrom);
-        Rift to = getRift(locationTo);
+        if(isRiftAt(locationFrom) && isRiftAt(locationTo)) {
+            Rift from = getRift(locationFrom);
+            Rift to = getRift(locationTo);
 
-        removeEdge(from, to);
+            removeEdge(from, to);
 
-        // Notify the linked vertices of the change
-        from.targetGone(to);
-        to.sourceGone(from);
+            // Notify the linked vertices of the change
+            from.targetGone(to);
+            to.sourceGone(from);
+        } else DimDoors.log.error("Error removing link "+locationFrom + " -> " + locationTo+" as one of the rifts did not exist");
     }
 
     public void setProperties(Location location, LinkProperties properties) {
         DimDoors.log.debug("Setting DungeonLinkProperties for rift at " + location + " to " + properties);
-        Rift rift = getRift(location);
-        rift.properties = properties;
-        rift.markDirty();
+        if(isRiftAt(location)) {
+            Rift rift = getRift(location);
+            rift.properties = properties;
+            rift.markDirty();
+        } else DimDoors.log.debug("No rift at "+location +" to set properties for!");
     }
 
     public Set<Location> getPocketEntrances(Pocket pocket) {
@@ -382,16 +388,18 @@ public class RiftRegistry extends WorldSavedData {
 
     public void addPocketEntrance(Pocket pocket, Location location) {
         DimDoors.log.debug("Adding pocket entrance for pocket " + pocket.getId() + " in dimension " + pocket.getDim() + " at " + location);
-        PocketEntrancePointer pointer = pocketEntranceMap.get(pocket);
-        if (pointer == null) {
-            pointer = new PocketEntrancePointer(pocket.getDim(), pocket.getId());
-            pointer.dim = pocket.getDim();
-            graph.addVertex(pointer);
-            pocketEntranceMap.put(pocket, pointer);
-            uuidMap.put(pointer.id, pointer);
-        }
-        Rift rift = getRift(location);
-        addEdge(pointer, rift);
+        if(isRiftAt(location)) {
+            PocketEntrancePointer pointer = pocketEntranceMap.get(pocket);
+            if (pointer == null) {
+                pointer = new PocketEntrancePointer(pocket.getDim(), pocket.getId());
+                pointer.dim = pocket.getDim();
+                graph.addVertex(pointer);
+                pocketEntranceMap.put(pocket, pointer);
+                uuidMap.put(pointer.id, pointer);
+            }
+            Rift rift = getRift(location);
+            addEdge(pointer, rift);
+        } else DimDoors.log.error("Failed to add entrance for pocket " + pocket.getId() + " in dimension " + pocket.getDim() + " at " + location+"! You should report this!");
     }
 
     public Location getPrivatePocketEntrance(UUID playerUUID) {
@@ -452,18 +460,24 @@ public class RiftRegistry extends WorldSavedData {
     }
 
     public Set<Location> getTargets(Location location) {
-        return graph.outgoingEdgesOf(getRift(location)).stream()
-                .map(graph::getEdgeTarget)
-                .map(Rift.class::cast)
-                .map(rift -> rift.location)
-                .collect(Collectors.toSet());
+        if(isRiftAt(location)) {
+            return graph.outgoingEdgesOf(getRift(location)).stream()
+                    .map(graph::getEdgeTarget)
+                    .map(Rift.class::cast)
+                    .map(rift -> rift.location)
+                    .collect(Collectors.toSet());
+        } else DimDoors.log.error("No rift at location "+location+"! Cannot get targets!");
+        return new HashSet<>(new ArrayList<>());
     }
 
     public Set<Location> getSources(Location location) {
-        return graph.incomingEdgesOf(getRift(location)).stream()
-                .map(graph::getEdgeTarget)
-                .map(Rift.class::cast)
-                .map(rift -> rift.location)
-                .collect(Collectors.toSet());
+        if(isRiftAt(location)) {
+            return graph.incomingEdgesOf(getRift(location)).stream()
+                    .map(graph::getEdgeTarget)
+                    .map(Rift.class::cast)
+                    .map(rift -> rift.location)
+                    .collect(Collectors.toSet());
+        } else DimDoors.log.error("No rift at location "+location+"! Cannot get sources!");
+        return new HashSet<>(new ArrayList<>());
     }
 }
