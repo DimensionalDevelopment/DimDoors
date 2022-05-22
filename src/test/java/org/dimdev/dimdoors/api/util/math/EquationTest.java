@@ -49,5 +49,14 @@ public class EquationTest {
 
 		String equation = "20*4-13/5^1^3*max(1,2,3,4,5)";
 		assertEquals(equation, Equation.parse(equation).asString());
+
+		equation = "9/1?1:max(0,0)";
+		assertEquals(equation, Equation.parse(equation).asString());
+
+		equation = "someVariable";
+		assertEquals(equation, Equation.parse(equation).asString());
+
+		equation = "5*test?one:two";
+		assertEquals(equation, Equation.parse(equation).asString());
 	}
 }

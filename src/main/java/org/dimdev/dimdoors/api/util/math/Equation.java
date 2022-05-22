@@ -239,7 +239,7 @@ public interface Equation {
 
 							return Optional.of(newEquation(stringDoubleMap -> operation.getRight().apply(stringDoubleMap, equations), stringBuilder -> {
 								for (int j = 0; j < symbols.length; j++) {
-									equations[j].visit(stringBuilder).append(symbols[j]);
+									equations[j].visit(stringBuilder).append(symbols[symbols.length - 1 - j]);
 								}
 								equations[equations.length-1].visit(stringBuilder);
 								return stringBuilder;
