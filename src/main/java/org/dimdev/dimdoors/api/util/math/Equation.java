@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import net.minecraft.util.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -15,12 +17,18 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.util.math.MathHelper;
 
-@FunctionalInterface
+//@FunctionalInterface
 public interface Equation {
 	double FALSE = 0d;
 	double TRUE = 1d;
 
 	double apply(Map<String, Double> variableMap);
+
+	default String asString() {
+		return this.visit(new StringBuilder()).toString();
+	}
+
+	StringBuilder visit(StringBuilder builder);
 
 	default boolean asBoolean(Map<String, Double> variableMap) {
 		return toBoolean(this.apply(variableMap));
@@ -36,6 +44,20 @@ public interface Equation {
 
 	static boolean toBoolean(double value) {
 		return value != FALSE;
+	}
+
+	static Equation newEquation(Function<Map<String, Double>, Double> apply, UnaryOperator<StringBuilder> visit) {
+		return new Equation() {
+			@Override
+			public double apply(Map<String, Double> variableMap) {
+					return apply.apply(variableMap);
+			}
+
+			@Override
+			public StringBuilder visit(StringBuilder builder) {
+				return visit.apply(builder);
+			}
+		};
 	}
 
 	class StringEquationParser {
@@ -54,7 +76,7 @@ public interface Equation {
 			parseRules.add(toParse -> {
 				try {
 					Double result = Double.parseDouble(toParse);
-					return Optional.of(stringDoubleMap -> result);
+					return Optional.of(newEquation(stringDoubleMap -> result, builder -> builder.append(toParse)));
 				} catch (NumberFormatException e) {
 					return Optional.empty();
 				}
@@ -151,12 +173,12 @@ public interface Equation {
 			@Override
 			public Optional<Equation> tryParse(String toParse) {
 				if (!toParse.matches("[a-zA-Z_][a-zA-Z0-9_]*")) return Optional.empty();
-				return Optional.of(stringDoubleMap -> {
+				return Optional.of(newEquation(stringDoubleMap -> {
 					if (stringDoubleMap != null && stringDoubleMap.containsKey(toParse))
 						return stringDoubleMap.get(toParse);
 					LOGGER.error("Variable \"" + toParse + "\" was not passed to equation! Returning 0 as fallback.");
 					return 0d;
-				});
+				}, stringBuilder -> stringBuilder.append(toParse)));
 			}
 		}
 
@@ -215,7 +237,13 @@ public interface Equation {
 								equations[partIndices.size() - j - 1] = Equation.parse(toParse.substring(pair.getLeft(), pair.getRight()));
 							}
 
-							return Optional.of(stringDoubleMap -> operation.getRight().apply(stringDoubleMap, equations));
+							return Optional.of(newEquation(stringDoubleMap -> operation.getRight().apply(stringDoubleMap, equations), stringBuilder -> {
+								for (int j = 0; j < symbols.length; j++) {
+									equations[j].visit(stringBuilder).append(symbols[j]);
+								}
+								equations[equations.length-1].visit(stringBuilder);
+								return stringBuilder;
+							}));
 						}
 					}
 				}
@@ -241,7 +269,8 @@ public interface Equation {
 				if (!toParse.startsWith(this.functionString) || !toParse.endsWith(")")) return Optional.empty();
 				String[] arguments = toParse.substring(this.functionString.length(), toParse.length() - 1).split(",", -1);
 				if (arguments.length == 1 && arguments[0].equals("") && this.minArguments == 0) {
-					return Optional.of(stringDoubleMap -> this.function.apply(stringDoubleMap, new Equation[0]));
+					return Optional.of(newEquation(stringDoubleMap -> this.function.apply(stringDoubleMap, new Equation[0]),
+							stringBuilder -> stringBuilder.append(functionString).append(")")));
 				}
 				if (this.minArguments > arguments.length || (this.maxArguments < arguments.length && this.maxArguments != -1))
 					return Optional.empty();
@@ -249,7 +278,16 @@ public interface Equation {
 				for (int i = 0; i < arguments.length; i++) {
 					argumentEquations[i] = Equation.parse(arguments[i]);
 				}
-				return Optional.of(stringDoubleMap -> this.function.apply(stringDoubleMap, argumentEquations));
+				return Optional.of(newEquation(stringDoubleMap -> this.function.apply(stringDoubleMap, argumentEquations),
+						stringBuilder -> {
+							stringBuilder.append(functionString);
+							argumentEquations[0].visit(stringBuilder);
+							for (int i = 1; i < argumentEquations.length; i++) {
+								stringBuilder.append(",");
+								argumentEquations[i].visit(stringBuilder);
+							}
+							return stringBuilder.append(functionString);
+						}));
 			}
 		}
 
