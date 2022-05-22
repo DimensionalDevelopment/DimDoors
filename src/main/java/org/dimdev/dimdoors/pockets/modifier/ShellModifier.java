@@ -222,7 +222,8 @@ public class ShellModifier implements LazyModifier {
 				this.thicknessEquation = Equation.parse(thickness);
 			} catch (Equation.EquationParseException e) {
 				LOGGER.error("Could not parse layer thickness equation. Defaulting to 1");
-				this.thicknessEquation = variableMap -> 1d;
+				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+				this.thicknessEquation = Equation.newEquation(variableMap -> 1d, stringBuilder -> stringBuilder.append(thickness));
 			}
 
 			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow(false, LOGGER::error);

@@ -286,7 +286,7 @@ public interface Equation {
 								stringBuilder.append(",");
 								argumentEquations[i].visit(stringBuilder);
 							}
-							return stringBuilder.append(functionString);
+							return stringBuilder.append(")");
 						}));
 			}
 		}

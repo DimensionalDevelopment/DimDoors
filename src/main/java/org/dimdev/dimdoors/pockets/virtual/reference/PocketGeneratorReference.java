@@ -46,11 +46,13 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 			LOGGER.debug("Defaulting to default weight equation for {}", this);
 			LOGGER.debug("Exception Stacktrace", e);
 			try {
-				this.weightEquation = Equation.parse(DimensionalDoorsInitializer.getConfig().getPocketsConfig().defaultWeightEquation);
+				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+				this.weightEquation = Equation.newEquation(Equation.parse(DimensionalDoorsInitializer.getConfig().getPocketsConfig().defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
 			} catch (EquationParseException equationParseException) {
 				LOGGER.debug("Defaulting to default weight equation for {}", this);
 				LOGGER.debug("Exception Stacktrace", e);
-				this.weightEquation = stringDoubleMap -> DimensionalDoorsInitializer.getConfig().getPocketsConfig().fallbackWeight;
+				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) DimensionalDoorsInitializer.getConfig().getPocketsConfig().fallbackWeight, stringBuilder -> stringBuilder.append(weight));
 			}
 		}
 	}

@@ -75,10 +75,12 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		} catch (EquationParseException e) {
 			LOGGER.error("Could not parse weight equation \"" + weight + "\", defaulting to default weight equation \"" + defaultWeightEquation + "\"", e);
 			try {
-				this.weightEquation = Equation.parse(defaultWeightEquation);
+				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+				this.weightEquation = Equation.newEquation(Equation.parse(defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
 			} catch (EquationParseException equationParseException) {
 				LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
-				this.weightEquation = stringDoubleMap -> fallbackWeight;
+				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) fallbackWeight, stringBuilder -> stringBuilder.append(weight));
 			}
 		}
 	}
