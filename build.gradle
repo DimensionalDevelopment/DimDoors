@@ -154,6 +154,7 @@ dependencies {
 	modCompileOnly "curse.maven:worldedit-225608:3697298"
 	modCompileOnly "curse.maven:wthit-440979:3707010"
 
+	testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
 //	testImplementation("junit:junit:4.13.2")
 //	testImplementation("net.devtech:PotatoUnit:1.0.2")
 }
@@ -216,12 +217,12 @@ curseforge {
 	}
 }
 
-//test {
+test {
 //	workingDir = file("test")
 //
 //	systemProperty("fabric.dli.config", file(".gradle/loom-cache/launch.cfg").getAbsolutePath())
-//	//useJUnitPlatform()
-//}
+	useJUnitPlatform()
+}
 //
 //tasks.test.doFirst {test ->
 //	if (!test.workingDir.exists()) {
