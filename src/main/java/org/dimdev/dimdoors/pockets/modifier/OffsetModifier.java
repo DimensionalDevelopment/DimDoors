@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +12,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OffsetModifier implements Modifier {
+public class OffsetModifier extends AbstractModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "offset";
 
@@ -23,8 +24,7 @@ public class OffsetModifier implements Modifier {
 	private Equation offsetZEquation;
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt) {
-
+	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
 		try {
 			offsetX = nbt.contains("offset_x") ? nbt.getString("offset_x") : "0";
 			offsetXEquation = Equation.parse(offsetX);
@@ -40,8 +40,8 @@ public class OffsetModifier implements Modifier {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		Modifier.super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		if (!offsetX.equals("0")) nbt.putString("offset_x", offsetX);
 		if (!offsetY.equals("0")) nbt.putString("offset_y", offsetY);

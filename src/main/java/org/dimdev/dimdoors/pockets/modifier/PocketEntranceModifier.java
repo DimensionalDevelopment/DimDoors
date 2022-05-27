@@ -2,12 +2,13 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.resource.ResourceManager;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class PocketEntranceModifier implements Modifier {
+public class PocketEntranceModifier extends AbstractModifier {
 	public static final String KEY = "pocket_entrance";
 
 	private int id;
@@ -21,13 +22,13 @@ public class PocketEntranceModifier implements Modifier {
 	}
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt) {
+	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
 		return new PocketEntranceModifier(nbt.getInt("id"));
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		Modifier.super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putInt("id", id);
 

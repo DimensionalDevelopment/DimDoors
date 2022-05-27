@@ -10,6 +10,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.*;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +29,7 @@ import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class ShellModifier implements LazyModifier {
+public class ShellModifier extends AbstractLazyModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "shell";
 
@@ -36,8 +37,8 @@ public class ShellModifier implements LazyModifier {
 	private BlockBox boxToDrawAround;
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		LazyModifier.super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		NbtList layersNbt = new NbtList();
 		for (Layer layer : layers) {
@@ -124,7 +125,7 @@ public class ShellModifier implements LazyModifier {
 	}
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt) {
+	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
 		for (NbtElement layerNbt : nbt.getList("layers", NbtType.COMPOUND)) {
 			NbtCompound nbtCompound = (NbtCompound) layerNbt;
 			try {

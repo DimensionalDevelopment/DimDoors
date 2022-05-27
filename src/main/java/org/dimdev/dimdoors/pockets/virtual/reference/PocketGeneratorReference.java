@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
@@ -71,8 +72,13 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		if (nbt.contains("modifiers")) {
 			NbtList modifiersNbt = nbt.getList("modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
-				// TODO: deserialize with ResourceManager
-				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i)));
+				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i), manager));
+			}
+		}
+		if (nbt.contains("modifier_references")) {
+			NbtList modifiersNbt = nbt.getList("modifier_references", NbtType.STRING);
+			for (NbtElement nbtElement : modifiersNbt) {
+				modifierList.add(Modifier.deserialize(nbtElement, manager));
 			}
 		}
 

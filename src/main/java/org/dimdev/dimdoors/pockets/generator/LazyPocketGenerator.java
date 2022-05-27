@@ -4,6 +4,7 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
@@ -50,6 +51,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 			NbtList modifiersNbt = nbt.getList("lazy_modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
 				// TODO: skip deserialization of single Modifiers on Exception.
+				// TODO: Modifier via ResourceManager
 				lazyModifierList.add((LazyModifier) Modifier.deserialize(modifiersNbt.getCompound(i)));
 			}
 		}
@@ -62,7 +64,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 		super.toNbt(nbt);
 
 		if (lazyModifierList.size() > 0) {
-			List<NbtCompound> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new NbtCompound())).collect(Collectors.toList());
+			List<NbtElement> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new NbtCompound(), false)).collect(Collectors.toList());
 			NbtList lazyModifiersNbt = new NbtList();
 			lazyModifiersNbt.addAll(lazyModNbts);
 			nbt.put("lazy_modifiers", lazyModifiersNbt);

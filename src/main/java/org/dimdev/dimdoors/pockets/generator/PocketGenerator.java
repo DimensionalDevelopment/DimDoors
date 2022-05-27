@@ -96,6 +96,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		if (nbt.contains("modifiers")) {
 			NbtList modifiersNbt = nbt.getList("modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
+				// TODO: Modifier via ResourceLoader
 				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i)));
 			}
 		}

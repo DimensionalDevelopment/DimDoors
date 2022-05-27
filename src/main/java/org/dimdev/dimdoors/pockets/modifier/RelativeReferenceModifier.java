@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import java.util.Optional;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
 
 import com.google.common.base.MoreObjects;
@@ -12,21 +13,21 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class RelativeReferenceModifier implements Modifier {
+public class RelativeReferenceModifier extends AbstractModifier {
 	public static final String KEY = "relative";
 
 	private int point_a, point_b;
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt) {
+	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
 		point_a = nbt.getInt("point_a");
 		point_b = nbt.getInt("point_b");
 		return this;
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		Modifier.super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 		nbt.putInt("point_a", point_a);
 		nbt.putInt("point_b", point_b);
 		return nbt;

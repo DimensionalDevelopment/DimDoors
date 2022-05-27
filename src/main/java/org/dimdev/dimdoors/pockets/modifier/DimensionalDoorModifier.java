@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +33,7 @@ import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class DimensionalDoorModifier implements LazyCompatibleModifier {
+public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "door";
 
@@ -50,7 +51,7 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	private Equation zEquation;
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt) {
+	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
 		String facingString = nbt.getString("facing");
 		facing = Direction.byName(nbt.getString("facing"));
 		if (facing == null || facing.getAxis().isVertical()) {
@@ -64,10 +65,12 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 		}
 		doorType = (DimensionalDoorBlock) doorBlock;
 
+		// TODO: rift data via ResourceManager
 		if (nbt.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = nbt.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
+
 		else if (nbt.getType("rift_data") == NbtType.COMPOUND) doorData = nbt.getCompound("rift_data");
 
 		try {
@@ -85,8 +88,8 @@ public class DimensionalDoorModifier implements LazyCompatibleModifier {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		LazyCompatibleModifier.super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putString("facing", facing.asString());
 		nbt.putString("door_type", doorTypeString);

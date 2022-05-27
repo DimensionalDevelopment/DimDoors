@@ -32,6 +32,7 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 				return VirtualPocketList.deserialize((NbtList) nbt, manager);
 			case NbtType.COMPOUND: // It's a serialized VirtualPocket
 				return ImplementedVirtualPocket.deserialize((NbtCompound) nbt, manager);
+			// TODO: throw if manager is null
 			case NbtType.STRING: // It's a reference to a resource location
 				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
 			default:

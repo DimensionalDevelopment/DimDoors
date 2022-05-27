@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
@@ -32,10 +31,5 @@ public interface LazyCompatibleModifier extends Modifier {
 			chunkTaskQueue.add(task);
 			return chunkTaskQueue;
 		}));
-	}
-
-	@Override
-	default NbtCompound toNbt(NbtCompound nbt) {
-		return Modifier.super.toNbt(nbt);
 	}
 }

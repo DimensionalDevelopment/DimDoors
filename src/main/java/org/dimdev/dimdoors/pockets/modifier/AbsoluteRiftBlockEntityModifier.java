@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -20,7 +21,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
+public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "block_entity";
 
@@ -36,7 +37,8 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	}
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt) {
+	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
+		// TODO: rifts from resource
 		serializedRifts = nbt.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(NbtCompound.class::cast)
 				.filter(compound -> {
 					if (compound.contains("Pos")) {
@@ -54,8 +56,8 @@ public class AbsoluteRiftBlockEntityModifier implements LazyModifier {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		LazyModifier.super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowResource) {
+		super.toNbtInternal(nbt, allowResource);
 
 		NbtList riftsNbt;
 		if (rifts != null) {

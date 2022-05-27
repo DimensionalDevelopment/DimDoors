@@ -10,6 +10,7 @@ import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.NbtCompound;
 import com.google.common.base.MoreObjects;
+import net.minecraft.resource.ResourceManager;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -18,7 +19,7 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class RiftDataModifier implements Modifier {
+public class RiftDataModifier extends AbstractModifier {
 	public static final String KEY = "rift_data";
 
 	private NbtCompound doorData;
@@ -26,7 +27,8 @@ public class RiftDataModifier implements Modifier {
 	private List<Integer> ids;
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt) {
+	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
+		// TODO: RiftData via ResourceManager
 		if (nbt.getType("rift_data") == NbtType.STRING) {
 			doorDataReference = nbt.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
@@ -51,8 +53,8 @@ public class RiftDataModifier implements Modifier {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		Modifier.super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
 		else if (doorData != null) nbt.put("rift_data", doorData);
