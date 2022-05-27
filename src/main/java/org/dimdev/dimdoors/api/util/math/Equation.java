@@ -69,7 +69,8 @@ public interface Equation {
 			// Parenthesis
 			parseRules.add(toParse -> {
 				if (!toParse.startsWith("(") || !toParse.endsWith(")")) return Optional.empty();
-				return Optional.of(Equation.parse(toParse.substring(1, toParse.length() - 1)));
+				Equation equation = Equation.parse(toParse.substring(1, toParse.length() - 1));
+				return Optional.of(newEquation(equation::apply, stringBuilder -> equation.visit(stringBuilder.append("(")).append(")")));
 			});
 
 			// try to parse as Double
@@ -113,6 +114,8 @@ public interface Equation {
 					.add((variableMap, equations) -> equations[0].apply(variableMap) * equations[1].apply((variableMap)), "*")
 					.add((variableMap, equations) -> equations[0].apply(variableMap) / equations[1].apply((variableMap)), "/")
 					.add((variableMap, equations) -> equations[0].apply(variableMap) % equations[1].apply((variableMap)), "%"));
+
+			//TODO: ensure x^y is right associative
 
 			// x^y
 			parseRules.add(new SplitterParser()
