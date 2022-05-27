@@ -5,6 +5,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -49,8 +50,8 @@ public class ChunkGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromNbt(NbtCompound nbt) {
-		super.fromNbt(nbt);
+	public PocketGenerator fromNbt(NbtCompound nbt, ResourceManager manager) {
+		super.fromNbt(nbt, manager);
 
 		this.dimensionID = new Identifier(nbt.getString("dimension_id"));
 
@@ -62,8 +63,8 @@ public class ChunkGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putString("dimension_id", dimensionID.toString());
 		nbt.putIntArray("size", new int[]{this.size.getX(), this.size.getY(), this.size.getZ()});

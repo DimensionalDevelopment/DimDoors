@@ -92,7 +92,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	}
 
 	private BiFunction<NbtElement, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {
-		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an NbtCompound!")/*, manager*/);
+		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an NbtCompound!"), manager);
 	}
 
 	private PocketTemplate loadPocketTemplate(NbtCompound nbt, Path<String> id) {

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.resource.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
@@ -72,8 +73,8 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
-	public PocketGenerator fromNbt(NbtCompound nbt) {
-		super.fromNbt(nbt);
+	public PocketGenerator fromNbt(NbtCompound nbt, ResourceManager manager) {
+		super.fromNbt(nbt, manager);
 
 		this.id = nbt.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
 		this.templateID = new Identifier("dimdoors", id);
@@ -87,8 +88,8 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putString("id", this.id);
 		if (placementType != BlockPlacementType.SECTION_NO_UPDATE) nbt.putString("placement_type", placementType.getId());

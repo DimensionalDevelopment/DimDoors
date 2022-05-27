@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets.generator;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import org.apache.logging.log4j.LogManager;
@@ -50,8 +51,8 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromNbt(NbtCompound nbt) {
-		super.fromNbt(nbt);
+	public PocketGenerator fromNbt(NbtCompound nbt, ResourceManager manager) {
+		super.fromNbt(nbt, manager);
 
 		try {
 			width = nbt.getString("width");
@@ -69,8 +70,8 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putString("width", width);
 		nbt.putString("height", height);

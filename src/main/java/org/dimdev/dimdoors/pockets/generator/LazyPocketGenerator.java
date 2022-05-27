@@ -1,11 +1,14 @@
 package org.dimdev.dimdoors.pockets.generator;
 
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
 import net.minecraft.util.math.BlockPos;
@@ -44,15 +47,24 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromNbt(NbtCompound nbt) {
-		super.fromNbt(nbt);
+	public PocketGenerator fromNbt(NbtCompound nbt, ResourceManager manager) {
+		super.fromNbt(nbt, manager);
 
 		if (nbt.contains("lazy_modifiers")) {
 			NbtList modifiersNbt = nbt.getList("lazy_modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
 				// TODO: skip deserialization of single Modifiers on Exception.
 				// TODO: Modifier via ResourceManager
-				lazyModifierList.add((LazyModifier) Modifier.deserialize(modifiersNbt.getCompound(i)));
+				lazyModifierList.add((LazyModifier) Modifier.deserialize(modifiersNbt.getCompound(i), manager));
+			}
+		}
+
+		if (nbt.contains("lazy_modifier_references")) {
+			NbtList modifiersNbt = nbt.getList("lazy_modifier_references", NbtType.STRING);
+			for (NbtElement nbtElement : modifiersNbt) {
+				// TODO: skip deserialization of single Modifiers on Exception.
+				// TODO: Modifier via ResourceManager
+				lazyModifierList.add((LazyModifier) Modifier.deserialize(nbtElement, manager));
 			}
 		}
 
@@ -60,14 +72,19 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		if (lazyModifierList.size() > 0) {
-			List<NbtElement> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new NbtCompound(), false)).collect(Collectors.toList());
+			List<NbtElement> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new NbtCompound(), allowReference)).collect(Collectors.toList());
+
 			NbtList lazyModifiersNbt = new NbtList();
-			lazyModifiersNbt.addAll(lazyModNbts);
+			lazyModifiersNbt.addAll(lazyModNbts.stream().filter(NbtCompound.class::isInstance).collect(Collectors.toList()));
 			nbt.put("lazy_modifiers", lazyModifiersNbt);
+
+			NbtList lazyModifierReferences = new NbtList();
+			lazyModifiersNbt.addAll(lazyModNbts.stream().filter(NbtString.class::isInstance).collect(Collectors.toList()));
+			nbt.put("lazy_modifier_references", lazyModifierReferences);
 		}
 
 		return nbt;
