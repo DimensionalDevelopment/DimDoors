@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
 import com.google.common.collect.Maps;
+import net.minecraft.resource.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
@@ -16,10 +18,11 @@ import java.util.Map;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 
-public class ConditionalSelector implements ImplementedVirtualPocket {
+public class ConditionalSelector extends AbstractVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "conditional";
 
+	// TODO: redo this weird map part, Equations now have Equation.asString()
 	private LinkedHashMap<String, VirtualPocket> pocketMap = Maps.newLinkedHashMap();
 	private LinkedHashMap<String, Equation> equationMap = Maps.newLinkedHashMap();
 
@@ -35,7 +38,7 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 	}
 
 	@Override
-	public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+	public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
 		NbtList conditionalPockets = nbt.getList("pockets", 10);
 		for (int i = 0; i < conditionalPockets.size(); i++) {
 			NbtCompound pocket = conditionalPockets.getCompound(i);
@@ -43,7 +46,7 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 			if (pocketMap.containsKey(condition)) continue;
 			try {
 				equationMap.put(condition, Equation.parse(condition));
-				pocketMap.put(condition, VirtualPocket.deserialize(pocket.get("pocket")));
+				pocketMap.put(condition, VirtualPocket.deserialize(pocket.get("pocket"), manager));
 			} catch (Equation.EquationParseException e) {
 				LOGGER.error("Could not parse pocket condition equation!", e);
 			}
@@ -52,14 +55,14 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		ImplementedVirtualPocket.super.toNbt(nbt);
+	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		NbtList conditionalPockets = new NbtList();
 		pocketMap.forEach((condition, pocket) -> {
 			NbtCompound compound = new NbtCompound();
 			compound.putString("condition", condition);
-			compound.put("pocket", VirtualPocket.serialize(pocket));
+			compound.put("pocket", VirtualPocket.serialize(pocket, allowReference));
 			conditionalPockets.add(compound);
 		});
 		nbt.put("pockets", conditionalPockets);

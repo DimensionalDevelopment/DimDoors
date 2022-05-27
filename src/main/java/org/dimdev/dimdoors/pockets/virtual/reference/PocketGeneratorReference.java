@@ -9,6 +9,7 @@ import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
 import net.minecraft.server.world.ChunkHolder;
@@ -23,6 +24,7 @@ import org.dimdev.dimdoors.pockets.modifier.LazyCompatibleModifier;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
+import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.api.util.math.Equation;
@@ -30,7 +32,7 @@ import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public abstract class PocketGeneratorReference implements ImplementedVirtualPocket {
+public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	protected String weight;
@@ -58,7 +60,7 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	}
 
 	@Override
-	public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+	public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
 		if (nbt.contains("weight")) { // override referenced pockets weight
 			this.weight = nbt.getString("weight");
 			parseWeight();
@@ -69,6 +71,7 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 		if (nbt.contains("modifiers")) {
 			NbtList modifiersNbt = nbt.getList("modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
+				// TODO: deserialize with ResourceManager
 				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i)));
 			}
 		}
@@ -76,6 +79,7 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 		if (nbt.contains("addons", NbtType.LIST)) {
 			NbtList addonsNbt = nbt.getList("addons", 10);
 			for (int i = 0; i < addonsNbt.size(); i++) {
+				// TODO: something with the ResourceManager??? Probably need AddonBuilder now.
 				addons.add(addonsNbt.getCompound(i));
 			}
 		}
@@ -84,20 +88,21 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		ImplementedVirtualPocket.super.toNbt(nbt);
+	protected NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
 
 		if (weight != null) nbt.putString("weight", weight);
 
 		if (setupLoot != null) nbt.putBoolean("setup_loot", setupLoot);
 
 		NbtList modifiersNbt = new NbtList();
+		// TODO: deserialize with ResourceManager
 		for (Modifier modifier : modifierList) {
 			modifiersNbt.add(modifier.toNbt(new NbtCompound()));
 		}
 		if (modifiersNbt.size() > 0) nbt.put("modifiers", modifiersNbt);
 
 		NbtList addonsNbt = new NbtList();
+		// TODO: something with the ResourceManager??? Probably need AddonBuilder now.
 		addonsNbt.addAll(addons);
 		if (addonsNbt.size() > 0) nbt.put("addons", addonsNbt);
 

@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.api.util;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -12,8 +14,6 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.ExceptionHandlingCollector;
-import org.dimdev.dimdoors.api.util.Path;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +45,39 @@ public class ResourceUtil {
 			throw new RuntimeException();
 		}
 	};
+
+	public static <R extends ReferenceSerializable> R loadReferencedResource(ResourceManager manager, String startingPath, String resourceKey, Function<InputStream, R> reader) {
+		// last two is resource path, rest is flags
+		String[] splitResourceKey = resourceKey.split("\\|");
+
+		Multimap<String, String> flags = HashMultimap.create();
+		flags.put("resource_key", resourceKey);
+
+		for (int i = 0; i < splitResourceKey.length - 1; i++) {
+			String keyValuePair = splitResourceKey[i];
+			int splitIndex = keyValuePair.indexOf(':');
+			if (splitIndex == -1) {
+				// TODO: some logging about malformed flag
+				continue;
+			}
+			flags.put(keyValuePair.substring(0, splitIndex), keyValuePair.substring(splitIndex + 1));
+		}
+
+		String identifier = splitResourceKey[splitResourceKey.length - 1];
+		int identifierSplitIndex = identifier.indexOf(':');
+		R resource = loadResource(manager, new Identifier(identifier.substring(0, identifierSplitIndex), startingPath + identifier.substring(identifierSplitIndex + 1)), reader);
+		resource.processFlags(flags);
+		return resource;
+	}
+
+	public static <R> R loadResource(ResourceManager manager, Identifier resourceKey, Function<InputStream, R> reader) {
+		try {
+			return reader.apply(manager.getResource(resourceKey).getInputStream());
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	public static  <K, T, M extends Map<K, T>> CompletableFuture<M> loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, Identifier, K> keyProvider) {
 		Collection<Identifier> ids = manager.findResources(startingPath, str -> str.endsWith(extension));

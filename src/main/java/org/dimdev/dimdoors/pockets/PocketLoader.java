@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.pockets;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -42,9 +43,9 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 
 		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/json", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.composeIdentity(), ResourceUtil.PATH_KEY_PROVIDER).join();
 
-		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(this::loadPocketGenerator), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(this::loadVirtualPocket), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(this::loadVirtualPocket), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(pocketGeneratorLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER);
 
 
@@ -86,12 +87,12 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		return NbtUtil.asNbtCompound(getDataNbt(id), "Could not convert NbtElement \"" + id + "\" to NbtCompound!");
 	}
 
-	private VirtualPocket loadVirtualPocket(NbtElement nbt, Path<String> ignore) {
-		return VirtualPocket.deserialize(nbt);
+	private BiFunction<NbtElement, Path<String>, VirtualPocket> virtualPocketLoader(ResourceManager manager) {
+		return (nbt, ignore) -> VirtualPocket.deserialize(nbt, manager);
 	}
 
-	private PocketGenerator loadPocketGenerator(NbtElement nbt, Path<String> ignore) {
-		return PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an NbtCompound!"));
+	private BiFunction<NbtElement, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {
+		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an NbtCompound!")/*, manager*/);
 	}
 
 	private PocketTemplate loadPocketTemplate(NbtCompound nbt, Path<String> id) {

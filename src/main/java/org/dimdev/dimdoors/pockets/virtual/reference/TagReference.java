@@ -5,6 +5,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import com.google.common.base.MoreObjects;
+import net.minecraft.resource.ResourceManager;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
@@ -14,7 +15,7 @@ import org.dimdev.dimdoors.api.util.WeightedList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TagReference extends PocketGeneratorReference{
+public class TagReference extends PocketGeneratorReference {
 	public static final String KEY = "tag";
 
 	private final List<String> required = new ArrayList<>();
@@ -24,8 +25,8 @@ public class TagReference extends PocketGeneratorReference{
 	private WeightedList<PocketGenerator, PocketGenerationContext> pockets;
 
 	@Override
-	public ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
-		super.fromNbt(nbt);
+	public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
+		super.fromNbt(nbt, manager);
 
 		if (nbt.contains("required")) {
 			NbtList listNbt = nbt.getList("required", NbtType.STRING);
@@ -47,8 +48,8 @@ public class TagReference extends PocketGeneratorReference{
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
-		super.toNbt(nbt);
+	protected NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
 		if (required.size() > 0) {
 			NbtList listNbt = new NbtList();

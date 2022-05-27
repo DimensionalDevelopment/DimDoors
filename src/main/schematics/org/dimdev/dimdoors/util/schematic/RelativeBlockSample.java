@@ -165,6 +165,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				}
 				if(section.getBlockState(x, y, z).isAir()) {
 					BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
+					// FIXME: newState can be null in some circumstances
 					if (!newState.isAir()) {
 						section.setBlockState(x, y, z, newState, false);
 						if (placementType.shouldMarkForUpdate()) serverChunkManager.markForUpdate(blockPos);
