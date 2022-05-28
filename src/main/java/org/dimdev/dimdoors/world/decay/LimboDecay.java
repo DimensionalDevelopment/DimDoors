@@ -36,8 +36,6 @@ import net.minecraft.world.World;
 public final class LimboDecay {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<RegistryKey<World>, Set<DecayTask>> DECAY_QUEUE = new HashMap<>();
-	// TODO: config
-	private static final int DECAY_DELAY = 40;
 
 	private static final Random RANDOM = new Random();
 
@@ -82,7 +80,7 @@ public final class LimboDecay {
 				ExtendedServerPlayNetworkHandler.get(player.networkHandler).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, 5));
 			});
 			world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), ModSoundEvents.TEARING, SoundCategory.BLOCKS, 0.5f, 1f);
-			queueDecay(world, pos, origin, pattern, DECAY_DELAY);
+			queueDecay(world, pos, origin, pattern, DimensionalDoorsInitializer.getConfig().getLimboConfig().limboDecay);
 			break;
 		}
 	}
