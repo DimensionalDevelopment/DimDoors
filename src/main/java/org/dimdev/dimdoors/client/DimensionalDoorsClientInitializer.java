@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.client;
 
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -12,7 +13,6 @@ import org.dimdev.dimdoors.particle.ModParticleTypes;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClientInitializer implements ClientModInitializer {
@@ -23,8 +23,8 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
         ModEntityTypes.initClient();
 		ModFluids.initClient();
 //        ModBlockEntityTypes.initClient();
-		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.ENTRANCE_RIFT, ctx -> new EntranceRiftBlockEntityRenderer());
-		BlockEntityRendererRegistry.INSTANCE.register(ModBlockEntityTypes.DETACHED_RIFT, ctx -> new DetachedRiftBlockEntityRenderer());
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT, ctx -> new EntranceRiftBlockEntityRenderer());
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT, ctx -> new DetachedRiftBlockEntityRenderer());
         ModBlocks.initClient();
 		ModEntityModelLayers.initClient();
 		ModParticleTypes.initClient();

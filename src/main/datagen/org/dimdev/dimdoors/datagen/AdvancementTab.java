@@ -1,41 +1,33 @@
 package org.dimdev.dimdoors.datagen;
 
-import java.util.function.Consumer;
-
-import net.minecraft.tag.TagKey;
-import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
-import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
-import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.world.ModDimensions;
-
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementFrame;
 import net.minecraft.advancement.criterion.ChangedDimensionCriterion;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
-import net.minecraft.advancement.criterion.ItemUsedOnBlockCriterion;
 import net.minecraft.advancement.criterion.PlacedBlockCriterion;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
-import net.minecraft.predicate.BlockPredicate;
-import net.minecraft.predicate.FluidPredicate;
-import net.minecraft.predicate.LightPredicate;
-import net.minecraft.predicate.NbtPredicate;
-import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.predicate.entity.LocationPredicate;
-import net.minecraft.predicate.item.EnchantmentPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.tag.TagKey;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
+import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
+import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.world.ModDimensions;
+
+import java.util.function.Consumer;
 
 public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey) {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
-				new TranslatableText("dimdoors.advancement." + titleKey),
-				new TranslatableText("dimdoors.advancement." + titleKey + ".desc"),
+				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey)),
+				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey + ".desc")),
 				new Identifier("dimdoors:textures/block/unravelled_fabric.png"),
 				AdvancementFrame.TASK,
 				true,
@@ -46,8 +38,8 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey, AdvancementFrame advancementFrame) {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
-				new TranslatableText("dimdoors.advancement." + titleKey),
-				new TranslatableText("dimdoors.advancement." + titleKey + ".desc"),
+				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey)),
+				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey + ".desc")),
 				new Identifier("dimdoors:textures/block/unravelled_fabric.png"),
 				advancementFrame,
 				true,
@@ -97,37 +89,37 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.parent(holeInTheSky)
 				.criterion("enter_dungeon", ChangedDimensionCriterion.Conditions.to(ModDimensions.DUNGEON))
 				.build(advancementConsumer, "dimdoors:dimdoors/door_to_adventure");
-		Advancement.Builder.create()
-				.display(makeDisplay(Items.CHEST, "lost_and_found"))
-				.parent(doorToAdventure)
-				.criterion("open_chest", new ItemUsedOnBlockCriterion.Conditions
-						(
-								EntityPredicate.Extended.EMPTY,
-								new LocationPredicate(
-										NumberRange.FloatRange.ANY,
-										NumberRange.FloatRange.ANY,
-										NumberRange.FloatRange.ANY,
-										null,
-										null,
-										ModDimensions.DUNGEON,
-										null,
-										LightPredicate.ANY,
-										BlockPredicate.Builder.create().blocks(Blocks.CHEST, Blocks.TRAPPED_CHEST).build(),
-								FluidPredicate.ANY
-								),
-								new ItemPredicate(
-										null,
-										null,
-										NumberRange.IntRange.ANY,
-										NumberRange.IntRange.ANY,
-										EnchantmentPredicate.ARRAY_OF_ANY,
-										EnchantmentPredicate.ARRAY_OF_ANY,
-										null,
-										NbtPredicate.ANY
-								)
-						)
-				)
-				.build(advancementConsumer, "dimdoors:dimdoors/lost_and_found");
+//		Advancement.Builder.create() TODO: Figure out what the heck ItemUsedOnBlockCriterion
+//				.display(makeDisplay(Items.CHEST, "lost_and_found"))
+//				.parent(doorToAdventure)
+//				.criterion("open_chest", new ItemUsedOnBlockCriterion.Conditions
+//						(
+//								EntityPredicate.Extended.EMPTY,
+//								new LocationPredicate(
+//										NumberRange.FloatRange.ANY,
+//										NumberRange.FloatRange.ANY,
+//										NumberRange.FloatRange.ANY,
+//										null,
+//										null,
+//										ModDimensions.DUNGEON,
+//										null,
+//										LightPredicate.ANY,
+//										BlockPredicate.Builder.create().blocks(Blocks.CHEST, Blocks.TRAPPED_CHEST).build(),
+//								FluidPredicate.ANY
+//								),
+//								new ItemPredicate(
+//										null,
+//										null,
+//										NumberRange.IntRange.ANY,
+//										NumberRange.IntRange.ANY,
+//										EnchantmentPredicate.ARRAY_OF_ANY,
+//										EnchantmentPredicate.ARRAY_OF_ANY,
+//										null,
+//										NbtPredicate.ANY
+//								)
+//						)
+//				)
+//				.build(advancementConsumer, "dimdoors:dimdoors/lost_and_found");
 		Advancement.Builder.create()
 				.display(makeDisplay(ModItems.BLACK_FABRIC, "darklight"))
 				.parent(doorToAdventure)

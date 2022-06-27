@@ -8,23 +8,21 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.SimpleTree;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 
 import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class PocketTemplateArgumentType implements ArgumentType<PocketTemplate> {
-	public static final DynamicCommandExceptionType UNKNOWN_POCKET_TEMPLATE = new DynamicCommandExceptionType(s -> new TranslatableText("commands.pocket.unknownPocketTemplate", s));
+	public static final DynamicCommandExceptionType UNKNOWN_POCKET_TEMPLATE = new DynamicCommandExceptionType(s -> MutableText.of(new TranslatableTextContent("commands.pocket.unknownPocketTemplate",s)));
 
 	@Override
 	public PocketTemplate parse(StringReader reader) throws CommandSyntaxException {

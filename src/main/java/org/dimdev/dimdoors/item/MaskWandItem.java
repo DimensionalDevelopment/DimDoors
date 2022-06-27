@@ -1,23 +1,22 @@
 package org.dimdev.dimdoors.item;
 
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.api.Environment;
+import java.util.List;
 
 import static net.fabricmc.api.EnvType.CLIENT;
 
@@ -51,7 +50,7 @@ import static net.fabricmc.api.EnvType.CLIENT;
 	@Environment(CLIENT)
 	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
 		if (I18n.hasTranslation(this.getTranslationKey() + ".info")) {
-			list.add(new TranslatableText(this.getTranslationKey() + ".info"));
+			list.add(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".info")));
 		}
 	}
 }

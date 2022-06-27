@@ -1,20 +1,7 @@
 package org.dimdev.dimdoors.item;
 
-import java.util.List;
-
-import net.fabricmc.api.ModInitializer;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.client.ToolTipHelper;
-import org.dimdev.dimdoors.rift.targets.RiftReference;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.RotatedLocation;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.jetbrains.annotations.NotNull;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -24,17 +11,27 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.RotatedLocation;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.client.ToolTipHelper;
+import org.dimdev.dimdoors.rift.targets.RiftReference;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.jetbrains.annotations.NotNull;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.util.List;
 
 public class RiftSignatureItem extends Item {
 	public static final String ID = "rift_signature";
@@ -71,7 +68,7 @@ public class RiftSignatureItem extends Item {
 		}
 
 		if(ModDimensions.isPrivatePocketDimension(world) && !DimensionalDoorsInitializer.getConfig().getPocketsConfig().canUseRiftSignatureInPrivatePockets) {
-			player.sendMessage(new TranslatableText("tools.signature_blocked").formatted(Formatting.BLACK), true);
+			player.sendMessage(MutableText.of(new TranslatableTextContent("tools.signature_blocked")).formatted(Formatting.BLACK), true);
 			return ActionResult.FAIL;
 		}
 
@@ -80,13 +77,13 @@ public class RiftSignatureItem extends Item {
 		if (target == null) {
 			// The link signature has not been used. Store its current target as the first location.
 			setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.getYaw(), 0));
-			player.sendMessage(new TranslatableText(this.getTranslationKey() + ".stored"), true);
+			player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".stored")), true);
 			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
 		} else {
 			// Place a rift at the saved point
 			if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
 				if (!target.getBlockState().getBlock().canMobSpawnInside()) {
-					player.sendMessage(new TranslatableText("tools.target_became_block"), true);
+					player.sendMessage(MutableText.of(new TranslatableTextContent("tools.target_became_block")), true);
 					clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
 					return ActionResult.FAIL;
 				}
@@ -107,7 +104,7 @@ public class RiftSignatureItem extends Item {
 			}); // TODO: calculate damage based on position?
 
 			clearSource(stack);
-			player.sendMessage(new TranslatableText(this.getTranslationKey() + ".created"), true);
+			player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".created")), true);
 			// null = send sound to the player too, we have to do this because this code is not run client-side
 			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
 		}
@@ -139,8 +136,8 @@ public class RiftSignatureItem extends Item {
 	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
 		RotatedLocation transform = getSource(itemStack);
 		if (transform != null) {
-			list.add(new TranslatableText(this.getTranslationKey() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().getValue()));
-			list.add(new TranslatableText(this.getTranslationKey() + ".bound.info1", transform.getWorldId().getValue()));
+			list.add(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().getValue())));
+			list.add(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".bound.info1", transform.getWorldId().getValue())));
 		} else {
 			ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".unbound.info");
 		}

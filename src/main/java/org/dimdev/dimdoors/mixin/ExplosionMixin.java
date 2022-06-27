@@ -24,7 +24,7 @@ public class ExplosionMixin {
 	@Mutable @Shadow
 	private List<BlockPos> affectedBlocks;
 
-	@Inject(method = "affectWorld", at = @At(value = "INVOKE", target = "Ljava/util/Collections;shuffle(Ljava/util/List;Ljava/util/Random;)V", ordinal = 0, shift = At.Shift.AFTER))
+	@Inject(method = "affectWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;shuffle(Lit/unimi/dsi/fastutil/objects/ObjectArrayList;Lnet/minecraft/util/math/random/Random;)V", ordinal = 0, shift = At.Shift.AFTER))
 	private void handleExplosionConvertibleBlocks(boolean b1, CallbackInfo ci) {
 		this.affectedBlocks = this.affectedBlocks.stream().filter(blockPos -> {
 			BlockState state = this.world.getBlockState(blockPos);

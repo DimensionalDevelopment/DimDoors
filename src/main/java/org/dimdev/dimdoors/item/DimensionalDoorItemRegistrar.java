@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.DoorBlock;
@@ -12,14 +11,14 @@ import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.*;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.registry.Registry;
-
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -143,12 +142,12 @@ public class DimensionalDoorItemRegistrar {
 
 		@Override
 		public Text getName(ItemStack stack) {
-			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
+			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
 		}
 
 		@Override
 		public Text getName() {
-			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
+			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
 		}
 
 		@Override
@@ -173,12 +172,12 @@ public class DimensionalDoorItemRegistrar {
 
 		@Override
 		public Text getName(ItemStack stack) {
-			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
+			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
 		}
 
 		@Override
 		public Text getName() {
-			return new TranslatableText("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
+			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
 		}
 
 		@Override

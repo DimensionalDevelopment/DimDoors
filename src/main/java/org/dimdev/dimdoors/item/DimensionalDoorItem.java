@@ -1,16 +1,19 @@
 package org.dimdev.dimdoors.item;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.IntStream;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.BlockItem;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
@@ -19,15 +22,8 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class DimensionalDoorItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;
@@ -67,7 +63,7 @@ public class DimensionalDoorItem extends BlockItem {
 			// without sending custom packets.
 
 			if (context.getWorld().isClient) {
-				context.getPlayer().sendMessage(new TranslatableText("rifts.entrances.rift_too_close"), true);
+				context.getPlayer().sendMessage(MutableText.of(new TranslatableTextContent("rifts.entrances.rift_too_close")), true);
 				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 			}
 

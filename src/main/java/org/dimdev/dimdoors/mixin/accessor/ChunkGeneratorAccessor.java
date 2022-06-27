@@ -1,12 +1,8 @@
 package org.dimdev.dimdoors.mixin.accessor;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(ChunkGenerator.class)
 public interface ChunkGeneratorAccessor {
-	@Accessor("field_37261")
-	long getWorldSeed();
 }

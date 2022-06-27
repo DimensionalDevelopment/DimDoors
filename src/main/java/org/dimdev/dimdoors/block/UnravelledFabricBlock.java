@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.block;
 
-import java.util.Random;
-
+import net.minecraft.util.math.random.Random;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.decay.LimboDecay;
 

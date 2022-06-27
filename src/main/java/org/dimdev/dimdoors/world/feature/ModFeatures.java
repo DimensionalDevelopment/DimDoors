@@ -1,39 +1,28 @@
 package org.dimdev.dimdoors.world.feature;
 
-import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.structure.rule.BlockMatchRuleTest;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryEntryList;
 import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.YOffset;
+import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.placementmodifier.*;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.*;
 
-import net.minecraft.fluid.Fluids;
-import net.minecraft.structure.rule.BlockMatchRuleTest;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.Category;
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.ConfiguredFeatures;
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.PlacedFeatures;
-import net.minecraft.world.gen.feature.SpringFeatureConfig;
-
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-
 import java.util.List;
 
-import static net.minecraft.world.gen.feature.Feature.*;
-import static net.minecraft.world.gen.feature.OrePlacedFeatures.modifiersWithCount;
+import static net.minecraft.world.gen.feature.Feature.ORE;
+import static net.minecraft.world.gen.feature.Feature.SPRING_FEATURE;
 
 public final class ModFeatures {
 	public static final SchematicGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
@@ -74,20 +63,14 @@ public final class ModFeatures {
 		public static final RegistryEntry<PlacedFeature> ETERNAL_FLUID_SPRING_PLACED_FEATURE = PlacedFeatures.register("dimdoors:eternal_fluid_spring", Configured.ETERNAL_FLUID_SPRING_CONFIGURED_FEATURE, List.of(CountPlacementModifier.of(25), SquarePlacementModifier.of(), HeightRangePlacementModifier.uniform(YOffset.getBottom(), YOffset.fixed(192)), BiomePlacementModifier.of()));
 
 		public static void init() {
-			BiomeModifications.addFeature(ctx -> {
-						Biome biome = ctx.getBiome();
-						return biome.getCategory() != Category.NONE &&
-								biome.getCategory() != Category.THEEND &&
-								biome.getCategory() != Category.DESERT &&
-								biome.getCategory() != Category.NETHER &&
-								biome.getCategory() != Category.OCEAN &&
-								!(ctx.getBiomeKey().equals(BiomeKeys.END_HIGHLANDS) || ctx.getBiomeKey().equals(BiomeKeys.END_MIDLANDS) || ctx.getBiomeKey().equals(BiomeKeys.SMALL_END_ISLANDS));
-						},
+			BiomeModifications.addFeature(ctx -> ctx.hasTag(ConventionalBiomeTags.IN_OVERWORLD) &&
+					!ctx.hasTag(ConventionalBiomeTags.DESERT) &&
+					!ctx.hasTag(ConventionalBiomeTags.OCEAN),
 					GenerationStep.Feature.SURFACE_STRUCTURES,
 					TWO_PILLARS_PLACED_FEATURE.getKey().get()
 			);
 			BiomeModifications.addFeature(
-					ctx -> ctx.getBiome().getCategory() == Category.DESERT,
+					ctx -> ctx.hasTag(ConventionalBiomeTags.DESERT),
 					GenerationStep.Feature.SURFACE_STRUCTURES,
 					SANDSTONE_PILLARS_PLACED_FEATURE.getKey().get()
 			);

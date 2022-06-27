@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.entity;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.util.math.Box;
@@ -47,7 +47,7 @@ public class MonolithEntity extends MobEntity {
 	private static final TrackedData<Float> PITCH = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.FLOAT);
     private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
     @Environment(EnvType.CLIENT)
-    private static final Random clientRandom = new Random();
+    private static final Random clientRandom = Random.create();
 
     private int soundTime = 0;
     private final int aggroCap;

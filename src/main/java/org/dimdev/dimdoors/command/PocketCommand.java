@@ -3,6 +3,11 @@ package org.dimdev.dimdoors.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
@@ -10,12 +15,6 @@ import org.dimdev.dimdoors.command.arguments.EnumArgumentType;
 import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
-
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TranslatableText;
-
-import net.fabricmc.loader.api.FabricLoader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,10 +65,10 @@ public class PocketCommand {
 													UUID playerUUID = commandSource.getPlayer().getUuid();
 													if (logSetting.containsKey(playerUUID)) {
 														logSetting.remove(playerUUID);
-														commandSource.sendFeedback(new TranslatableText("commands.pocket.log.creation.off"), false);
+														commandSource.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.log.creation.off")), false);
 													} else {
 														logSetting.put(playerUUID, commandSource);
-														commandSource.sendFeedback(new TranslatableText("commands.pocket.log.creation.on"), false);
+														commandSource.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.log.creation.on")), false);
 													}
 													return Command.SINGLE_SUCCESS;
 												})
@@ -96,7 +95,7 @@ public class PocketCommand {
 		);
 
 		String id = template.getId().toString();
-		source.getCommandSource().sendFeedback(new TranslatableText("commands.pocket.placedSchem", id, "" + source.getBlockPos().getX() + ", " + source.getBlockPos().getY() + ", " + source.getBlockPos().getZ(), source.world.getRegistryKey().getValue().toString()), true);
+		source.getCommandSource().sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.placedSchem", id, "" + source.getBlockPos().getX() + ", " + source.getBlockPos().getY() + ", " + source.getBlockPos().getZ(), source.world.getRegistryKey().getValue().toString())), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

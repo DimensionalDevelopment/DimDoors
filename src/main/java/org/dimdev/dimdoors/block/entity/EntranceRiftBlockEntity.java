@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.block.entity;
 import java.util.Optional;
 
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -26,7 +28,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
@@ -69,7 +70,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 					return innerTeleport(entity);
 				}
 
-				EntityUtils.chat(entity, new TranslatableText("rifts.isLocked"));
+				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("rifts.isLocked")));
 			}
 			return false;
 		}

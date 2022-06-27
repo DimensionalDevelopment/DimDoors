@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.entity.limbo;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.MessageType;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.Util;
 
 public enum LimboExitReason implements StringIdentifiable {
 	ETERNAL_FLUID,
@@ -18,6 +18,6 @@ public enum LimboExitReason implements StringIdentifiable {
 
 	public void broadcast(PlayerEntity player) {
 		//noinspection ConstantConditions
-		player.getServer().getPlayerManager().broadcast(new TranslatableText(asString(), player.getGameProfile().getName()), MessageType.SYSTEM, Util.NIL_UUID);
+		player.getServer().getPlayerManager().broadcast(MutableText.of(new TranslatableTextContent(asString(), player.getGameProfile().getName())), MessageType.SYSTEM);
 	}
 }

@@ -1,35 +1,35 @@
 package org.dimdev.dimdoors.client.wthit;
 
-import java.util.List;
-import java.util.Objects;
-
-import mcp.mobius.waila.api.IComponentProvider;
-import mcp.mobius.waila.api.IDataAccessor;
+import mcp.mobius.waila.api.IBlockAccessor;
+import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
+import mcp.mobius.waila.api.ITooltip;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.util.Identifier;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
+import java.util.Objects;
 
 // FIXME: is not actually client sided
-public enum EntranceRiftProvider implements IComponentProvider {
+public enum EntranceRiftProvider implements IBlockComponentProvider {
 	INSTANCE;
 
 	private static final Identifier ID = new Identifier("dimdoors", "entrance_rift_provider");
 
 	@Override
-	public void appendBody(List<Text> tooltip, IDataAccessor accessor, IPluginConfig config) {
-		if (!config.get(ID, true)) {
+	public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {
+		if (!config.getBoolean(ID)) {
 			return;
 		}
 		EntranceRiftBlockEntity blockEntity = ((EntranceRiftBlockEntity) accessor.getBlockEntity());
 		VirtualTarget destination = Objects.requireNonNull(blockEntity).getDestination();
 		if (destination != null) {
-			TranslatableText tKey = new TranslatableText(destination.getType().getTranslationKey());
-			Text main = new TranslatableText("dimdoors.destination").append(": ").append(tKey);
-			tooltip.add(main);
+			Text tKey = MutableText.of(new TranslatableTextContent(destination.getType().getTranslationKey()));
+			Text main = MutableText.of(new TranslatableTextContent("dimdoors.destination")).append(": ").append(tKey);
+			tooltip.addLine(main);
 		}
 	}
 }

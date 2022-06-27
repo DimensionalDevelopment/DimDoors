@@ -1,33 +1,31 @@
 package org.dimdev.dimdoors.world.decay;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.resource.ResourceManager;
-
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
@@ -37,7 +35,7 @@ public final class LimboDecay {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<RegistryKey<World>, Set<DecayTask>> DECAY_QUEUE = new HashMap<>();
 
-	private static final Random RANDOM = new Random();
+	private static final Random RANDOM = Random.create();
 
 	/**
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)

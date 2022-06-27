@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.api.client;
 
 import java.util.Collections;
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

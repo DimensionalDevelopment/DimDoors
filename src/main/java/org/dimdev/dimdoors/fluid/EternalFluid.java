@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.fluid;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
@@ -57,7 +57,7 @@ public abstract class EternalFluid extends FlowableFluid {
 
 	@Override
 	public int getFlowSpeed(WorldView worldView) {
-		return worldView.getDimension().isUltrawarm() ? 4 : 2;
+		return worldView.getDimension().ultrawarm() ? 4 : 2;
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public abstract class EternalFluid extends FlowableFluid {
 
 	@Override
 	public int getLevelDecreasePerBlock(WorldView worldView) {
-		return worldView.getDimension().isUltrawarm() ? 1 : 2;
+		return worldView.getDimension().ultrawarm() ? 1 : 2;
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public abstract class EternalFluid extends FlowableFluid {
 
 	@Override
 	public int getTickRate(WorldView worldView) {
-		return worldView.getDimension().isUltrawarm() ? 10 : 30;
+		return worldView.getDimension().ultrawarm() ? 10 : 30;
 	}
 
 	@Override

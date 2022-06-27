@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.datagen;
 import java.io.IOException;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTablesProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.item.Items;
@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import net.minecraft.block.Block;
 import org.dimdev.dimdoors.item.ModItems;
 
-public class LootTableProvider extends FabricBlockLootTablesProvider {
+public class LootTableProvider extends FabricBlockLootTableProvider {
 
 	public LootTableProvider(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);

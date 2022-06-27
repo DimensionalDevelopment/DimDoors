@@ -1,24 +1,18 @@
 package org.dimdev.dimdoors.util.schematic;
 
-import java.util.Iterator;
-import java.util.Objects;
-
-import com.mojang.brigadier.ImmutableStringReader;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
-
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.BlockArgumentParser;
-import net.minecraft.command.argument.BlockStateArgument;
-import net.minecraft.command.argument.BlockStateArgumentType;
 import net.minecraft.state.property.Property;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.registry.Registry;
+
+import java.util.Iterator;
+import java.util.Objects;
 
 public class SchematicBlockPalette {
 	public static final UnboundedMapCodec<BlockState, Integer> CODEC = Codec.unboundedMap(Entry.CODEC, Codec.INT);
@@ -32,13 +26,15 @@ public class SchematicBlockPalette {
 
 		static DataResult<BlockState> to(String string) {
 			StringReader reader = new StringReader(string);
-			BlockArgumentParser parser = new BlockArgumentParser(reader, true);
+
+			BlockArgumentParser.BlockResult parser = null;
+
 			try {
-				parser.parse(true);
+				BlockArgumentParser.block(Registry.BLOCK, reader, true);
 			} catch (CommandSyntaxException e) {
 				return DataResult.error(e.getMessage());
 			}
-			return DataResult.success(parser.getBlockState());
+			return DataResult.success(parser.blockState());
 //			if (!string.contains("[") && !string.contains("]")) {
 //				BlockState state = Registry.BLOCK.get(new Identifier(string)).getDefaultState();
 //				return DataResult.success(state);

@@ -46,7 +46,7 @@ public final class ModBlocks {
 	public static final Block OAK_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorBlock(FabricBlockSettings.copyOf(Blocks.OAK_TRAPDOOR).luminance(state -> 10)));
 
 	@RegistryEntry("dimensional_portal")
-	public static final Block DIMENSIONAL_PORTAL = register(new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).strength(-1.0F, 3600000.0F).nonOpaque().dropsNothing().luminance(10)));
+	public static final Block DIMENSIONAL_PORTAL = register(new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).strength(-1.0F, 3600000.0F).nonOpaque().dropsNothing().luminance(blockState -> 10)));
 
 	@RegistryEntry("detached_rift")
 	public static final Block DETACHED_RIFT = register(new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).strength(-1.0F, 3600000.0F).noCollision().nonOpaque()));

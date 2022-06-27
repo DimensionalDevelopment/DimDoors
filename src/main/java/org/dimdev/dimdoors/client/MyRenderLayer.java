@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.client;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import com.flowpowered.math.vector.VectorNi;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -20,7 +20,7 @@ public class MyRenderLayer extends RenderLayer {
     public static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
     private static final Identifier KEY_PATH = new Identifier("dimdoors:textures/other/keyhole.png");
     private static final Identifier KEYHOLE_LIGHT = new Identifier("dimdoors:textures/other/keyhole_light.png");
-    private static final Random RANDOM = new Random(31100L);
+    private static final Random RANDOM = Random.create(31100L);
 
     public MyRenderLayer(String string, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int j, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {
         super(string, vertexFormat, drawMode, j, bl, bl2, runnable, runnable2);

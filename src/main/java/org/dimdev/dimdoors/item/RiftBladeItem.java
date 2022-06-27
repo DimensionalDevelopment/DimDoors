@@ -1,25 +1,16 @@
 package org.dimdev.dimdoors.item;
 
-import java.util.List;
-import java.util.Objects;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.block.DimensionalPortalBlock;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.client.ToolTipHelper;
-
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -28,6 +19,15 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.block.DimensionalPortalBlock;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.client.ToolTipHelper;
+
+import java.util.List;
+import java.util.Objects;
 
 public class RiftBladeItem extends SwordItem {
 	public static final String ID = "rift_blade";
@@ -73,7 +73,7 @@ public class RiftBladeItem extends SwordItem {
 			if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
 				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 			} else {
-				player.sendMessage(new TranslatableText(this.getTranslationKey() + ".rift_miss"), true);
+				player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".rift_miss")), true);
 				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 				return new TypedActionResult<>(ActionResult.FAIL, stack);
 			}

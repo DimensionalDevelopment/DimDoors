@@ -1,6 +1,6 @@
 plugins {
 	id "java"
-	id "fabric-loom" version "0.10-SNAPSHOT"
+	id "fabric-loom" version "0.12-SNAPSHOT"
 	id "maven-publish"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
@@ -123,15 +123,15 @@ loom {
 assemble.dependsOn runDatagen
 
 dependencies {
-	minecraft "com.mojang:minecraft:1.18.2"
-	mappings "net.fabricmc:yarn:1.18.2+build.2:v2"
-	modImplementation "net.fabricmc:fabric-loader:0.13.3"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:0.48.0+1.18.2"
+	minecraft "com.mojang:minecraft:1.19"
+	mappings "net.fabricmc:yarn:1.19+build.4:v2"
+	modImplementation "net.fabricmc:fabric-loader:0.14.8"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:0.56.3+1.19"
 	includeCompile("com.flowpowered", "flow-math", "1.0.3")
 	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
 	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
 	includeCompile("com.github.DimensionalDevelopment", "Matrix", "1.0.0")
-	includeCompile("me.shedaniel.cloth", "cloth-config-fabric", "6.2.57")
+	includeCompile("me.shedaniel.cloth", "cloth-config-fabric", "7.0.72")
 
 	includeCompile("curse.maven", "cardinal_base-318449", "${project.cardinal_components_base}")
 	includeCompile("curse.maven", "cardinal_item-318449", "${project.cardinal_components_item}")
@@ -142,7 +142,7 @@ dependencies {
 
 	//includeCompile("curse.maven", "wthit-3707010", "${project.wthit}")
 
-	modCompileOnly("com.terraformersmc:modmenu:3.1.0") {
+	modCompileOnly("com.terraformersmc:modmenu:4.0.0") {
 		exclude module: "fabric-api"
 	}
 
@@ -151,8 +151,8 @@ dependencies {
 //		exclude module: "fabric-api"
 //	}
 
-	modCompileOnly "curse.maven:worldedit-225608:3697298"
-	modCompileOnly "curse.maven:wthit-440979:3707010"
+	modCompileOnly "curse.maven:worldedit-225608:3836903"
+	modCompileOnly "curse.maven:wthit-440979:3841975"
 
 	testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
 //	testImplementation("junit:junit:4.13.2")

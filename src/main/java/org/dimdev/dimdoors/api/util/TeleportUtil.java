@@ -1,24 +1,21 @@
 package org.dimdev.dimdoors.api.util;
 
-import java.util.concurrent.ThreadLocalRandom;
-
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.server.world.ChunkTicketType;
-import net.minecraft.util.math.*;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.*;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.world.ModDimensions;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 @SuppressWarnings("deprecation")
 public final class TeleportUtil {
@@ -99,7 +96,7 @@ public final class TeleportUtil {
 	}
 
 	public static  <E extends Entity> E teleportUntargeted(E entity, World world) {
-		double actualScale = entity.world.getDimension().getCoordinateScale() / world.getDimension().getCoordinateScale();
+		double actualScale = entity.world.getDimension().coordinateScale() / world.getDimension().coordinateScale();
 		return teleport(
 				entity,
 				world,
@@ -109,7 +106,7 @@ public final class TeleportUtil {
 	}
 
 	public static  <E extends Entity> E teleportUntargeted(E entity, World world, double y) {
-		double actualScale = entity.world.getDimension().getCoordinateScale() / world.getDimension().getCoordinateScale();
+		double actualScale = entity.world.getDimension().coordinateScale() / world.getDimension().coordinateScale();
 		return teleport(
 				entity,
 				world,

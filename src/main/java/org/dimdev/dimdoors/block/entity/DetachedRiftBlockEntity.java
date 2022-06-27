@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.block.entity;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
@@ -22,7 +22,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 public class DetachedRiftBlockEntity extends RiftBlockEntity {
-	private static final Random random = new Random();
+	private static final Random random = Random.create();
 
 	public boolean closing = false;
 	public boolean stabilized = false;

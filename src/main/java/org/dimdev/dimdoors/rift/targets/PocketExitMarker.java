@@ -1,14 +1,13 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.entity.Entity;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.text.TranslatableText;
 
 public class PocketExitMarker extends VirtualTarget implements EntityTarget {
 	public static final Codec<PocketExitMarker> CODEC = Codec.unit(PocketExitMarker::new);
@@ -18,7 +17,7 @@ public class PocketExitMarker extends VirtualTarget implements EntityTarget {
 
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		EntityUtils.chat(entity, new TranslatableText("The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug."));
+		EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug.")));
 		return false;
 	}
 

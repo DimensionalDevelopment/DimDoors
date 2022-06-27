@@ -1,21 +1,6 @@
 package org.dimdev.dimdoors.item;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import org.dimdev.dimdoors.block.RiftProvider;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.mixin.accessor.ListTagAccessor;
-import org.dimdev.dimdoors.network.ServerPacketHandler;
-import org.dimdev.dimdoors.rift.registry.Rift;
-import org.dimdev.dimdoors.api.util.EntityUtils;
-import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.jetbrains.annotations.Nullable;
-
+import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,15 +10,28 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtIntArray;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.mixin.accessor.ListTagAccessor;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.rift.registry.Rift;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.util.NbtType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class RiftKeyItem extends Item {
 	public RiftKeyItem(Settings settings) {
@@ -43,10 +41,10 @@ public class RiftKeyItem extends Item {
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
 		if (isEmpty(stack)) {
-			tooltip.add(new TranslatableText("item.dimdoors.rift_key.no_links"));
+			tooltip.add(MutableText.of(new TranslatableTextContent("item.dimdoors.rift_key.no_links")));
 		} else if (context.isAdvanced()) {
 			for (UUID id : getIds(stack)) {
-				tooltip.add(new LiteralText(" " + id.toString()));
+				tooltip.add(Text.of(" " + id.toString()));
 			}
 		}
 		super.appendTooltip(stack, world, tooltip, context);
@@ -97,17 +95,17 @@ public class RiftKeyItem extends Item {
 				if (tryRemove(context.getStack(), rift.getId())) {
 					entranceRiftBlockEntity.setLocked(false);
 					entranceRiftBlockEntity.markDirty();
-					EntityUtils.chat(player, new TranslatableText("rifts.unlocked"));
+					EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.unlocked")));
 					ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
 					return ActionResult.SUCCESS;
 				} else {
-					EntityUtils.chat(player, new TranslatableText("rifts.cantUnlock"));
+					EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.cantUnlock")));
 				}
 			} else {
 				entranceRiftBlockEntity.setLocked(true);
 				add(context.getStack(), rift.getId());
 				entranceRiftBlockEntity.markDirty();
-				EntityUtils.chat(player, new TranslatableText("rifts.locked"));
+				EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.locked")));
 				ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
  				return ActionResult.SUCCESS;
 			}

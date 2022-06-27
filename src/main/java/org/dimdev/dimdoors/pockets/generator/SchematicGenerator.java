@@ -1,11 +1,15 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
@@ -22,15 +26,10 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.chunk.Chunk;
-
-import net.fabricmc.fabric.api.util.NbtType;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SchematicGenerator extends LazyPocketGenerator{
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -143,7 +142,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
 		BlockPos origin = pocket.getOrigin();
 		LOGGER.info("Generating pocket from template " + templateID + " at location " + origin);
-		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendFeedback(new TranslatableText("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ()), false));
+		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ())), false));
 
 
 		if (pocket instanceof LazyGenerationPocket) {

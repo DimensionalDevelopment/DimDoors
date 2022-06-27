@@ -55,8 +55,9 @@ public final class ModBiomes {
     }
 
     static {
+
         Biome.Builder voidBiomeBuilder = new Biome.Builder()
-				.category(Biome.Category.NONE)
+//				.category(Biome.Category.NONE) //TODO: Find out analog or if needed?
 				.downfall(0)
 				.generationSettings(new GenerationSettings.Builder().build())
 				.precipitation(Biome.Precipitation.NONE)
@@ -71,7 +72,7 @@ public final class ModBiomes {
         PUBLIC_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
         DUNGEON_DANGEROUS_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
         LIMBO_BIOME = new Biome.Builder()
-                .category(Biome.Category.NONE)
+//                .category(Biome.Category.NONE) TODO: FInd if needed
                 .downfall(0.0f)
                 .effects(new BiomeEffects.Builder()
                         .fogColor(0x404040)

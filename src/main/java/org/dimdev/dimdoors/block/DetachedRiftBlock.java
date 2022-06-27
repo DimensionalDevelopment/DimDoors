@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.block;
 
-import java.util.Random;
-
 import net.minecraft.block.*;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.math.random.Random;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.particle.client.RiftParticleEffect;

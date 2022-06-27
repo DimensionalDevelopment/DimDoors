@@ -33,7 +33,7 @@ public abstract class WorldMixin {
 			at = @At(value = "INVOKE_ASSIGN",
 					target = "Lnet/minecraft/world/World;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;",
 					ordinal = 0))
-	private FluidState replaceFluidStateWithCustomHackyFluidState(FluidState original, BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
+	private FluidState replaceFluidStateWithCustomHackyFluidState(FluidState original, BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) { //TODO: Fix
 		World world = (World) (Object) this;
 		BlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();

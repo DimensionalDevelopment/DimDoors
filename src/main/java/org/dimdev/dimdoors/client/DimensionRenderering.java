@@ -89,7 +89,8 @@ public class DimensionRenderering {
         bufferBuilder.vertex(matrix4f, s, 100.0F, s).texture(1.0F, 1.0F).next();
         bufferBuilder.vertex(matrix4f, -s, 100.0F, s).texture(0.0F, 1.0F).next();
         bufferBuilder.end();
-        BufferRenderer.draw(bufferBuilder);
+		tessellator.draw();
+//        BufferRenderer.draw(bufferBuilder);
         RenderSystem.setShaderTexture(0, MOON_RENDER_PATH);
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         bufferBuilder.vertex(matrix4f, -s, -100.0F, -s).texture(0.0F, 0.0F).next();
@@ -97,7 +98,8 @@ public class DimensionRenderering {
         bufferBuilder.vertex(matrix4f, s, -100.0F, s).texture(1.0F, 1.0F).next();
         bufferBuilder.vertex(matrix4f, -s, -100.0F, s).texture(0.0F, 1.0F).next();
         bufferBuilder.end();
-        BufferRenderer.draw(bufferBuilder);
+		tessellator.draw();
+//        BufferRenderer.draw(bufferBuilder);
 
         RenderSystem.depthMask(true);
         RenderSystem.enableTexture();

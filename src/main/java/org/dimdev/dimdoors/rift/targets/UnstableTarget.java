@@ -1,16 +1,15 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import java.util.Collections;
-import java.util.Random;
-
-import org.dimdev.dimdoors.api.rift.target.EntityTarget;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+
+import java.util.Collections;
 
 public class UnstableTarget extends VirtualTarget implements EntityTarget {
-	private static final Random RANDOM = new Random();
+	private static final Random RANDOM = Random.create();
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {

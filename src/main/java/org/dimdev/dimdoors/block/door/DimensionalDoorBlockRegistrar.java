@@ -12,7 +12,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -133,7 +133,7 @@ public class DimensionalDoorBlockRegistrar {
 
 		@Override
 		public MutableText getName() {
-			return new TranslatableText("dimdoors.autogen_block_prefix").append(originalBlock.getName());
+			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_block_prefix")).append(originalBlock.getName());
 		}
 	}
 
@@ -161,7 +161,7 @@ public class DimensionalDoorBlockRegistrar {
 
 		@Override
 		public MutableText getName() {
-			return new TranslatableText("dimdoors.autogen_block_prefix").append(originalBlock.getName());
+			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_block_prefix")).append(originalBlock.getName());
 		}
 	}
 }

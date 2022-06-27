@@ -4,15 +4,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.AncientFabricBlock;
 import org.dimdev.dimdoors.block.FabricBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
@@ -53,7 +54,7 @@ public class DyeableAddon implements PocketAddon {
 		int maxDye = amountOfDyeRequiredToColor(pocket);
 
 		if (this.dyeColor == color) {
-			EntityUtils.chat(entity, new TranslatableText("dimdoors.pockets.dyeAlreadyAbsorbed"));
+			EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pockets.dyeAlreadyAbsorbed")));
 			return false;
 		}
 
@@ -63,15 +64,15 @@ public class DyeableAddon implements PocketAddon {
 				this.dyeColor = color;
 				this.nextDyeColor = PocketColor.NONE;
 				this.count = 0;
-				EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.pocketHasBeenDyed", dyeColor));
+				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.pocketHasBeenDyed", dyeColor)));
 			} else {
 				this.count++;
-				EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color));
+				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color)));
 			}
 		} else {
 			this.nextDyeColor = color;
 			this.count = 1;
-			EntityUtils.chat(entity, new TranslatableText("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color));
+			EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color)));
 		}
 		return true;
 	}

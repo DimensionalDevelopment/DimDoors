@@ -1,8 +1,13 @@
 package org.dimdev.dimdoors.entity.ai;
 
-import java.util.EnumSet;
-import java.util.Random;
-
+import net.minecraft.entity.ai.TargetPredicate;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.predicate.entity.EntityPredicates;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.entity.stat.ModStats;
@@ -12,13 +17,7 @@ import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.BlockPos;
+import java.util.EnumSet;
 
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
@@ -63,7 +62,7 @@ public class MonolithAggroGoal extends Goal {
         }
 
         if (this.target != null && (this.target.getInventory().armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && this.target.getInventory().armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && this.target.getInventory().armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && this.target.getInventory().armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
-            Random random = new Random();
+            Random random = Random.create();
             int i = random.nextInt(64);
             if (this.target instanceof ServerPlayerEntity) {
                 if (i < 4) {

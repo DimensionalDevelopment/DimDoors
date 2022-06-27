@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.datagen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import net.minecraft.data.DataWriter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
@@ -37,14 +38,14 @@ public class LimboDecayProvider implements DataProvider {
     }
 
     @Override
-    public void run(DataCache cache) throws IOException {
+    public void run(DataWriter cache) throws IOException {
         Path path = this.generator.getOutput();
 
         BiConsumer<Identifier, JsonObject> consumer = (identifier, json)  -> {
             Path outputPath = getOutput(path, identifier);
 
             try {
-                DataProvider.writeToPath(GSON, cache, json, outputPath);
+                DataProvider.writeToPath(cache, json, outputPath);
             } catch (IOException var6) {
                 LOGGER.error("Couldn't save decay pattern {}", outputPath, var6);
         }

@@ -20,10 +20,12 @@ accessible method net/minecraft/server/world/ThreadedAnvilChunkStorage entryIter
 
 accessible method net/minecraft/client/render/WorldRenderer renderEndSky (Lnet/minecraft/client/util/math/MatrixStack;)V
 
-accessible method net/minecraft/world/biome/Biome getCategory ()Lnet/minecraft/world/biome/Biome$Category;
+#accessible method net/minecraft/world/biome/Biome getCategory ()Lnet/minecraft/world/biome/Biome$Category;
 
 accessible field net/minecraft/block/Block LOGGER Lorg/slf4j/Logger;
 
 accessible method net/minecraft/world/gen/feature/OrePlacedFeatures modifiersWithCount (ILnet/minecraft/world/gen/placementmodifier/PlacementModifier;)Ljava/util/List;
 
 accessible class net/minecraft/data/client/BlockStateModelGenerator$BlockTexturePool
+
+accessible method net/minecraft/command/argument/BlockArgumentParser parse ()V

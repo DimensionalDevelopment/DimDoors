@@ -6,7 +6,7 @@ import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Map;
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 
@@ -17,7 +17,7 @@ public final class MathUtil {
 		for (float weight : weights.values()) {
 			totalWeight += weight;
 		}
-		Random random = new Random();
+		Random random = Random.create();
 		float f = random.nextFloat() * totalWeight;
 		for (Map.Entry<T, Float> e : weights.entrySet()) {
 			f -= e.getValue();

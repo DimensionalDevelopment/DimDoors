@@ -12,6 +12,6 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 public class WthitPlugin implements IWailaPlugin {
 	@Override
 	public void register(IRegistrar registrar) {
-		registrar.registerComponentProvider(EntranceRiftProvider.INSTANCE, TooltipPosition.BODY, EntranceRiftBlockEntity.class);
+		registrar.addComponent(EntranceRiftProvider.INSTANCE, TooltipPosition.BODY, EntranceRiftBlockEntity.class);
 	}
 }
