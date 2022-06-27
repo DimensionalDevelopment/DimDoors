@@ -21,6 +21,8 @@ import net.minecraft.world.chunk.*;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.Blender;
 
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
+import net.minecraft.world.gen.noise.NoiseConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
@@ -87,6 +89,8 @@ public class ChunkGenerator extends PocketGenerator {
 		ServerWorld genWorld = DimensionalDoorsInitializer.getWorld(RegistryKey.of(Registry.WORLD_KEY, dimensionID));
 		net.minecraft.world.gen.chunk.ChunkGenerator genWorldChunkGenerator = genWorld.getChunkManager().getChunkGenerator();
 
+		NoiseConfig config = NoiseConfig.create(ChunkGeneratorSettings.createMissingSettings(), world.getRegistryManager().get(Registry.NOISE_KEY), world.getSeed());
+
 		ArrayList<Chunk> protoChunks = new ArrayList<>();
 		for (int z = 0; z < chunkSizeZ; z++) {
 			for (int x = 0; x < chunkSizeX; x++) {
@@ -97,7 +101,7 @@ public class ChunkGenerator extends PocketGenerator {
 		}
 		ChunkRegion protoRegion = new ChunkRegionHack(genWorld, protoChunks);
 		for (Chunk protoChunk : protoChunks) { // TODO: check wether structures are even activated
-			genWorldChunkGenerator.setStructureStarts(genWorld.getRegistryManager(), genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk, genWorld.getStructureManager(), genWorld.getSeed());
+			genWorldChunkGenerator.setStructureStarts(genWorld.getRegistryManager(), config, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk, genWorld.getStructureTemplateManager(), genWorld.getSeed());
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_STARTS);
 		}
 		for (Chunk protoChunk : protoChunks) {
@@ -105,24 +109,24 @@ public class ChunkGenerator extends PocketGenerator {
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_REFERENCES);
 		}
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.populateBiomes(genWorld.getRegistryManager().get(Registry.BIOME_KEY), Util.getMainWorkerExecutor(), Blender.getNoBlending(), genWorld.getStructureAccessor(), protoChunk);
+			genWorldChunkGenerator.populateBiomes(genWorld.getRegistryManager().get(Registry.BIOME_KEY), Util.getMainWorkerExecutor(), config, Blender.getNoBlending(), genWorld.getStructureAccessor(), protoChunk);
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.BIOMES);
 		}
 		for (Chunk protoChunk : protoChunks) {
 			try {
-				genWorldChunkGenerator.populateNoise(Util.getMainWorkerExecutor(), Blender.getNoBlending(), genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk).get();
+				genWorldChunkGenerator.populateNoise(Util.getMainWorkerExecutor(), Blender.getNoBlending(), config, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk).get();
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.NOISE);
 		}
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.buildSurface(protoRegion, genWorld.getStructureAccessor(), protoChunk);
+			genWorldChunkGenerator.buildSurface(protoRegion, genWorld.getStructureAccessor(), config, protoChunk);
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.SURFACE);
 		}
 		for (GenerationStep.Carver carver : GenerationStep.Carver.values()) {
 			for (Chunk protoChunk : protoChunks) {
-				genWorldChunkGenerator.carve(protoRegion, genWorld.getSeed(), genWorld.getBiomeAccess(), genWorld.getStructureAccessor(), protoChunk, carver);
+				genWorldChunkGenerator.carve(protoRegion, genWorld.getSeed(), config, genWorld.getBiomeAccess(), genWorld.getStructureAccessor(), protoChunk, carver);
 				ProtoChunk pChunk = ((ProtoChunk) protoChunk);
 				if (pChunk.getStatus() == ChunkStatus.SURFACE) pChunk.setStatus(ChunkStatus.CARVERS);
 				else pChunk.setStatus(ChunkStatus.LIQUID_CARVERS);
