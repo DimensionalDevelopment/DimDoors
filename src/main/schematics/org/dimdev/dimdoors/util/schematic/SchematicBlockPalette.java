@@ -30,7 +30,7 @@ public class SchematicBlockPalette {
 			BlockArgumentParser.BlockResult parser = null;
 
 			try {
-				BlockArgumentParser.block(Registry.BLOCK, reader, true);
+				parser = BlockArgumentParser.block(Registry.BLOCK, reader, true);
 			} catch (CommandSyntaxException e) {
 				return DataResult.error(e.getMessage());
 			}
