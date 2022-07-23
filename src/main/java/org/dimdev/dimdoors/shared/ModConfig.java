@@ -59,6 +59,7 @@ public final class ModConfig {
         @LangKey("dimdoors.general.riftCloseSpeed")
         @RangeDouble(min = 0)
         public float riftCloseSpeed = 1f;
+        
         @Name("enableRiftDecay")
         @LangKey("dimdoors.world.enableDecay")
         public boolean enableRiftDecay = true;
@@ -66,7 +67,11 @@ public final class ModConfig {
         @Name("blockRiftDecayBlackList")
         @LangKey("dimdoors.world.blockDecayBlackList")
         public String[] blockRiftDecayBlackList = {};
-
+        
+        @Name("enableRiftDecayDropsWorldThread")
+        @LangKey("dimdoors.world.enableDecayDrops")
+        public boolean enableRiftDecay = true;
+        
         @Name("maxRiftSize")
         @LangKey("dimdoors.world.maxRiftSize")
         public int maxRiftSize = -1;

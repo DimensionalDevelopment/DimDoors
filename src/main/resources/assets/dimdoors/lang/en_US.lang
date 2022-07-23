@@ -184,6 +184,8 @@ dimdoors.world.clusterDimBlacklist=Cluster Dimension Blacklist
 dimdoors.world.clusterDimBlacklist.tooltip=Dimension Blacklist for the generation of Rift Scar clusters. Add a dimension ID here to prevent generation in certain dimensions.
 dimdoors.world.gatewayDimBlacklist=Gateway Dimension Blacklist
 dimdoors.world.gatewayDimBlacklist.tooltip=Dimension Blacklist for the generation of Dimensional Portal gateways. Add a dimension ID here to prevent generation in certain dimensions.
+dimdoors.world.enableDecayDrops=Enable Rift Decay Drops
+dimdoors.world.enableDecayDrops.tooltip=When true, blocks destroyed by rift decay will drop world thread.
 
 dimdoors.dungeons=Dungeon Settings
 dimdoors.dungeons.tooltip=Settings that affect the generation of pocket dungeons
