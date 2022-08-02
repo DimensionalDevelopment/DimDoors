@@ -85,7 +85,9 @@ public class RiftDecay {
         if (canDecayBlock(block, world, pos)) {
             //change block to air and spawn a new world thread item
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
-            world.spawnEntity(new EntityItem(world,pos.getX(),pos.getY(),pos.getZ(),new ItemStack(ModItems.WORLD_THREAD)));
+            if (ModConfig.rifts.enableRiftDecayDropsWorldThread) {
+                world.spawnEntity(new EntityItem(world,pos.getX(),pos.getY(),pos.getZ(),new ItemStack(ModItems.WORLD_THREAD)));
+            }
             return true;
         }
         return false;
