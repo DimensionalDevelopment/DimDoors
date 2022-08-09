@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.shared;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
@@ -33,7 +32,7 @@ public final class EventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingDeath(LivingDeathEvent event) {
         EntityLivingBase entity = event.getEntityLiving();
-        if(entity instanceof EntityPlayer && ModDimensions.isDimDoorsDimension(entity.dimension)) {
+        if(entity instanceof EntityPlayer && (ModDimensions.isDimDoorsDimension(entity.dimension) || ModConfig.limbo.universalLimbo)) {
             EntityPlayer player = (EntityPlayer)entity;
             player.extinguish();
             if(!player.getActivePotionEffects().isEmpty()) player.clearActivePotions();

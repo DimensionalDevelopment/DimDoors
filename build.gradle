@@ -1,3 +1,4 @@
+//file:noinspection GrDeprecatedAPIUsage
 buildscript {
     repositories {
         maven { url = "http://files.minecraftforge.net/maven" }
@@ -38,7 +39,7 @@ ext.mcversion = "1.12.2"
 ext.forgeversion = "14.23.5.2860"
 
 // Mod version
-version = "3.0.11"
+version = "3.0.12"
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"
 
