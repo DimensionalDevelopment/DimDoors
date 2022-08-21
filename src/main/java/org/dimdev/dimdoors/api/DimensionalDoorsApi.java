@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.api;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
+import org.dimdev.dimdoors.pockets.theme.Converter;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
@@ -42,4 +43,6 @@ public interface DimensionalDoorsApi {
 
 	default void registerDecayPredicates(Registry<DecayPredicate.DecayPredicateType<? extends DecayPredicate>> registry) {
 	}
+
+    void registerConverters(Registry<Converter.ConverterType<? extends Converter>> registry);
 }

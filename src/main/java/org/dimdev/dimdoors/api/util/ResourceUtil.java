@@ -32,6 +32,8 @@ public class ResourceUtil {
 
 	public static final BiFunction<String, Identifier, Path<String>> PATH_KEY_PROVIDER = (startingPath, id) ->  Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + (startingPath.endsWith("/") ? 0 : 1)));
 
+	public static final BiFunction<String, Identifier, Identifier> IDENTIFIER_PROVIDER = (s, identifier) -> identifier;
+
 	public static final ComposableFunction<JsonElement, NbtElement> JSON_TO_NBT = json -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json);
 
 	public static final ComposableFunction<NbtElement, JsonElement> NBT_TO_JSON = json -> NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, json);

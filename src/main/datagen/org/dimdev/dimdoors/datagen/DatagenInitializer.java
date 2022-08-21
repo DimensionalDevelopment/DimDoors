@@ -4,14 +4,12 @@ import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockStateDefinitionProvider;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.client.*;
-import net.minecraft.item.Item;
+import net.minecraft.data.client.BlockStateModelGenerator;
+import net.minecraft.data.client.ItemModelGenerator;
+import net.minecraft.data.client.Models;
+import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.block.ModBlocks;
 
-import static net.minecraft.data.client.BlockStateModelGenerator.createBlockStateWithTwoModelAndRandomInversion;
 import static net.minecraft.data.client.BlockStateModelGenerator.createDoorBlockState;
 
 public class DatagenInitializer implements DataGeneratorEntrypoint {
@@ -21,7 +19,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 
 			@Override
 			public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-				registerDoor(blockStateModelGenerator, ModBlocks.STONE_DOOR, Blocks.STONE);
+//				registerDoor(blockStateModelGenerator, ModBlocks.STONE_DOOR, Blocks.STONE);
 			}
 
 			@Override
@@ -44,5 +42,6 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(new AdvancementProvider(dataGenerator));
 		dataGenerator.addProvider(new LootTableProvider(dataGenerator));
 		dataGenerator.addProvider(new LimboDecayProvider(dataGenerator));
+		dataGenerator.addProvider(ThemeProvider::new);
 	}
 }

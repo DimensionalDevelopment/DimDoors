@@ -1,13 +1,11 @@
 package org.dimdev.dimdoors.world.decay.predicates;
 
-import com.google.gson.JsonObject;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -44,12 +42,7 @@ public class SimpleDecayPredicate implements DecayPredicate {
         return DecayPredicateType.SIMPLE_PREDICATE_TYPE;
     }
 
-    @Override
-    public String getKey() {
-        return KEY;
-    }
-
-    @Override
+	@Override
     public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
         BlockState state = world.getBlockState(pos);
 

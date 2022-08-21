@@ -1,31 +1,27 @@
 package org.dimdev.dimdoors.world.decay;
 
-import java.util.Set;
-import java.util.function.Supplier;
-
 import com.mojang.serialization.Lifecycle;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.block.Block;
-import net.minecraft.nbt.NbtCompound;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
-import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
-
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
+import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
 
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import java.util.Set;
+import java.util.function.Supplier;
 
 public interface DecayPredicate {
     Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "decay_predicate_type")), Lifecycle.stable(), null)).buildAndRegister();
 
     DecayPredicate NONE = new DecayPredicate() {
-        private static final String ID = "none";
-
         @Override
         public DecayPredicate fromNbt(NbtCompound nbt) {
             return this;
@@ -36,12 +32,7 @@ public interface DecayPredicate {
             return DecayPredicateType.NONE_PREDICATE_TYPE;
         }
 
-        @Override
-        public String getKey() {
-            return ID;
-        }
-
-        @Override
+		@Override
         public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
             return false;
         }
@@ -61,18 +52,14 @@ public interface DecayPredicate {
         return modifier.toNbt(new NbtCompound());
     }
 
-
     DecayPredicate fromNbt(NbtCompound nbt);
 
     default NbtCompound toNbt(NbtCompound nbt) {
         return this.getType().toNbt(nbt);
     }
-
     DecayPredicate.DecayPredicateType<? extends DecayPredicate> getType();
 
-    String getKey();
-
-    boolean test(World world, BlockPos pos, BlockState origin, BlockState target);
+	boolean test(World world, BlockPos pos, BlockState origin, BlockState target);
 
     Set<Block> constructApplicableBlocks();
 

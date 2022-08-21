@@ -1,33 +1,30 @@
 package org.dimdev.dimdoors.world.decay;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.resource.ResourceManager;
-
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
@@ -107,7 +104,8 @@ public final class LimboDecay {
 	public static class DecayLoader implements SimpleSynchronousResourceReloadListener {
 		private static final Logger LOGGER = LogManager.getLogger();
 		private static final DecayLoader INSTANCE = new DecayLoader();
-		private final Map<Block, List<DecayPattern>> patterns = new HashMap();
+		private final Map<Block, List<DecayPattern>> patterns = new HashMap<>();
+		private static Identifier ID = new Identifier("dimdoors", "decay_pattern");;
 
 		private DecayLoader() {
 		}
@@ -138,7 +136,7 @@ public final class LimboDecay {
 
 		@Override
 		public Identifier getFabricId() {
-			return new Identifier("dimdoors", "decay_pattern");
+			return ID;
 		}
 	}
 

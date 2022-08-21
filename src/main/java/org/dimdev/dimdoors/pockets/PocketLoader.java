@@ -1,25 +1,25 @@
 package org.dimdev.dimdoors.pockets;
 
-import java.util.*;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.util.*;
+import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.pockets.theme.Converter;
+import org.dimdev.dimdoors.pockets.theme.Theme;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.util.schematic.Schematic;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.nbt.*;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.NbtUtil;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.api.util.SimpleTree;
-import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
-import org.dimdev.dimdoors.api.util.WeightedList;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.util.schematic.Schematic;
 
 public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -29,6 +29,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
 	private SimpleTree<String, NbtElement> dataTree = new SimpleTree<>(String.class);
+	private Map<Identifier, Theme> themes = new HashMap<>();
 
 	private PocketLoader() {
 	}
@@ -40,8 +41,10 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		virtualPockets.clear();
 		templates.clear();
 		dataTree.clear();
+		themes.clear();
 
 		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/json", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.composeIdentity(), ResourceUtil.PATH_KEY_PROVIDER).join();
+		themes = ResourceUtil.loadResourcePathToMap(manager, "pockets/themes", ".json", new HashMap<>(), ResourceUtil.NBT_READER.andThenReader(PocketLoader.this::loadTheme), ResourceUtil.IDENTIFIER_PROVIDER).join();
 
 		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(pocketGeneratorLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
@@ -103,6 +106,14 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		}
 	}
 
+	private Theme loadTheme(NbtElement nbt, Identifier ignore) {
+		if(nbt instanceof NbtCompound compound && compound.contains("converters")) {
+			return new Theme(compound.getList("converters", NbtElement.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(Converter::deserialize).collect(Collectors.toList()));
+		} else {
+			return Theme.NONE;
+		}
+	}
+
 	public WeightedList<PocketGenerator, PocketGenerationContext> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
 		return new WeightedList<>(pocketGenerators.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
@@ -121,6 +132,14 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 
 	public SimpleTree<String, VirtualPocket> getPocketGroups() {
 		return this.pocketGroups;
+	}
+
+	public Map<Identifier, Theme> getThemes() {
+		return this.themes;
+	}
+
+	public Theme getTheme(Identifier id) {
+		return this.themes.get(id);
 	}
 
 	public SimpleTree<String, VirtualPocket> getVirtualPockets() {
