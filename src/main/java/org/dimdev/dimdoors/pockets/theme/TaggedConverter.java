@@ -9,6 +9,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
+import java.util.Map;
+
 import static org.dimdev.dimdoors.pockets.theme.Converter.ConverterType.TAGGED_CONVERTER_TYPE;
 
 public final class TaggedConverter implements Converter {
@@ -32,7 +34,11 @@ public final class TaggedConverter implements Converter {
 	public BlockState apply(BlockState blockState) {
 		BlockState newBlockState = Registry.BLOCK.get(key).getDefaultState();
 
-		blockState.getEntries().entrySet().stream().filter(property -> newBlockState.contains(property.getKey())).forEach((entry) -> newBlockState.with((Property) entry.getKey(), (Comparable) entry.getValue()));
+		for (Map.Entry<Property<?>, Comparable<?>> property : blockState.getEntries().entrySet()) {
+			if (newBlockState.contains(property.getKey())) {
+				newBlockState = newBlockState.with((Property) property.getKey(), (Comparable) property.getValue());
+			}
+		}
 
 		return newBlockState;
 	}
