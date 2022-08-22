@@ -42,11 +42,10 @@ public class ThemeArgumentType implements ArgumentType<Theme> {
 		return getThemes()
 				.keySet()
 				.parallelStream()
-				.map(id -> "\"" + id + "\"")
 				.collect(Collectors.toCollection(TreeSet::new));
 	}
 
-	private Map<Identifier, Theme> getThemes() {
+	private Map<String, Theme> getThemes() {
 		return PocketLoader.getInstance().getThemes();
 	}
 

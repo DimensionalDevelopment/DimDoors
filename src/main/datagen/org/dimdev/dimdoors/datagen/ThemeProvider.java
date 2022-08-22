@@ -2,25 +2,28 @@ package org.dimdev.dimdoors.datagen;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataCache;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.pockets.theme.Converter;
-import org.dimdev.dimdoors.pockets.theme.TaggedConverter;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.pockets.theme.Theme;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ThemeProvider implements DataProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -36,7 +39,7 @@ public class ThemeProvider implements DataProvider {
 	public void run(DataCache cache) throws IOException {
 		Path path = this.generator.getOutput();
 
-		BiConsumer<Identifier, JsonObject> consumer = (identifier, json)  -> {
+		BiConsumer<Identifier, JsonElement> consumer = (identifier, json)  -> {
 			Path outputPath = getOutput(path, identifier);
 
 			try {
@@ -49,18 +52,24 @@ public class ThemeProvider implements DataProvider {
 		generatePatterns(consumer);
 	}
 
-	protected void generatePatterns(BiConsumer<Identifier, JsonObject> consumer) {
+	protected void generatePatterns(BiConsumer<Identifier, JsonElement> consumer) {
 		theme(new Identifier("dimdoors", "oak"),
-				TaggedConverter.of(BlockTags.STAIRS, Blocks.OAK_STAIRS),
-				TaggedConverter.of(BlockTags.LOGS, Blocks.OAK_LOG),
-				TaggedConverter.of(BlockTags.SLABS, Blocks.OAK_SLAB),
-				TaggedConverter.of(BlockTags.LEAVES, Blocks.OAK_LEAVES))
+				of(BlockTags.STAIRS, Blocks.OAK_STAIRS),
+				of(BlockTags.LOGS, Blocks.OAK_LOG),
+				of(BlockTags.SLABS, Blocks.OAK_SLAB),
+				of(BlockTags.LEAVES, Blocks.OAK_LEAVES),
+				of(ModBlocks.BLACK_FABRIC, Blocks.QUARTZ_BLOCK))
 				.run(consumer);
 	}
 
-	private TaggedThemeBuilder theme(Identifier id, Converter... converters) {
+	private Pair<Theme.Entry, Block> of(Object obj, Block block) {
+		return Pair.of(Theme.Entry.of(obj), block);
+	}
+
+	private TaggedThemeBuilder theme(Identifier id, Pair<Theme.Entry, Block>... converters) {
 		return new TaggedThemeBuilder(id, converters);
 	}
+
 
 
 	@Override
@@ -73,24 +82,17 @@ public class ThemeProvider implements DataProvider {
 	}
 
 	public static class TaggedThemeBuilder {
-		private final List<Converter> converters;
+		private final Theme theme ;
 		private Identifier id;
 
-		public TaggedThemeBuilder(Identifier id, Converter... converters) {
+		public TaggedThemeBuilder(Identifier id, Pair<Theme.Entry, Block>... converters) {
 			this.id = id;
 
-			this.converters = List.of(converters);
+			this.theme = new Theme(Stream.of(converters).collect(Collectors.toMap(Pair::getFirst, Pair::getSecond)));
 		}
 
-		public void run(BiConsumer<Identifier, JsonObject> consumer) {
-			JsonObject object = new JsonObject();
-
-			JsonArray converters = new JsonArray();
-
-			this.converters.stream().map(converter -> converter.toNbt(new NbtCompound())).map(ResourceUtil.NBT_TO_JSON).forEach(converters::add);
-
-			object.add("converters", converters);
-
+		public void run(BiConsumer<Identifier, JsonElement> consumer) {
+			JsonElement object = JsonOps.INSTANCE.withEncoder(Theme.CODEC).andThen(DataResult::result).andThen(Optional::get).apply(theme);
 			consumer.accept(id, object);
 		}
 	}

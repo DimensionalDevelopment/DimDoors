@@ -3,13 +3,13 @@ package org.dimdev.dimdoors.pockets;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.*;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.theme.Converter;
 import org.dimdev.dimdoors.pockets.theme.Theme;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.schematic.Schematic;
@@ -29,7 +29,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
 	private SimpleTree<String, NbtElement> dataTree = new SimpleTree<>(String.class);
-	private Map<Identifier, Theme> themes = new HashMap<>();
+	private Map<String, Theme> themes = new HashMap<>();
 
 	private PocketLoader() {
 	}
@@ -43,8 +43,8 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		dataTree.clear();
 		themes.clear();
 
-		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/json", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.composeIdentity(), ResourceUtil.PATH_KEY_PROVIDER).join();
-		themes = ResourceUtil.loadResourcePathToMap(manager, "pockets/themes", ".json", new HashMap<>(), ResourceUtil.NBT_READER.andThenReader(PocketLoader.this::loadTheme), ResourceUtil.IDENTIFIER_PROVIDER).join();
+		dataTree = 	ResourceUtil.loadResourcePathToMap(manager, "pockets/jsonss", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.composeIdentity(), ResourceUtil.PATH_KEY_PROVIDER).join();
+		themes = 	ResourceUtil.loadResourcePathToMap(manager, "pockets/themes", ".json", new HashMap<>(), ResourceUtil.NBT_READER.andThenReader(this::loadTheme), ResourceUtil.STRING_PROVIDER).join();
 
 		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(pocketGeneratorLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
@@ -106,12 +106,8 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		}
 	}
 
-	private Theme loadTheme(NbtElement nbt, Identifier ignore) {
-		if(nbt instanceof NbtCompound compound && compound.contains("converters")) {
-			return new Theme(compound.getList("converters", NbtElement.COMPOUND_TYPE).stream().map(NbtCompound.class::cast).map(Converter::deserialize).collect(Collectors.toList()));
-		} else {
-			return Theme.NONE;
-		}
+	private Theme loadTheme(NbtElement nbt, String ignore) {
+		return NbtOps.INSTANCE.withParser(Theme.CODEC).apply(nbt).setPartial(Theme.NONE).getOrThrow(true, System.out::println);
 	}
 
 	public WeightedList<PocketGenerator, PocketGenerationContext> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
@@ -134,12 +130,12 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		return this.pocketGroups;
 	}
 
-	public Map<Identifier, Theme> getThemes() {
+	public Map<String, Theme> getThemes() {
 		return this.themes;
 	}
 
 	public Theme getTheme(Identifier id) {
-		return this.themes.get(id);
+		return this.themes.getOrDefault(id.toString(), Theme.NONE);
 	}
 
 	public SimpleTree<String, VirtualPocket> getVirtualPockets() {

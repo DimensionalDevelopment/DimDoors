@@ -102,6 +102,7 @@ public interface Modifier extends ReferenceSerializable {
 		ModifierType<RelativeReferenceModifier> RELATIVE_REFERENCE_MODIFIER_TYPE = register(new Identifier("dimdoors", RelativeReferenceModifier.KEY), RelativeReferenceModifier::new);
 		ModifierType<OffsetModifier> OFFSET_MODIFIER_TYPE = register(new Identifier("dimdoors", OffsetModifier.KEY), OffsetModifier::new);
 		ModifierType<AbsoluteRiftBlockEntityModifier> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(new Identifier("dimdoors", AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
+		ModifierType<ThemeModifier> THEME_MODIFIER_TYPE = register(new Identifier("dimdoors", ThemeModifier.KEY), ThemeModifier::new);
 
 		Modifier fromNbt(NbtCompound nbt, ResourceManager manager);
 
