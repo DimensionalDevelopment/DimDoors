@@ -91,5 +91,55 @@
         "type": "minecraft:block"
       }
     ]
-  }
+  },
+  "spawn_target": [
+    {
+      "erosion": [
+        -1,
+        1
+      ],
+      "depth": 0,
+      "weirdness": [
+        -1,
+        -0.16
+      ],
+      "offset": 0,
+      "temperature": [
+        -1,
+        1
+      ],
+      "humidity": [
+        -1,
+        1
+      ],
+      "continentalness": [
+        -0.11,
+        1
+      ]
+    },
+    {
+      "erosion": [
+        -1,
+        1
+      ],
+      "depth": 0,
+      "weirdness": [
+        0.16,
+        1
+      ],
+      "offset": 0,
+      "temperature": [
+        -1,
+        1
+      ],
+      "humidity": [
+        -1,
+        1
+      ],
+      "continentalness": [
+        -0.11,
+        1
+      ]
+    }
+  ]
 }

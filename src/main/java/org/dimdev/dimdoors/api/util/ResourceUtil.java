@@ -81,7 +81,7 @@ public class ResourceUtil {
 	}
 
 	public static  <K, T, M extends Map<K, T>> CompletableFuture<M> loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, Identifier, K> keyProvider) {
-		Map<Identifier, Resource> ids = manager.findResources(startingPath, str -> str.getNamespace().endsWith(extension));
+		Map<Identifier, Resource> ids = manager.findResources(startingPath, str -> str.getPath().endsWith(extension));
 		return CompletableFuture.supplyAsync(() -> {
 			map.putAll(ids.entrySet().parallelStream().unordered().collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
 					id -> keyProvider.apply(startingPath, id.getKey()),

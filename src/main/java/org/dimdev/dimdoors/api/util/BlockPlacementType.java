@@ -3,13 +3,14 @@ package org.dimdev.dimdoors.api.util;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public enum BlockPlacementType {
+public enum BlockPlacementType implements StringIdentifiable {
 	// TODO: do we need some update fluids only option?
 	SECTION_NO_UPDATE_QUEUE_BLOCK_ENTITY("section_no_update_queue_block_entity", true, false, BlockPlacementType::queueBlockEntity),
 	SECTION_NO_UPDATE("section_no_update", true, false, World::addBlockEntity),
@@ -18,6 +19,8 @@ public enum BlockPlacementType {
 	SET_BLOCK_STATE_QUEUE_BLOCK_ENTITY("set_block_state_queue_block_entity", false, false, BlockPlacementType::queueBlockEntity);
 
 	private final static Map<String, BlockPlacementType> idMap = new HashMap<>();
+
+	public static final Codec<BlockPlacementType> CODEC = StringIdentifiable.createCodec(BlockPlacementType::values);
 
 	static {
 		for (BlockPlacementType type : BlockPlacementType.values()) {
@@ -61,5 +64,10 @@ public enum BlockPlacementType {
 	private static void queueBlockEntity(World world, BlockEntity blockEntity) {
 		MinecraftServer server = world.getServer();
 		server.send(new ServerTask(server.getTicks(), () -> world.addBlockEntity(blockEntity)));
+	}
+
+	@Override
+	public String asString() {
+		return id;
 	}
 }

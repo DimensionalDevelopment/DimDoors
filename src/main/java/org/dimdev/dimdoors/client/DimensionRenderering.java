@@ -1,26 +1,19 @@
 package org.dimdev.dimdoors.client;
 
-import java.util.List;
-
 import com.mojang.blaze3d.systems.RenderSystem;
-import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
-
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.BufferRenderer;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
 
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
+import java.util.List;
 
 public class DimensionRenderering {
     private static final Identifier MOON_RENDER_PATH = new Identifier("dimdoors:textures/other/limbo_moon.png");
@@ -88,7 +81,6 @@ public class DimensionRenderering {
         bufferBuilder.vertex(matrix4f, s, 100.0F, -s).texture(1.0F, 0.0F).next();
         bufferBuilder.vertex(matrix4f, s, 100.0F, s).texture(1.0F, 1.0F).next();
         bufferBuilder.vertex(matrix4f, -s, 100.0F, s).texture(0.0F, 1.0F).next();
-        bufferBuilder.end();
 		tessellator.draw();
 //        BufferRenderer.draw(bufferBuilder);
         RenderSystem.setShaderTexture(0, MOON_RENDER_PATH);
@@ -97,7 +89,6 @@ public class DimensionRenderering {
         bufferBuilder.vertex(matrix4f, s, -100.0F, -s).texture(1.0F, 0.0F).next();
         bufferBuilder.vertex(matrix4f, s, -100.0F, s).texture(1.0F, 1.0F).next();
         bufferBuilder.vertex(matrix4f, -s, -100.0F, s).texture(0.0F, 1.0F).next();
-        bufferBuilder.end();
 		tessellator.draw();
 //        BufferRenderer.draw(bufferBuilder);
 

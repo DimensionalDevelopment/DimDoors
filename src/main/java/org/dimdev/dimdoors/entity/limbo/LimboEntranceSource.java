@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.entity.limbo;
 
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.message.MessageType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -12,7 +11,7 @@ public abstract class LimboEntranceSource {
 	public abstract Text getMessage(PlayerEntity player);
 
 	public void broadcast(PlayerEntity player, MinecraftServer server) {
-		server.getPlayerManager().broadcast(this.getMessage(player), MessageType.SYSTEM);
+		server.getPlayerManager().broadcast(this.getMessage(player), false);
 	}
 
 	public static LimboDeathEntranceSource ofDamageSource(DamageSource source) {

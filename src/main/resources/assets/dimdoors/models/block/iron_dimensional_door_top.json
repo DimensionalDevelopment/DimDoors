@@ -1,8 +1,0 @@
-{
-  "parent": "block/door_top",
-  "textures": {
-    "bottom": "dimdoors:block/iron_dimensional_door_lower",
-    "top": "dimdoors:block/iron_dimensional_door_upper",
-    "particle": "dimdoors:block/iron_dimensional_door_lower"
-  }
-}

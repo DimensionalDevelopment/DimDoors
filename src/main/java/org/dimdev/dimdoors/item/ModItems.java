@@ -1,7 +1,11 @@
 package org.dimdev.dimdoors.item;
 
-import java.util.Collections;
-
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.*;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
@@ -11,21 +15,7 @@ import org.dimdev.matrix.Matrix;
 import org.dimdev.matrix.Registrar;
 import org.dimdev.matrix.RegistryEntry;
 
-import net.minecraft.block.Block;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import java.util.Collections;
 
 @SuppressWarnings("unused")
 @Registrar(element = Item.class, modid = "dimdoors")
@@ -232,10 +222,10 @@ public final class ModItems {
 	public static final Item UNRAVELLED_FABRIC = create(ModBlocks.UNRAVELLED_FABRIC);
 
 	@RegistryEntry("creepy_record")
-	public static final Item CREEPY_RECORD = create(new MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item CREEPY_RECORD = create(new net.minecraft.item.MusicDiscItem(10, ModSoundEvents.CREEPY, new Item.Settings().group(DIMENSIONAL_DOORS), 317));
 
 	@RegistryEntry("white_void_record")
-	public static final Item WHITE_VOID_RECORD = create(new MusicDiscItem(10, ModSoundEvents.WHITE_VOID, new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item WHITE_VOID_RECORD = create(new net.minecraft.item.MusicDiscItem(10, ModSoundEvents.WHITE_VOID, new Item.Settings().group(DIMENSIONAL_DOORS), 225));
 
 	@RegistryEntry("marking_plate")
 	public static final Item MARKING_PLATE = createWithoutItemGroup(ModBlocks.MARKING_PLATE);
@@ -278,11 +268,5 @@ public final class ModItems {
 
 	public static void init() {
 		Matrix.register(ModItems.class, Registry.ITEM);
-	}
-
-	private static class MusicDiscItem extends net.minecraft.item.MusicDiscItem {
-		protected MusicDiscItem(int comparatorOutput, SoundEvent soundEvent, Settings settings) {
-			super(comparatorOutput, soundEvent, settings);
-		}
 	}
 }

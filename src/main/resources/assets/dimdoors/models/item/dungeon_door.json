@@ -1,3 +1,6 @@
 {
-  "parent": "dimdoors:item/stone_door"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dimdoors:item/stone_door"
+  }
 }

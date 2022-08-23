@@ -3,6 +3,7 @@
   "package": "org.dimdev.dimdoors.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "ArgumentTypesMixin",
     "BlockMixin",
     "EntityMixin",
     "ExplosionMixin",

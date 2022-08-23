@@ -11,7 +11,7 @@ import net.minecraft.text.TranslatableTextContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
-import org.dimdev.dimdoors.command.arguments.EnumArgumentType;
+import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
 import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
@@ -41,8 +41,8 @@ public class PocketCommand {
 																argument("pocket_template", new PocketTemplateArgumentType())
 																		.executes(ctx -> place(ctx.getSource().getPlayer(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementType.SECTION_NO_UPDATE))
 																		.then(
-																				argument("placement_type", new EnumArgumentType<>(BlockPlacementType.class))
-																						.executes(ctx -> place(ctx.getSource().getPlayer(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), ctx.getArgument("placement_type", BlockPlacementType.class)))
+																				argument("placement_type", new BlockPlacementTypeArgumentType())
+																						.executes(ctx -> place(ctx.getSource().getPlayer(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementTypeArgumentType.getBlockPlacementType(ctx, "placement_type")))
 																		)
 														)
 										)

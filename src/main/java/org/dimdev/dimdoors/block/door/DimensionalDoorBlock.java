@@ -111,11 +111,11 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 
 		// TODO: replace with dimdoor cooldown?
-		if (entity.hasNetherPortalCooldown()) {
-			entity.resetNetherPortalCooldown();
+		if (entity.hasPortalCooldown()) {
+			entity.resetPortalCooldown();
 			return ActionResult.PASS;
 		}
-		entity.resetNetherPortalCooldown();
+		entity.resetPortalCooldown();
 
 
 		this.getRift(world, pos, state).teleport(entity);
