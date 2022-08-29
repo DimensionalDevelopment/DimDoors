@@ -3,18 +3,23 @@ package org.dimdev.dimdoors.item;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.entity.MaskEntity;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
 
 import java.util.List;
 
@@ -38,8 +43,9 @@ import static net.fabricmc.api.EnvType.CLIENT;
 			return TypedActionResult.fail(stack);
 		} else {
 			if(hit.getType().equals(HitResult.Type.BLOCK)) {
-//				MaskEntity mask = ModEntityTypes.MASK.create((ServerWorld) world, null, LiteralText.EMPTY, player, ((BlockHitResult) hit).getBlockPos(), SpawnReason.SPAWNER, true, false);
-//				world.spawnEntity(mask);
+				MaskEntity mask = ModEntityTypes.MASK.create((ServerWorld) world, null, Text.empty(), player, ((BlockHitResult) hit).getBlockPos(), SpawnReason.SPAWNER, true, false);
+
+				world.spawnEntity(mask);
 			}
 		}
 

@@ -146,6 +146,8 @@ dependencies {
 		exclude module: "fabric-api"
 	}
 
+	modImplementation "curse.maven:geckolib-388172:3950254"
+
 //	modCompileOnly("mcp.mobius.waila:wthit:fabric-4.8.0") {
 //		exclude module: "modmenu"
 //		exclude module: "fabric-api"
