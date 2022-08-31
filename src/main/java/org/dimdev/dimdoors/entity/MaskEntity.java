@@ -4,12 +4,9 @@ import dev.onyxstudios.cca.api.v3.util.NbtSerializable;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.entity.ai.MaskPatrolMove;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -68,11 +65,6 @@ public class MaskEntity extends PathAwareEntity implements IAnimatable { // TODO
 		nbt.put("patrolData", patrolData.toTag(new NbtCompound()));
 	}
 
-	@Nullable
-	@Override
-	protected SoundEvent getDeathSound() {
-		return ModSoundEvents.MASK_CRACK;
-	}
 
 	public static final class PatrolData implements NbtSerializable {
 		private List<BlockPos> points;
