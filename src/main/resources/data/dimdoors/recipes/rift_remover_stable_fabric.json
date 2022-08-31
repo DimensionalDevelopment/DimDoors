@@ -7,7 +7,7 @@
   ],
   "key": {
     "#": {
-      "item": "minecraft:gold_ingot"
+      "tag": "c:gold_ingots"
     },
     "X": {
       "item": "dimdoors:stable_fabric"
