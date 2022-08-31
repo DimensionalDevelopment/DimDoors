@@ -18,7 +18,14 @@
     {
       "type": "dimdoors:relative",
       "point_a": 1,
-      "point_b": 3
+      "point_b": 0,
+      "connection": "one_way"
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 3,
+      "point_b": 2,
+
     }
   ]
 }
