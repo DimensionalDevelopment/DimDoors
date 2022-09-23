@@ -3,8 +3,6 @@ package org.dimdev.dimdoors.item;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.DoorBlock;
@@ -29,7 +27,6 @@ import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
-import org.dimdev.dimdoors.listener.ItemRegistryEntryAddedListener;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
 
 import java.util.ArrayList;
@@ -50,9 +47,10 @@ public class DimensionalDoorItemRegistrar {
 
 	public DimensionalDoorItemRegistrar(Registry<Item> registry) {
 		this.registry = registry;
-
-		init();
-		RegistryEntryAddedCallback.event(registry).register(new ItemRegistryEntryAddedListener(this));
+	}
+	
+	public void run() {
+		new ArrayList<>(registry.getEntrySet()).forEach(en -> handleEntry(en.getKey().getValue(), en.getValue()));
 	}
 
 	public boolean isRegistered(Item item) {
@@ -61,11 +59,6 @@ public class DimensionalDoorItemRegistrar {
 
 	public ActionResult place(Item item, ItemPlacementContext context) {
 		return placementFunctions.get(item).apply(context);
-	}
-
-	private void init() {
-		new ArrayList<>(registry.getEntrySet())
-				.forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
 	}
 
 	public void handleEntry(Identifier identifier, Item original) {

@@ -4,7 +4,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.*;
@@ -19,7 +18,6 @@ import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
-import org.dimdev.dimdoors.listener.BlockRegistryEntryAddedListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,14 +35,10 @@ public class DimensionalDoorBlockRegistrar {
 	public DimensionalDoorBlockRegistrar(Registry<Block> registry, DimensionalDoorItemRegistrar itemRegistrar) {
 		this.registry = registry;
 		this.itemRegistrar = itemRegistrar;
-
-		init();
-		RegistryEntryAddedCallback.event(registry).register(new BlockRegistryEntryAddedListener(this));
 	}
-
-	private void init() {
-		new ArrayList<>(registry.getEntrySet())
-				.forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
+	
+	public void run() {
+		new ArrayList<>(registry.getEntrySet()).forEach(en -> handleEntry(en.getKey().getValue(), en.getValue()));
 	}
 
 	public void handleEntry(Identifier identifier, Block original) {

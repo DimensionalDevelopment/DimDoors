@@ -25,6 +25,9 @@
     "main": [
       "org.dimdev.dimdoors.DimensionalDoorsInitializer"
     ],
+    "server": [
+      "org.dimdev.dimdoors.DimensionalDoorsServerInitializer"
+    ],
     "client": [
       "org.dimdev.dimdoors.client.DimensionalDoorsClientInitializer"
     ],

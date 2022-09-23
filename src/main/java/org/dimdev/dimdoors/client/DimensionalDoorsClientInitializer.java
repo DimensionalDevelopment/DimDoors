@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.client;
 
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -18,6 +20,9 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegi
 public class DimensionalDoorsClientInitializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+    	DimensionalDoorsInitializer.getDimensionalDoorBlockRegistrar().run();
+		DimensionalDoorsInitializer.getDimensionalDoorItemRegistrar().run();
+    	
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider((manager) -> new DimensionalDoorModelVariantProvider());
 
         ModEntityTypes.initClient();
