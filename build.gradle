@@ -1,3 +1,4 @@
+//file:noinspection GroovyImplicitNullArgumentCall
 plugins {
 	id "java"
 	id "fabric-loom" version "0.12-SNAPSHOT"
@@ -156,7 +157,7 @@ dependencies {
 	modCompileOnly "curse.maven:worldedit-225608:3836903"
 	modCompileOnly "curse.maven:wthit-440979:3841975"
 
-	testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
+	testImplementation('org.junit.jupiter:junit-jupiter:5.9.0')
 //	testImplementation("junit:junit:4.13.2")
 //	testImplementation("net.devtech:PotatoUnit:1.0.2")
 }
@@ -205,10 +206,10 @@ curseforge {
 		id = "284876"
 		changelog = file("changelog.txt").text
 		releaseType = "beta"
-		addGameVersion "1.18.2"
+		addGameVersion "1.19.2"
 		addGameVersion "Fabric"
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[1.18.2] Dimensional Doors ${version}"
+			displayName = "[1.19.2] Dimensional Doors ${version}"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")

@@ -1,12 +1,26 @@
 package org.dimdev.dimdoors.entity;
 
-import dev.onyxstudios.cca.api.v3.util.NbtSerializable;
+import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.WanderAroundGoal;
+import net.minecraft.entity.ai.goal.WanderAroundPointOfInterestGoal;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.LocalDifficulty;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.entity.ai.MaskPatrolMove;
+import org.dimdev.dimdoors.entity.ai.mask.MaskWanderGoal;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -15,28 +29,50 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
+public class AbstractMaskEntity extends PathAwareEntity implements IAnimatable { // TODO
 
-public class MaskEntity extends PathAwareEntity implements IAnimatable { // TODO
-    private AnimationFactory factory = new AnimationFactory(this);
-	private PatrolData patrolData;
+	private static final TrackedData<Integer> AI_MODE = DataTracker.registerData(AbstractMaskEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    private final AnimationFactory factory = new AnimationFactory(this);
+	private Pocket pocket;
+	private BlockPos pocketOrigin;
+	private BlockBox pocketBounds;
 
-    protected MaskEntity(EntityType<? extends MaskEntity> entityType, World world) {
+	private int
+
+    protected AbstractMaskEntity(EntityType<? extends AbstractMaskEntity> entityType, World world) {
         super(entityType, world);
-		patrolData = new PatrolData(this.getBlockPos(), List.of(new BlockPos(0, 0, 0), new BlockPos(0, 0, 10)));
     }
+
+	public static DefaultAttributeContainer.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 50.0);
+	}
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         event.getController().setAnimation(new AnimationBuilder().addAnimation("animation.mask.hover", true));
         return PlayState.CONTINUE;
     }
 
+	public void initializeInPocket(Pocket pocket, double xOffset, double yOffset, double zOffset) {
+		this.pocketOrigin = pocket.getOrigin();
+		this.pocketBounds = pocket.getBox();
+		this.setPosition(this.pocketOrigin.getX()+xOffset,this.pocketOrigin.getY()+yOffset,this.pocketOrigin.getZ()+zOffset);
+	}
+
+	@Override
+	public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityNbt) {
+		setNoGravity(true);
+		return super.initialize(world, difficulty, spawnReason, entityData, entityNbt);
+	}
+
 	@Override
 	protected void initGoals() {
-		goalSelector.add(0, new MaskPatrolMove(this));
+		goalSelector.add(0, new WanderAroundGoal(this,0.5d));
+	}
+
+	@Override
+	protected void initDataTracker() {
+		super.initDataTracker();
+		this.dataTracker.startTracking(AI_MODE,0);
 	}
 
 	@Override
@@ -49,23 +85,27 @@ public class MaskEntity extends PathAwareEntity implements IAnimatable { // TODO
         return this.factory;
     }
 
-	public PatrolData getPatrolData() {
-		return patrolData;
+	public BlockPos getPocketOrigin() {
+		return this.pocketOrigin;
+	}
+
+	public BlockBox getPocketBounds() {
+		return this.pocketBounds;
 	}
 
 	@Override
 	public void readCustomDataFromNbt(NbtCompound nbt) {
 		super.readCustomDataFromNbt(nbt);
-		patrolData.fromTag(nbt.getCompound("patrolData"));
 	}
 
 	@Override
 	public void writeCustomDataToNbt(NbtCompound nbt) {
 		super.writeCustomDataToNbt(nbt);
-		nbt.put("patrolData", patrolData.toTag(new NbtCompound()));
 	}
 
+	/*
 
+	@SuppressWarnings("UnstableApiUsage")
 	public static final class PatrolData implements NbtSerializable {
 		private List<BlockPos> points;
 		private BlockPos origin;
@@ -105,11 +145,12 @@ public class MaskEntity extends PathAwareEntity implements IAnimatable { // TODO
 		}
 
 		@Override
-		public NbtCompound toTag(NbtCompound nbtCompound) {
+		public @NotNull NbtCompound toTag(NbtCompound nbtCompound) {
 			nbtCompound.putLong("origin", origin.asLong());
 			nbtCompound.putLongArray("points", points.stream().map(BlockPos::asLong).collect(Collectors.toList()));
 			nbtCompound.putInt("index", index);
 			return nbtCompound;
 		}
 	}
+	 */
 }

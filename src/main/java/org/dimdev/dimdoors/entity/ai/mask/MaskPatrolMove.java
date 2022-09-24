@@ -1,13 +1,18 @@
-package org.dimdev.dimdoors.entity.ai;
+package org.dimdev.dimdoors.entity.ai.mask;
 
 import net.minecraft.entity.ai.goal.MoveToTargetPosGoal;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldView;
-import org.dimdev.dimdoors.entity.MaskEntity;
+import org.dimdev.dimdoors.entity.AbstractMaskEntity;
 
 public class MaskPatrolMove extends MoveToTargetPosGoal {
-	public MaskPatrolMove(MaskEntity mob) {
+	public MaskPatrolMove(AbstractMaskEntity mob) {
 		super(mob, 0.1f, 1000);
+	}
+
+	@Override
+	public boolean canStart() {
+		return false;
 	}
 
 	@Override
@@ -15,9 +20,7 @@ public class MaskPatrolMove extends MoveToTargetPosGoal {
 		super.tick();
 
 		if(hasReached()) {
-			System.out.println("Current State: " + targetPos);
-			targetPos = ((MaskEntity) mob).getPatrolData().getNextTarget();
-			System.out.println("Next State: " + targetPos);
+
 		}
 	}
 
@@ -28,7 +31,6 @@ public class MaskPatrolMove extends MoveToTargetPosGoal {
 
 	@Override
 	protected boolean findTargetPos() {
-		targetPos = ((MaskEntity) mob).getPatrolData().getCurrentTarget();
 		return true;
 	}
 

@@ -1,21 +1,19 @@
 package org.dimdev.dimdoors.entity;
 
+import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.util.math.Box;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
+import org.dimdev.dimdoors.entity.ai.monolith.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
@@ -70,6 +68,10 @@ public class MonolithEntity extends MobEntity {
 
         this.setInvulnerable(true);
     }
+
+	public static DefaultAttributeContainer.Builder createMobAttributes() {
+		return LivingEntity.createLivingAttributes().add(EntityAttributes.GENERIC_FOLLOW_RANGE, 16.0).add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK);
+	}
 
     public boolean isDangerous() {
         return DimensionalDoorsInitializer.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || DimensionalDoorsInitializer.getConfig().getMonolithsConfig().dangerousLimboMonoliths);

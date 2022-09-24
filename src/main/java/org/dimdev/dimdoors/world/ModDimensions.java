@@ -34,6 +34,10 @@ public final class ModDimensions {
         return isPocketDimension(world.getRegistryKey());
     }
 
+	public static boolean isDungeonPocketDimension(World world) {
+		return world != null && world == DUNGEON_POCKET_DIMENSION;
+	}
+
     public static boolean isPrivatePocketDimension(World world) {
 		return world != null && world == PERSONAL_POCKET_DIMENSION;
     }

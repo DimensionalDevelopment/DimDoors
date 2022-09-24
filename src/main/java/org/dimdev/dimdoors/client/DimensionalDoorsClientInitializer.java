@@ -25,6 +25,7 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
 //        ModBlockEntityTypes.initClient();
 		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT, ctx -> new EntranceRiftBlockEntityRenderer());
 		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT, ctx -> new DetachedRiftBlockEntityRenderer());
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.FAKE_BLOCK, ctx -> new FakeBlockRenderer());
         ModBlocks.initClient();
 		ModEntityModelLayers.initClient();
 		ModParticleTypes.initClient();
@@ -37,8 +38,6 @@ public class DimensionalDoorsClientInitializer implements ClientModInitializer {
     private void registerListeners() {
 		ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> ((ExtendedClientPlayNetworkHandler) handler).getDimDoorsPacketHandler().init());
 
-		ClientPlayConnectionEvents.DISCONNECT.register(((handler, client) -> {
-			((ExtendedClientPlayNetworkHandler) handler).getDimDoorsPacketHandler().unregister();
-		}));
+		ClientPlayConnectionEvents.DISCONNECT.register(((handler, client) -> ((ExtendedClientPlayNetworkHandler) handler).getDimDoorsPacketHandler().unregister()));
 	}
 }

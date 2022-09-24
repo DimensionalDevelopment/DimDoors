@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.entity.ai;
+package org.dimdev.dimdoors.entity.ai.monolith;
 
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;

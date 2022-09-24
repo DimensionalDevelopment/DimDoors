@@ -18,7 +18,6 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 
 import java.util.List;
@@ -28,7 +27,7 @@ import static net.fabricmc.api.EnvType.CLIENT;
 	public class MaskWandItem extends Item {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	public static final String ID = "rift_configuration_tool";
+	public static final String ID = "mask_wand_tool";
 
 	public MaskWandItem(Settings settings) {
 		super(settings);
@@ -42,11 +41,8 @@ import static net.fabricmc.api.EnvType.CLIENT;
 		if (world.isClient) {
 			return TypedActionResult.fail(stack);
 		} else {
-			if(hit.getType().equals(HitResult.Type.BLOCK)) {
-				MaskEntity mask = ModEntityTypes.MASK.create((ServerWorld) world, null, Text.empty(), player, ((BlockHitResult) hit).getBlockPos(), SpawnReason.SPAWNER, true, false);
-
-				world.spawnEntity(mask);
-			}
+			if(hit.getType().equals(HitResult.Type.BLOCK))
+				ModEntityTypes.CYCLOPS_MASK.spawn((ServerWorld) world, null, Text.empty(), player, ((BlockHitResult) hit).getBlockPos(), SpawnReason.SPAWNER, true, false);
 		}
 
 		return TypedActionResult.success(stack);
