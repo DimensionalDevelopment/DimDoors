@@ -1,27 +1,30 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import java.util.Optional;
+import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
-
-import com.google.common.base.MoreObjects;
+import net.minecraft.util.StringIdentifiable;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.LocalReference;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
-import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.Optional;
 
 public class RelativeReferenceModifier extends AbstractModifier {
 	public static final String KEY = "relative";
 
 	private int point_a, point_b;
+	private ConnectionType connection = ConnectionType.BOTH;
 
 	@Override
 	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
 		point_a = nbt.getInt("point_a");
 		point_b = nbt.getInt("point_b");
+		connection = nbt.contains("connection") ? ConnectionType.valueOf(nbt.getString("connection")) : ConnectionType.BOTH;
 		return this;
 	}
 
@@ -30,6 +33,7 @@ public class RelativeReferenceModifier extends AbstractModifier {
 		super.toNbtInternal(nbt, allowReference);
 		nbt.putInt("point_a", point_a);
 		nbt.putInt("point_b", point_b);
+		nbt.putString("connection", connection.asString());
 		return nbt;
 	}
 
@@ -53,7 +57,8 @@ public class RelativeReferenceModifier extends AbstractModifier {
 			RiftReference link2 = LocalReference.tryMakeRelative(riftB.get(), riftA.get());
 
 			manager.consume(point_a, rift -> addLink(rift, link1));
-			manager.consume(point_b, rift -> addLink(rift, link2));
+
+			if(connection == ConnectionType.BOTH) manager.consume(point_b, rift -> addLink(rift, link2));
 		}
 	}
 
@@ -67,11 +72,28 @@ public class RelativeReferenceModifier extends AbstractModifier {
 		return MoreObjects.toStringHelper(this)
 				.add("point_a", point_a)
 				.add("point_b", point_b)
+				.add("connection", connection.asString())
 				.toString();
 	}
 
 	private boolean addLink(RiftBlockEntity rift, RiftReference link) {
 		rift.setDestination(link);
 		return true;
+	}
+
+	public enum ConnectionType implements StringIdentifiable {
+		BOTH("both"),
+		ONE_WAY("one_way");
+
+		private String id;
+
+		ConnectionType(String id) {
+			this.id = id;
+		}
+
+		@Override
+		public String asString() {
+			return id;
+		}
 	}
 }
