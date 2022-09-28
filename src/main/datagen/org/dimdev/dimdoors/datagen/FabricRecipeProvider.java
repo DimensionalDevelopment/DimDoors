@@ -1,20 +1,19 @@
 package org.dimdev.dimdoors.datagen;
 
-import java.util.Map;
-import java.util.function.Consumer;
-
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.minecraft.advancement.criterion.InventoryChangedCriterion;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
+import net.minecraft.item.DyeItem;
+import net.minecraft.util.DyeColor;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
-import net.minecraft.advancement.criterion.InventoryChangedCriterion;
-import net.minecraft.block.Block;
-import net.minecraft.item.DyeItem;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class FabricRecipeProvider extends net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider {
 
@@ -31,7 +30,7 @@ public class FabricRecipeProvider extends net.fabricmc.fabric.api.datagen.v1.pro
 				.pattern("XX")
 				.input('X', Blocks.STONE)
 				.criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Blocks.STONE))
-				.offerTo(exporter, new Identifier("dimdoors", "stone_door"));
+				.offerTo(exporter, Util.id("stone_door"));
 
 		for (Map.Entry<DyeColor, Block> entry : ModBlocks.FABRIC_BLOCKS.entrySet()) {
 			DyeColor dyeColor = entry.getKey();
@@ -44,7 +43,7 @@ public class FabricRecipeProvider extends net.fabricmc.fabric.api.datagen.v1.pro
 					.pattern(" X ")
 					.input('X', ModItems.WORLD_THREAD)
 					.input('D', DyeItem.byColor(dyeColor))
-					.offerTo(exporter, new Identifier("dimdoors", dyeColor.getName() + "_fabric"));
+					.offerTo(exporter, Util.id(dyeColor.getName() + "_fabric"));
 		}
 	}
 

@@ -1,29 +1,29 @@
 package org.dimdev.dimdoors.pockets;
 
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-
-import net.minecraft.server.world.ServerWorld;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public final class PocketGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final Identifier ALL_DUNGEONS = new Identifier("dimdoors", "dungeon");
-    public static final Identifier NETHER_DUNGEONS = new Identifier("dimdoors", "nether");
-	public static final Identifier RUINS_DUNGEONS = new Identifier("dimdoors", "ruins");
-	public static final Identifier ATLANTIS_DUNGEONS = new Identifier("dimdoors", "atlantis");
-	public static final Identifier JUNGLE_DUNGEONS = new Identifier("dimdoors", "jungle");
-	public static final Identifier SNOW_DUNGEONS = new Identifier("dimdoors", "snow");
-	public static final Identifier PYRAMID_DUNGEONS = new Identifier("dimdoors", "pyramid");
-	public static final Identifier END_DUNGEONS = new Identifier("dimdoors", "end");
+    public static final Identifier ALL_DUNGEONS = Util.id("dungeon");
+    public static final Identifier NETHER_DUNGEONS = Util.id("nether");
+	public static final Identifier RUINS_DUNGEONS = Util.id("ruins");
+	public static final Identifier ATLANTIS_DUNGEONS = Util.id("atlantis");
+	public static final Identifier JUNGLE_DUNGEONS = Util.id("jungle");
+	public static final Identifier SNOW_DUNGEONS = Util.id("snow");
+	public static final Identifier PYRAMID_DUNGEONS = Util.id("pyramid");
+	public static final Identifier END_DUNGEONS = Util.id("end");
 
     /*
     private static Pocket prepareAndPlacePocket(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
@@ -38,11 +38,11 @@ public final class PocketGenerator {
 
 
     public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
-		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), new Identifier("dimdoors", "private"), virtualLocation, null, null);
+		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PERSONAL), Util.id("private"), virtualLocation, null, null);
     }
 
     public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-        return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), new Identifier("dimdoors", "public"), virtualLocation, linkTo, linkProperties);
+        return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.PUBLIC), Util.id("public"), virtualLocation, linkTo, linkProperties);
     }
 
     public static Pocket generateFromPocketGroupV2(ServerWorld world, Identifier group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
@@ -55,7 +55,7 @@ public final class PocketGenerator {
 	}
 
 	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), new Identifier("dimdoors", "dungeon"), virtualLocation, linkTo, linkProperties);
+		return generateFromPocketGroupV2(DimensionalDoorsInitializer.getWorld(ModDimensions.DUNGEON), Util.id("dungeon"), virtualLocation, linkTo, linkProperties);
 	}
 
 	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, Identifier group) {

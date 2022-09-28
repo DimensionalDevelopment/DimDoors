@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.client;
 
-import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.Util;
 
 import org.dimdev.dimdoors.entity.MaskEntity;
 //import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -8,16 +8,16 @@ import org.dimdev.dimdoors.entity.MaskEntity;
 //public class MaskModel extends AnimatedGeoModel<MaskEntity> {
 //	@Override
 //	public Identifier getModelLocation(MaskEntity object) {
-//		return new Identifier("dimdoors:geo/mob/mask/mask.geo.json");
+//		return Util.id("geo/mob/mask/mask.geo.json");
 //	}
 //
 //	@Override
 //	public Identifier getTextureLocation(MaskEntity object) {
-//		return new Identifier("dimdoors:textures/mob/mask/mask.png");
+//		return Util.id("textures/mob/mask/mask.png");
 //	}
 //
 //	@Override
 //	public Identifier getAnimationFileLocation(MaskEntity animatable) {
-//		return new Identifier("dimdoors:animations/mob/mask/mask.animation.json");
+//		return Util.id("animations/mob/mask/mask.animation.json");
 //	}
 //}

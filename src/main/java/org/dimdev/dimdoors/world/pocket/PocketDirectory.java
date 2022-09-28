@@ -1,26 +1,26 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
+import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.jetbrains.annotations.TestOnly;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
-import net.minecraft.util.Pair;
-import net.minecraft.util.math.Vec3i;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.api.util.math.GridUtil;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
-import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.jetbrains.annotations.TestOnly;
 
 public class PocketDirectory {
 	int gridSize; // Determines how much pockets in their dimension are spaced

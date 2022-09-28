@@ -1,13 +1,12 @@
 package org.dimdev.dimdoors.mixin;
 
-import java.util.Objects;
-
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryKey;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKey;
+import java.util.Objects;
 
 @Mixin(RegistryKey.class)
 public class RegistryKeyMixin {

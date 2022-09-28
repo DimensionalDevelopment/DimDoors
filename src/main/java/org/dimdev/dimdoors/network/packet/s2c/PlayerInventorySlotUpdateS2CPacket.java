@@ -5,14 +5,14 @@ import net.fabricmc.api.Environment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-
-import org.dimdev.dimdoors.network.client.ClientPacketListener;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.network.SimplePacket;
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 import java.io.IOException;
 
 public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPacketListener> {
-	public static final Identifier ID = new Identifier("dimdoors:player_inventory_slot_update");
+	public static final Identifier ID = Util.id("player_inventory_slot_update");
 
 	private int slot;
 	private ItemStack stack;

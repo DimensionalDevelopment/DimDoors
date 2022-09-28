@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.entity.stat;
 
-import org.dimdev.dimdoors.mixin.accessor.StatsAccessor;
-
 import net.minecraft.stat.StatFormatter;
 import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.mixin.accessor.StatsAccessor;
 
 public class ModStats {
 	public static final Identifier DEATHS_IN_POCKETS = StatsAccessor.invokeRegister("dimdoors:deaths_in_pocket", StatFormatter.DEFAULT);

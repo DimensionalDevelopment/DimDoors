@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.world.feature.ModFeatures;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
-import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.Util;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -64,10 +64,10 @@ public final class ModBiomes {
 				.spawnSettings(new SpawnSettings.Builder().build())
 				.temperature(0.8f)
 				.temperatureModifier(Biome.TemperatureModifier.NONE);
-        PERSONAL_WHITE_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:white_void"));
-        PUBLIC_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:black_void"));
-        DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors:dangerous_black_void"));
-        LIMBO_KEY = RegistryKey.of(Registry.BIOME_KEY, new Identifier("dimdoors", "limbo"));
+        PERSONAL_WHITE_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, Util.id("white_void"));
+        PUBLIC_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, Util.id("black_void"));
+        DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, Util.id("dangerous_black_void"));
+        LIMBO_KEY = RegistryKey.of(Registry.BIOME_KEY, Util.id("limbo"));
         PERSONAL_WHITE_VOID_BIOME = voidBiomeBuilder.effects(createEffect(true)).build();
         PUBLIC_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
         DUNGEON_DANGEROUS_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();

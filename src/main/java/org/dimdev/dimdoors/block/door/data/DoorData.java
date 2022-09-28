@@ -1,29 +1,27 @@
 package org.dimdev.dimdoors.block.door.data;
 
-import java.util.*;
-import java.util.function.Consumer;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.item.ItemGroup;
-import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.item.DimensionalDoorItem;
-import org.dimdev.dimdoors.item.ItemExtensions;
-
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
-
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.util.TriState;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.item.DimensionalDoorItem;
+import org.dimdev.dimdoors.item.ItemExtensions;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.mixin.accessor.ItemGroupAccessor;
+
+import java.util.*;
+import java.util.function.Consumer;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public final class DoorData implements AutoCloseable {

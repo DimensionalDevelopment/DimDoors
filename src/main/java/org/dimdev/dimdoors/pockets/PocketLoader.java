@@ -1,25 +1,22 @@
 package org.dimdev.dimdoors.pockets;
 
-import java.util.*;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.api.util.*;
+import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.util.schematic.Schematic;
+
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.nbt.*;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.NbtUtil;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.api.util.SimpleTree;
-import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
-import org.dimdev.dimdoors.api.util.WeightedList;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.util.schematic.Schematic;
 
 public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -133,6 +130,6 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 
 	@Override
 	public Identifier getFabricId() {
-		return new Identifier("dimdoors", "schematics_v2");
+		return Util.id("schematics_v2");
 	}
 }

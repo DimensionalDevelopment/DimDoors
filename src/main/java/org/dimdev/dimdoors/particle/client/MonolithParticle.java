@@ -16,7 +16,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
-import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.Util;
 import net.minecraft.util.math.Vec3f;
 
 import net.fabricmc.api.EnvType;
@@ -39,7 +39,7 @@ public class MonolithParticle extends Particle {
 		matrices.scale(-1.0F, -1.0F, 1.0F);
 		matrices.translate(0.0D, -1.1009999513626099D, 1.5D);
 		VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-		VertexConsumer vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().getLayer(new Identifier("dimdoors:textures/mob/monolith/monolith14.png")));
+		VertexConsumer vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().getLayer(Util.id("textures/mob/monolith/monolith14.png")));
 		MonolithRenderer.getInstance().render(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 		immediate.draw();
 	}

@@ -1,25 +1,24 @@
 package org.dimdev.dimdoors.world.decay;
 
-import java.util.function.Supplier;
-
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.nbt.NbtCompound;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
-import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
-
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.block.BlockState;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
+import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
 
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import java.util.function.Supplier;
 
 public interface DecayProcessor {
-    Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(new Identifier("dimdoors", "decay_processor_type")), Lifecycle.stable(), null)).buildAndRegister();
+    Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(Util.id("decay_processor_type")), Lifecycle.stable(), null)).buildAndRegister();
 
     DecayProcessor NONE = new DecayProcessor() {
         @Override
@@ -68,9 +67,9 @@ public interface DecayProcessor {
     int process(World world, BlockPos pos, BlockState origin, BlockState target);
 
     interface DecayProcessorType<T extends DecayProcessor> {
-        DecayProcessorType<SimpleDecayProcesor> SIMPLE_PROCESSOR_TYPE = register(new Identifier("dimdoors", SimpleDecayProcesor.KEY), SimpleDecayProcesor::new);
-        DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(new Identifier("dimdoors", "none"), () -> NONE);
-        DecayProcessorType<SelfDecayProcessor> SELF = register(new Identifier("dimdoors", SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
+        DecayProcessorType<SimpleDecayProcesor> SIMPLE_PROCESSOR_TYPE = register(Util.id(SimpleDecayProcesor.KEY), SimpleDecayProcesor::new);
+        DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(Util.id("none"), () -> NONE);
+        DecayProcessorType<SelfDecayProcessor> SELF = register(Util.id(SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
 
         DecayProcessor fromNbt(NbtCompound nbt);
 

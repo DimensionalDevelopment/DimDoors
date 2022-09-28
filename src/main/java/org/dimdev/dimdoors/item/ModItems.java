@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
-import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.Util;
 import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -24,7 +24,7 @@ public final class ModItems {
 	public static final Registry<Item> REGISTRY = Registry.ITEM;
 
 	public static final ItemGroup DIMENSIONAL_DOORS = FabricItemGroupBuilder
-			.create(new Identifier("dimdoors", "dimensional_doors"))
+			.create(Util.id("dimensional_doors"))
 			.icon(() -> new ItemStack(ModItems.RIFT_BLADE))
 			.build();
 

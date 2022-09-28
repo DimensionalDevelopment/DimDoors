@@ -1,17 +1,14 @@
 package org.dimdev.dimdoors.world.decay.predicates;
 
-import com.google.gson.JsonObject;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 import java.util.Set;
 

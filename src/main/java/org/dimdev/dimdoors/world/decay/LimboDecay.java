@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
@@ -136,7 +137,7 @@ public final class LimboDecay {
 
 		@Override
 		public Identifier getFabricId() {
-			return new Identifier("dimdoors", "decay_pattern");
+			return Util.id("decay_pattern");
 		}
 	}
 

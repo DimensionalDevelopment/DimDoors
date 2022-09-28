@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,13 +15,14 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.io.IOException;
 
 public class PreventBlockModificationAddon implements AutoSyncedAddon, AttackBlockCallback, PlayerBlockBreakEvents.Before, UseItemOnBlockCallback {
-	public static Identifier ID = new Identifier("dimdoors", "prevent_block_modification");
+	public static Identifier ID = Util.id("prevent_block_modification");
 
 	//AttackBlockCallback
 	@Override

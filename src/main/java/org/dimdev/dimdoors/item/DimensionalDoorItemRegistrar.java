@@ -22,6 +22,7 @@ import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.api.util.function.QuadFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
@@ -112,7 +113,7 @@ public class DimensionalDoorItemRegistrar {
 
 	private void register(Identifier identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
 		if (!DoorData.PARENT_ITEMS.contains(original)) {
-			Identifier gennedId = new Identifier("dimdoors", PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+			Identifier gennedId = Util.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
 			BlockItem item = Registry.register(registry, gennedId, dimItem.apply(block));
 			placementFunctions.put(original, item::place);
 			if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

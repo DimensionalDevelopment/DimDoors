@@ -1,19 +1,18 @@
 package org.dimdev.dimdoors.mixin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
-
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.structure.pool.StructurePoolElement;
+import net.minecraft.structure.processor.StructureProcessorLists;
+import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.structure.pool.StructurePoolElement;
-import net.minecraft.structure.processor.StructureProcessorLists;
-import net.minecraft.util.Identifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 
 @Mixin(StructurePool.class)
 public class StructurePoolMixin {

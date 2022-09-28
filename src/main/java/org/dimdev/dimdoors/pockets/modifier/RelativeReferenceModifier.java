@@ -24,7 +24,7 @@ public class RelativeReferenceModifier extends AbstractModifier {
 	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
 		point_a = nbt.getInt("point_a");
 		point_b = nbt.getInt("point_b");
-		connection = nbt.contains("connection") ? ConnectionType.valueOf(nbt.getString("connection")) : ConnectionType.BOTH;
+		connection = nbt.contains("connection") ? ConnectionType.fromString(nbt.getString("connection")) : ConnectionType.BOTH;
 		return this;
 	}
 
@@ -95,5 +95,10 @@ public class RelativeReferenceModifier extends AbstractModifier {
 		public String asString() {
 			return id;
 		}
+
+		public static ConnectionType fromString(String name) {
+			return "one_way".equals(name) ? ONE_WAY : BOTH;
+		}
+
 	}
 }

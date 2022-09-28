@@ -12,6 +12,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -50,7 +51,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	public SchematicGenerator(String id) {
 		this.id = id;
 
-		this.templateID = new Identifier("dimdoors", id);
+		this.templateID = Util.id(id);
 	}
 
 	public String getId() {
@@ -76,7 +77,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		super.fromNbt(nbt, manager);
 
 		this.id = nbt.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
-		this.templateID = new Identifier("dimdoors", id);
+		this.templateID = Util.id(id);
 		if (nbt.contains("origin", NbtType.INT_ARRAY)) {
 			int[] originInts = nbt.getIntArray("origin");
 			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);

@@ -1,18 +1,18 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import java.io.IOException;
-
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import java.io.IOException;
+
 public class SkyAddon implements AutoSyncedAddon {
-	public static Identifier ID = new Identifier("dimdoors", "sky");
+	public static Identifier ID = Util.id("sky");
 
 	private RegistryKey<World> world;
 

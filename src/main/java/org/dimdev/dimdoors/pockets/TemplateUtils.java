@@ -31,7 +31,7 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
@@ -64,10 +64,10 @@ public class TemplateUtils {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");
-            table = world.getServer().getLootManager().getTable(new Identifier("dimdoors:dungeon_chest"));
+            table = world.getServer().getLootManager().getTable(Util.id("dungeon_chest"));
         } else {
             logger.debug("Now populating dispenser.");
-            table = world.getServer().getLootManager().getTable(new Identifier("dimdoors:dispenser_projectiles"));
+            table = world.getServer().getLootManager().getTable(Util.id("dispenser_projectiles"));
         }
         LootContext ctx = new LootContext.Builder(world).random(world.random).parameter(LootContextParameters.ORIGIN, Vec3d.of(tile.getPos())).build(LootContextTypes.CHEST);
         table.supplyInventory(inventory, ctx);

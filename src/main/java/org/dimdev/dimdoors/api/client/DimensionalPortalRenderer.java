@@ -1,22 +1,16 @@
 package org.dimdev.dimdoors.api.client;
 
-import java.util.Collections;
-import net.minecraft.util.math.random.Random;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import org.dimdev.dimdoors.client.ModShaders;
-import org.dimdev.dimdoors.mixin.client.accessor.RenderLayerAccessor;
-
 import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.RenderPhase;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.client.ModShaders;
+
+import java.util.Collections;
 
 @Environment(EnvType.CLIENT)
 public final class DimensionalPortalRenderer {
@@ -41,7 +35,7 @@ public final class DimensionalPortalRenderer {
 	}
 
 	static {
-		WARP_PATH = new Identifier("dimdoors:textures/other/warp.png");
+		WARP_PATH = Util.id("textures/other/warp.png");
 		DIMENSIONAL_PORTAL_SHADER = new RenderPhase.Shader(ModShaders::getDimensionalPortal);
 		RENDER_LAYER = RenderLayerFactory.create(
 				"dimensional_portal",

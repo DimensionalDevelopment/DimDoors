@@ -1,17 +1,15 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
-import com.google.gson.JsonObject;
-import net.minecraft.state.property.Property;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
 import java.util.Set;
 import java.util.stream.Collectors;

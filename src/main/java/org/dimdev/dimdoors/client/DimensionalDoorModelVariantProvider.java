@@ -10,6 +10,7 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DimensionalDoorModelVariantProvider implements ModelVariantProvider {
-	private static final Identifier childItem = new Identifier("dimdoors:item/child_item");
+	private static final Identifier childItem = Util.id("item/child_item");
 
 	@Override
 	public @Nullable UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException {

@@ -9,18 +9,22 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.*;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.ProtoChunk;
+import net.minecraft.world.chunk.UpgradeData;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.chunk.Blender;
-
 import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.noise.NoiseConfig;
 import org.apache.logging.log4j.LogManager;
@@ -29,11 +33,11 @@ import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,12 +113,12 @@ public class ChunkGenerator extends PocketGenerator {
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_REFERENCES);
 		}
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.populateBiomes(genWorld.getRegistryManager().get(Registry.BIOME_KEY), Util.getMainWorkerExecutor(), config, Blender.getNoBlending(), genWorld.getStructureAccessor(), protoChunk);
+			genWorldChunkGenerator.populateBiomes(genWorld.getRegistryManager().get(Registry.BIOME_KEY), net.minecraft.util.Util.getMainWorkerExecutor(), config, Blender.getNoBlending(), genWorld.getStructureAccessor(), protoChunk);
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.BIOMES);
 		}
 		for (Chunk protoChunk : protoChunks) {
 			try {
-				genWorldChunkGenerator.populateNoise(Util.getMainWorkerExecutor(), Blender.getNoBlending(), config, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk).get();
+				genWorldChunkGenerator.populateNoise(net.minecraft.util.Util.getMainWorkerExecutor(), Blender.getNoBlending(), config, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk).get();
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}

@@ -1,29 +1,29 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.api.rift.target.Target;
-import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.RGBA;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.api.rift.target.Target;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.RGBA;
 
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A target that is not an actual object in the game such as a block or a block
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {
-	public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, SimpleRegistry<VirtualTargetType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("dimdoors", "virtual_type")), Lifecycle.stable(), null)).buildAndRegister();
+	public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, SimpleRegistry<VirtualTargetType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(Util.id("virtual_type")), Lifecycle.stable(), null)).buildAndRegister();
 	public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
 	protected Location location;

@@ -5,13 +5,14 @@ import net.fabricmc.api.Environment;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 import java.io.IOException;
 
 public class RenderBreakBlockS2CPacket implements SimplePacket<ClientPacketListener> {
-	public static final Identifier ID = new Identifier("dimdoors:render_break_block");
+	public static final Identifier ID = Util.id("render_break_block");
 
 	private BlockPos pos;
 	private int stage;

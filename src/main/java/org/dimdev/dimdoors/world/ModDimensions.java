@@ -1,26 +1,24 @@
 package org.dimdev.dimdoors.world;
 
-import java.util.Objects;
-
-import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
-
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import java.util.Objects;
 
 public final class ModDimensions {
-    public static final RegistryKey<World> LIMBO = RegistryKey.of(Registry.WORLD_KEY, new Identifier("dimdoors:limbo"));
-    public static final RegistryKey<World> PERSONAL = RegistryKey.of(Registry.WORLD_KEY, new Identifier("dimdoors:personal_pockets"));
-    public static final RegistryKey<World> PUBLIC = RegistryKey.of(Registry.WORLD_KEY, new Identifier("dimdoors:public_pockets"));
-    public static final RegistryKey<World> DUNGEON = RegistryKey.of(Registry.WORLD_KEY, new Identifier("dimdoors:dungeon_pockets"));
+    public static final RegistryKey<World> LIMBO = RegistryKey.of(Registry.WORLD_KEY, Util.id("limbo"));
+    public static final RegistryKey<World> PERSONAL = RegistryKey.of(Registry.WORLD_KEY, Util.id("personal_pockets"));
+    public static final RegistryKey<World> PUBLIC = RegistryKey.of(Registry.WORLD_KEY, Util.id("public_pockets"));
+    public static final RegistryKey<World> DUNGEON = RegistryKey.of(Registry.WORLD_KEY, Util.id("dungeon_pockets"));
 
-    public static final RegistryKey<DimensionType> LIMBO_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("dimdoors:limbo"));
-    public static final RegistryKey<DimensionType> POCKET_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("dimdoors:personal_pockets"));
+    public static final RegistryKey<DimensionType> LIMBO_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, Util.id("limbo"));
+    public static final RegistryKey<DimensionType> POCKET_TYPE_KEY = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, Util.id("personal_pockets"));
 
     public static DimensionType LIMBO_TYPE;
     public static DimensionType POCKET_TYPE;
@@ -55,6 +53,6 @@ public final class ModDimensions {
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getWorld(PUBLIC);
             ModDimensions.DUNGEON_POCKET_DIMENSION = server.getWorld(DUNGEON);
         });
-        Registry.register(Registry.CHUNK_GENERATOR, new Identifier("dimdoors", "blank"), BlankChunkGenerator.CODEC);
+        Registry.register(Registry.CHUNK_GENERATOR, Util.id("blank"), BlankChunkGenerator.CODEC);
     }
 }

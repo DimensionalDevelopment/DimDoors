@@ -4,10 +4,11 @@ import com.google.common.base.MoreObjects;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 
 public class IdReference extends PocketGeneratorReference {
 	public static final String KEY = "id";
@@ -19,7 +20,7 @@ public class IdReference extends PocketGeneratorReference {
 		super.fromNbt(nbt, manager);
 
 		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
-		id = new Identifier("dimdoors", nbt.getString("id"));
+		id = Util.id(nbt.getString("id"));
 
 		return this;
 	}

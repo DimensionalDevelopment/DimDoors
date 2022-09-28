@@ -7,16 +7,16 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-
-import org.dimdev.dimdoors.network.client.ClientPacketListener;
+import org.dimdev.dimdoors.Util;
 import org.dimdev.dimdoors.network.SimplePacket;
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 import java.io.IOException;
 import java.util.List;
 
 public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListener> {
-	public static final Identifier ID = new Identifier("dimdoors:sync_pocket_addons");
+	public static final Identifier ID = Util.id("sync_pocket_addons");
 
 	private RegistryKey<World> world;
 	private int gridSize;

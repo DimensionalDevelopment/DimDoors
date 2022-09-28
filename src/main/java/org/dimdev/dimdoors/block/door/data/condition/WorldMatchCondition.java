@@ -1,12 +1,11 @@
 package org.dimdev.dimdoors.block.door.data.condition;
 
 import com.google.gson.JsonObject;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public record WorldMatchCondition(RegistryKey<World> world) implements Condition {
 	public static WorldMatchCondition fromJson(JsonObject json) {

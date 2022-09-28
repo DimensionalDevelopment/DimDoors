@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
-import net.minecraft.util.Identifier;
+import org.dimdev.dimdoors.Util;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryEntryList;
@@ -29,8 +29,8 @@ public final class ModFeatures {
 	public static final SchematicGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
 	public static final SchematicGateway END_GATEWAY = new EndGateway();
 
-	public static final Feature<SchematicGatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "schematic_gateway"), new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
-	public static final Feature<DefaultFeatureConfig> LIMBO_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, new Identifier("dimdoors", "limbo_gateway"), new LimboGatewayFeature());
+	public static final Feature<SchematicGatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, Util.id("schematic_gateway"), new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
+	public static final Feature<DefaultFeatureConfig> LIMBO_GATEWAY_FEATURE = Registry.register(Registry.FEATURE, Util.id("limbo_gateway"), new LimboGatewayFeature());
 
 	public static void init() {
 		SANDSTONE_PILLARS_GATEWAY.init();
