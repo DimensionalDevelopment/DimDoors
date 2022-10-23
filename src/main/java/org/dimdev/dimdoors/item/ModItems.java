@@ -63,7 +63,7 @@ public final class ModItems {
 	public static final Item INFRANGIBLE_FIBER = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryEntry("frayed_filament")
-	public static final Item FRAYED_FILAMENT = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+	public static final Item FRAYED_FILAMENTS = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	@RegistryEntry("rift_configuration_tool")
 	public static final Item RIFT_CONFIGURATION_TOOL = create(new RiftConfigurationToolItem());
@@ -239,8 +239,35 @@ public final class ModItems {
 	@RegistryEntry("solid_static")
 	public static final Item SOLID_STATIC = create(ModBlocks.SOLID_STATIC);
 
+	@RegistryEntry("tesselating_loom")
+	public static final Item TESSELATING_LOOM = create(ModBlocks.TESSELATING_LOOM);
+
 	@RegistryEntry("mask_shard")
 	public static final Item MASK_SHARD = create(new Item(new Item.Settings()/*.group(DIMENSIONAL_DOORS)*/));
+
+	@RegistryEntry("fuzzy_fireball")
+	public static final Item FUZZY_FIREBALL = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
+	@RegistryEntry("fabric_of_finality")
+	public static final Item FABRIC_OF_FINALITY = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
+	@RegistryEntry("garment_of_reality")
+	public static final Item GARMENT_OF_REALITY = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
+	@RegistryEntry("reality_sponge")
+	public static final Item REALITY_SPONGE = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
+	@RegistryEntry("liminal_lint")
+	public static final Item LIMINAL_LINT = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
+	@RegistryEntry("enduring_fibers")
+	public static final Item ENDURING_FIBERS = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
+	@RegistryEntry("rift_pearl")
+	public static final Item RIFT_PEARL = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
+
+	@RegistryEntry("fabric_of_reality")
+	public static final Item FABRIC_OF_REALITY = create(new Item(new Item.Settings().group(DIMENSIONAL_DOORS)));
 
 	private static Item createWithoutItemGroup(Block block) {
 		return create(new BlockItem(block, (new Item.Settings())));

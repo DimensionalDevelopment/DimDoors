@@ -11,5 +11,6 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 		dataGenerator.addProvider(AdvancementProvider::new);
 		dataGenerator.addProvider(LootTableProvider::new);
 		dataGenerator.addProvider(LimboDecayProvider::new);
+		dataGenerator.addProvider(TesselatingRecipeProvider::new);
 	}
 }

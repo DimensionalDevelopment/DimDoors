@@ -44,8 +44,11 @@ import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
+import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
+import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -111,6 +114,9 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
 		registerRegistries();
 
+		ModRecipeTypes.init();
+		ModRecipeSerializers.init();
+		ModScreenHandlerTypes.init();
         ModBlocks.init();
         ModItems.init();
         ModFeatures.init();

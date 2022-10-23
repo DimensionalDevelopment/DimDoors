@@ -1,16 +1,9 @@
 package org.dimdev.dimdoors.block;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
-import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
-import org.dimdev.dimdoors.block.door.data.DoorData;
-import org.dimdev.dimdoors.block.door.data.DoorDataReader;
-import org.dimdev.matrix.Matrix;
-import org.dimdev.matrix.Registrar;
-import org.dimdev.matrix.RegistryEntry;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.MapColor;
@@ -19,11 +12,15 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.registry.Registry;
+import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
+import org.dimdev.dimdoors.block.door.data.DoorData;
+import org.dimdev.dimdoors.block.door.data.DoorDataReader;
+import org.dimdev.matrix.Matrix;
+import org.dimdev.matrix.Registrar;
+import org.dimdev.matrix.RegistryEntry;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import java.util.HashMap;
+import java.util.Map;
 
 @Registrar(element = Block.class, modid = "dimdoors")
 public final class ModBlocks {
@@ -173,6 +170,9 @@ public final class ModBlocks {
 
 	@RegistryEntry("solid_static")
 	public static final Block SOLID_STATIC = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE).strength(7, 25).ticksRandomly().requiresTool().sounds(BlockSoundGroup.SAND)));
+
+	@RegistryEntry("tesselating_loom")
+	public static final Block TESSELATING_LOOM = register(new TesselatingLoomBlock(FabricBlockSettings.copy(Blocks.LOOM)));
 
 	private static Block register(Block block) {
 		return block;

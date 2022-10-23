@@ -422,5 +422,6 @@
   "resourcePackActivationType.alwaysEnabled": "Always Enabled",
 
   "dimdoors.mode.enable": "Enable",
-  "dimdoors.mode.disable": "Disable"
+  "dimdoors.mode.disable": "Disable",
+  "container.tesselating_loom": "Tesselating Loom"
 }

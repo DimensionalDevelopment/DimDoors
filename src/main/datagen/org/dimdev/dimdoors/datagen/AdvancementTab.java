@@ -144,9 +144,9 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.build(advancementConsumer, "dimdoors:dimdoors/unravelled_but_immutable");
 
 		Advancement.Builder.create()
-				.display(makeDisplay(ModItems.FRAYED_FILAMENT, "fuzzy_unreality"))
+				.display(makeDisplay(ModItems.FRAYED_FILAMENTS, "fuzzy_unreality"))
 				.parent(enterLimbo)
-				.criterion("get_the_immutable", InventoryChangedCriterion.Conditions.items(ModItems.FRAYED_FILAMENT))
+				.criterion("get_the_immutable", InventoryChangedCriterion.Conditions.items(ModItems.FRAYED_FILAMENTS))
 				.build(advancementConsumer, "dimdoors:dimdoors/fuzzy_unreality");
 
 //		Advancement.Task.create()
