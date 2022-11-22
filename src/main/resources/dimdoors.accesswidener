@@ -29,3 +29,10 @@ accessible method net/minecraft/world/gen/feature/OrePlacedFeatures modifiersWit
 accessible class net/minecraft/data/client/BlockStateModelGenerator$BlockTexturePool
 
 accessible method net/minecraft/command/argument/BlockArgumentParser parse ()V
+
+accessible method net/minecraft/recipe/ShapedRecipe removePadding ([Ljava/lang/String;)[Ljava/lang/String;
+accessible method net/minecraft/recipe/ShapedRecipe readSymbols (Lcom/google/gson/JsonObject;)Ljava/util/Map;
+accessible method net/minecraft/recipe/ShapedRecipe createPatternMatrix ([Ljava/lang/String;Ljava/util/Map;II)Lnet/minecraft/util/collection/DefaultedList;
+accessible method net/minecraft/recipe/ShapedRecipe getPattern (Lcom/google/gson/JsonArray;)[Ljava/lang/String;
+
+accessible method net/minecraft/recipe/RecipeManager getAllOfType (Lnet/minecraft/recipe/RecipeType;)Ljava/util/Map;

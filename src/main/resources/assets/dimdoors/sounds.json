@@ -13,5 +13,6 @@
     "rift_start": { "sounds" : [ "dimdoors:rift_start" ] },
     "tearing": { "sounds" : [ "dimdoors:tearing"] },
     "white_void": { "sounds" : [ "dimdoors:white_void"] },
-    "bloop": { "sounds" :  [ "dimdoors:bloop"]}
+    "bloop": { "sounds" :  [ "dimdoors:bloop"]},
+    "tesselating_weave": { "sounds" :  [ "dimdoors:tesselating_weave"]}
 }

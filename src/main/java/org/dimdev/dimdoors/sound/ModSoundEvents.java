@@ -21,6 +21,7 @@ public final class ModSoundEvents {
 	public static final SoundEvent TEARING = register("tearing");
 	public static final SoundEvent WHITE_VOID = register("white_void");
 	public static final SoundEvent BLOOP = register("bloop");
+	public static final SoundEvent TESSELATING_WEAVE = register("tesselating_weave");
 
 	private static SoundEvent register(String id) {
 		Identifier identifier = Util.id(id);

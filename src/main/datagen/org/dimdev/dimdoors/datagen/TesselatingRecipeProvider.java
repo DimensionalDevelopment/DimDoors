@@ -18,14 +18,14 @@ public class TesselatingRecipeProvider extends net.fabricmc.fabric.api.datagen.v
 	@Override
 	protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
 
-		TesselatingRecipeJsonBuilder.create(ModItems.STABLE_FABRIC).input(ModItems.WORLD_THREAD, 4).criterion("world_thread", InventoryChangedCriterion.Conditions.items(ModItems.WORLD_THREAD)).offerTo(exporter);
-		TesselatingRecipeJsonBuilder.create(ModItems.LIMINAL_LINT).input(ModItems.FRAYED_FILAMENTS, 4).criterion("frayed_filaments", InventoryChangedCriterion.Conditions.items(ModItems.FRAYED_FILAMENTS)).offerTo(exporter);
-		TesselatingRecipeJsonBuilder.create(ModItems.ENDURING_FIBERS).input(ModItems.INFRANGIBLE_FIBER, 4).criterion("infrangible_fiber", InventoryChangedCriterion.Conditions.items(ModItems.INFRANGIBLE_FIBER)).offerTo(exporter);
-		TesselatingRecipeJsonBuilder.create(ModItems.RIFT_PEARL).input(Ingredient.ofItems(ModItems.STABLE_FABRIC)).input(Items.ENDER_PEARL).criterion("stable_fabric", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter);
-		TesselatingRecipeJsonBuilder.create(ModItems.FABRIC_OF_REALITY).input(ModItems.STABLE_FABRIC).input(ModItems.WORLD_THREAD, 3).criterion("stable_fabric", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter);
-		TesselatingRecipeJsonBuilder.create(ModItems.FUZZY_FIREBALL).input(ModItems.LIMINAL_LINT, 2).input(Items.FIRE_CHARGE).criterion("liminal_lint", InventoryChangedCriterion.Conditions.items(ModItems.LIMINAL_LINT)).offerTo(exporter);
-		TesselatingRecipeJsonBuilder.create(ModItems.GARMENT_OF_REALITY).input(ModItems.STABLE_FABRIC, 8).input(ModItems.INFRANGIBLE_FIBER, 2).criterion("stable_fabric", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter);
-		TesselatingRecipeJsonBuilder.create(ModItems.FABRIC_OF_FINALITY).input(ModItems.ENDURING_FIBERS, 2).input(Items.DRAGON_BREATH).criterion("enduring_fabric", InventoryChangedCriterion.Conditions.items(ModItems.ENDURING_FIBERS)).offerTo(exporter);
-		TesselatingRecipeJsonBuilder.create(ModItems.REALITY_SPONGE).input(ModItems.STABLE_FABRIC, 5).input(ModItems.INFRANGIBLE_FIBER, 4).criterion("liminal_lint", InventoryChangedCriterion.Conditions.items(ModItems.LIMINAL_LINT)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.STABLE_FABRIC).pattern("XX").pattern("XX").input('X', ModItems.WORLD_THREAD).criterion("world_thread", InventoryChangedCriterion.Conditions.items(ModItems.WORLD_THREAD)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.LIMINAL_LINT).pattern("XX").pattern("XX").input('X', ModItems.FRAYED_FILAMENTS).criterion("frayed_filaments", InventoryChangedCriterion.Conditions.items(ModItems.FRAYED_FILAMENTS)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.ENDURING_FIBERS).pattern("XX").pattern("XX").input('X', ModItems.INFRANGIBLE_FIBER).criterion("infrangible_fiber", InventoryChangedCriterion.Conditions.items(ModItems.INFRANGIBLE_FIBER)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.RIFT_PEARL).pattern("XO").input('X', Ingredient.ofItems(ModItems.STABLE_FABRIC)).input('O', Items.ENDER_PEARL).criterion("stable_fabric", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.FABRIC_OF_REALITY).pattern("XX").pattern("XO").input('O', ModItems.STABLE_FABRIC).input('X', ModItems.WORLD_THREAD).criterion("stable_fabric", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.FUZZY_FIREBALL).pattern("XOX").input('X', ModItems.LIMINAL_LINT).input('O', Items.FIRE_CHARGE).criterion("liminal_lint", InventoryChangedCriterion.Conditions.items(ModItems.LIMINAL_LINT)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.GARMENT_OF_REALITY).pattern("XXX").pattern("XOX").pattern("XXX").input('X', ModItems.STABLE_FABRIC).input('O', ModItems.INFRANGIBLE_FIBER).criterion("stable_fabric", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.FABRIC_OF_FINALITY).pattern("XOX").input('X', ModItems.ENDURING_FIBERS).input('O', Items.DRAGON_BREATH).criterion("enduring_fabric", InventoryChangedCriterion.Conditions.items(ModItems.ENDURING_FIBERS)).offerTo(exporter);
+		TesselatingRecipeJsonBuilder.create(ModItems.REALITY_SPONGE).pattern("XOX").pattern("OXO").pattern("XOX").input('X', ModItems.STABLE_FABRIC).input('O', ModItems.INFRANGIBLE_FIBER).criterion("liminal_lint", InventoryChangedCriterion.Conditions.items(ModItems.LIMINAL_LINT)).offerTo(exporter);
 	}
 }

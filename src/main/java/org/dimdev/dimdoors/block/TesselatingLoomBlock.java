@@ -5,13 +5,14 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.*;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -33,13 +34,12 @@ public class TesselatingLoomBlock extends BlockWithEntity {
 
 	@Override
 	public void onStateReplaced(BlockState oldState, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (!oldState.isOf(newState.getBlock()))
-		{
+		if (!oldState.isOf(newState.getBlock())) {
 			BlockEntity tileEntity = worldIn.getBlockEntity(pos);
 			if (tileEntity instanceof TesselatingLoomBlockEntity) {
-				final Inventory inventory = ((TesselatingLoomBlockEntity) tileEntity).inventory;
-				for (int slot = 0; slot < inventory.size(); ++slot)
-					ItemScatterer.spawn(worldIn, pos.getX(), pos.getY(), pos.getZ(), inventory.getStack(slot));
+				final DefaultedList<ItemStack> inventory = ((TesselatingLoomBlockEntity) tileEntity).inventory;
+				for (ItemStack itemStack : inventory)
+					ItemScatterer.spawn(worldIn, pos.getX(), pos.getY(), pos.getZ(), itemStack);
 				worldIn.updateComparators(pos, this);
 			}
 		}
