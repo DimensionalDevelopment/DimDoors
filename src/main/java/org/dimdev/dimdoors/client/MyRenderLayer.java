@@ -66,6 +66,17 @@ public class MyRenderLayer extends RenderLayer {
 					.build(false)
 	);
 
+	public static RenderLayer STATIC = RenderLayerFactory.create(
+			"static",
+			VertexFormats.POSITION_TEXTURE,
+			VertexFormat.DrawMode.QUADS,
+			2097152,
+			true,
+			false,
+			RenderLayer.MultiPhaseParameters.builder()
+					.shader(new Shader(ModShaders::getStaticShader))
+					.build(true));
+
 	public static RenderLayer getMonolith(Identifier texture) {
 		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, false, false)).shader(new Shader(GameRenderer::getRenderTypeEntityTranslucentShader)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
 		return RenderLayerFactory.create("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, multiPhaseParameters);
