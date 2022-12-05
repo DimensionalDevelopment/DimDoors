@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
+import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
@@ -17,13 +16,13 @@ import java.util.stream.Collectors;
 public class SimpleDecayProcesor implements DecayProcessor {
     public static final String KEY = "simple";
 
-    private Block block;
+    protected Block block;
 
-    private int entropy;
+    protected int entropy;
 
     public SimpleDecayProcesor() {}
 
-    private SimpleDecayProcesor(Block block, int entropy) {
+    protected SimpleDecayProcesor(Block block, int entropy) {
         this.block = block;
         this.entropy = entropy;
     }
@@ -56,6 +55,9 @@ public class SimpleDecayProcesor implements DecayProcessor {
     @Override
     public int process(World world, BlockPos pos, BlockState origin, BlockState target) {
     	BlockState newState = block.getDefaultState();
+
+		if(target.getBlock() instanceof TallPlantBlock) pos = target.get(TallPlantBlock.HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos;
+
     	Set<Property<?>> commonProperties = target.getProperties().stream().filter(newState.getProperties()::contains).collect(Collectors.toSet());
     	for(Property<?> property : commonProperties) {
     		newState = transferProperty(target, newState, property);

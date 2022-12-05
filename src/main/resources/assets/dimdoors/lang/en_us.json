@@ -55,6 +55,7 @@
   "block.dimdoors.eternal_fluid": "Eternal Fluid",
   "block.dimdoors.solid_static": "Solid Static",
   "block.dimdoors.detached_rift": "Rift",
+  "block.dimdoors.tesselating_loom": "Tesselating Loom",
 
   "dimdoors.autogen_item_prefix": "Dimensional %s",
   "item.dimdoors.gold_door": "Gold Door",
@@ -422,6 +423,5 @@
   "resourcePackActivationType.alwaysEnabled": "Always Enabled",
 
   "dimdoors.mode.enable": "Enable",
-  "dimdoors.mode.disable": "Disable",
-  "container.tesselating_loom": "Tesselating Loom"
+  "dimdoors.mode.disable": "Disable"
 }

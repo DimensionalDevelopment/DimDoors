@@ -53,7 +53,7 @@ public final class LimboDecay {
 			int decayAmount = RANDOM.nextInt(5) + 1;
 			List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
 			for (int i = 0; i < decayAmount; i++) {
-				decayBlock(world, pos.offset(directions.remove(RANDOM.nextInt(5 - i))), origin);
+				 decayBlock(world, pos.offset(directions.remove(RANDOM.nextInt(5 - i))), origin);
 			}
 		}
 	}
@@ -166,7 +166,7 @@ public final class LimboDecay {
 					ExtendedServerPlayNetworkHandler.get(player.networkHandler).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, -1));
 				});
 				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), target.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 0.5f, 1f);
-				processor.process(world, pos, origin, world.getBlockState(pos));
+				processor.process(world, pos, origin, target);
 			}
 		}
 	}

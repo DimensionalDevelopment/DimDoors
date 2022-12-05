@@ -13,8 +13,8 @@ import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.Util;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
-import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
+import org.dimdev.dimdoors.world.decay.predicates.SimpleBlockDecayPredicate;
+import org.dimdev.dimdoors.world.decay.predicates.SimpleTagDecayPredicate;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -77,7 +77,8 @@ public interface DecayPredicate {
 
     interface DecayPredicateType<T extends DecayPredicate> {
         DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(Util.id("none"), () -> NONE);
-        DecayPredicateType<SimpleDecayPredicate> SIMPLE_PREDICATE_TYPE = register(Util.id(SimpleDecayProcesor.KEY), SimpleDecayPredicate::new);
+        DecayPredicateType<SimpleTagDecayPredicate> SIMPLE_TAG_PREDICATE_TYPE = register(Util.id(SimpleTagDecayPredicate.KEY), SimpleTagDecayPredicate::new);
+		DecayPredicateType<SimpleBlockDecayPredicate> SIMPLE_BLOCK_PREDICATE_TYPE = register(Util.id(SimpleBlockDecayPredicate.KEY), SimpleBlockDecayPredicate::new);
 
         DecayPredicate fromNbt(NbtCompound nbt);
 

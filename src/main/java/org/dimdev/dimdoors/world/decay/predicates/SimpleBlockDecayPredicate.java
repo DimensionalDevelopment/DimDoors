@@ -12,14 +12,14 @@ import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 import java.util.Set;
 
-public class SimpleDecayPredicate implements DecayPredicate {
-    public static final String KEY = "simple";
+public class SimpleBlockDecayPredicate implements DecayPredicate {
+    public static final String KEY = "simple_block";
 
     private Block block;
 
-    public SimpleDecayPredicate() {}
+    public SimpleBlockDecayPredicate() {}
 
-    private SimpleDecayPredicate(Block block) {
+    private SimpleBlockDecayPredicate(Block block) {
         this.block = block;
     }
 
@@ -38,7 +38,7 @@ public class SimpleDecayPredicate implements DecayPredicate {
 
     @Override
     public DecayPredicateType<? extends DecayPredicate> getType() {
-        return DecayPredicateType.SIMPLE_PREDICATE_TYPE;
+        return DecayPredicateType.SIMPLE_BLOCK_PREDICATE_TYPE;
     }
 
     @Override
@@ -70,8 +70,8 @@ public class SimpleDecayPredicate implements DecayPredicate {
             return this;
         }
 
-        public SimpleDecayPredicate create() {
-            return new SimpleDecayPredicate(block);
+        public SimpleBlockDecayPredicate create() {
+            return new SimpleBlockDecayPredicate(block);
         }
     }
 }
