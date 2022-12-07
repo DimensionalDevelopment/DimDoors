@@ -67,7 +67,7 @@ public class RiftRemoverItem extends Item {
 				rift.setClosing(true);
 				world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1);
 				stack.damage(10, player, a -> a.sendToolBreakStatus(hand));
-				LootContext ctx = new LootContext.Builder((ServerWorld) world).random(world.random).parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(((BlockHitResult) hit).getBlockPos())).optionalParameter(LootContextParameters.THIS_ENTITY, player).ctx.build(LootContextTypes.GENERIC);
+				LootContext ctx = new LootContext.Builder((ServerWorld) world).random(world.random).parameter(LootContextParameters.ORIGIN, Vec3d.ofCenter(((BlockHitResult) hit).getBlockPos())).optionalParameter(LootContextParameters.THIS_ENTITY, player).build(LootContextTypes.GENERIC);
 				((ServerWorld) world).getServer().getLootManager().getTable(REMOVED_RIFT_LOOT_TABLE).generateLoot(ctx).forEach(stack1 -> {
 					ItemScatterer.spawn(world, ((BlockHitResult) hit).getBlockPos().getX(), ((BlockHitResult) hit).getBlockPos().getY(), ((BlockHitResult) hit).getBlockPos().getZ(), stack1);
 				});
