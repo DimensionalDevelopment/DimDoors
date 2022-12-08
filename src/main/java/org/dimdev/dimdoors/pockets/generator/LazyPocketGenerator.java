@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
@@ -125,14 +125,14 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	abstract public LazyPocketGenerator getNewInstance();
 
 	public void setupChunk(Pocket pocket, Chunk chunk, boolean setupLootTables) {
-		MinecraftServer server = DimensionalDoorsInitializer.getServer();
+		MinecraftServer server = DimensionalDoors.getServer();
 		chunk.getBlockEntityPositions().stream().map(chunk::getBlockEntity).forEach(blockEntity -> { // RiftBlockEntities should already be initialized here
 			if (setupLootTables && blockEntity instanceof Inventory) {
 				Inventory inventory = (Inventory) blockEntity;
 				server.send(new ServerTask(server.getTicks(), () -> {
 					if (inventory.isEmpty()) {
 						if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
-							TemplateUtils.setupLootTable(DimensionalDoorsInitializer.getWorld(pocket.getWorld()), blockEntity, inventory, LOGGER);
+							TemplateUtils.setupLootTable(DimensionalDoors.getWorld(pocket.getWorld()), blockEntity, inventory, LOGGER);
 						}
 					}
 				}));

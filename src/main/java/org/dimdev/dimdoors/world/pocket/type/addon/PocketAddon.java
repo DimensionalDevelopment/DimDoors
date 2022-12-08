@@ -7,8 +7,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.blockbreak.BlockBreakContainer;
 
@@ -16,7 +15,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public interface PocketAddon {
-	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketAddonType<? extends PocketAddon>>(RegistryKey.ofRegistry(Util.id("pocket_applicable_addon_type")), Lifecycle.stable(), null)).buildAndRegister();
+	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketAddonType<? extends PocketAddon>>(RegistryKey.ofRegistry(DimensionalDoors.id("pocket_applicable_addon_type")), Lifecycle.stable(), null)).buildAndRegister();
 
 	static PocketAddon deserialize(NbtCompound nbt) {
 		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;
@@ -97,7 +96,7 @@ public interface PocketAddon {
 		Identifier identifier();
 
 		static void register() {
-			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerPocketAddonTypes(REGISTRY));
+			DimensionalDoors.apiSubscribers.forEach(d -> d.registerPocketAddonTypes(REGISTRY));
 		}
 
 		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {

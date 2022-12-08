@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -135,7 +135,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
 			if (virtualLocation.getDepth() <= 0) {
 				// This will lead to the overworld
-				ServerWorld world = DimensionalDoorsInitializer.getWorld(virtualLocation.getWorld());
+				ServerWorld world = DimensionalDoors.getWorld(virtualLocation.getWorld());
 				BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
 				if (pos.getY() == -1) {
 					// No blocks at that XZ (hole in bedrock)

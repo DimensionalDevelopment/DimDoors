@@ -12,8 +12,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -25,7 +24,7 @@ import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<DetachedRiftBlockEntity> {
-    public static final Identifier TESSERACT_PATH = Util.id("textures/other/tesseract.png");
+    public static final Identifier TESSERACT_PATH = DimensionalDoors.id("textures/other/tesseract.png");
     private static final RGBA DEFAULT_COLOR = new RGBA(1, 0.5f, 1, 1);
 
     private static final Tesseract TESSERACT = new Tesseract();
@@ -42,7 +41,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 			matrices.pop();
 		}
 
-    	if (DimensionalDoorsInitializer.getConfig().getGraphicsConfig().showRiftCore) {
+    	if (DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore) {
             this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
             long timeLeft = RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis();
@@ -57,7 +56,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
     private void renderCrack(VertexConsumer vc, MatrixStack matrices, DetachedRiftBlockEntity rift) {
         matrices.push();
         matrices.translate(0.5, 0.5, 0.5);
-        RiftCrackRenderer.drawCrack(matrices.peek().getPositionMatrix(), vc, 0, CURVE, DimensionalDoorsInitializer.getConfig().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
+        RiftCrackRenderer.drawCrack(matrices.peek().getPositionMatrix(), vc, 0, CURVE, DimensionalDoors.getConfig().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
         matrices.pop();
     }
 

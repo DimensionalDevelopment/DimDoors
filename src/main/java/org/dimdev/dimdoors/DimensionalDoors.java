@@ -16,6 +16,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -65,7 +66,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class DimensionalDoorsInitializer implements ModInitializer {
+public class DimensionalDoors implements ModInitializer {
 	public static List<DimensionalDoorsApi> apiSubscribers = Collections.emptyList();
 	private static final Supplier<Path> CONFIG_ROOT = () -> FabricLoader.getInstance().getConfigDir().resolve("dimdoors").toAbsolutePath();
 	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootJanksonConfigSerializer::new);
@@ -106,6 +107,10 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 		return CONFIG_ROOT.get();
 	}
 
+	public static Identifier id(String id) {
+		return new Identifier("dimdoors", id);
+	}
+
 	@Override
     public void onInitialize() {
 		apiSubscribers = FabricLoader.getInstance().getEntrypoints("dimdoors:api", DimensionalDoorsApi.class);
@@ -136,8 +141,8 @@ public class DimensionalDoorsInitializer implements ModInitializer {
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(LimboDecay.DecayLoader.getInstance());
-		ResourceManagerHelper.registerBuiltinResourcePack(Util.id("default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType());
-		ResourceManagerHelper.registerBuiltinResourcePack(Util.id("classic"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().classicPocketsResourcePackActivationType.asResourcePackActivationType());
+		ResourceManagerHelper.registerBuiltinResourcePack(id("default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType());
+		ResourceManagerHelper.registerBuiltinResourcePack(id("classic"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().classicPocketsResourcePackActivationType.asResourcePackActivationType());
 
 		registerListeners();
 		apiSubscribers.forEach(DimensionalDoorsApi::postInitialize);

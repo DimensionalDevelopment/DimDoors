@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import org.dimdev.dimdoors.Util;
-
-import org.dimdev.dimdoors.entity.MaskEntity;
 //import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 //public class MaskModel extends AnimatedGeoModel<MaskEntity> {

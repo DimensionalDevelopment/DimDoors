@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
 import org.dimdev.dimdoors.entity.limbo.LimboExitReason;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;

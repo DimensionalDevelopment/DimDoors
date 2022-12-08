@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.client;
 
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.util.Util;
@@ -34,7 +34,7 @@ public final class RiftCrackRenderer {
         float time = ((Util.getEpochTimeMs() + riftRandom) % 2000000) * motionSpeed;
         double[] jitters = new double[jCount];
 
-        double jitterScale = DimensionalDoorsInitializer.getConfig().getGraphicsConfig().riftJitter * size * size * size / 2000f;
+        double jitterScale = DimensionalDoors.getConfig().getGraphicsConfig().riftJitter * size * size * size / 2000f;
         // We use random constants here on purpose just to get different wave forms
         double xJitter = jitterScale * Math.sin(1.1f * time*size) * Math.sin(0.8f * time);
         double yJitter = jitterScale * Math.sin(1.2f * time*size) * Math.sin(0.9f * time);

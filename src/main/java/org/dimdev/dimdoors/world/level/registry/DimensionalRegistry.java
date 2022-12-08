@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import static org.dimdev.dimdoors.DimensionalDoorsInitializer.getServer;
+import static org.dimdev.dimdoors.DimensionalDoors.getServer;
 
 public class DimensionalRegistry implements ComponentV3 {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added

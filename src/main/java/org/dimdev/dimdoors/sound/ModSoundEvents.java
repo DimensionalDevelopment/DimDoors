@@ -3,7 +3,8 @@ package org.dimdev.dimdoors.sound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 
 public final class ModSoundEvents {
 	public static final SoundEvent CRACK = register("crack");
@@ -24,7 +25,7 @@ public final class ModSoundEvents {
 	public static final SoundEvent TESSELATING_WEAVE = register("tesselating_weave");
 
 	private static SoundEvent register(String id) {
-		Identifier identifier = Util.id(id);
+		Identifier identifier = DimensionalDoors.id(id);
 		return Registry.register(Registry.SOUND_EVENT, identifier, new SoundEvent(identifier));
 	}
 

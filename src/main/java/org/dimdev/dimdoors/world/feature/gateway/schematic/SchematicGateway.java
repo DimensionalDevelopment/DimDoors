@@ -7,7 +7,7 @@ import java.util.function.BiPredicate;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.util.schematic.Schematic;
@@ -32,7 +32,7 @@ public abstract class SchematicGateway implements Gateway, BiPredicate<Structure
 	public void init() {
 		String schematicJarDirectory = "/data/dimdoors/gateways/";
 
-		try (InputStream stream = DimensionalDoorsInitializer.class.getResourceAsStream(schematicJarDirectory + this.id + ".schem")) {
+		try (InputStream stream = DimensionalDoors.class.getResourceAsStream(schematicJarDirectory + this.id + ".schem")) {
 			if (stream == null) {
 				throw new RuntimeException("Schematic '" + this.id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
 			}
@@ -47,7 +47,7 @@ public abstract class SchematicGateway implements Gateway, BiPredicate<Structure
 	}
 
 	public final void generate(StructureWorldAccess world, BlockPos pos) {
-		if (DimensionalDoorsInitializer.getConfig()
+		if (DimensionalDoors.getConfig()
 				.getWorldConfig()
 				.gatewayDimBlacklist
 				.contains(world.toServerWorld().getRegistryKey().getValue().toString())

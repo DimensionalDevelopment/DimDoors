@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.particle.client;
 
-import org.dimdev.dimdoors.client.MonolithModel;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.MonolithRenderer;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,13 +10,11 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
-import org.dimdev.dimdoors.Util;
 import net.minecraft.util.math.Vec3f;
 
 import net.fabricmc.api.EnvType;
@@ -39,7 +37,7 @@ public class MonolithParticle extends Particle {
 		matrices.scale(-1.0F, -1.0F, 1.0F);
 		matrices.translate(0.0D, -1.1009999513626099D, 1.5D);
 		VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
-		VertexConsumer vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().getLayer(Util.id("textures/mob/monolith/monolith14.png")));
+		VertexConsumer vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().getLayer(DimensionalDoors.id("textures/mob/monolith/monolith14.png")));
 		MonolithRenderer.getInstance().render(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
 		immediate.draw();
 	}

@@ -29,7 +29,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 import net.minecraft.world.gen.noise.NoiseConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -90,7 +90,7 @@ public class ChunkGenerator extends PocketGenerator {
 
 		LOGGER.info("Generating chunk pocket at location " + pocket.getOrigin());
 
-		ServerWorld genWorld = DimensionalDoorsInitializer.getWorld(RegistryKey.of(Registry.WORLD_KEY, dimensionID));
+		ServerWorld genWorld = DimensionalDoors.getWorld(RegistryKey.of(Registry.WORLD_KEY, dimensionID));
 		net.minecraft.world.gen.chunk.ChunkGenerator genWorldChunkGenerator = genWorld.getChunkManager().getChunkGenerator();
 
 		NoiseConfig config = NoiseConfig.create(ChunkGeneratorSettings.createMissingSettings(), world.getRegistryManager().get(Registry.NOISE_KEY), world.getSeed());

@@ -7,7 +7,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.render.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.client.RenderLayerFactory;
 
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
@@ -15,10 +16,10 @@ import static org.lwjgl.opengl.GL11.GL_ZERO;
 
 @Environment(EnvType.CLIENT)
 public class MyRenderLayer extends RenderLayer {
-    public static final Identifier WARP_PATH = Util.id("textures/other/warp.png");
+    public static final Identifier WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
     public static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-    private static final Identifier KEY_PATH = Util.id("textures/other/keyhole.png");
-    private static final Identifier KEYHOLE_LIGHT = Util.id("textures/other/keyhole_light.png");
+    private static final Identifier KEY_PATH = DimensionalDoors.id("textures/other/keyhole.png");
+    private static final Identifier KEYHOLE_LIGHT = DimensionalDoors.id("textures/other/keyhole_light.png");
     private static final Random RANDOM = Random.create(31100L);
 
     public MyRenderLayer(String string, VertexFormat vertexFormat, VertexFormat.DrawMode drawMode, int j, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {

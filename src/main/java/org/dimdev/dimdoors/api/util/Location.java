@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 
 public class Location {
 	public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> {
@@ -84,7 +84,7 @@ public class Location {
 	}
 
 	public ServerWorld getWorld() {
-		return DimensionalDoorsInitializer.getServer().getWorld(this.world);
+		return DimensionalDoors.getServer().getWorld(this.world);
 	}
 
 	public static NbtCompound toNbt(Location location) {

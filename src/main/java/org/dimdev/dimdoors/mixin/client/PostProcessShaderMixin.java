@@ -7,8 +7,6 @@ import net.minecraft.entity.player.PlayerEntity;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.ModConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

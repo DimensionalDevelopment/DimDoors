@@ -7,7 +7,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableTextContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
@@ -92,7 +92,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
 		BlockState state = this.getWorld().getBlockState(this.getPos());
 		Block block = state.getBlock();
-		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoorsInitializer.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
+		Vec3d targetPos = Vec3d.ofCenter(this.pos).add(Vec3d.of(this.getOrientation().getOpposite().getVector()).multiply(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
 		/*
 		Unused code that needs to be edited if there are other ways to get to limbo
 		But if it is only dimteleport and going through rifts then this code isn't nessecary

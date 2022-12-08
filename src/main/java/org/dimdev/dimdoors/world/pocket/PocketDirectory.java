@@ -8,7 +8,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
@@ -31,7 +31,7 @@ public class PocketDirectory {
 	RegistryKey<World> worldKey;
 
 	public PocketDirectory(RegistryKey<World> worldKey) {
-		this.gridSize = DimensionalDoorsInitializer.getConfig().getPocketsConfig().pocketGridSize;
+		this.gridSize = DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize;
 		this.worldKey = worldKey;
 		this.nextIDMap = new TreeMap<>();
 		this.pockets = new HashMap<>();

@@ -7,14 +7,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
 public abstract class RegistryVertex {
-	public static final Registry<RegistryVertexType> registry = FabricRegistryBuilder.createSimple(RegistryVertex.RegistryVertexType.class, Util.id("registry_vertex")).attribute(RegistryAttribute.MODDED).buildAndRegister();
+	public static final Registry<RegistryVertexType> registry = FabricRegistryBuilder.createSimple(RegistryVertex.RegistryVertexType.class, DimensionalDoors.id("registry_vertex")).attribute(RegistryAttribute.MODDED).buildAndRegister();
 
 	private RegistryKey<World> world; // The dimension to store this object in. Links are stored in both registries.
 

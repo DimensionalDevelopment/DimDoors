@@ -1,41 +1,25 @@
 package org.dimdev.dimdoors.mixin.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
-import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
-import org.dimdev.dimdoors.Util;
 import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import java.util.List;
 import java.util.Map;
 
 @Mixin(WorldRenderer.class)

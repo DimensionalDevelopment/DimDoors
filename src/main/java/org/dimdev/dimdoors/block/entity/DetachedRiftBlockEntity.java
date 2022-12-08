@@ -4,7 +4,7 @@ import net.minecraft.util.math.random.Random;
 
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 
@@ -48,7 +48,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 			return;
 		}
 
-		if (!world.isClient() && random.nextFloat() < DimensionalDoorsInitializer.getConfig().getGeneralConfig().endermanSpawnChance) {
+		if (!world.isClient() && random.nextFloat() < DimensionalDoors.getConfig().getGeneralConfig().endermanSpawnChance) {
 			EndermanEntity enderman = EntityType.ENDERMAN.spawn(
 					(ServerWorld) world,
 					null,
@@ -60,7 +60,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 					false
 			);
 
-			if (random.nextDouble() < DimensionalDoorsInitializer.getConfig().getGeneralConfig().endermanAggressiveChance) {
+			if (random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {
 				if (enderman != null) {
 					enderman.setTarget(world.getClosestPlayer(enderman, 50));
 				}
@@ -69,12 +69,12 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
 		if (blockEntity.closing) {
 			if (blockEntity.size > 0) {
-				blockEntity.size -= DimensionalDoorsInitializer.getConfig().getGeneralConfig().riftCloseSpeed;
+				blockEntity.size -= DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
 			} else {
 				world.removeBlock(pos, false);
 			}
 		} else if (!blockEntity.stabilized) {
-			blockEntity.size += DimensionalDoorsInitializer.getConfig().getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
+			blockEntity.size += DimensionalDoors.getConfig().getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
 		}
 	}
 

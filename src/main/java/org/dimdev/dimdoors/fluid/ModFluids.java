@@ -19,7 +19,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.function.Function;
 
@@ -35,7 +36,7 @@ public class ModFluids {
 	}
 
 	public static void initClient() {
-		setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, Util.id("eternal_fluid"));
+		setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, DimensionalDoors.id("eternal_fluid"));
 	}
 
 	@Environment(EnvType.CLIENT)

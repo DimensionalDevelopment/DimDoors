@@ -6,13 +6,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.io.IOException;
 
 public class SkyAddon implements AutoSyncedAddon {
-	public static Identifier ID = Util.id("sky");
+	public static Identifier ID = DimensionalDoors.id("sky");
 
 	private RegistryKey<World> world;
 

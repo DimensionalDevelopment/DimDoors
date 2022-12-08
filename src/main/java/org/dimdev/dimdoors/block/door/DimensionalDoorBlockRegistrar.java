@@ -15,8 +15,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.listener.BlockRegistryEntryAddedListener;
@@ -48,7 +47,7 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	public void handleEntry(Identifier identifier, Block original) {
-		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().isAllowed(identifier)) {
+		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(identifier)) {
 			if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock) {
 				register(identifier, original, DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock);
 			} else if (!(original instanceof DimensionalTrapdoorBlock) && original instanceof TrapdoorBlock) {
@@ -58,7 +57,7 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	private void register(Identifier identifier, Block original, BiFunction<AbstractBlock.Settings, Block, ? extends Block> constructor) {
-		Identifier gennedId = Util.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+		Identifier gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
 		Block dimBlock = Registry.register(registry, gennedId, constructor.apply(FabricBlockSettings.copy(original), original));
 		ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(dimBlock);
 		mappedDoorBlocks.put(gennedId, identifier);

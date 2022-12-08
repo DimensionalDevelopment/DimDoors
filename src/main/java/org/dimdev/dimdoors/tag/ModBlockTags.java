@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.tag;
 
+import org.dimdev.dimdoors.DimensionalDoors;
+
 import net.minecraft.block.Block;
 import net.minecraft.tag.TagKey;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class ModBlockTags {
@@ -37,6 +38,6 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_TO_AMALGAM = of("decay_to_amalgam");
 
     private static TagKey<Block> of(String id) {
-		return TagKey.of(Registry.BLOCK_KEY, new Identifier("dimdoors", id));
+		return TagKey.of(Registry.BLOCK_KEY, DimensionalDoors.id(id));
 	}
 }

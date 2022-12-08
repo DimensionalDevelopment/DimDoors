@@ -12,7 +12,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -71,7 +71,7 @@ public class VirtualLocation {
 				virtualLocation = null; // TODO: door was placed in a pockets dim but outside of a pockets...
 			}
 		} else if (ModDimensions.isLimboDimension(location.getWorld())) { // TODO: convert to interface on worldprovider
-			virtualLocation = new VirtualLocation(location.world, location.getX(), location.getZ(), DimensionalDoorsInitializer.getConfig().getDungeonsConfig().maxDungeonDepth);
+			virtualLocation = new VirtualLocation(location.world, location.getX(), location.getZ(), DimensionalDoors.getConfig().getDungeonsConfig().maxDungeonDepth);
 		} // TODO: nether coordinate transform
 
 		if (virtualLocation == null) {
@@ -81,13 +81,13 @@ public class VirtualLocation {
 	}
 
 	public Location projectToWorld(boolean acceptLimbo) {
-		ServerWorld world = DimensionalDoorsInitializer.getServer().getWorld(this.world);
+		ServerWorld world = DimensionalDoors.getServer().getWorld(this.world);
 
 		if (!acceptLimbo && ModDimensions.isLimboDimension(world)) {
 			world = world.getServer().getOverworld();
 		}
 
-		float spread = DimensionalDoorsInitializer.getConfig().getGeneralConfig().depthSpreadFactor * this.depth;
+		float spread = DimensionalDoors.getConfig().getGeneralConfig().depthSpreadFactor * this.depth;
 		int newX = (int) (this.x + spread * 2 * (Math.random() - 0.5));
 		int newZ = (int) (this.z + spread * 2 * (Math.random() - 0.5));
 		//BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 1, newZ));

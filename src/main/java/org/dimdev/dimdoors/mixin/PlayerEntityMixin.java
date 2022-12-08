@@ -6,7 +6,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.mixin.accessor.EntityAccessor;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,7 +42,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Unique
 	protected void doOnDeathStuff(DamageSource source, CallbackInfo ci) {
-		if (ModDimensions.isPocketDimension(this.world) || DimensionalDoorsInitializer.getConfig().getLimboConfig().universalLimbo) {
+		if (ModDimensions.isPocketDimension(this.world) || DimensionalDoors.getConfig().getLimboConfig().universalLimbo) {
 			((EntityAccessor) this).setRemovalReason(null);
 			this.dead = false;
 			this.setHealth(this.getMaxHealth());

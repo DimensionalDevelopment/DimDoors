@@ -7,13 +7,15 @@ import net.minecraft.block.Material;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.DyeColor;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
+
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 public class FabricBlock extends Block {
-	public static final TagKey<Block> BLOCK_TAG = TagKey.of(Registry.BLOCK_KEY, Util.id("fabric"));
+	public static final TagKey<Block> BLOCK_TAG = TagKey.of(Registry.BLOCK_KEY, DimensionalDoors.id("fabric"));
 
 	FabricBlock(DyeColor color) {
 		super(FabricBlockSettings.of(Material.STONE, color).strength(1.2F).luminance(15));

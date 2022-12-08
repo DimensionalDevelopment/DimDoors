@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.listener;
 
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
@@ -19,7 +19,7 @@ public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallbac
 	public ActionResult useItemOnBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
 		if (world.getBlockState(hitResult.getBlockPos()).getBlock() != ModBlocks.DETACHED_RIFT) return ActionResult.PASS;
 		ItemStack stack = player.getStackInHand(hand);
-		DimensionalDoorItemRegistrar registrar = DimensionalDoorsInitializer.getDimensionalDoorItemRegistrar();
+		DimensionalDoorItemRegistrar registrar = DimensionalDoors.getDimensionalDoorItemRegistrar();
 		Item item = stack.getItem();
 		if (registrar.isRegistered(item)) {
 			return registrar.place(item, new ItemPlacementContext(player, hand, stack, hitResult));

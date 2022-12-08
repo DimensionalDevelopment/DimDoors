@@ -7,7 +7,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.*;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
@@ -130,6 +130,6 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 
 	@Override
 	public Identifier getFabricId() {
-		return Util.id("schematics_v2");
+		return DimensionalDoors.id("schematics_v2");
 	}
 }

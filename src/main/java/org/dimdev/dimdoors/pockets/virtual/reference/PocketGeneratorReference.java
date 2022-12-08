@@ -18,7 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.LazyCompatibleModifier;
@@ -50,12 +50,12 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 			LOGGER.debug("Exception Stacktrace", e);
 			try {
 				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.weightEquation = Equation.newEquation(Equation.parse(DimensionalDoorsInitializer.getConfig().getPocketsConfig().defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
+				this.weightEquation = Equation.newEquation(Equation.parse(DimensionalDoors.getConfig().getPocketsConfig().defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
 			} catch (EquationParseException equationParseException) {
 				LOGGER.debug("Defaulting to default weight equation for {}", this);
 				LOGGER.debug("Exception Stacktrace", e);
 				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) DimensionalDoorsInitializer.getConfig().getPocketsConfig().fallbackWeight, stringBuilder -> stringBuilder.append(weight));
+				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) DimensionalDoors.getConfig().getPocketsConfig().fallbackWeight, stringBuilder -> stringBuilder.append(weight));
 			}
 		}
 	}
@@ -179,10 +179,10 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 				Chunk chunk = LazyPocketGenerator.generationQueue.remove();
 
 				LazyCompatibleModifier.runQueuedModifications(chunk);
-				MinecraftServer server = DimensionalDoorsInitializer.getServer();
-				DimensionalDoorsInitializer.getServer().send(new ServerTask(server.getTicks(), () -> (lazyPocket).chunkLoaded(chunk)));
+				MinecraftServer server = DimensionalDoors.getServer();
+				DimensionalDoors.getServer().send(new ServerTask(server.getTicks(), () -> (lazyPocket).chunkLoaded(chunk)));
 			}
-			LazyCompatibleModifier.runLeftoverModifications(DimensionalDoorsInitializer.getWorld(lazyPocket.getWorld()));
+			LazyCompatibleModifier.runLeftoverModifications(DimensionalDoors.getWorld(lazyPocket.getWorld()));
 		} else {
 			LazyPocketGenerator.currentlyGenerating = false;
 			LazyPocketGenerator.generationQueue.clear();

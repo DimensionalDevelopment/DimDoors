@@ -8,7 +8,7 @@ import java.util.Objects;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -31,7 +31,6 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import org.dimdev.dimdoors.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 
@@ -64,10 +63,10 @@ public class TemplateUtils {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");
-            table = world.getServer().getLootManager().getTable(Util.id("dungeon_chest"));
+            table = world.getServer().getLootManager().getTable(DimensionalDoors.id("dungeon_chest"));
         } else {
             logger.debug("Now populating dispenser.");
-            table = world.getServer().getLootManager().getTable(Util.id("dispenser_projectiles"));
+            table = world.getServer().getLootManager().getTable(DimensionalDoors.id("dispenser_projectiles"));
         }
         LootContext ctx = new LootContext.Builder(world).random(world.random).parameter(LootContextParameters.ORIGIN, Vec3d.of(tile.getPos())).build(LootContextTypes.CHEST);
         table.supplyInventory(inventory, ctx);
@@ -77,7 +76,7 @@ public class TemplateUtils {
     }
 
     static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
-        ServerWorld world = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
+        ServerWorld world = DimensionalDoors.getWorld(pocket.getWorld());
         HashMap<RiftBlockEntity, Float> entranceWeights = new HashMap<>();
 
         for (RiftBlockEntity rift : rifts) { // Find an entrance

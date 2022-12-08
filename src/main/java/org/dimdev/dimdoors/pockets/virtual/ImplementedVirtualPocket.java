@@ -10,8 +10,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
@@ -27,7 +26,7 @@ import java.util.function.Supplier;
 public interface ImplementedVirtualPocket extends VirtualPocket {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
-	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(Util.id("virtual_pocket_type")), Lifecycle.stable(), null)).buildAndRegister();
+	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(DimensionalDoors.id("virtual_pocket_type")), Lifecycle.stable(), null)).buildAndRegister();
 
 	static ImplementedVirtualPocket deserialize(NbtElement nbt, @Nullable ResourceManager manager) {
 		switch (nbt.getType()) {
@@ -79,11 +78,11 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 	String getKey();
 
 	interface VirtualPocketType<T extends ImplementedVirtualPocket> {
-		VirtualPocketType<NoneVirtualPocket> NONE = register(Util.id(NoneVirtualPocket.KEY), () -> NoneVirtualPocket.NONE);
-		VirtualPocketType<IdReference> ID_REFERENCE = register(Util.id(IdReference.KEY), IdReference::new);
-		VirtualPocketType<TagReference> TAG_REFERENCE = register(Util.id(TagReference.KEY), TagReference::new);
-		VirtualPocketType<ConditionalSelector> CONDITIONAL_SELECTOR = register(Util.id(ConditionalSelector.KEY), ConditionalSelector::new);
-		VirtualPocketType<PathSelector> PATH_SELECTOR = register(Util.id(PathSelector.KEY), PathSelector::new);
+		VirtualPocketType<NoneVirtualPocket> NONE = register(DimensionalDoors.id(NoneVirtualPocket.KEY), () -> NoneVirtualPocket.NONE);
+		VirtualPocketType<IdReference> ID_REFERENCE = register(DimensionalDoors.id(IdReference.KEY), IdReference::new);
+		VirtualPocketType<TagReference> TAG_REFERENCE = register(DimensionalDoors.id(TagReference.KEY), TagReference::new);
+		VirtualPocketType<ConditionalSelector> CONDITIONAL_SELECTOR = register(DimensionalDoors.id(ConditionalSelector.KEY), ConditionalSelector::new);
+		VirtualPocketType<PathSelector> PATH_SELECTOR = register(DimensionalDoors.id(PathSelector.KEY), PathSelector::new);
 
 		ImplementedVirtualPocket fromNbt(NbtCompound nbt, @Nullable ResourceManager manager);
 
@@ -94,7 +93,7 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 		NbtCompound toNbt(NbtCompound nbt);
 
 		static void register() {
-			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerVirtualSingularPocketTypes(REGISTRY));
+			DimensionalDoors.apiSubscribers.forEach(d -> d.registerVirtualSingularPocketTypes(REGISTRY));
 		}
 
 		static <U extends ImplementedVirtualPocket> VirtualPocketType<U> register(Identifier id, Supplier<U> factory) {

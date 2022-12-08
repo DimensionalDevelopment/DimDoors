@@ -9,8 +9,7 @@ import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.AncientFabricBlock;
 import org.dimdev.dimdoors.block.FabricBlock;
@@ -20,7 +19,7 @@ import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class DyeableAddon implements PocketAddon {
-	public static Identifier ID = Util.id("dyeable");
+	public static Identifier ID = DimensionalDoors.id("dyeable");
 
 	private static final int BLOCKS_PAINTED_PER_DYE = 1000000;
 
@@ -36,7 +35,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	private void repaint(Pocket pocket, DyeColor dyeColor) {
-		ServerWorld serverWorld = DimensionalDoorsInitializer.getWorld(pocket.getWorld());
+		ServerWorld serverWorld = DimensionalDoors.getWorld(pocket.getWorld());
 		BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).getDefaultState();
 		BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).getDefaultState();
 

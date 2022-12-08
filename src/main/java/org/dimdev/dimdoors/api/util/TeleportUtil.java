@@ -10,7 +10,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.*;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -76,11 +76,11 @@ public final class TeleportUtil {
 	}
 
 	public static ServerPlayerEntity teleport(ServerPlayerEntity player, Location location) {
-		return teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, 0);
+		return teleport(player, DimensionalDoors.getWorld(location.world), location.pos, 0);
 	}
 
 	public static ServerPlayerEntity teleport(ServerPlayerEntity player, RotatedLocation location) {
-		return teleport(player, DimensionalDoorsInitializer.getWorld(location.world), location.pos, (int) location.yaw);
+		return teleport(player, DimensionalDoors.getWorld(location.world), location.pos, (int) location.yaw);
 	}
 	public static  <E extends Entity> E teleportRandom(E entity, World world, double y) {
 		double scale = ThreadLocalRandom.current().nextGaussian() * ThreadLocalRandom.current().nextInt(90);

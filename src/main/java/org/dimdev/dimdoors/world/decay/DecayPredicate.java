@@ -11,8 +11,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleBlockDecayPredicate;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleTagDecayPredicate;
 
@@ -20,7 +19,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public interface DecayPredicate {
-    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(Util.id("decay_predicate_type")), Lifecycle.stable(), null)).buildAndRegister();
+    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_predicate_type")), Lifecycle.stable(), null)).buildAndRegister();
 
     DecayPredicate NONE = new DecayPredicate() {
         private static final String ID = "none";
@@ -76,16 +75,16 @@ public interface DecayPredicate {
     Set<Block> constructApplicableBlocks();
 
     interface DecayPredicateType<T extends DecayPredicate> {
-        DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(Util.id("none"), () -> NONE);
-        DecayPredicateType<SimpleTagDecayPredicate> SIMPLE_TAG_PREDICATE_TYPE = register(Util.id(SimpleTagDecayPredicate.KEY), SimpleTagDecayPredicate::new);
-		DecayPredicateType<SimpleBlockDecayPredicate> SIMPLE_BLOCK_PREDICATE_TYPE = register(Util.id(SimpleBlockDecayPredicate.KEY), SimpleBlockDecayPredicate::new);
+        DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
+        DecayPredicateType<SimpleTagDecayPredicate> SIMPLE_TAG_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleTagDecayPredicate.KEY), SimpleTagDecayPredicate::new);
+		DecayPredicateType<SimpleBlockDecayPredicate> SIMPLE_BLOCK_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleBlockDecayPredicate.KEY), SimpleBlockDecayPredicate::new);
 
         DecayPredicate fromNbt(NbtCompound nbt);
 
 		NbtCompound toNbt(NbtCompound nbt);
 
         static void register() {
-            DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerDecayPredicates(REGISTRY));
+            DimensionalDoors.apiSubscribers.forEach(d -> d.registerDecayPredicates(REGISTRY));
         }
 
         static <U extends DecayPredicate> DecayPredicateType<U> register(Identifier id, Supplier<U> factory) {

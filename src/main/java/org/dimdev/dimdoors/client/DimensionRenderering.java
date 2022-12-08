@@ -9,7 +9,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
@@ -17,8 +18,8 @@ import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
 import java.util.List;
 
 public class DimensionRenderering {
-    private static final Identifier MOON_RENDER_PATH = Util.id("textures/other/limbo_moon.png");
-    private static final Identifier SUN_RENDER_PATH = Util.id("textures/other/limbo_sun.png");
+    private static final Identifier MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
+    private static final Identifier SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
 
     public static void initClient() {
         DimensionRenderingRegistry.CloudRenderer noCloudRenderer = context -> {

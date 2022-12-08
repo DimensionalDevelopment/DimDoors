@@ -7,15 +7,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 import java.util.Objects;
 import java.util.function.Function;
 
 public interface Condition {
-	Registry<ConditionType<?>> REGISTRY = FabricRegistryBuilder.<ConditionType<?>, SimpleRegistry<ConditionType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(Util.id("rift_data_condition")), Lifecycle.stable(), null)).buildAndRegister();
+	Registry<ConditionType<?>> REGISTRY = FabricRegistryBuilder.<ConditionType<?>, SimpleRegistry<ConditionType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(DimensionalDoors.id("rift_data_condition")), Lifecycle.stable(), null)).buildAndRegister();
 
 	boolean matches(EntranceRiftBlockEntity rift);
 
@@ -48,11 +47,11 @@ public interface Condition {
 		}
 
 		static void register() {
-			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerConditionTypes(REGISTRY));
+			DimensionalDoors.apiSubscribers.forEach(d -> d.registerConditionTypes(REGISTRY));
 		}
 
 		static <T extends Condition> ConditionType<T> register(String name, Function<JsonObject, T> fromJson) {
-			return Registry.register(REGISTRY, Util.id(name), json -> fromJson.apply(json));
+			return Registry.register(REGISTRY, DimensionalDoors.id(name), json -> fromJson.apply(json));
 		}
 	}
 }

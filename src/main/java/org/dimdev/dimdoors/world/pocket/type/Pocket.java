@@ -13,7 +13,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
@@ -142,7 +142,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public Map<BlockPos, BlockEntity> getBlockEntities() {
-		ServerWorld serverWorld = DimensionalDoorsInitializer.getWorld(this.getWorld());
+		ServerWorld serverWorld = DimensionalDoors.getWorld(this.getWorld());
 		Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
 		ChunkPos.stream(new ChunkPos(new BlockPos(box.getMinX(), box.getMinY(), box.getMinZ())), new ChunkPos(new BlockPos(box.getMaxX(), box.getMaxY(), box.getMaxZ()))).forEach(chunkPos -> serverWorld.getChunk(chunkPos.x, chunkPos.z).getBlockEntities().forEach((blockPos, blockEntity) -> {
 			if (this.box.contains(blockPos)) blockEntities.put(blockPos, blockEntity);

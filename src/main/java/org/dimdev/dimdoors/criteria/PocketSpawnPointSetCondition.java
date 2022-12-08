@@ -7,10 +7,11 @@ import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 
 public class PocketSpawnPointSetCondition extends AbstractCriterion<PocketSpawnPointSetCondition.Conditions> {
-	public static final Identifier ID = Util.id("pocket_spawn_point_set");
+	public static final Identifier ID = DimensionalDoors.id("pocket_spawn_point_set");
 
 	@Override
 	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {

@@ -7,10 +7,11 @@ import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 
 public class RiftTrackedCriterion extends AbstractCriterion<RiftTrackedCriterion.Conditions> {
-	public static final Identifier ID = Util.id("rift_tracked");
+	public static final Identifier ID = DimensionalDoors.id("rift_tracked");
 
 	@Override
 	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {

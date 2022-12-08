@@ -16,7 +16,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -39,7 +39,7 @@ public class RiftStabilizerItem extends Item {
 				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 			} else {
 				player.sendMessage(MutableText.of(new TranslatableTextContent("tools.rift_miss")), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 				return new TypedActionResult<>(ActionResult.FAIL, stack);
 			}
 		}

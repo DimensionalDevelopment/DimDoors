@@ -213,7 +213,7 @@ public final class ModConfig implements ConfigData {
 		}
 
 		private Path getConfigPath() {
-			return DimensionalDoorsInitializer.getConfigRoot().resolve(definition.name() + "-config.json5");
+			return DimensionalDoors.getConfigRoot().resolve(definition.name() + "-config.json5");
 		}
 
 		@Override

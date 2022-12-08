@@ -21,8 +21,7 @@ import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.function.QuadFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
@@ -69,7 +68,7 @@ public class DimensionalDoorItemRegistrar {
 	}
 
 	public void handleEntry(Identifier identifier, Item original) {
-		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().isAllowed(identifier)) {
+		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(identifier)) {
 			if (original instanceof TallBlockItem) {
 				Block block = ((TallBlockItem) original).getBlock();
 				handleEntry(identifier, original, block, AutoGenDimensionalDoorItem::new);
@@ -113,7 +112,7 @@ public class DimensionalDoorItemRegistrar {
 
 	private void register(Identifier identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
 		if (!DoorData.PARENT_ITEMS.contains(original)) {
-			Identifier gennedId = Util.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+			Identifier gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
 			BlockItem item = Registry.register(registry, gennedId, dimItem.apply(block));
 			placementFunctions.put(original, item::place);
 			if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {

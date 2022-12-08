@@ -5,7 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.*;
 import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
@@ -24,7 +25,7 @@ public final class ModItems {
 	public static final Registry<Item> REGISTRY = Registry.ITEM;
 
 	public static final ItemGroup DIMENSIONAL_DOORS = FabricItemGroupBuilder
-			.create(Util.id("dimensional_doors"))
+			.create(DimensionalDoors.id("dimensional_doors"))
 			.icon(() -> new ItemStack(ModItems.RIFT_BLADE))
 			.build();
 

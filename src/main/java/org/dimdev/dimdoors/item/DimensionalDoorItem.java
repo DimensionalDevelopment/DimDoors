@@ -14,7 +14,7 @@ import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -64,7 +64,7 @@ public class DimensionalDoorItem extends BlockItem {
 
 			if (context.getWorld().isClient) {
 				context.getPlayer().sendMessage(MutableText.of(new TranslatableTextContent("rifts.entrances.rift_too_close")), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 			}
 
 			return ActionResult.FAIL;

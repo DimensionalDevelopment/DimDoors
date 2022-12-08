@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -24,7 +23,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
@@ -35,7 +34,7 @@ import java.util.Objects;
 
 public class RiftRemoverItem extends Item {
 	public static final String ID = "rift_remover";
-	public static final Identifier REMOVED_RIFT_LOOT_TABLE = new Identifier("dimdoors", "removed_rift");
+	public static final Identifier REMOVED_RIFT_LOOT_TABLE = DimensionalDoors.id("removed_rift");
 
 	public RiftRemoverItem(Settings settings) {
 		super(settings);
@@ -55,7 +54,7 @@ public class RiftRemoverItem extends Item {
 		if (world.isClient) {
 			if (!RaycastHelper.hitsDetachedRift(hit, world)) {
 				player.sendMessage(MutableText.of(new TranslatableTextContent("tools.rift_miss")), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoorsInitializer.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 			}
 			return new TypedActionResult<>(ActionResult.FAIL, stack);
 		}

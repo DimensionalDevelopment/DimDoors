@@ -15,7 +15,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -71,7 +71,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 					// Don't clear source, stabilized signatures always stay bound
 					return ActionResult.FAIL;
 				}
-				World targetWorld = DimensionalDoorsInitializer.getWorld(target.world);
+				World targetWorld = DimensionalDoors.getWorld(target.world);
 				targetWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
 				DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
 				rift1.register();

@@ -12,12 +12,13 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.Objects;
 
 public class TagBlockBreakCriteria extends AbstractCriterion<TagBlockBreakCriteria.Conditions> {
-	public static final Identifier ID = Util.id("tag_block_break");
+	public static final Identifier ID = DimensionalDoors.id("tag_block_break");
 
 	@Override
 	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {

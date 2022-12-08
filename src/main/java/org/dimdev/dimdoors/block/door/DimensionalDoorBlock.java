@@ -8,7 +8,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.explosion.Explosion;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
 import org.dimdev.dimdoors.api.block.CustomBreakBlock;
 import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock;
@@ -119,7 +119,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 
 		this.getRift(world, pos, state).teleport(entity);
-		if (DimensionalDoorsInitializer.getConfig().getDoorsConfig().closeDoorBehind) {
+		if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
 			world.setBlockState(top, world.getBlockState(top).with(DoorBlock.OPEN, false));
 			world.setBlockState(bottom, world.getBlockState(bottom).with(DoorBlock.OPEN, false));
 		}
@@ -235,7 +235,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			if (blockEntity instanceof EntranceRiftBlockEntity
 					&& blockState.get(HALF) == DoubleBlockHalf.LOWER
 					&& !(player.isCreative()
-						&& !DimensionalDoorsInitializer.getConfig().getDoorsConfig().placeRiftsInCreativeMode
+						&& !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode
 						)
 			) {
 				world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, blockState.get(WATERLOGGED)));
@@ -278,7 +278,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	static {
 		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-			if (player.isCreative() && !DimensionalDoorsInitializer.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
+			if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
 				return;
 			}
 			if (blockEntity instanceof EntranceRiftBlockEntity && state.get(HALF) == DoubleBlockHalf.LOWER) {

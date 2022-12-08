@@ -7,7 +7,8 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
 import java.util.List;
@@ -17,25 +18,25 @@ import java.util.stream.Stream;
 @Environment(EnvType.CLIENT)
 public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, MonolithModel> {
     public static final List<Identifier> MONOLITH_TEXTURES = Stream.of(
-            Util.id("textures/mob/monolith/monolith0.png"),
-            Util.id("textures/mob/monolith/monolith1.png"),
-            Util.id("textures/mob/monolith/monolith2.png"),
-            Util.id("textures/mob/monolith/monolith3.png"),
-            Util.id("textures/mob/monolith/monolith4.png"),
-            Util.id("textures/mob/monolith/monolith5.png"),
-            Util.id("textures/mob/monolith/monolith6.png"),
-            Util.id("textures/mob/monolith/monolith7.png"),
-            Util.id("textures/mob/monolith/monolith8.png"),
-            Util.id("textures/mob/monolith/monolith9.png"),
-            Util.id("textures/mob/monolith/monolith10.png"),
-            Util.id("textures/mob/monolith/monolith11.png"),
-            Util.id("textures/mob/monolith/monolith12.png"),
-            Util.id("textures/mob/monolith/monolith13.png"),
-            Util.id("textures/mob/monolith/monolith14.png"),
-            Util.id("textures/mob/monolith/monolith15.png"),
-            Util.id("textures/mob/monolith/monolith16.png"),
-            Util.id("textures/mob/monolith/monolith17.png"),
-            Util.id("textures/mob/monolith/monolith18.png")
+            DimensionalDoors.id("textures/mob/monolith/monolith0.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith1.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith2.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith3.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith4.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith5.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith6.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith7.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith8.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith9.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith10.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith11.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith12.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith13.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith14.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith15.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith16.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith17.png"),
+            DimensionalDoors.id("textures/mob/monolith/monolith18.png")
 	).collect(Collectors.toList());
 
     private static MonolithModel INSTANCE;

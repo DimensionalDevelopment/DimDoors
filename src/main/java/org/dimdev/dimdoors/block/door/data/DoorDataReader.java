@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.block.door.data;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedList;
@@ -16,7 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.data.condition.AlwaysTrueCondition;
 import org.dimdev.dimdoors.block.door.data.condition.InverseCondition;
 import org.dimdev.dimdoors.block.door.data.condition.WorldMatchCondition;
@@ -132,7 +131,7 @@ public class DoorDataReader {
 	), true);
 
 	public static void read() {
-		Path doorDir = DimensionalDoorsInitializer.getConfigRoot().resolve("doors");
+		Path doorDir = DimensionalDoors.getConfigRoot().resolve("doors");
 
 		if (Files.exists(doorDir) && !Files.isDirectory(doorDir)) {
 			try {

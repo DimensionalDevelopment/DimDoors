@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -88,7 +88,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	@Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		if (!manager.isPocketLazy()) { // rifts is guaranteed to exist at this stage since this modifier is not supposed to be loaded from json
-			World world = DimensionalDoorsInitializer.getWorld(manager.getPocket().getWorld());
+			World world = DimensionalDoors.getWorld(manager.getPocket().getWorld());
 			rifts.values().forEach(world::addBlockEntity);
 		}
 	}

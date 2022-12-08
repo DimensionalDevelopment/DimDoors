@@ -13,10 +13,12 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.screen.TesselatingScreenHandler;
 
 public class TesselatingLoomScreen extends HandledScreen<TesselatingScreenHandler> implements RecipeBookProvider {
-	private static final Identifier TEXTURE = new Identifier("dimdoors", "textures/screen/container/tesselating_loom.png");
+	private static final Identifier TEXTURE = DimensionalDoors.id("textures/screen/container/tesselating_loom.png");
 	private static final Identifier RECIPE_BUTTON_TEXTURE = new Identifier("textures/gui/recipe_button.png");
 
 	private final RecipeBookWidget recipeBook = new RecipeBookWidget();

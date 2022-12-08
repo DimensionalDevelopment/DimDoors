@@ -15,7 +15,7 @@ import net.minecraft.util.math.random.Random;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
@@ -64,7 +64,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			if (((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition() != null) {
 				destLoc = new Location(((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointDimension(), ((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition());
 			} else {
-				destLoc = new Location(DimensionalDoorsInitializer.getServer().getOverworld(), DimensionalDoorsInitializer.getServer().getOverworld().getSpawnPos());
+				destLoc = new Location(DimensionalDoors.getServer().getOverworld(), DimensionalDoors.getServer().getOverworld().getSpawnPos());
 
 			}
 
@@ -92,7 +92,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				entity.fallDistance = 0;
 				Random random = Random.create();
 				BlockPos.iterateOutwards(location.pos.add(0, -3, 0), 3, 2, 3).forEach((pos1 -> {
-					if (random.nextFloat() < (1 / ((float) location.pos.getSquaredDistance(pos1))) * DimensionalDoorsInitializer.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
+					if (random.nextFloat() < (1 / ((float) location.pos.getSquaredDistance(pos1))) * DimensionalDoors.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
 						Block block = location.getWorld().getBlockState(pos1).getBlock();
 						if (UnravelUtil.unravelBlocksMap.containsKey(block))
 							location.getWorld().setBlockState(pos1, UnravelUtil.unravelBlocksMap.get(block).getDefaultState());

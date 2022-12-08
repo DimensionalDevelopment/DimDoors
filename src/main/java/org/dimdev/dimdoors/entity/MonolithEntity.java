@@ -4,7 +4,7 @@ import net.minecraft.util.math.random.Random;
 
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.util.math.Box;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -72,7 +72,7 @@ public class MonolithEntity extends MobEntity {
     }
 
     public boolean isDangerous() {
-        return DimensionalDoorsInitializer.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || DimensionalDoorsInitializer.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
+        return DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || DimensionalDoors.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
     }
 
     @Override

@@ -20,8 +20,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoorsInitializer;
-import org.dimdev.dimdoors.Util;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
@@ -44,7 +43,7 @@ import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable {
 	private static final Logger LOGGER = LogManager.getLogger();
-	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketGeneratorType<? extends PocketGenerator>>(RegistryKey.ofRegistry(Util.id("pocket_generator_type")), Lifecycle.stable(), null)).buildAndRegister();
+	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketGeneratorType<? extends PocketGenerator>>(RegistryKey.ofRegistry(DimensionalDoors.id("pocket_generator_type")), Lifecycle.stable(), null)).buildAndRegister();
 	public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
@@ -300,16 +299,16 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	public abstract Vec3i getSize(PocketGenerationContext parameters);
 
 	public interface PocketGeneratorType<T extends PocketGenerator> {
-		PocketGeneratorType<SchematicGenerator> SCHEMATIC = register(Util.id(SchematicGenerator.KEY), SchematicGenerator::new);
-		PocketGeneratorType<ChunkGenerator> CHUNK = register(Util.id(ChunkGenerator.KEY), ChunkGenerator::new);
-		PocketGeneratorType<VoidGenerator> VOID = register(Util.id(VoidGenerator.KEY), VoidGenerator::new);
+		PocketGeneratorType<SchematicGenerator> SCHEMATIC = register(DimensionalDoors.id(SchematicGenerator.KEY), SchematicGenerator::new);
+		PocketGeneratorType<ChunkGenerator> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
+		PocketGeneratorType<VoidGenerator> VOID = register(DimensionalDoors.id(VoidGenerator.KEY), VoidGenerator::new);
 
 		PocketGenerator fromNbt(NbtCompound nbt, ResourceManager manager);
 
 		NbtCompound toNbt(NbtCompound nbt);
 
 		static void register() {
-			DimensionalDoorsInitializer.apiSubscribers.forEach(d -> d.registerPocketGeneratorTypes(REGISTRY));
+			DimensionalDoors.apiSubscribers.forEach(d -> d.registerPocketGeneratorTypes(REGISTRY));
 		}
 
 		static <U extends PocketGenerator> PocketGeneratorType<U> register(Identifier id, Supplier<U> constructor) {

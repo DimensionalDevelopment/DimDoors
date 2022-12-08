@@ -7,7 +7,8 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.ModShaders;
 
 import java.util.Collections;
@@ -35,7 +36,7 @@ public final class DimensionalPortalRenderer {
 	}
 
 	static {
-		WARP_PATH = Util.id("textures/other/warp.png");
+		WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
 		DIMENSIONAL_PORTAL_SHADER = new RenderPhase.Shader(ModShaders::getDimensionalPortal);
 		RENDER_LAYER = RenderLayerFactory.create(
 				"dimensional_portal",
