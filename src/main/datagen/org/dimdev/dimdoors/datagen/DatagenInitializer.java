@@ -7,7 +7,8 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator dataGenerator) {
 		dataGenerator.addProvider(BlockStateProvider::new);
-		dataGenerator.addProvider(FabricRecipeProvider::new);
+		dataGenerator.addProvider(DimdoorsRecipeProvider::new);
+		dataGenerator.addProvider(ColoredFabricRecipeProvider::new);
 		dataGenerator.addProvider(AdvancementProvider::new);
 		dataGenerator.addProvider(LootTableProvider::new);
 		dataGenerator.addProvider(LimboDecayProvider::new);

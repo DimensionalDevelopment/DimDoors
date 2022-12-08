@@ -23,7 +23,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "org.dimdev.dimdoors.DimensionalDoorsInitializer"
+      "org.dimdev.dimdoors.DimensionalDoors"
     ],
     "client": [
       "org.dimdev.dimdoors.client.DimensionalDoorsClientInitializer"

@@ -16,7 +16,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
 import org.dimdev.dimdoors.item.ModItems;
@@ -29,7 +30,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
 				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey)),
 				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey + ".desc")),
-				Util.id("textures/block/unravelled_fabric.png"),
+				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
 				AdvancementFrame.TASK,
 				true,
 				true,
@@ -41,7 +42,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
 				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey)),
 				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey + ".desc")),
-				Util.id("textures/block/unravelled_fabric.png"),
+				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
 				advancementFrame,
 				true,
 				true,
@@ -124,7 +125,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		Advancement.Builder.create()
 				.display(makeDisplay(ModItems.BLACK_FABRIC, "darklight"))
 				.parent(doorToAdventure)
-				.criterion("get_fabric", InventoryChangedCriterion.Conditions.items(ItemPredicate.Builder.create().tag(TagKey.of(Registry.ITEM_KEY, Util.id("fabric"))).build()))
+				.criterion("get_fabric", InventoryChangedCriterion.Conditions.items(ItemPredicate.Builder.create().tag(TagKey.of(Registry.ITEM_KEY, DimensionalDoors.id("fabric"))).build()))
 				.build(advancementConsumer, "dimdoors:dimdoors/darklight");
 		Advancement enterLimbo = Advancement.Builder.create()
 				.display(makeDisplay(ModItems.MONOLITH_SPAWNER, "enter_limbo"))

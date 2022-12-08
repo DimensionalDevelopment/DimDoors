@@ -10,7 +10,8 @@ import net.minecraft.data.client.Models;
 import net.minecraft.data.client.TextureMap;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.dimdev.dimdoors.Util;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 
 public class BlockStateProvider extends FabricModelProvider {
@@ -23,10 +24,10 @@ public class BlockStateProvider extends FabricModelProvider {
 		generator.registerDoor(ModBlocks.GOLD_DOOR);
 		generator.registerDoor(ModBlocks.STONE_DOOR);
 		generator.registerDoor(ModBlocks.QUARTZ_DOOR);
-		registerDoor(generator, Registry.BLOCK.get(Util.id("iron_dimensional_door")), Blocks.IRON_DOOR);
-		registerDoor(generator, Registry.BLOCK.get(Util.id("gold_dimensional_door")), ModBlocks.GOLD_DOOR);
-		registerDoor(generator, Registry.BLOCK.get(Util.id("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
-		registerDoor(generator, Registry.BLOCK.get(Util.id("oak_dimensional_door")), Blocks.OAK_DOOR);
+		registerDoor(generator, Registry.BLOCK.get(DimensionalDoors.id("iron_dimensional_door")), Blocks.IRON_DOOR);
+		registerDoor(generator, Registry.BLOCK.get(DimensionalDoors.id("gold_dimensional_door")), ModBlocks.GOLD_DOOR);
+		registerDoor(generator, Registry.BLOCK.get(DimensionalDoors.id("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
+		registerDoor(generator, Registry.BLOCK.get(DimensionalDoors.id("oak_dimensional_door")), Blocks.OAK_DOOR);
 //		registerDoor(generator, Registry.BLOCK.get(Util.id("dungeon_door")), ModBlocks.STONE_DOOR);
 	}
 
