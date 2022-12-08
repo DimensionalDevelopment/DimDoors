@@ -1,5 +1,4 @@
-4.0.0+beta.3
-Bug Fixes
-- Fixed gateways not generating in modded biomes
-- Fixed incorrect particle shown on unfolded block
-- Added registration of features
+5.0.1
+- Fixed invalid file on curseforge
+- Modded gold ingots can be used to craft gold doors
+- Removing a rift has a chance to drop some world thread
