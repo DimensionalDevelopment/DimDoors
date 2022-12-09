@@ -4,11 +4,11 @@ import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.decay.processors.DoorDecayProccessor;
@@ -19,7 +19,7 @@ import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
 import java.util.function.Supplier;
 
 public interface DecayProcessor {
-    Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_processor_type")), Lifecycle.stable(), null)).buildAndRegister();
+    Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_processor_type")), Lifecycle.stable(), false)).buildAndRegister();
 
     DecayProcessor NONE = new DecayProcessor() {
         @Override

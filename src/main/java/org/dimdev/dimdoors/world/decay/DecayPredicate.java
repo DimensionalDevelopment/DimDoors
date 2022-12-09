@@ -5,11 +5,11 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleBlockDecayPredicate;
@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public interface DecayPredicate {
-    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_predicate_type")), Lifecycle.stable(), null)).buildAndRegister();
+    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_predicate_type")), Lifecycle.stable(), false)).buildAndRegister();
 
     DecayPredicate NONE = new DecayPredicate() {
         private static final String ID = "none";

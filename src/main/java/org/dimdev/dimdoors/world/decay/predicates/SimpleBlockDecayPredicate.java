@@ -4,9 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
@@ -25,14 +25,14 @@ public class SimpleBlockDecayPredicate implements DecayPredicate {
 
     @Override
     public DecayPredicate fromNbt(NbtCompound nbt) {
-        block = Registry.BLOCK.get(Identifier.tryParse(nbt.getString("block")));
+        block = Registries.BLOCK.get(Identifier.tryParse(nbt.getString("block")));
         return this;
     }
 
     @Override
     public NbtCompound toNbt(NbtCompound nbt) {
         DecayPredicate.super.toNbt(nbt);
-        nbt.putString("block", Registry.BLOCK.getId(block).toString());
+        nbt.putString("block", Registries.BLOCK.getId(block).toString());
         return nbt;
     }
 

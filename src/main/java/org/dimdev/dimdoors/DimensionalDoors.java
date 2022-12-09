@@ -13,12 +13,12 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
@@ -136,8 +136,8 @@ public class DimensionalDoors implements ModInitializer {
 		ModParticleTypes.init();
 		ModCriteria.init();
 		ModEnchants.init();
-		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(Registry.ITEM);
-		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registry.BLOCK, dimensionalDoorItemRegistrar);
+		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(Registries.ITEM);
+		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registries.BLOCK, dimensionalDoorItemRegistrar);
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(LimboDecay.DecayLoader.getInstance());
