@@ -1,19 +1,19 @@
 package org.dimdev.dimdoors.entity;
 
 //import org.dimdev.dimdoors.client.MaskRenderer;
-import org.dimdev.dimdoors.client.MonolithRenderer;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityDimensions;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import org.dimdev.dimdoors.client.MonolithRenderer;
 
 public class ModEntityTypes {
     public static final EntityType<MonolithEntity> MONOLITH = register(
@@ -40,6 +40,6 @@ public class ModEntityTypes {
     }
 
     private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, float width, float height, boolean fixed) {
-        return Registry.register(Registry.ENTITY_TYPE, id, FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, factory).dimensions(new EntityDimensions(width, height, fixed)).spawnableFarFromPlayer().fireImmune().build());
+        return Registry.register(Registries.ENTITY_TYPE, id, FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, factory).dimensions(new EntityDimensions(width, height, fixed)).spawnableFarFromPlayer().fireImmune().build());
     }
 }

@@ -1,27 +1,24 @@
 package org.dimdev.dimdoors.fluid;
 
-import net.minecraft.util.math.random.Random;
-
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.ModItems;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.state.StateManager;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.item.ModItems;
 
 public abstract class EternalFluid extends FlowableFluid {
 	@Override
@@ -97,7 +94,7 @@ public abstract class EternalFluid extends FlowableFluid {
 	}
 
 	@Override
-	protected boolean isInfinite() {
+	protected boolean isInfinite(World world) {
 		return false;
 	}
 

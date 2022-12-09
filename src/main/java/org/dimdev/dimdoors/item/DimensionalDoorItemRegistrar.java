@@ -17,8 +17,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -89,7 +87,7 @@ public class DimensionalDoorItemRegistrar {
 		if (!(originalBlock instanceof DimensionalDoorBlock)
 				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
 				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapdoorBlock)) {
-			Item.Settings settings = ItemExtensions.getSettings(original).group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS);
+			Item.Settings settings = ItemExtensions.getSettings(original)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
 
 			Function<Block, BlockItem> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, rift -> rift.setDestination(new PublicPocketTarget()), original);
 

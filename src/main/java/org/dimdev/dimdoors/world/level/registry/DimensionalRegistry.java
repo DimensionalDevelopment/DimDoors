@@ -3,10 +3,10 @@ package org.dimdev.dimdoors.world.level.registry;
 import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.level.LevelProperties;
 import org.dimdev.dimdoors.DimensionalDoorsComponents;
@@ -42,7 +42,7 @@ public class DimensionalRegistry implements ComponentV3 {
 		NbtCompound pocketRegistryNbt = nbt.getCompound("pocket_registry");
 		CompletableFuture<Map<RegistryKey<World>, PocketDirectory>> futurePocketRegistry = CompletableFuture.supplyAsync(() -> pocketRegistryNbt.getKeys().stream().map(key -> {
 					NbtCompound pocketDirectoryNbt = pocketRegistryNbt.getCompound(key);
-					return CompletableFuture.supplyAsync(() -> new Pair<>(RegistryKey.of(Registry.WORLD_KEY, Identifier.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt)));
+					return CompletableFuture.supplyAsync(() -> new Pair<>(RegistryKey.of(RegistryKeys.WORLD, Identifier.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt)));
 				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight)));
 
 		NbtCompound privateRegistryNbt = nbt.getCompound("private_registry");

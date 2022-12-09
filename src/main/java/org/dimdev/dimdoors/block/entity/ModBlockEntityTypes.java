@@ -1,20 +1,15 @@
 package org.dimdev.dimdoors.block.entity;
 
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.block.Block;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import org.apache.commons.lang3.ArrayUtils;
 import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.data.DoorData;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.registry.Registry;
-
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ModBlockEntityTypes {
 	public static final BlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = register(
@@ -31,11 +26,11 @@ public class ModBlockEntityTypes {
 
 
     private static <E extends BlockEntity> BlockEntityType<E> register(String id, FabricBlockEntityTypeBuilder.Factory<E> factory, Block... blocks) {
-		return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(factory, blocks).build());
+		return Registry.register(Registries.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(factory, blocks).build());
 	}
 
 	private static <E extends BlockEntity> MutableBlockEntityType<E> registerMutable(String id, MutableBlockEntityType.BlockEntityFactory<E> factory, Block... blocks) {
-		return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, MutableBlockEntityType.Builder.create(factory, blocks).build());
+		return Registry.register(Registries.BLOCK_ENTITY_TYPE, id, MutableBlockEntityType.Builder.create(factory, blocks).build());
 	}
 
 	public static void init() {

@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
 public enum DefaultTransformation implements Transformer {
@@ -36,7 +36,7 @@ public enum DefaultTransformation implements Transformer {
 		@Override
 		public void transform(MatrixStack matrices) {
 			// TODO
-			matrices.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
+			matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-90f)));
 			matrices.translate(0, 0, -0.81F);
 		}
 	},
@@ -44,7 +44,7 @@ public enum DefaultTransformation implements Transformer {
 		@Override
 		public void transform(MatrixStack matrices) {
 			// TODO
-			matrices.multiply(Vec3f.NEGATIVE_Y.getDegreesQuaternion(90.0F));
+			matrices.multiply(new Quaternionf().rotateY((float) Math.toRadians(-90f)));
 			matrices.translate(0, 0, -0.19F);
 		}
 	},

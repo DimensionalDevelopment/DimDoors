@@ -11,13 +11,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -43,7 +43,7 @@ import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable {
 	private static final Logger LOGGER = LogManager.getLogger();
-	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketGeneratorType<? extends PocketGenerator>>(RegistryKey.ofRegistry(DimensionalDoors.id("pocket_generator_type")), Lifecycle.stable(), null)).buildAndRegister();
+	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketGeneratorType<? extends PocketGenerator>>(RegistryKey.ofRegistry(DimensionalDoors.id("pocket_generator_type")), Lifecycle.stable(), false)).buildAndRegister();
 	public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config

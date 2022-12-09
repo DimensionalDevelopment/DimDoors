@@ -26,7 +26,6 @@
     "accessor.GenerationSettingsAccessor",
     "accessor.ItemGroupAccessor",
     "accessor.ListTagAccessor",
-    "accessor.RecipesProviderAccessor",
     "accessor.RedstoneWireBlockAccessor",
     "accessor.StatsAccessor"
   ],

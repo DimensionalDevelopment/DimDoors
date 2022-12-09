@@ -3,11 +3,10 @@ package org.dimdev.dimdoors.network.packet.s2c;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
@@ -39,7 +38,7 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 
 	@Override
 	public SimplePacket<ClientPacketListener> read(PacketByteBuf buf) throws IOException {
-		this.world = RegistryKey.of(Registry.WORLD_KEY, buf.readIdentifier());
+		this.world = RegistryKey.of(RegistryKeys.WORLD, buf.readIdentifier());
 		this.gridSize = buf.readInt();
 		this.pocketId = buf.readInt();
 		this.pocketRange = buf.readInt();

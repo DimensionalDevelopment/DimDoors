@@ -6,13 +6,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.NbtEquations;
@@ -57,7 +57,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 		}
 
 		doorTypeString = nbt.getString("door_type");
-		Block doorBlock = Registry.BLOCK.get(Identifier.tryParse(doorTypeString));
+		Block doorBlock = Registries.BLOCK.get(Identifier.tryParse(doorTypeString));
 		if (!(doorBlock instanceof DimensionalDoorBlock)) {
 			throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
 		}

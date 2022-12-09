@@ -1,21 +1,18 @@
 package org.dimdev.dimdoors.particle.client;
 
-import java.util.Locale;
-
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.DustParticleEffect;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.util.registry.Registry;
-
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleType;
+import net.minecraft.registry.Registries;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
+
+import java.util.Locale;
 
 public class RiftParticleEffect implements ParticleEffect {
    public static RiftParticleEffect of(boolean isOutsidePocket) {
@@ -76,7 +73,7 @@ public class RiftParticleEffect implements ParticleEffect {
    }
 
    public String asString() {
-      return String.format(Locale.ROOT, "%s %.2f %s", Registry.PARTICLE_TYPE.getId(this.getType()), this.color, this.averageAge);
+      return String.format(Locale.ROOT, "%s %.2f %s", Registries.PARTICLE_TYPE.getId(this.getType()), this.color, this.averageAge);
    }
 
    public ParticleType<RiftParticleEffect> getType() {

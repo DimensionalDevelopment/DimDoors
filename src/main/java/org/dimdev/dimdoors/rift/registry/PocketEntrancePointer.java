@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 
 public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftPointer superclass?
@@ -35,7 +35,7 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 	}
 
 	public static PocketEntrancePointer fromNbt(NbtCompound nbt) {
-		PocketEntrancePointer pointer = new PocketEntrancePointer(RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
+		PocketEntrancePointer pointer = new PocketEntrancePointer(RegistryKey.of(RegistryKeys.WORLD, new Identifier(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
 		pointer.id = nbt.getUuid("id");
 		return pointer;
 	}

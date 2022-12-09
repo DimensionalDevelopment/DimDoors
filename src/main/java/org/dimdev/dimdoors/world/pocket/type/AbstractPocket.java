@@ -3,11 +3,12 @@ package org.dimdev.dimdoors.world.pocket.type;
 import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public abstract class AbstractPocket<V extends AbstractPocket<?>> {
-	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(RegistryKey.ofRegistry(DimensionalDoors.id("abstract_pocket_type")), Lifecycle.stable(), null)).buildAndRegister();
+	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(RegistryKey.ofRegistry(DimensionalDoors.id("abstract_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
 
 	protected Integer id;
 	protected RegistryKey<World> world;
@@ -49,7 +50,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 
 	public V fromNbt(NbtCompound nbt) {
 		this.id = nbt.getInt("id");
-		this.world = RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world")));
+		this.world = RegistryKey.of(RegistryKeys.WORLD, new Identifier(nbt.getString("world")));
 
 		return (V) this;
 	}

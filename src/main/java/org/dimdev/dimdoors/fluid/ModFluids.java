@@ -12,14 +12,14 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockRenderView;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.function.Function;
@@ -29,7 +29,7 @@ public class ModFluids {
 	public static final FlowableFluid FLOWING_ETERNAL_FLUID = register("dimdoors:flowing_eternal_fluid", new EternalFluid.Flowing());
 
 	private static <T extends Fluid> T register(String string, T fluid) {
-		return Registry.register(Registry.FLUID, string, fluid);
+		return Registry.register(Registries.FLUID, string, fluid);
 	}
 
 	public static void init() {
@@ -44,13 +44,14 @@ public class ModFluids {
 		final Identifier stillSpriteId = new Identifier(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_still");
 		final Identifier flowingSpriteId = new Identifier(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_flow");
 
+		//TODO: Redo
 		// If they're not already present, add the sprites to the block atlas
 		ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
 			registry.register(stillSpriteId);
 			registry.register(flowingSpriteId);
 		});
 
-		final Identifier fluidId = Registry.FLUID.getId(still);
+		final Identifier fluidId = Registries.FLUID.getId(still);
 		final Identifier listenerId = new Identifier(fluidId.getNamespace(), fluidId.getPath() + "_reload_listener");
 
 		final Sprite[] fluidSprites = {null, null};

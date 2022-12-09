@@ -14,8 +14,9 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Uuids;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
+import net.minecraft.util.dynamic.UuDynamicSerializableUuid;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
@@ -114,18 +115,18 @@ public class RiftKeyItem extends Item {
 	}
 
 	public static boolean tryRemove(ItemStack stack, UUID id) {
-		NbtIntArray arrayTag = new NbtIntArray(DynamicSerializableUuid.toIntArray(id));
+		NbtIntArray arrayTag = new NbtIntArray(Uuids.toIntArray(id));
 		return stack.getNbt().getList("Ids", NbtType.INT_ARRAY).remove(arrayTag);
 	}
 
 	public static void add(ItemStack stack, UUID id) {
 		if (!has(stack, id)) {
-			stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).add(new NbtIntArray(DynamicSerializableUuid.toIntArray(id)));
+			stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).add(new NbtIntArray(Uuids.toIntArray(id)));
 		}
 	}
 
 	public static boolean has(ItemStack stack, UUID id) {
-		return stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).contains(new NbtIntArray(DynamicSerializableUuid.toIntArray(id)));
+		return stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).contains(new NbtIntArray(Uuids.toIntArray(id)));
 	}
 
 	public static boolean isEmpty(ItemStack stack) {
@@ -138,7 +139,7 @@ public class RiftKeyItem extends Item {
 				.stream()
 				.map(NbtIntArray.class::cast)
 				.map(NbtIntArray::getIntArray)
-				.map(DynamicSerializableUuid::toUuid)
+				.map(Uuids::toUuid)
 				.collect(Collectors.toList());
 	}
 

@@ -6,9 +6,9 @@ import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
@@ -32,7 +32,7 @@ public class DimensionalDoorModelVariantProvider implements ModelVariantProvider
 			//UnbakedModel model = context.loadModel(newId);
 			//if (model != null) return model;
 
-			Block original = Registry.BLOCK.get(mapped);
+			Block original = Registries.BLOCK.get(mapped);
 			Set<String> originalProperties = original.getStateManager().getProperties().stream().map(Property::getName).collect(Collectors.toSet());
 
 			ArrayList<String> variantArray = new ArrayList<>();
