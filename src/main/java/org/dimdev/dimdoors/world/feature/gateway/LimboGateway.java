@@ -1,18 +1,12 @@
 package org.dimdev.dimdoors.world.feature.gateway;
 
-import java.util.Set;
-
-import com.google.common.collect.ImmutableSet;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.biome.Biome;
 
 public enum LimboGateway implements Gateway {
     INSTANCE;

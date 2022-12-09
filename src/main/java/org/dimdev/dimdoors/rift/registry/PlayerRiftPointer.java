@@ -5,13 +5,13 @@ import java.util.UUID;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
+import net.minecraft.util.Uuids;
 
 public class PlayerRiftPointer extends RegistryVertex {
 	public static final Codec<PlayerRiftPointer> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
-				DynamicSerializableUuid.CODEC.fieldOf("id").forGetter(a -> a.id),
-				DynamicSerializableUuid.CODEC.fieldOf("player").forGetter(a -> a.player)
+				Uuids.CODEC.fieldOf("id").forGetter(a -> a.id),
+				Uuids.CODEC.fieldOf("player").forGetter(a -> a.player)
 		).apply(instance, (id, player) -> {
 			PlayerRiftPointer pointer = new PlayerRiftPointer(player);
 			pointer.id = id;
