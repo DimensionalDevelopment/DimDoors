@@ -34,7 +34,7 @@ public abstract class SchematicGateway implements Gateway, BiPredicate<Structure
 
 		try (InputStream stream = DimensionalDoors.class.getResourceAsStream(schematicJarDirectory + this.id + ".schem")) {
 			if (stream == null) {
-				throw new RuntimeException("Schematic '" + this.id + "' was not found in the jar or config directory, neither with the .schem extension, nor with the .schematic extension.");
+				throw new RuntimeException("Schematic '" + this.id + "' was not found in the jar.");
 			}
 			try {
 				this.schematic = Schematic.fromNbt(NbtIo.readCompressed(stream));

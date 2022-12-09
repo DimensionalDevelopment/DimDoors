@@ -1,25 +1,21 @@
 package org.dimdev.dimdoors.util.schematic;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
-import net.minecraft.block.*;
-import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.*;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkSection;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -27,10 +23,20 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.server.world.ServerChunkManager;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ModifiableWorld;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
@@ -50,7 +56,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		this.blockData = SchematicPlacer.getBlockData(schematic);
 		this.biomeData = SchematicPlacer.getBiomeData(schematic);
 		this.blockPalette = ImmutableBiMap.copyOf(schematic.getBlockPalette());
-		this.biomePalette = ImmutableBiMap.copyOf(schematic.getBiomePalette());
+		this.biomePalette = /*ImmutableBiMap.copyOf(schematic.getBiomePalette());*/ HashBiMap.create(0);
 		this.blockContainer = Maps.newHashMap();
 		this.biomeContainer = Maps.newHashMap();
 		this.blockEntityContainer = Maps.newHashMap();
@@ -160,7 +166,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				int sectionY = chunk.getSectionIndex(blockPos.getY());
 				ChunkSection section = sections[sectionY];
 				if (section == null) {
-					section = new ChunkSection(sectionY, world.getRegistryManager().get(Registry.BIOME_KEY));
+					section = new ChunkSection(sectionY, world.getRegistryManager().get(RegistryKeys.BIOME));
 					sections[sectionY] = section;
 				}
 				if(section.getBlockState(x, y, z).isAir()) {
@@ -182,7 +188,6 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				}
 			});
 		}
-
 
 		// do the lighting thing
 		serverChunkManager.getLightingProvider().light(chunk, false);

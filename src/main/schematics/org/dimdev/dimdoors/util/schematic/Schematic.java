@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.util.schematic;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,8 +25,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.world.biome.Biome;
 
 public class Schematic {
 	private static final Consumer<String> PRINT_TO_STDERR = System.err::println;
@@ -43,9 +40,9 @@ public class Schematic {
 			SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
 			Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
 			Codec.list(NbtCompound.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
-			Codec.list(NbtCompound.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities),
-			Codec.unboundedMap(BuiltinRegistries.BIOME.getCodec(), Codec.INT).optionalFieldOf("BiomePalette", Collections.emptyMap()).forGetter(Schematic::getBiomePalette),
-			Codec.BYTE_BUFFER.optionalFieldOf("BiomeData", ByteBuffer.wrap(new byte[0])).forGetter(Schematic::getBlockData)
+			Codec.list(NbtCompound.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities)/*,*/
+//			Codec.unboundedMap(BuiltinRegistries.BIOME.getCodec(), Codec.INT).optionalFieldOf("BiomePalette", Collections.emptyMap()).forGetter(Schematic::getBiomePalette),
+//			Codec.BYTE_BUFFER.optionalFieldOf("BiomeData", ByteBuffer.wrap(new byte[0])).forGetter(Schematic::getBlockData)
 	).apply(instance, Schematic::new));
 
 	private final int version;
@@ -60,11 +57,11 @@ public class Schematic {
 	private final ByteBuffer blockData;
 	private List<NbtCompound> blockEntities;
 	private List<NbtCompound> entities;
-	private final BiMap<Biome, Integer> biomePalette;
-	private final ByteBuffer biomeData;
+//	private final BiMap<Biome, Integer> biomePalette;
+//	private final ByteBuffer biomeData;
 	private RelativeBlockSample cachedBlockSample = null;
 
-	public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, ByteBuffer blockData, List<NbtCompound> blockEntities, List<NbtCompound> entities, Map<Biome, Integer> biomePalette, ByteBuffer biomeData) {
+	public Schematic(int version, int dataVersion, SchematicMetadata metadata, short width, short height, short length, Vec3i offset, int paletteMax, Map<BlockState, Integer> blockPalette, ByteBuffer blockData, List<NbtCompound> blockEntities, List<NbtCompound> entities /*, Map<Biome, Integer> biomePalette, ByteBuffer biomeData*/) {
 		this.version = version;
 		this.dataVersion = dataVersion;
 		this.metadata = metadata;
@@ -77,8 +74,8 @@ public class Schematic {
 		this.blockData = blockData;
 		this.blockEntities = blockEntities;
 		this.entities = entities;
-		this.biomePalette = HashBiMap.create(biomePalette);
-		this.biomeData = biomeData;
+//		this.biomePalette = HashBiMap.create(biomePalette);
+//		this.biomeData = biomeData;
 	}
 
 	public int getVersion() {
@@ -125,13 +122,13 @@ public class Schematic {
 		return this.blockEntities;
 	}
 
-	public BiMap<Biome, Integer> getBiomePalette() {
-		return this.biomePalette;
-	}
+//	public BiMap<Biome, Integer> getBiomePalette() {
+//		return this.biomePalette;
+//	}
 
-	public ByteBuffer getBiomeData() {
-		return this.biomeData;
-	}
+//	public ByteBuffer getBiomeData() {
+//		return this.biomeData;
+//	}
 
 	public void setBlockEntities(List<NbtCompound> blockEntities) {
 		this.blockEntities = blockEntities.stream().map(SchematicPlacer::fixEntityId).collect(Collectors.toList());
@@ -199,8 +196,8 @@ public class Schematic {
 				.add("blockData", this.blockData)
 				.add("blockEntities", this.blockEntities)
 				.add("entities", this.entities)
-				.add("biomePalette", this.biomePalette)
-				.add("biomeData", this.biomeData)
+//				.add("biomePalette", this.biomePalette)
+//				.add("biomeData", this.biomeData)
 				.toString();
 	}
 
@@ -221,8 +218,9 @@ public class Schematic {
 				&& Objects.equals(this.blockData, schematic.blockData)
 				&& Objects.equals(this.blockEntities, schematic.blockEntities)
 				&& Objects.equals(this.entities, schematic.entities)
-				&& Objects.equals(this.biomePalette, schematic.biomePalette)
-				&& Objects.equals(this.biomeData, schematic.biomeData);
+//				&& Objects.equals(this.biomePalette, schematic.biomePalette)
+//				&& Objects.equals(this.biomeData, schematic.biomeData);
+		;
 	}
 
 	@Override
@@ -239,9 +237,9 @@ public class Schematic {
 				this.blockPalette,
 				this.blockData,
 				this.blockEntities,
-				this.entities,
-				this.biomePalette,
-				this.biomeData
+				this.entities/*,*/
+//				this.biomePalette,
+//				this.biomeData
 		);
 	}
 }

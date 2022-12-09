@@ -1,34 +1,56 @@
 package org.dimdev.dimdoors.world.feature;
 
-import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
+import java.util.List;
+
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.EndGateway;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SandstonePillarsGateway;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGateway;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGatewayFeature;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGatewayFeatureConfig;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.TwoPillarsGateway;
+
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.structure.rule.BlockMatchRuleTest;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.YOffset;
-import net.minecraft.world.gen.feature.*;
-import net.minecraft.world.gen.placementmodifier.*;
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.*;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.ConfiguredFeatures;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.PlacedFeature;
+import net.minecraft.world.gen.feature.PlacedFeatures;
+import net.minecraft.world.gen.feature.SpringFeatureConfig;
+import net.minecraft.world.gen.placementmodifier.BiomePlacementModifier;
+import net.minecraft.world.gen.placementmodifier.CountPlacementModifier;
+import net.minecraft.world.gen.placementmodifier.HeightRangePlacementModifier;
+import net.minecraft.world.gen.placementmodifier.RarityFilterPlacementModifier;
+import net.minecraft.world.gen.placementmodifier.SquarePlacementModifier;
 
-import java.util.List;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 
 import static net.minecraft.world.gen.feature.Feature.ORE;
 import static net.minecraft.world.gen.feature.Feature.SPRING_FEATURE;
+import static org.dimdev.dimdoors.DimensionalDoors.id;
 
 public final class ModFeatures {
 	public static final SchematicGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
 	public static final SchematicGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
 	public static final SchematicGateway END_GATEWAY = new EndGateway();
 
-	public static final Feature<SchematicGatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = Registry.register(Registries.FEATURE, DimensionalDoors.id("schematic_gateway"), new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
-	public static final Feature<DefaultFeatureConfig> LIMBO_GATEWAY_FEATURE = Registry.register(Registries.FEATURE, DimensionalDoors.id("limbo_gateway"), new LimboGatewayFeature());
+	public static final Feature<SchematicGatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = Registry.register(Registries.FEATURE, id("schematic_gateway"), new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
+	public static final Feature<DefaultFeatureConfig> LIMBO_GATEWAY_FEATURE = Registry.register(Registries.FEATURE, id("limbo_gateway"), new LimboGatewayFeature());
 
 	public static void init() {
 		SANDSTONE_PILLARS_GATEWAY.init();
@@ -40,15 +62,19 @@ public final class ModFeatures {
 	}
 
 	public static final class Configured {
-		public static final RegistryEntry<ConfiguredFeature<SchematicGatewayFeatureConfig, ?>> SANDSTONE_PILLARS_CONFIGURED_FEATURE = ConfiguredFeatures.register("dimdoors:sandstone_pillars", SCHEMATIC_GATEWAY_FEATURE, new SchematicGatewayFeatureConfig(SchematicGateway.ID_SCHEMATIC_MAP.inverse().get(SANDSTONE_PILLARS_GATEWAY)));
-		public static final RegistryEntry<ConfiguredFeature<SchematicGatewayFeatureConfig, ?>> TWO_PILLARS_CONFIGURED_FEATURE = ConfiguredFeatures.register("dimdoors:two_pillars", SCHEMATIC_GATEWAY_FEATURE, new SchematicGatewayFeatureConfig(SchematicGateway.ID_SCHEMATIC_MAP.inverse().get(TWO_PILLARS_GATEWAY)));
-		public static final RegistryEntry<ConfiguredFeature<SchematicGatewayFeatureConfig, ?>> END_GATEWAY_CONFIGURED_FEATURE = ConfiguredFeatures.register("dimdoors:end_gateway", SCHEMATIC_GATEWAY_FEATURE, new SchematicGatewayFeatureConfig(SchematicGateway.ID_SCHEMATIC_MAP.inverse().get(END_GATEWAY)));
-		public static final RegistryEntry<ConfiguredFeature<DefaultFeatureConfig, ?>> LIMBO_GATEWAY_CONFIGURED_FEATURE =  ConfiguredFeatures.register("dimdoors:limbo_gateway", LIMBO_GATEWAY_FEATURE, DefaultFeatureConfig.INSTANCE);
-		public static final RegistryEntry<ConfiguredFeature<SpringFeatureConfig, ?>> SOLID_STATIC_ORE_CONFIGURED_FEATURE =  ConfiguredFeatures.register("dimdoors:eternal_fluid_spring", SPRING_FEATURE, new SpringFeatureConfig(Fluids.WATER.getDefaultState(), true, 4, 1, RegistryEntryList.of(Block::getRegistryEntry, ModBlocks.UNRAVELLED_FABRIC, ModBlocks.UNRAVELLED_BLOCK, ModBlocks.UNFOLDED_BLOCK, ModBlocks.UNWARPED_BLOCK)));
-		public static final RegistryEntry<ConfiguredFeature<OreFeatureConfig, ?>> DECAYED_BLOCK_ORE_CONFIGURED_FEATURE =  ConfiguredFeatures.register("dimdoors:solid_static_ore", ORE, new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.SOLID_STATIC.getDefaultState(), 4));
-		public static final RegistryEntry<ConfiguredFeature<OreFeatureConfig, ?>> ETERNAL_FLUID_SPRING_CONFIGURED_FEATURE =  ConfiguredFeatures.register("dimdoors:decayed_block_ore", ORE, new OreFeatureConfig(new BlockMatchRuleTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.DECAYED_BLOCK.getDefaultState(), 64));
+		public static final RegistryKey<ConfiguredFeature<?, ?>> SANDSTONE_PILLARS = of("sandstone_pillars");
+		public static final RegistryKey<ConfiguredFeature<?, ?>> TWO_PILLARS = of("two_pillars");
+		public static final RegistryKey<ConfiguredFeature<?, ?>> END_GATEWAY = of("end_gateway");
+		public static final RegistryKey<ConfiguredFeature<?, ?>> LIMBO_GATEWAY = of("limbo_gateway");
+		public static final RegistryKey<ConfiguredFeature<?, ?>> SOLID_STATIC_ORE = of("solid_static_ore");
+		public static final RegistryKey<ConfiguredFeature<?, ?>> DECAYED_BLOCK_ORE = of("decayed_block_ore");
+		public static final RegistryKey<ConfiguredFeature<?, ?>> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
 
 		public static void init() {}
+
+		public static RegistryKey<ConfiguredFeature<?, ?>> of(String id) {
+			return RegistryKey.of(RegistryKeys.CONFIGURED_FEATURE, id(id));
+		}
 	}
 
 	public static class Placed {
@@ -78,6 +104,10 @@ public final class ModFeatures {
 					GenerationStep.Feature.SURFACE_STRUCTURES,
 					END_GATEWAY_PLACED_FEATURE.getKey().get()
 			);
+		}
+
+		public static RegistryKey<PlacedFeature> of(String id) {
+			return RegistryKey.of(RegistryKeys.PLACED_FEATURE, id(id));
 		}
 	}
 }

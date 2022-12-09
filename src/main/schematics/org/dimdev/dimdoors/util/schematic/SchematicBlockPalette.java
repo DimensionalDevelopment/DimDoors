@@ -7,9 +7,9 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.BlockArgumentParser;
+import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.StringIdentifiable;
-import net.minecraft.util.registry.Registry;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -27,10 +27,10 @@ public class SchematicBlockPalette {
 		static DataResult<BlockState> to(String string) {
 			StringReader reader = new StringReader(string);
 
-			BlockArgumentParser.BlockResult parser = null;
+			BlockArgumentParser.BlockResult parser;
 
 			try {
-				parser = BlockArgumentParser.block(Registry.BLOCK, reader, true);
+				parser = BlockArgumentParser.block(Registries.BLOCK.getReadOnlyWrapper(), reader, true);
 			} catch (CommandSyntaxException e) {
 				return DataResult.error(e.getMessage());
 			}
@@ -59,7 +59,7 @@ public class SchematicBlockPalette {
 
 		static String from(BlockState state) {
 			StringBuilder builder = new StringBuilder();
-			builder.append(Objects.requireNonNull(Registry.BLOCK.getId(state.getBlock())));
+			builder.append(Objects.requireNonNull(Registries.BLOCK.getId(state.getBlock())));
 			// Ensures that [ and ] are only added when properties are present
 			boolean flag = true;
 			Iterator<Property<?>> iterator = state.getProperties().iterator();

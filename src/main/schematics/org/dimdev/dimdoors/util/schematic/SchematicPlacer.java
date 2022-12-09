@@ -30,10 +30,10 @@ public final class SchematicPlacer {
 	}
 
 	public static void place(Schematic schematic, StructureWorldAccess world, BlockPos origin, BlockPlacementType placementType) {
-		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
-		for (String id : schematic.getMetadata().getRequiredMods()) {
+		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
+		for (String id : schematic.getMetadata().requiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
-				LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
+				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
@@ -46,10 +46,10 @@ public final class SchematicPlacer {
 	}
 
 	public static void place(Schematic schematic, ServerWorld world, Chunk chunk, BlockPos origin, BlockPlacementType placementType) {
-		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().getName());
-		for (String id : schematic.getMetadata().getRequiredMods()) {
+		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
+		for (String id : schematic.getMetadata().requiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
-				LOGGER.warn("Schematic \"" + schematic.getMetadata().getName() + "\" depends on mod \"" + id + "\", which is missing!");
+				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
@@ -75,23 +75,24 @@ public final class SchematicPlacer {
 	}
 
 	public static int[][] getBiomeData(Schematic schematic) {
-		int width = schematic.getWidth();
-		int length = schematic.getLength();
-		byte[] biomeDataArray = schematic.getBiomeData().array();
-		if (biomeDataArray.length == 0) return new int[0][0];
-		int[][] biomeData = new int[width][length];
-		for (int x = 0; x < width; x++) {
-			for (int z = 0; z < length; z++) {
-				biomeData[x][z] = biomeDataArray[x + z * width];
-			}
-		}
-		return biomeData;
+//		int width = schematic.getWidth();
+//		int length = schematic.getLength();
+//		byte[] biomeDataArray = schematic.getBiomeData().array();
+//		if (biomeDataArray.length == 0) return new int[0][0];
+//		int[][] biomeData = new int[width][length];
+//		for (int x = 0; x < width; x++) {
+//			for (int z = 0; z < length; z++) {
+//				biomeData[x][z] = biomeDataArray[x + z * width];
+//			}
+//		}
+//		return biomeData;
+		return new int[0][0];
 	}
 
 	private static void placeEntities(int originX, int originY, int originZ, Schematic schematic, StructureWorldAccess world) {
 		List<NbtCompound> entityNbts = schematic.getEntities();
 		for (NbtCompound nbt : entityNbts) {
-			NbtList nbtList = Objects.requireNonNull(nbt.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().getName() + "\" did not have a Pos nbt list!");
+			NbtList nbtList = Objects.requireNonNull(nbt.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().name() + "\" did not have a Pos nbt list!");
 			SchematicPlacer.processPos(nbtList, originX, originY, originZ, nbt);
 
 			EntityType<?> entityType = EntityType.fromNbt(nbt).orElseThrow(AssertionError::new);
