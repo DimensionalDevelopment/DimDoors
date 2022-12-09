@@ -104,7 +104,7 @@ public class ChunkGenerator extends PocketGenerator {
 				protoChunks.add(protoChunk);
 			}
 		}
-		ChunkRegion protoRegion = new ChunkRegionHack(genWorld, protoChunks);
+		ChunkRegion protoRegion = new ChunkRegionHack(genWorld, protoChunks);//TODO Redo?
 		for (Chunk protoChunk : protoChunks) { // TODO: check wether structures are even activated
 			genWorldChunkGenerator.setStructureStarts(genWorld.getRegistryManager(), config, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk, genWorld.getStructureTemplateManager(), genWorld.getSeed());
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_STARTS);

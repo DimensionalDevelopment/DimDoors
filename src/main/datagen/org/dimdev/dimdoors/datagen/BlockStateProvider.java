@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -8,14 +8,13 @@ import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
 import net.minecraft.data.client.TextureMap;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 
 public class BlockStateProvider extends FabricModelProvider {
-	public BlockStateProvider(FabricDataGenerator dataGenerator) {
+	public BlockStateProvider(FabricDataOutput dataGenerator) {
 		super(dataGenerator);
 	}
 
@@ -24,10 +23,10 @@ public class BlockStateProvider extends FabricModelProvider {
 		generator.registerDoor(ModBlocks.GOLD_DOOR);
 		generator.registerDoor(ModBlocks.STONE_DOOR);
 		generator.registerDoor(ModBlocks.QUARTZ_DOOR);
-		registerDoor(generator, Registry.BLOCK.get(DimensionalDoors.id("iron_dimensional_door")), Blocks.IRON_DOOR);
-		registerDoor(generator, Registry.BLOCK.get(DimensionalDoors.id("gold_dimensional_door")), ModBlocks.GOLD_DOOR);
-		registerDoor(generator, Registry.BLOCK.get(DimensionalDoors.id("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
-		registerDoor(generator, Registry.BLOCK.get(DimensionalDoors.id("oak_dimensional_door")), Blocks.OAK_DOOR);
+		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("iron_dimensional_door")), Blocks.IRON_DOOR);
+		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("gold_dimensional_door")), ModBlocks.GOLD_DOOR);
+		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
+		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("oak_dimensional_door")), Blocks.OAK_DOOR);
 //		registerDoor(generator, Registry.BLOCK.get(Util.id("dungeon_door")), ModBlocks.STONE_DOOR);
 	}
 

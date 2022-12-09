@@ -5,11 +5,11 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -26,17 +26,14 @@ import java.util.function.Supplier;
 public interface ImplementedVirtualPocket extends VirtualPocket {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
-	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(DimensionalDoors.id("virtual_pocket_type")), Lifecycle.stable(), null)).buildAndRegister();
+	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(DimensionalDoors.id("virtual_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
 
 	static ImplementedVirtualPocket deserialize(NbtElement nbt, @Nullable ResourceManager manager) {
-		switch (nbt.getType()) {
-			case NbtType.COMPOUND:
-				return deserialize((NbtCompound) nbt, manager);
-			case NbtType.STRING:
-				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
-			default:
-				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
-		}
+		return switch (nbt.getType()) {
+			case NbtType.COMPOUND -> deserialize((NbtCompound) nbt, manager);
+			case NbtType.STRING -> ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
+			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
+		};
 	}
 
 	static ImplementedVirtualPocket deserialize(NbtElement nbt) {

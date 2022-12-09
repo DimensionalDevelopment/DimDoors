@@ -6,11 +6,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoors;
 
@@ -97,7 +97,7 @@ public class Location {
 	public static Location fromNbt(NbtCompound nbt) {
 		int[] pos = nbt.getIntArray("pos");
 		return new Location(
-				RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world"))),
+				RegistryKey.of(RegistryKeys.WORLD, new Identifier(nbt.getString("world"))),
 				new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}

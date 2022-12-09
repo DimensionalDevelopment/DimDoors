@@ -4,12 +4,12 @@ import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -53,7 +53,7 @@ public class VirtualLocation {
 
 	public static VirtualLocation fromNbt(NbtCompound nbt) {
 		return new VirtualLocation(
-				RegistryKey.of(Registry.WORLD_KEY, new Identifier(nbt.getString("world"))),
+				RegistryKey.of(RegistryKeys.WORLD, new Identifier(nbt.getString("world"))),
 				nbt.getInt("x"),
 				nbt.getInt("z"),
 				nbt.getInt("depth")

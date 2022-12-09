@@ -1,12 +1,12 @@
 package org.dimdev.dimdoors.world.pocket;
 
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
@@ -46,7 +46,7 @@ public class PocketDirectory {
 	}
 
 	public static PocketDirectory readFromNbt(String id, NbtCompound nbt) {
-		PocketDirectory directory = new PocketDirectory(RegistryKey.of(Registry.WORLD_KEY, new Identifier(id)));
+		PocketDirectory directory = new PocketDirectory(RegistryKey.of(RegistryKeys.WORLD, new Identifier(id)));
 		// no need to parallelize
 		directory.gridSize = nbt.getInt("grid_size");
 		directory.privatePocketSize = nbt.getInt("private_pocket_size");

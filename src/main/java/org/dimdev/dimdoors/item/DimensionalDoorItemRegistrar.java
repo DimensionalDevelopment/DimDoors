@@ -11,14 +11,12 @@ import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.*;
+import net.minecraft.registry.Registry;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec3f;
-import net.minecraft.util.registry.Registry;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -30,6 +28,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
 import org.dimdev.dimdoors.listener.ItemRegistryEntryAddedListener;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
+import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,7 +87,7 @@ public class DimensionalDoorItemRegistrar {
 		if (!(originalBlock instanceof DimensionalDoorBlock)
 				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
 				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapdoorBlock)) {
-			Item.Settings settings = ItemExtensions.getSettings(original).group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS);
+			Item.Settings settings = ItemExtensions.getSettings(original)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
 
 			Function<Block, BlockItem> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, rift -> rift.setDestination(new PublicPocketTarget()), original);
 
@@ -189,7 +188,7 @@ public class DimensionalDoorItemRegistrar {
 		public void transform(MatrixStack matrices) {
 			matrices.scale(0.55f, 0.55f, 0.6f);
 			matrices.translate(0.05, -0.05, 0.41);
-			matrices.multiply(Quaternion.fromEulerXyzDegrees(new Vec3f(90, 0, 0)));
+			matrices.multiply(new Quaternionf().rotateXYZ(90, 0, 0));
 		}
 	}
 

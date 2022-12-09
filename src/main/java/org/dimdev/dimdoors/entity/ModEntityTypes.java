@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.entity;
 
 //import org.dimdev.dimdoors.client.MaskRenderer;
+
 import org.dimdev.dimdoors.client.MonolithRenderer;
 
 import net.minecraft.entity.Entity;

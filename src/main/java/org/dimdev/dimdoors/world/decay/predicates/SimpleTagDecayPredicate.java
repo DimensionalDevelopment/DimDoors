@@ -3,11 +3,12 @@ package org.dimdev.dimdoors.world.decay.predicates;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
@@ -27,7 +28,7 @@ public class SimpleTagDecayPredicate implements DecayPredicate {
 
 	@Override
 	public DecayPredicate fromNbt(NbtCompound nbt) {
-		block = TagKey.of(Registry.BLOCK_KEY, Identifier.tryParse(nbt.getString("tag")));
+		block = TagKey.of(RegistryKeys.BLOCK, Identifier.tryParse(nbt.getString("tag")));
 		return this;
 	}
 
@@ -57,7 +58,7 @@ public class SimpleTagDecayPredicate implements DecayPredicate {
 
 	@Override
 	public Set<Block> constructApplicableBlocks() {
-		return Registry.BLOCK.getOrCreateEntryList(block).stream().map(RegistryEntry::value).collect(Collectors.toSet());
+		return Registries.BLOCK.getOrCreateEntryList(block).stream().map(RegistryEntry::value).collect(Collectors.toSet());
 	}
 
 	public static Builder builder() {

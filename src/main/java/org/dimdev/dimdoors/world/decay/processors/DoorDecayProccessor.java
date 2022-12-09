@@ -4,10 +4,10 @@ import net.minecraft.block.*;
 import net.minecraft.block.enums.DoorHinge;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
@@ -27,7 +27,7 @@ public class DoorDecayProccessor implements DecayProcessor {
 
 	@Override
 	public DecayProcessor fromNbt(NbtCompound json) {
-		block = Registry.BLOCK.get(Identifier.tryParse(json.getString("block")));
+		block = Registries.BLOCK.get(Identifier.tryParse(json.getString("block")));
 		entropy = json.getInt("entropy");
 		return this;
 	}
@@ -35,7 +35,7 @@ public class DoorDecayProccessor implements DecayProcessor {
 	@Override
 	public NbtCompound toNbt(NbtCompound nbt) {
 		DecayProcessor.super.toNbt(nbt);
-		nbt.putString("block", Registry.BLOCK.getId(block).toString());
+		nbt.putString("block", Registries.BLOCK.getId(block).toString());
 		nbt.putInt("entropy", entropy);
 		return nbt;
 	}

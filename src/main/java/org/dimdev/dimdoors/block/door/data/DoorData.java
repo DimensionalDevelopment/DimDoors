@@ -9,16 +9,15 @@ import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Util;
-import net.minecraft.util.registry.Registry;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.DimensionalDoorItem;
 import org.dimdev.dimdoors.item.ItemExtensions;
-import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.mixin.accessor.ItemGroupAccessor;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -114,7 +113,7 @@ public final class DoorData implements AutoCloseable {
 			throw new UnsupportedOperationException("Already Closed");
 		}
 
-		Item parentItem = Registry.ITEM.get(new Identifier(this.itemSettings.parent));
+		Item parentItem = Registries.ITEM.get(new Identifier(this.itemSettings.parent));
 		PARENT_ITEMS.add(parentItem);
 		Item.Settings itemSettings = ItemExtensions.getSettings(parentItem);
 		this.itemSettings.maxCount.ifPresent(itemSettings::maxCount);
@@ -125,32 +124,32 @@ public final class DoorData implements AutoCloseable {
 			itemSettings.fireproof();
 			return false;
 		});
-		ItemGroup group = null;
-		if (itemGroup.isPresent()) {
-			String groupString = itemGroup.get();
-			if (itemGroupCache.containsKey(groupString)) {
-				group = itemGroupCache.get(groupString);
-			} else {
-				for (ItemGroup g : ItemGroup.GROUPS) {
-					if (((ItemGroupAccessor) g).getId().equals(groupString)) {
-						group = g;
-						itemGroupCache.put(groupString, group);
-						break;
-					}
-				}
-			}
-		}
-		itemSettings.group(group != null ? group : ModItems.DIMENSIONAL_DOORS);
+//		ItemGroup group = null;
+//		if (itemGroup.isPresent()) { //TODO: Figure this out
+//			String groupString = itemGroup.get();
+//			if (itemGroupCache.containsKey(groupString)) {
+//				group = itemGroupCache.get(groupString);
+//			} else {
+//				for (ItemGroup g : ItemGroup.GROUPS) {
+//					if (((ItemGroupAccessor) g).getId().equals(groupString)) {
+//						group = g;
+//						itemGroupCache.put(groupString, group);
+//						break;
+//					}
+//				}
+//			}
+//		}
+//		itemSettings.group(group != null ? group : ModItems.DIMENSIONAL_DOORS);
 
-		Block parentBlock = Registry.BLOCK.get(new Identifier(this.blockSettings.parent));
+		Block parentBlock = Registries.BLOCK.get(new Identifier(this.blockSettings.parent));
 		PARENT_BLOCKS.add(parentBlock);
 		FabricBlockSettings blockSettings = FabricBlockSettings.copyOf(parentBlock);
 		this.blockSettings.luminance.ifPresent(blockSettings::luminance);
 		Identifier id = new Identifier(this.id);
 		Block doorBlock = new DimensionalDoorBlock(blockSettings);
 		Item doorItem = new DimensionalDoorItem(doorBlock, itemSettings, createSetupFunction(), hasToolTip);
-		Registry.register(Registry.BLOCK, id, doorBlock);
-		Registry.register(Registry.ITEM, id, doorItem);
+		Registry.register(Registries.BLOCK, id, doorBlock);
+		Registry.register(Registries.ITEM, id, doorItem);
 		DOORS.add(doorBlock);
 		Item.BLOCK_ITEMS.put(doorBlock, doorItem);
 		this.closed = true;

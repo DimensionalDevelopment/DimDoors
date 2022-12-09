@@ -8,11 +8,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
 import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.Objects;
@@ -22,7 +21,7 @@ public class TagBlockBreakCriteria extends AbstractCriterion<TagBlockBreakCriter
 
 	@Override
 	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
-		return new Conditions(playerPredicate, TagKey.of(Registry.BLOCK_KEY, Identifier.tryParse(obj.get("tag").getAsString())));
+		return new Conditions(playerPredicate, TagKey.of(RegistryKeys.BLOCK, Identifier.tryParse(obj.get("tag").getAsString())));
 	}
 
 	public void trigger(ServerPlayerEntity player, BlockState block) {

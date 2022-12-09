@@ -1,15 +1,13 @@
 package org.dimdev.dimdoors.datagen;
 
-import java.nio.file.Path;
-import java.util.function.Consumer;
-
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
-
 import net.minecraft.advancement.Advancement;
 
+import java.util.function.Consumer;
+
 public class AdvancementProvider extends FabricAdvancementProvider {
-	public AdvancementProvider(FabricDataGenerator dataGenerator) {
+	public AdvancementProvider(FabricDataOutput dataGenerator) {
 		super(dataGenerator);
 	}
 

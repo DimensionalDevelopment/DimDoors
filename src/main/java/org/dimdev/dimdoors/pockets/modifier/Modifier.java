@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 public interface Modifier extends ReferenceSerializable {
-	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<ModifierType<? extends Modifier>>(RegistryKey.ofRegistry(DimensionalDoors.id("modifier_type")), Lifecycle.stable())).buildAndRegister();
+	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<ModifierType<? extends Modifier>>(RegistryKey.ofRegistry(DimensionalDoors.id("modifier_type")), Lifecycle.stable(), false)).buildAndRegister();
 
 	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
 

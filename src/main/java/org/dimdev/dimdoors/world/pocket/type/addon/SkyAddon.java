@@ -2,11 +2,10 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -24,7 +23,7 @@ public class SkyAddon implements AutoSyncedAddon {
 
 	@Override
 	public PocketAddon fromNbt(NbtCompound nbt) {
-		this.world = RegistryKey.of(Registry.WORLD_KEY, Identifier.tryParse(nbt.getString("world")));
+		this.world = RegistryKey.of(RegistryKeys.WORLD, Identifier.tryParse(nbt.getString("world")));
 
 		return this;
 	}
@@ -54,7 +53,7 @@ public class SkyAddon implements AutoSyncedAddon {
 
 	@Override
 	public AutoSyncedAddon read(PacketByteBuf buf) throws IOException {
-		this.world = RegistryKey.of(Registry.WORLD_KEY, buf.readIdentifier());
+		this.world = RegistryKey.of(RegistryKeys.WORLD, buf.readIdentifier());
 		return this;
 	}
 
@@ -91,7 +90,7 @@ public class SkyAddon implements AutoSyncedAddon {
 
 		@Override
 		public PocketBuilderAddon<SkyAddon> fromNbt(NbtCompound nbt) {
-			this.world = RegistryKey.of(Registry.WORLD_KEY, Identifier.tryParse(nbt.getString("world")));
+			this.world = RegistryKey.of(RegistryKeys.WORLD, Identifier.tryParse(nbt.getString("world")));
 
 			return this;
 		}
