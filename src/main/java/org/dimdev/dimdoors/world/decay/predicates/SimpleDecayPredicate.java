@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.decay.predicates;
 
+import com.sk89q.jchronic.tags.Tag;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -7,6 +8,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryCodecs;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
@@ -16,12 +18,16 @@ public class SimpleBlockDecayPredicate implements DecayPredicate {
     public static final String KEY = "simple_block";
 
     private Block block;
+	private Tag<Block> tag;
 
     public SimpleBlockDecayPredicate() {}
 
     private SimpleBlockDecayPredicate(Block block) {
         this.block = block;
     }
+	private SimpleBlockDecayPredicate(Tag<Block> tag) {
+		this.tag = tag;
+	}
 
     @Override
     public DecayPredicate fromNbt(NbtCompound nbt) {
@@ -32,6 +38,7 @@ public class SimpleBlockDecayPredicate implements DecayPredicate {
     @Override
     public NbtCompound toNbt(NbtCompound nbt) {
         DecayPredicate.super.toNbt(nbt);
+		RegistryCodecs.createRegistryCodec()
         nbt.putString("block", Registry.BLOCK.getId(block).toString());
         return nbt;
     }
