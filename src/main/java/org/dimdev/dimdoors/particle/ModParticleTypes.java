@@ -8,7 +8,8 @@ import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,9 +22,9 @@ public class ModParticleTypes {
 	public static final DefaultParticleType LIMBO_ASH = FabricParticleTypes.simple(false);
 
 	public static void init() {
-		Registry.register(Registry.PARTICLE_TYPE, DimensionalDoors.id("monolith"), MONOLITH);
-		Registry.register(Registry.PARTICLE_TYPE, DimensionalDoors.id("rift"), RIFT);
-		Registry.register(Registry.PARTICLE_TYPE, DimensionalDoors.id("limbo_ash"), LIMBO_ASH);
+		Registry.register(Registries.PARTICLE_TYPE, DimensionalDoors.id("monolith"), MONOLITH);
+		Registry.register(Registries.PARTICLE_TYPE, DimensionalDoors.id("rift"), RIFT);
+		Registry.register(Registries.PARTICLE_TYPE, DimensionalDoors.id("limbo_ash"), LIMBO_ASH);
 	}
 
 	@Environment(EnvType.CLIENT)

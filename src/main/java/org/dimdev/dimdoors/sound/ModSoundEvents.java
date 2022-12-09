@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.sound;
 
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 
@@ -26,7 +27,7 @@ public final class ModSoundEvents {
 
 	private static SoundEvent register(String id) {
 		Identifier identifier = DimensionalDoors.id(id);
-		return Registry.register(Registry.SOUND_EVENT, identifier, new SoundEvent(identifier));
+		return Registry.register(Registries.SOUND_EVENT, identifier, SoundEvent.of(identifier));
 	}
 
 	public static void init() {
