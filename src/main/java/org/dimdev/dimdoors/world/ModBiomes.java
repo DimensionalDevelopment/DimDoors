@@ -7,17 +7,19 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
-import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeParticleConfig;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
+
+import static org.dimdev.dimdoors.DimensionalDoors.id;
 
 public final class ModBiomes {
     public static final RegistryKey<Biome> PERSONAL_WHITE_VOID_KEY;
@@ -30,10 +32,10 @@ public final class ModBiomes {
     public static final Biome LIMBO_BIOME;
 
     public static void init() {
-        Registry.register(BuiltinRegistries.BIOME, LIMBO_KEY.getValue(), LIMBO_BIOME);
-        Registry.register(BuiltinRegistries.BIOME, PERSONAL_WHITE_VOID_KEY.getValue(), PERSONAL_WHITE_VOID_BIOME);
-        Registry.register(BuiltinRegistries.BIOME, PUBLIC_BLACK_VOID_KEY.getValue(), PUBLIC_BLACK_VOID_BIOME);
-        Registry.register(BuiltinRegistries.BIOME, DUNGEON_DANGEROUS_BLACK_VOID_KEY.getValue(), DUNGEON_DANGEROUS_BLACK_VOID_BIOME);
+//        Registry.register(BuiltinRegistries.BIOME, LIMBO_KEY.getValue(), LIMBO_BIOME);
+//        Registry.register(BuiltinRegistries.BIOME, PERSONAL_WHITE_VOID_KEY.getValue(), PERSONAL_WHITE_VOID_BIOME);
+//        Registry.register(BuiltinRegistries.BIOME, PUBLIC_BLACK_VOID_KEY.getValue(), PUBLIC_BLACK_VOID_BIOME);
+//        Registry.register(BuiltinRegistries.BIOME, DUNGEON_DANGEROUS_BLACK_VOID_KEY.getValue(), DUNGEON_DANGEROUS_BLACK_VOID_BIOME);
         // only ever needed if the biome api is broken
 //        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(LIMBO_BIOME), LIMBO_KEY);
 //        BuiltinBiomesAccessor.getIdMap().put(BuiltinRegistries.BIOME.getRawId(PERSONAL_WHITE_VOID_BIOME), PERSONAL_WHITE_VOID_KEY);
@@ -64,10 +66,10 @@ public final class ModBiomes {
 				.spawnSettings(new SpawnSettings.Builder().build())
 				.temperature(0.8f)
 				.temperatureModifier(Biome.TemperatureModifier.NONE);
-        PERSONAL_WHITE_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, DimensionalDoors.id("white_void"));
-        PUBLIC_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, DimensionalDoors.id("black_void"));
-        DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(Registry.BIOME_KEY, DimensionalDoors.id("dangerous_black_void"));
-        LIMBO_KEY = RegistryKey.of(Registry.BIOME_KEY, DimensionalDoors.id("limbo"));
+        PERSONAL_WHITE_VOID_KEY = RegistryKey.of(RegistryKeys.BIOME, id("white_void"));
+        PUBLIC_BLACK_VOID_KEY = RegistryKey.of(RegistryKeys.BIOME, id("black_void"));
+        DUNGEON_DANGEROUS_BLACK_VOID_KEY = RegistryKey.of(RegistryKeys.BIOME, id("dangerous_black_void"));
+        LIMBO_KEY = RegistryKey.of(RegistryKeys.BIOME, id("limbo"));
         PERSONAL_WHITE_VOID_BIOME = voidBiomeBuilder.effects(createEffect(true)).build();
         PUBLIC_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
         DUNGEON_DANGEROUS_BLACK_VOID_BIOME = voidBiomeBuilder.effects(createEffect(false)).build();
