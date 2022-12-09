@@ -1,23 +1,22 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
+import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.loot.condition.TableBonusLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import org.dimdev.dimdoors.block.ModBlocks;
-
-import net.minecraft.block.Block;
 import org.dimdev.dimdoors.item.ModItems;
 
 public class LootTableProvider extends FabricBlockLootTableProvider {
 
-	public LootTableProvider(FabricDataGenerator dataGenerator) {
+	public LootTableProvider(FabricDataOutput dataGenerator) {
 		super(dataGenerator);
 	}
 
 	@Override
-	protected void generateBlockLootTables() {
+	public void generate() {
 		for (Block block : ModBlocks.FABRIC_BLOCKS.values()) {
 			this.addDropWithSilkTouch(block);
 		}

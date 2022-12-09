@@ -1,19 +1,22 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.block.Blocks;
-import net.minecraft.tag.BlockTags;
+import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.BlockTags;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 
+import java.util.concurrent.CompletableFuture;
+
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
-	public BlockTagProvider(FabricDataGenerator dataGenerator) {
-		super(dataGenerator);
+	public BlockTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+		super(output, registriesFuture);
 	}
 
 	@Override
-	protected void generateTags() {
+	protected void configure(RegistryWrapper.WrapperLookup arg) {
 		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_AIR).add(
 				Blocks.COBWEB,
 				ModBlocks.DRIFTWOOD_LEAVES,

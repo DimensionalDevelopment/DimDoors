@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
@@ -12,12 +12,12 @@ import static net.minecraft.advancement.criterion.InventoryChangedCriterion.Cond
 
 public class TesselatingRecipeProvider extends net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider {
 
-	public TesselatingRecipeProvider(FabricDataGenerator dataGenerator) {
+	public TesselatingRecipeProvider(FabricDataOutput dataGenerator) {
 		super(dataGenerator);
 	}
 
 	@Override
-	protected void generateRecipes(Consumer<RecipeJsonProvider> exporter) {
+	public void generate(Consumer<RecipeJsonProvider> exporter) {
 		TesselatingRecipeJsonBuilder.create(ModItems.STABLE_FABRIC).pattern("XX").pattern("XX").input('X', ModItems.WORLD_THREAD).criterion("world_thread", items(ModItems.WORLD_THREAD)).offerTo(exporter);
 		TesselatingRecipeJsonBuilder.create(ModItems.LIMINAL_LINT).pattern("XX").pattern("XX").input('X', ModItems.FRAYED_FILAMENTS).criterion("frayed_filaments", items(ModItems.FRAYED_FILAMENTS)).offerTo(exporter);
 		TesselatingRecipeJsonBuilder.create(ModItems.ENDURING_FIBERS).pattern("XX").pattern("XX").input('X', ModItems.INFRANGIBLE_FIBER).criterion("infrangible_fiber", items(ModItems.INFRANGIBLE_FIBER)).offerTo(exporter);

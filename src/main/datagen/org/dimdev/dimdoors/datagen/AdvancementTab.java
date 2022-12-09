@@ -11,12 +11,12 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
@@ -67,17 +67,17 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.parent(root)
 				.build(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
 		Advancement darkOstiology = Advancement.Builder.create()
-				.display(makeDisplay(Registry.BLOCK.get(new Identifier("dimdoors:oak_dimensional_door")), "dark_ostiology"))
-				.criterion("place_door", PlacedBlockCriterion.Conditions.block(Registry.BLOCK.get(new Identifier("dimdoors:oak_dimensional_door"))))
+				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:oak_dimensional_door")), "dark_ostiology"))
+				.criterion("place_door", PlacedBlockCriterion.Conditions.block(Registries.BLOCK.get(new Identifier("dimdoors:oak_dimensional_door"))))
 				.parent(holeInTheSky)
 				.build(advancementConsumer, "dimdoors:dimdoors/dark_ostiology");
 		Advancement.Builder.create()
-				.display(makeDisplay(Registry.BLOCK.get(new Identifier("dimdoors:iron_dimensional_door")), "public_pocket"))
+				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:iron_dimensional_door")), "public_pocket"))
 				.parent(darkOstiology)
 				.criterion("public_pocket", ChangedDimensionCriterion.Conditions.to(ModDimensions.PUBLIC))
 				.build(advancementConsumer, "dimdoors:dimdoors/public_pocket");
 		Advancement.Builder.create()
-				.display(makeDisplay(Registry.BLOCK.get(new Identifier("dimdoors:iron_dimensional_door")), "home_away_from_home"))
+				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:iron_dimensional_door")), "home_away_from_home"))
 				.parent(darkOstiology)
 				.criterion("private_pocket", ChangedDimensionCriterion.Conditions.to(ModDimensions.PERSONAL))
 				.build(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
@@ -87,7 +87,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.parent(darkOstiology)
 				.build(advancementConsumer, "dimdoors:dimdoors/out_of_time");
 		Advancement doorToAdventure = Advancement.Builder.create()
-				.display(makeDisplay(Registry.BLOCK.get(new Identifier("dimdoors:gold_dimensional_door")), "door_to_adventure"))
+				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:gold_dimensional_door")), "door_to_adventure"))
 				.parent(holeInTheSky)
 				.criterion("enter_dungeon", ChangedDimensionCriterion.Conditions.to(ModDimensions.DUNGEON))
 				.build(advancementConsumer, "dimdoors:dimdoors/door_to_adventure");
@@ -125,7 +125,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		Advancement.Builder.create()
 				.display(makeDisplay(ModItems.BLACK_FABRIC, "darklight"))
 				.parent(doorToAdventure)
-				.criterion("get_fabric", InventoryChangedCriterion.Conditions.items(ItemPredicate.Builder.create().tag(TagKey.of(Registry.ITEM_KEY, DimensionalDoors.id("fabric"))).build()))
+				.criterion("get_fabric", InventoryChangedCriterion.Conditions.items(ItemPredicate.Builder.create().tag(TagKey.of(RegistryKeys.ITEM, DimensionalDoors.id("fabric"))).build()))
 				.build(advancementConsumer, "dimdoors:dimdoors/darklight");
 		Advancement enterLimbo = Advancement.Builder.create()
 				.display(makeDisplay(ModItems.MONOLITH_SPAWNER, "enter_limbo"))
