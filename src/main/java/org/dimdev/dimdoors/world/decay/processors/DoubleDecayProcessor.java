@@ -73,7 +73,10 @@ public class DoubleDecayProcessor implements DecayProcessor {
 			return entropy;
 		} else if(target.getBlock() instanceof BedBlock) {
 			BlockPos otherPos = pos.offset(BedBlock.getOppositePartDirection(target));
+			BlockState newState = block.getDefaultState();
 
+			world.setBlockState(pos, newState);
+			world.setBlockState(otherPos, newState);
 		}
 
 		return 0;

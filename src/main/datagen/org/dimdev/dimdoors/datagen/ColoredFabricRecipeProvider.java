@@ -11,20 +11,12 @@ import net.minecraft.item.DyeItem;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.util.DyeColor;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
-public class ColoredFabricRecipeProvider extends net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider {
-
-	public ColoredFabricRecipeProvider(FabricDataOutput dataGenerator) {
-		super(dataGenerator);
-	}
-
-	@Override
-	public void generate(Consumer<RecipeJsonProvider> exporter) {
+public class ColoredFabricRecipeProvider {
+	public static void generate(Consumer<RecipeJsonProvider> exporter) {
 		for (Map.Entry<DyeColor, Block> entry : ModBlocks.FABRIC_BLOCKS.entrySet()) {
 			DyeColor dyeColor = entry.getKey();
 			Block block = entry.getValue();
@@ -39,9 +31,4 @@ public class ColoredFabricRecipeProvider extends net.fabricmc.fabric.api.datagen
 					.offerTo(exporter, DimensionalDoors.id(dyeColor.getName() + "_fabric"));
 		}
 	}
-// TODO: Reenable
-//	@Override
-//	public String getName() {
-//		return "Colored Fabric Recipes";
-//	}
 }

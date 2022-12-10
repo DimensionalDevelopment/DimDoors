@@ -1,10 +1,7 @@
 package org.dimdev.dimdoors.world.decay;
 
-import java.util.Set;
-import java.util.function.Supplier;
-
 import com.mojang.serialization.Lifecycle;
-
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
@@ -14,12 +11,11 @@ import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleBlockDecayPredicate;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleTagDecayPredicate;
+import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
+
+import java.util.Set;
+import java.util.function.Supplier;
 
 public interface DecayPredicate {
     Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_predicate_type")), Lifecycle.stable(), false)).buildAndRegister();
@@ -79,8 +75,7 @@ public interface DecayPredicate {
 
     interface DecayPredicateType<T extends DecayPredicate> {
         DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
-        DecayPredicateType<SimpleTagDecayPredicate> SIMPLE_TAG_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleTagDecayPredicate.KEY), SimpleTagDecayPredicate::new);
-		DecayPredicateType<SimpleBlockDecayPredicate> SIMPLE_BLOCK_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleBlockDecayPredicate.KEY), SimpleBlockDecayPredicate::new);
+        DecayPredicateType<SimpleDecayPredicate> SIMPLE_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleDecayPredicate.KEY), SimpleDecayPredicate::new);
 
         DecayPredicate fromNbt(NbtCompound nbt);
 

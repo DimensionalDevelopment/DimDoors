@@ -12,11 +12,9 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 
 		pack.addProvider(BlockStateProvider::new);
 		pack.addProvider(DimdoorsRecipeProvider::new);
-		pack.addProvider(ColoredFabricRecipeProvider::new);
 		pack.addProvider(AdvancementProvider::new);
 		pack.addProvider(LootTableProvider::new);
 		pack.addProvider(LimboDecayProvider::new);
 		pack.addProvider(BlockTagProvider::new);
-		pack.addProvider(TesselatingRecipeProvider::new);
 	}
 }

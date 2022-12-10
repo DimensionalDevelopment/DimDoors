@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block.door;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -44,12 +45,12 @@ public class DimensionalDoorBlockRegistrar<T extends Block & DoorSoundProvider> 
 		this.registry = registry;
 		this.itemRegistrar = itemRegistrar;
 
-		init();
+//		init();
 		RegistryEntryAddedCallback.event(registry).register(new BlockRegistryEntryAddedListener(this));
 	}
 
 	private void init() {
-		registry.getEntrySet().forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
+		new ArrayList<>(registry.getEntrySet()).forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
 	}
 
 	public void handleEntry(Identifier identifier, Block original) {

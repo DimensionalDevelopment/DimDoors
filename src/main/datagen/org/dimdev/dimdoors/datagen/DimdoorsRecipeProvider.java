@@ -45,5 +45,8 @@ public class DimdoorsRecipeProvider extends FabricRecipeProvider {
 		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_STABILIZER).pattern(" # ").pattern("#X#").pattern(" # ").input('#', DIAMONDS).input('X', Items.ENDER_PEARL).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.RIFT_BLADE)).offerTo(exporter, id("rift_stabilizer"));
 		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_STABILIZER).pattern("###").pattern("#X#").pattern("###").input('#', DIAMONDS).input('X', ModItems.STABLE_FABRIC).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter, id("rift_stabilizer_stable_fabric"));
 		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.STABILIZED_RIFT_SIGNATURE).pattern("# #").pattern(" X ").pattern("# #").input('#', Items.ENDER_PEARL).input('X', ModItems.RIFT_SIGNATURE).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.RIFT_SIGNATURE)).offerTo(exporter, id("stabilized_rift_signature"));
+
+		ColoredFabricRecipeProvider.generate(exporter);
+		TesselatingRecipeProvider.generate(exporter);
 	}
 }

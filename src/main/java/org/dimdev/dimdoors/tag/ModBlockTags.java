@@ -36,8 +36,23 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_DARK_SAND_STAIRS = of("decay_dark_sand_stairs");
 
 	public static final TagKey<Block> DECAY_TO_AMALGAM = of("decay_to_amalgam");
+	public static final TagKey<Block> DECAY_TO_DIRT = of("decay_to_dirt");
+	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_PLANK = of("decay_to_driftwood_plank");
+	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_FENCE = of("decay_to_driftwood_fence");
+	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_GATE = of("decay_to_driftwood_gate");
+	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_BUTTON = of("decay_to_driftwood_button");
+	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_SLAB = of("decay_to_driftwood_slab");
+	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_STAIRS = of("decay_to_driftwood_stairs");
 
-    private static TagKey<Block> of(String id) {
+	public static final TagKey<Block> DECAY_TO_CHEST = of("decay_to_chest");
+	public static final TagKey<Block> DECAY_TO_SKELETON_SKULL = of("decay_to_skeleton_skull");
+	public static final TagKey<Block> DECAY_TO_SKELETON_WALL_SKULL = of("decay_to_skeleton_wall_skull");
+	public static final TagKey<Block> DECAY_TO_NETHERWART_BLOCK = of("decay_to_netherwart_block");
+	public static final TagKey<Block> DECAY_TO_AMALGAM_ORE = of("decay_to_amalgam_ore");
+	public static final TagKey<Block> DECAY_TO_CLOD_ORE = of("decay_to_clod_ore");
+	public static final TagKey<Block> DECAY_TO_COBBLESTONE = of("decay_to_cobblestone");
+
+	private static TagKey<Block> of(String id) {
 		return TagKey.of(RegistryKeys.BLOCK, DimensionalDoors.id(id));
 	}
 }
