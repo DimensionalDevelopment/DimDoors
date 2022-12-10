@@ -16,7 +16,7 @@ import java.util.Collections;
 @Environment(EnvType.CLIENT)
 public final class DimensionalPortalRenderer {
 	public static final Identifier WARP_PATH;
-	private static final RenderPhase.Shader DIMENSIONAL_PORTAL_SHADER;
+	private static final RenderPhase.ShaderProgram DIMENSIONAL_PORTAL_SHADER;
 	private static final RenderLayer RENDER_LAYER;
 	private static final ModelPart MODEL;
 	private static final ModelPart TALL_MODEL;
@@ -37,7 +37,7 @@ public final class DimensionalPortalRenderer {
 
 	static {
 		WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
-		DIMENSIONAL_PORTAL_SHADER = new RenderPhase.Shader(ModShaders::getDimensionalPortal);
+		DIMENSIONAL_PORTAL_SHADER = new RenderPhase.ShaderProgram(ModShaders::getDimensionalPortal);
 		RENDER_LAYER = RenderLayerFactory.create(
 				"dimensional_portal",
 				VertexFormats.POSITION,
@@ -46,7 +46,7 @@ public final class DimensionalPortalRenderer {
 				false,
 				false,
 				RenderLayer.MultiPhaseParameters.builder()
-						.shader(DIMENSIONAL_PORTAL_SHADER)
+						.program(DIMENSIONAL_PORTAL_SHADER)
 						.texture(
 								RenderPhase.Textures.create()
 										.add(EndPortalBlockEntityRenderer.SKY_TEXTURE, false, false)

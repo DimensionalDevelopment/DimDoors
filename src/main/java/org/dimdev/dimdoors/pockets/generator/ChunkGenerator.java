@@ -213,7 +213,7 @@ public class ChunkGenerator extends PocketGenerator {
 		@Override
 		public Chunk getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
 			Chunk chunk = super.getChunk(chunkX, chunkZ, leastStatus, false);
-			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA, this, this.getRegistryManager().get(RegistryKeys.BIOME)) : chunk;
+			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA, this, this.getRegistryManager().get(Registry.BIOME_KEY)) : chunk;
 		}
 
 		// TODO: Override getSeed()

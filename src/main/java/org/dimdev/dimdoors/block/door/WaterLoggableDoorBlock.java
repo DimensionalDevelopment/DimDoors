@@ -9,6 +9,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
@@ -24,8 +25,8 @@ import org.jetbrains.annotations.Nullable;
 public class WaterLoggableDoorBlock extends DoorBlock implements Waterloggable {
 	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
-	protected WaterLoggableDoorBlock(Settings settings) {
-		super(settings);
+	protected WaterLoggableDoorBlock(Settings settings, SoundEvent closeSound, SoundEvent openSound) {
+		super(settings, closeSound, openSound);
 		setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(OPEN, false).with(HINGE, DoorHinge.LEFT).with(POWERED, false).with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
 	}
 
@@ -39,7 +40,7 @@ public class WaterLoggableDoorBlock extends DoorBlock implements Waterloggable {
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		ActionResult result = super.onUse(state, world, pos, player, hand, hit);
 		if (result.isAccepted()) {
-			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
 		return result;
 	}
@@ -55,7 +56,7 @@ public class WaterLoggableDoorBlock extends DoorBlock implements Waterloggable {
 		boolean bl = world.isReceivingRedstonePower(pos) || world.isReceivingRedstonePower(pos.offset(state.get(HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
 		super.neighborUpdate(state, world, pos, block, fromPos, notify);
 		if (bl && !world.isClient && state.get(WATERLOGGED)) {
-			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
 	}
 
@@ -72,7 +73,7 @@ public class WaterLoggableDoorBlock extends DoorBlock implements Waterloggable {
 	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
 		if (state.get(WATERLOGGED)) {
-			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
 
 		BlockState newState = super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);

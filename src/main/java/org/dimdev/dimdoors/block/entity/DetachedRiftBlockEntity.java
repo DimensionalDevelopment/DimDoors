@@ -53,7 +53,6 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 					(ServerWorld) world,
 					null,
 					null,
-					null,
 					pos,
 					SpawnReason.STRUCTURE,
 					false,

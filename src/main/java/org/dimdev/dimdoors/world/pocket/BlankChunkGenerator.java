@@ -3,11 +3,7 @@ package org.dimdev.dimdoors.world.pocket;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
-import net.minecraft.structure.StructureSet;
-import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
@@ -23,24 +19,22 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class BlankChunkGenerator extends ChunkGenerator {
 	public static final Codec<BlankChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
-			ChunkGenerator.createStructureSetRegistryGetter(instance).and(
-					BiomeSource.CODEC.fieldOf("biome_source")
+					instance.group(BiomeSource.CODEC.fieldOf("biome_source")
 							.forGetter((generator) -> generator.biomeSource)
 			).apply(instance, instance.stable(BlankChunkGenerator::of))
 	);
 
-	private static BlankChunkGenerator of(Registry<StructureSet> structureSets, BiomeSource biomeSource) {
-		return new BlankChunkGenerator(structureSets, biomeSource);
+	private static BlankChunkGenerator of(BiomeSource biomeSource) {
+		return new BlankChunkGenerator(biomeSource);
 	}
 
-	private BlankChunkGenerator(Registry<StructureSet> structureSets, BiomeSource biomeSource) {
-		super(structureSets, Optional.empty(), biomeSource);
+	private BlankChunkGenerator(BiomeSource biomeSource) {
+		super(biomeSource);
 	}
 
 	@Override
@@ -74,10 +68,6 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	@Override
 	public int getWorldHeight() {
 		return 0;
-	}
-
-	@Override
-	public void setStructureStarts(DynamicRegistryManager registryManager, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk, StructureTemplateManager structureTemplateManager, long seed) {
 	}
 
 	@Override

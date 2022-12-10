@@ -4,11 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Uuids;
-<<<<<<< HEAD
-=======
 
 import java.util.UUID;
->>>>>>> 1094dcf08ea591e210aafa16d4b4c1141a2fae7b
 
 public class PlayerRiftPointer extends RegistryVertex {
 	public static final Codec<PlayerRiftPointer> CODEC = RecordCodecBuilder.create(instance -> {

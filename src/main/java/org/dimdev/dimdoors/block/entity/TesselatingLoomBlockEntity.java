@@ -304,7 +304,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements NamedScre
 				if (!remainingStack.isEmpty()) {
 					if (current.isEmpty()) {
 						inventory.set(i, remainingStack);
-					} else if (ItemStack.areItemsEqualIgnoreDamage(current, remainingStack) && ItemStack.areEqual(current, remainingStack)) {
+					} else if (ItemStack.areItemsEqual(current, remainingStack) && ItemStack.areEqual(current, remainingStack)) {
 						current.increment(remainingStack.getCount());
 					} else {
 						ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), remainingStack);

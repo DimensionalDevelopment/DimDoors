@@ -7,6 +7,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
@@ -18,7 +19,7 @@ public class TesselatingRecipe extends ShapedRecipe {
 	public final int weavingTime;
 
 	public TesselatingRecipe(Identifier id, String group, int width, int height, DefaultedList<Ingredient> defaultedList, ItemStack itemStack, float experience, int weavingTime) {
-		super(id, group, width, height, defaultedList, itemStack);
+		super(id, group, CraftingRecipeCategory.MISC, width, height, defaultedList, itemStack);
 
 		this.experience = experience;
 		this.weavingTime = weavingTime;

@@ -5,7 +5,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtIntArray;
@@ -15,8 +14,6 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Uuids;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.dynamic.UuDynamicSerializableUuid;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
@@ -141,12 +138,5 @@ public class RiftKeyItem extends Item {
 				.map(NbtIntArray::getIntArray)
 				.map(Uuids::toUuid)
 				.collect(Collectors.toList());
-	}
-
-	@Override
-	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
-		if (this.isIn(group)) {
-			stacks.add(this.getDefaultStack());
-		}
 	}
 }

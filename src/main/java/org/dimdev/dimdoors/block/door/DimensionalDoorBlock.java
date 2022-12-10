@@ -5,6 +5,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Pair;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.explosion.Explosion;
@@ -46,8 +47,8 @@ import net.fabricmc.api.Environment;
 import java.util.function.Consumer;
 
 public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, CustomBreakBlock, AfterMoveCollidableBlock {
-	public DimensionalDoorBlock(Settings settings) {
-		super(settings);
+	public DimensionalDoorBlock(Settings settings, SoundEvent closeSound, SoundEvent openSound) {
+		super(settings, closeSound, openSound);
 	}
 
 	@Override
@@ -131,7 +132,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		state = state.cycle(OPEN);
 		world.setBlockState(pos, state, 10);
 		if (!world.isClient && state.get(WATERLOGGED)) {
-			world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
 		}
 		world.syncWorldEvent(player, state.get(OPEN) ? this.material == Material.METAL ? 1005 : 1006 : this.material == Material.METAL ? 1011 : 1012, pos, 0);
 		world.emitGameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);

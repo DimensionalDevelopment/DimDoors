@@ -56,6 +56,10 @@
     "waila:plugins": {
       "id": "dimdoors:wthit_plugin",
       "initializer": "org.dimdev.dimdoors.client.wthit.WthitPlugin"
+    },
+    "loom:injected_interfaces": {
+      "net/minecraft/class_2323": ["org/dimdev/dimdoors/block/DoorSoundProvider"],
+      "net/minecraft/class_2533": ["org/dimdev/dimdoors/block/DoorSoundProvider"]
     }
   }
 }

@@ -14,6 +14,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Util;
+import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.DimensionalDoorItem;
@@ -142,11 +143,13 @@ public final class DoorData implements AutoCloseable {
 //		itemSettings.group(group != null ? group : ModItems.DIMENSIONAL_DOORS);
 
 		Block parentBlock = Registries.BLOCK.get(new Identifier(this.blockSettings.parent));
+		DoorSoundProvider provider = parentBlock instanceof DoorSoundProvider soundProvider ? soundProvider : DoorSoundProvider.DUMMY;
+
 		PARENT_BLOCKS.add(parentBlock);
 		FabricBlockSettings blockSettings = FabricBlockSettings.copyOf(parentBlock);
 		this.blockSettings.luminance.ifPresent(blockSettings::luminance);
 		Identifier id = new Identifier(this.id);
-		Block doorBlock = new DimensionalDoorBlock(blockSettings);
+		Block doorBlock = new DimensionalDoorBlock(blockSettings, provider.getCloseSound(), provider.getOpenSound());
 		Item doorItem = new DimensionalDoorItem(doorBlock, itemSettings, createSetupFunction(), hasToolTip);
 		Registry.register(Registries.BLOCK, id, doorBlock);
 		Registry.register(Registries.ITEM, id, doorItem);

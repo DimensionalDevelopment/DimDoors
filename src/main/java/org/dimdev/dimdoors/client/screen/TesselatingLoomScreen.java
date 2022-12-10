@@ -8,12 +8,10 @@ import net.minecraft.client.gui.widget.TexturedButtonWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.screen.AbstractRecipeScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.screen.TesselatingScreenHandler;
 
@@ -31,12 +29,12 @@ public class TesselatingLoomScreen extends HandledScreen<TesselatingScreenHandle
 	public void init() {
 		super.init();
 		this.narrow = this.width < 379;
-		this.recipeBook.initialize(this.width, this.height, this.client, this.narrow, (AbstractRecipeScreenHandler)this.handler);
+		this.recipeBook.initialize(this.width, this.height, this.client, this.narrow, this.handler);
 		this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
 		this.addDrawableChild(new TexturedButtonWidget(this.x + 5, this.height / 2 - 49, 20, 18, 0, 0, 19, RECIPE_BUTTON_TEXTURE, (button) -> {
 			this.recipeBook.toggleOpen();
 			this.x = this.recipeBook.findLeftEdge(this.width, this.backgroundWidth);
-			((TexturedButtonWidget)button).setPos(this.x + 5, this.height / 2 - 49);
+			button.setPos(this.x + 5, this.height / 2 - 49);
 		}));
 		this.addSelectableChild(this.recipeBook);
 		this.setInitialFocus(this.recipeBook);
@@ -60,7 +58,7 @@ public class TesselatingLoomScreen extends HandledScreen<TesselatingScreenHandle
 	}
 
 	protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		int i = this.x;
@@ -98,11 +96,6 @@ public class TesselatingLoomScreen extends HandledScreen<TesselatingScreenHandle
 
 	public void refreshRecipeBook() {
 		this.recipeBook.refresh();
-	}
-
-	public void removed() {
-		this.recipeBook.close();
-		super.removed();
 	}
 
 	public RecipeBookWidget getRecipeBookWidget() {

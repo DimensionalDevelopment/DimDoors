@@ -114,7 +114,7 @@ public class TesselatingScreenHandler extends AbstractRecipeScreenHandler<Invent
 	}
 
 	@Override
-	public ItemStack transferSlot(PlayerEntity player, int index) {
+	public ItemStack quickMove(PlayerEntity player, int index) {
 		{
 			ItemStack returnStack = ItemStack.EMPTY;
 			final Slot slot = this.slots.get(index);

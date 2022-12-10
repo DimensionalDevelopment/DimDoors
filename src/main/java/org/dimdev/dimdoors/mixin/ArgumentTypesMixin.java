@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import net.minecraft.command.argument.ArgumentTypes;
 import net.minecraft.command.argument.serialize.ArgumentSerializer;
 import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
 import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
 import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +20,7 @@ public abstract class ArgumentTypesMixin {
 		throw new AssertionError("Nope.");
 	}
 
-	@Inject(method = "register(Lnet/minecraft/util/registry/Registry;)Lnet/minecraft/command/argument/serialize/ArgumentSerializer;", at = @At("RETURN"))
+	@Inject(method = "register(Lnet/minecraft/registry/Registry;)Lnet/minecraft/command/argument/serialize/ArgumentSerializer;", at = @At("RETURN"))
 	private static void register(Registry<ArgumentSerializer<?, ?>> registry, CallbackInfoReturnable<ArgumentSerializer<?, ?>> ci) {
 		register(registry, "pocket", PocketTemplateArgumentType.class, ConstantArgumentSerializer.of(PocketTemplateArgumentType::new));
 		register(registry, "block_placement_type", BlockPlacementTypeArgumentType.class, ConstantArgumentSerializer.of(BlockPlacementTypeArgumentType::blockPlacementType));

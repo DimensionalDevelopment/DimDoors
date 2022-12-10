@@ -46,7 +46,7 @@ public class MyRenderLayer extends RenderLayer {
 								RenderSystem.defaultBlendFunc();
 							})
 					)
-					.shader(RenderPhase.COLOR_SHADER)
+					.program(RenderPhase.COLOR_PROGRAM)
 					.build(false)
 	);
 
@@ -63,12 +63,12 @@ public class MyRenderLayer extends RenderLayer {
 							false,
 							false)
 					)
-					.shader(RenderPhase.POSITION_COLOR_TEXTURE_SHADER)
+					.program(RenderPhase.POSITION_COLOR_TEXTURE_PROGRAM)
 					.build(false)
 	);
 
 	public static RenderLayer getMonolith(Identifier texture) {
-		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, false, false)).shader(new Shader(GameRenderer::getRenderTypeEntityTranslucentShader)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
+		RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, false, false)).program(new ShaderProgram(GameRenderer::getRenderTypeEntityTranslucentProgram)).transparency(RenderPhase.TRANSLUCENT_TRANSPARENCY).cull(DISABLE_CULLING).lightmap(ENABLE_LIGHTMAP).depthTest(RenderPhase.ALWAYS_DEPTH_TEST).overlay(ENABLE_OVERLAY_COLOR).build(false);
 		return RenderLayerFactory.create("monolith", VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL, VertexFormat.DrawMode.QUADS, 256, true, true, multiPhaseParameters);
 	}
 }

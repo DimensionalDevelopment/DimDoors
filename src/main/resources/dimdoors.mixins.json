@@ -5,6 +5,7 @@
   "mixins": [
     "ArgumentTypesMixin",
     "BlockMixin",
+    "DoorBlockMixin",
     "EntityMixin",
     "ExplosionMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
@@ -16,6 +17,7 @@
     "ServerPlayNetworkHandlerMixin",
     "ServerWorldMixin",
     "StructurePoolMixin",
+    "TrapDoorMixin",
     "WorldMixin",
     "accessor.ChunkGeneratorAccessor",
     "accessor.CraftingInventoryAccessor",
@@ -23,7 +25,6 @@
     "accessor.DirectionAccessor",
     "accessor.EntityAccessor",
     "accessor.GenerationSettingsAccessor",
-    "accessor.ItemGroupAccessor",
     "accessor.ListTagAccessor",
     "accessor.RedstoneWireBlockAccessor",
     "accessor.StatsAccessor"

@@ -16,15 +16,10 @@ import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-<<<<<<< HEAD
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.world.World;
-=======
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
->>>>>>> 1094dcf08ea591e210aafa16d4b4c1141a2fae7b
 
 public class RiftRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
