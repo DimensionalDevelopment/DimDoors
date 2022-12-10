@@ -1,15 +1,18 @@
 package org.dimdev.dimdoors.mixin.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import org.dimdev.dimdoors.network.client.ClientPacketHandler;
-import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import org.dimdev.dimdoors.network.client.ClientPacketHandler;
+import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)

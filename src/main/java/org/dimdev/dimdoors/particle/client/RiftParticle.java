@@ -6,9 +6,6 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.DefaultParticleType;
-
-import org.dimdev.dimdoors.particle.RiftParticleType;
 
 public class RiftParticle extends AnimatedParticle {
     public RiftParticle(ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float color, int ageSpread, SpriteProvider spriteProvider) {

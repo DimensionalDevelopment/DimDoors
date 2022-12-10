@@ -1,13 +1,8 @@
 package org.dimdev.dimdoors.mixin.client;
 
-import org.dimdev.dimdoors.world.ModDimensions;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BackgroundRenderer;
-import net.minecraft.client.world.ClientWorld;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

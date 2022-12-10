@@ -1,12 +1,14 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import java.util.function.Consumer;
+
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
-import org.dimdev.dimdoors.item.ModItems;
 
-import java.util.function.Consumer;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+
+import org.dimdev.dimdoors.item.ModItems;
 
 import static net.minecraft.advancement.criterion.InventoryChangedCriterion.Conditions.items;
 

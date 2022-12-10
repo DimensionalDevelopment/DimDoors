@@ -1,19 +1,21 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.io.IOException;
+import java.util.List;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
-
-import java.io.IOException;
-import java.util.List;
 
 public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListener> {
 	public static final Identifier ID = DimensionalDoors.id("sync_pocket_addons");

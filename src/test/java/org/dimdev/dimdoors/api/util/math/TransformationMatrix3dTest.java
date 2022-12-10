@@ -1,12 +1,14 @@
 package org.dimdev.dimdoors.api.util.math;
 
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-
 import org.dimdev.test.TestUtil;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TransformationMatrix3dTest {
 

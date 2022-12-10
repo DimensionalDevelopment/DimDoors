@@ -4,11 +4,14 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.math.Equation;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+
+import net.fabricmc.fabric.api.util.NbtType;
+
+import org.dimdev.dimdoors.api.util.math.Equation;
 
 public class NbtEquations {
 	private static final Logger LOGGER = LogManager.getLogger();

@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.NbtCompound;
+
+import net.fabricmc.fabric.api.util.NbtType;
+
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 

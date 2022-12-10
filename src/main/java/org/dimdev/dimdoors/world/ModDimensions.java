@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import java.util.Objects;
+
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -8,10 +9,11 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
-
-import java.util.Objects;
 
 public final class ModDimensions {
     public static final RegistryKey<World> LIMBO = RegistryKey.of(RegistryKeys.WORLD, DimensionalDoors.id("limbo"));

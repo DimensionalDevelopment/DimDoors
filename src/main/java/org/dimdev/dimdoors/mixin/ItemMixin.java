@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.mixin;
 
-import org.dimdev.dimdoors.item.ItemExtensions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -8,6 +7,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
+
+import org.dimdev.dimdoors.item.ItemExtensions;
 
 @Mixin(Item.class)
 public class ItemMixin implements ItemExtensions {

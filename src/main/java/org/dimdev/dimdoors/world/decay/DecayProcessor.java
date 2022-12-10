@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.world.decay;
 
+import java.util.function.Supplier;
+
 import com.mojang.serialization.Lifecycle;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
@@ -10,13 +12,14 @@ import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.decay.processors.DoorDecayProccessor;
 import org.dimdev.dimdoors.world.decay.processors.DoubleDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
-
-import java.util.function.Supplier;
 
 public interface DecayProcessor {
     Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_processor_type")), Lifecycle.stable(), false)).buildAndRegister();

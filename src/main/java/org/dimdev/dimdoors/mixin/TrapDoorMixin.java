@@ -1,11 +1,13 @@
 package org.dimdev.dimdoors.mixin;
 
-import net.minecraft.block.TrapdoorBlock;
-import net.minecraft.sound.SoundEvent;
-import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+
+import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.sound.SoundEvent;
+
+import org.dimdev.dimdoors.block.DoorSoundProvider;
 
 @Mixin(TrapdoorBlock.class)
 public class TrapDoorMixin implements DoorSoundProvider {

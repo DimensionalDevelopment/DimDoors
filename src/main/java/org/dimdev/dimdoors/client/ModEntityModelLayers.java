@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.client;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
+
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 

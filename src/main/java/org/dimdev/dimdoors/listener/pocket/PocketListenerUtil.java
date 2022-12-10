@@ -1,20 +1,22 @@
 package org.dimdev.dimdoors.listener.pocket;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.dimdev.dimdoors.network.client.ClientPacketHandler;
-import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
-import org.dimdev.dimdoors.api.util.math.GridUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.network.client.ClientPacketHandler;
+import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PocketListenerUtil {
 	public static <T> List<T> applicableAddons(Class<T> clazz, World world, BlockPos pos) {

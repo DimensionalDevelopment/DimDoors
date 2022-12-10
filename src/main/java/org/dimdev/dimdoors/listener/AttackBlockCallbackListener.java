@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.listener;
 
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ActionResult;
@@ -9,6 +8,9 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;

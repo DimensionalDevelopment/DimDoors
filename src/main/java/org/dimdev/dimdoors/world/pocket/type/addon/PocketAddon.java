@@ -1,18 +1,21 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
 import com.mojang.serialization.Lifecycle;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.blockbreak.BlockBreakContainer;
-
-import java.util.Map;
-import java.util.function.Supplier;
 
 public interface PocketAddon {
 	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketAddonType<? extends PocketAddon>>(RegistryKey.ofRegistry(DimensionalDoors.id("pocket_applicable_addon_type")), Lifecycle.stable(), false)).buildAndRegister();

@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.criteria;
 
 import com.google.gson.JsonObject;
+
 import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterionConditions;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;

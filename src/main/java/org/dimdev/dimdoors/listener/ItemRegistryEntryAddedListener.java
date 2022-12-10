@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.listener;
 
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 
 public record ItemRegistryEntryAddedListener(DimensionalDoorItemRegistrar registrar) implements RegistryEntryAddedCallback<Item> {

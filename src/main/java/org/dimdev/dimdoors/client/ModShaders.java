@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraft.client.gl.ShaderProgram;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gl.ShaderProgram;
 
 @Environment(EnvType.CLIENT)
 public class ModShaders {

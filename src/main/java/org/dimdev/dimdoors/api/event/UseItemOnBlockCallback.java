@@ -1,12 +1,13 @@
 package org.dimdev.dimdoors.api.event;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 public interface UseItemOnBlockCallback {
 	Event<UseItemOnBlockCallback> EVENT = EventFactory.createArrayBacked(UseItemOnBlockCallback.class,

@@ -6,8 +6,10 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.minecraft.nbt.NbtCompound;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import net.minecraft.nbt.NbtCompound;
 
 public class LinkProperties {
 	public static final LinkProperties NONE = LinkProperties.builder().build();

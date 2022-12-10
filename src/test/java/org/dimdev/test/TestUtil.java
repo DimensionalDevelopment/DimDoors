@@ -2,6 +2,7 @@ package org.dimdev.test;
 
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
+
 import org.dimdev.dimdoors.api.util.math.AbstractMatrixd;
 
 public class TestUtil {

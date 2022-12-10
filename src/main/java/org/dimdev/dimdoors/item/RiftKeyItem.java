@@ -1,6 +1,12 @@
 package org.dimdev.dimdoors.item;
 
-import net.fabricmc.fabric.api.util.NbtType;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +21,9 @@ import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Uuids;
 import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.util.NbtType;
+
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.RiftProvider;
@@ -24,12 +33,6 @@ import org.dimdev.dimdoors.mixin.accessor.ListTagAccessor;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class RiftKeyItem extends Item {
 	public RiftKeyItem(Settings settings) {

@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.world.decay.predicates;
 
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -8,9 +10,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
-import java.util.Set;
+import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 public class SimpleBlockDecayPredicate implements DecayPredicate {
     public static final String KEY = "simple_block";

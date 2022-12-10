@@ -1,16 +1,18 @@
 package org.dimdev.dimdoors.world.level.registry;
 
+import java.util.function.BiFunction;
+
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Util;
-import org.dimdev.dimdoors.world.level.registry.schema.Schema1;
 
-import java.util.function.BiFunction;
+import org.dimdev.dimdoors.world.level.registry.schema.Schema1;
 
 public class RiftSchemas {
 	public static final DSL.TypeReference RIFT_DATA_TYPE_REF = () -> "rift_data";

@@ -1,19 +1,22 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
-import net.fabricmc.fabric.api.util.NbtType;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.base.MoreObjects;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
-import com.google.common.base.MoreObjects;
 import net.minecraft.resource.ResourceManager;
+
+import net.fabricmc.fabric.api.util.NbtType;
+
+import org.dimdev.dimdoors.api.util.WeightedList;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.api.util.WeightedList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TagReference extends PocketGeneratorReference {
 	public static final String KEY = "tag";

@@ -1,16 +1,17 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
+
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DungeonTarget extends RandomTarget {
 	private final Identifier dungeonGroup;

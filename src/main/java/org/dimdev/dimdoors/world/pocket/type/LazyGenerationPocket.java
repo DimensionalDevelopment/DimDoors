@@ -1,17 +1,19 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
-import net.fabricmc.fabric.api.util.NbtType;
+import java.util.Map;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
+
+import net.fabricmc.fabric.api.util.NbtType;
+
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
-
-import java.util.Map;
 
 public class LazyGenerationPocket extends Pocket {
 	public static String KEY = "lazy_gen_pocket";

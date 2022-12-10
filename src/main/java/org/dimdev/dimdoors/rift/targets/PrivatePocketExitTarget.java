@@ -1,10 +1,13 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.UUID;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
+
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
@@ -14,8 +17,6 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
-import java.util.UUID;
 
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
 	public static final RGBA COLOR = new RGBA(0, 1, 0, 1);

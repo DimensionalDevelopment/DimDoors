@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.api.block;
 
+import java.util.function.Consumer;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -8,8 +10,6 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.function.Consumer;
 
 /**
  * Only works in cases where {@link net.minecraft.block.AbstractBlock#getStateForNeighborUpdate AbstractBlock#getStateForNeighborUpdate} returns an air {@link BlockState}

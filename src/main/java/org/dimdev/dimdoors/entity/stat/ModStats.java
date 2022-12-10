@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.entity.stat;
 
 import net.minecraft.stat.StatFormatter;
 import net.minecraft.util.Identifier;
+
 import org.dimdev.dimdoors.mixin.accessor.StatsAccessor;
 
 public class ModStats {

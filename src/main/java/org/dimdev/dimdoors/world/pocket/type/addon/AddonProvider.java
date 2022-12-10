@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import net.minecraft.util.Identifier;
+
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public interface AddonProvider {

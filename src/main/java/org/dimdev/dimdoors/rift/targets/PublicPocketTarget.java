@@ -1,11 +1,12 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.dimdoors.pockets.PocketGenerator;
 import net.minecraft.nbt.NbtCompound;
+
 import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PublicPocketTarget extends RestoringTarget {
 	private VirtualTarget wrappedDestination = null;

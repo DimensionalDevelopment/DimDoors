@@ -1,9 +1,11 @@
 package org.dimdev.dimdoors.pockets;
 
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;

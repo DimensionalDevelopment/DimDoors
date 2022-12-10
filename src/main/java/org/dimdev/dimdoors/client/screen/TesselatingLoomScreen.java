@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookProvider;
 import net.minecraft.client.gui.screen.recipebook.RecipeBookWidget;
@@ -12,6 +13,7 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.screen.TesselatingScreenHandler;
 

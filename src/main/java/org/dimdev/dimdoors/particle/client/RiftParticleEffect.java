@@ -1,18 +1,21 @@
 package org.dimdev.dimdoors.particle.client;
 
+import java.util.Locale;
+
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.registry.Registries;
-import org.dimdev.dimdoors.particle.ModParticleTypes;
 
-import java.util.Locale;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import org.dimdev.dimdoors.particle.ModParticleTypes;
 
 public class RiftParticleEffect implements ParticleEffect {
    public static RiftParticleEffect of(boolean isOutsidePocket) {

@@ -7,16 +7,17 @@ import java.util.function.BiPredicate;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.pockets.TemplateUtils;
-import org.dimdev.dimdoors.api.util.BlockPlacementType;
-import org.dimdev.dimdoors.util.schematic.Schematic;
-import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
-import org.dimdev.dimdoors.world.feature.gateway.Gateway;
 
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
+
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
+import org.dimdev.dimdoors.pockets.TemplateUtils;
+import org.dimdev.dimdoors.util.schematic.Schematic;
+import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
+import org.dimdev.dimdoors.world.feature.gateway.Gateway;
 
 public abstract class SchematicGateway implements Gateway, BiPredicate<StructureWorldAccess, BlockPos> {
 	private Schematic schematic;

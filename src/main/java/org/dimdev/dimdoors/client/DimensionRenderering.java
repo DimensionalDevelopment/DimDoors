@@ -1,20 +1,27 @@
 package org.dimdev.dimdoors.client;
 
+import java.util.List;
+
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
-import net.minecraft.client.render.*;
+import org.joml.Matrix4f;
+
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
-import org.joml.Matrix4f;
-
-import java.util.List;
 
 public class DimensionRenderering {
     private static final Identifier MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");

@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.particle.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
@@ -13,10 +14,12 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DefaultParticleType;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.MonolithRenderer;
-import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
 public class MonolithParticle extends Particle {

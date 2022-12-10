@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.tag;
 import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModBlockTags {

@@ -15,20 +15,25 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.block.door.data.condition.AlwaysTrueCondition;
-import org.dimdev.dimdoors.block.door.data.condition.InverseCondition;
-import org.dimdev.dimdoors.block.door.data.condition.WorldMatchCondition;
-import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.targets.*;
-import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.util.Pair;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.api.util.TriState;
+
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.door.data.condition.AlwaysTrueCondition;
+import org.dimdev.dimdoors.block.door.data.condition.InverseCondition;
+import org.dimdev.dimdoors.block.door.data.condition.WorldMatchCondition;
+import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
+import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
+import org.dimdev.dimdoors.rift.targets.PrivatePocketExitTarget;
+import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget;
+import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
+import org.dimdev.dimdoors.rift.targets.UnstableTarget;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 public class DoorDataReader {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().setLenient().create();

@@ -11,10 +11,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import net.minecraft.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
 
 //@FunctionalInterface

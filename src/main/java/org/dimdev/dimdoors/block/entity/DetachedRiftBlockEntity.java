@@ -1,13 +1,5 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.minecraft.util.math.random.Random;
-
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.api.util.TeleportUtil;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -16,10 +8,17 @@ import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.block.ModBlocks;
 
 public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	private static final Random random = Random.create();

@@ -1,11 +1,12 @@
 package org.dimdev.dimdoors.api.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import org.dimdev.dimdoors.mixin.client.accessor.RenderLayerAccessor;
-
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexFormat;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+import org.dimdev.dimdoors.mixin.client.accessor.RenderLayerAccessor;
 
 @Environment(EnvType.CLIENT)
 public class RenderLayerFactory {

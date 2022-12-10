@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
+import java.io.IOException;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
-
-import java.io.IOException;
 
 abstract public class AutoSyncedAddonContainer<T extends ContainedAddon & AutoSyncedAddon> extends AddonContainer<T> implements AutoSyncedAddon {
 	@Override

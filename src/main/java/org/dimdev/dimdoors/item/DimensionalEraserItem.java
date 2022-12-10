@@ -1,14 +1,5 @@
 package org.dimdev.dimdoors.item;
 
-import static org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle;
-
-import org.dimdev.dimdoors.api.util.TeleportUtil;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.rift.targets.LimboTarget;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -21,6 +12,14 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+
+import static org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle;
 
 public class DimensionalEraserItem extends Item {
 	public DimensionalEraserItem(Settings settings) {

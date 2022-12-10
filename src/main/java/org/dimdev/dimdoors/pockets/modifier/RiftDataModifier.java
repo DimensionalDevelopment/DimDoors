@@ -7,16 +7,20 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.nbt.NbtCompound;
+
 import com.google.common.base.MoreObjects;
+
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
+
+import net.fabricmc.fabric.api.util.NbtType;
+
+import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class RiftDataModifier extends AbstractModifier {

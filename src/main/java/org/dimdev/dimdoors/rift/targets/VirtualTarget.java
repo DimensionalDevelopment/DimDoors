@@ -1,21 +1,24 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
-
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * A target that is not an actual object in the game such as a block or a block

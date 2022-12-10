@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.recipe;
 
+import java.util.Map;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
@@ -11,8 +14,6 @@ import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
-
-import java.util.Map;
 
 public class TesselatingRecipe extends ShapedRecipe {
 	public final float experience;

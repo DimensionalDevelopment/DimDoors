@@ -1,16 +1,17 @@
 package org.dimdev.dimdoors.block;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
-import org.dimdev.dimdoors.item.ModItems;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.dimdev.dimdoors.item.ModItems;
 
 public class UnravelUtil {
 	public static final Set<Block> whitelistedBlocksForLimboRemoval = new HashSet<>();

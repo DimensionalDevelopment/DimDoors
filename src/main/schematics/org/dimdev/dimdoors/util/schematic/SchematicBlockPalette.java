@@ -1,18 +1,19 @@
 package org.dimdev.dimdoors.util.schematic;
 
+import java.util.Iterator;
+import java.util.Objects;
+
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.BlockArgumentParser;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.StringIdentifiable;
-
-import java.util.Iterator;
-import java.util.Objects;
 
 public class SchematicBlockPalette {
 	public static final UnboundedMapCodec<BlockState, Integer> CODEC = Codec.unboundedMap(Entry.CODEC, Codec.INT);

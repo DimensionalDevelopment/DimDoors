@@ -7,6 +7,7 @@ import java.util.stream.StreamSupport;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public class AllCondition extends MultipleCondition {

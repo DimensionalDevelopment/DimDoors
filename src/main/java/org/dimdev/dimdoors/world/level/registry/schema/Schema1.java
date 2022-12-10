@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
+
 import org.dimdev.dimdoors.world.level.registry.RiftSchemas;
 
 public class Schema1 extends Schema {

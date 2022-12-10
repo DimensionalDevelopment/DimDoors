@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import net.minecraft.network.PacketByteBuf;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.minecraft.network.PacketByteBuf;
 
 public interface AutoSyncedAddon extends PocketAddon {
 	static <T extends AutoSyncedAddon> List<T> readAutoSyncedAddonList(PacketByteBuf buf) throws IOException {

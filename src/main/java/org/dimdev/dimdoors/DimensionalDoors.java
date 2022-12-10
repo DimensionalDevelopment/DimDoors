@@ -1,7 +1,22 @@
 package org.dimdev.dimdoors;
 
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Supplier;
+
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -13,13 +28,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+
 import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -38,7 +47,11 @@ import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
-import org.dimdev.dimdoors.listener.pocket.*;
+import org.dimdev.dimdoors.listener.pocket.PlayerBlockBreakEventBeforeListener;
+import org.dimdev.dimdoors.listener.pocket.PocketAttackBlockCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseItemCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -59,12 +72,6 @@ import org.dimdev.dimdoors.world.decay.LimboDecay;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
-import org.jetbrains.annotations.NotNull;
-
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class DimensionalDoors implements ModInitializer {
 	public static List<DimensionalDoorsApi> apiSubscribers = Collections.emptyList();

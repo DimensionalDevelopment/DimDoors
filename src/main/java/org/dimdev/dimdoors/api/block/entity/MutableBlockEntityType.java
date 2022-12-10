@@ -1,14 +1,16 @@
 package org.dimdev.dimdoors.api.block.entity;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.mojang.datafixers.types.Type;
-import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
 
 public class MutableBlockEntityType<T extends BlockEntity> extends BlockEntityType<T> {
 

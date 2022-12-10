@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.util.DyeColor;
 
 public enum PocketColor {

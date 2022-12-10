@@ -1,26 +1,49 @@
 package org.dimdev.dimdoors.block;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.dimdev.matrix.Matrix;
+import org.dimdev.matrix.Registrar;
+import org.dimdev.matrix.RegistryEntry;
+
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ButtonBlock;
+import net.minecraft.block.DoorBlock;
+import net.minecraft.block.ExperienceDroppingBlock;
+import net.minecraft.block.FenceBlock;
+import net.minecraft.block.FenceGateBlock;
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.MapColor;
+import net.minecraft.block.Material;
+import net.minecraft.block.PillarBlock;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.StairsBlock;
+import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.DyeColor;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.block.door.data.DoorDataReader;
-import org.dimdev.matrix.Matrix;
-import org.dimdev.matrix.Registrar;
-import org.dimdev.matrix.RegistryEntry;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static net.minecraft.block.Blocks.*;
+import static net.minecraft.block.Blocks.CLAY;
+import static net.minecraft.block.Blocks.GRAVEL;
+import static net.minecraft.block.Blocks.MUD;
+import static net.minecraft.block.Blocks.OAK_LEAVES;
+import static net.minecraft.block.Blocks.OAK_SAPLING;
+import static net.minecraft.block.Blocks.STONE;
+import static net.minecraft.block.Blocks.WATER;
 
 @Registrar(element = Block.class, modid = "dimdoors")
 public final class ModBlocks {

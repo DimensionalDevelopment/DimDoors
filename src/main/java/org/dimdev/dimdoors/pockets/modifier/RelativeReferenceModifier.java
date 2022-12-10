@@ -1,18 +1,20 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import java.util.Optional;
+
 import com.google.common.base.MoreObjects;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.StringIdentifiable;
+
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.LocalReference;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
-import java.util.Optional;
 
 public class RelativeReferenceModifier extends AbstractModifier {
 	public static final String KEY = "relative";

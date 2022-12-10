@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.screen;
 
-import org.dimdev.dimdoors.DimensionalDoors;
-
 import net.minecraft.screen.ScreenHandlerType;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModScreenHandlerTypes {
 

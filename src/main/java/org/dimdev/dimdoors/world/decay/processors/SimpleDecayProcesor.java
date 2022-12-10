@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -11,10 +14,8 @@ import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
 public class SimpleDecayProcesor implements DecayProcessor {
     public static final String KEY = "simple";

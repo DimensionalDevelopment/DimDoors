@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
@@ -9,6 +8,9 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.DyeColor;
+
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class FabricBlock extends Block {

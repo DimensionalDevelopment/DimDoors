@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.api.util;
 
-import net.minecraft.util.math.random.Random;
-
 import java.util.ArrayList;
 import java.util.Collection;
+
+import net.minecraft.util.math.random.Random;
 
 public class WeightedList<T extends Weighted<C>, C> extends ArrayList<T> {
 	private final Random random = Random.create();

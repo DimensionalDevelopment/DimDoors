@@ -1,17 +1,5 @@
 package org.dimdev.dimdoors;
 
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.serializer.ConfigSerializer;
-import me.shedaniel.autoconfig.util.Utils;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
-import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,9 +9,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.serializer.ConfigSerializer;
+import me.shedaniel.autoconfig.util.Utils;
+import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
+import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.EnvironmentInterface;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
-import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.*;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.RequiresRestart;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip;
+import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 
 @SuppressWarnings("FieldMayBeFinal")
 @Config(name = "dimdoors")

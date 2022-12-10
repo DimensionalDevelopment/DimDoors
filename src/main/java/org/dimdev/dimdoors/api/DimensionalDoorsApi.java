@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.api;
 
 import net.minecraft.registry.Registry;
+
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;

@@ -1,31 +1,38 @@
 package org.dimdev.dimdoors.network.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
-import org.dimdev.dimdoors.entity.MonolithEntity;
-import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
-import org.dimdev.dimdoors.network.SimplePacket;
-import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
-import org.dimdev.dimdoors.network.packet.s2c.*;
-import org.dimdev.dimdoors.particle.client.MonolithParticle;
-import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+
+import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
+import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
+import org.dimdev.dimdoors.network.SimplePacket;
+import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
+import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
+import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
+import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
+import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
+import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket;
+import org.dimdev.dimdoors.particle.client.MonolithParticle;
+import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 @Environment(EnvType.CLIENT)
 public class ClientPacketHandler implements ClientPacketListener {

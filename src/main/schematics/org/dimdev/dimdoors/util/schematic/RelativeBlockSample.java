@@ -8,9 +8,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
-import org.dimdev.dimdoors.api.util.BlockBoxUtil;
-import org.dimdev.dimdoors.api.util.BlockPlacementType;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockEntityProvider;
@@ -39,6 +36,10 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 
 import net.fabricmc.fabric.api.util.NbtType;
+
+import org.dimdev.dimdoors.api.util.BlockBoxUtil;
+import org.dimdev.dimdoors.api.util.BlockPlacementType;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	public final Schematic schematic;

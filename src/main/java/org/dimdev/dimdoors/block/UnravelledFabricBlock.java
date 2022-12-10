@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.util.math.random.Random;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.decay.LimboDecay;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
+
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.decay.LimboDecay;
 
 public class UnravelledFabricBlock extends Block {
 	public static final String ID = "unravelled_fabric";

@@ -1,10 +1,15 @@
 package org.dimdev.dimdoors.api.util;
 
-import net.minecraft.util.Identifier;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+
+import net.minecraft.util.Identifier;
 
 public class Path<K> {
 	private final ArrayList<K> path;

@@ -1,15 +1,5 @@
 package org.dimdev.dimdoors.entity;
 
-import net.minecraft.util.math.random.Random;
-
-import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.util.math.Box;
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
-import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.world.ModDimensions;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
@@ -27,13 +17,22 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.util.NbtType;
+
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
+import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 public class MonolithEntity extends MobEntity {
     public static final int MAX_AGGRO = 250;

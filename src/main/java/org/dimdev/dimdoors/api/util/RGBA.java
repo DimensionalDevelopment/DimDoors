@@ -3,8 +3,10 @@ package org.dimdev.dimdoors.api.util;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Consumer;
-import net.minecraft.nbt.NbtCompound;
+
 import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.nbt.NbtCompound;
 
 public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> {
 	public static final RGBA NONE = new RGBA(0, 0, 0, 0);

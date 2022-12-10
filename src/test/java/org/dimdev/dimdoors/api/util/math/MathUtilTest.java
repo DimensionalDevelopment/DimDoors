@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.api.util.math;
 
+import org.dimdev.test.TestUtil;
+import org.junit.jupiter.api.Test;
+
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 
-import org.dimdev.test.TestUtil;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MathUtilTest {
 

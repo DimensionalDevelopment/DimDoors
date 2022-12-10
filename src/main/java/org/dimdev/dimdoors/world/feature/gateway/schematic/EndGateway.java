@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.block.SandBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
 

@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.world.decay.predicates;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
@@ -10,10 +13,8 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 public class SimpleTagDecayPredicate implements DecayPredicate {
 	public static final String KEY = "simple_tag";

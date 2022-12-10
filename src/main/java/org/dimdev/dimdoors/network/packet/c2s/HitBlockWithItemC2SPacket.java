@@ -1,18 +1,19 @@
 package org.dimdev.dimdoors.network.packet.c2s;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.io.IOException;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.ServerPacketListener;
 import org.dimdev.dimdoors.network.SimplePacket;
-
-import java.io.IOException;
 
 public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListener> {
 	public static final Identifier ID = DimensionalDoors.id("hit_block_with_item");

@@ -3,11 +3,6 @@ package org.dimdev.dimdoors.item;
 import java.lang.reflect.Field;
 import java.util.Collections;
 
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.rift.targets.RandomTarget;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.matrix.Matrix;
 import org.dimdev.matrix.Registrar;
 import org.dimdev.matrix.RegistryEntry;
@@ -26,6 +21,12 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.rift.targets.RandomTarget;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import static org.dimdev.dimdoors.DimensionalDoors.id;
 

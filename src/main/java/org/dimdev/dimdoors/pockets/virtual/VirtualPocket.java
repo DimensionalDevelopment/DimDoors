@@ -1,21 +1,23 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
-import com.google.common.collect.Multimap;
-import net.minecraft.resource.ResourceManager;
-import org.dimdev.dimdoors.api.util.ReferenceSerializable;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.api.util.Weighted;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import java.util.Collection;
 
-import net.fabricmc.fabric.api.util.NbtType;
+import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.resource.ResourceManager;
 
-import java.util.Collection;
+import net.fabricmc.fabric.api.util.NbtType;
+
+import org.dimdev.dimdoors.api.util.ReferenceSerializable;
+import org.dimdev.dimdoors.api.util.ResourceUtil;
+import org.dimdev.dimdoors.api.util.Weighted;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs

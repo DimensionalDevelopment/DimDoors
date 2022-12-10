@@ -1,14 +1,14 @@
 package org.dimdev.dimdoors.api.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.world.World;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 public enum BlockPlacementType implements StringIdentifiable {
 	// TODO: do we need some update fluids only option?

@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.api.client;
 
+import net.minecraft.client.util.math.MatrixStack;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.util.math.MatrixStack;
 
 /**
  * A Transformer is a matrix stack consumer.

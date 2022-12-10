@@ -1,11 +1,14 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import java.util.UUID;
-import net.minecraft.nbt.NbtCompound;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+
+import net.minecraft.nbt.NbtCompound;
+
 import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 public class Rift extends RegistryVertex {

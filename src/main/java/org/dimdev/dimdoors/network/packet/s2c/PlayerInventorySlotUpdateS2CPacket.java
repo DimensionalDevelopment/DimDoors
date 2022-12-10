@@ -1,16 +1,17 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import java.io.IOException;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
-
-import java.io.IOException;
 
 public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPacketListener> {
 	public static final Identifier ID = DimensionalDoors.id("player_inventory_slot_update");

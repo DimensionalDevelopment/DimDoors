@@ -2,9 +2,6 @@ package org.dimdev.dimdoors.item;
 
 import java.util.function.Consumer;
 
-import org.dimdev.dimdoors.block.RiftProvider;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
@@ -12,6 +9,9 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public class DimensionalTrapdoorItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;

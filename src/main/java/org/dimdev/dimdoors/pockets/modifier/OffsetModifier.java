@@ -1,16 +1,18 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.math.Vec3i;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.api.util.math.Equation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class OffsetModifier extends AbstractModifier {
 	private static final Logger LOGGER = LogManager.getLogger();

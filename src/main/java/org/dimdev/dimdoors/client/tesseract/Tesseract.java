@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.client.tesseract;
 
 import com.flowpowered.math.vector.Vector4f;
+
+import net.minecraft.client.render.VertexConsumer;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.VertexConsumer;
+
 import org.dimdev.dimdoors.api.util.RGBA;
 
 @Environment(EnvType.CLIENT)

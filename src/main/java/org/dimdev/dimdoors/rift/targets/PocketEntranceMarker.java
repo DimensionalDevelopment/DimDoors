@@ -1,12 +1,14 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 

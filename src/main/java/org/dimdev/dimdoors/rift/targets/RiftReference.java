@@ -2,12 +2,12 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.Set;
 
+import net.minecraft.util.math.Vec3i;
+
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-
-import net.minecraft.util.math.Vec3i;
 
 /**
  * Allows rifts and targets to reference another rift without having to

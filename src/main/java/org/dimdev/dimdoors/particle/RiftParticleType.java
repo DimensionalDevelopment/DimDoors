@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.particle;
 
-import net.minecraft.particle.ParticleType;
-
 import com.mojang.serialization.Codec;
+
+import net.minecraft.particle.ParticleType;
 
 import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 

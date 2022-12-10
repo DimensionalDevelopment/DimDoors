@@ -1,17 +1,19 @@
 package org.dimdev.dimdoors.mixin;
 
 import com.mojang.brigadier.arguments.ArgumentType;
-import net.minecraft.command.argument.ArgumentTypes;
-import net.minecraft.command.argument.serialize.ArgumentSerializer;
-import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
-import net.minecraft.registry.Registry;
-import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
-import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.command.argument.ArgumentTypes;
+import net.minecraft.command.argument.serialize.ArgumentSerializer;
+import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
+import net.minecraft.registry.Registry;
+
+import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
+import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
 
 @Mixin(ArgumentTypes.class)
 public abstract class ArgumentTypesMixin {

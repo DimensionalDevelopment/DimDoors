@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.nbt.NbtCompound;
+
 import org.dimdev.dimdoors.api.util.Location;
 
 public class GlobalReference extends RiftReference {

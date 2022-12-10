@@ -1,14 +1,12 @@
 package org.dimdev.dimdoors.api.util.math;
 
+import java.util.Map;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-
-import java.util.Map;
 import net.minecraft.util.math.random.Random;
-
-import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 
 public final class MathUtil {
 	public static <T> T weightedRandom(Map<T, Float> weights) {

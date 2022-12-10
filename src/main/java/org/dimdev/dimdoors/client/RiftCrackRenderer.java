@@ -1,11 +1,14 @@
 package org.dimdev.dimdoors.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import org.joml.Matrix4f;
+
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.util.Util;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.joml.Matrix4f;
 
 @Environment(EnvType.CLIENT)
 public final class RiftCrackRenderer {

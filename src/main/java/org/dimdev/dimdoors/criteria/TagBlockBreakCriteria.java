@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.criteria;
 
+import java.util.Objects;
+
 import com.google.gson.JsonObject;
+
 import net.minecraft.advancement.criterion.AbstractCriterion;
 import net.minecraft.advancement.criterion.AbstractCriterionConditions;
 import net.minecraft.block.Block;
@@ -12,9 +15,8 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.DimensionalDoors;
 
-import java.util.Objects;
+import org.dimdev.dimdoors.DimensionalDoors;
 
 public class TagBlockBreakCriteria extends AbstractCriterion<TagBlockBreakCriteria.Conditions> {
 	public static final Identifier ID = DimensionalDoors.id("tag_block_break");

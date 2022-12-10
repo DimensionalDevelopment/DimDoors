@@ -1,14 +1,15 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import net.fabricmc.fabric.api.util.NbtType;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import net.fabricmc.fabric.api.util.NbtType;
 
 public abstract class AddonContainer<T extends ContainedAddon> implements PocketAddon {
 	protected Identifier id;

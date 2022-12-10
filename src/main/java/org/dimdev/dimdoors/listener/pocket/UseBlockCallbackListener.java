@@ -1,13 +1,14 @@
 package org.dimdev.dimdoors.listener.pocket;
 
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
 
-import java.util.List;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 
 public class UseBlockCallbackListener implements UseBlockCallback {
 	@Override

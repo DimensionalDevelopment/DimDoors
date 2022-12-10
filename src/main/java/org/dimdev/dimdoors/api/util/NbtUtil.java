@@ -1,9 +1,11 @@
 package org.dimdev.dimdoors.api.util;
 
 import com.mojang.serialization.Codec;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
+
 import net.fabricmc.fabric.api.util.NbtType;
 
 public class NbtUtil {

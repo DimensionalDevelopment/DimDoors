@@ -1,17 +1,19 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Function;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.DimensionalDoors;
 
-import java.util.Objects;
-import java.util.UUID;
-import java.util.function.Function;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+
+import org.dimdev.dimdoors.DimensionalDoors;
 
 public abstract class RegistryVertex {
 	public static final Registry<RegistryVertexType> registry = FabricRegistryBuilder.createSimple(RegistryVertex.RegistryVertexType.class, DimensionalDoors.id("registry_vertex")).attribute(RegistryAttribute.MODDED).buildAndRegister();

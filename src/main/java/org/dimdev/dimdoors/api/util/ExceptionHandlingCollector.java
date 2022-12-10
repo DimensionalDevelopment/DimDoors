@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.api.util;
 
-import org.apache.logging.log4j.util.TriConsumer;
-
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+
+import org.apache.logging.log4j.util.TriConsumer;
 
 public record ExceptionHandlingCollector<T, A, R>(Collector<T, A, R> collector, TriConsumer<A, T, Exception> exceptionalAccumulator) implements Collector<T, A, R> {
 	@Override

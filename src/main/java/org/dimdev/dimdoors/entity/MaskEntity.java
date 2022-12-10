@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.entity;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.world.World;
 

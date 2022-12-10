@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import org.dimdev.dimdoors.api.util.Location;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Vec3i;
+
+import org.dimdev.dimdoors.api.util.Location;
 
 public class RelativeReference extends RiftReference {
 	private final Vec3i offset;

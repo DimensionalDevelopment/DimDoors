@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,12 +14,15 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtDouble;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.chunk.Chunk;
 
 import net.fabricmc.loader.api.FabricLoader;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 public final class SchematicPlacer {
 	public static final Logger LOGGER = LogManager.getLogger();

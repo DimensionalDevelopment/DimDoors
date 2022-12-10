@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.api.rift.target;
 
 import java.util.Optional;
 
-import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.InstanceMap;
 
 public final class DefaultTargets {

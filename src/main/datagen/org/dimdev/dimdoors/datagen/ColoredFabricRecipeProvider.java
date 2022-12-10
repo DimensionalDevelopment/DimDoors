@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.block.Block;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
@@ -8,12 +10,12 @@ import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
 import net.minecraft.item.DyeItem;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.util.DyeColor;
+
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
-
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class ColoredFabricRecipeProvider extends net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider {
 

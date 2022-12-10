@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.listener.pocket;
 
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -8,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.List;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 
 public class PocketAttackBlockCallbackListener implements AttackBlockCallback {
 	@Override

@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.command.arguments;
 
 import com.mojang.brigadier.context.CommandContext;
+
 import net.minecraft.command.argument.EnumArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
+
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 
 public class BlockPlacementTypeArgumentType extends EnumArgumentType<BlockPlacementType> {

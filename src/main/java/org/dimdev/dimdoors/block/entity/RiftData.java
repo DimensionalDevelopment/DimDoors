@@ -1,9 +1,10 @@
 package org.dimdev.dimdoors.block.entity;
 
+import net.minecraft.nbt.NbtCompound;
+
+import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.api.util.RGBA;
-import net.minecraft.nbt.NbtCompound;
 
 public class RiftData {
 	private VirtualTarget destination = VirtualTarget.NoneTarget.INSTANCE; // How the rift acts as a source

@@ -1,11 +1,12 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import java.util.UUID;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Uuids;
-
-import java.util.UUID;
 
 public class PlayerRiftPointer extends RegistryVertex {
 	public static final Codec<PlayerRiftPointer> CODEC = RecordCodecBuilder.create(instance -> {

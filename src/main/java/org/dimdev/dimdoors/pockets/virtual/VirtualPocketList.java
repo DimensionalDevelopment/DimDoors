@@ -1,16 +1,19 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
-import net.fabricmc.fabric.api.util.NbtType;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.resource.ResourceManager;
+
+import net.fabricmc.fabric.api.util.NbtType;
+
 import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import net.minecraft.nbt.NbtList;
 import org.dimdev.dimdoors.api.util.WeightedList;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.jetbrains.annotations.Nullable;
 
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
 	private String resourceKey = null;

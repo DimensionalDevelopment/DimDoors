@@ -1,13 +1,5 @@
 package org.dimdev.dimdoors.world.feature;
 
-import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.EndGateway;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SandstonePillarsGateway;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGateway;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGatewayFeature;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGatewayFeatureConfig;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.TwoPillarsGateway;
-
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -21,6 +13,14 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
+
+import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.EndGateway;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SandstonePillarsGateway;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGateway;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGatewayFeature;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGatewayFeatureConfig;
+import org.dimdev.dimdoors.world.feature.gateway.schematic.TwoPillarsGateway;
 
 import static org.dimdev.dimdoors.DimensionalDoors.id;
 

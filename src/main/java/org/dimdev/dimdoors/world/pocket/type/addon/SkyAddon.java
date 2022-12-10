@@ -1,15 +1,16 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
+import java.io.IOException;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
-import java.io.IOException;
 
 public class SkyAddon implements AutoSyncedAddon {
 	public static Identifier ID = DimensionalDoors.id("sky");

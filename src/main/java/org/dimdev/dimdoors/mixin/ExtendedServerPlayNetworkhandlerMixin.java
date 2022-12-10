@@ -1,12 +1,14 @@
 package org.dimdev.dimdoors.mixin;
 
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
-import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+
+import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class ExtendedServerPlayNetworkhandlerMixin implements ExtendedServerPlayNetworkHandler {

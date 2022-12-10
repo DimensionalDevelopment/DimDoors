@@ -1,11 +1,5 @@
 package org.dimdev.dimdoors.particle;
 
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.particle.client.LimboAshParticle;
-import org.dimdev.dimdoors.particle.client.MonolithParticle;
-import org.dimdev.dimdoors.particle.client.RiftParticle;
-import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
-
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.registry.Registries;
@@ -15,6 +9,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.particle.client.LimboAshParticle;
+import org.dimdev.dimdoors.particle.client.MonolithParticle;
+import org.dimdev.dimdoors.particle.client.RiftParticle;
+import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 
 public class ModParticleTypes {
 	public static final DefaultParticleType MONOLITH = FabricParticleTypes.simple(true);

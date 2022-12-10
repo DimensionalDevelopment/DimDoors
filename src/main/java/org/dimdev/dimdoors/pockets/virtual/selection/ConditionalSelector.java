@@ -1,22 +1,24 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.google.common.collect.Maps;
-import net.minecraft.resource.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.resource.ResourceManager;
+
+import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
 
 public class ConditionalSelector extends AbstractVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();

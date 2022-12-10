@@ -2,24 +2,8 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.block.RiftProvider;
-import org.dimdev.dimdoors.api.client.DefaultTransformation;
-import org.dimdev.dimdoors.api.client.Transformer;
-import org.dimdev.dimdoors.item.RiftKeyItem;
-import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
-import org.dimdev.dimdoors.rift.registry.Rift;
-import org.dimdev.dimdoors.rift.targets.EscapeTarget;
-import org.dimdev.dimdoors.api.util.EntityUtils;
-import org.dimdev.dimdoors.api.util.TeleportUtil;
-import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
-import org.dimdev.dimdoors.world.ModDimensions;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,6 +12,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
@@ -35,6 +22,20 @@ import net.minecraft.util.math.Vec3d;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.client.DefaultTransformation;
+import org.dimdev.dimdoors.api.client.Transformer;
+import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.item.RiftKeyItem;
+import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
+import org.dimdev.dimdoors.rift.registry.Rift;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);

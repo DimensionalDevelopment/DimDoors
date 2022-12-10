@@ -1,15 +1,13 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
-import static org.dimdev.dimdoors.world.decay.DecayProcessor.DecayProcessorType.SELF;
-
-import com.google.gson.JsonObject;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import org.dimdev.dimdoors.world.decay.DecayProcessor;
+
+import static org.dimdev.dimdoors.world.decay.DecayProcessor.DecayProcessorType.SELF;
 
 public class SelfDecayProcessor implements DecayProcessor {
     public static final String KEY = "self";

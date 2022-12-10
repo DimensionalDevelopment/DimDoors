@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.block.door.data.condition;
 
 import com.google.gson.JsonObject;
+
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public record InverseCondition(Condition condition) implements Condition {

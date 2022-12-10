@@ -1,13 +1,14 @@
 package org.dimdev.dimdoors.listener.pocket;
 
+import java.util.List;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 
-import java.util.List;
+import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 
 public class UseItemOnBlockCallbackListener implements UseItemOnBlockCallback {
 	@Override

@@ -1,7 +1,12 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.common.base.MoreObjects;
-import net.fabricmc.fabric.api.util.NbtType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.DoubleBlockHalf;
@@ -13,8 +18,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.fabric.api.util.NbtType;
+
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
@@ -27,9 +33,6 @@ import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	private static final Logger LOGGER = LogManager.getLogger();

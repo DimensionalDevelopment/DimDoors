@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class DatagenInitializer implements DataGeneratorEntrypoint {

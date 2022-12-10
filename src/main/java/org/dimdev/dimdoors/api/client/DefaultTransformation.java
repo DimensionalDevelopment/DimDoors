@@ -1,10 +1,12 @@
 package org.dimdev.dimdoors.api.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import org.joml.Quaternionf;
+
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
-import org.joml.Quaternionf;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 @Environment(EnvType.CLIENT)
 public enum DefaultTransformation implements Transformer {

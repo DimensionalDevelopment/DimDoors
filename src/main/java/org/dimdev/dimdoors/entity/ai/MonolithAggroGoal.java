@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.entity.ai;
 
+import java.util.EnumSet;
+
 import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
@@ -8,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.entity.stat.ModStats;
@@ -16,8 +19,6 @@ import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-
-import java.util.EnumSet;
 
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 

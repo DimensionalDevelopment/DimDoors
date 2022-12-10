@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.mixin.client;
 
-import org.dimdev.dimdoors.particle.ModParticleTypes;
-import org.dimdev.dimdoors.world.ModDimensions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

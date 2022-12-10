@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import net.minecraft.util.math.Direction;
-import org.dimdev.dimdoors.entity.MonolithEntity;
-
 import net.minecraft.client.model.ModelData;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.model.ModelPartBuilder;
@@ -16,6 +13,8 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import org.dimdev.dimdoors.entity.MonolithEntity;
 
 @Environment(EnvType.CLIENT)
 public class MonolithModel extends EntityModel<MonolithEntity> {

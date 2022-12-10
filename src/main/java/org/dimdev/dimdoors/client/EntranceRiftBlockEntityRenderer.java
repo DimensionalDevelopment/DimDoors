@@ -2,17 +2,17 @@ package org.dimdev.dimdoors.client;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+
+import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 

@@ -2,24 +2,25 @@ package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
 
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.rift.target.EntityTarget;
-import org.dimdev.dimdoors.pockets.PocketGenerator;
-import org.dimdev.dimdoors.api.util.EntityUtils;
-import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.RGBA;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.Item;
+import net.minecraft.util.math.EulerAngle;
+import net.minecraft.util.math.Vec3d;
+
+import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.RGBA;
+import org.dimdev.dimdoors.pockets.PocketGenerator;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {

@@ -1,13 +1,14 @@
 package org.dimdev.dimdoors.world.pocket.type.addon.blockbreak;
 
+import java.io.IOException;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
+
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.ContainedAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
-
-import java.io.IOException;
 
 // TODO
 public class BlockBreakRegexBlacklistAddon implements AutoSyncedAddon, ContainedAddon { //TODO

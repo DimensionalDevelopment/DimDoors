@@ -1,11 +1,15 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.function.Consumer;
+
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-
-import java.util.*;
-import java.util.function.Consumer;
 
 public interface LazyCompatibleModifier extends Modifier {
 	LinkedHashMap<ChunkPos, Queue<Consumer<Chunk>>> chunkModificationQueue = new LinkedHashMap<>();

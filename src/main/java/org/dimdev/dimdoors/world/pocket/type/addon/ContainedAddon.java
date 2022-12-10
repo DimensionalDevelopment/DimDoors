@@ -1,10 +1,11 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 
-import net.minecraft.util.Identifier;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
 import java.util.Map;
+
+import net.minecraft.util.Identifier;
+
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public interface ContainedAddon extends PocketAddon {
 	Identifier getContainerId();

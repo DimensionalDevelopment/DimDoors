@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.datagen;
 
+import java.util.function.Consumer;
+
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.advancement.AdvancementFrame;
@@ -17,13 +19,12 @@ import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.world.ModDimensions;
-
-import java.util.function.Consumer;
 
 public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey) {

@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.pockets.virtual.selection;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
+
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;

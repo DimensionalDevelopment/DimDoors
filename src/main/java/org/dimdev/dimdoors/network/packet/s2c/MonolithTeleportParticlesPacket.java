@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
+import java.io.IOException;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
-
-import java.io.IOException;
 
 public class MonolithTeleportParticlesPacket implements SimplePacket<ClientPacketListener> {
 	public static final Identifier ID = DimensionalDoors.id("monolith_tp_particles");
