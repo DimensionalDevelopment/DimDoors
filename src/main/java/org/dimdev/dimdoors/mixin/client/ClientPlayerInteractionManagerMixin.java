@@ -29,7 +29,7 @@ public abstract class ClientPlayerInteractionManagerMixin {
 	@Shadow
 	protected abstract void sendSequencedPacket(ClientWorld world, SequencedPacketCreator packetCreator);
 
-	@Inject(method = "interactBlock", cancellable = true, at = @At(value = "NEW", target = "org/apache/commons/lang3/mutable/MutableObject"))
+	@Inject(method = "interactBlock", cancellable = true, at = @At(value = "NEW", target = "org/apache/commons/lang3/mutable/MutableObject", remap = false))
 	public void useItemOnBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> info) {
 		ActionResult result = UseItemOnBlockCallback.EVENT.invoker().useItemOnBlock(player, client.world, hand, hitResult);
 		if (result == ActionResult.PASS) {
