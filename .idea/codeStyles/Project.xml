@@ -1,15 +1,14 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
     <JavaCodeStyleSettings>
-      <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="50" />
-      <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="50" />
+      <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
+      <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="999" />
       <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
         <value />
       </option>
       <option name="IMPORT_LAYOUT_TABLE">
         <value>
           <package name="java" withSubpackages="true" static="false" />
-          <emptyLine />
           <package name="javax" withSubpackages="true" static="false" />
           <emptyLine />
           <package name="" withSubpackages="true" static="false" />
@@ -18,7 +17,7 @@
           <emptyLine />
           <package name="net.fabricmc" withSubpackages="true" static="false" />
           <emptyLine />
-          <package name="net.legacyfabric" withSubpackages="true" static="false" />
+          <package name="org.dimdev.dimdoors" withSubpackages="true" static="false" />
           <emptyLine />
           <package name="" withSubpackages="true" static="true" />
         </value>

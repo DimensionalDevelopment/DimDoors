@@ -20,6 +20,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.ChunkPos;
@@ -96,19 +97,19 @@ public class ChunkGenerator extends PocketGenerator {
 		ServerWorld genWorld = DimensionalDoors.getWorld(RegistryKey.of(RegistryKeys.WORLD, dimensionID));
 		net.minecraft.world.gen.chunk.ChunkGenerator genWorldChunkGenerator = genWorld.getChunkManager().getChunkGenerator();
 
-		NoiseConfig config = NoiseConfig.create(ChunkGeneratorSettings.createMissingSettings(), world.getRegistryManager().get(Registry.NOISE_KEY), world.getSeed());
+		NoiseConfig config = NoiseConfig.create(ChunkGeneratorSettings.createMissingSettings(), world.getRegistryManager().get(RegistryKeys.NOISE_PARAMETERS).getReadOnlyWrapper(), world.getSeed());
 
 		ArrayList<Chunk> protoChunks = new ArrayList<>();
 		for (int z = 0; z < chunkSizeZ; z++) {
 			for (int x = 0; x < chunkSizeX; x++) {
-				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA, world, genWorld.getRegistryManager().get(Registry.BIOME_KEY), null);
+				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().add(x * 16, 0, z * 16)), UpgradeData.NO_UPGRADE_DATA, world, genWorld.getRegistryManager().get(RegistryKeys.BIOME), null);
 				protoChunk.setLightingProvider(genWorld.getLightingProvider());
 				protoChunks.add(protoChunk);
 			}
 		}
 		ChunkRegion protoRegion = new ChunkRegionHack(genWorld, protoChunks);//TODO Redo?
 		for (Chunk protoChunk : protoChunks) { // TODO: check wether structures are even activated
-			genWorldChunkGenerator.setStructureStarts(genWorld.getRegistryManager(), config, genWorld.getStructureAccessor().forRegion(protoRegion), protoChunk, genWorld.getStructureTemplateManager(), genWorld.getSeed());
+			genWorldChunkGenerator.setStructureStarts(genWorld.getRegistryManager(), genWorld.getChunkManager().getStructurePlacementCalculator(), genWorld.getStructureAccessor(), protoChunk, genWorld.getStructureTemplateManager());
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_STARTS);
 		}
 		for (Chunk protoChunk : protoChunks) {
@@ -116,7 +117,7 @@ public class ChunkGenerator extends PocketGenerator {
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_REFERENCES);
 		}
 		for (Chunk protoChunk : protoChunks) {
-			genWorldChunkGenerator.populateBiomes(genWorld.getRegistryManager().get(RegistryKeys.BIOME), net.minecraft.util.Util.getMainWorkerExecutor(), config, Blender.getNoBlending(), genWorld.getStructureAccessor(), protoChunk);
+			genWorldChunkGenerator.populateBiomes(Util.getMainWorkerExecutor(), config, Blender.getNoBlending(), genWorld.getStructureAccessor(), protoChunk);
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.BIOMES);
 		}
 		for (Chunk protoChunk : protoChunks) {
@@ -215,7 +216,7 @@ public class ChunkGenerator extends PocketGenerator {
 		@Override
 		public Chunk getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
 			Chunk chunk = super.getChunk(chunkX, chunkZ, leastStatus, false);
-			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA, this, this.getRegistryManager().get(Registry.BIOME_KEY)) : chunk;
+			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.NO_UPGRADE_DATA, this, this.getRegistryManager().get(RegistryKeys.BIOME)) : chunk;
 		}
 
 		// TODO: Override getSeed()
