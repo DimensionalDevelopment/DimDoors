@@ -30,6 +30,97 @@ public class BlockStateProvider extends FabricModelProvider {
 		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
 		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("oak_dimensional_door")), Blocks.OAK_DOOR);
 //		registerDoor(generator, Registry.BLOCK.get(Util.id("dungeon_door")), ModBlocks.STONE_DOOR);
+
+
+		generator.registerLog(ModBlocks.DRIFTWOOD_LOG).log(ModBlocks.DRIFTWOOD_LOG).wood(ModBlocks.DRIFTWOOD_WOOD);
+		generator.registerCubeAllModelTexturePool(ModBlocks.DRIFTWOOD_PLANKS)
+				.fence(ModBlocks.DRIFTWOOD_FENCE)
+				.fenceGate(ModBlocks.DRIFTWOOD_GATE)
+				.button(ModBlocks.DRIFTWOOD_BUTTON)
+				.slab(ModBlocks.DRIFTWOOD_SLAB)
+				.stairs(ModBlocks.DRIFTWOOD_STAIRS);
+		generator.registerDoor(ModBlocks.DRIFTWOOD_DOOR);
+		generator.registerTrapdoor(ModBlocks.DRIFTWOOD_TRAPDOOR);
+
+		generator.registerCubeAllModelTexturePool(ModBlocks.AMALGAM_BLOCK)
+				.slab(ModBlocks.AMALGAM_SLAB)
+				.stairs(ModBlocks.AMALGAM_STAIRS);
+		generator.registerDoor(ModBlocks.AMALGAM_DOOR);
+		generator.registerTrapdoor(ModBlocks.AMALGAM_TRAPDOOR);
+		generator.registerSimpleCubeAll(ModBlocks.AMALGAM_ORE);
+		generator.registerSimpleCubeAll(ModBlocks.RUST);
+
+		generator.registerSimpleCubeAll(ModBlocks.CLOD_ORE);
+		generator.registerSimpleCubeAll(ModBlocks.CLOD_BLOCK);
+
+		generator.registerCubeAllModelTexturePool(Blocks.GRAVEL)
+				.fence(ModBlocks.GRAVEL_FENCE)
+				.button(ModBlocks.GRAVEL_BUTTON)
+				.fenceGate(ModBlocks.GRAVEL_GATE)
+				.slab(ModBlocks.GRAVEL_SLAB)
+				.stairs(ModBlocks.GRAVEL_STAIRS);
+
+		generator.registerCubeAllModelTexturePool(ModBlocks.DARK_SAND)
+				.fence(ModBlocks.DARK_SAND_FENCE)
+				.button(ModBlocks.DARK_SAND_BUTTON)
+				.fenceGate(ModBlocks.DARK_SAND_GATE)
+				.slab(ModBlocks.DARK_SAND_SLAB)
+				.stairs(ModBlocks.DARK_SAND_STAIRS);
+
+		generator.registerCubeAllModelTexturePool(Blocks.CLAY)
+				.fence(ModBlocks.CLAY_FENCE)
+				.fenceGate(ModBlocks.CLAY_GATE)
+				.button(ModBlocks.CLAY_BUTTON)
+				.slab(ModBlocks.CLAY_SLAB)
+				.stairs(ModBlocks.CLAY_STAIRS);
+
+
+		generator.registerCubeAllModelTexturePool(ModBlocks.UNRAVELLED_FABRIC);
+////				.fence(ModBlocks.UNRAVELED_FENCE)
+////				.fenceGate(ModBlocks.UNRAVELED_GATE)
+//				.button(ModBlocks.UNRAVELED_BUTTON)
+//				.slab(ModBlocks.UNRAVELED_SLAB)
+//				.stairs(ModBlocks.UNRAVELED_STAIRS);
+
+		generator.registerCubeAllModelTexturePool(Blocks.MUD)
+				.fence(ModBlocks.MUD_FENCE)
+				.fenceGate(ModBlocks.MUD_GATE)
+				.button(ModBlocks.MUD_BUTTON)
+				.slab(ModBlocks.MUD_SLAB)
+				.stairs(ModBlocks.MUD_STAIRS);
+
+
+		generator.registerSimpleCubeAll(ModBlocks.GRITTY_STONE);
+
+
+
+//		gravel_fence
+//				gravel_gate
+//		gravel_button
+//				gravel_slab
+//		gravel_stairs
+//				dark_sand
+//		dark_sand_fence
+//				dark_sand_gate
+//		dark_sand_button
+//				dark_sand_slab
+//		dark_sand_stairs
+//				clay_fence
+//		clay_gate
+//				clay_button
+//		clay_slab
+//				clay_stairs
+//		mud_fence
+//				mud_gate
+//		mud_button
+//				mud_slab
+//		mud_stairs
+//				unraveled_fence
+//		unraveled_gate
+//				unraveled_button
+//		unraveled_slab
+//				unraveled_stairs
+
 	}
 
 	public void registerDoor(BlockStateModelGenerator generator, Block doorBlock, Block textureSource) {
