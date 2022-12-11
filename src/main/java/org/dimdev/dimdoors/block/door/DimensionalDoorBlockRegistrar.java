@@ -33,7 +33,7 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.listener.BlockRegistryEntryAddedListener;
 
-public class DimensionalDoorBlockRegistrar<T extends Block & DoorSoundProvider> {
+public class DimensionalDoorBlockRegistrar {
 	private static final String PREFIX = "block_ag_dim_";
 
 	private final Registry<Block> registry;

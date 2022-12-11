@@ -4,19 +4,21 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
+import com.mojang.serialization.Lifecycle;
+
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public abstract class RegistryVertex {
-	public static final Registry<RegistryVertexType> registry = FabricRegistryBuilder.createSimple(RegistryVertex.RegistryVertexType.class, DimensionalDoors.id("registry_vertex")).attribute(RegistryAttribute.MODDED).buildAndRegister();
+	public static final Registry<RegistryVertexType<?>> registry = FabricRegistryBuilder.from(new SimpleRegistry<RegistryVertexType<? extends RegistryVertex>>(RegistryKey.ofRegistry(DimensionalDoors.id("registry_vertex")), Lifecycle.stable())).buildAndRegister();
 
 	private RegistryKey<World> world; // The dimension to store this object in. Links are stored in both registries.
 
@@ -74,6 +76,9 @@ public abstract class RegistryVertex {
 		RegistryVertexType<Rift> RIFT = register("rift", Rift::fromNbt, Rift::toNbt);
 		RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer::fromNbt, PocketEntrancePointer::toNbt);
 		RegistryVertexType<RiftPlaceholder> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder::fromNbt, RiftPlaceholder::toNbt);
+
+		static void register() {
+		}
 
 		T fromNbt(NbtCompound nbt);
 

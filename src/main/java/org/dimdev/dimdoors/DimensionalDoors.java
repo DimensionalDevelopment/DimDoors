@@ -60,6 +60,7 @@ import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
+import org.dimdev.dimdoors.rift.registry.RegistryVertex;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
@@ -159,6 +160,7 @@ public class DimensionalDoors implements ModInitializer {
 		Targets.registerDefaultTargets();
 		VirtualTarget.VirtualTargetType.register();
 		ImplementedVirtualPocket.VirtualPocketType.register();
+		RegistryVertex.RegistryVertexType.register();
 		Modifier.ModifierType.register();
 		PocketGenerator.PocketGeneratorType.register();
 		AbstractPocket.AbstractPocketType.register();
@@ -192,5 +194,7 @@ public class DimensionalDoors implements ModInitializer {
 
 		// placing doors on rifts
 		UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());
+
+
 	}
 }

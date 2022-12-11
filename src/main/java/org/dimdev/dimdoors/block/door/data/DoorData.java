@@ -19,6 +19,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -36,13 +37,13 @@ import org.dimdev.dimdoors.item.ItemExtensions;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public final class DoorData implements AutoCloseable {
-	private static final Map<String, ItemGroup> itemGroupCache = new HashMap<>();
+	private static final Map<Identifier, ItemGroup> itemGroupCache = new HashMap<Identifier, ItemGroup>();
 	public static final Set<Block> PARENT_BLOCKS = new HashSet<>();
 	public static final Set<Item> PARENT_ITEMS = new HashSet<>();
 	public static final List<Block> DOORS = new ArrayList<>();
 	private final String id;
 	private final UnbakedItemSettings itemSettings;
-	private final Optional<String> itemGroup;
+	private final Optional<Identifier> itemGroup;
 	private final UnbakedBlockSettings blockSettings;
 	private final RiftDataList riftDataList;
 	private final boolean hasToolTip;
@@ -52,7 +53,7 @@ public final class DoorData implements AutoCloseable {
 		try {
 			String id = json.get("id").getAsString();
 			UnbakedItemSettings itemSettings = UnbakedItemSettings.fromJson(json.getAsJsonObject("itemSettings"));
-			Optional<String> itemGroup = Optional.ofNullable(json.getAsJsonPrimitive("itemGroup")).map(JsonPrimitive::getAsString);
+			Optional<Identifier> itemGroup = Optional.ofNullable(json.getAsJsonPrimitive("itemGroup")).map(JsonPrimitive::getAsString).map(Identifier::new);
 			UnbakedBlockSettings blockSettings = UnbakedBlockSettings.fromJson(json.getAsJsonObject("blockSettings"));
 			RiftDataList riftDataList = RiftDataList.fromJson(json.getAsJsonArray("riftData"));
 			boolean hasToolTip = json.has("hasToolTip") && json.getAsJsonPrimitive("hasToolTip").getAsBoolean();
@@ -70,7 +71,7 @@ public final class DoorData implements AutoCloseable {
 		this(id, itemSettings, Optional.empty(), blockSettings, riftDataList, hasToolTip);
 	}
 
-	public DoorData(String id, UnbakedItemSettings itemSettings, Optional<String> itemGroup, UnbakedBlockSettings blockSettings, RiftDataList riftDataList, boolean hasToolTip) {
+	public DoorData(String id, UnbakedItemSettings itemSettings, Optional<Identifier> itemGroup, UnbakedBlockSettings blockSettings, RiftDataList riftDataList, boolean hasToolTip) {
 		this.id = id;
 		this.itemSettings = itemSettings;
 		this.itemGroup = itemGroup;
@@ -82,7 +83,7 @@ public final class DoorData implements AutoCloseable {
 	public JsonObject toJson(JsonObject json) {
 		json.addProperty("id", this.id);
 		json.add("itemSettings", this.itemSettings.toJson(new JsonObject()));
-		itemGroup.ifPresent(s -> json.add("itemGroup", new JsonPrimitive(s)));
+		itemGroup.ifPresent(s -> json.add("itemGroup", new JsonPrimitive(s.toString())));
 		json.add("blockSettings", this.blockSettings.toJson(new JsonObject()));
 		json.add("riftData", this.riftDataList.toJson());
 		json.addProperty("hasToolTip", this.hasToolTip);
@@ -136,21 +137,21 @@ public final class DoorData implements AutoCloseable {
 			itemSettings.fireproof();
 			return false;
 		});
-//		ItemGroup group = null;
-//		if (itemGroup.isPresent()) { //TODO: Figure this out
-//			String groupString = itemGroup.get();
-//			if (itemGroupCache.containsKey(groupString)) {
-//				group = itemGroupCache.get(groupString);
-//			} else {
-//				for (ItemGroup g : ItemGroup.GROUPS) {
-//					if (((ItemGroupAccessor) g).getId().equals(groupString)) {
-//						group = g;
-//						itemGroupCache.put(groupString, group);
-//						break;
-//					}
-//				}
-//			}
-//		}
+		ItemGroup group = null;
+		if (itemGroup.isPresent()) { //TODO: Figure this out
+			Identifier groupString = itemGroup.get();
+			if (itemGroupCache.containsKey(groupString)) {
+				group = itemGroupCache.get(groupString);
+			} else {
+				for (ItemGroup g : ItemGroups.getGroups()) {
+					if ((g).getId().equals(groupString)) {
+						group = g;
+						itemGroupCache.put(groupString, group);
+						break;
+					}
+				}
+			}
+		}
 //		itemSettings.group(group != null ? group : ModItems.DIMENSIONAL_DOORS);
 
 		Block parentBlock = Registries.BLOCK.get(new Identifier(this.blockSettings.parent));
