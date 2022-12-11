@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.mixin;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -41,15 +42,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	private static final int CHUNK_SIZES = 25;
 	private static final int POSITION_AWAY = 50;
 	private static final float RANDOM_LIQUID_CHANCE = 0.7F;
-	Random random = Random.create();
+	@Unique
+	Random dimdoors_random = Random.create();
 
 	public ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
 	}
 
-	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "tick", at = @At("HEAD"))
 	public void playerTickMixin(CallbackInfo ci) {
-		if (random.nextFloat() <= RANDOM_ACTION_CHANCE) {
+		if (dimdoors_random.nextFloat() <= RANDOM_ACTION_CHANCE) {
 			if(ModDimensions.isLimboDimension(((PlayerEntity)(Object)(this)).getEntityWorld())) {
 				tryMakingLimboLikeOtherDimensions((PlayerEntity)(Object)this);
 			}
@@ -92,7 +94,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 
 	private void makeSpotOfLiquid(World world, BlockPos pos, BlockState state, int range) {
 
-		BlockPos.iterateOutwards(pos, random.nextInt(range), random.nextInt(range), random.nextInt(range)).forEach( (blockPos -> {
+		BlockPos.iterateOutwards(pos, dimdoors_random.nextInt(range), dimdoors_random.nextInt(range), dimdoors_random.nextInt(range)).forEach( (blockPos -> {
 			if(isValidBlockToReplace(world, blockPos)) {
 				world.setBlockState(blockPos, state);
 			}
@@ -118,10 +120,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 		 */
 	}
 	private void tryMakingLimboLikeOtherDimensions(PlayerEntity player) {
-		if(random.nextFloat() > CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS) {
+		if(dimdoors_random.nextFloat() > CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS) {
 			return;
 		}
-		switch (random.nextInt(3)) {
+		switch (dimdoors_random.nextInt(3)) {
 			case 0 : makeLimboLikeOverworld(player); break;
 			case 1 : makeLimboLikeNether(player); break;
 			case 2 : makeLimboLikeEnd(player); break;
@@ -136,7 +138,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 				this.incrementStat(ModStats.DEATHS_IN_POCKETS);
 			}
 			this.incrementStat(ModStats.TIMES_SENT_TO_LIMBO);
-			TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 384);
+			TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 512);
 			//noinspection ConstantConditions
 			LimboEntranceSource.ofDamageSource(source).broadcast((PlayerEntity) (Object) this, this.getServer());
 		}

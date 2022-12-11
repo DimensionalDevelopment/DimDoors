@@ -31,7 +31,6 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
-import org.dimdev.dimdoors.listener.BlockRegistryEntryAddedListener;
 
 public class DimensionalDoorBlockRegistrar {
 	private static final String PREFIX = "block_ag_dim_";
@@ -46,7 +45,7 @@ public class DimensionalDoorBlockRegistrar {
 		this.itemRegistrar = itemRegistrar;
 
 		init();
-		RegistryEntryAddedCallback.event(registry).register(new BlockRegistryEntryAddedListener(this));
+		RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> handleEntry(id, object));
 	}
 
 	private void init() {

@@ -41,7 +41,6 @@ import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
-import org.dimdev.dimdoors.listener.ItemRegistryEntryAddedListener;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
 
 public class DimensionalDoorItemRegistrar {
@@ -58,7 +57,7 @@ public class DimensionalDoorItemRegistrar {
 		this.registry = registry;
 
 		init();
-		RegistryEntryAddedCallback.event(registry).register(new ItemRegistryEntryAddedListener(this));
+		RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> handleEntry(id, object));
 	}
 
 	public boolean isRegistered(Item item) {

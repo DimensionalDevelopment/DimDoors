@@ -194,7 +194,5 @@ public class DimensionalDoors implements ModInitializer {
 
 		// placing doors on rifts
 		UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());
-
-
 	}
 }
