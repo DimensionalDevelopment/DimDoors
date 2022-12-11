@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.item;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.dimdev.matrix.Matrix;
 import org.dimdev.matrix.Registrar;
@@ -20,9 +22,12 @@ import net.minecraft.item.SpawnEggItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
+import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
@@ -245,6 +250,8 @@ public final class ModItems {
 	@RegistryEntry("mud_stairs") public static final Item MUD_STAIRS = create(ModBlocks.MUD_STAIRS);
 	@RegistryEntry("unraveled_spike") public static final Item UNRAVELED_SPIKE = create(ModBlocks.UNRAVELED_SPIKE);
 
+	public static final Set<Item> DOOR_ITEMS = new HashSet<>();
+
 	public static final ItemGroup DIMENSIONAL_DOORS = FabricItemGroup.builder(id("dimensional_doors"))
 			.icon(() -> new ItemStack(ModItems.RIFT_BLADE))
 			.entries((enabledFeatures, entries, operatorEnabled) -> {
@@ -256,6 +263,9 @@ public final class ModItems {
 							e.printStackTrace();
 						}
 					}
+				}
+				for (Item item : DOOR_ITEMS) {
+					entries.add(item);
 				}
 			})
 			.build();
@@ -277,6 +287,20 @@ public final class ModItems {
 	}
 
 	public static void init() {
+		for (Item item : Registries.ITEM) {
+			if (item instanceof BlockItem blockItem) {
+				if (blockItem.getBlock() instanceof DimensionalDoorBlock) {
+					DOOR_ITEMS.add(item);
+				}
+			}
+		}
+		RegistryEntryAddedCallback.event(Registries.ITEM).register((rawId, id, item) -> {
+			if (item instanceof BlockItem blockItem) {
+				if (blockItem.getBlock() instanceof DimensionalDoorBlock) {
+					DOOR_ITEMS.add(item);
+				}
+			}
+		});
 		Matrix.register(ModItems.class, REGISTRY);
 	}
 }

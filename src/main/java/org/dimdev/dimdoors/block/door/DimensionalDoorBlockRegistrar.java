@@ -45,7 +45,7 @@ public class DimensionalDoorBlockRegistrar {
 		this.registry = registry;
 		this.itemRegistrar = itemRegistrar;
 
-//		init();
+		init();
 		RegistryEntryAddedCallback.event(registry).register(new BlockRegistryEntryAddedListener(this));
 	}
 

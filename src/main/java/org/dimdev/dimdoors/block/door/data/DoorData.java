@@ -137,21 +137,21 @@ public final class DoorData implements AutoCloseable {
 			itemSettings.fireproof();
 			return false;
 		});
-		ItemGroup group = null;
-		if (itemGroup.isPresent()) { //TODO: Figure this out
-			Identifier groupString = itemGroup.get();
-			if (itemGroupCache.containsKey(groupString)) {
-				group = itemGroupCache.get(groupString);
-			} else {
-				for (ItemGroup g : ItemGroups.getGroups()) {
-					if ((g).getId().equals(groupString)) {
-						group = g;
-						itemGroupCache.put(groupString, group);
-						break;
-					}
-				}
-			}
-		}
+//		ItemGroup group = null;
+//		if (itemGroup.isPresent()) { //TODO: Figure this out
+//			Identifier groupString = itemGroup.get();
+//			if (itemGroupCache.containsKey(groupString)) {
+//				group = itemGroupCache.get(groupString);
+//			} else {
+//				for (ItemGroup g : ItemGroups.getGroups()) {
+//					if ((g).getId().equals(groupString)) {
+//						group = g;
+//						itemGroupCache.put(groupString, group);
+//						break;
+//					}
+//				}
+//			}
+//		}
 //		itemSettings.group(group != null ? group : ModItems.DIMENSIONAL_DOORS);
 
 		Block parentBlock = Registries.BLOCK.get(new Identifier(this.blockSettings.parent));
