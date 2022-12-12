@@ -1,17 +1,22 @@
 package org.dimdev.dimdoors.world.decay.predicates;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import com.google.common.collect.Streams;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
-import java.util.Set;
+import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 public class SimpleDecayPredicate implements DecayPredicate {
     public static final String KEY = "simple";
@@ -56,12 +61,12 @@ public class SimpleDecayPredicate implements DecayPredicate {
     public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
         BlockState state = world.getBlockState(pos);
 
-        return state.isIn(tag) || state.getBlock() == block;
+        return state.getBlock() == block || state.isIn(tag);
     }
 
 	@Override
 	public Set<Block> constructApplicableBlocks() {
-		return Set.of(block);
+		return block != null ? Set.of(block) : Streams.stream(Registries.BLOCK.iterateEntries(tag)).map(RegistryEntry::value).collect(Collectors.toSet());
 	}
 
 	public static Builder builder() {

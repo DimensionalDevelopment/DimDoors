@@ -99,7 +99,7 @@ public class ResourceUtil {
 	}
 
 	public static  <T, M extends Collection<T>> CompletableFuture<M> loadResourcePathToCollection(ResourceManager manager, String startingPath, String extension, M collection, BiFunction<InputStream, Identifier, T> reader) {
-		Map<Identifier, Resource> ids = manager.findResources(startingPath, str -> str.getNamespace().endsWith(extension));
+		Map<Identifier, Resource> ids = manager.findResources(startingPath, str -> str.getPath().endsWith(extension));
 		return CompletableFuture.supplyAsync(() -> {
 			collection.addAll(ids.entrySet().parallelStream().unordered().map(id -> {
 				try {

@@ -27,7 +27,6 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
-import org.dimdev.dimdoors.block.door.data.DoorData;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
@@ -196,7 +195,7 @@ public final class ModItems {
 
 	@RegistryEntry("garment_of_reality") public static final Item GARMENT_OF_REALITY = create(new Item(new Item.Settings()));
 
-	@RegistryEntry("reality_sponge") public static final Item REALITY_SPONGE = create(new Item(new Item.Settings()));
+	@RegistryEntry("reality_sponge") public static final Item REALITY_SPONGE = create(ModBlocks.REALITY_SPONGE);
 
 	@RegistryEntry("liminal_lint") public static final Item LIMINAL_LINT = create(new Item(new Item.Settings()));
 
@@ -249,7 +248,11 @@ public final class ModItems {
 	@RegistryEntry("mud_slab") public static final Item MUD_SLAB = create(ModBlocks.MUD_SLAB);
 	@RegistryEntry("mud_stairs") public static final Item MUD_STAIRS = create(ModBlocks.MUD_STAIRS);
 	@RegistryEntry("unraveled_spike") public static final Item UNRAVELED_SPIKE = create(ModBlocks.UNRAVELED_SPIKE);
-
+	@RegistryEntry("unraveled_fence") public static final Item UNRAVELED_FENCE = create(ModBlocks.UNRAVELED_FENCE);
+	@RegistryEntry("unraveled_gate") public static final Item UNRAVELED_GATE = create(ModBlocks.UNRAVELED_GATE);
+	@RegistryEntry("unraveled_button") public static final Item UNRAVELED_BUTTON = create(ModBlocks.UNRAVELED_BUTTON);
+	@RegistryEntry("unraveled_slab") public static final Item UNRAVELED_SLAB = create(ModBlocks.UNRAVELED_SLAB);
+	@RegistryEntry("unraveled_stairs") public static final Item UNRAVELED_STAIRS = create(ModBlocks.UNRAVELED_STAIRS);
 	public static final Set<Item> DOOR_ITEMS = new HashSet<>();
 
 	public static final ItemGroup DIMENSIONAL_DOORS = FabricItemGroup.builder(id("dimensional_doors"))

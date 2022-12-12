@@ -41,6 +41,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 				Blocks.INFESTED_CRACKED_STONE_BRICKS,
 				Blocks.INFESTED_CHISELED_STONE_BRICKS);
 		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_SOLID_STATIC).add(
+				Blocks.BEDROCK,
 				Blocks.END_PORTAL_FRAME,
 				Blocks.COMMAND_BLOCK,
 				Blocks.CHAIN_COMMAND_BLOCK,

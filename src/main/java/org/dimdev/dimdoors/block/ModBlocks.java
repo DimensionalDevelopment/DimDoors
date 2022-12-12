@@ -49,7 +49,7 @@ import static net.minecraft.block.Blocks.WATER;
 public final class ModBlocks {
 	public static final Map<DyeColor, Block> FABRIC_BLOCKS = new HashMap<>();
 
-    private static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
+	private static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
 
 	@RegistryEntry("stone_player") public static final Block STONE_PLAYER = register(new Block(FabricBlockSettings.of(Material.STONE).strength(0.5F).nonOpaque()));
 
@@ -148,6 +148,9 @@ public final class ModBlocks {
 	@RegistryEntry("solid_static") public static final Block SOLID_STATIC = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE).strength(7, 25).ticksRandomly().requiresTool().sounds(BlockSoundGroup.SAND)));
 
 	@RegistryEntry("tesselating_loom") public static final Block TESSELATING_LOOM = register(new TesselatingLoomBlock(FabricBlockSettings.copy(Blocks.LOOM)));
+
+	@RegistryEntry("reality_sponge")
+	public static final Block REALITY_SPONGE = new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS);
 
 	//Decay graph filler.
 	@RegistryEntry("driftwood_wood") public static final Block DRIFTWOOD_WOOD = new PillarBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F).sounds(BlockSoundGroup.WOOD));

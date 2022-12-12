@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.item.ModItems;
 
 public class BlockStateProvider extends FabricModelProvider {
 	public BlockStateProvider(FabricDataOutput dataGenerator) {
@@ -75,12 +76,12 @@ public class BlockStateProvider extends FabricModelProvider {
 				.stairs(ModBlocks.CLAY_STAIRS);
 
 
-		generator.registerCubeAllModelTexturePool(ModBlocks.UNRAVELLED_FABRIC);
-////				.fence(ModBlocks.UNRAVELED_FENCE)
-////				.fenceGate(ModBlocks.UNRAVELED_GATE)
-//				.button(ModBlocks.UNRAVELED_BUTTON)
-//				.slab(ModBlocks.UNRAVELED_SLAB)
-//				.stairs(ModBlocks.UNRAVELED_STAIRS);
+	generator.registerCubeAllModelTexturePool(ModBlocks.UNRAVELLED_FABRIC)
+				.fence(ModBlocks.UNRAVELED_FENCE)
+				.fenceGate(ModBlocks.UNRAVELED_GATE)
+				.button(ModBlocks.UNRAVELED_BUTTON)
+				.slab(ModBlocks.UNRAVELED_SLAB)
+				.stairs(ModBlocks.UNRAVELED_STAIRS);
 
 		generator.registerCubeAllModelTexturePool(Blocks.MUD)
 				.fence(ModBlocks.MUD_FENCE)
@@ -92,34 +93,6 @@ public class BlockStateProvider extends FabricModelProvider {
 
 		generator.registerSimpleCubeAll(ModBlocks.GRITTY_STONE);
 
-
-
-//		gravel_fence
-//				gravel_gate
-//		gravel_button
-//				gravel_slab
-//		gravel_stairs
-//				dark_sand
-//		dark_sand_fence
-//				dark_sand_gate
-//		dark_sand_button
-//				dark_sand_slab
-//		dark_sand_stairs
-//				clay_fence
-//		clay_gate
-//				clay_button
-//		clay_slab
-//				clay_stairs
-//		mud_fence
-//				mud_gate
-//		mud_button
-//				mud_slab
-//		mud_stairs
-//				unraveled_fence
-//		unraveled_gate
-//				unraveled_button
-//		unraveled_slab
-//				unraveled_stairs
 
 	}
 
@@ -139,6 +112,14 @@ public class BlockStateProvider extends FabricModelProvider {
 
 	@Override
 	public void generateItemModels(ItemModelGenerator itemModelGenerator) {
+		itemModelGenerator.register(ModItems.FUZZY_FIREBALL, Models.GENERATED);
+		itemModelGenerator.register(ModItems.FABRIC_OF_FINALITY, Models.GENERATED);
+		itemModelGenerator.register(ModItems.GARMENT_OF_REALITY, Models.GENERATED);
+		itemModelGenerator.register(ModItems.LIMINAL_LINT, Models.GENERATED);
+		itemModelGenerator.register(ModItems.ENDURING_FIBERS, Models.GENERATED);
+		itemModelGenerator.register(ModItems.RIFT_PEARL, Models.GENERATED);
+		itemModelGenerator.register(ModItems.AMALGAM_LUMP, Models.GENERATED);
+		itemModelGenerator.register(ModItems.CLOD, Models.GENERATED);
 
 	}
 }

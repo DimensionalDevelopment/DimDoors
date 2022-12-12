@@ -70,7 +70,7 @@ public final class LimboDecay {
 	/**
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
-	private static void decayBlock(ServerWorld world, BlockPos pos, BlockState origin) {
+	public static void decayBlock(ServerWorld world, BlockPos pos, BlockState origin) {
 		BlockState target = world.getBlockState(pos);
 
 		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(target.getBlock());
