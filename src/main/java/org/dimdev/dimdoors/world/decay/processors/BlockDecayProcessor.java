@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.TallPlantBlock;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Property;
@@ -17,16 +18,16 @@ import net.minecraft.world.World;
 
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
-public class SimpleDecayProcesor implements DecayProcessor {
-    public static final String KEY = "simple";
+public class BlockDecayProcessor implements DecayProcessor {
+    public static final String KEY = "block";
 
     protected Block block;
 
     protected int entropy;
 
-    public SimpleDecayProcesor() {}
+    public BlockDecayProcessor() {}
 
-    protected SimpleDecayProcesor(Block block, int entropy) {
+    protected BlockDecayProcessor(Block block, int entropy) {
         this.block = block;
         this.entropy = entropy;
     }
@@ -57,7 +58,7 @@ public class SimpleDecayProcesor implements DecayProcessor {
     }
 
     @Override
-    public int process(World world, BlockPos pos, BlockState origin, BlockState target) {
+    public int process(World world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid) {
     	BlockState newState = block.getDefaultState();
 
 		if(target.getBlock() instanceof TallPlantBlock) pos = target.get(TallPlantBlock.HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos;
@@ -74,26 +75,26 @@ public class SimpleDecayProcesor implements DecayProcessor {
 		return to.with(property, from.get(property));
 	}
 
-    public static SimpleDecayProcesor.Builder builder() {
-        return new SimpleDecayProcesor.Builder();
+    public static BlockDecayProcessor.Builder builder() {
+        return new BlockDecayProcessor.Builder();
     }
 
     public static class Builder {
         private Block block = Blocks.AIR;
         private int entropy;
 
-        public SimpleDecayProcesor.Builder block(Block block) {
+        public BlockDecayProcessor.Builder block(Block block) {
             this.block = block;
             return this;
         }
 
-        public SimpleDecayProcesor.Builder entropy(int entropy) {
+        public BlockDecayProcessor.Builder entropy(int entropy) {
             this.entropy = entropy;
             return this;
         }
 
-        public SimpleDecayProcesor create() {
-            return new SimpleDecayProcesor(block, entropy);
+        public BlockDecayProcessor create() {
+            return new BlockDecayProcessor(block, entropy);
         }
     }
 }
