@@ -7,6 +7,7 @@ import com.google.common.collect.Streams;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 public class SimpleDecayPredicate implements DecayPredicate {
-    public static final String KEY = "simple";
+    public static final String KEY = "block";
 
     private Block block;
 	private TagKey<Block> tag;
@@ -58,10 +59,8 @@ public class SimpleDecayPredicate implements DecayPredicate {
     }
 
     @Override
-    public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
-        BlockState state = world.getBlockState(pos);
-
-        return state.getBlock() == block || state.isIn(tag);
+    public boolean test(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+        return targetBlock.getBlock() == block || targetBlock.isIn(tag);
     }
 
 	@Override

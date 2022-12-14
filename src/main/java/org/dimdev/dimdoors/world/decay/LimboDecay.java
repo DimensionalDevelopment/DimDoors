@@ -16,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.predicate.entity.EntityPredicates;
@@ -71,17 +73,20 @@ public final class LimboDecay {
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
 	public static void decayBlock(ServerWorld world, BlockPos pos, BlockState origin) {
-		BlockState target = world.getBlockState(pos);
+		BlockState targetState = world.getBlockState(pos);
+		FluidState fluidState = world.getFluidState(pos);
 
-		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(target.getBlock());
+		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(targetState.getBlock());
 
-		if(patterns == null || patterns.isEmpty()) {
+		if(patterns.isEmpty()) patterns = DecayLoader.getInstance().getPatterns(fluidState.getFluid());
+
+		if(patterns.isEmpty()) {
 			return;
 		}
 
 
 		for(DecayPattern pattern : patterns) {
-			if (!pattern.test(world, pos, origin, target)) {
+			if (!pattern.test(world, pos, origin, targetState, fluidState)) {
 				continue;
 			}
 			world.getPlayers(EntityPredicates.maxDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
@@ -115,7 +120,8 @@ public final class LimboDecay {
 	public static class DecayLoader implements SimpleSynchronousResourceReloadListener {
 		private static final Logger LOGGER = LogManager.getLogger();
 		private static final DecayLoader INSTANCE = new DecayLoader();
-		private final Map<Block, List<DecayPattern>> patterns = new HashMap();
+		private final Map<Block, List<DecayPattern>> blockPatterns = new HashMap<>();
+		private final Map<Fluid, List<DecayPattern>> fluidPatterns = new HashMap<>();
 
 		private DecayLoader() {
 		}
@@ -126,12 +132,17 @@ public final class LimboDecay {
 
 		@Override
 		public void reload(ResourceManager manager) {
-			patterns.clear();
+			blockPatterns.clear();
 			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.NBT_READER.andThenReader(this::loadPattern));
 			for (DecayPattern pattern : futurePatternList.join()) {
 				for (Block block : pattern.constructApplicableBlocks()) {
-					patterns.computeIfAbsent(block, (b) -> new ArrayList<>());
-					patterns.get(block).add(pattern);
+					blockPatterns.computeIfAbsent(block, (b) -> new ArrayList<>());
+					blockPatterns.get(block).add(pattern);
+				}
+
+				for (Fluid fluid : pattern.constructApplicableFluids()) {
+					fluidPatterns.computeIfAbsent(fluid, (b) -> new ArrayList<>());
+					fluidPatterns.get(fluid).add(pattern);
 				}
 			}
 		}
@@ -141,7 +152,11 @@ public final class LimboDecay {
 		}
 
 		public Collection<DecayPattern> getPatterns(Block block) {
-			return patterns.get(block);
+			return blockPatterns.getOrDefault(block, new ArrayList<>());
+		}
+
+		public Collection<DecayPattern> getPatterns(Fluid fluid) {
+			return fluidPatterns.getOrDefault(fluid, new ArrayList<>());
 		}
 
 		@Override
@@ -169,13 +184,14 @@ public final class LimboDecay {
 		}
 
 		public void process(ServerWorld world) {
-			BlockState target = world.getBlockState(pos);
-			if (world.isChunkLoaded(pos) && processor.test(world, pos, origin, target)) {
+			BlockState targetBlock = world.getBlockState(pos);
+			FluidState targetFluid = world.getFluidState(pos);
+			if (world.isChunkLoaded(pos) && processor.test(world, pos, origin, targetBlock, targetFluid)) {
 				world.getPlayers(EntityPredicates.maxDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
 					ExtendedServerPlayNetworkHandler.get(player.networkHandler).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, -1));
 				});
-				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), target.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 0.5f, 1f);
-				processor.process(world, pos, origin, target);
+				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), targetBlock.getSoundGroup().getBreakSound(), SoundCategory.BLOCKS, 0.5f, 1f);
+				processor.process(world, pos, origin, targetBlock, targetFluid);
 			}
 		}
 	}

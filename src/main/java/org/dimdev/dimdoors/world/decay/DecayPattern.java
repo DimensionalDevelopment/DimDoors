@@ -4,6 +4,8 @@ import java.util.Set;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -32,16 +34,20 @@ public class DecayPattern {
         return DecayPattern.builder().predicate(predicate).processor(processor).create();
     }
 
-    public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
-        return predicate.test(world, pos, origin, target);
+    public boolean test(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+        return predicate.test(world, pos, origin, targetBlock, targetFluid);
     }
 
-    public void process(World world, BlockPos pos, BlockState origin, BlockState target) {
-        ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos, origin, target));
+    public void process(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+        ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos, origin, targetBlock, targetFluid));
     }
 
 	public Set<Block> constructApplicableBlocks() {
 		return predicate.constructApplicableBlocks();
+	}
+
+	public Set<Fluid> constructApplicableFluids() {
+		return predicate.constructApplicableFluids();
 	}
 
     public static DecayPattern.Builder builder() {

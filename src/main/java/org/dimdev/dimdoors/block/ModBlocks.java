@@ -208,6 +208,10 @@ public final class ModBlocks {
 	@RegistryEntry("unraveled_slab") public static final Block UNRAVELED_SLAB = createSlab(UNRAVELLED_FABRIC);
 	@RegistryEntry("unraveled_stairs") public static final Block UNRAVELED_STAIRS = createStairs(UNRAVELLED_FABRIC);
 
+	@RegistryEntry("deepslate_slab") public static final Block DEEPSLATE_SLAB = createSlab(Blocks.DEEPSLATE);
+	@RegistryEntry("deepslate_stairs") public static final Block DEEPSLATE_STAIRS = createStairs(Blocks.DEEPSLATE);
+	@RegistryEntry("deepslate_wall") public static final Block DEEPSLATE_WALL = createWall(Blocks.DEEPSLATE);
+
 	@RegistryEntry("unraveled_spike") public static final Block UNRAVELED_SPIKE = new Block(AbstractBlock.Settings.copy(UNRAVELLED_FABRIC).luminance(state -> 0));
 	@RegistryEntry("gritty_stone") public static final Block GRITTY_STONE = new Block(AbstractBlock.Settings.copy(STONE));
 	@RegistryEntry("leak") public static final Block LEAK = new Block(AbstractBlock.Settings.copy(WATER));
