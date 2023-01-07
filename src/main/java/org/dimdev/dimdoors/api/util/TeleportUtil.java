@@ -15,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
+import net.minecraft.world.border.WorldBorder;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
@@ -33,12 +34,34 @@ public final class TeleportUtil {
 		return teleport(entity, world, pos, new EulerAngle(entity.getPitch(), yaw, 0), entity.getVelocity());
 	}
 
+	public static Vec3d clampToWorldBorder(Vec3d original, WorldBorder border) {
+		double newX = original.x;
+		double newZ = original.z;
+		double size = border.getSize() - 1;
+		double northBound = border.getBoundNorth() + 1;
+		double southBound = border.getBoundSouth() - 1;
+		double westBound = border.getBoundWest() + 1;
+		double eastBound = border.getBoundEast() - 1;
+		if (newZ < northBound) {
+			newZ = northBound + Math.abs(newZ % size) + 1;
+		} else if (newZ > southBound) {
+			newZ = southBound - Math.abs(newZ % size) - 1;
+		}
+		if (newX < westBound) {
+			newX = westBound + Math.abs(newX % size) + 1;
+		} else if (newX > eastBound) {
+			newX = eastBound - Math.abs(newX % size) - 1;
+		}
+		return new Vec3d(newX, original.y, newZ);
+	}
+
 	public static  <E extends Entity> E teleport(E entity, World world, Vec3d pos, EulerAngle angle, Vec3d velocity) {
 		if (world.isClient) {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
 
 		// Some insurance
+		pos = clampToWorldBorder(pos, world.getWorldBorder());
 		float yaw = MathHelper.wrapDegrees(angle.getYaw());
 		float pitch = MathHelper.clamp(MathHelper.wrapDegrees(angle.getPitch()), -90.0F, 90.0F);
 
