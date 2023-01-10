@@ -1,4 +1,4 @@
-5.0.1
-- Fixed invalid file on curseforge
-- Modded gold ingots can be used to craft gold doors
-- Removing a rift has a chance to drop some world thread
+5.1.0
+- Update to 1.19.3
+- Add more variants of blocks (only creative mode for now)
+- Fix bug with players being teleported outside the world border in limbo
