@@ -34,6 +34,7 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_DARK_SAND_BUTTON = of("decay_dark_sand_button");
 	public static final TagKey<Block> DECAY_DARK_SAND_SLAB = of("decay_dark_sand_slab");
 	public static final TagKey<Block> DECAY_DARK_SAND_STAIRS = of("decay_dark_sand_stairs");
+	public static final TagKey<Block> DECAY_DARK_SAND_WALL = of("decay_dark_sand_wall");
 
 	public static final TagKey<Block> DECAY_TO_AMALGAM = of("decay_to_amalgam");
 	public static final TagKey<Block> DECAY_TO_DIRT = of("decay_to_dirt");
@@ -51,6 +52,18 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_TO_AMALGAM_ORE = of("decay_to_amalgam_ore");
 	public static final TagKey<Block> DECAY_TO_CLOD_ORE = of("decay_to_clod_ore");
 	public static final TagKey<Block> DECAY_TO_COBBLESTONE = of("decay_to_cobblestone");
+	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_DOOR = of("decay_to_driftwood_door");
+	public static final TagKey<Block> DECAY_TO_MUD = of("decay_to_mud");
+	public static final TagKey<Block> DECAY_TO_MUD_FENCE = of("decay_to_mud_fence");
+	public static final TagKey<Block> DECAY_TO_MUD_GATE = of("decay_to_mud_gate");
+	public static final TagKey<Block> DECAY_TO_MUD_BUTTON = of("decay_to_mud_button");
+	public static final TagKey<Block> DECAY_TO_MUD_SLAB = of("decay_to_mud_slab");
+	public static final TagKey<Block> DECAY_TO_MUD_STAIRS = of("decay_to_mud_stairs");
+	public static final TagKey<Block> DECAY_TO_COBBLESTONE_SLAB = of("decay_to_cobblestone_slab");
+	public static final TagKey<Block> DECAY_TO_COBBLESTONE_STAIRS = of("decay_to_cobblestone_stairs");
+	public static final TagKey<Block> DECAY_TO_COBBLESTONE_WALL = of("decay_to_cobblestone_wall");
+	public static final TagKey<Block> DECAY_TO_RED_SANDSTONE = of("decay_to_red_sandstone");
+	public static final TagKey<Block> DECAY_TO_SANDSTONE = of("decay_to_sandstone");
 
 	private static TagKey<Block> of(String id) {
 		return TagKey.of(RegistryKeys.BLOCK, DimensionalDoors.id(id));

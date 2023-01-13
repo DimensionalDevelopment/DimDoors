@@ -23,7 +23,11 @@ import net.minecraft.block.PillarBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TrapdoorBlock;
+//<<<<<<< HEAD
 import net.minecraft.block.WoodType;
+//=======
+import net.minecraft.block.WallBlock;
+//>>>>>>> 9ba9cc82 (Pushed current datagen stuff I forgot to push.)
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.BlockSoundGroup;
@@ -181,6 +185,7 @@ public final class ModBlocks {
 	@RegistryEntry("gravel_button") public static final Block GRAVEL_BUTTON = createButton(GRAVEL);
 	@RegistryEntry("gravel_slab") public static final Block GRAVEL_SLAB = createSlab(GRAVEL);
 	@RegistryEntry("gravel_stairs") public static final Block GRAVEL_STAIRS = createStairs(GRAVEL);
+	@RegistryEntry("gravel_wall") public static Block GRAVEL_WALL = createWall(GRAVEL);
 
 	@RegistryEntry("dark_sand") public static final Block DARK_SAND = new Block(AbstractBlock.Settings.of(Material.AGGREGATE, MapColor.BLACK).strength(0.5F).sounds(BlockSoundGroup.SAND));
 	@RegistryEntry("dark_sand_fence") public static final Block DARK_SAND_FENCE = createFence(DARK_SAND);
@@ -188,6 +193,7 @@ public final class ModBlocks {
 	@RegistryEntry("dark_sand_button") public static final Block DARK_SAND_BUTTON = createButton(DARK_SAND);
 	@RegistryEntry("dark_sand_slab") public static final Block DARK_SAND_SLAB = createSlab(DARK_SAND);
 	@RegistryEntry("dark_sand_stairs") public static final Block DARK_SAND_STAIRS = createStairs(DARK_SAND);
+	@RegistryEntry("dark_sand_wall") public static Block DARK_SAND_WALL = createWall(DARK_SAND);
 
 	@RegistryEntry("clay_fence") public static final Block CLAY_FENCE = createFence(CLAY);
 	@RegistryEntry("clay_gate") public static final Block CLAY_GATE = createFenceGate(CLAY);
@@ -268,5 +274,9 @@ public final class ModBlocks {
 
 	public static Block createStairs(Block block) {
 		return new StairsBlock(block.getDefaultState(), AbstractBlock.Settings.copy(block));
+	}
+
+	public static Block createWall(Block block) {
+		return new WallBlock(AbstractBlock.Settings.copy(block));
 	}
 }
