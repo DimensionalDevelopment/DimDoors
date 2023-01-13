@@ -92,26 +92,51 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 				Blocks.IRON_BARS,
 				Blocks.HOPPER,
 				Blocks.CHAIN,
-				Blocks.CAULDRON
+				Blocks.CAULDRON,
+				Blocks.BELL
 		);
 		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_UNRAVELED_SPIKE).add(
 				Blocks.END_ROD,
 				Blocks.POINTED_DRIPSTONE
-		).forceAddTag(BlockTags.FLOWER_POTS).addOptionalTag(BlockTags.CANDLES);
+		).forceAddTag(BlockTags.FLOWER_POTS).forceAddTag(BlockTags.CANDLES);
 		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_WITHER_ROSE).addOptionalTag(BlockTags.SMALL_FLOWERS).addOptionalTag(BlockTags.TALL_FLOWERS);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_CLAY);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_CLAY);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_FENCE);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_GATE);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_BUTTON);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_SLAB);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_STAIRS);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_DARK_SAND);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_FENCE);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_GATE);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_BUTTON);
+		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_CLAY).add(
+				ModBlocks.AMALGAM_BLOCK,
+				Blocks.MUD,
+				Blocks.TERRACOTTA,
+				Blocks.BRICKS
+		);
+		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_FENCE).add(
+				ModBlocks.CLAY_FENCE,
+				ModBlocks.MUD_FENCE
+		);
+		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_GATE).add(
+				ModBlocks.CLAY_GATE,
+				ModBlocks.MUD_GATE
+		);
+		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_BUTTON).add(
+				ModBlocks.CLAY_BUTTON,
+				ModBlocks.MUD_BUTTON
+		);
+		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_SLAB).add(
+				ModBlocks.CLAY_SLAB,
+				ModBlocks.MUD_SLAB
+		);
+		getOrCreateTagBuilder(ModBlockTags.DECAY_CLAY_STAIRS).add(
+				ModBlocks.CLAY_STAIRS,
+				ModBlocks.MUD_STAIRS
+		);
+		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_DARK_SAND).add(
+				Blocks.AMETHYST_BLOCK,
+				Blocks.GLASS,
+				Blocks.GRAVEL,
+				Blocks.RED_SAND,
+				Blocks.SAND,
+				Blocks.SOUL_SAND
+		);
 		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_SLAB);
 		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_STAIRS);
+		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_WALL);
 		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_AMALGAM);
 	}
 }

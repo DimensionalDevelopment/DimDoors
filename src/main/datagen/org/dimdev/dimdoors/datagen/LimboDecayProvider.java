@@ -217,7 +217,7 @@ public class LimboDecayProvider implements DataProvider {
 		createPatterData(id("amalgam"), ModBlockTags.DECAY_TO_AMALGAM, ModBlocks.AMALGAM_BLOCK).run(consumer);
 		createPatterData(id("amalgam_slab"), Blocks.CUT_COPPER_SLAB, ModBlocks.AMALGAM_SLAB).run(consumer);
 		createPatterData(id("amalgam_stairs"), Blocks.CUT_COPPER_STAIRS, ModBlocks.AMALGAM_STAIRS).run(consumer);
-		createPatterData(id("mud"), ModBlockTags.DECAY_TO_MUD, ModBlocks.MUD).run(consumer);
+		createPatterData(id("mud"), ModBlockTags.DECAY_TO_MUD, Blocks.MUD).run(consumer);
 		createPatterData(id("mud_fence"), ModBlockTags.DECAY_TO_MUD_FENCE, ModBlocks.MUD_FENCE).run(consumer);
 		createPatterData(id("mud_gate"), ModBlockTags.DECAY_TO_MUD_GATE, ModBlocks.MUD_GATE).run(consumer);
 		createPatterData(id("mud_button"), ModBlockTags.DECAY_TO_MUD_BUTTON, ModBlocks.MUD_BUTTON).run(consumer);
@@ -234,8 +234,15 @@ public class LimboDecayProvider implements DataProvider {
 		createPatterData(id("gravel_button", ModBlockTags.DECAY_TO_GRAVEL_BUTTON, ModBlocks.GRAVEL_BUTTON)).run(consumer);
 		createPatterData(id("gravel_slab", ModBlockTags.DECAY_TO_GRAVEL_SLAB, ModBlocks.GRAVEL_SLAB)).run(consumer);
 		createPatterData(id("gravel_stairs", ModBlockTags.DECAY_TO_GRAVEL_STAIRS, ModBlocks.GRAVEL_STAIRS)).run(consumer);
+		createPatterData(id("gravel_wall", ModBlockTags.DECAY_TO_GRAVEL_WALL, ModBlocks.GRAVEL_WALL)).run(consumer);
 		createPatterData(id("red_sand"), Blocks.RED_SANDSTONE, RED_SAND).run(consumer);
+		createPatterData(id("red_sand_slab", ModBlockTags.DECAY_TO_RED_SAND_SLAB, ModBlocks.RED_SAND_SLAB)).run(consumer);
+		createPatterData(id("red_sand_stairs", ModBlockTags.DECAY_TO_RED_SAND_STAIRS, ModBlocks.RED_SAND_STAIRS)).run(consumer);
+		createPatterData(id("red_sand_wall", ModBlockTags.DECAY_TO_RED_SAND_WALL, ModBlocks.RED_SAND_WALL)).run(consumer);
 		createPatterData(id("sand"), ModBlockTags.DECAY_TO_SAND, SAND).run(consumer);
+		createPatterData(id("sand_slab", ModBlockTags.DECAY_TO_SAND_SLAB, ModBlocks.SAND_SLAB)).run(consumer);
+		createPatterData(id("sand_stairs", ModBlockTags.DECAY_TO_SAND_STAIRS, ModBlocks.SAND_STAIRS)).run(consumer);
+		createPatterData(id("sand_wall", ModBlockTags.DECAY_TO_SAND_WALL, ModBlocks.SAND_WALL)).run(consumer);
 		createPatterData(id("soul_sand"), Blocks.SOUL_SOIL, Blocks.SOUL_SAND).run(consumer);
 
 		createSimplePattern(id("ice"), PACKED_ICE, ICE).run(consumer);
