@@ -68,9 +68,9 @@ public final class ModConfig {
         @LangKey("dimdoors.world.blockDecayBlackList")
         public String[] blockRiftDecayBlackList = {};
         
-        @Name("enableRiftDecayDropsWorldThread")
+        @Name("enableDecayDrops")
         @LangKey("dimdoors.world.enableDecayDrops")
-        public boolean enableRiftDecay = true;
+        public boolean enableDecayDrops = true;
         
         @Name("maxRiftSize")
         @LangKey("dimdoors.world.maxRiftSize")

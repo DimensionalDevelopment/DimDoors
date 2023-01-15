@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.DimDoors;
 public class ItemGeneric extends Item {
 
     public ItemGeneric(String ID) {
-        this.setUnlocalizedName(ID);
+        this.setRegistryName(ID);
         this.setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
         this.setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         this.setFull3D();

@@ -26,7 +26,7 @@ public class ItemRiftStabilizer extends Item {
         setMaxStackSize(1);
         setMaxDamage(6); // TODO: Add more uses and make it reduce rift growth speed instead?
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
@@ -52,10 +52,10 @@ public class ItemRiftStabilizer extends Item {
                 rift.setStabilized(true);
                 world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1); // TODO: different sound
                 stack.damageItem(1, player);
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".stabilized"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".stabilized"), true);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else {
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".already_stabilized"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".already_stabilized"), true);
             }
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);
@@ -64,6 +64,6 @@ public class ItemRiftStabilizer extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(I18n.format(I18n.format(getUnlocalizedName() + ".info")));
+        tooltip.add(I18n.format(I18n.format(getRegistryName() + ".info")));
     }
 }

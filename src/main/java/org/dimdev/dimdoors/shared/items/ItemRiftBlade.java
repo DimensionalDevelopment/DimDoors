@@ -30,7 +30,7 @@ public class ItemRiftBlade extends ItemSword {
     public ItemRiftBlade() {
         super(ToolMaterial.IRON);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
@@ -57,7 +57,7 @@ public class ItemRiftBlade extends ItemSword {
             if (RayTraceHelper.isLivingEntity(hit) || RayTraceHelper.isRift(hit, world)) {
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             } else {
-                player.sendStatusMessage(new TextComponentTranslation(getUnlocalizedName() + ".rift_miss"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".rift_miss"), true);
                 TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
                 return new ActionResult<>(EnumActionResult.FAIL, stack);
             }
@@ -93,6 +93,6 @@ public class ItemRiftBlade extends ItemSword {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
+        tooltip.add(I18n.format(getRegistryName() + ".info"));
     }
 }

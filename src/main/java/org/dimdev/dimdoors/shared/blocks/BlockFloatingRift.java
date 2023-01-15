@@ -28,7 +28,7 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
 
     public BlockFloatingRift() {
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setTickRandomly(true);
         setResistance(6000000.0F); // Same as bedrock
         setLightLevel(0.5f);

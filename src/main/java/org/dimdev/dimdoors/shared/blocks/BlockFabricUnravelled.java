@@ -24,7 +24,7 @@ public class BlockFabricUnravelled extends BlockEmptyDrops {
     public BlockFabricUnravelled() {
         super(UNRAVELLED_FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
         setSoundType(SoundType.STONE);

@@ -21,7 +21,7 @@ public class BlockMarkingPlate extends Block {
     public BlockMarkingPlate() {
         super(FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
         setSoundType(SoundType.STONE);

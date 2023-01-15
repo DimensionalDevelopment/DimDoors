@@ -296,7 +296,7 @@ public class Schematic {
                     if (id.contains(":")) mods.add(id.split(":")[0]);
                     schematic.setBlockState(x, y, z, state);
 
-                    TileEntity tileEntity = world.getChunkFromBlockCoords(pos).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
+                    TileEntity tileEntity = world.getChunk(pos).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
                     if (tileEntity != null) {
                         NBTTagCompound tileEntityNBT = tileEntity.serializeNBT();
                         tileEntityNBT.setInteger("x", tileEntityNBT.getInteger("x") - from.getX());
@@ -438,7 +438,7 @@ public class Schematic {
                 for (int chunkZ = 0; chunkZ <= (length >> 4) + 1; chunkZ++) {
                     long setStart = System.nanoTime();
                     // Get the chunk only once for efficiency
-                    Chunk chunk = world.getChunkFromChunkCoords((xBase >> 4) + chunkX, (zBase >> 4) + chunkZ);
+                    Chunk chunk = world.getChunk((xBase >> 4) + chunkX, (zBase >> 4) + chunkZ);
                     ExtendedBlockStorage[] storageArray = chunk.getBlockStorageArray();
                     for (int storageY = 0; storageY <= (height >> 4) + 1; storageY++) {
                         // Get the storage only once for eficiency

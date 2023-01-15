@@ -188,7 +188,7 @@ public final class TeleportUtils {
                 // Send respawn packets to the player
                 player.dimension = newDimension;
                 player.connection.sendPacket(new SPacketRespawn(player.dimension, newWorld.getDifficulty(), newWorld.getWorldInfo().getTerrainType(), player.interactionManager.getGameType()));
-                player.mcServer.getPlayerList().updatePermissionLevel(player); // Sends an SPacketEntityStatus
+                player.server.getPlayerList().updatePermissionLevel(player); // Sends an SPacketEntityStatus
 
                 // Remove player entity from the old world
                 oldWorld.removeEntityDangerously(player);
@@ -213,14 +213,14 @@ public final class TeleportUtils {
                 player.setWorld(newWorld);
 
                 // Sync the player
-                player.mcServer.getPlayerList().preparePlayer(player, oldWorld);
+                player.server.getPlayerList().preparePlayer(player, oldWorld);
                 player.connection.setPlayerLocation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
                 // Fix for https://bugs.mojang.com/browse/MC-98153. See this comment: https://bugs.mojang.com/browse/MC-98153#comment-411524
                 captureCurrentPosition(player.connection);
                 player.interactionManager.setWorld(newWorld);
                 player.connection.sendPacket(new SPacketPlayerAbilities(player.capabilities));
-                player.mcServer.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
-                player.mcServer.getPlayerList().syncPlayerInventory(player);
+                player.server.getPlayerList().updateTimeAndWeatherForPlayer(player, newWorld);
+                player.server.getPlayerList().syncPlayerInventory(player);
                 for (PotionEffect potioneffect : player.getActivePotionEffects()) {
                     player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
                 }

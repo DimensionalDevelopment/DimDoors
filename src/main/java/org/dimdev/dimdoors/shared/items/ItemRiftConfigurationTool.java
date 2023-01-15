@@ -30,7 +30,7 @@ public class ItemRiftConfigurationTool extends Item {
         setMaxStackSize(1);
         setMaxDamage(16);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 
@@ -60,8 +60,8 @@ public class ItemRiftConfigurationTool extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getUnlocalizedName() + ".info")) {
-            tooltip.add(I18n.format(getUnlocalizedName() + ".info"));
+        if (I18n.hasKey(getRegistryName() + ".info")) {
+            tooltip.add(I18n.format(getRegistryName() + ".info"));
         }
     }
 }

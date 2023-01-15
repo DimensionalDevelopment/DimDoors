@@ -17,7 +17,7 @@ public class BlockDimensionalDoorWood extends BlockDimensionalDoor { // TODO: al
     public BlockDimensionalDoorWood() {
         super(Material.WOOD);
         setHardness(1.0F);
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
     }
 

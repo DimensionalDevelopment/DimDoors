@@ -21,7 +21,7 @@ public class BlockFabricEternal extends BlockEmptyDrops { // TODO: make this a g
     public BlockFabricEternal() {
         super(ETERNAL_FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(-1);
         setResistance(6000000.0F);

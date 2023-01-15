@@ -12,7 +12,7 @@ public class ItemDimensionalDoorIron extends ItemDimensionalDoor {
     public ItemDimensionalDoorIron() {
         super(ModBlocks.IRON_DIMENSIONAL_DOOR);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setUnlocalizedName(BlockDimensionalDoorIron.ID);
+        setRegistryName(BlockDimensionalDoorIron.ID);
         setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorIron.ID));
     }
 

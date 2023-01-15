@@ -23,7 +23,7 @@ public class BlockFabricAncient extends BlockColored {
         super(Material.ROCK);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setDefaultState(getDefaultState().withProperty(COLOR, EnumDyeColor.BLACK));
         setHardness(-1);
         setResistance(6000000.0F);

@@ -20,12 +20,12 @@ import org.dimdev.dimdoors.shared.items.ModItems;
 public final class ModRecipes {
 
     public static ResourceLocation getNameForRecipe(ItemStack output) {
-        ResourceLocation baseLoc = new ResourceLocation(DimDoors.MODID, output.getItem().getRegistryName().getResourcePath());
+        ResourceLocation baseLoc = new ResourceLocation(DimDoors.MODID, output.getItem().getRegistryName().getPath());
         ResourceLocation recipeLoc = baseLoc;
         int index = 0;
         while (CraftingManager.REGISTRY.containsKey(recipeLoc)) {
             index++;
-            recipeLoc = new ResourceLocation(DimDoors.MODID, baseLoc.getResourcePath() + "_" + index);
+            recipeLoc = new ResourceLocation(DimDoors.MODID, baseLoc.getPath() + "_" + index);
         }
         return recipeLoc;
     }

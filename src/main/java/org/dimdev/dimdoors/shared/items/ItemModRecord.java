@@ -8,6 +8,6 @@ public class ItemModRecord extends ItemRecord {
     protected ItemModRecord(String recordName, SoundEvent soundIn) {
         super(recordName, soundIn);
         setRegistryName(DimDoors.MODID, "record_" + recordName);
-        setUnlocalizedName("record");
+        setRegistryName("record");
     }
 }

@@ -30,7 +30,7 @@ public class BlockFabric extends BlockColored {
     public BlockFabric() {
         super(FABRIC);
         setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setUnlocalizedName(ID);
+        setRegistryName(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setDefaultState(getDefaultState().withProperty(COLOR, EnumDyeColor.BLACK));
         setHardness(0.1F);
