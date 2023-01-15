@@ -17,10 +17,13 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.items.ModItems;
 
+import java.util.Objects;
+
 public final class ModRecipes {
 
     public static ResourceLocation getNameForRecipe(ItemStack output) {
-        ResourceLocation baseLoc = new ResourceLocation(DimDoors.MODID, output.getItem().getRegistryName().getPath());
+        ResourceLocation baseLoc = new ResourceLocation(DimDoors.MODID,
+                Objects.requireNonNull(output.getItem().getRegistryName()).getPath());
         ResourceLocation recipeLoc = baseLoc;
         int index = 0;
         while (CraftingManager.REGISTRY.containsKey(recipeLoc)) {
@@ -33,7 +36,8 @@ public final class ModRecipes {
     public static IRecipe makeShapedRecipe(ItemStack output, Object... params) {
         ResourceLocation location = getNameForRecipe(output);
         CraftingHelper.ShapedPrimer primer = CraftingHelper.parseShaped(params);
-        ShapedRecipes recipe = new ShapedRecipes(output.getItem().getRegistryName().toString(), primer.width, primer.height, primer.input, output);
+        ShapedRecipes recipe = new ShapedRecipes(Objects.requireNonNull(output.getItem().getRegistryName()).toString(),
+                primer.width, primer.height, primer.input, output);
         recipe.setRegistryName(location);
         return recipe;
     }
@@ -45,13 +49,14 @@ public final class ModRecipes {
         return recipe;
     }
 
-    public static IRecipe makeShapedlessRecipe(ItemStack output, Object... params) {
+    public static IRecipe makeShapelessRecipe(ItemStack output, Object... params) {
         ResourceLocation location = getNameForRecipe(output);
         NonNullList<Ingredient> ingredients = NonNullList.create();
         for (Object obj : params) {
             ingredients.add(CraftingHelper.getIngredient(obj));
         }
-        ShapelessRecipes recipe = new ShapelessRecipes(output.getItem().getRegistryName().toString(), output, ingredients);
+        ShapelessRecipes recipe = new ShapelessRecipes(Objects.requireNonNull(output.getItem().getRegistryName()).toString(),
+                output, ingredients);
         recipe.setRegistryName(location);
         return recipe;
     }
@@ -140,7 +145,7 @@ public final class ModRecipes {
                 " y ", "x x", 'x', ModItems.WORLD_THREAD, 'y', Items.LEATHER_BOOTS));
 
         for (int meta = 0; meta <= 15; meta++) {
-            registry.register(makeShapedlessRecipe(new ItemStack(ModItems.FABRIC, 1, meta),
+            registry.register(makeShapelessRecipe(new ItemStack(ModItems.FABRIC, 1, meta),
                     ModItems.FABRIC, new ItemStack(Items.DYE, 1, EnumDyeColor.byDyeDamage(meta).getMetadata())));
         }
     }

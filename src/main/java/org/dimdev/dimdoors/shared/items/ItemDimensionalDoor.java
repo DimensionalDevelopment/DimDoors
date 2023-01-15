@@ -23,6 +23,7 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 import java.util.List;
+import java.util.Objects;
 
 // TODO: All wood types, Biome O' Plenty support
 public abstract class ItemDimensionalDoor extends ItemDoor {
@@ -35,9 +36,7 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         BlockPos originalPos = pos; // super.onItemUse needs the actual position
         if (!world.getBlockState(pos).getBlock().isReplaceable(world, pos)) pos = pos.offset(facing);
-
         boolean placedOnRift = world.getBlockState(pos).getBlock() == ModBlocks.RIFT;
-
         if (!placedOnRift && !player.isSneaking() && isRiftNear(world, pos)) {
             // Allowing on second right click would require cancelling client-side, which
             // is impossible (see https://github.com/MinecraftForge/MinecraftForge/issues/3272)
@@ -48,22 +47,15 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
             }
             return EnumActionResult.FAIL;
         }
-
-        if (world.isRemote) {
-            return super.onItemUse(player, world, originalPos, hand, facing, hitX, hitY, hitZ);
-        }
-
+        if (world.isRemote) return super.onItemUse(player, world, originalPos, hand, facing, hitX, hitY, hitZ);
         // Store the rift entity if there's a rift block there that may be broken
         TileEntityFloatingRift rift = null;
         if (placedOnRift) {
             if (canBePlacedOnRift()) {
                 rift = (TileEntityFloatingRift) world.getTileEntity(pos);
                 rift.setUnregisterDisabled(true);
-            } else {
-                DimDoors.sendTranslatedMessage(player, "rifts.entrances.cannot_be_placed_on_rift");
-            }
+            } else DimDoors.sendTranslatedMessage(player, "rifts.entrances.cannot_be_placed_on_rift");
         }
-
         EnumActionResult result = super.onItemUse(player, world, originalPos, hand, facing, hitX, hitY, hitZ);
         if (result == EnumActionResult.SUCCESS) {
             IBlockState state = world.getBlockState(pos);
@@ -71,10 +63,8 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
                 // Get the rift entity (not hard coded, works with any door size)
                 @SuppressWarnings("unchecked") // Guaranteed to be IRiftProvider<TileEntityEntranceRift> because of constructor
                 TileEntityEntranceRift entranceRift = ((IRiftProvider<TileEntityEntranceRift>) state.getBlock()).getRift(world, pos, state);
-
                 // Configure the rift to its default functionality
                 setupRift(entranceRift);
-
                 // Register the rift in the registry
                 entranceRift.markDirty();
                 entranceRift.register();
@@ -84,9 +74,7 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
                 newRift.copyFrom(rift);
                 newRift.updateType();
             }
-        } else if (rift != null) {
-            rift.setUnregisterDisabled(false);
-        }
+        } else if (Objects.nonNull(rift)) rift.setUnregisterDisabled(false);
         return result;
     }
 
@@ -109,9 +97,7 @@ public abstract class ItemDimensionalDoor extends ItemDoor {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getRegistryName() + ".info")) {
-            tooltip.add(I18n.format(getRegistryName() + ".info"));
-        }
+        if (I18n.hasKey(getRegistryName() + ".info")) tooltip.add(I18n.format(getRegistryName() + ".info"));
     }
 
     public abstract void setupRift(TileEntityEntranceRift entranceRift); // TODO: NBT-based, or maybe lambda function-based?

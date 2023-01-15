@@ -3,6 +3,7 @@ package org.dimdev.dimdoors;
 import lombok.Getter;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.storage.loot.LootTableList;
@@ -62,6 +63,7 @@ public class DimDoors {
 
     // Initialization
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
         log = event.getModLog();
@@ -93,8 +95,8 @@ public class DimDoors {
         EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
 
         // Register tile entities
-        GameRegistry.registerTileEntity(TileEntityEntranceRift.class, "dimdoors:entrance_rift");
-        GameRegistry.registerTileEntity(TileEntityFloatingRift.class, "dimdoors:floating_rift");
+        TileEntity.register("dimdoors:entrance_rift", TileEntityEntranceRift.class);
+        TileEntity.register("dimdoors:floating_rift", TileEntityFloatingRift.class);
 
         // Register dimensions
         ModDimensions.registerDimensions();

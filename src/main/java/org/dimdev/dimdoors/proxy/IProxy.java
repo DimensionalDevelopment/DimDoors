@@ -8,15 +8,15 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 public interface IProxy {
 
-    public void onPreInitialization(FMLPreInitializationEvent event);
+    void onPreInitialization(FMLPreInitializationEvent event);
 
-    public void onInitialization(FMLInitializationEvent event);
+    void onInitialization(FMLInitializationEvent event);
 
-    public boolean isClient();
+    boolean isClient();
 
-    public EntityPlayer getLocalPlayer();
+    EntityPlayer getLocalPlayer();
 
-    public void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);
+    void setCloudRenderer(WorldProvider provider, IRenderHandler renderer);
 
-    public void setSkyRenderer(WorldProvider provider, IRenderHandler renderer);
+    void setSkyRenderer(WorldProvider provider, IRenderHandler renderer);
 }

@@ -52,7 +52,6 @@ public class BlockFabric extends BlockColored {
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         ItemStack heldItem = player.getHeldItem(hand);
         Block block = Block.getBlockFromItem(heldItem.getItem());
-
         // Replace fabric in pockets unless it's a special block or the player is sneaking
         if (block.getDefaultState().isNormalCube()
             && !block.hasTileEntity(block.getDefaultState())
@@ -62,8 +61,6 @@ public class BlockFabric extends BlockColored {
             if (!player.isCreative()) heldItem.shrink(1);
             world.setBlockState(pos, block.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, heldItem.getMetadata(), player, hand));
             return true; // Cancel the block place, and return success (swings arm)
-        } else {
-            return false; // Handle the place normally
-        }
+        } return false; // Handle the place normally
     }
 }

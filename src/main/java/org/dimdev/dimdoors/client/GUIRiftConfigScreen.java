@@ -8,7 +8,6 @@ package org.dimdev.dimdoors.client;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 
@@ -18,8 +17,8 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
  */
 public class GUIRiftConfigScreen extends GUIConfigScreen {
 
-    private InventoryPlayer playerInv;
-    private TileEntityRift rift; 
+    private final InventoryPlayer playerInv;
+    private final TileEntityRift rift;
       
     public GUIRiftConfigScreen(Object Rift, InventoryPlayer playerInv) {
         super();

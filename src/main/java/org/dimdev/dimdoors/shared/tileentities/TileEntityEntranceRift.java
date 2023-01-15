@@ -110,17 +110,14 @@ import java.util.Random;
     @SideOnly(Side.CLIENT)
     protected RGBA getEntranceRenderColor(Random rand) {
         float red, green, blue;
-        switch(world.provider.getDimension()) {
-            case -1: // Nether
-                red = rand.nextFloat() * 0.5F + 0.4F;
-                green = rand.nextFloat() * 0.05F;
-                blue = rand.nextFloat() * 0.05F;
-                break;
-            default:
-                red = rand.nextFloat() * 0.5F + 0.1F;
-                green = rand.nextFloat() * 0.4F + 0.4F;
-                blue = rand.nextFloat() * 0.6F + 0.5F;
-                break;
+        if (world.provider.getDimension() == -1) { // Nether
+            red = rand.nextFloat() * 0.5F + 0.4F;
+            green = rand.nextFloat() * 0.05F;
+            blue = rand.nextFloat() * 0.05F;
+        } else {
+            red = rand.nextFloat() * 0.5F + 0.1F;
+            green = rand.nextFloat() * 0.4F + 0.4F;
+            blue = rand.nextFloat() * 0.6F + 0.5F;
         }
         return new RGBA(red, green, blue, 1);
     }

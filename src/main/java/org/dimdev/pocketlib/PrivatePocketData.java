@@ -16,6 +16,7 @@ import org.dimdev.ddutils.nbt.INBTStorable;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @NBTSerializable public class PrivatePocketData extends WorldSavedData {
@@ -42,14 +43,15 @@ import java.util.UUID;
 
     public static PrivatePocketData instance() {
         MapStorage storage = WorldUtils.getWorld(0).getMapStorage();
-        PrivatePocketData instance = (PrivatePocketData) storage.getOrLoadData(PrivatePocketData.class, DATA_NAME);
-
-        if (instance == null) {
-            instance = new PrivatePocketData();
-            storage.setData(DATA_NAME, instance);
+        if(Objects.nonNull(storage)) {
+            WorldSavedData instance = storage.getOrLoadData(PrivatePocketData.class, DATA_NAME);
+            if (Objects.isNull(instance) || !(instance instanceof PrivatePocketData)) {
+                instance = new PrivatePocketData();
+                storage.setData(DATA_NAME, instance);
+            }
+            return (PrivatePocketData) instance;
         }
-
-        return instance;
+        throw new RuntimeException("Could not get storage data for dimension 0! Something went very wrong!");
     }
 
     @Override public void readFromNBT(NBTTagCompound nbt) { NBTUtils.readFromNBT(this, nbt); }

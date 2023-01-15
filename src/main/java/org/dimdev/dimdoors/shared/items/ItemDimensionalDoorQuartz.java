@@ -20,11 +20,9 @@ public class ItemDimensionalDoorQuartz extends ItemDimensionalDoor {
 
     @Override
     public void setupRift(TileEntityEntranceRift rift) {
-        if (rift.getWorld().provider instanceof WorldProviderPersonalPocket) {
+        if (rift.getWorld().provider instanceof WorldProviderPersonalPocket)
             rift.setDestination(new PrivatePocketExitTarget()); // exit
-        } else {
-            rift.setDestination(new PrivatePocketTarget()); // entrances
-        }
+        else rift.setDestination(new PrivatePocketTarget()); // entrances
     }
 
     @Override

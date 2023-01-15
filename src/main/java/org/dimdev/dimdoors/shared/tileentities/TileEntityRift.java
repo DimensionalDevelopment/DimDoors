@@ -15,18 +15,18 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.DimDoors;
+import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
 import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.registry.Rift;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.rifts.targets.*;
 import org.dimdev.pocketlib.VirtualLocation;
 
-import javax.annotation.Nonnull;
-import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
+import java.util.Objects;
 
 @NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITarget, IEntityTarget {
 
-    /*@Saved*/ @Nonnull @Getter /*protected*/ VirtualTarget destination; // How the rift acts as a source
+    /*@Saved*/ @Getter /*protected*/ VirtualTarget destination; // How the rift acts as a source
     @Saved @Getter protected LinkProperties properties; // How the rift acts as a target, and properties that affect how it can link to other rifts
     @Saved @Getter protected boolean relativeRotation;
     @Saved @Getter protected boolean alwaysDelete; // Delete the rift when an entrances rift is broken even if the state was changed or destinations link there.
@@ -208,14 +208,12 @@ import org.dimdev.dimdoors.shared.pockets.PocketTemplate;
     public void updateColor() {
         //DimDoors.log.info("Updating color of rift at " + new Location(world, pos));
         if (forcedColor) return;
-        if (!isRegistered()) {
-            color = new RGBA(0, 0, 0, 1);
-        } else if (destination == null) {
-            color = new RGBA(0.7f, 0.7f, 0.7f, 1);
-        } else {
+        if (!isRegistered()) color = new RGBA(0, 0, 0, 1);
+        else if (destination == null) color = new RGBA(0.7f, 0.7f, 0.7f, 1);
+        else {
             destination.setLocation(new Location(world, pos));
             RGBA newColor = destination.getColor();
-            if (color == null && newColor != null || !color.equals(newColor)) {
+            if ((Objects.isNull(color) && Objects.nonNull(newColor)) || !color.equals(newColor)) {
                 color = newColor;
                 markDirty();
                 world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);

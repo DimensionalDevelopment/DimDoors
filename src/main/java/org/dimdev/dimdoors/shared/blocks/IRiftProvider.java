@@ -7,5 +7,5 @@ import net.minecraft.world.World;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 
 public interface IRiftProvider<T extends TileEntityRift> extends ITileEntityProvider {
-    public T getRift(World world, BlockPos pos, IBlockState state);
+    T getRift(World world, BlockPos pos, IBlockState state);
 }

@@ -47,21 +47,16 @@ public class BlockDimensionalPortal extends BlockDimensionalDoor { // TODO: conv
     public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
         // Run server-side only
         if (world.isRemote) return;
-
         // Check that the teleport timer is 0
         if (entity.timeUntilPortal == 0) {
             entity.timeUntilPortal = 50; // Disable another teleport for 2.5s to avoid duplicate teleports
-
             // Get the rift tile entity and teleport the entity
             TileEntityEntranceRift rift = getRift(world, pos, state);
             boolean successful = rift.teleport(entity);
-
             if (successful) entity.timeUntilPortal = 0; // Allow teleportation again
-
             // Break the entrance if necessary
-            if (successful && entity instanceof EntityPlayer && rift.isCloseAfterPassThrough()) {
+            if (successful && entity instanceof EntityPlayer && rift.isCloseAfterPassThrough())
                 world.setBlockToAir(pos);
-            }
         }
     }
 

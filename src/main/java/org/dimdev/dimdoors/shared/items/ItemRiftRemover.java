@@ -33,16 +33,13 @@ public class ItemRiftRemover extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getRegistryName() + ".info")) {
-            tooltip.add(I18n.format(getRegistryName() + ".info"));
-        }
+        if (I18n.hasKey(getRegistryName() + ".info")) tooltip.add(I18n.format(getRegistryName() + ".info"));
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         RayTraceResult hit = RayTraceHelper.rayTraceForRiftTools(world, player);
-
         if (world.isRemote) {
             if (!RayTraceHelper.isFloatingRift(hit, world)) {
                 player.sendStatusMessage(new TextComponentTranslation("tools.rift_miss"), true);
@@ -50,7 +47,6 @@ public class ItemRiftRemover extends Item {
             }
             return new ActionResult<>(EnumActionResult.FAIL, stack);
         }
-
         if (RayTraceHelper.isFloatingRift(hit, world)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
             if (!rift.closing) {
@@ -59,9 +55,7 @@ public class ItemRiftRemover extends Item {
                 stack.damageItem(10, player);
                 player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".closing"), true);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-            } else {
-                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".already_closing"), true);
-            }
+            } else player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".already_closing"), true);
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);
     }

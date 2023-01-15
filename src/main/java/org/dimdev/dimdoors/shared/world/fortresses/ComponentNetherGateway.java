@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.world.fortresses;
 
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -11,17 +10,14 @@ import net.minecraft.world.gen.structure.template.TemplateManager;
 import java.util.List;
 import java.util.Random;
 
-public class ComponentNetherGateway extends StructureComponent
-{
+public class ComponentNetherGateway extends StructureComponent {
     // Note: In this case, it doesn't really matter which class we extend, since this class will
     // never be passed to Minecraft. We just need an instance to have access to structure-building methods.
     // If Forge supports adding custom fortress structures in the future, then we might have to change
     // our class to extend ComponentNetherBridgeCrossing or something along those lines. ~SenseiKiwi
 
-    public ComponentNetherGateway(int componentType, Random random, StructureBoundingBox bounds, EnumFacing coordBaseMode)
-    {
+    public ComponentNetherGateway(int componentType, Random random, StructureBoundingBox bounds, EnumFacing coordBaseMode) {
         super(componentType);
-
         this.boundingBox = bounds;
         this.setCoordBaseMode(coordBaseMode);
     }
@@ -29,14 +25,12 @@ public class ComponentNetherGateway extends StructureComponent
     /**
      * Creates and returns a new component piece. Or null if it could not find enough room to place it.
      */
-    public static ComponentNetherGateway createValidComponent(List components, Random random, int minX, int minY, int minZ, EnumFacing coordBaseMode, int componentType)
-    {
+    public static ComponentNetherGateway createValidComponent(List<StructureComponent> components, Random random, int minX, int minY, int minZ, EnumFacing coordBaseMode, int componentType) {
         StructureBoundingBox bounds = StructureBoundingBox.getComponentToAddBoundingBox(minX, minY, minZ, -2, 0, 0, 7, 9, 7, coordBaseMode);
         return isAboveGround(bounds) && StructureComponent.findIntersecting(components, bounds) == null ? new ComponentNetherGateway(componentType, random, bounds, coordBaseMode) : null;
     }
 
-    public static ComponentNetherGateway createFromComponent(StructureComponent component, Random random)
-    {
+    public static ComponentNetherGateway createFromComponent(StructureComponent component, Random random) {
         // Create an instance of our gateway component using the same data as another component,
         // likely a component that we intend to replace during generation
         return new ComponentNetherGateway( component.getComponentType(), random,

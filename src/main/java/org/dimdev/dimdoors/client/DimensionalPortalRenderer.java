@@ -36,43 +36,31 @@ public final class DimensionalPortalRenderer {
     public static void renderDimensionalPortal(double x, double y, double z, EnumFacing orientation, double width, double height, RGBA[] colors) { // TODO: Make this work at any angle
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
-
         for (int pass = 0; pass < 16; pass++) {
             GlStateManager.pushMatrix();
-
             float translationScale = 16 - pass;
             float scale = 0.2625F;
             float colorMultiplier = 1.0F / (translationScale + .80F);
-
             Minecraft.getMinecraft().getTextureManager().bindTexture(warpPath);
             GlStateManager.enableBlend();
-
             if (pass == 0) {
                 colorMultiplier = 0.1F;
                 translationScale = 25.0F;
                 scale = 0.125F;
-
                 GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             }
-
             if (pass == 1) {
                 scale = 0.5F;
                 GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE);
             }
-
             double offset = Minecraft.getSystemTime() % 200000L / 200000.0F;
             GlStateManager.translate(offset, offset, offset);
-
             GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_LINEAR);
             GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_LINEAR);
-
-            if (orientation == EnumFacing.UP || orientation == EnumFacing.DOWN) {
+            if (orientation == EnumFacing.UP || orientation == EnumFacing.DOWN)
                 GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_LINEAR);
-            } else {
-                GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_LINEAR);
-            }
-
+            else GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_LINEAR);
             switch (orientation) { // TODO: Why 0.15F? Is that a door's thickness? If yes, don't hardcode that.
                 case SOUTH:
                     GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getBuffer(0.0F, 1.0F, 0.0F, 0.0F));
@@ -99,11 +87,6 @@ public final class DimensionalPortalRenderer {
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_OBJECT_PLANE, getBuffer(1.0F, 0.0F, 0.0F, -0.15F));
                     break;
                 case UP:
-                    GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getBuffer(1.0F, 0.0F, 0.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getBuffer(0.0F, 0.0F, 1.0F, 0.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.R, GL11.GL_OBJECT_PLANE, getBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-                    GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, getBuffer(0.0F, 1.0F, 0.0F, 0.0F));
-                    break;
                 case DOWN:
                     GlStateManager.texGen(GlStateManager.TexGen.S, GL11.GL_OBJECT_PLANE, getBuffer(1.0F, 0.0F, 0.0F, 0.0F));
                     GlStateManager.texGen(GlStateManager.TexGen.T, GL11.GL_OBJECT_PLANE, getBuffer(0.0F, 0.0F, 1.0F, 0.0F));
@@ -111,14 +94,11 @@ public final class DimensionalPortalRenderer {
                     GlStateManager.texGen(GlStateManager.TexGen.Q, GL11.GL_EYE_PLANE, getBuffer(0.0F, 1.0F, 0.0F, 0.0F));
                     break;
             }
-
             GlStateManager.enableTexGenCoord(GlStateManager.TexGen.S);
             GlStateManager.enableTexGenCoord(GlStateManager.TexGen.T);
             GlStateManager.enableTexGenCoord(GlStateManager.TexGen.R);
             GlStateManager.enableTexGenCoord(GlStateManager.TexGen.Q);
-
             GlStateManager.popMatrix();
-
             GlStateManager.matrixMode(GL11.GL_TEXTURE);
             GlStateManager.pushMatrix();
             GlStateManager.loadIdentity();
@@ -127,14 +107,11 @@ public final class DimensionalPortalRenderer {
             GlStateManager.translate(0.5F, 0.5F, 0.5F);
             GlStateManager.rotate((pass * pass * 4321 + pass * 9) * 2.0F, 0.0F, 0.0F, 1.0F);
             GlStateManager.translate(0.5F, 0.5F, 0.5F);
-
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder worldRenderer = tessellator.getBuffer();
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-
             RGBA color = colors[pass];
             GlStateManager.color(color.getRed() * colorMultiplier, color.getGreen() * colorMultiplier, color.getBlue() * colorMultiplier, color.getAlpha());
-
             switch (orientation) {
                 case NORTH:
                     worldRenderer.pos(x, y, z).endVertex();
@@ -173,13 +150,10 @@ public final class DimensionalPortalRenderer {
                     worldRenderer.pos(x, y, z + width).endVertex();
                     break;
             }
-
             tessellator.draw();
-
             GlStateManager.popMatrix();
             GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         }
-
         GlStateManager.disableBlend();
         GlStateManager.disableTexGenCoord(GlStateManager.TexGen.S);
         GlStateManager.disableTexGenCoord(GlStateManager.TexGen.T);

@@ -124,34 +124,27 @@ public final class LimboDecay {
     /**
      * Checks if a block can be decayed and, if so, changes it directly into Unraveled Fabric.
      */
-    private static boolean decayBlockFast(World world, BlockPos pos) {
+    private static void decayBlockFast(World world, BlockPos pos) {
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
-            if (block.isNormalCube()) {
+            if (block.isNormalCube())
                 world.setBlockState(pos, ModBlocks.UNRAVELLED_FABRIC.getDefaultState());
-            } else {
-                world.setBlockState(pos, Blocks.AIR.getDefaultState());
-            }
-            return true;
+            else world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
-        return false;
     }
 
     /**
      * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
      */
-    private static boolean decayBlock(World world, BlockPos pos) {
+    private static void decayBlock(World world, BlockPos pos) {
         int index;
         IBlockState block = world.getBlockState(pos);
         if (canDecayBlock(block, world, pos)) {
             //Loop over the block IDs that decay can go through.
             //Find an index matching the current blockID, if any.
             if (block.isNormalCube()) {
-                for (index = 0; index < getDecaySequence().length; index++) {
-                    if (getDecaySequence()[index].equals(block)) {
-                        break;
-                    }
-                }
+                for (index = 0; index < getDecaySequence().length; index++)
+                    if (getDecaySequence()[index].equals(block)) break;
 
                 //Since the decay sequence is a reversed list, the block ID in the index before our match
                 //is the block ID we should change this block into. A trick in this approach is that if
@@ -160,12 +153,8 @@ public final class LimboDecay {
                 //We assume that Unraveled Fabric is NOT decayable. Otherwise, this will go out of bounds!
 
                 world.setBlockState(pos, getDecaySequence()[index - 1]);
-            } else {
-                world.setBlockState(pos, Blocks.AIR.getDefaultState());
-            }
-            return true;
+            } else world.setBlockState(pos, Blocks.AIR.getDefaultState());
         }
-        return false;
     }
 
     /**

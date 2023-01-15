@@ -21,6 +21,7 @@ import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ItemStabilizedRiftSignature extends Item { // TODO: common superclass with rift signature
     public static final String ID = "stabilized_rift_signature";
@@ -44,17 +45,10 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         ItemStack stack = player.getHeldItem(hand);
         pos = world.getBlockState(pos).getBlock().isReplaceable(world, pos) ? pos : pos.offset(side);
         // Fail if the player can't place a block there
-        if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) {
-            return EnumActionResult.FAIL;
-        }
-
-        if (world.isRemote) {
-            return EnumActionResult.SUCCESS;
-        }
-
+        if (!player.canPlayerEdit(pos, side.getOpposite(), stack)) return EnumActionResult.FAIL;
+        if (world.isRemote) return EnumActionResult.SUCCESS;
         RotatedLocation target = getTarget(stack);
-
-        if (target == null) {
+        if (Objects.isNull(target)) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
             player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".stored"), true);
@@ -73,20 +67,16 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
                 rift1.setTeleportTargetRotation(target.getYaw(), 0);
                 rift1.register();
             }
-
             // Place a rift at the source point
             world.setBlockState(pos, ModBlocks.RIFT.getDefaultState());
             TileEntityFloatingRift rift2 = (TileEntityFloatingRift) world.getTileEntity(pos);
             rift2.setDestination(RiftReference.tryMakeRelative(new Location(world, pos), target.getLocation()));
             rift2.setTeleportTargetRotation(player.rotationYaw, 0);
             rift2.register();
-
             stack.damageItem(1, player);
-
             player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".created"), true);
             world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
         }
-
         return EnumActionResult.SUCCESS;
     }
 
@@ -96,9 +86,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     }
 
     public static void clearSource(ItemStack itemStack) {
-        if (itemStack.hasTagCompound()) {
-            itemStack.getTagCompound().removeTag("destination");
-        }
+        if (itemStack.hasTagCompound()) itemStack.getTagCompound().removeTag("destination");
     }
 
     public static RotatedLocation getTarget(ItemStack itemStack) {
@@ -106,19 +94,16 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
             RotatedLocation transform = new RotatedLocation();
             transform.readFromNBT(itemStack.getTagCompound().getCompoundTag("destination"));
             return transform;
-        } else {
-            return null;
-        }
+        } return null;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         RotatedLocation transform = getTarget(stack);
-        if (transform != null) {
-            tooltip.add(I18n.format(getRegistryName() + ".bound.info", transform.getLocation().getX(), transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().dim));
-        } else {
-            tooltip.add(I18n.format(getRegistryName() + ".unbound.info"));
-        }
+        if (Objects.nonNull(transform))
+            tooltip.add(I18n.format(getRegistryName() + ".bound.info", transform.getLocation().getX(),
+                    transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().dim));
+        else tooltip.add(I18n.format(getRegistryName() + ".unbound.info"));
     }
 }

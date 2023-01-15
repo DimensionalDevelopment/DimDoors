@@ -25,13 +25,10 @@ public abstract class ItemDimensionalTrapdoor extends ItemBlock {
         super(block);
     }
 
-    // TODO: placing trapdoors on rifts, merge this code with the dimdoor code/common interface
+    // TODO: placing trapdoors on rifts, merge this code with the dimdoors code/common interface
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (world.isRemote) {
-            return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-        }
-
+        if (world.isRemote) return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
         boolean replaceable = world.getBlockState(pos).getBlock().isReplaceable(world, pos); // Check this before calling super, since that changes the block
         EnumActionResult result = super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
         if (result == EnumActionResult.SUCCESS) {
@@ -40,10 +37,8 @@ public abstract class ItemDimensionalTrapdoor extends ItemBlock {
             // Get the rift entity (not hard coded, works with any door size)
             @SuppressWarnings("unchecked") // Guaranteed to be IRiftProvider<TileEntityEntranceRift> because of constructor
             TileEntityEntranceRift entranceRift = ((IRiftProvider<TileEntityEntranceRift>) state.getBlock()).getRift(world, pos, state);
-
             // Configure the rift to its default functionality
             setupRift(entranceRift);
-
             // Register the rift in the registry
             entranceRift.markDirty();
             entranceRift.register();
@@ -54,9 +49,7 @@ public abstract class ItemDimensionalTrapdoor extends ItemBlock {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        if (I18n.hasKey(getRegistryName() + ".info")) {
-            tooltip.add(I18n.format(getRegistryName() + ".info"));
-        }
+        if (I18n.hasKey(getRegistryName() + ".info")) tooltip.add(I18n.format(getRegistryName() + ".info"));
     }
 
     protected abstract void setupRift(TileEntityEntranceRift entranceRift); // TODO: NBT-based

@@ -5,8 +5,8 @@ import lombok.Value;
 public final class GridUtils {
     @Value
     public static class GridPos {
-        private int x;
-        private int z;
+        int x;
+        int z;
     }
 
     /**
@@ -21,8 +21,7 @@ public final class GridUtils {
         int layerNumber = num - layer * layer; // The number of the spot on that layer
         //                           | First Side   |  Second Side                     |
         int x = layerNumber <= layer ? layer        :  layer - (layerNumber - layer);
-        int z = layerNumber <= layer ? layerNumber  :  layer;
-
+        int z = Math.min(layerNumber, layer);
         return new GridPos(x, z);
     }
 
@@ -35,10 +34,9 @@ public final class GridUtils {
     public static int posToNum(GridPos pos) {
         int x = pos.getX();
         int z = pos.getZ();
-        if (x >= z) { // First side
+        if (x >= z)  // First side
             return x * x + z; // (number of points in the square x * x) + (z points on the top layer)
-        } else { // Second side
+        else  // Second side
             return (z + 1) * z + z - x; // (number of points in the rectangle (z + 1) * z) + (z - x points on the top layer)
-        }
     }
 }

@@ -18,12 +18,12 @@ import java.util.Random;
 
 public class ChunkGeneratorLimbo implements IChunkGenerator {
 
-    private Random rand;
+    private final Random rand;
 
     // Noise generators
-    private NoiseGeneratorOctaves minLimitPerlinNoise;
-    private NoiseGeneratorOctaves maxLimitPerlinNoise;
-    private NoiseGeneratorOctaves mainPerlinNoise;
+    private final NoiseGeneratorOctaves minLimitPerlinNoise;
+    private final NoiseGeneratorOctaves maxLimitPerlinNoise;
+    private final NoiseGeneratorOctaves mainPerlinNoise;
     public NoiseGeneratorOctaves depthNoise;
 
     double[] mainNoiseRegion;
@@ -74,6 +74,7 @@ public class ChunkGeneratorLimbo implements IChunkGenerator {
         return false;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private double[] generateHeightmap(double[] heightMap, int xOffset, int yOffset, int zOffset, int xSize, int ySize, int zSize) {
         if (heightMap == null) heightMap = new double[xSize * ySize * zSize];
 
@@ -89,7 +90,7 @@ public class ChunkGeneratorLimbo implements IChunkGenerator {
         int depthRegionIndex = 0;
         for (int x = 0; x < xSize; x++) {
             for (int z = 0; z < zSize; z++) {
-                // These were were static but calculated by some wrongly-converted biome blend code (which is unnecessary
+                // These were static but calculated by some wrongly-converted biome blend code (which is unnecessary
                 // since there is only one biome in limbo)
                 float heightVariation = 5.959498f;
                 float baseHeight = -1.3523747f;

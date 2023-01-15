@@ -6,7 +6,7 @@ import java.util.Map;
 public class InstanceMap { // Type safe map between classes and instances
     public InstanceMap() {}
 
-    private Map<Class<?>, Object> uncheckedMap = new HashMap<>();
+    private final Map<Class<?>, Object> uncheckedMap = new HashMap<>();
 
     public <T> void put(Class<T> key, T value) {
         uncheckedMap.put(key, value);

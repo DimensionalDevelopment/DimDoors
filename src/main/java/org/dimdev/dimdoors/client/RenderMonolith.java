@@ -49,21 +49,16 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
     public void doRender(EntityMonolith monolith, double x, double y, double z, float entityYaw, float partialTicks) {
         final float minScaling = 0;
         final float maxScaling = 0.1f;
-
         float jitterScale = 0;
-        if (monolith.isDangerous()) {
+        if (monolith.isDangerous())
             // Use linear interpolation to scale how much jitter we want for our given aggro level
             jitterScale = minScaling + (maxScaling - minScaling) * monolith.getAggroProgress();
-        }
-
         // Calculate jitter - include entity ID to give Monoliths individual jitters
         float time = ((Minecraft.getSystemTime() + 0xF1234568 * monolith.getEntityId()) % 200000) / 50.0F;
-
         // We use random constants here on purpose just to get different wave forms
         double xJitter = jitterScale * Math.sin(1.1f * time) * Math.sin(0.8f * time);
         double yJitter = jitterScale * Math.sin(1.2f * time) * Math.sin(0.9f * time);
         double zJitter = jitterScale * Math.sin(1.3f * time) * Math.sin(0.7f * time);
-
         // Render with jitter
         render(monolith, x + xJitter, y + yJitter, z + zJitter, entityYaw, partialTicks);
     }
@@ -76,35 +71,27 @@ public class RenderMonolith extends RenderLiving<EntityMonolith> {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         mainModel.swingProgress = getSwingProgress(monolith, partialTicks);
-
         try {
             float interpolatedYaw = interpolateRotation(monolith.prevRenderYawOffset, monolith.renderYawOffset, partialTicks);
             float rotation;
             float pitch = monolith.prevRotationPitch + (monolith.rotationPitch - monolith.prevRotationPitch) * partialTicks;
             renderLivingAt(monolith, x, y, z);
-
             rotation = handleRotationFloat(monolith, partialTicks);
             applyRotations(monolith, rotation, interpolatedYaw, partialTicks);
-
             float scaleFactor = 0.0625F;
             GlStateManager.enableRescaleNormal();
-
             GlStateManager.scale(-1.0F, -1.0F, 1.0F);
             preRenderCallback(monolith, partialTicks);
             GlStateManager.rotate(monolith.pitchLevel, 1.0F, 0.0F, 0.0F);
             GlStateManager.translate(0.0F, 24.0F * scaleFactor - 0.0078125F, 0.0F);
-
             renderModel(monolith, 0, 0, rotation, interpolatedYaw, pitch, scaleFactor);
-
             OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
             GlStateManager.disableTexture2D();
             OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
-
             GlStateManager.disableRescaleNormal();
         } catch (Exception e) {
             DimDoors.log.error("Couldn't render entity", e);
         }
-
         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
         GlStateManager.enableTexture2D();
         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);

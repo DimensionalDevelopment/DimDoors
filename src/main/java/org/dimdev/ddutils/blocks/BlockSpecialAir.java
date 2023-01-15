@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import java.util.Random;
 
 /**
- * Allows the creation of indestructible air blocks that can have a TileEntity. Right clicks
+ * Allows the creation of indestructible air blocks that can have a TileEntity. Right-clicks
  * on this block call the onBlockActivated method, and if it returns false, call the onBlockActivated
  * method of the block that would have been hit if the block wasn't there. Left clicks pass through the
  * block (or maybe add an onLeftClick method).

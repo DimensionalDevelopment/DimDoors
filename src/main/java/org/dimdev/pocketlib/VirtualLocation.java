@@ -1,7 +1,6 @@
 package org.dimdev.pocketlib;
 
 import lombok.*;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.MaterialLiquid;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
@@ -15,6 +14,8 @@ import org.dimdev.ddutils.nbt.NBTUtils;
 import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 
+import java.util.Objects;
+
 /*@Value*/ @ToString @AllArgsConstructor @NoArgsConstructor @Builder(toBuilder = true)
 @NBTSerializable public class VirtualLocation implements INBTStorable {
     @Saved @Getter protected int dim;
@@ -27,36 +28,26 @@ import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) { return NBTUtils.writeToNBT(this, nbt); }
 
     public static VirtualLocation fromLocation(Location location) {
-        VirtualLocation virtualLocation = null;
         if (location.getWorld().provider instanceof WorldProviderPocket) {
             Pocket pocket = PocketRegistry.instance(location.getDim()).getPocketAt(location.getPos());
-            if (pocket != null) {
-                virtualLocation = pocket.getVirtualLocation(); // TODO: pockets-relative coordinates
-            } else {
-                virtualLocation = null; // TODO: door was placed in a pockets dim but outside of a pockets...
-            }
-        } else if (location.getWorld().provider instanceof WorldProviderLimbo) { // TODO: convert to interface on worldprovider
-            virtualLocation = new VirtualLocation(location.getDim(), location.getX(), location.getZ(), ModConfig.dungeons.maxDungeonDepth);
-        } // TODO: nether coordinate transform
-        if (virtualLocation == null) {
-            virtualLocation = new VirtualLocation(0, location.getX(), location.getZ(), 5); // TODO
-        }
-        return virtualLocation;
+            if (Objects.nonNull(pocket))
+                return pocket.getVirtualLocation(); // TODO: pockets-relative coordinates
+            // TODO: door was placed in a pockets dim but outside of a pockets...
+        } // TODO: convert to interface on worldprovider
+            // virtualLocation = new VirtualLocation(location.getDim(), location.getX(), location.getZ(), ModConfig.dungeons.maxDungeonDepth);
+        // TODO: nether coordinate transform
+        return new VirtualLocation(0, location.getX(), location.getZ(), 5); // TODO
     }
 
     public Location projectToWorld(boolean limboConsideredWorld) {
         World world = WorldUtils.getWorld(dim);
-        if (!limboConsideredWorld && world.provider instanceof WorldProviderLimbo) {
-            world = WorldUtils.getWorld(0);
-        }
+        if (!limboConsideredWorld && world.provider instanceof WorldProviderLimbo) world = WorldUtils.getWorld(0);
         float spread = ModConfig.general.depthSpreadFactor * depth; // TODO: gaussian spread, handle air-filled/pocket world
         int newX = (int) (x + spread * 2 * (Math.random() - 0.5));
         int newZ = (int) (z + spread * 2 * (Math.random() - 0.5));
         BlockPos pos = world.getTopSolidOrLiquidBlock(new BlockPos(newX, 0, newZ)); // Does not actually detect liquid blocks and returns the position above the surface
-        do {
-            pos = pos.up();
-        } while (world.getBlockState(pos).getMaterial() instanceof MaterialLiquid);
-        
+        do pos = pos.up();
+        while (world.getBlockState(pos).getMaterial() instanceof MaterialLiquid);
         return new Location(world, pos);
     }
 }

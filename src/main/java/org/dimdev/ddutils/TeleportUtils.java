@@ -26,6 +26,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.EnumSet;
 
+@SuppressWarnings("SameParameterValue")
 public final class TeleportUtils {
 
     // <editor-fold defaultstate="collapsed" desc="Helper functions">
@@ -177,7 +178,7 @@ public final class TeleportUtils {
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
 
-                // Setting this field seems to be useful for advancments. Adjusted dimension checks for non-vanilla
+                // Setting this field seems to be useful for advancements. Adjusted dimension checks for non-vanilla
                 // dimension support (entering the nether from any dimension should trigger it now).
                 if (newDimension == -1) {
                     setEnteredNetherPosition(player, new Vec3d(player.posX, player.posY, player.posZ));

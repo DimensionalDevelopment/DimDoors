@@ -55,7 +55,6 @@ public final class ModelManager {
         // Register item variants
         registerColoredVariants(ModItems.FABRIC);
         registerColoredVariants(ModItems.ANCIENT_FABRIC);
-
         // Register state mappers
         StateMap ignorePowered = new StateMap.Builder().ignore(BlockDoor.POWERED).build();
         ModelLoader.setCustomStateMapper(ModBlocks.GOLD_DOOR, ignorePowered);
@@ -64,8 +63,8 @@ public final class ModelManager {
         ModelLoader.setCustomStateMapper(ModBlocks.IRON_DIMENSIONAL_DOOR, ignorePowered);
         ModelLoader.setCustomStateMapper(ModBlocks.PERSONAL_DIMENSIONAL_DOOR, ignorePowered);
         ModelLoader.setCustomStateMapper(ModBlocks.WARP_DIMENSIONAL_DOOR, ignorePowered);
-
-        ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_PORTAL, new StateMap.Builder().ignore(BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());
+        ModelLoader.setCustomStateMapper(ModBlocks.DIMENSIONAL_PORTAL, new StateMap.Builder().
+                ignore(BlockDoor.FACING, BlockDoor.HALF, BlockDoor.HINGE, BlockDoor.OPEN, BlockDoor.POWERED).build());
     }
 
     private static void register(Item item) {
@@ -79,18 +78,14 @@ public final class ModelManager {
     }
 
     private static void registerColored(Item item) {
-        for (EnumDyeColor color : EnumDyeColor.values()) {
-            register(item, color.getMetadata(), color.getName());
-        }
+        for (EnumDyeColor color : EnumDyeColor.values()) register(item, color.getMetadata(), color.getName());
     }
 
     private static void registerColoredVariants(Item item) {
         ResourceLocation itemName = item.getRegistryName();
         ResourceLocation[] variants = new ResourceLocation[16];
-        for (EnumDyeColor color : EnumDyeColor.values()) {
+        for (EnumDyeColor color : EnumDyeColor.values())
             variants[color.getMetadata()] = new ResourceLocation(itemName + "_" + color.getName());
-        }
-
         ModelBakery.registerItemVariants(item, variants);
     }
 }

@@ -25,7 +25,6 @@ public abstract class BlockDimensionalTrapdoor extends BlockTrapDoor implements 
     @Override
     public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
         if (world.isRemote) return;
-
         // Check that it's a door and that the entity portal timer is 0
         if (state.getValue(BlockDoor.OPEN) && entity.timeUntilPortal == 0) {
             entity.timeUntilPortal = 50; // Disable another teleport for that entity for 2.5s

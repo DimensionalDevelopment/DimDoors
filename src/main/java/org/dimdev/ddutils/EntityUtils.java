@@ -26,8 +26,8 @@ public final class EntityUtils {
             if (playerName != null) player = entity.world.getPlayerEntityByName(((EntityItem) entity).getThrower());
             if (player != null) entity = player;
         }
-
-        if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwnerId() != null) return ((IEntityOwnable) entity).getOwnerId();
+        if (entity instanceof IEntityOwnable && ((IEntityOwnable) entity).getOwnerId() != null)
+            return ((IEntityOwnable) entity).getOwnerId();
         if (entity instanceof EntityPlayer) return entity.getUniqueID(); // ownable players shouldn't be a problem, but just in case we have a slave mod, check their owner's uuid first to send them to their owner's pocket :)
         return null;
     }

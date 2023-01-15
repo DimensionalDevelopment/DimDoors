@@ -18,7 +18,9 @@ import org.dimdev.dimdoors.shared.tileentities.TileEntityFloatingRift;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 
 import java.util.List;
+import java.util.Objects;
 
+@SuppressWarnings("JavadocDeclaration")
 public final class RayTraceHelper {
 
     public static boolean isFloatingRift(RayTraceResult hit, World world) {
@@ -50,31 +52,26 @@ public final class RayTraceHelper {
         //TODO: make this work on a server
         Vec3d playerEyesVector = player.getPositionEyes(partialTicks);
         Vec3d playerLookVector = player.getLookVec();
-
-        //Make sure that the raytrace stops if there's a block inbetween
+        //Make sure that the raytrace stops if there's a block between
         RayTraceResult firstHitBlock = RayTraceHelper.rayTraceForRiftTools(world, player, range);
         if (firstHitBlock != null) {
             Vec3d hitVector = firstHitBlock.hitVec;
             range = hitVector.distanceTo(playerEyesVector);
         }
-
         Vec3d tempVec = playerEyesVector;
         Vec3d tempVec2;
         for (double d = 0.2; d < range; d += 0.2) {
             tempVec2 = playerEyesVector.add(playerLookVector.scale(d));
             List<EntityLiving> entities = world.getEntitiesWithinAABB(EntityLiving.class, new AxisAlignedBB(tempVec.x, tempVec.y, tempVec.z, tempVec2.x, tempVec2.y, tempVec2.z));
             for (EntityLiving entity : entities) {
-                if (entity == null) { //should never happen, but just in case
+                if (Objects.isNull(entity))  //should never happen, but just in case
+                    continue;
+                AxisAlignedBB aabb = entity.getEntityBoundingBox();
+                if (Objects.isNull(aabb)) {
+                    DimDoors.log.warn("The hit-box of Entity: " + entity + " was null, somehow");
                     continue;
                 }
-                AxisAlignedBB entityHitbox = entity.getEntityBoundingBox();
-                if (entityHitbox == null) {
-                    DimDoors.log.warn("The hitbox of Entity: " + entity + " was null, somehow");
-                    continue;
-                }
-                if (entityHitbox.contains(tempVec2)) {
-                    return new RayTraceResult(entity);
-                }
+                if (aabb.contains(tempVec2)) return new RayTraceResult(entity);
             }
             tempVec = tempVec2;
         }
@@ -85,14 +82,12 @@ public final class RayTraceHelper {
         return rayTraceForRiftTools(worldIn, playerIn, playerIn.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue());
     }
 
-    //partially copied from MC source code, because Vanilla MC assumes that everything without a hitbox either can never be hit OR is a liquid
+    //partially copied from MC source code, because Vanilla MC assumes that everything without a hit-box either can never be hit OR is a liquid
     //TODO: clean this up?
     public static RayTraceResult rayTraceForRiftTools(World worldIn, EntityPlayer player, double range) {
-
         Vec3d playerLookVector = player.getLookVec();
-        Vec3d tempVector = player.getPositionEyes(1.0F); //this is what constantly gets shifted in the while-loop later and it starts at the eyes
+        Vec3d tempVector = player.getPositionEyes(1.0F); //this is what constantly gets shifted in the while-loop later, and it starts at the eyes
         Vec3d endVector = tempVector.add(playerLookVector.scale(range));
-
         if (!Double.isNaN(tempVector.x) && !Double.isNaN(tempVector.y) && !Double.isNaN(tempVector.z)) {
             if (!Double.isNaN(endVector.x) && !Double.isNaN(endVector.y) && !Double.isNaN(endVector.z)) {
                 int endX = MathHelper.floor(endVector.x);
@@ -102,86 +97,44 @@ public final class RayTraceHelper {
                 int playerY = MathHelper.floor(tempVector.y);
                 int playerZ = MathHelper.floor(tempVector.z);
                 BlockPos blockpos = new BlockPos(playerX, playerY, playerZ);
-                IBlockState iblockstate = worldIn.getBlockState(blockpos);
-                Block block = iblockstate.getBlock();
-
-                if (block.canCollideCheck(iblockstate, false) || block instanceof IRiftProvider) {
-                    RayTraceResult raytraceresult = iblockstate.collisionRayTrace(worldIn, blockpos, tempVector, endVector);
-                    if (raytraceresult != null) {
-                        return raytraceresult;
-                    }
+                IBlockState state = worldIn.getBlockState(blockpos);
+                Block block = state.getBlock();
+                if (block.canCollideCheck(state, false) || block instanceof IRiftProvider) {
+                    RayTraceResult result = state.collisionRayTrace(worldIn, blockpos, tempVector, endVector);
+                    if (Objects.nonNull(result)) return result;
                 }
-                
                 int counter = 200; //TODO: should this really be a hardcoded value?
                 while (counter-- >= 0) {
-                    if (Double.isNaN(tempVector.x) || Double.isNaN(tempVector.y) || Double.isNaN(tempVector.z) || (playerX == endX && playerY == endY && playerZ == endZ)) {
-                        return null;
-                    }
-
+                    if (Double.isNaN(tempVector.x) || Double.isNaN(tempVector.y) || Double.isNaN(tempVector.z) ||
+                            (playerX == endX && playerY == endY && playerZ == endZ)) return null;
                     boolean xFlag = true;
                     boolean yFlag = true;
                     boolean zFlag = true;
                     double x1 = 999.0D;
                     double y1 = 999.0D;
                     double z1 = 999.0D;
-
-                    if (endX > playerX) {
-                        x1 = (double) playerX + 1.0D;
-                    } else if (endX < playerX) {
-                        x1 = (double) playerX;
-                    } else {
-                        xFlag = false;
-                    }
-
-                    if (endY > playerY) {
-                        y1 = (double) playerY + 1.0D;
-                    } else if (endY < playerY) {
-                        y1 = (double) playerY;
-                    } else {
-                        yFlag = false;
-                    }
-
-                    if (endZ > playerZ) {
-                        z1 = (double) playerZ + 1.0D;
-                    } else if (endZ < playerZ) {
-                        z1 = (double) playerZ;
-                    } else {
-                        zFlag = false;
-                    }
-
+                    if (endX > playerX) x1 = (double) playerX + 1.0D;
+                    else if (endX < playerX) x1 = playerX;
+                    else xFlag = false;
+                    if (endY > playerY) y1 = (double) playerY + 1.0D;
+                    else if (endY < playerY) y1 = playerY;
+                    else yFlag = false;
+                    if (endZ > playerZ) z1 = (double) playerZ + 1.0D;
+                    else if (endZ < playerZ) z1 = playerZ;
+                    else zFlag = false;
                     double x2 = endVector.x - tempVector.x;
                     double y2 = endVector.y - tempVector.y;
                     double z2 = endVector.z - tempVector.z;
                     double x3 = 999.0D;
                     double y3 = 999.0D;
                     double z3 = 999.0D;
-
-                    if (xFlag) {
-                        x3 = (x1 - tempVector.x) / x2;
-                    }
-
-                    if (yFlag) {
-                        y3 = (y1 - tempVector.y) / y2;
-                    }
-
-                    if (zFlag) {
-                        z3 = (z1 - tempVector.z) / z2;
-                    }
-
-                    if (x3 == -0.0D) {
-                        x3 = -1.0E-4D;
-                    }
-
-                    if (y3 == -0.0D) {
-                        y3 = -1.0E-4D;
-                    }
-
-                    if (z3 == -0.0D) {
-                        z3 = -1.0E-4D;
-                    }
-
+                    if (xFlag) x3 = (x1 - tempVector.x) / x2;
+                    if (yFlag) y3 = (y1 - tempVector.y) / y2;
+                    if (zFlag) z3 = (z1 - tempVector.z) / z2;
+                    if (x3 == -0.0D) x3 = -1.0E-4D;
+                    if (y3 == -0.0D) y3 = -1.0E-4D;
+                    if (z3 == -0.0D) z3 = -1.0E-4D;
                     EnumFacing enumfacing;
-
                     if (x3 < y3 && x3 < z3) {
                         enumfacing = endX > playerX ? EnumFacing.WEST : EnumFacing.EAST;
                         tempVector = new Vec3d(x1, tempVector.y + y2 * x3, tempVector.z + z2 * x3);
@@ -192,20 +145,15 @@ public final class RayTraceHelper {
                         enumfacing = endZ > playerZ ? EnumFacing.NORTH : EnumFacing.SOUTH;
                         tempVector = new Vec3d(tempVector.x + x2 * z3, tempVector.y + y2 * z3, z1);
                     }
-
                     playerX = MathHelper.floor(tempVector.x) - (enumfacing == EnumFacing.EAST ? 1 : 0);
                     playerY = MathHelper.floor(tempVector.y) - (enumfacing == EnumFacing.UP ? 1 : 0);
                     playerZ = MathHelper.floor(tempVector.z) - (enumfacing == EnumFacing.SOUTH ? 1 : 0);
                     blockpos = new BlockPos(playerX, playerY, playerZ);
-                    IBlockState iblockstate1 = worldIn.getBlockState(blockpos);
-                    Block block1 = iblockstate1.getBlock();
-
-                    if (block1.canCollideCheck(iblockstate1, false) || block1 instanceof IRiftProvider) {
-                        RayTraceResult raytraceresult1 = iblockstate1.collisionRayTrace(worldIn, blockpos, tempVector, endVector);
-
-                        if (raytraceresult1 != null) {
-                            return raytraceresult1;
-                        }
+                    IBlockState state1 = worldIn.getBlockState(blockpos);
+                    Block block1 = state1.getBlock();
+                    if (block1.canCollideCheck(state1, false) || block1 instanceof IRiftProvider) {
+                        RayTraceResult result = state1.collisionRayTrace(worldIn, blockpos, tempVector, endVector);
+                        if (Objects.nonNull(result)) return result;
                     }
                 }
             }

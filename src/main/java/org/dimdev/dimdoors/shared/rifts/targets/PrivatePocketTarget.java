@@ -16,6 +16,7 @@ import lombok.ToString;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
@@ -29,31 +30,28 @@ public class PrivatePocketTarget extends VirtualTarget implements IEntityTarget 
     public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) {
         UUID uuid = EntityUtils.getEntityOwnerUUID(entity);
         VirtualLocation virtualLocation = VirtualLocation.fromLocation(location);
-        if (uuid != null) {
+        if (Objects.nonNull(uuid) && Objects.nonNull(virtualLocation)) {
             Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
             if (pocket == null) { // generate the private pocket and get its entrances
                 // set to where the pocket was first created
-                pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-1).build() : null);
+                pocket = PocketGenerator.generatePrivatePocket(virtualLocation.toBuilder().depth(-1).build());
                 PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
                 ((IEntityTarget) RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
-                RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
-                return true;
             } else {
                 Location destLoc = RiftRegistry.instance().getPrivatePocketEntrance(uuid); // get the last used entrances
-                if (destLoc == null) destLoc = RiftRegistry.instance().getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
-                if (destLoc == null) { // if the pocket entrances is gone, then create a new private pocket
+                if (Objects.isNull(destLoc))
+                    destLoc = RiftRegistry.instance().getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
+                if (Objects.isNull(destLoc)) { // if the pocket entrances is gone, then create a new private pocket
                     DimDoors.log.info("All entrances are gone, creating a new private pocket!");
-                    pocket = PocketGenerator.generatePrivatePocket(virtualLocation != null ? virtualLocation.toBuilder().depth(-1).build() : null);
+                    pocket = PocketGenerator.generatePrivatePocket(virtualLocation.toBuilder().depth(-1).build());
                     PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
                     destLoc = RiftRegistry.instance().getPocketEntrance(pocket);
                 }
                 ((IEntityTarget) destLoc.getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
-                RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
-                return true;
             }
-        } else {
-            return false;
-        }
+            RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
+            return true;
+        } return false;
     }
 
     @Override

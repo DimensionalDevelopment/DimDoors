@@ -52,32 +52,32 @@ public final class ModConfig {
 
     public static class Rifts {
         @Name("riftBoundingBoxInCreative")
-        @LangKey("dimdoors.general.riftBoundingBoxInCreative")
+        @LangKey("dimdoors.rifts.riftBoundingBoxInCreative")
         public boolean riftBoundingBoxInCreative;
 
         @Name("riftCloseSpeed")
-        @LangKey("dimdoors.general.riftCloseSpeed")
+        @LangKey("dimdoors.rifts.riftCloseSpeed")
         @RangeDouble(min = 0)
         public float riftCloseSpeed = 1f;
         
         @Name("enableRiftDecay")
-        @LangKey("dimdoors.world.enableDecay")
+        @LangKey("dimdoors.rifts.enableDecay")
         public boolean enableRiftDecay = true;
 
         @Name("blockRiftDecayBlackList")
-        @LangKey("dimdoors.world.blockDecayBlackList")
+        @LangKey("dimdoors.rifts.blockDecayBlackList")
         public String[] blockRiftDecayBlackList = {};
-        
-        @Name("enableDecayDrops")
-        @LangKey("dimdoors.world.enableDecayDrops")
-        public boolean enableDecayDrops = true;
+
+        @Name("decayDropChance")
+        @LangKey("dimdoors.rifts.decayDropChance")
+        public float decayDropChance = 0.1f;
         
         @Name("maxRiftSize")
-        @LangKey("dimdoors.world.maxRiftSize")
+        @LangKey("dimdoors.rifts.maxRiftSize")
         public int maxRiftSize = -1;
 
         @Name("enableRifts")
-        @LangKey("dimdoors.world.enableRifts")
+        @LangKey("dimdoors.rifts.enableRifts")
         public boolean enableRifts = true;
     }
 

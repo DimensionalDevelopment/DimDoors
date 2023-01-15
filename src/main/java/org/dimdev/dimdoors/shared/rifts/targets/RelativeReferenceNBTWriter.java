@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.rifts.targets;
 
 import net.minecraft.nbt.*;
+import net.minecraft.util.math.Vec3i;
 
 public final class RelativeReferenceNBTWriter {
 
@@ -20,8 +21,7 @@ public final class RelativeReferenceNBTWriter {
         // Read field net.minecraft.util.math.Vec3i offset
         if (nbt.hasKey("offset")) {
             NBTBase tag = nbt.getTag("offset");
-            net.minecraft.util.math.Vec3i arr = new net.minecraft.util.math.Vec3i(((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
-            obj.offset = arr;
+            obj.offset = new Vec3i(((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
         }
     }
 }

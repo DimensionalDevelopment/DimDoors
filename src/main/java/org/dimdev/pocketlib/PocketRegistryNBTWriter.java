@@ -5,6 +5,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 
+import java.util.Map;
+import java.util.Objects;
+
 public final class PocketRegistryNBTWriter {
 
     public static void writeToNBT(org.dimdev.pocketlib.PocketRegistry obj, NBTTagCompound nbt) {
@@ -18,9 +21,9 @@ public final class PocketRegistryNBTWriter {
         nbt.setInteger("publicPocketSize", obj.publicPocketSize);
 
         // Write field java.util.Map<java.lang.Integer,org.dimdev.pocketlib.Pocket> pockets
-        if (obj.pockets != null) {
+        if (Objects.nonNull(obj.pockets)) {
             NBTTagList tag = new NBTTagList();
-            for (java.util.Map.Entry<java.lang.Integer,org.dimdev.pocketlib.Pocket> element : obj.pockets.entrySet()) {
+            for (Map.Entry<java.lang.Integer,org.dimdev.pocketlib.Pocket> element : obj.pockets.entrySet()) {
                 NBTTagCompound elementNBT = new NBTTagCompound();
                 NBTTagInt key = new NBTTagInt(element.getKey());
                 elementNBT.setTag("key", key);

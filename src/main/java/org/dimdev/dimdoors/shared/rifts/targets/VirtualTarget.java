@@ -10,6 +10,8 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.RGBA;
 import org.dimdev.ddutils.nbt.INBTStorable;
 
+import java.util.Objects;
+
 /**
  * A target that is not an actual object in the game such as a block or a tile
  * entity. Only virtual targets can be saved to NBT.
@@ -20,10 +22,11 @@ public abstract class VirtualTarget implements ITarget, INBTStorable {
     public static final BiMap<String, Class<? extends VirtualTarget>> registry = HashBiMap.create();
     @Setter protected Location location;
 
+    @SuppressWarnings("deprecation")
     public static VirtualTarget readVirtualTargetNBT(NBTTagCompound nbt) {
         String type = nbt.getString("type");
         Class<? extends VirtualTarget> destinationClass = registry.get(type);
-        if (destinationClass == null) throw new RuntimeException("Unknown type '" + type + "'.");
+        if (Objects.isNull(destinationClass)) throw new RuntimeException("Unknown type '" + type + "'.");
         try {
             VirtualTarget destination = destinationClass.newInstance();
             destination.readFromNBT(nbt);

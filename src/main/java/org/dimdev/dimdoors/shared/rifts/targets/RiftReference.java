@@ -11,7 +11,7 @@ import java.util.Set;
  * Allows rifts and targets to reference another rift without having to
  * actually load the rift's chunk and get its tile entity (which could lead
  * to recursively loading many chunks to load a single rift's chunk).
- *
+ * <p>
  * Information about the referenced rift's location is stored in the RiftRegistry
  * such that when the target rift is gone, the destination is notified and invalidated
  * (see shouldInvalidate)

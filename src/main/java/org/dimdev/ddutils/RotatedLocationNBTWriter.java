@@ -16,15 +16,12 @@ public final class RotatedLocationNBTWriter {
             tag.setInteger("z", obj.location.getZ());
             nbt.setTag("location", tag);
         }
-
         // Write field float yaw
         nbt.setFloat("yaw", obj.yaw);
-
         // Write field float pitch
         nbt.setFloat("pitch", obj.pitch);
     }
 
-    @SuppressWarnings({"OverlyStrongTypeCast", "RedundantSuppression"})
     public static void readFromNBT(org.dimdev.ddutils.RotatedLocation obj, NBTTagCompound nbt) {
         // Read field org.dimdev.ddutils.Location location
         if (nbt.hasKey("location")) {
@@ -32,10 +29,8 @@ public final class RotatedLocationNBTWriter {
             org.dimdev.ddutils.Location arr = new org.dimdev.ddutils.Location(((NBTTagCompound) tag).getInteger("dim"), ((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
             obj.location = arr;
         }
-
         // Read field float yaw
         obj.yaw = nbt.getFloat("yaw");
-
         // Read field float pitch
         obj.pitch = nbt.getFloat("pitch");
     }

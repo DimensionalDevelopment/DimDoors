@@ -13,7 +13,6 @@ public final class MCPReflection {
             field = class0.getDeclaredField(deobfuscatedName);
         }
         field.setAccessible(true);
-
         try {
             Field modifiers = Field.class.getDeclaredField("modifiers");
             modifiers.setAccessible(true);

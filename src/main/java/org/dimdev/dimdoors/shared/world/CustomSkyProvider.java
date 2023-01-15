@@ -12,6 +12,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Objects;
+
 public class CustomSkyProvider extends IRenderHandler {
 
     private static final ResourceLocation locationEndSkyPng = new ResourceLocation("textures/environment/end_sky.png");
@@ -44,7 +46,7 @@ public class CustomSkyProvider extends IRenderHandler {
 
         mc.renderEngine.bindTexture(locationEndSkyPng);
 
-        if (mc.world.provider.isSurfaceWorld()) {
+        if (mc.world.provider.isSurfaceWorld() && Objects.nonNull(mc.getRenderViewEntity())) {
             GlStateManager.disableTexture2D();
             final Vec3d vec3 = world.getSkyColor(mc.getRenderViewEntity(), partialTicks);
             float f1 = (float) vec3.x;

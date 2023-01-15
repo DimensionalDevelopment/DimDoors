@@ -75,37 +75,29 @@ public class Schematic {
     public static Schematic loadFromNBT(NBTTagCompound nbt) {
         Schematic schematic = new Schematic();
         schematic.version = nbt.getInteger("Version"); //Version is required
-
         schematic.creationDate = System.currentTimeMillis();
         if (nbt.hasKey("Metadata")) { //Metadata is not required
             NBTTagCompound metadataCompound = nbt.getCompoundTag("Metadata").getCompoundTag(".");
-            if (nbt.hasKey("Author")) { //Author is not required
+            if (nbt.hasKey("Author"))  //Author is not required
                 schematic.author = metadataCompound.getString("Author");
-            }
-            //Name is not required (may be null)
+            //Name is not required (maybe null)
             schematic.name = metadataCompound.getString("Name");
-
-            if (nbt.hasKey("Date")) { //Date is not required
+            if (nbt.hasKey("Date"))  //Date is not required
                 schematic.creationDate = metadataCompound.getLong("Date");
-            } else {
-                schematic.creationDate = -1;
-            }
+            else schematic.creationDate = -1;
             if (nbt.hasKey("RequiredMods")) { //RequiredMods is not required (ironically)
                 NBTTagList requiredModsTagList = (NBTTagList) metadataCompound.getTag("RequiredMods");
                 schematic.requiredMods = new String[requiredModsTagList.tagCount()];
-                for (int i = 0; i < requiredModsTagList.tagCount(); i++) {
+                for (int i = 0; i < requiredModsTagList.tagCount(); i++)
                     schematic.requiredMods[i] = requiredModsTagList.getStringTagAt(i);
-                }
             }
         }
 
         schematic.width = nbt.getShort("Width"); //Width is required
         schematic.height = nbt.getShort("Height"); //Height is required
         schematic.length = nbt.getShort("Length"); //Length is required
-        if (nbt.hasKey("Offset")) { //Offset is not required
+        if (nbt.hasKey("Offset"))  //Offset is not required
             schematic.offset = nbt.getIntArray("Offset");
-        }
-
         NBTTagCompound paletteNBT = nbt.getCompoundTag("Palette"); //Palette is not required, however since we assume that the schematic contains at least some blocks, we can also assume that thee has to be a Palette
         Map<Integer, String> paletteMap = new HashMap<>();
         for (String key : paletteNBT.getKeySet()) {
@@ -127,30 +119,24 @@ public class Schematic {
                 stateString = "";
             }
             Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
-
-            IBlockState blockstate = block.getDefaultState();
+            IBlockState state = block.getDefaultState();
             if (!stateString.equals("")) {
                 String[] properties = stateString.split(",");
-                blockstate = getBlockStateWithProperties(block, properties);
+                state = getBlockStateWithProperties(block, properties);
             }
-            schematic.palette.add(blockstate); //@todo, can we assume that a schematic file always has all palette integers used from 0 to pallettemax-1?
+            schematic.palette.add(state); //@todo, can we assume that a schematic file always has all palette integers used from 0 to pallettemax-1?
         }
-        if (nbt.hasKey("PaletteMax")) { //PaletteMax is not required
+        if (nbt.hasKey("PaletteMax"))  //PaletteMax is not required
             schematic.paletteMax = nbt.getInteger("PaletteMax");
-        } else {
-            schematic.paletteMax = schematic.palette.size() - 1;
-        }
-
+        else schematic.paletteMax = schematic.palette.size() - 1;
         byte[] blockDataIntArray = nbt.getByteArray("BlockData"); //BlockData is required
         schematic.blockData = new short[schematic.width][schematic.height][schematic.length];
         for (int x = 0; x < schematic.width; x++) {
             for (int y = 0; y < schematic.height; y++) {
-                for (int z = 0; z < schematic.length; z++) {
+                for (int z = 0; z < schematic.length; z++)
                     schematic.blockData[x][y][z] = blockDataIntArray[x + z * schematic.width + y * schematic.width * schematic.length]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
-                }
             }
         }
-
         if (nbt.hasKey("TileEntities")) { //TileEntities is not required
             NBTTagList tileEntitiesTagList = (NBTTagList) nbt.getTag("TileEntities");
             for (int i = 0; i < tileEntitiesTagList.tagCount(); i++) {
@@ -158,7 +144,6 @@ public class Schematic {
                 schematic.tileEntities.add(tileEntityTagCompound);
             }
         }
-
         if (nbt.hasKey("Entities")) { //Entities is not required
             NBTTagList entitiesTagList = (NBTTagList) nbt.getTag("Entities");
             for (int i = 0; i < entitiesTagList.tagCount(); i++) {
@@ -166,31 +151,26 @@ public class Schematic {
                 schematic.entities.add(entityTagCompound);
             }
         }
-
         return schematic;
     }
 
     public NBTTagCompound saveToNBT() {
         NBTTagCompound nbt = new NBTTagCompound();
-
         nbt.setInteger("Version", version);
         NBTTagCompound metadataCompound = new NBTTagCompound();
         if (author != null) metadataCompound.setString("Author", author); // Author is not required
         metadataCompound.setString("Name", name);
         if (creationDate != -1) metadataCompound.setLong("Date", creationDate);
         NBTTagList requiredModsTagList = new NBTTagList();
-        for (String requiredMod : requiredMods) {
+        for (String requiredMod : requiredMods)
             requiredModsTagList.appendTag(new NBTTagString(requiredMod));
-        }
         metadataCompound.setTag("RequiredMods", requiredModsTagList);
         nbt.setTag("Metadata", metadataCompound);
-
         nbt.setShort("Width", width);
         nbt.setShort("Height", height);
         nbt.setShort("Length", length);
         nbt.setIntArray("Offset", offset);
         nbt.setInteger("PaletteMax", paletteMax);
-
         NBTTagCompound paletteNBT = new NBTTagCompound();
         for (int i = 0; i < palette.size(); i++) {
             IBlockState state = palette.get(i);
@@ -198,29 +178,20 @@ public class Schematic {
             paletteNBT.setInteger(blockStateString, i);
         }
         nbt.setTag("Palette", paletteNBT);
-
         byte[] blockDataIntArray = new byte[width * height * length];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                for (int z = 0; z < length; z++) {
+                for (int z = 0; z < length; z++)
                     blockDataIntArray[x + z * width + y * width * length] = (byte) blockData[x][y][z]; //according to the documentation on https://github.com/SpongePowered/Schematic-Specification/blob/master/versions/schematic-1.md
-                }
             }
         }
         nbt.setByteArray("BlockData", blockDataIntArray);
-
         NBTTagList tileEntitiesTagList = new NBTTagList();
-        for (NBTTagCompound tileEntityTagCompound : tileEntities) {
-            tileEntitiesTagList.appendTag(tileEntityTagCompound);
-        }
+        for (NBTTagCompound tileEntityTagCompound : tileEntities) tileEntitiesTagList.appendTag(tileEntityTagCompound);
         nbt.setTag("TileEntities", tileEntitiesTagList);
-
         NBTTagList entitiesTagList = new NBTTagList();
-        for (NBTTagCompound entityTagCompound : entities) {
-            entitiesTagList.appendTag(entityTagCompound);
-        }
+        for (NBTTagCompound entityTagCompound : entities) entitiesTagList.appendTag(entityTagCompound);
         nbt.setTag("Entities", entitiesTagList);
-
         return nbt;
     }
 
@@ -242,13 +213,12 @@ public class Schematic {
                         break;
                     }
                 }
-                if (value != null) {
+                if (Objects.nonNull(value))
                     // property is IProperty<?>, value is Comparable<?>, and the ?s refer to the same type because
                     // IProperty<T>.getAllowedValues() returns Collection<T>, but the compiler doesn't keep track of
                     // this, so casting to raw types:
-                    //noinspection unchecked,RedundantCast,rawtypes
+                    // noinspection unchecked,rawtypes
                     chosenState = chosenState.withProperty((IProperty) property, (Comparable) value);
-                }
             }
         }
         return chosenState;
@@ -260,9 +230,8 @@ public class Schematic {
         StringBuilder blockStateString = new StringBuilder();
         String totalString;
         IBlockState defaultState = block.getDefaultState();
-        if (state == defaultState) {
-            totalString = blockNameString;
-        } else { //there is at least one property not equal to the default state's property
+        if (state == defaultState) totalString = blockNameString;
+        else { //there is at least one property not equal to the default state's property
             BlockStateContainer container = block.getBlockState();
             for (IProperty<?> property : container.getProperties()) { //for every property that is valid for this type of Block
                 String defaultPropertyValue = defaultState.getProperties().get(property).toString();
@@ -283,48 +252,38 @@ public class Schematic {
     public static Schematic createFromWorld(World world, BlockPos from, BlockPos to) {
         BlockPos dimensions = to.subtract(from).add(1, 1, 1);
         Schematic schematic = new Schematic((short) dimensions.getX(), (short) dimensions.getY(), (short) dimensions.getZ());
-
         Set<String> mods = new HashSet<>();
-
         for (int x = 0; x < dimensions.getX(); x++) {
             for (int y = 0; y < dimensions.getY(); y++) {
                 for (int z = 0; z < dimensions.getZ(); z++) {
                     BlockPos pos = new BlockPos(from.getX() + x, from.getY() + y, from.getZ() + z);
-
                     IBlockState state = world.getBlockState(pos);
                     String id = getBlockStateStringFromState(state);
                     if (id.contains(":")) mods.add(id.split(":")[0]);
                     schematic.setBlockState(x, y, z, state);
-
                     TileEntity tileEntity = world.getChunk(pos).getTileEntity(pos, Chunk.EnumCreateEntityType.CHECK);
                     if (tileEntity != null) {
                         NBTTagCompound tileEntityNBT = tileEntity.serializeNBT();
                         tileEntityNBT.setInteger("x", tileEntityNBT.getInteger("x") - from.getX());
                         tileEntityNBT.setInteger("y", tileEntityNBT.getInteger("y") - from.getY());
                         tileEntityNBT.setInteger("z", tileEntityNBT.getInteger("z") - from.getZ());
-
                         schematic.tileEntities.add(tileEntityNBT);
                     }
                 }
             }
         }
-
         for (Entity entity : world.getEntitiesInAABBexcluding(null, getBoundingBox(from, to), entity -> !(entity instanceof EntityPlayerMP))) {
             NBTTagCompound entityNBT = entity.serializeNBT();
-
             NBTTagList posNBT = (NBTTagList) entityNBT.getTag("Pos");
             NBTTagList newPosNBT = new NBTTagList();
             newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(0) - from.getX()));
             newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(1) - from.getY()));
             newPosNBT.appendTag(new NBTTagDouble(posNBT.getDoubleAt(2) - from.getZ()));
             entityNBT.setTag("Pos", newPosNBT);
-
             schematic.entities.add(entityNBT);
         }
-
-        schematic.requiredMods = mods.toArray(new String[mods.size()]);
+        schematic.requiredMods = mods.toArray(new String[0]);
         schematic.creationDate = System.currentTimeMillis();
-
         return schematic;
     }
 
@@ -335,7 +294,6 @@ public class Schematic {
     public void place(World world, int xBase, int yBase, int zBase) {
         // Place the schematic's blocks
         setBlocks(world, xBase, yBase, zBase);
-
         // Set TileEntity data
         for (NBTTagCompound tileEntityNBT : tileEntities) {
             Vec3i schematicPos = new BlockPos(tileEntityNBT.getInteger("x"), tileEntityNBT.getInteger("y"), tileEntityNBT.getInteger("z"));
@@ -346,19 +304,17 @@ public class Schematic {
                 String blockTileEntityId = TileEntity.getKey(tileEntity.getClass()).toString();
                 if (schematicTileEntityId.equals(blockTileEntityId)) {
                     tileEntity.readFromNBT(tileEntityNBT);
-
                     // Correct the position
                     tileEntity.setWorld(world);
                     tileEntity.setPos(pos);
                     tileEntity.markDirty();
-                } else {
-                    throw new RuntimeException("Schematic contained TileEntity " + schematicTileEntityId + " at " + pos + " but the TileEntity of that block (" + world.getBlockState(pos) + ") must be " + blockTileEntityId);
-                }
+                } else throw new RuntimeException("Schematic contained TileEntity " + schematicTileEntityId + " at " +
+                        pos + " but the TileEntity of that block (" + world.getBlockState(pos) + ") must be " + blockTileEntityId);
             } else {
-                throw new RuntimeException("Schematic contained TileEntity info at " + pos + " but the block there (" + world.getBlockState(pos) + ") has no TileEntity.");
+                throw new RuntimeException("Schematic contained TileEntity info at " + pos + " but the block there (" +
+                        world.getBlockState(pos) + ") has no TileEntity.");
             }
         }
-
         // Spawn entities
         for (NBTTagCompound entityNBT : entities) {
             // Correct the position and UUID
@@ -370,7 +326,6 @@ public class Schematic {
             NBTTagCompound adjustedEntityNBT = entityNBT.copy();
             adjustedEntityNBT.setTag("Pos", newPosNBT);
             adjustedEntityNBT.setUniqueId("UUID", UUID.randomUUID());
-
             Entity entity = EntityList.createEntityFromNBT(adjustedEntityNBT, world);
             world.spawnEntity(entity);
         }
@@ -381,9 +336,9 @@ public class Schematic {
     }
 
     public void setBlockState(int x, int y, int z, IBlockState state) {
-        if (palette.contains(state)) {
+        if (palette.contains(state))
             blockData[x][y][z] = (short) palette.indexOf(state); // TODO: optimize this (there must be some efficient list implementations)
-        } else {
+        else {
             palette.add(state);
             blockData[x][y][z] = (short) ++paletteMax;
         }
@@ -413,13 +368,11 @@ public class Schematic {
                                     if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
-                                            if (storage == null) {
-                                                cube.setStorage(storage = new ExtendedBlockStorage(cube.getY() << 4, world.provider.hasSkyLight()));
-                                            }
+                                            if (Objects.isNull(storage))
+                                                cube.setStorage(storage = new ExtendedBlockStorage(cube.getY() << 4,
+                                                        world.provider.hasSkyLight()));
                                             storage.set(x, y, z, state);
-                                        } else if (setAir) {
-                                            storage.set(x, y, z, state);
-                                        }
+                                        } else if (setAir) storage.set(x, y, z, state);
                                     }
                                 }
                             }
@@ -441,7 +394,7 @@ public class Schematic {
                     Chunk chunk = world.getChunk((xBase >> 4) + chunkX, (zBase >> 4) + chunkZ);
                     ExtendedBlockStorage[] storageArray = chunk.getBlockStorageArray();
                     for (int storageY = 0; storageY <= (height >> 4) + 1; storageY++) {
-                        // Get the storage only once for eficiency
+                        // Get the storage only once for efficiency
                         ExtendedBlockStorage storage = storageArray[(yBase >> 4) + storageY];
                         boolean setAir = storage != null;
                         for (int x = 0; x < 16; x++) {
@@ -453,14 +406,12 @@ public class Schematic {
                                     if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
                                         if (!state.getBlock().equals(Blocks.AIR)) {
-                                            if (storage == null) {
+                                            if (Objects.isNull(storage)) {
                                                 storage = new ExtendedBlockStorage((yBase >> 4) + storageY << 4, world.provider.hasSkyLight());
                                                 storageArray[(yBase >> 4) + storageY] = storage;
                                             }
                                             storage.set(x, y, z, state);
-                                        } else if (setAir) {
-                                            storage.set(x, y, z, state);
-                                        }
+                                        } else if (setAir) storage.set(x, y, z, state);
                                     }
                                 }
                             }

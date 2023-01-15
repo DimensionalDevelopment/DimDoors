@@ -2,6 +2,8 @@ package org.dimdev.ddutils;
 
 import org.jgrapht.Graph;
 
+import java.util.Objects;
+
 public final class GraphUtils {
     public static <V, E> void replaceVertex(Graph<V, E> graph, V vertex, V replace) {
         graph.addVertex(replace);
@@ -11,7 +13,7 @@ public final class GraphUtils {
     }
 
     public static <V, E> V followPointer(Graph<V, E> graph, V pointer) {
-        if (pointer != null) {
+        if (Objects.nonNull(pointer)) {
             E edge = graph.outgoingEdgesOf(pointer).stream().findFirst().orElse(null);
             return edge != null ? graph.getEdgeTarget(edge) : null;
         }

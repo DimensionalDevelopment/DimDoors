@@ -34,7 +34,6 @@ public class ItemRiftStabilizer extends Item {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         RayTraceResult hit = RayTraceHelper.rayTraceForRiftTools(world, player);
-
         if (world.isRemote) {
             if (RayTraceHelper.isFloatingRift(hit, world)) {
                 // TODO: not necessarily success, fix this and all other similar cases to make arm swing correct
@@ -45,7 +44,6 @@ public class ItemRiftStabilizer extends Item {
                 return new ActionResult<>(EnumActionResult.FAIL, stack);
             }
         }
-
         if (RayTraceHelper.isFloatingRift(hit, world)) {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
             if (!rift.stabilized && !rift.closing) {
@@ -54,9 +52,7 @@ public class ItemRiftStabilizer extends Item {
                 stack.damageItem(1, player);
                 player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".stabilized"), true);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-            } else {
-                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".already_stabilized"), true);
-            }
+            } else player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".already_stabilized"), true);
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);
     }

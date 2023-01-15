@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityRift;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ItemRiftBlade extends ItemSword {
 
@@ -49,41 +50,33 @@ public class ItemRiftBlade extends ItemSword {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
         RayTraceResult hit = RayTraceHelper.rayTraceEntity(world, player, 16, 1.0F); //TODO: make the range of the Rift Blade configurable
-        if (hit == null) {
-            hit = RayTraceHelper.rayTraceForRiftTools(world, player);
-        }
-
+        if (Objects.isNull(hit)) hit = RayTraceHelper.rayTraceForRiftTools(world, player);
         if (world.isRemote) {
-            if (RayTraceHelper.isLivingEntity(hit) || RayTraceHelper.isRift(hit, world)) {
+            if (RayTraceHelper.isLivingEntity(hit) || RayTraceHelper.isRift(hit, world))
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-            } else {
+            else {
                 player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".rift_miss"), true);
                 TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
                 return new ActionResult<>(EnumActionResult.FAIL, stack);
             }
         }
-
         if (RayTraceHelper.isLivingEntity(hit)) {
             double damageMultiplier = (double) stack.getItemDamage() /  (double) stack.getMaxDamage();
             // TODO: gaussian, instead or random
             double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
-            double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;            
-            
+            double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;
             Vec3d playerVec = player.getPositionVector();
             Vec3d entityVec = hit.hitVec;
             Vec3d offsetDirection = playerVec.subtract(entityVec).normalize();
             offsetDirection = offsetDirection.rotateYaw((float) (offsetRotationYaw * Math.PI) / 180);
-
             BlockPos tpPos = new BlockPos(entityVec.add(offsetDirection.scale(offsetDistance)));
             while (world.getBlockState(tpPos).getMaterial().blocksMovement()) tpPos = tpPos.up(); // TODO: move to ddutils
             TeleportUtils.teleport(player, new Location(world, tpPos), (player.rotationYaw - (float) offsetRotationYaw) % 360, player.rotationPitch);
-            
             stack.damageItem(1, player);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         } else if (RayTraceHelper.isRift(hit, world)) {
             TileEntityRift rift = (TileEntityRift) world.getTileEntity(hit.getBlockPos());
             rift.teleport(player);
-
             stack.damageItem(1, player);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }

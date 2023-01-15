@@ -6,8 +6,8 @@ import org.dimdev.dimdoors.DimDoors;
 @SuppressWarnings("OverloadedVarargsMethod")
 public class MessageTarget implements IEntityTarget {
     private ITarget forwardTo;
-    private String message;
-    private Object[] messageParams;
+    private final String message;
+    private final Object[] messageParams;
 
     public MessageTarget(ITarget forwardTo, String message, Object... messageParams) {
         this.forwardTo = forwardTo;
@@ -27,8 +27,6 @@ public class MessageTarget implements IEntityTarget {
         if (forwardTo != null) {
             forwardTo.as(Targets.ENTITY).receiveEntity(entity, relativeYaw, relativePitch);
             return true;
-        } else {
-            return false;
-        }
+        } return false;
     }
 }

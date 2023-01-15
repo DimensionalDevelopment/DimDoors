@@ -17,8 +17,8 @@ import net.minecraft.world.WorldServer;
 @ToString @Value
 public class Location implements Serializable {
 
-    public final int dim;
-    public final BlockPos pos;
+    public int dim;
+    public BlockPos pos;
 
     public Location(World world, BlockPos pos) {
         this(world.provider.getDimension(), pos);
@@ -67,9 +67,7 @@ public class Location implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Location)) {
-            return false;
-        }
+        if (!(obj instanceof Location)) return false;
         Location other = (Location) obj;
         return other.dim == dim && other.pos.equals(pos);
     }

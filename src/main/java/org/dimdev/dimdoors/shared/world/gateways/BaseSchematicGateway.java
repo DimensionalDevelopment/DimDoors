@@ -44,7 +44,7 @@ public abstract class BaseSchematicGateway extends BaseGateway {
                 try {
                     schematicDataStream.close();
                 } catch (IOException ex) {
-                    DimDoors.log.error("Error occured while closing schematicDataStream", ex);
+                    DimDoors.log.error("Error occurred while closing schematicDataStream", ex);
                 }
             }
         }

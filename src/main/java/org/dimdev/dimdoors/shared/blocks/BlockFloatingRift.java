@@ -57,9 +57,8 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess world, BlockPos pos) {
         if (ModConfig.rifts.riftBoundingBoxInCreative) {
             EntityPlayer player = DimDoors.proxy.getLocalPlayer();
-            if (player != null && player.isCreative()) {
+            if (Objects.nonNull(player) && player.isCreative())
                 return blockState.getBoundingBox(world, pos);
-            }
         }
         return null;
     }
@@ -77,10 +76,8 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
         // randomDisplayTick can be called before the tile entity is created in multiplayer
         if (!(tileEntity instanceof TileEntityFloatingRift)) return;
         TileEntityFloatingRift rift = (TileEntityFloatingRift) tileEntity;
-
         boolean outsidePocket = !ModDimensions.isDimDoorsPocketDimension(world);
         double speed = 0.1D;
-
         if (rift.closing) {
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(new RiftParticle(
                     world,
@@ -88,7 +85,6 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
                     rand.nextGaussian() * speed, rand.nextGaussian() * speed, rand.nextGaussian() * speed,
                     outsidePocket ? 0.8f : 0.4f, 0.55f, 2000, 2000));
         }
-
         FMLClientHandler.instance().getClient().effectRenderer.addEffect(new RiftParticle(
                 world,
                 pos.getX() + .5, pos.getY() + 1.5, pos.getZ() + .5,

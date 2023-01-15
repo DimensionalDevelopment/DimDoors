@@ -19,8 +19,6 @@ public class Cube {
 
     @SideOnly(Side.CLIENT)
     public void draw(RGBA color, double radian) {
-        for (Plane plane : planes) {
-            plane.draw(color, radian);
-        }
+        for (Plane plane : planes) plane.draw(color, radian);
     }
 }

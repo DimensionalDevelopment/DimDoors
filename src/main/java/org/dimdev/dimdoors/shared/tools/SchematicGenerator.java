@@ -11,22 +11,23 @@ import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
 import org.dimdev.dimdoors.shared.blocks.BlockFabric;
 import org.dimdev.dimdoors.shared.blocks.BlockFabricAncient;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget;
+import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
 import org.dimdev.dimdoors.shared.rifts.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.shared.rifts.targets.PocketExitMarker;
 import org.dimdev.dimdoors.shared.rifts.targets.PrivatePocketExitTarget;
-import org.dimdev.dimdoors.shared.rifts.registry.LinkProperties;
+import org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public final class SchematicGenerator {
 
     // Run "gradlew generatePocketSchematics" to generate the pocket schematics
@@ -61,7 +62,7 @@ public final class SchematicGenerator {
             NBTTagCompound schematicNBT = schematic.saveToNBT();
             File saveFile = new File(schematicDir, saveFolders[i++ % saveFolders.length] + schematic.name + ".schem");
             saveFile.getParentFile().mkdirs();
-            DataOutputStream schematicDataStream = new DataOutputStream(new FileOutputStream(saveFile));
+            DataOutputStream schematicDataStream = new DataOutputStream(Files.newOutputStream(saveFile.toPath()));
             CompressedStreamTools.writeCompressed(schematicNBT, schematicDataStream);
             schematicDataStream.flush();
             schematicDataStream.close();

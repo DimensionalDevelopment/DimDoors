@@ -16,7 +16,6 @@ public class ModelMonolith extends ModelBase {
     public ModelMonolith() {
         textureWidth = 256;
         textureHeight = 256;
-
         monolith = new ModelRenderer(this, 0, 0);
         monolith.addBox(-24F, -108F / 1.3F, -6F, 48, 108, 12);
     }
@@ -24,7 +23,6 @@ public class ModelMonolith extends ModelBase {
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         EntityMonolith monolith = (EntityMonolith) entity;
-
         setRotationAngles(0, 0, 0, 0, 0, 0, monolith);
         GlStateManager.scale(monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier(), monolith.getRenderSizeModifier());
         this.monolith.render(scale);

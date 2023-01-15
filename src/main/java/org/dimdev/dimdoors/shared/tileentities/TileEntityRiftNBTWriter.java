@@ -1,14 +1,16 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
 import net.minecraft.nbt.*;
+import org.dimdev.ddutils.RGBA;
+
+import java.util.Objects;
 
 public final class TileEntityRiftNBTWriter {
 
     public static void writeToNBT(org.dimdev.dimdoors.shared.tileentities.TileEntityRift obj, NBTTagCompound nbt) {
         // Write field org.dimdev.dimdoors.shared.rifts.registry.LinkProperties properties
-        if (obj.properties != null) {
-            if (obj.properties != null) nbt.setTag("properties", obj.properties.writeToNBT(new NBTTagCompound()));
-        }
+        if (Objects.nonNull(obj.properties))
+            nbt.setTag("properties", obj.properties.writeToNBT(new NBTTagCompound()));
 
         // Write field boolean relativeRotation
         nbt.setBoolean("relativeRotation", obj.relativeRotation);
@@ -50,8 +52,7 @@ public final class TileEntityRiftNBTWriter {
         // Read field org.dimdev.ddutils.RGBA color
         if (nbt.hasKey("color")) {
             NBTBase tag = nbt.getTag("color");
-            org.dimdev.ddutils.RGBA arr = new org.dimdev.ddutils.RGBA(((NBTTagCompound) tag).getFloat("red"), ((NBTTagCompound) tag).getFloat("green"), ((NBTTagCompound) tag).getFloat("blue"), ((NBTTagCompound) tag).getFloat("alpha"));
-            obj.color = arr;
+            obj.color = new RGBA(((NBTTagCompound) tag).getFloat("red"), ((NBTTagCompound) tag).getFloat("green"), ((NBTTagCompound) tag).getFloat("blue"), ((NBTTagCompound) tag).getFloat("alpha"));
         }
     }
 }

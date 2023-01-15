@@ -14,7 +14,7 @@ public class GatewayTwoPillars extends BaseSchematicGateway {
 
     @Override
     protected void generateRandomBits(World world, int x, int y, int z) {
-        //Replace some of the ground around the gateway with bricks
+        //Replace some ground around the gateway with bricks
         for (int xc = -GATEWAY_RADIUS; xc <= GATEWAY_RADIUS; xc++) {
             for (int zc = -GATEWAY_RADIUS; zc <= GATEWAY_RADIUS; zc++) {
                 //Check that the block is supported by an opaque block.
@@ -23,10 +23,11 @@ public class GatewayTwoPillars extends BaseSchematicGateway {
                 if (world.getBlockState(new BlockPos(x + xc, y - 1, z + zc)).getMaterial().isSolid()) {
                     //Randomly choose whether to place bricks or not. The math is designed so that the
                     //chances of placing a block decrease as we get farther from the gateway's center.
-                    if (Math.abs(xc) + Math.abs(zc) < world.rand.nextInt(2) + 3) {
+                    int i = Math.abs(xc) + Math.abs(zc);
+                    if (i < world.rand.nextInt(2) + 3) {
                         //Place Stone Bricks
                         world.setBlockState(new BlockPos(x + xc, y, z + zc), Blocks.STONEBRICK.getDefaultState());
-                    } else if (Math.abs(xc) + Math.abs(zc) < world.rand.nextInt(3) + 3) {
+                    } else if (i < world.rand.nextInt(3) + 3) {
                         //Place Cracked Stone Bricks
                         world.setBlockState(new BlockPos(x + xc, y, z + zc), Blocks.STONEBRICK.getDefaultState().withProperty(BlockStoneBrick.VARIANT, BlockStoneBrick.EnumType.CRACKED));
                     }

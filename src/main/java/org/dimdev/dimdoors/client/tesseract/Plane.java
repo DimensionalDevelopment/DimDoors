@@ -26,7 +26,6 @@ public class Plane {
     public void draw(RGBA color, double radian) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuffer();
-
         worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
         GlStateManager.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
         project(worldRenderer, rotYW(vectors[0], radian), 0, 0, color);
@@ -76,7 +75,7 @@ public class Plane {
     private static void project(BufferBuilder buffer, Vector4f vector, int u, int v, RGBA color) {
         double scalar = 1d / (vector.getW() + 1);
         Vector3f vector1 = vector.toVector3().mul(scalar);
-
-        buffer.pos(vector1.getX(), vector1.getY(), vector1.getZ()).tex(u, v).color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).endVertex();
+        buffer.pos(vector1.getX(), vector1.getY(), vector1.getZ()).tex(u, v).color(color.getRed(), color.getGreen(),
+                color.getBlue(), color.getAlpha()).endVertex();
     }
 }

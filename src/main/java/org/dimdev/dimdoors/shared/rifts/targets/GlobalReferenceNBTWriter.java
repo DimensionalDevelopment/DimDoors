@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.rifts.targets;
 
 import net.minecraft.nbt.*;
+import org.dimdev.ddutils.Location;
 
 public final class GlobalReferenceNBTWriter {
 
@@ -21,8 +22,7 @@ public final class GlobalReferenceNBTWriter {
         // Read field org.dimdev.ddutils.Location target
         if (nbt.hasKey("target")) {
             NBTBase tag = nbt.getTag("target");
-            org.dimdev.ddutils.Location arr = new org.dimdev.ddutils.Location(((NBTTagCompound) tag).getInteger("dim"), ((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
-            obj.target = arr;
+            obj.target = new Location(((NBTTagCompound) tag).getInteger("dim"), ((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
         }
     }
 }

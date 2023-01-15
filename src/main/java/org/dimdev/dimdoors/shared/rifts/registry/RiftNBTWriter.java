@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.shared.rifts.registry;
 
 import net.minecraft.nbt.*;
+import org.dimdev.ddutils.Location;
+
+import java.util.Objects;
 
 public final class RiftNBTWriter {
 
@@ -19,9 +22,8 @@ public final class RiftNBTWriter {
         nbt.setBoolean("isFloating", obj.isFloating);
 
         // Write field org.dimdev.dimdoors.shared.rifts.registry.LinkProperties properties
-        if (obj.properties != null) {
-            if (obj.properties != null) nbt.setTag("properties", obj.properties.writeToNBT(new NBTTagCompound()));
-        }
+        if (Objects.nonNull(obj.properties))
+            nbt.setTag("properties", obj.properties.writeToNBT(new NBTTagCompound()));
     }
 
     @SuppressWarnings({"OverlyStrongTypeCast", "RedundantSuppression"})
@@ -29,8 +31,7 @@ public final class RiftNBTWriter {
         // Read field org.dimdev.ddutils.Location location
         if (nbt.hasKey("location")) {
             NBTBase tag = nbt.getTag("location");
-            org.dimdev.ddutils.Location arr = new org.dimdev.ddutils.Location(((NBTTagCompound) tag).getInteger("dim"), ((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
-            obj.location = arr;
+            obj.location = new Location(((NBTTagCompound) tag).getInteger("dim"), ((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
         }
 
         // Read field boolean isFloating

@@ -5,10 +5,12 @@ import org.apache.commons.io.FileUtils;
 import org.dimdev.ddutils.schem.Schematic;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.util.Objects;
 
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public final class SchematicProcessor {
 
-    @SuppressWarnings("UseOfSystemOutOrSystemErr")
     public static void main(String... args) throws IOException {
         // Parse arguments
         boolean testMode = false;
@@ -40,20 +42,18 @@ public final class SchematicProcessor {
 
 
     private static void process(File file, boolean testMode) throws IOException {
-        if (file.isDirectory()) {
-            for (File subFile : file.listFiles()) {
+        if (file.isDirectory() && Objects.nonNull(file.listFiles())) {
+            for (File subFile : Objects.requireNonNull(file.listFiles())) {
                 process(subFile, testMode);
             }
         } else {
-            Schematic schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(new FileInputStream(file)));
+            Schematic schematic = Schematic.loadFromNBT(CompressedStreamTools.readCompressed(Files.newInputStream(file.toPath())));
             schematic = runTasks(schematic);
 
             if (schematic != null) {
                 File outputFile = testMode ? new File("out", file.getName()) : file;
-                if (!testMode) {
-                    outputFile.delete();
-                }
-                CompressedStreamTools.writeCompressed(schematic.saveToNBT(), new FileOutputStream(outputFile));
+                if (!testMode) outputFile.delete();
+                CompressedStreamTools.writeCompressed(schematic.saveToNBT(), Files.newOutputStream(outputFile.toPath()));
             }
         }
     }

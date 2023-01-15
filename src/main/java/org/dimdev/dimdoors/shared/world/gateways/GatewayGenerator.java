@@ -25,8 +25,8 @@ public class GatewayGenerator implements IWorldGenerator {
     private static final int CHUNK_LENGTH = 16;
     private static final int MAX_GATEWAY_GENERATION_ATTEMPTS = 10;
 
-    private ArrayList<BaseGateway> gateways;
-    private BaseGateway defaultGateway;
+    private final ArrayList<BaseGateway> gateways;
+    private final BaseGateway defaultGateway;
 
     public GatewayGenerator() {
         gateways = new ArrayList<>();
@@ -126,14 +126,14 @@ public class GatewayGenerator implements IWorldGenerator {
         return pos.getY() >= MIN_RIFT_Y && pos.getY() <= MAX_RIFT_Y
                && world.isAirBlock(pos.up())
                && world.getBlockState(pos).getBlock() != Blocks.BEDROCK
-               && world.getBlockState(pos.down()) != Blocks.BEDROCK //<-- Stops Nether roof spawning. DO NOT REMOVE!
+               && world.getBlockState(pos.down()).getBlock() != Blocks.BEDROCK //<-- Stops Nether roof spawning. DO NOT REMOVE!
                && checkFoundationMaterial(world, pos.down());
     }
 
     private static boolean checkFoundationMaterial(World world, BlockPos pos) {
         //We check the material and opacity to prevent generating gateways on top of trees or houses,
         //or on top of strange things like tall grass, water, slabs, or torches.
-        //We also want to avoid generating things on top of the Nether's bedrock!
+        //We also want to avoid generating things on top of the Nether bedrock!
         Material material = world.getBlockState(pos).getMaterial();
         return material != Material.LEAVES && material != Material.WOOD && material != Material.GOURD
                && world.isBlockNormalCube(pos, false) && world.getBlockState(pos).getBlock() != Blocks.BEDROCK;

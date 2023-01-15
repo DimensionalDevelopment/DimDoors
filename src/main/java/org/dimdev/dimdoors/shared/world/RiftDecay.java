@@ -79,18 +79,15 @@ public class RiftDecay {
     /**
      * Checks if a block can be decayed and, if so, changes it into world thread.
      */
-    private static boolean decayBlock(World world, BlockPos pos) {
+    private static void decayBlock(World world, BlockPos pos) {
         IBlockState block = world.getBlockState(pos);
         //Check the decaying block against the blacklist and remove it as necessary
         if (canDecayBlock(block, world, pos)) {
             //change block to air and spawn a new world thread item
             world.setBlockState(pos, Blocks.AIR.getDefaultState());
-            if (ModConfig.rifts.enableDecayDrops) {
+            if(random.nextFloat()<ModConfig.rifts.decayDropChance)
                 world.spawnEntity(new EntityItem(world,pos.getX(),pos.getY(),pos.getZ(),new ItemStack(ModItems.WORLD_THREAD)));
-            }
-            return true;
         }
-        return false;
     }
 
     /**

@@ -22,14 +22,10 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
 
     private void renderKeyHole(TileEntityEntranceRift tile, double x, double y, double z, int i) {
         EnumFacing rotation = EnumFacing.byHorizontalIndex((tile.orientation.getHorizontalIndex() + 3) % 4);
-
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
-
         GlStateManager.rotate(180.0F - 90 * rotation.getHorizontalIndex(), 0.0F, 1.0F, 0.0F);
-
         GlStateManager.translate(0.007F, .25F, 0F);
-
         switch (rotation) {
             case SOUTH:
                 GlStateManager.translate(0.5F, 0F, -0.03F);
@@ -44,11 +40,8 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                 GlStateManager.translate(.5F, 0F, .97F);
                 break;
         }
-
         GlStateManager.disableLighting();
-
         GlStateManager.enableBlend();
-
         if (i == 1) {
             bindTexture(keyholeLight);
             GlStateManager.color(1, 1, 1, .7f);
@@ -57,26 +50,21 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
             bindTexture(keyPath);
             GlStateManager.blendFunc(GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_SRC_ALPHA);
         }
-
         GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(180.0F, 0.0F, 0.0F, 1.0F);
         GlStateManager.scale(0.00860625F, 0.00730625F, 0.0086625F);
         GlStateManager.translate(-65.0F, -107.0F, -3.0F);
-
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuffer();
         worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         byte b0 = 7;
-
-        worldRenderer.pos((double) (0 - b0), (double) (128 + b0), 0.0D).tex(0.0D, 1.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
-        worldRenderer.pos((double) (128 + b0), (double) (128 + b0), 0.0D).tex(1.0D, 1.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
-        worldRenderer.pos((double) (128 + b0), (double) (0 - b0), 0.0D).tex(1.0D, 0.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
-        worldRenderer.pos((double) (0 - b0), (double) (0 - b0), 0.0D).tex(0.0D, 0.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
+        worldRenderer.pos(-b0, 128 + b0, 0.0D).tex(0.0D, 1.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
+        worldRenderer.pos(128 + b0, 128 + b0, 0.0D).tex(1.0D, 1.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
+        worldRenderer.pos(128 + b0, -b0, 0.0D).tex(1.0D, 0.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
+        worldRenderer.pos(-b0, -b0, 0.0D).tex(0.0D, 0.0D).normal(0.0F, 0.0F, -1.0F).endVertex();
         tessellator.draw();
-
         GlStateManager.translate(0.0F, 0.0F, -1.0F);
         GlStateManager.disableBlend();
-
         GlStateManager.popMatrix();
     }
 
@@ -96,11 +84,8 @@ public class TileEntityEntranceRiftRenderer extends TileEntitySpecialRenderer<Ti
                 entrance.extendLeft + entrance.extendRight,
                 entrance.extendDown + entrance.extendUp,
                 entrance.getColors(16));
-
         if (entrance.lockStatus >= 1) {
-            for (int i = 0; i < 1 + entrance.lockStatus; i++) {
-                renderKeyHole(entrance, x, y, z, i);
-            }
+            for (int i = 0; i < 1 + entrance.lockStatus; i++) renderKeyHole(entrance, x, y, z, i);
         }
     }
 }

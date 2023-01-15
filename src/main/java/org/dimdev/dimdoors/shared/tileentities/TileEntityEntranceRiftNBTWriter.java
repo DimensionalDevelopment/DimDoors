@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.tileentities;
 
 import net.minecraft.nbt.*;
+import net.minecraft.util.EnumFacing;
 
 public final class TileEntityEntranceRiftNBTWriter {
 
@@ -29,8 +30,7 @@ public final class TileEntityEntranceRiftNBTWriter {
         // Read field net.minecraft.util.EnumFacing orientation
         if (nbt.hasKey("orientation")) {
             NBTBase tag = nbt.getTag("orientation");
-            net.minecraft.util.EnumFacing arr = net.minecraft.util.EnumFacing.values()[((NBTTagInt) tag).getInt()];
-            obj.orientation = arr;
+            obj.orientation = EnumFacing.values()[((NBTTagInt) tag).getInt()];
         }
     }
 }

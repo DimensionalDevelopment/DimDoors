@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.shared.rifts.targets;
 
 import net.minecraft.nbt.*;
+import net.minecraft.util.math.BlockPos;
 
 public final class LocalReferenceNBTWriter {
 
@@ -20,8 +21,7 @@ public final class LocalReferenceNBTWriter {
         // Read field net.minecraft.util.math.BlockPos target
         if (nbt.hasKey("target")) {
             NBTBase tag = nbt.getTag("target");
-            net.minecraft.util.math.BlockPos arr = new net.minecraft.util.math.BlockPos(((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
-            obj.target = arr;
+            obj.target = new BlockPos(((NBTTagCompound) tag).getInteger("x"), ((NBTTagCompound) tag).getInteger("y"), ((NBTTagCompound) tag).getInteger("z"));
         }
     }
 }

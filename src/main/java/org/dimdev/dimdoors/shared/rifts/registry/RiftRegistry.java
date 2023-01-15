@@ -41,7 +41,7 @@ public class RiftRegistry extends WorldSavedData {
     protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
     protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
 
-    // <editor-fold defaultstate="collapsed" desc="Code for reading/writing/getting the registry">
+    // Code for reading/writing/getting the registry
 
     public static class RiftSubregistry extends WorldSavedData {
         private int dim;
@@ -142,14 +142,15 @@ public class RiftRegistry extends WorldSavedData {
 
     public static RiftRegistry instance() {
         MapStorage storage = WorldUtils.getWorld(0).getMapStorage();
-        RiftRegistry instance = (RiftRegistry) storage.getOrLoadData(RiftRegistry.class, DATA_NAME);
-
-        if (instance == null) {
-            instance = new RiftRegistry();
-            storage.setData(DATA_NAME, instance);
+        if(Objects.nonNull(storage)) {
+            WorldSavedData instance = storage.getOrLoadData(RiftRegistry.class, DATA_NAME);
+            if (Objects.isNull(instance) || !(instance instanceof RiftRegistry)) {
+                instance = new RiftRegistry();
+                storage.setData(DATA_NAME, instance);
+            }
+            return (RiftRegistry) instance;
         }
-
-        return instance;
+        throw new RuntimeException("Could not get storage data for dimension 0! Something went very wrong!");
     }
 
     @Override

@@ -28,15 +28,13 @@ public class BlockFabricUnravelled extends BlockEmptyDrops {
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
         setSoundType(SoundType.STONE);
-
         setTickRandomly(true);
     }
 
     @Override
     public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
         // Spread decay in Limbo
-        if (world.provider instanceof WorldProviderLimbo && ModConfig.limbo.enableLimboDecay) {
+        if (world.provider instanceof WorldProviderLimbo && ModConfig.limbo.enableLimboDecay)
             LimboDecay.applySpreadDecay(world, pos);
-        }
     }
 }
