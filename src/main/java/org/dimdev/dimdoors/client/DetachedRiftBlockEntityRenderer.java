@@ -65,7 +65,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 
     private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, MatrixStack matrices, float tickDelta) {
         double radian = this.nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
-        RGBA color = rift.getColor();
+        RGBA color = RGBA.WHITE; //TODO REMOVE //rift.getColor();
         if (Objects.equals(color, RGBA.NONE)) {
             color = DEFAULT_COLOR;
         }
