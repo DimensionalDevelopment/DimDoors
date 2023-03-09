@@ -1,40 +1,27 @@
-//file:noinspection GrDeprecatedAPIUsage
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net/' }
-        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
-        classpath group: 'io.franzbecker', name: 'gradle-lombok', version: '5.+'
-    }
+//file:noinspection GroovyUnusedAssignment
+//file:noinspection GroovyAssignabilityCheck
+
+plugins {
+    id 'net.minecraftforge.gradle' version '5.1+'
+    id 'io.franzbecker.gradle-lombok' version '5.+'
+    id 'wtf.gofancy.fancygradle' version '1.1.+'
 }
 
-apply plugin: 'io.franzbecker.gradle-lombok'
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'maven-publish'
-
-configurations {
-    embed
-    implementation.extendsFrom(embed)
+fancyGradle {
+    patches {
+        resources
+        coremods
+        asm
+        mergetool
+    }
 }
-
-// Minecraft, MCP, Forge, and Java versions
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-ext.mcversion = "1.12.2"
-ext.forgeversion = "14.23.5.2860"
 
 // Mod version
 version = "3.1.0"
 group = "org.dimdev.dimdoors"
 archivesBaseName = "DimensionalDoors"
 
-// Build number
-String fullVersion = ext.mcversion + "-" + version
-String jarVersion = fullVersion.replace("+", "-") // Github/Travis doesn't seem to support + in filenames
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 // Configuration
 minecraft {
@@ -53,36 +40,55 @@ minecraft {
     }
 }
 
+configurations {
+    embed
+    implementation.extendsFrom(embed)
+}
+
 repositories {
     google()
     mavenCentral()
     maven {
-        url = uri("https://jitpack.io")
+        url = uri('https://jitpack.io')
     }
     maven {
-        url = uri("https://oss.sonatype.org/content/repositories/public/")
+        url = uri('https://oss.sonatype.org/content/repositories/public/')
     }
 }
 
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2860"
-	embed("com.flowpowered:flow-math:1.0.3")
+    minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2860'
+	embed('com.flowpowered:flow-math:1.0.3')
     embed('org.jgrapht:jgrapht-core:1.4.0')
-    embed("com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT")
+    embed('com.github.DimensionalDevelopment:poly2tri.java:master-SNAPSHOT')
     compileOnly 'com.github.DimensionalDevelopment:AnnotatedNBT:-SNAPSHOT'
     compileOnly 'io.github.opencubicchunks:cubicchunks:1.12.2-0.0.819.0-SNAPSHOT'
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
-// Tasks
-compileJava {
-    //options.compilerArgs += "-proc:only" // To debug AnnotatedNBT code generation
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', '1.12.2'
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': '1.12.2'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
 }
 
 jar {
-    archiveName = archivesBaseName + "-" + jarVersion + ".jar"
+    manifest {
+        attributes([
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.version,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
     from(configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }) {
         exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
     }
@@ -90,28 +96,9 @@ jar {
 
 jar.finalizedBy('reobfJar')
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    // This will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", "1.12.2"
-
-    // Replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': "1.12.2"
-    }
-
-    // Copy everything else except mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
-
-task generatePocketSchematics(dependsOn: jar, type: JavaExec, group: "dimdoors") {
-    classpath = files('build/libs/' + jar.archiveName)
+tasks.register('generatePocketSchematics', JavaExec) {
+    dependsOn jar
+    classpath = files('build/libs/' + jar.archiveFileName)
     classpath += sourceSets.main.runtimeClasspath
     main = "org.dimdev.dimdoors.shared.tools.SchematicGenerator"
     args = ["src/main/resources/assets/dimdoors/pockets/schematic"]

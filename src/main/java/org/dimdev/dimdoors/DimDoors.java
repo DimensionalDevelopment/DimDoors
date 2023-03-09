@@ -48,7 +48,7 @@ public class DimDoors {
     public static final String MODID = "dimdoors";
     public static final String MODNAME = "Dimensional Doors";
     public static final String MCVERSIONS = "[1.12,1.13)";
-    public static final String VERSION = "3.0.10";
+    public static final String VERSION = "3.1.0";
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,)";
 
     @Mod.Instance(DimDoors.MODID)
@@ -62,12 +62,10 @@ public class DimDoors {
     @Getter public static File configurationFolder;
 
     // Initialization
-
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event) {
         log = event.getModLog();
-
         // Register event handlers
         MinecraftForge.EVENT_BUS.register(EventHandler.class);
         MinecraftForge.EVENT_BUS.register(ModBlocks.class);
@@ -76,7 +74,6 @@ public class DimDoors {
         MinecraftForge.EVENT_BUS.register(ModSounds.class);
         MinecraftForge.EVENT_BUS.register(ModBiomes.class);
         MinecraftForge.EVENT_BUS.register(ModConfig.class);
-
         // Register rift destinations
         VirtualTarget.registry.put("available_link", RandomTarget.class);
         VirtualTarget.registry.put("escape", EscapeTarget.class);
@@ -89,28 +86,22 @@ public class DimDoors {
         VirtualTarget.registry.put("private", PrivatePocketTarget.class);
         VirtualTarget.registry.put("private_pocket_exit", PrivatePocketExitTarget.class);
         VirtualTarget.registry.put("relative", RelativeReference.class);
-
         // Register entities
-        EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class, "monoliths", 0, DimDoors.instance, 70, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class,
+                "monoliths", 0, DimDoors.instance, 70, 1, true);
         EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
-
         // Register tile entities
         TileEntity.register("dimdoors:entrance_rift", TileEntityEntranceRift.class);
         TileEntity.register("dimdoors:floating_rift", TileEntityFloatingRift.class);
-
         // Register dimensions
         ModDimensions.registerDimensions();
-
         // Register default targets
         Targets.registerDefaultTargets();
-        
         //Register GUIhandler
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new DDGUIHandler());
-
         // Make config folder and check if config needs to be regenerated TODO
         configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");
         configurationFolder.mkdirs();
-
         proxy.onPreInitialization(event);
     }
 
@@ -121,13 +112,10 @@ public class DimDoors {
         LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_projectiles"));
         LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_splash_potions"));
         LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_potion_arrows"));
-
         // Load schematics
         SchematicHandler.INSTANCE.loadSchematics();
-
         // Register world generators
         GameRegistry.registerWorldGenerator(new GatewayGenerator(), 0);
-
         proxy.onInitialization(event);
     }
 
