@@ -1,13 +1,12 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.client.BlockStateModelGenerator;
-import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.data.client.Models;
-import net.minecraft.data.client.TextureMap;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.ItemModelGenerators;
+import net.minecraft.data.models.model.ModelTemplates;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
@@ -22,31 +21,31 @@ public class BlockStateProvider extends FabricModelProvider {
 	}
 
 	@Override
-	public void generateBlockStateModels(BlockStateModelGenerator generator) {
-		generator.registerDoor(ModBlocks.GOLD_DOOR);
-		generator.registerDoor(ModBlocks.STONE_DOOR);
-		generator.registerDoor(ModBlocks.QUARTZ_DOOR);
-		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("iron_dimensional_door")), Blocks.IRON_DOOR);
-		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("gold_dimensional_door")), ModBlocks.GOLD_DOOR);
-		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
-		registerDoor(generator, Registries.BLOCK.get(DimensionalDoors.id("oak_dimensional_door")), Blocks.OAK_DOOR);
-//		registerDoor(generator, Registry.BLOCK.get(Util.id("dungeon_door")), ModBlocks.STONE_DOOR);
+	public void generateBlockStateModels(BlockModelGenerators generator) {
+		generator.createDoor(ModBlocks.GOLD_DOOR);
+		generator.createDoor(ModBlocks.STONE_DOOR);
+		generator.createDoor(ModBlocks.QUARTZ_DOOR);
+		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("iron_dimensional_door")), Blocks.IRON_DOOR);
+		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("gold_dimensional_door")), ModBlocks.GOLD_DOOR);
+		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
+		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("oak_dimensional_door")), Blocks.OAK_DOOR);
+//		createDoor(generator, Registry.BLOCK.get(Util.id("dungeon_door")), ModBlocks.STONE_DOOR);
 
 
-		generator.registerLog(ModBlocks.DRIFTWOOD_LOG).log(ModBlocks.DRIFTWOOD_LOG).wood(ModBlocks.DRIFTWOOD_WOOD);
-		generator.registerCubeAllModelTexturePool(ModBlocks.DRIFTWOOD_PLANKS)
+		generator.woodProvider(ModBlocks.DRIFTWOOD_LOG).log(ModBlocks.DRIFTWOOD_LOG).wood(ModBlocks.DRIFTWOOD_WOOD);
+		generator.createTrivialCube(ModBlocks.DRIFTWOOD_PLANKS)
 				.fence(ModBlocks.DRIFTWOOD_FENCE)
 				.fenceGate(ModBlocks.DRIFTWOOD_GATE)
 				.button(ModBlocks.DRIFTWOOD_BUTTON)
 				.slab(ModBlocks.DRIFTWOOD_SLAB)
 				.stairs(ModBlocks.DRIFTWOOD_STAIRS);
-		generator.registerDoor(ModBlocks.DRIFTWOOD_DOOR);
+		generator.createDoor(ModBlocks.DRIFTWOOD_DOOR);
 		generator.registerTrapdoor(ModBlocks.DRIFTWOOD_TRAPDOOR);
 
 		generator.registerCubeAllModelTexturePool(ModBlocks.AMALGAM_BLOCK)
 				.slab(ModBlocks.AMALGAM_SLAB)
 				.stairs(ModBlocks.AMALGAM_STAIRS);
-		generator.registerDoor(ModBlocks.AMALGAM_DOOR);
+		generator.createDoor(ModBlocks.AMALGAM_DOOR);
 		generator.registerTrapdoor(ModBlocks.AMALGAM_TRAPDOOR);
 		generator.registerSimpleCubeAll(ModBlocks.AMALGAM_ORE);
 		generator.registerSimpleCubeAll(ModBlocks.RUST);
@@ -96,30 +95,30 @@ public class BlockStateProvider extends FabricModelProvider {
 
 	}
 
-	public void registerDoor(BlockStateModelGenerator generator, Block doorBlock, Block textureSource) {
+	public void createDoor(BlockModelGenerators generator, Block doorBlock, Block textureSource) {
 		TextureMap textureMap = TextureMap.topBottom(textureSource);
-		Identifier identifier = Models.DOOR_BOTTOM_LEFT.upload(doorBlock, textureMap, generator.modelCollector);
-		Identifier identifier2 = Models.DOOR_BOTTOM_LEFT_OPEN.upload(doorBlock, textureMap, generator.modelCollector);
-		Identifier identifier3 = Models.DOOR_BOTTOM_RIGHT.upload(doorBlock, textureMap, generator.modelCollector);
-		Identifier identifier4 = Models.DOOR_BOTTOM_RIGHT_OPEN.upload(doorBlock, textureMap, generator.modelCollector);
-		Identifier identifier5 = Models.DOOR_TOP_LEFT.upload(doorBlock, textureMap, generator.modelCollector);
-		Identifier identifier6 = Models.DOOR_TOP_LEFT_OPEN.upload(doorBlock, textureMap, generator.modelCollector);
-		Identifier identifier7 = Models.DOOR_TOP_RIGHT.upload(doorBlock, textureMap, generator.modelCollector);
-		Identifier identifier8 = Models.DOOR_TOP_RIGHT_OPEN.upload(doorBlock, textureMap, generator.modelCollector);
+		ResourceLocation identifier = Models.DOOR_BOTTOM_LEFT.upload(doorBlock, textureMap, generator.modelCollector);
+		ResourceLocation identifier2 = Models.DOOR_BOTTOM_LEFT_OPEN.upload(doorBlock, textureMap, generator.modelCollector);
+		ResourceLocation identifier3 = Models.DOOR_BOTTOM_RIGHT.upload(doorBlock, textureMap, generator.modelCollector);
+		ResourceLocation identifier4 = Models.DOOR_BOTTOM_RIGHT_OPEN.upload(doorBlock, textureMap, generator.modelCollector);
+		ResourceLocation identifier5 = Models.DOOR_TOP_LEFT.upload(doorBlock, textureMap, generator.modelCollector);
+		ResourceLocation identifier6 = Models.DOOR_TOP_LEFT_OPEN.upload(doorBlock, textureMap, generator.modelCollector);
+		ResourceLocation identifier7 = Models.DOOR_TOP_RIGHT.upload(doorBlock, textureMap, generator.modelCollector);
+		ResourceLocation identifier8 = Models.DOOR_TOP_RIGHT_OPEN.upload(doorBlock, textureMap, generator.modelCollector);
 		generator.registerItemModel(doorBlock.asItem());
 		generator.blockStateCollector.accept(BlockStateModelGenerator.createDoorBlockState(doorBlock, identifier, identifier2, identifier3, identifier4, identifier5, identifier6, identifier7, identifier8));
 	}
 
 	@Override
-	public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-		itemModelGenerator.register(ModItems.FUZZY_FIREBALL, Models.GENERATED);
-		itemModelGenerator.register(ModItems.FABRIC_OF_FINALITY, Models.GENERATED);
-		itemModelGenerator.register(ModItems.GARMENT_OF_REALITY, Models.GENERATED);
-		itemModelGenerator.register(ModItems.LIMINAL_LINT, Models.GENERATED);
-		itemModelGenerator.register(ModItems.ENDURING_FIBERS, Models.GENERATED);
-		itemModelGenerator.register(ModItems.RIFT_PEARL, Models.GENERATED);
-		itemModelGenerator.register(ModItems.AMALGAM_LUMP, Models.GENERATED);
-		itemModelGenerator.register(ModItems.CLOD, Models.GENERATED);
+	public void generateItemModels(ItemModelGenerators itemModelGenerator) {
+		itemModelGenerator.generateFlatItem(ModItems.FUZZY_FIREBALL, ModelTemplates.FLAT_ITEM);
+		itemModelGenerator.generateFlatItem(ModItems.FABRIC_OF_FINALITY, ModelTemplates.FLAT_ITEM);
+		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY, ModelTemplates.FLAT_ITEM);
+		itemModelGenerator.generateFlatItem(ModItems.LIMINAL_LINT, ModelTemplates.FLAT_ITEM);
+		itemModelGenerator.generateFlatItem(ModItems.ENDURING_FIBERS, ModelTemplates.FLAT_ITEM);
+		itemModelGenerator.generateFlatItem(ModItems.RIFT_PEARL, ModelTemplates.FLAT_ITEM);
+		itemModelGenerator.generateFlatItem(ModItems.AMALGAM_LUMP, ModelTemplates.FLAT_ITEM);
+		itemModelGenerator.generateFlatItem(ModItems.CLOD, ModelTemplates.FLAT_ITEM);
 
 	}
 }

@@ -4,39 +4,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
-
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.advancement.Advancement;
-import net.minecraft.advancement.AdvancementRewards;
-import net.minecraft.advancement.CriterionMerger;
-import net.minecraft.advancement.criterion.CriterionConditions;
-import net.minecraft.advancement.criterion.RecipeUnlockedCriterion;
-import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
 
-public class TesselatingRecipeJsonBuilder implements CraftingRecipeJsonBuilder {
+public class TesselatingRecipeJsonBuilder implements RecipeBuilder {
 	private final RecipeCategory category;
 	private final Item output;
 	private final int outputCount;
 	private final List<String> pattern = Lists.newArrayList();
 	private final Map<Character, Ingredient> inputs = Maps.newLinkedHashMap();
-	private final Advancement.Builder advancementBuilder = Advancement.Builder.create();
+	private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
 
 	@Nullable
 	private String group;
@@ -44,26 +41,26 @@ public class TesselatingRecipeJsonBuilder implements CraftingRecipeJsonBuilder {
 	private float experience = 1.0f;
 	private int weavingTime = 200;
 
-	public TesselatingRecipeJsonBuilder(ItemConvertible output, int outputCount) {
+	public TesselatingRecipeJsonBuilder(ItemLike output, int outputCount) {
 		this.category = RecipeCategory.MISC; //TODO: FIND out if need to be different
 		this.output = output.asItem();
 		this.outputCount = outputCount;
 	}
 
-	public static TesselatingRecipeJsonBuilder create(ItemConvertible output) {
+	public static TesselatingRecipeJsonBuilder create(ItemLike output) {
 		return create(output, 1);
 	}
 
-	public static TesselatingRecipeJsonBuilder create(ItemConvertible output, int outputCount) {
+	public static TesselatingRecipeJsonBuilder create(ItemLike output, int outputCount) {
 		return new TesselatingRecipeJsonBuilder(output, outputCount);
 	}
 
 	public TesselatingRecipeJsonBuilder input(Character c, TagKey<Item> tag) {
-		return this.input(c, Ingredient.fromTag(tag));
+		return this.input(c, Ingredient.of(tag));
 	}
 
-	public TesselatingRecipeJsonBuilder input(Character c, ItemConvertible itemProvider) {
-		return this.input(c, Ingredient.ofItems(itemProvider));
+	public TesselatingRecipeJsonBuilder input(Character c, ItemLike itemProvider) {
+		return this.input(c, Ingredient.of(itemProvider));
 	}
 
 	public TesselatingRecipeJsonBuilder input(Character c, Ingredient ingredient) {
@@ -86,8 +83,8 @@ public class TesselatingRecipeJsonBuilder implements CraftingRecipeJsonBuilder {
 		}
 	}
 
-	public TesselatingRecipeJsonBuilder criterion(String string, CriterionConditions criterionConditions) {
-		this.advancementBuilder.criterion(string, criterionConditions);
+	public TesselatingRecipeJsonBuilder unlockedBy(String string, CriterionTriggerInstance criterionConditions) {
+		this.advancementBuilder.addCriterion(string, criterionConditions);
 		return this;
 	}
 
@@ -106,18 +103,18 @@ public class TesselatingRecipeJsonBuilder implements CraftingRecipeJsonBuilder {
 		return this;
 	}
 
-	public Item getOutputItem() {
+	public Item getResult() {
 		return this.output;
 	}
 
-	public void offerTo(Consumer<RecipeJsonProvider> exporter, Identifier recipeId) {
+	public void save(Consumer<FinishedRecipe> exporter, ResourceLocation recipeId) {
 		this.validate(recipeId);
-		this.advancementBuilder.parent(ROOT).criterion("has_the_recipe", RecipeUnlockedCriterion.create(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).criteriaMerger(CriterionMerger.OR);
+		this.advancementBuilder.parent(ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
 
-		exporter.accept(new TesselatingRecipeJsonProvider(recipeId, this.output, this.outputCount, this.group == null ? "" : this.group, this.pattern, this.inputs, this.advancementBuilder, recipeId.withPrefixedPath("recipes/tesselating/"), experience, weavingTime));
+		exporter.accept(new TesselatingRecipeJsonProvider(recipeId, this.output, this.outputCount, this.group == null ? "" : this.group, this.pattern, this.inputs, this.advancementBuilder, recipeId.withPrefix("recipes/tesselating/"), experience, weavingTime));
 	}
 
-	private void validate(Identifier recipeId) {
+	private void validate(ResourceLocation recipeId) {
 		if (this.pattern.isEmpty()) {
 			throw new IllegalStateException("No pattern is defined for shaped recipe " + recipeId + "!");
 		} else {
@@ -145,19 +142,19 @@ public class TesselatingRecipeJsonBuilder implements CraftingRecipeJsonBuilder {
 		}
 	}
 
-	static class TesselatingRecipeJsonProvider implements RecipeJsonProvider {
-		private final Identifier recipeId;
+	static class TesselatingRecipeJsonProvider implements FinishedRecipe {
+		private final ResourceLocation recipeId;
 		private final Item output;
 		private final int resultCount;
 		private final String group;
 		private final List<String> pattern;
 		private final Map<Character, Ingredient> inputs;
 		private final Advancement.Builder advancementBuilder;
-		private final Identifier advancementId;
+		private final ResourceLocation advancementId;
 		private final float experience;
 		private final int weavingTime;
 
-		public TesselatingRecipeJsonProvider(Identifier recipeId, Item output, int resultCount, String group, List<String> pattern, Map<Character, Ingredient> inputs, Advancement.Builder advancementBuilder, Identifier advancementId, float experience, int weavingTime) {
+		public TesselatingRecipeJsonProvider(ResourceLocation recipeId, Item output, int resultCount, String group, List<String> pattern, Map<Character, Ingredient> inputs, Advancement.Builder advancementBuilder, ResourceLocation advancementId, float experience, int weavingTime) {
 			this.recipeId = recipeId;
 			this.output = output;
 			this.resultCount = resultCount;
@@ -170,7 +167,7 @@ public class TesselatingRecipeJsonBuilder implements CraftingRecipeJsonBuilder {
 			this.weavingTime = weavingTime;
 		}
 
-		public void serialize(JsonObject json) {
+		public void serializeRecipeData(JsonObject json) {
 			if (!this.group.isEmpty()) {
 				json.addProperty("group", this.group);
 			}
@@ -190,7 +187,7 @@ public class TesselatingRecipeJsonBuilder implements CraftingRecipeJsonBuilder {
 
 			json.add("key", jsonObject);
 			JsonObject jsonObject2 = new JsonObject();
-			jsonObject2.addProperty("item", Registries.ITEM.getId(this.output).toString());
+			jsonObject2.addProperty("item", BuiltInRegistries.ITEM.getKey(this.output).toString());
 			if (this.resultCount > 1) {
 				jsonObject2.addProperty("count", this.resultCount);
 			}
@@ -200,21 +197,21 @@ public class TesselatingRecipeJsonBuilder implements CraftingRecipeJsonBuilder {
 			json.addProperty("weavingtime", weavingTime);
 		}
 
-		public RecipeSerializer<?> getSerializer() {
+		public RecipeSerializer<?> getType() {
 			return ModRecipeSerializers.TESSELATING;
 		}
 
-		public Identifier getRecipeId() {
+		public ResourceLocation getId() {
 			return this.recipeId;
 		}
 
 		@Nullable
-		public JsonObject toAdvancementJson() {
-			return this.advancementBuilder.toJson();
+		public JsonObject serializeAdvancement() {
+			return this.advancementBuilder.serializeToJson();
 		}
 
 		@Nullable
-		public Identifier getAdvancementId() {
+		public ResourceLocation getAdvancementId() {
 			return this.advancementId;
 		}
 	}

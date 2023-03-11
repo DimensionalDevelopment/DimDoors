@@ -1,50 +1,47 @@
 package org.dimdev.dimdoors.datagen;
 
 import java.util.function.Consumer;
-
-import net.minecraft.advancement.criterion.InventoryChangedCriterion;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.server.recipe.RecipeJsonProvider;
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder;
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
 import static org.dimdev.dimdoors.DimensionalDoors.id;
 
 public class DimdoorsRecipeProvider extends FabricRecipeProvider {
-	private static final TagKey<Item> GOLD_INGOTS = TagKey.of(RegistryKeys.ITEM, new Identifier("c", "gold_ingots"));
-	private static final TagKey<Item> IRON_INGOTS = TagKey.of(RegistryKeys.ITEM, new Identifier("c", "iron_ingots"));
-	private static final TagKey<Item> DIAMONDS = TagKey.of(RegistryKeys.ITEM, new Identifier("c", "diamond"));
+	private static final TagKey<Item> GOLD_INGOTS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "gold_ingots"));
+	private static final TagKey<Item> IRON_INGOTS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "iron_ingots"));
+	private static final TagKey<Item> DIAMONDS = TagKey.create(Registries.ITEM, new ResourceLocation("c", "diamond"));
 
 	public DimdoorsRecipeProvider(FabricDataOutput dataGenerator) {
 		super(dataGenerator);
 	}
 
 	@Override
-	public void generate(Consumer<RecipeJsonProvider> exporter) {
+	public void buildRecipes(Consumer<FinishedRecipe> exporter) {
 		//TODO: Find out proper RecipeCategory for these? I just random added this to make it work.
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.STONE_DOOR).pattern("XX").pattern("XX").pattern("XX").input('X', Blocks.STONE).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Blocks.STONE)).offerTo(exporter, id("stone_door"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.GOLD_DOOR, 3).pattern("XX").pattern("XX").pattern("XX").input('X', GOLD_INGOTS).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.GOLD_INGOT)).offerTo(exporter, id("gold_door"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModBlocks.QUARTZ_DOOR).pattern("XX").pattern("XX").pattern("XX").input('X', Items.QUARTZ).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.QUARTZ)).offerTo(exporter, id("quartz_door"));
-		ShapelessRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_BLADE).input(Items.IRON_SWORD).input(Items.ENDER_PEARL, 2).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(Items.IRON_SWORD)).offerTo(exporter, id("rift_blade"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_REMOVER).pattern(" # ").pattern("#X#").pattern(" # ").input('#', GOLD_INGOTS).input('X', Items.ENDER_PEARL).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.RIFT_BLADE)).offerTo(exporter, id("rift_remover"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_REMOVER).pattern("###").pattern("#X#").pattern("###").input('#', GOLD_INGOTS).input('X', ModItems.STABLE_FABRIC).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter, id("rift_remover_stable_fabric"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE).pattern(" # ").pattern("#X#").pattern(" # ").input('#', IRON_INGOTS).input('X', Items.ENDER_PEARL).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.RIFT_BLADE)).offerTo(exporter, id("rift_signature"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE).pattern("###").pattern("#X#").pattern("###").input('#', IRON_INGOTS).input('X', ModItems.STABLE_FABRIC).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter, id("rift_signature_stable_fabric"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_STABILIZER).pattern(" # ").pattern("#X#").pattern(" # ").input('#', DIAMONDS).input('X', Items.ENDER_PEARL).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.RIFT_BLADE)).offerTo(exporter, id("rift_stabilizer"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.RIFT_STABILIZER).pattern("###").pattern("#X#").pattern("###").input('#', DIAMONDS).input('X', ModItems.STABLE_FABRIC).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.STABLE_FABRIC)).offerTo(exporter, id("rift_stabilizer_stable_fabric"));
-		ShapedRecipeJsonBuilder.create(RecipeCategory.MISC, ModItems.STABILIZED_RIFT_SIGNATURE).pattern("# #").pattern(" X ").pattern("# #").input('#', Items.ENDER_PEARL).input('X', ModItems.RIFT_SIGNATURE).criterion("inventory_changed", InventoryChangedCriterion.Conditions.items(ModItems.RIFT_SIGNATURE)).offerTo(exporter, id("stabilized_rift_signature"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.STONE_DOOR).pattern("XX").pattern("XX").pattern("XX").define('X', Blocks.STONE).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.STONE)).save(exporter, id("stone_door"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.GOLD_DOOR, 3).pattern("XX").pattern("XX").pattern("XX").define('X', GOLD_INGOTS).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.GOLD_INGOT)).save(exporter, id("gold_door"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.QUARTZ_DOOR).pattern("XX").pattern("XX").pattern("XX").define('X', Items.QUARTZ).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.QUARTZ)).save(exporter, id("quartz_door"));
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ModItems.RIFT_BLADE).requires(Items.IRON_SWORD).requires(Items.ENDER_PEARL, 2).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.IRON_SWORD)).save(exporter, id("rift_blade"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_REMOVER).pattern(" # ").pattern("#X#").pattern(" # ").define('#', GOLD_INGOTS).define('X', Items.ENDER_PEARL).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE)).save(exporter, id("rift_remover"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_REMOVER).pattern("###").pattern("#X#").pattern("###").define('#', GOLD_INGOTS).define('X', ModItems.STABLE_FABRIC).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.STABLE_FABRIC)).save(exporter, id("rift_remover_stable_fabric"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE).pattern(" # ").pattern("#X#").pattern(" # ").define('#', IRON_INGOTS).define('X', Items.ENDER_PEARL).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE)).save(exporter, id("rift_signature"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE).pattern("###").pattern("#X#").pattern("###").define('#', IRON_INGOTS).define('X', ModItems.STABLE_FABRIC).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.STABLE_FABRIC)).save(exporter, id("rift_signature_stable_fabric"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER).pattern(" # ").pattern("#X#").pattern(" # ").define('#', DIAMONDS).define('X', Items.ENDER_PEARL).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE)).save(exporter, id("rift_stabilizer"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER).pattern("###").pattern("#X#").pattern("###").define('#', DIAMONDS).define('X', ModItems.STABLE_FABRIC).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.STABLE_FABRIC)).save(exporter, id("rift_stabilizer_stable_fabric"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STABILIZED_RIFT_SIGNATURE).pattern("# #").pattern(" X ").pattern("# #").define('#', Items.ENDER_PEARL).define('X', ModItems.RIFT_SIGNATURE).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_SIGNATURE)).save(exporter, id("stabilized_rift_signature"));
 
 		ColoredFabricRecipeProvider.generate(exporter);
 		TesselatingRecipeProvider.generate(exporter);
