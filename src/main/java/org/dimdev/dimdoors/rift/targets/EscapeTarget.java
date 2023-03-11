@@ -1,24 +1,21 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import java.util.UUID;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
@@ -43,30 +40,30 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		if (!ModDimensions.isPocketDimension(entity.world) && !(ModDimensions.isLimboDimension(entity.world))) {
-			chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.not_in_pocket_dim")));
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+		if (!ModDimensions.isPocketDimension(entity.level) && !(ModDimensions.isLimboDimension(entity.level))) {
+			chat(entity, MutableComponent.create(new TranslatableContents("rifts.destinations.escape.not_in_pocket_dim")));
 			return false;
 		}
-		if (ModDimensions.isLimboDimension(entity.world) && !this.canEscapeLimbo) {
-			chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.cannot_escape_limbo")));
+		if (ModDimensions.isLimboDimension(entity.level) && !this.canEscapeLimbo) {
+			chat(entity, MutableComponent.create(new TranslatableContents("rifts.destinations.escape.cannot_escape_limbo")));
 			return false;
 		}
-		if (entity.getEntityWorld().isClient)
+		if (entity.getCommandSenderWorld().isClientSide)
 			return false;
-		UUID uuid = entity.getUuid();
+		UUID uuid = entity.getUUID();
 		if (uuid != null) {
 			//Location destLoc = DimensionalRegistry.getRiftRegistry().getOverworldRift(uuid);
-			if (entity.world.getPlayerByUuid(uuid) == null) {
+			if (entity.level.getPlayerByUUID(uuid) == null) {
 				LOGGER.log(Level.ERROR, "Tried to get player for escape target from uuid, but player does not exist, uh oh");
 				return false;
 			}
 			LOGGER.log(Level.INFO, "sending player from limbo to their spawnpoint, good luck!");
 			Location destLoc;
-			if (((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition() != null) {
-				destLoc = new Location(((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointDimension(), ((ServerPlayerEntity) entity.world.getPlayerByUuid(uuid)).getSpawnPointPosition());
+			if (((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnPosition() != null) {
+				destLoc = new Location(((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnPosition());
 			} else {
-				destLoc = new Location(DimensionalDoors.getServer().getOverworld(), DimensionalDoors.getServer().getOverworld().getSpawnPos());
+				destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getSharedSpawnPos());
 
 			}
 
@@ -92,22 +89,22 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				Location location = destLoc; //VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false); //TODO Fix world projection.
 				entity = TeleportUtil.teleport(entity, location.getWorld(), location.getBlockPos(), relativeAngle, relativeVelocity);
 				entity.fallDistance = 0;
-				Random random = Random.create();
-				BlockPos.iterateOutwards(location.pos.add(0, -3, 0), 3, 2, 3).forEach((pos1 -> {
-					if (random.nextFloat() < (1 / ((float) location.pos.getSquaredDistance(pos1))) * DimensionalDoors.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
+				RandomSource random = RandomSource.create();
+				BlockPos.withinManhattan(location.pos.offset(0, -3, 0), 3, 2, 3).forEach((pos1 -> {
+					if (random.nextFloat() < (1 / ((float) location.pos.distSqr(pos1))) * DimensionalDoors.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
 						Block block = location.getWorld().getBlockState(pos1).getBlock();
 						if (UnravelUtil.unravelBlocksMap.containsKey(block))
-							location.getWorld().setBlockState(pos1, UnravelUtil.unravelBlocksMap.get(block).getDefaultState());
+							location.getWorld().setBlockAndUpdate(pos1, UnravelUtil.unravelBlocksMap.get(block).defaultBlockState());
 						else if (UnravelUtil.whitelistedBlocksForLimboRemoval.contains(block)) {
-							location.getWorld().setBlockState(pos1, ModBlocks.UNRAVELLED_FABRIC.getDefaultState());
+							location.getWorld().setBlockAndUpdate(pos1, ModBlocks.UNRAVELLED_FABRIC.defaultBlockState());
 						}
 					}
 				}));
 			} else {
 				if (destLoc == null) {
-					chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.did_not_use_rift")));
+					chat(entity, MutableComponent.create(new TranslatableContents("rifts.destinations.escape.did_not_use_rift")));
 				} else {
-					chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.rift_has_closed")));
+					chat(entity, MutableComponent.create(new TranslatableContents("rifts.destinations.escape.rift_has_closed")));
 				}
 				if (ModDimensions.LIMBO_DIMENSION != null) {
 					entity = TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
@@ -127,13 +124,13 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 		return VirtualTargetType.ESCAPE;
 	}
 
-	public static NbtCompound toNbt(EscapeTarget virtualTarget) {
-		NbtCompound nbt = new NbtCompound();
+	public static CompoundTag toNbt(EscapeTarget virtualTarget) {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);
 		return nbt;
 	}
 
-	public static EscapeTarget fromNbt(NbtCompound nbt) {
+	public static EscapeTarget fromNbt(CompoundTag nbt) {
 		return new EscapeTarget(nbt.getBoolean("canEscapeLimbo"));
 	}
 }

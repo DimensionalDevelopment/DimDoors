@@ -1,26 +1,24 @@
 package org.dimdev.dimdoors.recipe;
 
 import java.util.Map;
-
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import com.google.gson.JsonObject;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.RecipeType;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.collection.DefaultedList;
 
 public class TesselatingRecipe extends ShapedRecipe {
 	public final float experience;
 	public final int weavingTime;
 
-	public TesselatingRecipe(Identifier id, String group, int width, int height, DefaultedList<Ingredient> defaultedList, ItemStack itemStack, float experience, int weavingTime) {
-		super(id, group, CraftingRecipeCategory.MISC, width, height, defaultedList, itemStack);
+	public TesselatingRecipe(ResourceLocation id, String group, int width, int height, NonNullList<Ingredient> defaultedList, ItemStack itemStack, float experience, int weavingTime) {
+		super(id, group, CraftingBookCategory.MISC, width, height, defaultedList, itemStack);
 
 		this.experience = experience;
 		this.weavingTime = weavingTime;
@@ -39,32 +37,32 @@ public class TesselatingRecipe extends ShapedRecipe {
 	public static class Serializer implements RecipeSerializer<TesselatingRecipe> {
 
 		@Override
-		public TesselatingRecipe read(Identifier id, JsonObject jsonObject) {
-			String string = JsonHelper.getString(jsonObject, "group", "");
-			Map<String, Ingredient> map = ShapedRecipe.readSymbols(JsonHelper.getObject(jsonObject, "key"));
-			String[] strings = ShapedRecipe.removePadding(ShapedRecipe.getPattern(JsonHelper.getArray(jsonObject, "pattern")));
+		public TesselatingRecipe fromJson(ResourceLocation id, JsonObject jsonObject) {
+			String string = GsonHelper.getAsString(jsonObject, "group", "");
+			Map<String, Ingredient> map = ShapedRecipe.keyFromJson(GsonHelper.getAsJsonObject(jsonObject, "key"));
+			String[] strings = ShapedRecipe.shrink(ShapedRecipe.patternFromJson(GsonHelper.getAsJsonArray(jsonObject, "pattern")));
 			int i = strings[0].length();
 			int j = strings.length;
-			DefaultedList<Ingredient> defaultedList = ShapedRecipe.createPatternMatrix(strings, map, i, j);
-			ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "result"));
-			float experience = JsonHelper.getFloat(jsonObject, "experience", 0.0F);
-			int weavingTime = JsonHelper.getInt(jsonObject, "weavingtime", 200);
+			NonNullList<Ingredient> defaultedList = ShapedRecipe.dissolvePattern(strings, map, i, j);
+			ItemStack itemStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(jsonObject, "result"));
+			float experience = GsonHelper.getAsFloat(jsonObject, "experience", 0.0F);
+			int weavingTime = GsonHelper.getAsInt(jsonObject, "weavingtime", 200);
 
 			return new TesselatingRecipe(id, string, i, j, defaultedList, itemStack, experience, weavingTime);
 		}
 
 		@Override
-		public TesselatingRecipe read(Identifier id, PacketByteBuf packetByteBuf) {
+		public TesselatingRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf packetByteBuf) {
 			int i = packetByteBuf.readVarInt();
 			int j = packetByteBuf.readVarInt();
-			String string = packetByteBuf.readString();
-			DefaultedList<Ingredient> defaultedList = DefaultedList.ofSize(i * j, Ingredient.EMPTY);
+			String string = packetByteBuf.readUtf();
+			NonNullList<Ingredient> defaultedList = NonNullList.withSize(i * j, Ingredient.EMPTY);
 
 			for(int k = 0; k < defaultedList.size(); ++k) {
-				defaultedList.set(k, Ingredient.fromPacket(packetByteBuf));
+				defaultedList.set(k, Ingredient.fromNetwork(packetByteBuf));
 			}
 
-			ItemStack itemStack = packetByteBuf.readItemStack();
+			ItemStack itemStack = packetByteBuf.readItem();
 
 			float experience = packetByteBuf.readFloat();
 
@@ -74,16 +72,16 @@ public class TesselatingRecipe extends ShapedRecipe {
 		}
 
 		@Override
-		public void write(PacketByteBuf packetByteBuf, TesselatingRecipe shapedRecipe) {
+		public void write(FriendlyByteBuf packetByteBuf, TesselatingRecipe shapedRecipe) {
 			packetByteBuf.writeVarInt(shapedRecipe.getWidth());
 			packetByteBuf.writeVarInt(shapedRecipe.getHeight());
-			packetByteBuf.writeString(shapedRecipe.getGroup());
+			packetByteBuf.writeUtf(shapedRecipe.getGroup());
 
 			for (Ingredient ingredient : shapedRecipe.getIngredients()) {
-				ingredient.write(packetByteBuf);
+				ingredient.toNetwork(packetByteBuf);
 			}
 
-			packetByteBuf.writeItemStack(shapedRecipe.getOutput());
+			packetByteBuf.writeItem(shapedRecipe.getResultItem());
 
 			packetByteBuf.writeFloat(shapedRecipe.experience);
 			packetByteBuf.writeVarInt(shapedRecipe.weavingTime);

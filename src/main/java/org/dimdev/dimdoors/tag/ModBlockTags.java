@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.tag;
 
-import net.minecraft.block.Block;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModBlockTags {
@@ -53,6 +52,6 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_TO_COBBLESTONE = of("decay_to_cobblestone");
 
 	private static TagKey<Block> of(String id) {
-		return TagKey.of(RegistryKeys.BLOCK, DimensionalDoors.id(id));
+		return TagKey.create(Registries.BLOCK, DimensionalDoors.id(id));
 	}
 }

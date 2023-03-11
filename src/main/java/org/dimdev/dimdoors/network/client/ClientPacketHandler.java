@@ -9,18 +9,15 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
@@ -38,12 +35,12 @@ import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 public class ClientPacketHandler implements ClientPacketListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private final ClientPlayNetworkHandler networkHandler;
+	private final ClientPacketListener networkHandler;
 	private boolean initialized = false;
 
-	private final Set<Identifier> registeredChannels = new HashSet<>();
+	private final Set<ResourceLocation> registeredChannels = new HashSet<>();
 
-	private RegistryKey<World> pocketWorld;
+	private ResourceKey<Level> pocketWorld;
 	private int gridSize = 1;
 	private int pocketId = Integer.MIN_VALUE;
 	private int pocketRange = 1;
@@ -71,11 +68,11 @@ public class ClientPacketHandler implements ClientPacketListener {
 		}
 	}
 
-	public ClientPacketHandler(ClientPlayNetworkHandler networkHandler) {
+	public ClientPacketHandler(ClientPacketListener networkHandler) {
 		this.networkHandler = networkHandler;
 	}
 
-	private void registerReceiver(Identifier channelName, Supplier<? extends SimplePacket<ClientPacketListener>> supplier) {
+	private void registerReceiver(ResourceLocation channelName, Supplier<? extends SimplePacket<org.dimdev.dimdoors.network.client.ClientPacketListener>> supplier) {
 		ClientPlayNetworking.registerReceiver(channelName, (client, handler, buf, responseSender) -> {
 					try {
 						supplier.get().read(buf).apply(this);
@@ -86,7 +83,7 @@ public class ClientPacketHandler implements ClientPacketListener {
 		registeredChannels.add(channelName);
 	}
 
-	private void unregisterReceiver(Identifier channelName) {
+	private void unregisterReceiver(ResourceLocation channelName) {
 		ClientPlayNetworking.unregisterReceiver(channelName);
 		registeredChannels.remove(channelName);
 	}
@@ -95,7 +92,7 @@ public class ClientPacketHandler implements ClientPacketListener {
 		new HashSet<>(registeredChannels).forEach(this::unregisterReceiver);
 	}
 
-	public RegistryKey<World> getPocketWorld() {
+	public ResourceKey<Level> getPocketWorld() {
 		return pocketWorld;
 	}
 
@@ -117,9 +114,9 @@ public class ClientPacketHandler implements ClientPacketListener {
 
 	@Override
 	public void onPlayerInventorySlotUpdate(PlayerInventorySlotUpdateS2CPacket packet) {
-		MinecraftClient.getInstance().execute(() -> {
-			if (MinecraftClient.getInstance().player != null) {
-				MinecraftClient.getInstance().player.getInventory().setStack(packet.getSlot(), packet.getStack());
+		Minecraft.getInstance().execute(() -> {
+			if (Minecraft.getInstance().player != null) {
+				Minecraft.getInstance().player.getInventory().setItem(packet.getSlot(), packet.getStack());
 			}
 		});
 	}
@@ -135,18 +132,18 @@ public class ClientPacketHandler implements ClientPacketListener {
 
 	@Override
 	public void onMonolithAggroParticles(MonolithAggroParticlesPacket packet) {
-		MinecraftClient.getInstance().execute(() -> MonolithEntity.spawnParticles(packet.getAggro()));
+		Minecraft.getInstance().execute(() -> MonolithEntity.spawnParticles(packet.getAggro()));
 	}
 
 	@Override
 	public void onMonolithTeleportParticles(MonolithTeleportParticlesPacket packet) {
-		MinecraftClient client = MinecraftClient.getInstance();
+		Minecraft client = Minecraft.getInstance();
 		//noinspection ConstantConditions
-		client.execute(() -> client.particleManager.addParticle(new MonolithParticle(client.world, client.player.getX(), client.player.getY(), client.player.getZ())));
+		client.execute(() -> client.particleEngine.add(new MonolithParticle(client.level, client.player.getX(), client.player.getY(), client.player.getZ())));
 	}
 
 	@Override
 	public void onRenderBreakBlock(RenderBreakBlockS2CPacket packet) {
-		CustomBreakBlockHandler.customBreakBlock(packet.getPos(), packet.getStage(), ((WorldRendererAccessor) MinecraftClient.getInstance().worldRenderer).getTicks());
+		CustomBreakBlockHandler.customBreakBlock(packet.getPos(), packet.getStage(), ((WorldRendererAccessor) Minecraft.getInstance().levelRenderer).getTicks());
 	}
 }

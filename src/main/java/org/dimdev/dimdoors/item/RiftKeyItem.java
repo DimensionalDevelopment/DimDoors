@@ -6,24 +6,21 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.nbt.NbtIntArray;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Uuids;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.RiftProvider;
@@ -35,111 +32,111 @@ import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 public class RiftKeyItem extends Item {
-	public RiftKeyItem(Settings settings) {
+	public RiftKeyItem(Properties settings) {
 		super(settings);
 	}
 
 	@Override
-	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
 		if (isEmpty(stack)) {
-			tooltip.add(MutableText.of(new TranslatableTextContent("item.dimdoors.rift_key.no_links")));
+			tooltip.add(MutableComponent.create(new TranslatableContents("item.dimdoors.rift_key.no_links")));
 		} else if (context.isAdvanced()) {
 			for (UUID id : getIds(stack)) {
-				tooltip.add(Text.of(" " + id.toString()));
+				tooltip.add(Component.nullToEmpty(" " + id.toString()));
 			}
 		}
-		super.appendTooltip(stack, world, tooltip, context);
+		super.appendHoverText(stack, world, tooltip, context);
 	}
 
 	@Override
-	public boolean hasGlint(ItemStack stack) {
+	public boolean isFoil(ItemStack stack) {
 		return !isEmpty(stack);
 	}
 
 	@Override
-	public boolean isNbtSynced() {
-		return super.isNbtSynced();
+	public boolean shouldOverrideMultiplayerNbt() {
+		return super.shouldOverrideMultiplayerNbt();
 	}
 
 	@Override
-	public int getMaxUseTime(ItemStack stack) {
+	public int getUseDuration(ItemStack stack) {
 		return 30;
 	}
 
 	@Override
-	public void onCraft(ItemStack stack, World world, PlayerEntity player) {
-		stack.setNbt(this.getDefaultStack().getNbt());
+	public void onCraftedBy(ItemStack stack, Level world, Player player) {
+		stack.setTag(this.getDefaultInstance().getTag());
 	}
 
 	@Override
-	public ItemStack getDefaultStack() {
-		ItemStack stack = super.getDefaultStack();
-		stack.setSubNbt("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) NbtType.INT_ARRAY));
+	public ItemStack getDefaultInstance() {
+		ItemStack stack = super.getDefaultInstance();
+		stack.addTagElement("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) NbtType.INT_ARRAY));
 		return stack;
 	}
 
 	@Override
-	public ActionResult useOnBlock(ItemUsageContext context) {
-		if (context.getWorld().isClient) {
-			return ActionResult.CONSUME;
+	public InteractionResult useOn(UseOnContext context) {
+		if (context.getLevel().isClientSide) {
+			return InteractionResult.CONSUME;
 		}
-		PlayerEntity player = context.getPlayer();
-		BlockState state = context.getWorld().getBlockState(context.getBlockPos());
-		if (player != null && state.getBlock() instanceof RiftProvider && player.isSneaky()) {
-			RiftBlockEntity riftBlockEntity = ((RiftProvider<?>) state.getBlock()).getRift(context.getWorld(), context.getBlockPos(), state);
+		Player player = context.getPlayer();
+		BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+		if (player != null && state.getBlock() instanceof RiftProvider && player.isDiscrete()) {
+			RiftBlockEntity riftBlockEntity = ((RiftProvider<?>) state.getBlock()).getRift(context.getLevel(), context.getClickedPos(), state);
 			if (riftBlockEntity.isDetached()) {
-				return super.useOnBlock(context);
+				return super.useOn(context);
 			}
 			EntranceRiftBlockEntity entranceRiftBlockEntity = ((EntranceRiftBlockEntity) riftBlockEntity);
-			Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location(entranceRiftBlockEntity.getWorld().getRegistryKey(), entranceRiftBlockEntity.getPos()));
+			Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location(entranceRiftBlockEntity.getLevel().dimension(), entranceRiftBlockEntity.getBlockPos()));
 			if (entranceRiftBlockEntity.isLocked()) {
-				if (tryRemove(context.getStack(), rift.getId())) {
+				if (tryRemove(context.getItemInHand(), rift.getId())) {
 					entranceRiftBlockEntity.setLocked(false);
-					entranceRiftBlockEntity.markDirty();
-					EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.unlocked")));
-					ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
-					return ActionResult.SUCCESS;
+					entranceRiftBlockEntity.setChanged();
+					EntityUtils.chat(player, MutableComponent.create(new TranslatableContents("rifts.unlocked")));
+					ServerPacketHandler.get((ServerPlayer) player).sync(context.getItemInHand(), context.getHand());
+					return InteractionResult.SUCCESS;
 				} else {
-					EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.cantUnlock")));
+					EntityUtils.chat(player, MutableComponent.create(new TranslatableContents("rifts.cantUnlock")));
 				}
 			} else {
 				entranceRiftBlockEntity.setLocked(true);
-				add(context.getStack(), rift.getId());
-				entranceRiftBlockEntity.markDirty();
-				EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.locked")));
-				ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
- 				return ActionResult.SUCCESS;
+				add(context.getItemInHand(), rift.getId());
+				entranceRiftBlockEntity.setChanged();
+				EntityUtils.chat(player, MutableComponent.create(new TranslatableContents("rifts.locked")));
+				ServerPacketHandler.get((ServerPlayer) player).sync(context.getItemInHand(), context.getHand());
+ 				return InteractionResult.SUCCESS;
 			}
 		}
-		return super.useOnBlock(context);
+		return super.useOn(context);
 	}
 
 	public static boolean tryRemove(ItemStack stack, UUID id) {
-		NbtIntArray arrayTag = new NbtIntArray(Uuids.toIntArray(id));
-		return stack.getNbt().getList("Ids", NbtType.INT_ARRAY).remove(arrayTag);
+		IntArrayTag arrayTag = new IntArrayTag(UUIDUtil.uuidToIntArray(id));
+		return stack.getTag().getList("Ids", NbtType.INT_ARRAY).remove(arrayTag);
 	}
 
 	public static void add(ItemStack stack, UUID id) {
 		if (!has(stack, id)) {
-			stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).add(new NbtIntArray(Uuids.toIntArray(id)));
+			stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).add(new IntArrayTag(UUIDUtil.uuidToIntArray(id)));
 		}
 	}
 
 	public static boolean has(ItemStack stack, UUID id) {
-		return stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).contains(new NbtIntArray(Uuids.toIntArray(id)));
+		return stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).contains(new IntArrayTag(UUIDUtil.uuidToIntArray(id)));
 	}
 
 	public static boolean isEmpty(ItemStack stack) {
-		return stack.getOrCreateNbt().getList("Ids", NbtType.INT_ARRAY).isEmpty();
+		return stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).isEmpty();
 	}
 
 	public static List<UUID> getIds(ItemStack stack) {
-		return stack.getOrCreateNbt()
+		return stack.getOrCreateTag()
 				.getList("Ids", NbtType.INT_ARRAY)
 				.stream()
-				.map(NbtIntArray.class::cast)
-				.map(NbtIntArray::getIntArray)
-				.map(Uuids::toUuid)
+				.map(IntArrayTag.class::cast)
+				.map(IntArrayTag::getAsIntArray)
+				.map(UUIDUtil::uuidFromIntArray)
 				.collect(Collectors.toList());
 	}
 }

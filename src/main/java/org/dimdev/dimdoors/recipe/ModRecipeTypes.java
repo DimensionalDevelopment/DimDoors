@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.recipe;
 
-import net.minecraft.recipe.RecipeType;
+import net.minecraft.world.item.crafting.RecipeType;
 public class ModRecipeTypes {
 	public static RecipeType<TesselatingRecipe> TESSELATING = RecipeType.<TesselatingRecipe>register("dimdoors:tesselating");
 

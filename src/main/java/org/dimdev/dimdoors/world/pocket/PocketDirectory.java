@@ -6,18 +6,15 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.TestOnly;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
@@ -30,9 +27,9 @@ public class PocketDirectory {
 	int publicPocketSize;
 	Map<Integer, AbstractPocket<?>> pockets;
 	private SortedMap<Integer, Integer> nextIDMap;
-	RegistryKey<World> worldKey;
+	ResourceKey<Level> worldKey;
 
-	public PocketDirectory(RegistryKey<World> worldKey) {
+	public PocketDirectory(ResourceKey<Level> worldKey) {
 		this.gridSize = DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize;
 		this.worldKey = worldKey;
 		this.nextIDMap = new TreeMap<>();
@@ -40,45 +37,45 @@ public class PocketDirectory {
 	}
 
 	@TestOnly
-	public PocketDirectory(RegistryKey<World> worldKey, int gridSize) {
+	public PocketDirectory(ResourceKey<Level> worldKey, int gridSize) {
 		this.gridSize = gridSize;
 		this.worldKey = worldKey;
 		this.nextIDMap = new TreeMap<>();
 		this.pockets = new HashMap<>();
 	}
 
-	public static PocketDirectory readFromNbt(String id, NbtCompound nbt) {
-		PocketDirectory directory = new PocketDirectory(RegistryKey.of(RegistryKeys.WORLD, new Identifier(id)));
+	public static PocketDirectory readFromNbt(String id, CompoundTag nbt) {
+		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(id)));
 		// no need to parallelize
 		directory.gridSize = nbt.getInt("grid_size");
 		directory.privatePocketSize = nbt.getInt("private_pocket_size");
 		directory.publicPocketSize = nbt.getInt("public_pocket_size");
 		// same thing, too short anyways
-		NbtCompound nextIdMapNbt = nbt.getCompound("next_id_map");
-		directory.nextIDMap.putAll(nextIdMapNbt.getKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapNbt::getInt)));
+		CompoundTag nextIdMapNbt = nbt.getCompound("next_id_map");
+		directory.nextIDMap.putAll(nextIdMapNbt.getAllKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapNbt::getInt)));
 
-		NbtCompound pocketsNbt = nbt.getCompound("pockets");
-		directory.pockets = pocketsNbt.getKeys().stream().unordered().map(key -> {
-			NbtCompound pocketNbt = pocketsNbt.getCompound(key);
-			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketNbt)));
-		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight));
+		CompoundTag pocketsNbt = nbt.getCompound("pockets");
+		directory.pockets = pocketsNbt.getAllKeys().stream().unordered().map(key -> {
+			CompoundTag pocketNbt = pocketsNbt.getCompound(key);
+			return CompletableFuture.supplyAsync(() -> new Tuple<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketNbt)));
+		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Tuple::getA, Tuple::getB));
 
 		return directory;
 	}
 
-	public NbtCompound writeToNbt() {
-		NbtCompound nbt = new NbtCompound();
+	public CompoundTag writeToNbt() {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putInt("grid_size", this.gridSize);
 		nbt.putInt("private_pocket_size", this.privatePocketSize);
 		nbt.putInt("public_pocket_size", this.publicPocketSize);
 
-		NbtCompound nextIdMapNbt = new NbtCompound();
+		CompoundTag nextIdMapNbt = new CompoundTag();
 		this.nextIDMap.forEach((key, value) -> nextIdMapNbt.putInt(key.toString(), value));
 		nbt.put("next_id_map", nextIdMapNbt);
 
-		NbtCompound pocketsNbt = new NbtCompound();
-		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toNbt(new NbtCompound()))))
-				.map(CompletableFuture::join).sequential().forEach(pair -> pocketsNbt.put(pair.getLeft(), pair.getRight()));
+		CompoundTag pocketsNbt = new CompoundTag();
+		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Tuple<>(entry.getKey().toString(), entry.getValue().toNbt(new CompoundTag()))))
+				.map(CompletableFuture::join).sequential().forEach(pair -> pocketsNbt.put(pair.getA(), pair.getB()));
 		nbt.put("pockets", pocketsNbt);
 
 		return nbt;

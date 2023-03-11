@@ -1,11 +1,9 @@
 package org.dimdev.dimdoors.pockets;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
@@ -17,14 +15,14 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 public final class PocketGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final Identifier ALL_DUNGEONS = DimensionalDoors.id("dungeon");
-    public static final Identifier NETHER_DUNGEONS = DimensionalDoors.id("nether");
-	public static final Identifier RUINS_DUNGEONS = DimensionalDoors.id("ruins");
-	public static final Identifier ATLANTIS_DUNGEONS = DimensionalDoors.id("atlantis");
-	public static final Identifier JUNGLE_DUNGEONS = DimensionalDoors.id("jungle");
-	public static final Identifier SNOW_DUNGEONS = DimensionalDoors.id("snow");
-	public static final Identifier PYRAMID_DUNGEONS = DimensionalDoors.id("pyramid");
-	public static final Identifier END_DUNGEONS = DimensionalDoors.id("end");
+    public static final ResourceLocation ALL_DUNGEONS = DimensionalDoors.id("dungeon");
+    public static final ResourceLocation NETHER_DUNGEONS = DimensionalDoors.id("nether");
+	public static final ResourceLocation RUINS_DUNGEONS = DimensionalDoors.id("ruins");
+	public static final ResourceLocation ATLANTIS_DUNGEONS = DimensionalDoors.id("atlantis");
+	public static final ResourceLocation JUNGLE_DUNGEONS = DimensionalDoors.id("jungle");
+	public static final ResourceLocation SNOW_DUNGEONS = DimensionalDoors.id("snow");
+	public static final ResourceLocation PYRAMID_DUNGEONS = DimensionalDoors.id("pyramid");
+	public static final ResourceLocation END_DUNGEONS = DimensionalDoors.id("end");
 
     /*
     private static Pocket prepareAndPlacePocket(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
@@ -46,7 +44,7 @@ public final class PocketGenerator {
         return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DimensionalDoors.id("public"), virtualLocation, linkTo, linkProperties);
     }
 
-    public static Pocket generateFromPocketGroupV2(ServerWorld world, Identifier group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    public static Pocket generateFromPocketGroupV2(ServerLevel world, ResourceLocation group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
     	PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties);
     	return generatePocketV2(PocketLoader.getInstance().getGroup(group).getNextPocketGeneratorReference(context), context);
 	}
@@ -59,7 +57,7 @@ public final class PocketGenerator {
 		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), DimensionalDoors.id("dungeon"), virtualLocation, linkTo, linkProperties);
 	}
 
-	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, Identifier group) {
+	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, ResourceLocation group) {
 		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), group, virtualLocation, linkTo, linkProperties);
 	}
 

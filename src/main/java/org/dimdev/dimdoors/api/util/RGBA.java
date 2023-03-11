@@ -3,10 +3,8 @@ package org.dimdev.dimdoors.api.util;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Consumer;
-
+import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.nbt.NbtCompound;
 
 public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> {
 	public static final RGBA NONE = new RGBA(0, 0, 0, 0);
@@ -138,8 +136,8 @@ public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> 
 		return color;
 	}
 
-	public static NbtCompound toNbt(RGBA rgba) {
-		NbtCompound nbt = new NbtCompound();
+	public static CompoundTag toNbt(RGBA rgba) {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("red", rgba.red);
 		nbt.putFloat("green", rgba.green);
 		nbt.putFloat("blue", rgba.blue);
@@ -147,7 +145,7 @@ public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> 
 		return nbt;
 	}
 
-	public static RGBA fromNbt(NbtCompound nbt) {
+	public static RGBA fromNbt(CompoundTag nbt) {
 		return new RGBA(
 				nbt.getFloat("red"),
 				nbt.getFloat("green"),

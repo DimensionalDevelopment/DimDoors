@@ -3,29 +3,26 @@ package org.dimdev.dimdoors.client;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import org.joml.Matrix4f;
-
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
-
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
 
 public class DimensionRenderering {
-    private static final Identifier MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
-    private static final Identifier SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
+    private static final ResourceLocation MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
+    private static final ResourceLocation SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
 
     public static void initClient() {
         DimensionRenderingRegistry.CloudRenderer noCloudRenderer = context -> {
@@ -38,9 +35,9 @@ public class DimensionRenderering {
         DimensionRenderingRegistry.registerSkyRenderer(ModDimensions.LIMBO, context -> renderLimboSky(context.matrixStack()));
 
         DimensionRenderingRegistry.SkyRenderer pocketRenderer = context -> {
-            ClientWorld world = context.world();
-            MatrixStack matrices = context.matrixStack();
-            List<SkyAddon> skyAddons = PocketListenerUtil.applicableAddonsClient(SkyAddon.class, world, context.camera().getBlockPos());
+            ClientLevel world = context.world();
+            PoseStack matrices = context.matrixStack();
+            List<SkyAddon> skyAddons = PocketListenerUtil.applicableAddonsClient(SkyAddon.class, world, context.camera().getBlockPosition());
             SkyAddon skyAddon = null;
             if (skyAddons.size() > 0) {
                 // There should really only be one of these.
@@ -49,7 +46,7 @@ public class DimensionRenderering {
             }
 
             if (skyAddon != null) {
-                RegistryKey<World> key = skyAddon.getWorld();
+                ResourceKey<Level> key = skyAddon.getWorld();
 
                 DimensionRenderingRegistry.SkyRenderer skyRenderer = DimensionRenderingRegistry.getSkyRenderer(key);
 
@@ -57,8 +54,8 @@ public class DimensionRenderering {
                     skyRenderer.render(context);
                 } else {
 
-                    if (key.equals(World.END)) {
-                        context.gameRenderer().getClient().worldRenderer.renderEndSky(matrices);
+                    if (key.equals(Level.END)) {
+                        context.gameRenderer().getMinecraft().levelRenderer.renderEndSky(matrices);
                     } else if (key.equals(ModDimensions.LIMBO)) {
                         renderLimboSky(matrices);
                     }
@@ -71,33 +68,33 @@ public class DimensionRenderering {
         DimensionRenderingRegistry.registerSkyRenderer(ModDimensions.PUBLIC, pocketRenderer);
     }
 
-    private static void renderLimboSky(MatrixStack matrices) {
-        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
+    private static void renderLimboSky(PoseStack matrices) {
+        Matrix4f matrix4f = matrices.last().pose();
+        Tesselator tessellator = Tesselator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuilder();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         float s = 30.0F;
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, SUN_RENDER_PATH);
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-        bufferBuilder.vertex(matrix4f, -s, 100.0F, -s).texture(0.0F, 0.0F).next();
-        bufferBuilder.vertex(matrix4f, s, 100.0F, -s).texture(1.0F, 0.0F).next();
-        bufferBuilder.vertex(matrix4f, s, 100.0F, s).texture(1.0F, 1.0F).next();
-        bufferBuilder.vertex(matrix4f, -s, 100.0F, s).texture(0.0F, 1.0F).next();
-		tessellator.draw();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.vertex(matrix4f, -s, 100.0F, -s).uv(0.0F, 0.0F).endVertex();
+        bufferBuilder.vertex(matrix4f, s, 100.0F, -s).uv(1.0F, 0.0F).endVertex();
+        bufferBuilder.vertex(matrix4f, s, 100.0F, s).uv(1.0F, 1.0F).endVertex();
+        bufferBuilder.vertex(matrix4f, -s, 100.0F, s).uv(0.0F, 1.0F).endVertex();
+		tessellator.end();
 //        BufferRenderer.draw(bufferBuilder);
         RenderSystem.setShaderTexture(0, MOON_RENDER_PATH);
-        bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-        bufferBuilder.vertex(matrix4f, -s, -100.0F, -s).texture(0.0F, 0.0F).next();
-        bufferBuilder.vertex(matrix4f, s, -100.0F, -s).texture(1.0F, 0.0F).next();
-        bufferBuilder.vertex(matrix4f, s, -100.0F, s).texture(1.0F, 1.0F).next();
-        bufferBuilder.vertex(matrix4f, -s, -100.0F, s).texture(0.0F, 1.0F).next();
-		tessellator.draw();
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.vertex(matrix4f, -s, -100.0F, -s).uv(0.0F, 0.0F).endVertex();
+        bufferBuilder.vertex(matrix4f, s, -100.0F, -s).uv(1.0F, 0.0F).endVertex();
+        bufferBuilder.vertex(matrix4f, s, -100.0F, s).uv(1.0F, 1.0F).endVertex();
+        bufferBuilder.vertex(matrix4f, -s, -100.0F, s).uv(0.0F, 1.0F).endVertex();
+		tessellator.end();
 //        BufferRenderer.draw(bufferBuilder);
 
         RenderSystem.depthMask(true);

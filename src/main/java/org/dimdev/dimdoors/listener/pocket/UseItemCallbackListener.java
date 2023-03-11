@@ -1,27 +1,25 @@
 package org.dimdev.dimdoors.listener.pocket;
 
 import java.util.List;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class UseItemCallbackListener implements UseItemCallback {
 	@Override
-	public TypedActionResult<ItemStack> interact(PlayerEntity player, World world, Hand hand) {
+	public InteractionResultHolder<ItemStack> interact(Player player, Level world, InteractionHand hand) {
 		List<UseItemCallback> applicableAddons;
-		if (world.isClient) applicableAddons = PocketListenerUtil.applicableAddonsClient(UseItemCallback.class, world, player.getBlockPos());
-		else applicableAddons = PocketListenerUtil.applicableAddons(UseItemCallback.class, world, player.getBlockPos());
+		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(UseItemCallback.class, world, player.blockPosition());
+		else applicableAddons = PocketListenerUtil.applicableAddons(UseItemCallback.class, world, player.blockPosition());
 
 		for (UseItemCallback listener : applicableAddons) {
-			TypedActionResult<ItemStack> result = listener.interact(player, world, hand);
-			if (result.getResult() != ActionResult.PASS) return result;
+			InteractionResultHolder<ItemStack> result = listener.interact(player, world, hand);
+			if (result.getResult() != InteractionResult.PASS) return result;
 		}
-		return TypedActionResult.pass(player.getStackInHand(hand));
+		return InteractionResultHolder.pass(player.getItemInHand(hand));
 	}
 }

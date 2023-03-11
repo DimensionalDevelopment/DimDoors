@@ -1,10 +1,9 @@
 package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
 import com.mojang.serialization.Codec;
-
-import net.minecraft.block.AirBlock;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.util.FeatureContext;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 
 public class SchematicGatewayFeature extends Feature<SchematicGatewayFeatureConfig> {
     public SchematicGatewayFeature(Codec<SchematicGatewayFeatureConfig> codec) {
@@ -12,9 +11,9 @@ public class SchematicGatewayFeature extends Feature<SchematicGatewayFeatureConf
     }
 
 	@Override
-    public boolean generate(FeatureContext<SchematicGatewayFeatureConfig> featureContext) {
-        if (featureContext.getWorld().getBlockState(featureContext.getOrigin()).getBlock() instanceof AirBlock && featureContext.getConfig().getGateway().test(featureContext.getWorld(), featureContext.getOrigin())) {
-			featureContext.getConfig().getGateway().generate(featureContext.getWorld(), featureContext.getOrigin());
+    public boolean place(FeaturePlaceContext<SchematicGatewayFeatureConfig> featureContext) {
+        if (featureContext.level().getBlockState(featureContext.origin()).getBlock() instanceof AirBlock && featureContext.config().getGateway().test(featureContext.level(), featureContext.origin())) {
+			featureContext.config().getGateway().generate(featureContext.level(), featureContext.origin());
             return true;
         }
         return false;

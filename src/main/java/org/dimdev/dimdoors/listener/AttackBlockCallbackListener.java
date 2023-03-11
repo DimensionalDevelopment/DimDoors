@@ -1,32 +1,30 @@
 package org.dimdev.dimdoors.listener;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 
 public class AttackBlockCallbackListener implements AttackBlockCallback {
 	@Override
-	public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
-		if (!world.isClient) return ActionResult.PASS;
-		Item item = player.getStackInHand(hand).getItem();
+	public InteractionResult interact(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
+		if (!world.isClientSide) return InteractionResult.PASS;
+		Item item = player.getItemInHand(hand).getItem();
 		if (!(item instanceof ExtendedItem)) {
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		}
-		TypedActionResult<Boolean> result = ((ExtendedItem) item).onAttackBlock(world, player, hand, pos, direction);
-		if (result.getValue()) {
+		InteractionResultHolder<Boolean> result = ((ExtendedItem) item).onAttackBlock(world, player, hand, pos, direction);
+		if (result.getObject()) {
 			if (!ClientPacketHandler.sendPacket(new HitBlockWithItemC2SPacket(hand, pos, direction))) {
-				return ActionResult.FAIL;
+				return InteractionResult.FAIL;
 			}
 		}
 

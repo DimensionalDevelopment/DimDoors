@@ -1,19 +1,19 @@
 package org.dimdev.dimdoors.world.decay.predicates;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SimpleTagDecayPredicate implements DecayPredicate {
 	public static final String KEY = "simple_tag";
@@ -27,15 +27,15 @@ public class SimpleTagDecayPredicate implements DecayPredicate {
 	}
 
 	@Override
-	public DecayPredicate fromNbt(NbtCompound nbt) {
-		block = TagKey.of(RegistryKeys.BLOCK, Identifier.tryParse(nbt.getString("tag")));
+	public DecayPredicate fromNbt(CompoundTag nbt) {
+		block = TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(nbt.getString("tag")));
 		return this;
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
+	public CompoundTag toNbt(CompoundTag nbt) {
 		DecayPredicate.super.toNbt(nbt);
-		nbt.putString("tag", block.id().toString());
+		nbt.putString("tag", block.location().toString());
 		return nbt;
 	}
 
@@ -50,15 +50,15 @@ public class SimpleTagDecayPredicate implements DecayPredicate {
 	}
 
 	@Override
-	public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
+	public boolean test(Level world, BlockPos pos, BlockState origin, BlockState target) {
 		BlockState state = world.getBlockState(pos);
 
-		return state.isIn(block);
+		return state.is(block);
 	}
 
 	@Override
 	public Set<Block> constructApplicableBlocks() {
-		return Registries.BLOCK.getOrCreateEntryList(block).stream().map(RegistryEntry::value).collect(Collectors.toSet());
+		return BuiltInRegistries.BLOCK.getOrCreateTag(block).stream().map(Holder::value).collect(Collectors.toSet());
 	}
 
 	public static Builder builder() {

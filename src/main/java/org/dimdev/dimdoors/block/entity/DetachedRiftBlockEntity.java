@@ -1,27 +1,25 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 
 public class DetachedRiftBlockEntity extends RiftBlockEntity {
-	private static final Random random = Random.create();
+	private static final RandomSource random = RandomSource.create();
 
 	public boolean closing = false;
 	public boolean stabilized = false;
@@ -37,30 +35,30 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 		super(ModBlockEntityTypes.DETACHED_RIFT, pos, state);
 	}
 
-	public static void tick(World world, BlockPos pos, BlockState state, DetachedRiftBlockEntity blockEntity) {
+	public static void tick(Level world, BlockPos pos, BlockState state, DetachedRiftBlockEntity blockEntity) {
 		if (world == null) {
 			return;
 		}
 
 		if (state.getBlock() != ModBlocks.DETACHED_RIFT) {
-			blockEntity.markRemoved();
+			blockEntity.setRemoved();
 			return;
 		}
 
-		if (!world.isClient() && random.nextFloat() < DimensionalDoors.getConfig().getGeneralConfig().endermanSpawnChance) {
-			EndermanEntity enderman = EntityType.ENDERMAN.spawn(
-					(ServerWorld) world,
+		if (!world.isClientSide() && random.nextFloat() < DimensionalDoors.getConfig().getGeneralConfig().endermanSpawnChance) {
+			EnderMan enderman = EntityType.ENDERMAN.spawn(
+					(ServerLevel) world,
 					null,
 					null,
 					pos,
-					SpawnReason.STRUCTURE,
+					MobSpawnType.STRUCTURE,
 					false,
 					false
 			);
 
 			if (random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {
 				if (enderman != null) {
-					enderman.setTarget(world.getClosestPlayer(enderman, 50));
+					enderman.setTarget(world.getNearestPlayer(enderman, 50));
 				}
 			}
 		}
@@ -78,16 +76,16 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
 	public void setClosing(boolean closing) {
 		this.closing = closing;
-		this.markDirty();
+		this.setChanged();
 	}
 
 	public void setStabilized(boolean stabilized) {
 		this.stabilized = stabilized;
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Override
-	public NbtCompound serialize(NbtCompound nbt) {
+	public CompoundTag serialize(CompoundTag nbt) {
 		super.serialize(nbt);
 		nbt.putBoolean("closing", this.closing);
 		nbt.putBoolean("stablized", this.stabilized);
@@ -97,7 +95,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public void deserialize(NbtCompound nbt) {
+	public void deserialize(CompoundTag nbt) {
 		super.deserialize(nbt);
 		this.closing = nbt.getBoolean("closing");
 		this.stabilized = nbt.getBoolean("stablized");
@@ -118,9 +116,9 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d velocity) {
-		if (this.world instanceof ServerWorld)
-			TeleportUtil.teleport(entity, this.world, this.pos, relativeAngle, velocity);
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 velocity) {
+		if (this.level instanceof ServerLevel)
+			TeleportUtil.teleport(entity, this.level, this.worldPosition, relativeAngle, velocity);
 		return true;
 	}
 

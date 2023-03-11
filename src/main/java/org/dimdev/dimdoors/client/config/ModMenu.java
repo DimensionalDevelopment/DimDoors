@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.client.config;
 
 import me.shedaniel.autoconfig.AutoConfig;
-
-import net.minecraft.client.gui.screen.Screen;
-
+import net.minecraft.client.gui.screens.Screen;
 import org.dimdev.dimdoors.ModConfig;
 
 public class ModMenu {

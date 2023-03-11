@@ -1,17 +1,17 @@
 package org.dimdev.dimdoors.entity.limbo;
 
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
 
 public abstract class LimboEntranceSource {
-	public abstract Text getMessage(PlayerEntity player);
+	public abstract Component getMessage(Player player);
 
-	public void broadcast(PlayerEntity player, MinecraftServer server) {
-		server.getPlayerManager().broadcast(this.getMessage(player), false);
+	public void broadcast(Player player, MinecraftServer server) {
+		server.getPlayerList().broadcastSystemMessage(this.getMessage(player), false);
 	}
 
 	public static LimboDeathEntranceSource ofDamageSource(DamageSource source) {
@@ -26,9 +26,9 @@ public abstract class LimboEntranceSource {
 		}
 
 		@Override
-		public Text getMessage(PlayerEntity player) {
-			TranslatableTextContent message = (TranslatableTextContent) this.damageSource.getDeathMessage(player).getContent();
-			return MutableText.of(new TranslatableTextContent("limbo." + message.getKey(), message.getArgs()));
+		public Component getMessage(Player player) {
+			TranslatableContents message = (TranslatableContents) this.damageSource.getLocalizedDeathMessage(player).getContents();
+			return MutableComponent.create(new TranslatableContents("limbo." + message.getKey(), message.getArgs()));
 		}
 	}
 }

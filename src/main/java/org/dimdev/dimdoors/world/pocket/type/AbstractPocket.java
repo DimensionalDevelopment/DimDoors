@@ -4,28 +4,25 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Lifecycle;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 public abstract class AbstractPocket<V extends AbstractPocket<?>> {
-	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(RegistryKey.ofRegistry(DimensionalDoors.id("abstract_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
+	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(ResourceKey.createRegistryKey(DimensionalDoors.id("abstract_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
 
 	protected Integer id;
-	protected RegistryKey<World> world;
+	protected ResourceKey<Level> world;
 
-	public AbstractPocket(int id, RegistryKey<World> world) {
+	public AbstractPocket(int id, ResourceKey<Level> world) {
 		this.id = id;
 		this.world = world;
 	}
@@ -37,30 +34,30 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		return id;
 	}
 
-	public static AbstractPocket<? extends AbstractPocket<?>> deserialize(NbtCompound nbt) {
-		Identifier id = Identifier.tryParse(nbt.getString("type"));
+	public static AbstractPocket<? extends AbstractPocket<?>> deserialize(CompoundTag nbt) {
+		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
 		return REGISTRY.get(id).fromNbt(nbt);
 	}
 
-	public static AbstractPocketBuilder<?, ?> deserializeBuilder(NbtCompound nbt) {
-		Identifier id = Identifier.tryParse(nbt.getString("type"));
+	public static AbstractPocketBuilder<?, ?> deserializeBuilder(CompoundTag nbt) {
+		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
 		return REGISTRY.get(id).builder().fromNbt(nbt);
 	}
 
-	public static NbtCompound serialize(AbstractPocket<?> pocket) {
-		return pocket.toNbt(new NbtCompound());
+	public static CompoundTag serialize(AbstractPocket<?> pocket) {
+		return pocket.toNbt(new CompoundTag());
 	}
 
-	public V fromNbt(NbtCompound nbt) {
+	public V fromNbt(CompoundTag nbt) {
 		this.id = nbt.getInt("id");
-		this.world = RegistryKey.of(RegistryKeys.WORLD, new Identifier(nbt.getString("world")));
+		this.world = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world")));
 
 		return (V) this;
 	}
 
-	public NbtCompound toNbt(NbtCompound nbt) {
+	public CompoundTag toNbt(CompoundTag nbt) {
 		nbt.putInt("id", id);
-		nbt.putString("world", world.getValue().toString());
+		nbt.putString("world", world.location().toString());
 
 		getType().toNbt(nbt);
 
@@ -81,7 +78,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		return getReferencedPocket();
 	}
 
-	public RegistryKey<World> getWorld() {
+	public ResourceKey<Level> getWorld() {
 		return world;
 	}
 
@@ -93,9 +90,9 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		AbstractPocketType<LazyGenerationPocket> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
 
-		T fromNbt(NbtCompound nbt);
+		T fromNbt(CompoundTag nbt);
 
-		NbtCompound toNbt(NbtCompound nbt);
+		CompoundTag toNbt(CompoundTag nbt);
 
 		T instance();
 
@@ -105,15 +102,15 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 			DimensionalDoors.apiSubscribers.forEach(d -> d.registerAbstractPocketTypes(REGISTRY));
 		}
 
-		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> AbstractPocketType<U> register(Identifier id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
+		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> AbstractPocketType<U> register(ResourceLocation id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
 			return Registry.register(REGISTRY, id, new AbstractPocketType<U>() {
 				@Override
-				public U fromNbt(NbtCompound nbt) {
+				public U fromNbt(CompoundTag nbt) {
 					return (U) supplier.get().fromNbt(nbt);
 				}
 
 				@Override
-				public NbtCompound toNbt(NbtCompound nbt) {
+				public CompoundTag toNbt(CompoundTag nbt) {
 					nbt.putString("type", id.toString());
 					return nbt;
 				}
@@ -135,7 +132,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		protected final AbstractPocketType<T> type;
 
 		private int id;
-		private RegistryKey<World> world;
+		private ResourceKey<Level> world;
 
 		protected AbstractPocketBuilder(AbstractPocketType<T> type) {
 			this.type = type;
@@ -159,7 +156,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 			return getSelf();
 		}
 
-		public P world(RegistryKey<World> world) {
+		public P world(ResourceKey<Level> world) {
 			this.world = world;
 			return getSelf();
 		}
@@ -168,9 +165,9 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 			return (P) this;
 		}
 
-		abstract public P fromNbt(NbtCompound nbt);
+		abstract public P fromNbt(CompoundTag nbt);
 
-		abstract public NbtCompound toNbt(NbtCompound nbt);
+		abstract public CompoundTag toNbt(CompoundTag nbt);
 
 		/*
 		public P fromTag(CompoundTag tag) {

@@ -7,32 +7,30 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.mixin.accessor.EntityAccessor;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-@Mixin(value = PlayerEntity.class, priority = 900)
+@Mixin(value = Player.class, priority = 900)
 public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Shadow
-	public abstract void incrementStat(Identifier stat);
+	public abstract void incrementStat(ResourceLocation stat);
 
-	public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+	public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
 
 	@Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
 	public void handleLimboFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
-		if (ModDimensions.isLimboDimension(world)) {
+		if (ModDimensions.isLimboDimension(level)) {
 			cir.setReturnValue(false);
 		}
 	}
@@ -44,7 +42,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Unique
 	protected void doOnDeathStuff(DamageSource source, CallbackInfo ci) {
-		if (ModDimensions.isPocketDimension(this.world) || DimensionalDoors.getConfig().getLimboConfig().universalLimbo) {
+		if (ModDimensions.isPocketDimension(this.level) || DimensionalDoors.getConfig().getLimboConfig().universalLimbo) {
 			((EntityAccessor) this).setRemovalReason(null);
 			this.dead = false;
 			this.setHealth(this.getMaxHealth());

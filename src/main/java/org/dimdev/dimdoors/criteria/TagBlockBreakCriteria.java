@@ -1,53 +1,50 @@
 package org.dimdev.dimdoors.criteria;
 
 import java.util.Objects;
-
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.SerializationContext;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import com.google.gson.JsonObject;
-
-import net.minecraft.advancement.criterion.AbstractCriterion;
-import net.minecraft.advancement.criterion.AbstractCriterionConditions;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
-import net.minecraft.predicate.entity.AdvancementEntityPredicateSerializer;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 
-public class TagBlockBreakCriteria extends AbstractCriterion<TagBlockBreakCriteria.Conditions> {
-	public static final Identifier ID = DimensionalDoors.id("tag_block_break");
+public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakCriteria.Conditions> {
+	public static final ResourceLocation ID = DimensionalDoors.id("tag_block_break");
 
 	@Override
-	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
-		return new Conditions(playerPredicate, TagKey.of(RegistryKeys.BLOCK, Identifier.tryParse(obj.get("tag").getAsString())));
+	protected Conditions createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer) {
+		return new Conditions(playerPredicate, TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(obj.get("tag").getAsString())));
 	}
 
-	public void trigger(ServerPlayerEntity player, BlockState block) {
-		this.trigger(player, c -> block.isIn(c.getBlockTag()));
+	public void trigger(ServerPlayer player, BlockState block) {
+		this.trigger(player, c -> block.is(c.getBlockTag()));
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return ID;
 	}
 
-	public static class Conditions extends AbstractCriterionConditions {
+	public static class Conditions extends AbstractCriterionTriggerInstance {
 		private final TagKey<Block> blockTag;
 
-		public Conditions(EntityPredicate.Extended playerPredicate, TagKey<Block> blockTag) {
+		public Conditions(EntityPredicate.Composite playerPredicate, TagKey<Block> blockTag) {
 			super(ID, playerPredicate);
 			this.blockTag = Objects.requireNonNull(blockTag);
 		}
 
 		@Override
-		public JsonObject toJson(AdvancementEntityPredicateSerializer predicateSerializer) {
+		public JsonObject serializeToJson(SerializationContext predicateSerializer) {
 			JsonObject json = new JsonObject();
-			json.addProperty("tag", blockTag.id().toString());
-			return super.toJson(predicateSerializer);
+			json.addProperty("tag", blockTag.location().toString());
+			return super.serializeToJson(predicateSerializer);
 		}
 
 		public TagKey<Block> getBlockTag() {

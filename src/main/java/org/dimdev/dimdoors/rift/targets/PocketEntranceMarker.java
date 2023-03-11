@@ -1,14 +1,12 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import net.minecraft.core.Rotations;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 
@@ -32,8 +30,8 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug.")));
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+		EntityUtils.chat(entity, MutableComponent.create(new TranslatableContents("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug.")));
 		return false;
 	}
 
@@ -62,15 +60,15 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 		return VirtualTargetType.POCKET_ENTRANCE;
 	}
 
-	public static NbtCompound toNbt(PocketEntranceMarker target) {
-		NbtCompound nbt = new NbtCompound();
+	public static CompoundTag toNbt(PocketEntranceMarker target) {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("weight", target.weight);
 		nbt.put("ifDestination", VirtualTarget.toNbt(target.ifDestination));
 		nbt.put("otherwiseDestination", VirtualTarget.toNbt(target.otherwiseDestination));
 		return nbt;
 	}
 
-	public static PocketEntranceMarker fromNbt(NbtCompound nbt) {
+	public static PocketEntranceMarker fromNbt(CompoundTag nbt) {
 		return PocketEntranceMarker.builder()
 				.weight(nbt.getFloat("weight"))
 				.ifDestination(nbt.contains("ifDestination") ? VirtualTarget.fromNbt(nbt.getCompound("ifDestination")) : NoneTarget.INSTANCE)

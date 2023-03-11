@@ -9,33 +9,30 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
-
 import net.fabricmc.loader.api.FabricLoader;
-
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.server.level.ServerPlayer;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
 import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class PocketCommand {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	// TODO: probably move somewhere else
-	public static final Map<UUID, ServerCommandSource> logSetting = new HashMap<>();
+	public static final Map<UUID, CommandSourceStack> logSetting = new HashMap<>();
 
-	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(
 				literal("pocket")
-						.requires(source -> source.hasPermissionLevel(2))
+						.requires(source -> source.hasPermission(2))
 						.then(
 								literal("schematic")
 										.then(
@@ -62,16 +59,16 @@ public class PocketCommand {
 								literal("log")
 										// TODO: make command toggle logging of pocket creation to console if used from console
 										.then(literal("creation")
-												.requires(commandSource -> commandSource.getEntity() instanceof ServerPlayerEntity)
+												.requires(commandSource -> commandSource.getEntity() instanceof ServerPlayer)
 												.executes(ctx -> {
-													ServerCommandSource commandSource = ctx.getSource();
-													UUID playerUUID = commandSource.getPlayer().getUuid();
+													CommandSourceStack commandSource = ctx.getSource();
+													UUID playerUUID = commandSource.getPlayer().getUUID();
 													if (logSetting.containsKey(playerUUID)) {
 														logSetting.remove(playerUUID);
-														commandSource.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.log.creation.off")), false);
+														commandSource.sendSuccess(MutableComponent.create(new TranslatableContents("commands.pocket.log.creation.off")), false);
 													} else {
 														logSetting.put(playerUUID, commandSource);
-														commandSource.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.log.creation.on")), false);
+														commandSource.sendSuccess(MutableComponent.create(new TranslatableContents("commands.pocket.log.creation.on")), false);
 													}
 													return Command.SINGLE_SUCCESS;
 												})
@@ -81,7 +78,7 @@ public class PocketCommand {
 		);
 	}
 
-	private static int load(ServerCommandSource source, PocketTemplate template) throws CommandSyntaxException {
+	private static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
 		try {
 			return WorldeditHelper.load(source, template);
 		} catch (NoClassDefFoundError e) {
@@ -89,16 +86,16 @@ public class PocketCommand {
 		}
 	}
 
-	private static int place(ServerPlayerEntity source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
+	private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
 		SchematicPlacer.place(
 				template.getSchematic(),
-				source.getWorld(),
-				source.getBlockPos(),
+				source.getLevel(),
+				source.blockPosition(),
 				blockPlacementType
 		);
 
 		String id = template.getId().toString();
-		source.getCommandSource().sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.placedSchem", id, "" + source.getBlockPos().getX() + ", " + source.getBlockPos().getY() + ", " + source.getBlockPos().getZ(), source.world.getRegistryKey().getValue().toString())), true);
+		source.createCommandSourceStack().sendSuccess(MutableComponent.create(new TranslatableContents("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level.dimension().location().toString())), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

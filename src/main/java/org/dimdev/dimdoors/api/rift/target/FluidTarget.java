@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.api.rift.target;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.material.Fluid;
 
 public interface FluidTarget extends Target {
 	boolean addFluidFlow(Direction relativeFacing, Fluid fluid, int level);

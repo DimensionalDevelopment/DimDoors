@@ -5,21 +5,19 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
 
-@Mixin(ServerPlayNetworkHandler.class)
+@Mixin(ServerGamePacketListenerImpl.class)
 public class ServerPlayNetworkHandlerMixin {
 	@Shadow
-	public ServerPlayerEntity player;
+	public ServerPlayer player;
 	@Shadow
 	private double lastTickX;
 	@Shadow
@@ -28,22 +26,22 @@ public class ServerPlayNetworkHandlerMixin {
 	private double lastTickZ;
 
 	@Inject(method = "onPlayerMove", at = @At("TAIL"))
-	protected void checkBlockCollision(PlayerMoveC2SPacket packet, CallbackInfo ci) {
+	protected void checkBlockCollision(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
 		// stolen from Entity#checkBlockCollision
-		Box box = player.getBoundingBox();
+		AABB box = player.getBoundingBox();
 		BlockPos blockPos = new BlockPos(box.minX + 0.001D, box.minY + 0.001D, box.minZ + 0.001D);
 		BlockPos blockPos2 = new BlockPos(box.maxX - 0.001D, box.maxY - 0.001D, box.maxZ - 0.001D);
-		if (player.world.isRegionLoaded(blockPos, blockPos2)) {
-			BlockPos.Mutable mutable = new BlockPos.Mutable();
+		if (player.level.hasChunksAt(blockPos, blockPos2)) {
+			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
 			boolean done = false;
 			for(int i = blockPos.getX(); i <= blockPos2.getX(); ++i) {
 				for(int j = blockPos.getY(); j <= blockPos2.getY(); ++j) {
 					for(int k = blockPos.getZ(); k <= blockPos2.getZ(); ++k) {
 						mutable.set(i, j, k);
-						BlockState blockState = player.world.getBlockState(mutable);
+						BlockState blockState = player.level.getBlockState(mutable);
 						Block block = blockState.getBlock();
-						if (block instanceof AfterMoveCollidableBlock && ((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.getWorld(), mutable, player, player.getPos().subtract(lastTickX, lastTickY, lastTickZ)).isAccepted()) {
+						if (block instanceof AfterMoveCollidableBlock && ((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.getLevel(), mutable, player, player.position().subtract(lastTickX, lastTickY, lastTickZ)).consumesAction()) {
 							done = true;
 						}
 						if (done) {

@@ -7,14 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.levelgen.Heightmap;
 import com.google.common.collect.Sets;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
@@ -137,13 +134,13 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
 			if (virtualLocation.getDepth() <= 0) {
 				// This will lead to the overworld
-				ServerWorld world = DimensionalDoors.getWorld(virtualLocation.getWorld());
-				BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
+				ServerLevel world = DimensionalDoors.getWorld(virtualLocation.getWorld());
+				BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
 				if (pos.getY() == -1) {
 					// No blocks at that XZ (hole in bedrock)
 					pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getX());
 				}
-				world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
+				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
 
 				RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
 				DetachedRiftBlockEntity riftEntity = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
@@ -184,11 +181,11 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
 		RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
 		fromBe.setDestination(RiftReference.tryMakeLocal(from, to));
-		fromBe.markDirty();
+		fromBe.setChanged();
 		if (toBe.getProperties() != null) {
 			toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().getLinksRemaining() - 1));
 			toBe.updateProperties();
-			toBe.markDirty();
+			toBe.setChanged();
 		}
 	}
 
@@ -233,8 +230,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		return VirtualTargetType.AVAILABLE_LINK;
 	}
 
-	public static NbtCompound toNbt(RandomTarget target) {
-		NbtCompound nbt = new NbtCompound();
+	public static CompoundTag toNbt(RandomTarget target) {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("newRiftWeight", target.newRiftWeight);
 		nbt.putDouble("weightMaximum", target.weightMaximum);
 		nbt.putDouble("coordFactor", target.coordFactor);
@@ -247,7 +244,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		return nbt;
 	}
 
-	public static RandomTarget fromNbt(NbtCompound nbt) {
+	public static RandomTarget fromNbt(CompoundTag nbt) {
 		return new RandomTarget(
 				nbt.getFloat("newRiftWeight"),
 				nbt.getDouble("weightMaximum"),

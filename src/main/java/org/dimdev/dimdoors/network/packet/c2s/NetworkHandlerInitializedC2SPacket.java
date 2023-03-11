@@ -1,24 +1,22 @@
 package org.dimdev.dimdoors.network.packet.c2s;
 
 import java.io.IOException;
-
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.ServerPacketListener;
 import org.dimdev.dimdoors.network.SimplePacket;
 
 public class NetworkHandlerInitializedC2SPacket implements SimplePacket<ServerPacketListener> {
-	public static final Identifier ID = DimensionalDoors.id("network_handler_initialized");
+	public static final ResourceLocation ID = DimensionalDoors.id("network_handler_initialized");
 
 	@Override
-	public SimplePacket<ServerPacketListener> read(PacketByteBuf buf) throws IOException {
+	public SimplePacket<ServerPacketListener> read(FriendlyByteBuf buf) throws IOException {
 		return this;
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
 		return buf;
 	}
 
@@ -28,7 +26,7 @@ public class NetworkHandlerInitializedC2SPacket implements SimplePacket<ServerPa
 	}
 
 	@Override
-	public Identifier channelId() {
+	public ResourceLocation channelId() {
 		return ID;
 	}
 }

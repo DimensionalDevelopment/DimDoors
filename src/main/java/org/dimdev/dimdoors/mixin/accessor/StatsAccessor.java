@@ -1,16 +1,15 @@
 package org.dimdev.dimdoors.mixin.accessor;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.StatFormatter;
+import net.minecraft.stats.Stats;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
-
-import net.minecraft.stat.StatFormatter;
-import net.minecraft.stat.Stats;
-import net.minecraft.util.Identifier;
 
 @Mixin(Stats.class)
 public interface StatsAccessor {
 	@Invoker
-	static Identifier invokeRegister(String string, StatFormatter statFormatter) {
+	static ResourceLocation invokeRegister(String string, StatFormatter statFormatter) {
 		throw new UnsupportedOperationException();
 	}
 }

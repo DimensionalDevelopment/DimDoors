@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.api.item;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public interface ExtendedItem {
 
@@ -13,7 +13,7 @@ public interface ExtendedItem {
 	// true -> send packet to server
 	// false -> don't send packet to server
 	// boolean value currently does nothing server-side
-	default TypedActionResult<Boolean> onAttackBlock(World world, PlayerEntity player, Hand hand, BlockPos pos, Direction direction) {
-		return TypedActionResult.pass(false);
+	default InteractionResultHolder<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
+		return InteractionResultHolder.pass(false);
 	}
 }

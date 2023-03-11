@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.api.util.math;
 
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.Rotations;
+import net.minecraft.world.phys.Vec3;
 
 public class TransformationMatrix3d extends TransformationMatrixdImpl<TransformationMatrix3d> {
 	public TransformationMatrix3d(double[][] matrix) {
@@ -35,17 +35,17 @@ public class TransformationMatrix3d extends TransformationMatrixdImpl<Transforma
 		return new TransformationMatrix3d(vectors);
 	}
 
-	public Vec3d transform(Vec3d vector) {
+	public Vec3 transform(Vec3 vector) {
 		Vectord vec = transform(new Vectord(vector.x, vector.y, vector.z));
-		return new Vec3d(vec.get(0), vec.get(1), vec.get(2));
+		return new Vec3(vec.get(0), vec.get(1), vec.get(2));
 	}
 
 	// Should only be called on pure rotation matrices, behaviour undefined otherwise.
-	public EulerAngle transform(EulerAngle angle) {
+	public Rotations transform(Rotations angle) {
 		TransformationMatrix3d rotator = TransformationMatrix3d.builder().rotate(angle).build();
 		// angle vector representation
-		Vec3d direction = rotator.transform(new Vec3d(0, 0, 1));
-		Vec3d upwards = rotator.transform(new Vec3d(0, 1, 0));
+		Vec3 direction = rotator.transform(new Vec3(0, 0, 1));
+		Vec3 upwards = rotator.transform(new Vec3(0, 1, 0));
 
 		direction = transform(direction);
 		upwards = transform(upwards);
@@ -67,11 +67,11 @@ public class TransformationMatrix3d extends TransformationMatrixdImpl<Transforma
 			return this;
 		}
 
-		public TransformationMatrix3dBuilder translate(Vec3d vector) {
+		public TransformationMatrix3dBuilder translate(Vec3 vector) {
 			return translate(new Vectord(vector.x, vector.y, vector.z));
 		}
 
-		public TransformationMatrix3dBuilder inverseTranslate(Vec3d vector) {
+		public TransformationMatrix3dBuilder inverseTranslate(Vec3 vector) {
 			return translate(new Vectord(-vector.x, -vector.y, -vector.z));
 		}
 
@@ -88,16 +88,16 @@ public class TransformationMatrix3d extends TransformationMatrixdImpl<Transforma
 			return rotateAroundBasePlane(angle, 0, 1);
 		}
 
-		public TransformationMatrix3dBuilder rotate(EulerAngle angle) {
-			return this.rotateZ(Math.toRadians(angle.getRoll())) // roll
-					.rotateX(Math.toRadians(angle.getPitch())) // pitch
-					.rotateY(Math.toRadians(-angle.getYaw())); // yaw
+		public TransformationMatrix3dBuilder rotate(Rotations angle) {
+			return this.rotateZ(Math.toRadians(angle.getZ())) // roll
+					.rotateX(Math.toRadians(angle.getX())) // pitch
+					.rotateY(Math.toRadians(-angle.getY())); // yaw
 		}
 
-		public TransformationMatrix3dBuilder inverseRotate(EulerAngle angle) {
-			return this.rotateZ(-Math.toRadians(angle.getRoll())) // roll
-					.rotateX(-Math.toRadians(angle.getPitch())) // pitch
-					.rotateY(-Math.toRadians(-angle.getYaw())); // yaw
+		public TransformationMatrix3dBuilder inverseRotate(Rotations angle) {
+			return this.rotateZ(-Math.toRadians(angle.getZ())) // roll
+					.rotateX(-Math.toRadians(angle.getX())) // pitch
+					.rotateY(-Math.toRadians(-angle.getY())); // yaw
 		}
 	}
 }

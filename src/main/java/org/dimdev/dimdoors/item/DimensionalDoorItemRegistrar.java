@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.item;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,31 +10,27 @@ import java.util.function.Function;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Quaternionf;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.TrapdoorBlock;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.TallBlockItem;
-import net.minecraft.registry.Registry;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.loader.api.FabricLoader;
-
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DoubleHighBlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.function.QuadFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
@@ -49,9 +46,9 @@ public class DimensionalDoorItemRegistrar {
 	private final Registry<Item> registry;
 
 	private final Map<Block, Block> blocksAlreadyNotifiedAbout = new HashMap<>();
-	private final Map<Block, Triple<Identifier, Item, Function<Block, BlockItem>>> toBeMapped = new HashMap<>();
+	private final Map<Block, Triple<ResourceLocation, Item, Function<Block, BlockItem>>> toBeMapped = new HashMap<>();
 
-	private final Map<Item, Function<ItemPlacementContext, ActionResult>> placementFunctions = new HashMap<>();
+	private final Map<Item, Function<BlockPlaceContext, InteractionResult>> placementFunctions = new HashMap<>();
 
 	public DimensionalDoorItemRegistrar(Registry<Item> registry) {
 		this.registry = registry;
@@ -64,19 +61,19 @@ public class DimensionalDoorItemRegistrar {
 		return placementFunctions.containsKey(item);
 	}
 
-	public ActionResult place(Item item, ItemPlacementContext context) {
+	public InteractionResult place(Item item, BlockPlaceContext context) {
 		return placementFunctions.get(item).apply(context);
 	}
 
 	private void init() {
-		new ArrayList<>(registry.getEntrySet())
-				.forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
+		new ArrayList<>(registry.entrySet())
+				.forEach(entry -> handleEntry(entry.getKey().location(), entry.getValue()));
 	}
 
-	public void handleEntry(Identifier identifier, Item original) {
+	public void handleEntry(ResourceLocation identifier, Item original) {
 		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(identifier)) {
-			if (original instanceof TallBlockItem) {
-				Block block = ((TallBlockItem) original).getBlock();
+			if (original instanceof DoubleHighBlockItem) {
+				Block block = ((DoubleHighBlockItem) original).getBlock();
 				handleEntry(identifier, original, block, AutoGenDimensionalDoorItem::new);
 			} else if (original instanceof BlockItem) {
 				Block originalBlock = ((BlockItem) original).getBlock();
@@ -89,12 +86,12 @@ public class DimensionalDoorItemRegistrar {
 		}
 	}
 
-	private void handleEntry(Identifier identifier, Item original, Block originalBlock, QuadFunction<Block, Item.Settings, Consumer<? super EntranceRiftBlockEntity>, Item, ? extends BlockItem> constructor) {
+	private void handleEntry(ResourceLocation identifier, Item original, Block originalBlock, QuadFunction<Block, Item.Properties, Consumer<? super EntranceRiftBlockEntity>, Item, ? extends BlockItem> constructor) {
 
 		if (!(originalBlock instanceof DimensionalDoorBlock)
 				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
-				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapdoorBlock)) {
-			Item.Settings settings = ItemExtensions.getSettings(original)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
+				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapDoorBlock)) {
+			Item.Properties settings = ItemExtensions.getSettings(original)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
 
 			Function<Block, BlockItem> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, rift -> rift.setDestination(new PublicPocketTarget()), original);
 
@@ -112,13 +109,13 @@ public class DimensionalDoorItemRegistrar {
 			blocksAlreadyNotifiedAbout.put(original, dimBlock);
 			return;
 		}
-		Triple<Identifier, Item, Function<Block, BlockItem>> triple = toBeMapped.get(original);
+		Triple<ResourceLocation, Item, Function<Block, BlockItem>> triple = toBeMapped.get(original);
 		register(triple.getLeft(), triple.getMiddle(), dimBlock, triple.getRight());
 	}
 
-	private void register(Identifier identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
+	private void register(ResourceLocation identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
 		if (!DoorData.PARENT_ITEMS.contains(original)) {
-			Identifier gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+			ResourceLocation gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
 			BlockItem item = Registry.register(registry, gennedId, dimItem.apply(block));
 			placementFunctions.put(original, item::place);
 			if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
@@ -141,19 +138,19 @@ public class DimensionalDoorItemRegistrar {
 	private static class AutoGenDimensionalDoorItem extends DimensionalDoorItem implements ChildItem {
 		private final Item originalItem;
 
-		public AutoGenDimensionalDoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, Item originalItem) {
+		public AutoGenDimensionalDoorItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, Item originalItem) {
 			super(block, settings, setupFunction);
 			this.originalItem = originalItem;
 		}
 
 		@Override
-		public Text getName(ItemStack stack) {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
+		public Component getName(ItemStack stack) {
+			return MutableComponent.create(new TranslatableContents("dimdoors.autogen_item_prefix", I18n.get(originalItem.getDescriptionId())));
 		}
 
 		@Override
-		public Text getName() {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
+		public Component getDescription() {
+			return MutableComponent.create(new TranslatableContents("dimdoors.autogen_item_prefix", I18n.get(originalItem.getDescriptionId())));
 		}
 
 		@Override
@@ -162,7 +159,7 @@ public class DimensionalDoorItemRegistrar {
 		}
 
 		@Override
-		public void transform(MatrixStack matrices) {
+		public void transform(PoseStack matrices) {
 			matrices.scale(0.68f, 0.68f, 1);
 			matrices.translate(0.05, 0.02, 0);
 		}
@@ -171,19 +168,19 @@ public class DimensionalDoorItemRegistrar {
 	private static class AutoGenDimensionalTrapdoorItem extends DimensionalTrapdoorItem implements ChildItem {
 		private final Item originalItem;
 
-		public AutoGenDimensionalTrapdoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, Item originalItem) {
+		public AutoGenDimensionalTrapdoorItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, Item originalItem) {
 			super(block, settings, setupFunction);
 			this.originalItem = originalItem;
 		}
 
 		@Override
-		public Text getName(ItemStack stack) {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
+		public Component getName(ItemStack stack) {
+			return MutableComponent.create(new TranslatableContents("dimdoors.autogen_item_prefix", I18n.get(originalItem.getDescriptionId())));
 		}
 
 		@Override
-		public Text getName() {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
+		public Component getDescription() {
+			return MutableComponent.create(new TranslatableContents("dimdoors.autogen_item_prefix", I18n.get(originalItem.getDescriptionId())));
 		}
 
 		@Override
@@ -192,17 +189,17 @@ public class DimensionalDoorItemRegistrar {
 		}
 
 		@Override
-		public void transform(MatrixStack matrices) {
+		public void transform(PoseStack matrices) {
 			matrices.scale(0.55f, 0.55f, 0.6f);
 			matrices.translate(0.05, -0.05, 0.41);
-			matrices.multiply(new Quaternionf().rotateXYZ(90, 0, 0));
+			matrices.mulPose(new Quaternionf().rotateXYZ(90, 0, 0));
 		}
 	}
 
 	public interface ChildItem {
 		Item getOriginalItem();
 
-		default void transform(MatrixStack matrices) {
+		default void transform(PoseStack matrices) {
 		}
 	}
 }

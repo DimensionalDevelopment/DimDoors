@@ -1,16 +1,14 @@
 package org.dimdev.dimdoors.client;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.ModItems;
@@ -19,16 +17,16 @@ import org.dimdev.dimdoors.rift.targets.IdMarker;
 @Environment(EnvType.CLIENT)
 public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<EntranceRiftBlockEntity> {
 	@Override
-	public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay) {
-		if (MinecraftClient.getInstance().player != null)
-			if (MinecraftClient.getInstance().player.getStackInHand(Hand.MAIN_HAND).isOf(ModItems.RIFT_CONFIGURATION_TOOL))
+	public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
+		if (Minecraft.getInstance().player != null)
+			if (Minecraft.getInstance().player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.RIFT_CONFIGURATION_TOOL))
 				if (blockEntity.getData().getDestination() instanceof IdMarker idMarker) {
-					matrixStack.push();
+					matrixStack.pushPose();
 					matrixStack.translate(0.5, 0.5, 0.5);
 
-					MinecraftClient.getInstance().textRenderer.draw(Text.of(String.valueOf(idMarker.getId())), 0f, 0f, 0xffffffff, false, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider, true, 0x000000, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+					Minecraft.getInstance().font.drawInBatch(Component.nullToEmpty(String.valueOf(idMarker.getId())), 0f, 0f, 0xffffffff, false, matrixStack.last().pose(), vertexConsumerProvider, true, 0x000000, LightTexture.FULL_BRIGHT);
 
-					matrixStack.pop();
+					matrixStack.popPose();
 				}
 
 		DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, blockEntity.getTransformer(), tickDelta, light, overlay, blockEntity.isTall());

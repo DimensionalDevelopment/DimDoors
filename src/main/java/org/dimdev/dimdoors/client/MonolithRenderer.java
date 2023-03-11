@@ -1,24 +1,21 @@
 package org.dimdev.dimdoors.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.MobEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
 @Environment(EnvType.CLIENT)
-public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, MonolithModel> {
-    public static final List<Identifier> MONOLITH_TEXTURES = Stream.of(
+public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel> {
+    public static final List<ResourceLocation> MONOLITH_TEXTURES = Stream.of(
             DimensionalDoors.id("textures/mob/monolith/monolith0.png"),
             DimensionalDoors.id("textures/mob/monolith/monolith1.png"),
             DimensionalDoors.id("textures/mob/monolith/monolith2.png"),
@@ -42,7 +39,7 @@ public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, Monolith
 
     private static MonolithModel INSTANCE;
 
-    public MonolithRenderer(EntityRendererFactory.Context ctx) {
+    public MonolithRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, INSTANCE = new MonolithModel(ctx), 0);
     }
 
@@ -51,12 +48,12 @@ public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, Monolith
     }
 
     @Override
-    public void render(MonolithEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
+    public void render(MonolithEntity mobEntity, float f, float g, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int i) {
     	super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
     }
 
 	@Override
-	protected void scale(MonolithEntity entity, MatrixStack matrices, float amount) {
+	protected void scale(MonolithEntity entity, PoseStack matrices, float amount) {
 		matrices.scale(entity.getScale(), entity.getScale(), entity.getScale());
 	}
 
@@ -66,7 +63,7 @@ public class MonolithRenderer extends MobEntityRenderer<MonolithEntity, Monolith
     }
 
     @Override
-    public Identifier getTexture(MonolithEntity entity) {
+    public ResourceLocation getTexture(MonolithEntity entity) {
         return MonolithRenderer.MONOLITH_TEXTURES.get(entity.getTextureState());
     }
 }

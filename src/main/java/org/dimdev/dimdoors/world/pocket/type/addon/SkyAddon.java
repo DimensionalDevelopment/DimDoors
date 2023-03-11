@@ -1,39 +1,37 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import java.io.IOException;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class SkyAddon implements AutoSyncedAddon {
-	public static Identifier ID = DimensionalDoors.id("sky");
+	public static ResourceLocation ID = DimensionalDoors.id("sky");
 
-	private RegistryKey<World> world;
+	private ResourceKey<Level> world;
 
-	public boolean setWorld(RegistryKey<World> world) {
+	public boolean setWorld(ResourceKey<Level> world) {
 		this.world = world;
 		return true;
 	}
 
 	@Override
-	public PocketAddon fromNbt(NbtCompound nbt) {
-		this.world = RegistryKey.of(RegistryKeys.WORLD, Identifier.tryParse(nbt.getString("world")));
+	public PocketAddon fromNbt(CompoundTag nbt) {
+		this.world = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(nbt.getString("world")));
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
+	public CompoundTag toNbt(CompoundTag nbt) {
 		AutoSyncedAddon.super.toNbt(nbt);
 
-		nbt.putString("world", this.world.getValue().toString());
+		nbt.putString("world", this.world.location().toString());
 
 		return nbt;
 	}
@@ -44,28 +42,28 @@ public class SkyAddon implements AutoSyncedAddon {
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return ID;
 	}
 
-	public RegistryKey<World> getWorld() {
+	public ResourceKey<Level> getWorld() {
 		return world;
 	}
 
 	@Override
-	public AutoSyncedAddon read(PacketByteBuf buf) throws IOException {
-		this.world = RegistryKey.of(RegistryKeys.WORLD, buf.readIdentifier());
+	public AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException {
+		this.world = ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation());
 		return this;
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
-		buf.writeIdentifier(world.getValue());
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+		buf.writeResourceLocation(world.location());
 		return buf;
 	}
 
 	public interface SkyPocketBuilder<T extends Pocket.PocketBuilder<T, ?>> extends PocketBuilderExtension<T> {
-		default T world(RegistryKey<World> world) {
+		default T world(ResourceKey<Level> world) {
 
 			this.<SkyBuilderAddon>getAddon(ID).world = world;
 
@@ -75,7 +73,7 @@ public class SkyAddon implements AutoSyncedAddon {
 
 	public static class SkyBuilderAddon implements PocketBuilderAddon<SkyAddon> {
 
-		private RegistryKey<World> world = World.OVERWORLD;
+		private ResourceKey<Level> world = Level.OVERWORLD;
 
 		@Override
 		public void apply(Pocket pocket) {
@@ -85,22 +83,22 @@ public class SkyAddon implements AutoSyncedAddon {
 		}
 
 		@Override
-		public Identifier getId() {
+		public ResourceLocation getId() {
 			return ID;
 		}
 
 		@Override
-		public PocketBuilderAddon<SkyAddon> fromNbt(NbtCompound nbt) {
-			this.world = RegistryKey.of(RegistryKeys.WORLD, Identifier.tryParse(nbt.getString("world")));
+		public PocketBuilderAddon<SkyAddon> fromNbt(CompoundTag nbt) {
+			this.world = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(nbt.getString("world")));
 
 			return this;
 		}
 
 		@Override
-		public NbtCompound toNbt(NbtCompound nbt) {
+		public CompoundTag toNbt(CompoundTag nbt) {
 			PocketBuilderAddon.super.toNbt(nbt);
 
-			nbt.putString("world", world.getValue().toString());
+			nbt.putString("world", world.location().toString());
 
 			return nbt;
 		}
@@ -112,7 +110,7 @@ public class SkyAddon implements AutoSyncedAddon {
 	}
 
 	public interface SkyPocket extends AddonProvider {
-		default boolean sky(RegistryKey<World> world) {
+		default boolean sky(ResourceKey<Level> world) {
 			ensureIsPocket();
 			if (!this.hasAddon(ID)) {
 				SkyAddon addon = new SkyAddon();

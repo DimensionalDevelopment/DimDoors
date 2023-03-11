@@ -6,18 +6,15 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleType;
-import net.minecraft.registry.Registries;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 
-public class RiftParticleEffect implements ParticleEffect {
+public class RiftParticleEffect implements ParticleOptions {
    public static RiftParticleEffect of(boolean isOutsidePocket) {
       return isOutsidePocket ? OUTSIDE : INSIDE;
    }
@@ -49,8 +46,8 @@ public class RiftParticleEffect implements ParticleEffect {
            Codec.FLOAT.fieldOf("color").forGetter(riftParticleEffect -> riftParticleEffect.color),
            Codec.INT.fieldOf("averageAge").forGetter((riftParticleEffect) -> riftParticleEffect.averageAge))
            .apply(instance, RiftParticleEffect::new));
-   public static final ParticleEffect.Factory<RiftParticleEffect> PARAMETERS_FACTORY = new ParticleEffect.Factory<RiftParticleEffect>() {
-      public RiftParticleEffect read(ParticleType<RiftParticleEffect> particleType, StringReader stringReader) throws CommandSyntaxException {
+   public static final ParticleOptions.Deserializer<RiftParticleEffect> PARAMETERS_FACTORY = new ParticleOptions.Deserializer<RiftParticleEffect>() {
+      public RiftParticleEffect fromCommand(ParticleType<RiftParticleEffect> particleType, StringReader stringReader) throws CommandSyntaxException {
          stringReader.expect(' ');
          float f = stringReader.readFloat();
          stringReader.expect(' ');
@@ -58,7 +55,7 @@ public class RiftParticleEffect implements ParticleEffect {
          return new RiftParticleEffect(f, g);
       }
 
-      public RiftParticleEffect read(ParticleType<RiftParticleEffect> particleType, PacketByteBuf packetByteBuf) {
+      public RiftParticleEffect fromNetwork(ParticleType<RiftParticleEffect> particleType, FriendlyByteBuf packetByteBuf) {
          return new RiftParticleEffect(packetByteBuf.readFloat(), packetByteBuf.readInt());
       }
    };
@@ -70,13 +67,13 @@ public class RiftParticleEffect implements ParticleEffect {
       this.averageAge = averageAge;
    }
 
-   public void write(PacketByteBuf buf) {
+   public void writeToNetwork(FriendlyByteBuf buf) {
       buf.writeFloat(this.color);
       buf.writeInt(this.averageAge);
    }
 
-   public String asString() {
-      return String.format(Locale.ROOT, "%s %.2f %s", Registries.PARTICLE_TYPE.getId(this.getType()), this.color, this.averageAge);
+   public String writeToString() {
+      return String.format(Locale.ROOT, "%s %.2f %s", BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()), this.color, this.averageAge);
    }
 
    public ParticleType<RiftParticleEffect> getType() {

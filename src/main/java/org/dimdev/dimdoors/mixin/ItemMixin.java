@@ -5,32 +5,30 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.item.Item;
-
+import net.minecraft.world.item.Item;
 import org.dimdev.dimdoors.item.ItemExtensions;
 
 @Mixin(Item.class)
 public class ItemMixin implements ItemExtensions {
 	@Unique
-	private Item.Settings settings;
+	private Item.Properties settings;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
-	public void cacheSettings(Item.Settings settings, CallbackInfo ci) {
+	public void cacheSettings(Item.Properties settings, CallbackInfo ci) {
 		this.settings = settings;
 	}
 
 	@Override
-	public Item.Settings dimdoors_getSettings() {
+	public Item.Properties dimdoors_getSettings() {
 		return settings;
 	}
 
-	@Mixin(Item.Settings.class)
+	@Mixin(Item.Properties.class)
 	public static class SettingsMixin implements ItemExtensions.SettingsExtensions {
 		@Override
-		public Item.Settings clone() {
+		public Item.Properties clone() {
 			try {
-				return (Item.Settings) super.clone();
+				return (Item.Properties) super.clone();
 			} catch (CloneNotSupportedException e) {
 				throw new AssertionError(e); // Cant happen, we are Cloneable
 			}

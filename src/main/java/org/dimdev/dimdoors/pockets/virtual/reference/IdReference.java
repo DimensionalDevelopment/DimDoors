@@ -1,11 +1,9 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import com.google.common.base.MoreObjects;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -15,10 +13,10 @@ import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 public class IdReference extends PocketGeneratorReference {
 	public static final String KEY = "id";
 
-	private Identifier id;
+	private ResourceLocation id;
 
 	@Override
-	public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
 		super.fromNbt(nbt, manager);
 
 		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
@@ -28,7 +26,7 @@ public class IdReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	protected NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putString("id", id.getPath());

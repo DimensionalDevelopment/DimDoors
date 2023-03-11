@@ -1,68 +1,66 @@
 package org.dimdev.dimdoors.entity;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.EntityDimensions;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.control.LookControl;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.control.LookControl;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-public class MonolithEntity extends MobEntity {
+public class MonolithEntity extends Mob {
     public static final int MAX_AGGRO = 250;
     private static final int MAX_AGGRO_CAP = 100;
     private static final int MIN_AGGRO_CAP = 25;
     private static final int MAX_TEXTURE_STATE = 18;
     private static final int MAX_SOUND_COOLDOWN = 200;
     public static final int MAX_AGGRO_RANGE = 35;
-    private static final TrackedData<Integer> AGGRO = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    private static final TrackedData<Float> SCALE = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.FLOAT);
-	private static final TrackedData<Float> PITCH = DataTracker.registerData(MonolithEntity.class, TrackedDataHandlerRegistry.FLOAT);
+    private static final EntityDataAccessor<Integer> AGGRO = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
     private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
     @Environment(EnvType.CLIENT)
-    private static final Random clientRandom = Random.create();
+    private static final RandomSource clientRandom = RandomSource.create();
 
     private int soundTime = 0;
     private final int aggroCap;
 
-    MonolithEntity(World world) {
+    MonolithEntity(Level world) {
         this(ModEntityTypes.MONOLITH, world);
     }
 
-    public MonolithEntity(EntityType<? extends MonolithEntity> type, World world) {
+    public MonolithEntity(EntityType<? extends MonolithEntity> type, Level world) {
         super(ModEntityTypes.MONOLITH, world);
-        this.noClip = true;
-        this.aggroCap = MathHelper.nextInt(this.getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
+        this.noPhysics = true;
+        this.aggroCap = Mth.nextInt(this.getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
         this.setNoGravity(true);
         this.lookControl = new LookControl(this) {
             @Override
-            protected boolean shouldStayHorizontal() {
+            protected boolean resetXRotOnTick() {
                 return false;
             }
         };
@@ -71,11 +69,11 @@ public class MonolithEntity extends MobEntity {
     }
 
     public boolean isDangerous() {
-        return DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || DimensionalDoors.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
+        return DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.level) || DimensionalDoors.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
     }
 
     @Override
-    public boolean damage(DamageSource source, float amount) {
+    public boolean hurt(DamageSource source, float amount) {
         if (source != DamageSource.IN_WALL) {
             setAggro(MAX_AGGRO);
         }
@@ -83,12 +81,12 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    protected int getNextAirUnderwater(int i) {
+    protected int decreaseAirSupply(int i) {
         return 10;
     }
 
     @Override
-    protected int getNextAirOnLand(int i) {
+    protected int increaseAirSupply(int i) {
         return 10;
     }
 
@@ -103,7 +101,7 @@ public class MonolithEntity extends MobEntity {
 //    }
 
     @Override
-    public boolean cannotDespawn() {
+    public boolean requiresCustomPersistence() {
         return false;
     }
 
@@ -113,13 +111,13 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
+    protected void defineSynchedData() {
+        super.defineSynchedData();
         // Add a short for the aggro level
-        this.dataTracker.startTracking(AGGRO, 0);
-		this.dataTracker.startTracking(SCALE, 1f);
-		this.dataTracker.startTracking(PITCH, 1f);
-		this.calculateDimensions();
+        this.entityData.define(AGGRO, 0);
+		this.entityData.define(SCALE, 1f);
+		this.entityData.define(PITCH, 1f);
+		this.refreshDimensions();
     }
 
     @Override
@@ -128,24 +126,24 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    public void move(MovementType movementType, Vec3d vec3d) {
+    public void move(MoverType movementType, Vec3 vec3d) {
     }
 
     @Override
-    protected void mobTick() {
+    protected void customServerAiStep() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
-        if (!(ModDimensions.isLimboDimension(this.world) || ModDimensions.isPocketDimension(this.world))) {
+        if (!(ModDimensions.isLimboDimension(this.level) || ModDimensions.isPocketDimension(this.level))) {
             this.remove(RemovalReason.DISCARDED);
-            super.mobTick();
+            super.customServerAiStep();
             return;
         }
 
-        super.mobTick();
+        super.customServerAiStep();
 
         // Check for players and update aggro levels even if there are no players in range
     }
 
-    public void updateAggroLevel(PlayerEntity player, boolean visibility) {
+    public void updateAggroLevel(Player player, boolean visibility) {
         // If we're working on the server side, adjust aggro level
         // If we're working on the client side, retrieve aggro level from dataWatcher
         if (player == null) {
@@ -156,16 +154,16 @@ public class MonolithEntity extends MobEntity {
             return;
         }
 
-        if (!this.world.isClient) {
+        if (!this.level.isClientSide) {
             if (player.distanceTo(this) > 70) {
                 return;
             }
 
-            int aggro = this.dataTracker.get(AGGRO);
+            int aggro = this.entityData.get(AGGRO);
             // Server side...
             // Rapidly increase the aggro level if this Monolith can see the player
             if (visibility) {
-                if (ModDimensions.isLimboDimension(this.world)) {
+                if (ModDimensions.isLimboDimension(this.level)) {
                     if (this.isDangerous()) {
                         aggro++;
                     } else {
@@ -190,15 +188,15 @@ public class MonolithEntity extends MobEntity {
             }
             // Clamp the aggro level
             int maxAggro = this.isDangerous() ? MAX_AGGRO : 180;
-            aggro = (short) MathHelper.clamp(aggro, 0, maxAggro);
-            this.dataTracker.set(AGGRO, aggro);
+            aggro = (short) Mth.clamp(aggro, 0, maxAggro);
+            this.entityData.set(AGGRO, aggro);
         }
     }
 
     @Environment(EnvType.CLIENT)
     public int getTextureState() {
         // Determine texture state from aggro progress
-        return MathHelper.clamp(MAX_TEXTURE_STATE * this.dataTracker.get(AGGRO) / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
+        return Mth.clamp(MAX_TEXTURE_STATE * this.entityData.get(AGGRO) / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
     }
 
     /**
@@ -206,46 +204,46 @@ public class MonolithEntity extends MobEntity {
      *
      * @param pos The position to play the sounds at
      */
-    public void playSounds(Vec3d pos) {
+    public void playSounds(Vec3 pos) {
         float aggroPercent = this.getAggroProgress();
-        float pitch = getPitch();
+        float pitch = getXRot();
         if (this.soundTime <= 0) {
             this.playSound(ModSoundEvents.MONK, 1F, pitch);
             this.soundTime = 100;
         }
         if (aggroPercent > 0.70 && this.soundTime < 100) {
-            this.world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
+            this.level.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundSource.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
             this.soundTime = 100 + this.getRandom().nextInt(75);
         }
         if (aggroPercent > 0.80 && this.soundTime < MAX_SOUND_COOLDOWN) {
-            this.world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 7, 1);
+            this.level.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundSource.HOSTILE, 7, 1);
             this.soundTime = 250;
         }
         this.soundTime--;
     }
 
     @Override
-    public float getEyeHeight(EntityPose entityPose) {
+    public float getEyeHeight(Pose entityPose) {
         return getDimensions(entityPose).height * EYE_HEIGHT_PERCENTAGE;
     }
 
 	@Override
-	protected float getActiveEyeHeight(EntityPose pose, EntityDimensions dimensions) {
+	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
 		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
 	}
 
 	@Environment(EnvType.CLIENT)
     public static void spawnParticles(int aggro) {
-		PlayerEntity player = MinecraftClient.getInstance().player;
+		Player player = Minecraft.getInstance().player;
 		if (aggro < 120) {
 			return;
 		}
 		int count = 10 * aggro / MAX_AGGRO;
 		for (int i = 1; i < count; ++i) {
 			//noinspection ConstantConditions
-			player.world.addParticle(ParticleTypes.PORTAL, player.getX() + (clientRandom.nextDouble() - 0.5D) * 3.0,
-					player.getY() + clientRandom.nextDouble() * player.getHeight() - 0.75D,
-					player.getZ() + (clientRandom.nextDouble() - 0.5D) * player.getWidth(),
+			player.level.addParticle(ParticleTypes.PORTAL, player.getX() + (clientRandom.nextDouble() - 0.5D) * 3.0,
+					player.getY() + clientRandom.nextDouble() * player.getBbHeight() - 0.75D,
+					player.getZ() + (clientRandom.nextDouble() - 0.5D) * player.getBbWidth(),
 					(clientRandom.nextDouble() - 0.5D) * 2.0D, -clientRandom.nextDouble(),
 					(clientRandom.nextDouble() - 0.5D) * 2.0D);
 		}
@@ -256,86 +254,86 @@ public class MonolithEntity extends MobEntity {
     }
 
     @Override
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(0, new MonolithAggroGoal(this, MAX_AGGRO_RANGE));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(0, new MonolithAggroGoal(this, MAX_AGGRO_RANGE));
     }
 
-    public void facePlayer(PlayerEntity player) {
-        this.lookControl.lookAt(player, 1.0f, 1.0f);
+    public void facePlayer(Player player) {
+        this.lookControl.setLookAt(player, 1.0f, 1.0f);
     }
 
     @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
+    public void addAdditionalSaveData(CompoundTag nbt) {
+        super.addAdditionalSaveData(nbt);
         nbt.putInt("Aggro", getAggro());
         nbt.putFloat("scale", getScale());
-        nbt.putFloat("pitch", getPitch());
+        nbt.putFloat("pitch", getXRot());
     }
 
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
+    public void readAdditionalSaveData(CompoundTag nbt) {
+        super.readAdditionalSaveData(nbt);
         setAggro(nbt.getInt("Aggro"));
         if (nbt.contains("scale", NbtType.FLOAT)) {
         	setScale(nbt.getFloat("scale"));
 		}
         if (nbt.contains("pitch", NbtType.FLOAT)) {
-			setPitch(nbt.getFloat("pitch"));
+			setXRot(nbt.getFloat("pitch"));
 		}
     }
 
 	public int getAggro() {
-        return this.dataTracker.get(AGGRO);
+        return this.entityData.get(AGGRO);
     }
 
     public void setAggro(int aggro) {
-        this.dataTracker.set(AGGRO, aggro);
+        this.entityData.set(AGGRO, aggro);
     }
 
 	@Override
-	public float getScaleFactor() {
+	public float getScale() {
 		return getScale();
 	}
 
 	public float getScale() {
-    	return this.dataTracker.get(SCALE);
+    	return this.entityData.get(SCALE);
 	}
 
     public void setScale(float scale) {
-    	this.dataTracker.set(SCALE, scale);
-    	calculateDimensions();
+    	this.entityData.set(SCALE, scale);
+    	refreshDimensions();
 	}
 
-	public float getPitch() {
-    	return this.dataTracker.get(PITCH);
+	public float getXRot() {
+    	return this.entityData.get(PITCH);
 	}
 
-	public void setPitch(float pitch) {
-    	this.dataTracker.set(PITCH, pitch);
+	public void setXRot(float pitch) {
+    	this.entityData.set(PITCH, pitch);
 	}
 
 	@Override
-	public Box getBoundingBox(EntityPose pose) {
+	public AABB getLocalBoundsForPose(Pose pose) {
     	float scale = getScale();
-		return super.getBoundingBox(pose).stretch(scale, scale, scale);
+		return super.getLocalBoundsForPose(pose).expandTowards(scale, scale, scale);
 	}
 
 	@Override
-	public void onTrackedDataSet(TrackedData<?> data) {
+	public void onSyncedDataUpdated(EntityDataAccessor<?> data) {
 		if (SCALE.equals(data)) {
-			this.calculateDimensions();
+			this.refreshDimensions();
 		}
 
-		super.onTrackedDataSet(data);
+		super.onSyncedDataUpdated(data);
 	}
 
 	@Override
-    public boolean canSpawn(WorldAccess world, SpawnReason spawnReason) {
-        if (spawnReason == SpawnReason.CHUNK_GENERATION) {
-            return super.canSpawn(world, spawnReason);
+    public boolean checkSpawnRules(LevelAccessor world, MobSpawnType spawnReason) {
+        if (spawnReason == MobSpawnType.CHUNK_GENERATION) {
+            return super.checkSpawnRules(world, spawnReason);
         }
-        if (spawnReason == SpawnReason.NATURAL) {
+        if (spawnReason == MobSpawnType.NATURAL) {
             return this.getRandom().nextInt(32) == 2;
         }
         return false;

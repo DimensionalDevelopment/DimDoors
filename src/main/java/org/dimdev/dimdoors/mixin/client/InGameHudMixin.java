@@ -5,16 +5,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.world.entity.player.Player;
 
 @Environment(EnvType.CLIENT)
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public abstract class InGameHudMixin{
 	private int frame = 0;
 	private static final float OVERLAY_OPACITY_ADJUSTEMENT = 1.5F;
@@ -24,7 +22,7 @@ public abstract class InGameHudMixin{
 	private int scaledWidth;
 
 	@Shadow
-	protected abstract PlayerEntity getCameraPlayer();
+	protected abstract Player getCameraPlayer();
 
 	//	@Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShader(Ljava/util/function/Supplier;)V"), method = "renderVignetteOverlay(Lnet/minecraft/entity/Entity;)V")
 //	public void renderVignetteOverlay(Entity entity, CallbackInfo info) {
@@ -33,6 +31,6 @@ public abstract class InGameHudMixin{
 //		}
 //	}
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	public void renderOverlayMixin(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
+	public void renderOverlayMixin(PoseStack matrices, float tickDelta, CallbackInfo ci) {
 	}
 }

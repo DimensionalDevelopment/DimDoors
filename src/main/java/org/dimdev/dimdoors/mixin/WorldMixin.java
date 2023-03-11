@@ -1,7 +1,15 @@
 package org.dimdev.dimdoors.mixin;
 
 import java.util.function.Consumer;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -9,20 +17,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.Pair;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import org.dimdev.dimdoors.api.block.CustomBreakBlock;
 
-@Mixin(World.class)
+@Mixin(Level.class)
 public abstract class WorldMixin {
 
 	/*
@@ -36,18 +33,18 @@ public abstract class WorldMixin {
 					target = "Lnet/minecraft/world/World;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;",
 					ordinal = 0))
 	private FluidState replaceFluidStateWithCustomHackyFluidState(FluidState original, BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) { //TODO: Fix
-		World world = (World) (Object) this;
+		Level world = (Level) (Object) this;
 		BlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
 		if (!(block instanceof CustomBreakBlock)) {
 			return original;
 		}
-		TypedActionResult<Pair<BlockState, Consumer<BlockEntity>>> result = ((CustomBreakBlock) block).customBreakBlock(world, pos, blockState, breakingEntity);
-		if (!result.getResult().isAccepted()) {
+		InteractionResultHolder<Tuple<BlockState, Consumer<BlockEntity>>> result = ((CustomBreakBlock) block).customBreakBlock(world, pos, blockState, breakingEntity);
+		if (!result.getResult().consumesAction()) {
 			return original;
 		}
-		Pair<BlockState, Consumer<BlockEntity>> pair = result.getValue();
-		return new CustomBreakBlock.HackyFluidState(pair.getLeft(), pair.getRight());
+		Tuple<BlockState, Consumer<BlockEntity>> pair = result.getObject();
+		return new CustomBreakBlock.HackyFluidState(pair.getA(), pair.getB());
 	}
 
 	@Inject(method = "breakBlock(Lnet/minecraft/util/math/BlockPos;ZLnet/minecraft/entity/Entity;I)Z",
@@ -64,7 +61,7 @@ public abstract class WorldMixin {
 		if (blockEntityConsumer == null) {
 			return;
 		}
-		BlockEntity blockEntity = ((World) (Object) this).getBlockEntity(pos);
+		BlockEntity blockEntity = ((Level) (Object) this).getBlockEntity(pos);
 		if (blockEntity != null) {
 			blockEntityConsumer.accept(blockEntity);
 		}

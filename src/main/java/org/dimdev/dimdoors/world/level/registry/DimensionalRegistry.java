@@ -6,18 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.PrimaryLevelData;
 import dev.onyxstudios.cca.api.v3.component.ComponentV3;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.world.World;
-import net.minecraft.world.level.LevelProperties;
-
 import org.dimdev.dimdoors.DimensionalDoorsComponents;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -28,12 +25,12 @@ import static org.dimdev.dimdoors.DimensionalDoors.getServer;
 
 public class DimensionalRegistry implements ComponentV3 {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
-	private Map<RegistryKey<World>, PocketDirectory> pocketRegistry = new HashMap<>();
+	private Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
 	private RiftRegistry riftRegistry = new RiftRegistry();
 	private PrivateRegistry privateRegistry = new PrivateRegistry();
 
 	@Override
-	public void readFromNbt(NbtCompound nbt) {
+	public void readFromNbt(CompoundTag nbt) {
 		int riftDataVersion = nbt.getInt("RiftDataVersion");
 		if (riftDataVersion < RIFT_DATA_VERSION) {
 			nbt = RiftSchemas.update(riftDataVersion, nbt);
@@ -41,13 +38,13 @@ public class DimensionalRegistry implements ComponentV3 {
 			throw new UnsupportedOperationException("Downgrading is not supported!");
 		}
 
-		NbtCompound pocketRegistryNbt = nbt.getCompound("pocket_registry");
-		CompletableFuture<Map<RegistryKey<World>, PocketDirectory>> futurePocketRegistry = CompletableFuture.supplyAsync(() -> pocketRegistryNbt.getKeys().stream().map(key -> {
-					NbtCompound pocketDirectoryNbt = pocketRegistryNbt.getCompound(key);
-					return CompletableFuture.supplyAsync(() -> new Pair<>(RegistryKey.of(RegistryKeys.WORLD, Identifier.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt)));
-				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight)));
+		CompoundTag pocketRegistryNbt = nbt.getCompound("pocket_registry");
+		CompletableFuture<Map<ResourceKey<Level>, PocketDirectory>> futurePocketRegistry = CompletableFuture.supplyAsync(() -> pocketRegistryNbt.getAllKeys().stream().map(key -> {
+					CompoundTag pocketDirectoryNbt = pocketRegistryNbt.getCompound(key);
+					return CompletableFuture.supplyAsync(() -> new Tuple<>(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt)));
+				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Tuple::getA, Tuple::getB)));
 
-		NbtCompound privateRegistryNbt = nbt.getCompound("private_registry");
+		CompoundTag privateRegistryNbt = nbt.getCompound("private_registry");
 		CompletableFuture<PrivateRegistry> futurePrivateRegistry = CompletableFuture.supplyAsync(() -> {
 			PrivateRegistry privateRegistry = new PrivateRegistry();
 			privateRegistry.fromNbt(privateRegistryNbt);
@@ -56,7 +53,7 @@ public class DimensionalRegistry implements ComponentV3 {
 
 		pocketRegistry = futurePocketRegistry.join();
 
-		NbtCompound riftRegistryNbt = nbt.getCompound("rift_registry");
+		CompoundTag riftRegistryNbt = nbt.getCompound("rift_registry");
 		CompletableFuture<RiftRegistry> futureRiftRegistry = CompletableFuture.supplyAsync(() -> RiftRegistry.fromNbt(pocketRegistry, riftRegistryNbt));
 		riftRegistry = futureRiftRegistry.join();
 
@@ -64,17 +61,17 @@ public class DimensionalRegistry implements ComponentV3 {
 	}
 
 	@Override
-	public void writeToNbt(NbtCompound nbt) {
-		CompletableFuture<NbtElement> futurePocketRegistryNbt = CompletableFuture.supplyAsync(() -> {
-			List<CompletableFuture<Pair<String, NbtElement>>> futurePocketRegistryNbts = new ArrayList<>();
-			pocketRegistry.forEach((key, value) -> futurePocketRegistryNbts.add(CompletableFuture.supplyAsync(() -> new Pair<>(key.getValue().toString(), value.writeToNbt()))));
-			NbtCompound pocketRegistryNbt = new NbtCompound();
-			futurePocketRegistryNbts.parallelStream().unordered().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight)).forEach(pocketRegistryNbt::put);
+	public void writeToNbt(CompoundTag nbt) {
+		CompletableFuture<Tag> futurePocketRegistryNbt = CompletableFuture.supplyAsync(() -> {
+			List<CompletableFuture<Tuple<String, Tag>>> futurePocketRegistryNbts = new ArrayList<>();
+			pocketRegistry.forEach((key, value) -> futurePocketRegistryNbts.add(CompletableFuture.supplyAsync(() -> new Tuple<>(key.location().toString(), value.writeToNbt()))));
+			CompoundTag pocketRegistryNbt = new CompoundTag();
+			futurePocketRegistryNbts.parallelStream().unordered().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Tuple::getA, Tuple::getB)).forEach(pocketRegistryNbt::put);
 			return pocketRegistryNbt;
 		});
 
-		CompletableFuture<NbtElement> futureRiftRegistryNbt = CompletableFuture.supplyAsync(riftRegistry::toNbt);
-		CompletableFuture<NbtElement> futurePrivateRegistryNbt = CompletableFuture.supplyAsync(() -> privateRegistry.toNbt(new NbtCompound()));
+		CompletableFuture<Tag> futureRiftRegistryNbt = CompletableFuture.supplyAsync(riftRegistry::toNbt);
+		CompletableFuture<Tag> futurePrivateRegistryNbt = CompletableFuture.supplyAsync(() -> privateRegistry.toNbt(new CompoundTag()));
 
 		nbt.put("pocket_registry", futurePocketRegistryNbt.join());
 		nbt.put("rift_registry", futureRiftRegistryNbt.join());
@@ -84,7 +81,7 @@ public class DimensionalRegistry implements ComponentV3 {
 	}
 
 	public static DimensionalRegistry instance() {
-		return DimensionalDoorsComponents.DIMENSIONAL_REGISTRY_COMPONENT_KEY.get((LevelProperties) getServer().getSaveProperties());
+		return DimensionalDoorsComponents.DIMENSIONAL_REGISTRY_COMPONENT_KEY.get((PrimaryLevelData) getServer().getWorldData());
 	}
 
 	public static RiftRegistry getRiftRegistry() {
@@ -95,7 +92,7 @@ public class DimensionalRegistry implements ComponentV3 {
 		return instance().privateRegistry;
 	}
 
-	public static PocketDirectory getPocketDirectory(RegistryKey<World> key) {
+	public static PocketDirectory getPocketDirectory(ResourceKey<Level> key) {
 		if (!(ModDimensions.isPocketDimension(key))) {
 			throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
 		}

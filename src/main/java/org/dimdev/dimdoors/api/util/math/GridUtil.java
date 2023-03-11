@@ -2,8 +2,7 @@ package org.dimdev.dimdoors.api.util.math;
 
 import java.util.Arrays;
 import java.util.Vector;
-
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public final class GridUtil {
 	public static final class GridPos {

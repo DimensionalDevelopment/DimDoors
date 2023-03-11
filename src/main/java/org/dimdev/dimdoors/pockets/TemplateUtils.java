@@ -4,22 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.loot.context.LootContextTypes;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.StructureWorldAccess;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
@@ -36,7 +33,7 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class TemplateUtils {
-    static void setupEntityPlaceholders(List<NbtCompound> entities, NbtCompound entityTag) {
+    static void setupEntityPlaceholders(List<CompoundTag> entities, CompoundTag entityTag) {
         if (entityTag.contains("placeholder")) {
             double x = entityTag.getDouble("x");
             double y = entityTag.getDouble("y");
@@ -44,13 +41,13 @@ public class TemplateUtils {
             float yaw = entityTag.getFloat("yaw");
             float pitch = entityTag.getFloat("pitch");
 
-            NbtCompound newTag;
+            CompoundTag newTag;
             if ("monolith".equals(entityTag.getString("placeholder"))) {
                 MonolithEntity monolith = Objects.requireNonNull(ModEntityTypes.MONOLITH.create(null));
-                monolith.setPos(x, y, z);
-                monolith.setYaw(yaw);
-                monolith.setPitch(pitch);
-                newTag = monolith.writeNbt(new NbtCompound());
+                monolith.setPosRaw(x, y, z);
+                monolith.setYRot(yaw);
+                monolith.setXRot(pitch);
+                newTag = monolith.saveWithoutId(new CompoundTag());
             } else {
                 throw new RuntimeException("Unknown entity placeholder: " + entityTag.getString("placeholder"));
             }
@@ -60,24 +57,24 @@ public class TemplateUtils {
         }
     }
 
-    public static void setupLootTable(ServerWorld world, BlockEntity tile, Inventory inventory, Logger logger) {
+    public static void setupLootTable(ServerLevel world, BlockEntity tile, Container inventory, Logger logger) {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");
-            table = world.getServer().getLootManager().getTable(DimensionalDoors.id("dungeon_chest"));
+            table = world.getServer().getLootTables().get(DimensionalDoors.id("dungeon_chest"));
         } else {
             logger.debug("Now populating dispenser.");
-            table = world.getServer().getLootManager().getTable(DimensionalDoors.id("dispenser_projectiles"));
+            table = world.getServer().getLootTables().get(DimensionalDoors.id("dispenser_projectiles"));
         }
-        LootContext ctx = new LootContext.Builder(world).random(world.random).parameter(LootContextParameters.ORIGIN, Vec3d.of(tile.getPos())).build(LootContextTypes.CHEST);
-        table.supplyInventory(inventory, ctx);
+        LootContext ctx = new LootContext.Builder(world).withRandom(world.random).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
+        table.fill(inventory, ctx);
 		if (inventory.isEmpty()) {
 			logger.error(", however Inventory is: empty!");
 		}
     }
 
     static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
-        ServerWorld world = DimensionalDoors.getWorld(pocket.getWorld());
+        ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
         HashMap<RiftBlockEntity, Float> entranceWeights = new HashMap<>();
 
         for (RiftBlockEntity rift : rifts) { // Find an entrance
@@ -99,7 +96,7 @@ public class TemplateUtils {
                 if (rift == selectedEntrance) {
                     rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
                     rift.register();
-                    DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, new Location((ServerWorld) rift.getWorld(), rift.getPos()));
+                    DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, new Location((ServerLevel) rift.getLevel(), rift.getBlockPos()));
                 } else {
                     rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
                 }
@@ -116,51 +113,51 @@ public class TemplateUtils {
 
         for (RiftBlockEntity rift : rifts) {
             rift.register();
-            rift.markDirty();
+            rift.setChanged();
         }
     }
 
-    public static void replacePlaceholders(Schematic schematic, StructureWorldAccess world) {
+    public static void replacePlaceholders(Schematic schematic, WorldGenLevel world) {
         // Replace placeholders (some schematics will contain them)
-        List<NbtCompound> blockEntities = new ArrayList<>();
-        for (NbtCompound blockEntityTag : schematic.getBlockEntities()) {
+        List<CompoundTag> blockEntities = new ArrayList<>();
+        for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
             if (blockEntityTag.contains("placeholder")) {
                 int x = blockEntityTag.getInt("x");
                 int y = blockEntityTag.getInt("y");
                 int z = blockEntityTag.getInt("z");
                 BlockPos pos = new BlockPos(x, y, z);
 
-                NbtCompound newTag = new NbtCompound();
+                CompoundTag newTag = new CompoundTag();
                 EntranceRiftBlockEntity rift = new EntranceRiftBlockEntity(pos, Schematic.getBlockSample(schematic).getBlockState(pos));
 				switch (blockEntityTag.getString("placeholder")) {
 					case "deeper_depth_door" -> {
 						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
-						rift.writeNbt(newTag);
+						rift.saveAdditional(newTag);
 					}
 					case "less_deep_depth_door" -> {
 						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
-						rift.writeNbt(newTag);
+						rift.saveAdditional(newTag);
 					}
 					case "overworld_door" -> {
 						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
-						rift.writeNbt(newTag);
+						rift.saveAdditional(newTag);
 					}
 					case "entrance_door" -> {
 						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
-						rift.writeNbt(newTag);
+						rift.saveAdditional(newTag);
 					}
 					case "gateway_portal" -> {
 						rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getGateway());
-						rift.writeNbt(newTag);
+						rift.saveAdditional(newTag);
 					}
 					default -> throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
 				}
-				rift.setWorld(world.toServerWorld());
+				rift.setLevel(world.getLevel());
                 blockEntities.add(newTag);
             } else {
                 blockEntities.add(blockEntityTag);
@@ -168,8 +165,8 @@ public class TemplateUtils {
         }
         schematic.setBlockEntities(blockEntities);
 
-        List<NbtCompound> entities = new ArrayList<>();
-        for (NbtCompound entityTag : schematic.getEntities()) {
+        List<CompoundTag> entities = new ArrayList<>();
+        for (CompoundTag entityTag : schematic.getEntities()) {
             TemplateUtils.setupEntityPlaceholders(entities, entityTag);
         }
         schematic.setEntities(entities);

@@ -2,15 +2,15 @@ package org.dimdev.dimdoors.world.decay;
 
 import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
 
@@ -18,13 +18,13 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public interface DecayPredicate {
-    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayPredicateType<? extends DecayPredicate>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_predicate_type")), Lifecycle.stable(), false)).buildAndRegister();
+    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<DecayPredicateType<? extends DecayPredicate>>(ResourceKey.createRegistryKey(DimensionalDoors.id("decay_predicate_type")), Lifecycle.stable(), false)).buildAndRegister();
 
     DecayPredicate NONE = new DecayPredicate() {
         private static final String ID = "none";
 
         @Override
-        public DecayPredicate fromNbt(NbtCompound nbt) {
+        public DecayPredicate fromNbt(CompoundTag nbt) {
             return this;
         }
 
@@ -39,7 +39,7 @@ public interface DecayPredicate {
         }
 
         @Override
-        public boolean test(World world, BlockPos pos, BlockState origin, BlockState target) {
+        public boolean test(Level world, BlockPos pos, BlockState origin, BlockState target) {
             return false;
         }
 
@@ -49,19 +49,19 @@ public interface DecayPredicate {
 		}
 	};
 
-    static DecayPredicate deserialize(NbtCompound nbt) {
-        Identifier id = Identifier.tryParse(nbt.getString("type"));
-        return REGISTRY.getOrEmpty(id).orElse(DecayPredicateType.NONE_PREDICATE_TYPE).fromNbt(nbt);
+    static DecayPredicate deserialize(CompoundTag nbt) {
+        ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
+        return REGISTRY.getOptional(id).orElse(DecayPredicateType.NONE_PREDICATE_TYPE).fromNbt(nbt);
     }
 
-    static NbtCompound serialize(DecayPredicate modifier) {
-        return modifier.toNbt(new NbtCompound());
+    static CompoundTag serialize(DecayPredicate modifier) {
+        return modifier.toNbt(new CompoundTag());
     }
 
 
-    DecayPredicate fromNbt(NbtCompound nbt);
+    DecayPredicate fromNbt(CompoundTag nbt);
 
-    default NbtCompound toNbt(NbtCompound nbt) {
+    default CompoundTag toNbt(CompoundTag nbt) {
         return this.getType().toNbt(nbt);
     }
 
@@ -69,7 +69,7 @@ public interface DecayPredicate {
 
     String getKey();
 
-    boolean test(World world, BlockPos pos, BlockState origin, BlockState target);
+    boolean test(Level world, BlockPos pos, BlockState origin, BlockState target);
 
     Set<Block> constructApplicableBlocks();
 
@@ -77,23 +77,23 @@ public interface DecayPredicate {
         DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
         DecayPredicateType<SimpleDecayPredicate> SIMPLE_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleDecayPredicate.KEY), SimpleDecayPredicate::new);
 
-        DecayPredicate fromNbt(NbtCompound nbt);
+        DecayPredicate fromNbt(CompoundTag nbt);
 
-		NbtCompound toNbt(NbtCompound nbt);
+		CompoundTag toNbt(CompoundTag nbt);
 
         static void register() {
             DimensionalDoors.apiSubscribers.forEach(d -> d.registerDecayPredicates(REGISTRY));
         }
 
-        static <U extends DecayPredicate> DecayPredicateType<U> register(Identifier id, Supplier<U> factory) {
+        static <U extends DecayPredicate> DecayPredicateType<U> register(ResourceLocation id, Supplier<U> factory) {
             return Registry.register(REGISTRY, id, new DecayPredicateType<U>() {
                 @Override
-                public DecayPredicate fromNbt(NbtCompound nbt) {
+                public DecayPredicate fromNbt(CompoundTag nbt) {
                     return factory.get().fromNbt(nbt);
                 }
 
                 @Override
-                public NbtCompound toNbt(NbtCompound nbt) {
+                public CompoundTag toNbt(CompoundTag nbt) {
 					nbt.putString("type", id.toString());
                     return nbt;
                 }

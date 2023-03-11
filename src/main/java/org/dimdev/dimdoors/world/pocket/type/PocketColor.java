@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import com.mojang.serialization.Codec;
-
-import net.minecraft.util.DyeColor;
+import net.minecraft.world.item.DyeColor;
 
 public enum PocketColor {
 	WHITE(0, DyeColor.WHITE),

@@ -1,35 +1,33 @@
 package org.dimdev.dimdoors.criteria;
 
 import com.google.gson.JsonObject;
-
-import net.minecraft.advancement.criterion.AbstractCriterion;
-import net.minecraft.advancement.criterion.AbstractCriterionConditions;
-import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
-import net.minecraft.predicate.entity.EntityPredicate;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import org.dimdev.dimdoors.DimensionalDoors;
 
-public class PocketSpawnPointSetCondition extends AbstractCriterion<PocketSpawnPointSetCondition.Conditions> {
-	public static final Identifier ID = DimensionalDoors.id("pocket_spawn_point_set");
+public class PocketSpawnPointSetCondition extends SimpleCriterionTrigger<PocketSpawnPointSetCondition.Conditions> {
+	public static final ResourceLocation ID = DimensionalDoors.id("pocket_spawn_point_set");
 
 	@Override
-	protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
+	protected Conditions createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer) {
 		return new Conditions(playerPredicate);
 	}
 
-	public void trigger(ServerPlayerEntity player) {
+	public void trigger(ServerPlayer player) {
 		this.trigger(player, t -> true);
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return ID;
 	}
 
-	public static class Conditions extends AbstractCriterionConditions {
-		public Conditions(EntityPredicate.Extended playerPredicate) {
+	public static class Conditions extends AbstractCriterionTriggerInstance {
+		public Conditions(EntityPredicate.Composite playerPredicate) {
 			super(ID, playerPredicate);
 		}
 	}

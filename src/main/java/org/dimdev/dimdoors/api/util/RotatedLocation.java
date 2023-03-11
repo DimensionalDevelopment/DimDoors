@@ -1,35 +1,35 @@
 package org.dimdev.dimdoors.api.util;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 public class RotatedLocation extends Location {
 	public final float yaw;
 	public final float pitch;
 
-	public RotatedLocation(RegistryKey<World> world, BlockPos pos, float yaw, float pitch) {
+	public RotatedLocation(ResourceKey<Level> world, BlockPos pos, float yaw, float pitch) {
 		super(world, pos);
 		this.yaw = yaw;
 		this.pitch = pitch;
 	}
 
-	public static NbtCompound serialize(RotatedLocation location) {
-		NbtCompound nbt = new NbtCompound();
-		nbt.putString("world", location.world.getValue().toString());
+	public static CompoundTag serialize(RotatedLocation location) {
+		CompoundTag nbt = new CompoundTag();
+		nbt.putString("world", location.world.location().toString());
 		nbt.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
 		nbt.putFloat("yaw", location.pitch);
 		nbt.putFloat("pitch", location.pitch);
 		return nbt;
 	}
 
-	public static RotatedLocation deserialize(NbtCompound nbt) {
+	public static RotatedLocation deserialize(CompoundTag nbt) {
 		int[] pos = nbt.getIntArray("pos");
 		return new RotatedLocation(
-				RegistryKey.of(RegistryKeys.WORLD, new Identifier(nbt.getString("world"))),
+				ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
 				new BlockPos(pos[0], pos[1], pos[2]),
 				nbt.getFloat("yaw"),
 				nbt.getFloat("pitch")

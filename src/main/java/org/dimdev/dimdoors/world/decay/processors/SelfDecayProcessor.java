@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
 import static org.dimdev.dimdoors.world.decay.DecayProcessor.DecayProcessorType.SELF;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class SelfDecayProcessor implements DecayProcessor {
     public static final String KEY = "self";
@@ -19,7 +19,7 @@ public class SelfDecayProcessor implements DecayProcessor {
     }
 
     @Override
-    public DecayProcessor fromNbt(NbtCompound nbt) {
+    public DecayProcessor fromNbt(CompoundTag nbt) {
         return this;
     }
 
@@ -34,8 +34,8 @@ public class SelfDecayProcessor implements DecayProcessor {
     }
 
     @Override
-    public int process(World world, BlockPos pos, BlockState origin, BlockState target) {
-        world.setBlockState(pos, origin);
+    public int process(Level world, BlockPos pos, BlockState origin, BlockState target) {
+        world.setBlockAndUpdate(pos, origin);
         return 0;
     }
 }

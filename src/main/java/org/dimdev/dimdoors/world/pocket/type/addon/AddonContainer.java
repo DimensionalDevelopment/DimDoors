@@ -3,22 +3,20 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class AddonContainer<T extends ContainedAddon> implements PocketAddon {
-	protected Identifier id;
+	protected ResourceLocation id;
 	protected List<T> addons = new ArrayList<>();
 
 	public AddonContainer() {
 	}
 
-	public void setId(Identifier id) {
+	public void setId(ResourceLocation id) {
 		this.id = id;
 	}
 
@@ -31,12 +29,12 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 	}
 
 	@Override
-	public PocketAddon fromNbt(NbtCompound nbt) {
-		this.id = Identifier.tryParse(nbt.getString("id"));
+	public PocketAddon fromNbt(CompoundTag nbt) {
+		this.id = ResourceLocation.tryParse(nbt.getString("id"));
 
 		if (nbt.contains("addons", NbtType.LIST)) {
-			for (NbtElement addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
-				addons.add((T) PocketAddon.deserialize((NbtCompound) addonTag));
+			for (Tag addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
+				addons.add((T) PocketAddon.deserialize((CompoundTag) addonTag));
 			}
 		}
 
@@ -44,12 +42,12 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
+	public CompoundTag toNbt(CompoundTag nbt) {
 		PocketAddon.super.toNbt(nbt);
 
-		NbtList addonsTag = new NbtList();
+		ListTag addonsTag = new ListTag();
 		for(T addon : addons) {
-			addonsTag.add(addon.toNbt(new NbtCompound()));
+			addonsTag.add(addon.toNbt(new CompoundTag()));
 		}
 		nbt.put("addons", addonsTag);
 
@@ -57,7 +55,7 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return id;
 	}
 }

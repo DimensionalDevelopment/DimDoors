@@ -6,39 +6,37 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.client.network.SequencedPacketCreator;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.multiplayer.prediction.PredictiveAction;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.protocol.game.ServerboundUseItemOnPacket;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 
-@Mixin(ClientPlayerInteractionManager.class)
+@Mixin(MultiPlayerGameMode.class)
 public abstract class ClientPlayerInteractionManagerMixin {
 
 	@Shadow
 	@Final
-	private MinecraftClient client;
+	private Minecraft client;
 
 	@Shadow
-	protected abstract void sendSequencedPacket(ClientWorld world, SequencedPacketCreator packetCreator);
+	protected abstract void sendSequencedPacket(ClientLevel world, PredictiveAction packetCreator);
 
 	@Inject(method = "interactBlock", cancellable = true, at = @At(value = "NEW", target = "org/apache/commons/lang3/mutable/MutableObject", remap = false))
-	public void useItemOnBlock(ClientPlayerEntity player, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> info) {
-		ActionResult result = UseItemOnBlockCallback.EVENT.invoker().useItemOnBlock(player, client.world, hand, hitResult);
-		if (result == ActionResult.PASS) {
+	public void useItemOnBlock(LocalPlayer player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> info) {
+		InteractionResult result = UseItemOnBlockCallback.EVENT.invoker().useItemOnBlock(player, client.level, hand, hitResult);
+		if (result == InteractionResult.PASS) {
 			return;
 		}
 		info.setReturnValue(result);
 		info.cancel();
-		if (result == ActionResult.SUCCESS) {
-			this.sendSequencedPacket(this.client.world, sequence -> new PlayerInteractBlockC2SPacket(hand, hitResult, sequence));
+		if (result == InteractionResult.SUCCESS) {
+			this.sendSequencedPacket(this.client.level, sequence -> new ServerboundUseItemOnPacket(hand, hitResult, sequence));
 		}
 	}
 }

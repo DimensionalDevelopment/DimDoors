@@ -5,18 +5,15 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -29,7 +26,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	public static final String KEY = "block_entity";
 
 	private Map<BlockPos, RiftBlockEntity> rifts;
-	private Map<BlockPos, NbtCompound> serializedRifts;
+	private Map<BlockPos, CompoundTag> serializedRifts;
 
 	public AbsoluteRiftBlockEntityModifier() {
 	}
@@ -40,9 +37,9 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	}
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 		// TODO: rifts from resource
-		serializedRifts = nbt.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(NbtCompound.class::cast)
+		serializedRifts = nbt.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
 				.filter(compound -> {
 					if (compound.contains("Pos")) {
 						return true;
@@ -59,18 +56,18 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowResource) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowResource) {
 		super.toNbtInternal(nbt, allowResource);
 
-		NbtList riftsNbt;
+		ListTag riftsNbt;
 		if (rifts != null) {
 			riftsNbt = rifts.values().parallelStream().unordered().map(rift -> {
-				NbtCompound e = new NbtCompound();
-				rift.writeNbt(e);
+				CompoundTag e = new CompoundTag();
+				rift.saveAdditional(e);
 				return e;
-			}).collect(Collectors.toCollection(NbtList::new));
+			}).collect(Collectors.toCollection(ListTag::new));
 		} else {
-			riftsNbt = new NbtList();
+			riftsNbt = new ListTag();
 			riftsNbt.addAll(serializedRifts.values());
 		}
 		nbt.put("rifts", riftsNbt);
@@ -91,8 +88,8 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	@Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		if (!manager.isPocketLazy()) { // rifts is guaranteed to exist at this stage since this modifier is not supposed to be loaded from json
-			World world = DimensionalDoors.getWorld(manager.getPocket().getWorld());
-			rifts.values().forEach(world::addBlockEntity);
+			Level world = DimensionalDoors.getWorld(manager.getPocket().getWorld());
+			rifts.values().forEach(world::setBlockEntity);
 		}
 	}
 
@@ -102,20 +99,20 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	}
 
 	@Override
-	public void applyToChunk(LazyGenerationPocket pocket, Chunk chunk) {
-		BlockBox chunkBox = BlockBoxUtil.getBox(chunk);
+	public void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk) {
+		BoundingBox chunkBox = BlockBoxUtil.getBox(chunk);
 
 		if (rifts != null) {
-			rifts.entrySet().stream().unordered().filter(entry -> chunkBox.contains(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+			rifts.entrySet().stream().unordered().filter(entry -> chunkBox.isInside(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 					.forEach((pos, rift) -> {
 						rifts.remove(pos);
 						chunk.setBlockEntity(rift);
 					});
 		} else {
-			serializedRifts.entrySet().stream().unordered().filter(entry -> chunkBox.contains(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+			serializedRifts.entrySet().stream().unordered().filter(entry -> chunkBox.isInside(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 					.forEach((pos, riftNbt) -> {
 						rifts.remove(pos);
-						chunk.setBlockEntity(BlockEntity.createFromNbt(pos, chunk.getBlockState(pos), riftNbt));
+						chunk.setBlockEntity(BlockEntity.loadStatic(pos, chunk.getBlockState(pos), riftNbt));
 					});
 		}
 	}

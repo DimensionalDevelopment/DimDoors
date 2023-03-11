@@ -9,12 +9,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.google.common.base.MoreObjects;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.resource.ResourceManager;
-
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
@@ -26,18 +23,18 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 public class RiftDataModifier extends AbstractModifier {
 	public static final String KEY = "rift_data";
 
-	private NbtCompound doorData;
+	private CompoundTag doorData;
 	private String doorDataReference;
 	private List<Integer> ids;
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 		// TODO: RiftData via ResourceManager
-		if (nbt.getType("rift_data") == NbtType.STRING) {
+		if (nbt.getTagType("rift_data") == NbtType.STRING) {
 			doorDataReference = nbt.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
-		else if (nbt.getType("rift_data") == NbtType.COMPOUND) doorData = nbt.getCompound("rift_data");
+		else if (nbt.getTagType("rift_data") == NbtType.COMPOUND) doorData = nbt.getCompound("rift_data");
 
 		ids = stream(nbt.getByteArray("ids")).boxed().collect(Collectors.toList());
 		return this;
@@ -57,7 +54,7 @@ public class RiftDataModifier extends AbstractModifier {
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
@@ -94,7 +91,7 @@ public class RiftDataModifier extends AbstractModifier {
 		if (doorData == null) {
 			riftBlockEntityConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
 		} else {
-			NbtCompound solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
+			CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
 
 			riftBlockEntityConsumer = rift -> rift.setData(RiftData.fromNbt(solvedDoorData));
 		}

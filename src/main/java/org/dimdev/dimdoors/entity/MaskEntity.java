@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.entity;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.PathAwareEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.level.Level;
 
 //import software.bernie.geckolib3.core.IAnimatable;
 //import software.bernie.geckolib3.core.PlayState;
@@ -12,10 +12,10 @@ import net.minecraft.world.World;
 //import software.bernie.geckolib3.core.manager.AnimationData;
 //import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class MaskEntity extends PathAwareEntity /*implements IAnimatable*/ { // TODO
+public class MaskEntity extends PathfinderMob /*implements IAnimatable*/ { // TODO
 //    private AnimationFactory factory = new AnimationFactory(this);
 
-    protected MaskEntity(EntityType<? extends MaskEntity> entityType, World world) {
+    protected MaskEntity(EntityType<? extends MaskEntity> entityType, Level world) {
         super(entityType, world);
     }
 

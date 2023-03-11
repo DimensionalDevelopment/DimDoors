@@ -1,20 +1,20 @@
 package org.dimdev.dimdoors.screen;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Recipe;
-import net.minecraft.recipe.RecipeInputProvider;
-import net.minecraft.recipe.RecipeMatcher;
-import net.minecraft.recipe.book.RecipeBookCategory;
-import net.minecraft.screen.AbstractRecipeScreenHandler;
-import net.minecraft.screen.ArrayPropertyDelegate;
-import net.minecraft.screen.PropertyDelegate;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.RecipeBookMenu;
+import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.StackedContentsCompatible;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 
-public class TesselatingScreenHandler extends AbstractRecipeScreenHandler<Inventory> {
+public class TesselatingScreenHandler extends RecipeBookMenu<Container> {
 	public static final int INPUT1_SLOT = 0;
 	public static final int INPUT2_SLOT = 1;
 	public static final int INPUT3_SLOT = 2;
@@ -24,14 +24,14 @@ public class TesselatingScreenHandler extends AbstractRecipeScreenHandler<Invent
 	public static final int DATA_WEAVE_TIME_TOAL = 1;
 	public static final int NUM_DATA_VALUES = 2;
 
-	protected PlayerInventory playerInventory;
-	protected Inventory recipeInv;
-	protected PropertyDelegate data;
+	protected Inventory playerInventory;
+	protected Container recipeInv;
+	protected ContainerData data;
 
-	public TesselatingScreenHandler(int id, PlayerInventory playerInventory) {
-		this(id, new SimpleInventory(10), playerInventory, new ArrayPropertyDelegate(2));
+	public TesselatingScreenHandler(int id, Inventory playerInventory) {
+		this(id, new SimpleContainer(10), playerInventory, new SimpleContainerData(2));
 	}
-	public TesselatingScreenHandler(int id, Inventory inventory, PlayerInventory playerInventory, PropertyDelegate propertyDelegate) {
+	public TesselatingScreenHandler(int id, Container inventory, Inventory playerInventory, ContainerData propertyDelegate) {
 		super(ModScreenHandlerTypes.TESSELATING_LOOM, id);
 		this.playerInventory = playerInventory;
 		this.recipeInv = inventory;
@@ -55,99 +55,99 @@ public class TesselatingScreenHandler extends AbstractRecipeScreenHandler<Invent
 			this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
 		}
 
-		this.addProperties(data);
+		this.addDataSlots(data);
 	}
 
 	@Override
-	public void populateRecipeFinder(RecipeMatcher finder) {
-		if(this.recipeInv instanceof RecipeInputProvider provider) {
-			provider.provideRecipeInputs(finder);
+	public void fillCraftSlotsStackedContents(StackedContents finder) {
+		if(this.recipeInv instanceof StackedContentsCompatible provider) {
+			provider.fillStackedContents(finder);
 		}
 	}
 
 	@Override
-	public void clearCraftingSlots() {
-		this.getSlot(1).setStack(ItemStack.EMPTY);
-		this.getSlot(2).setStack(ItemStack.EMPTY);
-		this.getSlot(3).setStack(ItemStack.EMPTY);
-		this.getSlot(4).setStack(ItemStack.EMPTY);
-		this.getSlot(5).setStack(ItemStack.EMPTY);
-		this.getSlot(6).setStack(ItemStack.EMPTY);
-		this.getSlot(7).setStack(ItemStack.EMPTY);
-		this.getSlot(8).setStack(ItemStack.EMPTY);
-		this.getSlot(9).setStack(ItemStack.EMPTY);
+	public void clearCraftingContent() {
+		this.getSlot(1).set(ItemStack.EMPTY);
+		this.getSlot(2).set(ItemStack.EMPTY);
+		this.getSlot(3).set(ItemStack.EMPTY);
+		this.getSlot(4).set(ItemStack.EMPTY);
+		this.getSlot(5).set(ItemStack.EMPTY);
+		this.getSlot(6).set(ItemStack.EMPTY);
+		this.getSlot(7).set(ItemStack.EMPTY);
+		this.getSlot(8).set(ItemStack.EMPTY);
+		this.getSlot(9).set(ItemStack.EMPTY);
 	}
 
 	@Override
-	public boolean matches(Recipe<? super Inventory> recipe) {
-		return recipe.matches(recipeInv, playerInventory.player.world);
+	public boolean recipeMatches(Recipe<? super Container> recipe) {
+		return recipe.matches(recipeInv, playerInventory.player.level);
 	}
 
 	@Override
-	public int getCraftingResultSlotIndex() {
+	public int getResultSlotIndex() {
 		return 0;
 	}
 
 	@Override
-	public int getCraftingWidth() {
+	public int getGridWidth() {
 		return 3;
 	}
 
 	@Override
-	public int getCraftingHeight() {
+	public int getGridHeight() {
 		return 3;
 	}
 
 	@Override
-	public int getCraftingSlotCount() {
+	public int getSize() {
 		return 10;
 	}
 
 	@Override
-	public RecipeBookCategory getCategory() {
-		return RecipeBookCategory.CRAFTING;
+	public RecipeBookType getRecipeBookType() {
+		return RecipeBookType.CRAFTING;
 	}
 
 	@Override
-	public boolean canInsertIntoSlot(int index) {
+	public boolean shouldMoveToInventory(int index) {
 		return index != 0;
 	}
 
 	@Override
-	public ItemStack quickMove(PlayerEntity player, int index) {
+	public ItemStack quickMoveStack(Player player, int index) {
 		{
 			ItemStack returnStack = ItemStack.EMPTY;
 			final Slot slot = this.slots.get(index);
-			if (slot != null && slot.hasStack()) {
-				final ItemStack slotStack = slot.getStack();
+			if (slot != null && slot.hasItem()) {
+				final ItemStack slotStack = slot.getItem();
 				returnStack = slotStack.copy();
 
 				final int containerSlots =
-						this.slots.size() - player.getInventory().size();
+						this.slots.size() - player.getInventory().getContainerSize();
 				if (index < containerSlots) {
-					if (!insertItem(slotStack, containerSlots, this.slots.size(), true)) {
+					if (!moveItemStackTo(slotStack, containerSlots, this.slots.size(), true)) {
 						return ItemStack.EMPTY;
 					}
-				} else if (!insertItem(slotStack, 0, containerSlots, false)) {
+				} else if (!moveItemStackTo(slotStack, 0, containerSlots, false)) {
 					return ItemStack.EMPTY;
 				}
 				if (slotStack.getCount() == 0) {
-					slot.setStack(ItemStack.EMPTY);
+					slot.set(ItemStack.EMPTY);
 				} else {
-					slot.markDirty();
+					slot.setChanged();
 				}
 				if (slotStack.getCount() == returnStack.getCount()) {
 					return ItemStack.EMPTY;
 				}
-				slot.onTakeItem(player, slotStack);
+				slot.onTake(player, slotStack);
 			}
 			return returnStack;
 		} // end transferStackInSlot()
 	}
 
 	@Override
-	public boolean canUse(PlayerEntity player) {
-		return recipeInv.canPlayerUse(player);
+	public boolean stillValid(Player player) {
+		return recipeInv.stillValid(player);
 	}
 
 	public int getBurnProgress(int pixels) {

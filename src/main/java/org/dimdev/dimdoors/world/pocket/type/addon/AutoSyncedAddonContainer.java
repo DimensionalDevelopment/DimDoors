@@ -1,22 +1,21 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import java.io.IOException;
-
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 
 abstract public class AutoSyncedAddonContainer<T extends ContainedAddon & AutoSyncedAddon> extends AddonContainer<T> implements AutoSyncedAddon {
 	@Override
-	public AutoSyncedAddon read(PacketByteBuf buf) throws IOException {
-		id = Identifier.tryParse(buf.readString());
+	public AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException {
+		id = ResourceLocation.tryParse(buf.readUtf());
 		addons = AutoSyncedAddon.readAutoSyncedAddonList(buf);
 
 		return this;
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
-		buf.writeString(id.toString());
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+		buf.writeUtf(id.toString());
 		AutoSyncedAddon.writeAutoSyncedAddonList(buf, addons);
 		return buf;
 	}

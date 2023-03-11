@@ -4,42 +4,39 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.level.Level;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.world.World;
-
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class PrivateRegistry {
 	protected static class PocketInfo {
-		public final RegistryKey<World> world;
+		public final ResourceKey<Level> world;
 		public final int id;
 
-		public PocketInfo(RegistryKey<World> world, int id) {
+		public PocketInfo(ResourceKey<Level> world, int id) {
 			this.world = world;
 			this.id = id;
 		}
 
-		public static NbtCompound toNbt(PocketInfo info) {
-			NbtCompound nbt = new NbtCompound();
-			nbt.putString("world", info.world.getValue().toString());
+		public static CompoundTag toNbt(PocketInfo info) {
+			CompoundTag nbt = new CompoundTag();
+			nbt.putString("world", info.world.location().toString());
 			nbt.putInt("id", info.id);
 			return nbt;
 		}
 
-		public static PocketInfo fromNbt(NbtCompound nbt) {
+		public static PocketInfo fromNbt(CompoundTag nbt) {
 			return new PocketInfo(
-					RegistryKey.of(RegistryKeys.WORLD, new Identifier(nbt.getString("world"))),
+					ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
 					nbt.getInt("id")
 			);
 		}
@@ -52,22 +49,22 @@ public class PrivateRegistry {
 	public PrivateRegistry() {
 	}
 
-	public void fromNbt(NbtCompound nbt) {
+	public void fromNbt(CompoundTag nbt) {
 		privatePocketMap.clear();
-		NbtCompound privatePocketMapNbt = nbt.getCompound("private_pocket_map");
+		CompoundTag privatePocketMapNbt = nbt.getCompound("private_pocket_map");
 		CompletableFuture<Map<UUID, PocketInfo>> futurePrivatePocketMap = CompletableFuture.supplyAsync(() ->
-				privatePocketMapNbt.getKeys().stream().unordered().map(key -> {
-					NbtCompound pocketInfoNbt = privatePocketMapNbt.getCompound(key);
-					return CompletableFuture.supplyAsync(() -> new Pair<>(UUID.fromString(key), PocketInfo.fromNbt(pocketInfoNbt)));
-				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getLeft, Pair::getRight)));
+				privatePocketMapNbt.getAllKeys().stream().unordered().map(key -> {
+					CompoundTag pocketInfoNbt = privatePocketMapNbt.getCompound(key);
+					return CompletableFuture.supplyAsync(() -> new Tuple<>(UUID.fromString(key), PocketInfo.fromNbt(pocketInfoNbt)));
+				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Tuple::getA, Tuple::getB)));
 
 		futurePrivatePocketMap.join().forEach(this.privatePocketMap::put);
 	}
 
-	public NbtCompound toNbt(NbtCompound nbt) {
-		CompletableFuture<NbtCompound> futurePrivatePocketMapNbt = CompletableFuture.supplyAsync(() -> {
-			Map<String, NbtElement> privatePocketNbtMap = this.privatePocketMap.entrySet().parallelStream().unordered().collect(Collectors.toConcurrentMap(entry -> entry.getKey().toString(), entry -> PocketInfo.toNbt(entry.getValue())));
-			NbtCompound privatePocketMapNbt = new NbtCompound();
+	public CompoundTag toNbt(CompoundTag nbt) {
+		CompletableFuture<CompoundTag> futurePrivatePocketMapNbt = CompletableFuture.supplyAsync(() -> {
+			Map<String, Tag> privatePocketNbtMap = this.privatePocketMap.entrySet().parallelStream().unordered().collect(Collectors.toConcurrentMap(entry -> entry.getKey().toString(), entry -> PocketInfo.toNbt(entry.getValue())));
+			CompoundTag privatePocketMapNbt = new CompoundTag();
 			privatePocketNbtMap.forEach(privatePocketMapNbt::put);
 			return privatePocketMapNbt;
 		});

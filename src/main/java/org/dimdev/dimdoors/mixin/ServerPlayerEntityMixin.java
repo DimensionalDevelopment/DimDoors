@@ -7,20 +7,18 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.ServerRecipeBook;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.ServerRecipeBook;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.UnravelledFabricBlock;
 import org.dimdev.dimdoors.criteria.ModCriteria;
@@ -28,14 +26,14 @@ import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-@Mixin(value = ServerPlayerEntity.class, priority = 900)
+@Mixin(value = ServerPlayer.class, priority = 900)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	@Shadow
 	@Final
 	private ServerRecipeBook recipeBook;
 
 	@Shadow
-	public abstract void readCustomDataFromNbt(NbtCompound nbt);
+	public abstract void readAdditionalSaveData(CompoundTag nbt);
 
 	private static final float RANDOM_ACTION_CHANCE = 0.1F;
 	private static final float CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS = 0.1F;
@@ -43,25 +41,25 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	private static final int POSITION_AWAY = 50;
 	private static final float RANDOM_LIQUID_CHANCE = 0.7F;
 	@Unique
-	Random dimdoors_random = Random.create();
+	RandomSource dimdoors_random = RandomSource.create();
 
-	public ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
+	public ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
 	@Inject(method = "tick", at = @At("HEAD"))
 	public void playerTickMixin(CallbackInfo ci) {
 		if (dimdoors_random.nextFloat() <= RANDOM_ACTION_CHANCE) {
-			if(ModDimensions.isLimboDimension(((PlayerEntity)(Object)(this)).getEntityWorld())) {
-				tryMakingLimboLikeOtherDimensions((PlayerEntity)(Object)this);
+			if(ModDimensions.isLimboDimension(((Player)(Object)(this)).getCommandSenderWorld())) {
+				tryMakingLimboLikeOtherDimensions((Player)(Object)this);
 			}
 		}
 
 	}
-	private boolean isValidBlockToReplace(World world, BlockPos pos) {
-		return world.getBlockState(pos.up()).isAir() && world.getBlockState(pos).getBlock() instanceof UnravelledFabricBlock;
+	private boolean isValidBlockToReplace(Level world, BlockPos pos) {
+		return world.getBlockState(pos.above()).isAir() && world.getBlockState(pos).getBlock() instanceof UnravelledFabricBlock;
 	}
-	private void makeLimboLikeOverworld(PlayerEntity player) {
+	private void makeLimboLikeOverworld(Player player) {
 		/*
 		World world = player.getEntityWorld();
 		BlockPos pos = player.getBlockPos().add(random.nextInt(random.nextInt(POSITION_AWAY)), 0, random.nextInt(POSITION_AWAY));
@@ -78,7 +76,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 		 */
 
 	}
-	private void makeLimboLikeEnd(PlayerEntity player) {
+	private void makeLimboLikeEnd(Player player) {
 		/*
 		World world = player.getEntityWorld();
 		BlockPos pos = player.getBlockPos().add(random.nextInt(POSITION_AWAY), 0, random.nextInt(POSITION_AWAY));
@@ -92,18 +90,18 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 		 */
 	}
 
-	private void makeSpotOfLiquid(World world, BlockPos pos, BlockState state, int range) {
+	private void makeSpotOfLiquid(Level world, BlockPos pos, BlockState state, int range) {
 
-		BlockPos.iterateOutwards(pos, dimdoors_random.nextInt(range), dimdoors_random.nextInt(range), dimdoors_random.nextInt(range)).forEach( (blockPos -> {
+		BlockPos.withinManhattan(pos, dimdoors_random.nextInt(range), dimdoors_random.nextInt(range), dimdoors_random.nextInt(range)).forEach( (blockPos -> {
 			if(isValidBlockToReplace(world, blockPos)) {
-				world.setBlockState(blockPos, state);
+				world.setBlockAndUpdate(blockPos, state);
 			}
 
 		}));
 
 	}
 
-	private void makeLimboLikeNether(PlayerEntity player) {
+	private void makeLimboLikeNether(Player player) {
 		/*
 		World world = player.getEntityWorld();
 		BlockPos pos = player.getBlockPos().add(random.nextInt(POSITION_AWAY), 0, random.nextInt(POSITION_AWAY));
@@ -119,7 +117,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 
 		 */
 	}
-	private void tryMakingLimboLikeOtherDimensions(PlayerEntity player) {
+	private void tryMakingLimboLikeOtherDimensions(Player player) {
 		if(dimdoors_random.nextFloat() > CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS) {
 			return;
 		}
@@ -134,20 +132,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	public void checkDeathServer(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
 		if (ci.isCancelled()) {
-			if (ModDimensions.isPocketDimension(this.world)) {
+			if (ModDimensions.isPocketDimension(this.level)) {
 				this.incrementStat(ModStats.DEATHS_IN_POCKETS);
 			}
 			this.incrementStat(ModStats.TIMES_SENT_TO_LIMBO);
 			TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 512);
 			//noinspection ConstantConditions
-			LimboEntranceSource.ofDamageSource(source).broadcast((PlayerEntity) (Object) this, this.getServer());
+			LimboEntranceSource.ofDamageSource(source).broadcast((Player) (Object) this, this.getServer());
 		}
 	}
 
 	@Inject(method = "setSpawnPoint", at = @At("TAIL"))
-	public void onSpawnPointSet(RegistryKey<World> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean bl, CallbackInfo ci) {
+	public void onSpawnPointSet(ResourceKey<Level> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean bl, CallbackInfo ci) {
 		if (ModDimensions.isPocketDimension(dimension)) {
-			ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayerEntity) (Object) this);
+			ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayer) (Object) this);
 		}
 	}
 

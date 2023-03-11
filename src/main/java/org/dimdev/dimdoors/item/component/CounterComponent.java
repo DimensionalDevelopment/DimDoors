@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.item.component;
 
 import dev.onyxstudios.cca.api.v3.item.ItemComponent;
-
-import net.minecraft.item.ItemStack;
-
+import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.DimensionalDoorsComponents;
 
 public class CounterComponent extends ItemComponent {

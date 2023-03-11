@@ -1,20 +1,17 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPacketListener> {
-	public static final Identifier ID = DimensionalDoors.id("player_inventory_slot_update");
+	public static final ResourceLocation ID = DimensionalDoors.id("player_inventory_slot_update");
 
 	private int slot;
 	private ItemStack stack;
@@ -30,16 +27,16 @@ public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPa
 	}
 
 	@Override
-	public SimplePacket<ClientPacketListener> read(PacketByteBuf buf) throws IOException {
+	public SimplePacket<ClientPacketListener> read(FriendlyByteBuf buf) throws IOException {
 		slot = buf.readInt();
-		stack = buf.readItemStack();
+		stack = buf.readItem();
 		return this;
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
 		buf.writeInt(slot);
-		buf.writeItemStack(stack);
+		buf.writeItem(stack);
 		return buf;
 	}
 
@@ -49,7 +46,7 @@ public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPa
 	}
 
 	@Override
-	public Identifier channelId() {
+	public ResourceLocation channelId() {
 		return ID;
 	}
 

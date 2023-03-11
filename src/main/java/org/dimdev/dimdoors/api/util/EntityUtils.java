@@ -1,35 +1,35 @@
 package org.dimdev.dimdoors.api.util;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FishingHook;
+import net.minecraft.world.entity.projectile.Projectile;
 
 public final class EntityUtils {
 	public static Entity getOwner(Entity entity) {
 		Entity topmostEntity = null;
 
 		// Thrower
-		if (entity instanceof ProjectileEntity) topmostEntity = ((ProjectileEntity) entity).getOwner();
-		if (entity instanceof FishingBobberEntity) topmostEntity = ((FishingBobberEntity) entity).getOwner();
+		if (entity instanceof Projectile) topmostEntity = ((Projectile) entity).getOwner();
+		if (entity instanceof FishingHook) topmostEntity = ((FishingHook) entity).getOwner();
 		if (entity instanceof ItemEntity)
-			topmostEntity = ((ServerWorld) entity.getEntityWorld()).getEntity(((ItemEntity) entity).getThrower());
+			topmostEntity = ((ServerLevel) entity.getCommandSenderWorld()).getEntity(((ItemEntity) entity).getThrower());
 
 		// Passengers
-		if (entity.getPrimaryPassenger() != null && !(entity instanceof PlayerEntity))
-			topmostEntity = entity.getPrimaryPassenger();
-		if (entity.getPassengerList().size() > 0) topmostEntity = entity.getPassengerList().get(0);
+		if (entity.getControllingPassenger() != null && !(entity instanceof Player))
+			topmostEntity = entity.getControllingPassenger();
+		if (entity.getPassengers().size() > 0) topmostEntity = entity.getPassengers().get(0);
 
 		// Owned Animals
-		if (entity instanceof MobEntity && ((MobEntity) entity).isLeashed())
-			topmostEntity = ((MobEntity) entity).getHoldingEntity();
-		if (entity instanceof TameableEntity && ((TameableEntity) entity).getOwner() != null)
-			topmostEntity = ((TameableEntity) entity).getOwner();
+		if (entity instanceof Mob && ((Mob) entity).isLeashed())
+			topmostEntity = ((Mob) entity).getLeashHolder();
+		if (entity instanceof TamableAnimal && ((TamableAnimal) entity).getOwner() != null)
+			topmostEntity = ((TamableAnimal) entity).getOwner();
 
 		if (topmostEntity != null) {
 			return getOwner(topmostEntity);
@@ -38,11 +38,11 @@ public final class EntityUtils {
 		return entity;
 	}
 
-	public static void chat(Entity entity, Text text, boolean actionBar) {
-		if (entity instanceof PlayerEntity) ((PlayerEntity) entity).sendMessage(text, actionBar);
+	public static void chat(Entity entity, Component text, boolean actionBar) {
+		if (entity instanceof Player) ((Player) entity).displayClientMessage(text, actionBar);
 	}
 
-	public static void chat(Entity entity, Text text) {
+	public static void chat(Entity entity, Component text) {
 		chat(entity, text, true);
 	}
 }

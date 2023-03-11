@@ -1,12 +1,9 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import java.util.UUID;
-
+import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.nbt.NbtCompound;
-
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -74,18 +71,18 @@ public class Rift extends RegistryVertex {
 		return RegistryVertexType.RIFT;
 	}
 
-	public static NbtCompound toNbt(Rift rift) {
-		NbtCompound nbt = new NbtCompound();
-		nbt.putUuid("id", rift.id);
+	public static CompoundTag toNbt(Rift rift) {
+		CompoundTag nbt = new CompoundTag();
+		nbt.putUUID("id", rift.id);
 		nbt.put("location", Location.toNbt(rift.location));
 		nbt.putBoolean("isDetached", rift.isDetached);
 		if (rift.properties != null) nbt.put("properties", LinkProperties.toNbt(rift.properties));
 		return nbt;
 	}
 
-	public static Rift fromNbt(NbtCompound nbt) {
+	public static Rift fromNbt(CompoundTag nbt) {
 		Rift rift = new Rift();
-		rift.id = nbt.getUuid("id");
+		rift.id = nbt.getUUID("id");
 		rift.location = Location.fromNbt(nbt.getCompound("location"));
 		rift.isDetached = nbt.getBoolean("isDetached");
 		if (nbt.contains("properties")) rift.properties = LinkProperties.fromNbt(nbt.getCompound("properties"));

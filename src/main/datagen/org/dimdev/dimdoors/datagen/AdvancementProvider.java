@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.datagen;
 
 import java.util.function.Consumer;
 
-import net.minecraft.advancement.Advancement;
+import net.minecraft.advancements.Advancement;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;

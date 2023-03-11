@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
-
-import net.minecraft.nbt.NbtCompound;
-
+import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class GlobalReference extends RiftReference {
@@ -25,13 +23,13 @@ public class GlobalReference extends RiftReference {
 		return VirtualTargetType.GLOBAL;
 	}
 
-	public static NbtCompound toNbt(GlobalReference virtualTarget) {
-		NbtCompound nbt = new NbtCompound();
+	public static CompoundTag toNbt(GlobalReference virtualTarget) {
+		CompoundTag nbt = new CompoundTag();
 		nbt.put("target", Location.toNbt(virtualTarget.getReferencedLocation()));
 		return nbt;
 	}
 
-	public static GlobalReference fromNbt(NbtCompound nbt) {
+	public static GlobalReference fromNbt(CompoundTag nbt) {
 		return new GlobalReference(Location.fromNbt(nbt.getCompound("target")));
 	}
 }

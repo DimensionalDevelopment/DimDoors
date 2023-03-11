@@ -3,10 +3,8 @@ package org.dimdev.dimdoors.mixin;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-
-import net.minecraft.block.DoorBlock;
-import net.minecraft.sound.SoundEvent;
-
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.block.DoorBlock;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 
 @Mixin(DoorBlock.class)

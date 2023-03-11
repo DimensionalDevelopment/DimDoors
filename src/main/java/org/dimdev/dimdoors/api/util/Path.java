@@ -8,8 +8,7 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
-
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class Path<K> {
 	private final ArrayList<K> path;
@@ -56,7 +55,7 @@ public class Path<K> {
 		return new Path<>(str.split("(?<=[/:])"));
 	}
 
-	public static Path<String> stringPath(Identifier id) {
+	public static Path<String> stringPath(ResourceLocation id) {
 		return stringPath(id.toString());
 	}
 

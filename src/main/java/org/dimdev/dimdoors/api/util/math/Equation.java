@@ -10,12 +10,10 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-
+import net.minecraft.util.Mth;
+import net.minecraft.util.Tuple;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.util.Pair;
-import net.minecraft.util.math.MathHelper;
 
 //@FunctionalInterface
 public interface Equation {
@@ -149,7 +147,7 @@ public interface Equation {
 			})));
 
 			// clamp
-			parseRules.add(new FunctionParser("clamp", 3, 3, (stringDoubleMap, equations) -> MathHelper.clamp(equations[0].apply(stringDoubleMap), equations[1].apply(stringDoubleMap), equations[2].apply(stringDoubleMap))));
+			parseRules.add(new FunctionParser("clamp", 3, 3, (stringDoubleMap, equations) -> Mth.clamp(equations[0].apply(stringDoubleMap), equations[1].apply(stringDoubleMap), equations[2].apply(stringDoubleMap))));
 
 			// rand
 			parseRules.add(new FunctionParser("random", 0,0, ((stringDoubleMap, equations) -> Math.random())));
@@ -186,7 +184,7 @@ public interface Equation {
 		}
 
 		private static class SplitterParser implements EquationParser {
-			private final Map<String, Pair<String[], BiFunction<Map<String, Double>, Equation[], Double>>> operations;
+			private final Map<String, Tuple<String[], BiFunction<Map<String, Double>, Equation[], Double>>> operations;
 
 			public SplitterParser() {
 				this.operations = new HashMap<>();
@@ -195,7 +193,7 @@ public interface Equation {
 			public SplitterParser add(BiFunction<Map<String, Double>, Equation[], Double> function, String... symbols) {
 				List<String> symbolList = Arrays.asList(symbols);
 				Collections.reverse(symbolList);
-				operations.put(symbolList.get(0), new Pair<>(symbolList.toArray(new String[0]), function));
+				operations.put(symbolList.get(0), new Tuple<>(symbolList.toArray(new String[0]), function));
 				return this;
 			}
 
@@ -208,10 +206,10 @@ public interface Equation {
 					else if (substring.startsWith("(")) depth--;
 					for (String currentSymbol : this.operations.keySet()) {
 						if (depth == 0 && substring.startsWith(currentSymbol)) {
-							final Pair<String[], BiFunction<Map<String, Double>, Equation[], Double>> operation = this.operations.get(currentSymbol);
-							final String[] symbols = operation.getLeft();
-							List<Pair<Integer, Integer>> partIndices = new ArrayList<>(symbols.length + 1);
-							partIndices.add(new Pair<>(i + currentSymbol.length(), toParse.length()));
+							final Tuple<String[], BiFunction<Map<String, Double>, Equation[], Double>> operation = this.operations.get(currentSymbol);
+							final String[] symbols = operation.getA();
+							List<Tuple<Integer, Integer>> partIndices = new ArrayList<>(symbols.length + 1);
+							partIndices.add(new Tuple<>(i + currentSymbol.length(), toParse.length()));
 
 							int symbolPointer = 1;
 							if (symbolPointer < symbols.length) currentSymbol = symbols[symbolPointer];
@@ -224,7 +222,7 @@ public interface Equation {
 								else if (innerSubstring.startsWith("(")) innerDepth--;
 								if (innerDepth == 0 && innerSubstring.startsWith(currentSymbol)) {
 
-									partIndices.add(new Pair<>(j + currentSymbol.length(), endIndex));
+									partIndices.add(new Tuple<>(j + currentSymbol.length(), endIndex));
 
 									endIndex = j;
 									symbolPointer++;
@@ -232,15 +230,15 @@ public interface Equation {
 								}
 							}
 							if (symbolPointer < symbols.length) continue;
-							partIndices.add(new Pair<>(0, endIndex));
+							partIndices.add(new Tuple<>(0, endIndex));
 
 							Equation[] equations = new Equation[partIndices.size()];
 							for (int j = 0; j < partIndices.size(); j++) {
-								Pair<Integer, Integer> pair = partIndices.get(j);
-								equations[partIndices.size() - j - 1] = Equation.parse(toParse.substring(pair.getLeft(), pair.getRight()));
+								Tuple<Integer, Integer> pair = partIndices.get(j);
+								equations[partIndices.size() - j - 1] = Equation.parse(toParse.substring(pair.getA(), pair.getB()));
 							}
 
-							return Optional.of(newEquation(stringDoubleMap -> operation.getRight().apply(stringDoubleMap, equations), stringBuilder -> {
+							return Optional.of(newEquation(stringDoubleMap -> operation.getB().apply(stringDoubleMap, equations), stringBuilder -> {
 								for (int j = 0; j < symbols.length; j++) {
 									equations[j].visit(stringBuilder).append(symbols[symbols.length - 1 - j]);
 								}

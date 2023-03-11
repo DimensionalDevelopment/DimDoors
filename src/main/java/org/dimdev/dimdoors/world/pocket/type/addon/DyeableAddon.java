@@ -1,15 +1,14 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.AncientFabricBlock;
@@ -20,7 +19,7 @@ import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class DyeableAddon implements PocketAddon {
-	public static Identifier ID = DimensionalDoors.id("dyeable");
+	public static ResourceLocation ID = DimensionalDoors.id("dyeable");
 
 	private static final int BLOCKS_PAINTED_PER_DYE = 1000000;
 
@@ -29,22 +28,22 @@ public class DyeableAddon implements PocketAddon {
 	private int count = 0;
 
 	private static int amountOfDyeRequiredToColor(Pocket pocket) {
-		int outerVolume = pocket.getBox().getBlockCountY() * pocket.getBox().getBlockCountZ() * pocket.getBox().getBlockCountZ();
-		int innerVolume = (pocket.getBox().getBlockCountY() - 5) * (pocket.getBox().getBlockCountZ() - 5) * (pocket.getBox().getBlockCountZ() - 5);
+		int outerVolume = pocket.getBox().getYSpan() * pocket.getBox().getZSpan() * pocket.getBox().getZSpan();
+		int innerVolume = (pocket.getBox().getYSpan() - 5) * (pocket.getBox().getZSpan() - 5) * (pocket.getBox().getZSpan() - 5);
 
 		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}
 
 	private void repaint(Pocket pocket, DyeColor dyeColor) {
-		ServerWorld serverWorld = DimensionalDoors.getWorld(pocket.getWorld());
-		BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).getDefaultState();
-		BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).getDefaultState();
+		ServerLevel serverWorld = DimensionalDoors.getWorld(pocket.getWorld());
+		BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).defaultBlockState();
+		BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).defaultBlockState();
 
-		BlockPos.stream(pocket.getBox()).forEach(pos -> {
+		BlockPos.betweenClosedStream(pocket.getBox()).forEach(pos -> {
 			if (serverWorld.getBlockState(pos).getBlock() instanceof AncientFabricBlock) {
-				serverWorld.setBlockState(pos, outerWall);
+				serverWorld.setBlockAndUpdate(pos, outerWall);
 			} else if (serverWorld.getBlockState(pos).getBlock() instanceof FabricBlock) {
-				serverWorld.setBlockState(pos, innerWall);
+				serverWorld.setBlockAndUpdate(pos, innerWall);
 			}
 		});
 	}
@@ -55,7 +54,7 @@ public class DyeableAddon implements PocketAddon {
 		int maxDye = amountOfDyeRequiredToColor(pocket);
 
 		if (this.dyeColor == color) {
-			EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pockets.dyeAlreadyAbsorbed")));
+			EntityUtils.chat(entity, MutableComponent.create(new TranslatableContents("dimdoors.pockets.dyeAlreadyAbsorbed")));
 			return false;
 		}
 
@@ -65,15 +64,15 @@ public class DyeableAddon implements PocketAddon {
 				this.dyeColor = color;
 				this.nextDyeColor = PocketColor.NONE;
 				this.count = 0;
-				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.pocketHasBeenDyed", dyeColor)));
+				EntityUtils.chat(entity, MutableComponent.create(new TranslatableContents("dimdoors.pocket.pocketHasBeenDyed", dyeColor)));
 			} else {
 				this.count++;
-				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color)));
+				EntityUtils.chat(entity, MutableComponent.create(new TranslatableContents("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color)));
 			}
 		} else {
 			this.nextDyeColor = color;
 			this.count = 1;
-			EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color)));
+			EntityUtils.chat(entity, MutableComponent.create(new TranslatableContents("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color)));
 		}
 		return true;
 	}
@@ -84,7 +83,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public PocketAddon fromNbt(NbtCompound nbt) {
+	public PocketAddon fromNbt(CompoundTag nbt) {
 
 		this.dyeColor = PocketColor.from(nbt.getInt("dyeColor"));
 		this.nextDyeColor = PocketColor.from(nbt.getInt("nextDyeColor"));
@@ -94,7 +93,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
+	public CompoundTag toNbt(CompoundTag nbt) {
 		PocketAddon.super.toNbt(nbt);
 
 		nbt.putInt("dyeColor", this.dyeColor.getId());
@@ -110,7 +109,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return ID;
 	}
 
@@ -136,19 +135,19 @@ public class DyeableAddon implements PocketAddon {
 		}
 
 		@Override
-		public Identifier getId() {
+		public ResourceLocation getId() {
 			return ID;
 		}
 
 		@Override
-		public PocketBuilderAddon<DyeableAddon> fromNbt(NbtCompound nbt) {
+		public PocketBuilderAddon<DyeableAddon> fromNbt(CompoundTag nbt) {
 			this.dyeColor = PocketColor.from(nbt.getInt("dye_color"));
 
 			return this;
 		}
 
 		@Override
-		public NbtCompound toNbt(NbtCompound nbt) {
+		public CompoundTag toNbt(CompoundTag nbt) {
 			PocketBuilderAddon.super.toNbt(nbt);
 
 			nbt.putInt("dye_color", dyeColor.getId());

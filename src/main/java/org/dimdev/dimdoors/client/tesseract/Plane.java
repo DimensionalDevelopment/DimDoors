@@ -3,9 +3,7 @@ package org.dimdev.dimdoors.client.tesseract;
 import com.flowpowered.math.matrix.Matrix4f;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
-
-import net.minecraft.client.render.VertexConsumer;
-
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -34,8 +32,8 @@ public class Plane {
         Vector3f scaled = vector.toVector3().mul(scalar);
         vc.vertex(model, scaled.getX(), scaled.getY(), scaled.getZ())
                 .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
-                .texture(u, v)
-                .next();
+                .uv(u, v)
+                .endVertex();
     }
 
     private static Vector4f rotXW(Vector4f v, double angle) {

@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 // TODO
 public class MarkingPlateBlock extends Block {
-	public MarkingPlateBlock(Settings settings) {
+	public MarkingPlateBlock(Properties settings) {
 		super(settings);
 	}
 }

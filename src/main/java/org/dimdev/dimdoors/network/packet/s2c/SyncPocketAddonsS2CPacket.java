@@ -2,25 +2,22 @@ package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
 import java.util.List;
-
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListener> {
-	public static final Identifier ID = DimensionalDoors.id("sync_pocket_addons");
+	public static final ResourceLocation ID = DimensionalDoors.id("sync_pocket_addons");
 
-	private RegistryKey<World> world;
+	private ResourceKey<Level> world;
 	private int gridSize;
 	private int pocketId;
 	private int pocketRange;
@@ -30,7 +27,7 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 	public SyncPocketAddonsS2CPacket() {
 	}
 
-	public SyncPocketAddonsS2CPacket(RegistryKey<World> world, int gridSize, int pocketId, int pocketRange, List<AutoSyncedAddon> addons) {
+	public SyncPocketAddonsS2CPacket(ResourceKey<Level> world, int gridSize, int pocketId, int pocketRange, List<AutoSyncedAddon> addons) {
 		this.world = world;
 		this.gridSize = gridSize;
 		this.pocketId = pocketId;
@@ -39,8 +36,8 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 	}
 
 	@Override
-	public SimplePacket<ClientPacketListener> read(PacketByteBuf buf) throws IOException {
-		this.world = RegistryKey.of(RegistryKeys.WORLD, buf.readIdentifier());
+	public SimplePacket<ClientPacketListener> read(FriendlyByteBuf buf) throws IOException {
+		this.world = ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation());
 		this.gridSize = buf.readInt();
 		this.pocketId = buf.readInt();
 		this.pocketRange = buf.readInt();
@@ -49,8 +46,8 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
-		buf.writeIdentifier(world.getValue());
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+		buf.writeResourceLocation(world.location());
 		buf.writeInt(gridSize);
 		buf.writeInt(pocketId);
 		buf.writeInt(pocketRange);
@@ -64,7 +61,7 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 	}
 
 	@Override
-	public Identifier channelId() {
+	public ResourceLocation channelId() {
 		return ID;
 	}
 
@@ -84,7 +81,7 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 		return addons;
 	}
 
-	public RegistryKey<World> getWorld() {
+	public ResourceKey<Level> getWorld() {
 		return world;
 	}
 }

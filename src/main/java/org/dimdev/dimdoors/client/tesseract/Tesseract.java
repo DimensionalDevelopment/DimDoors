@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.client.tesseract;
 
 import com.flowpowered.math.vector.Vector4f;
-
-import net.minecraft.client.render.VertexConsumer;
-
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

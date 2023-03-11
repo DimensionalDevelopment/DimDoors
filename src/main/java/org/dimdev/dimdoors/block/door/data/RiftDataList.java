@@ -9,43 +9,41 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.util.Pair;
-
+import net.minecraft.util.Tuple;
 import org.dimdev.dimdoors.block.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 public class RiftDataList {
-	private final LinkedList<Pair<JsonObject, Condition>> riftDataConditions;
+	private final LinkedList<Tuple<JsonObject, Condition>> riftDataConditions;
 
 	public static RiftDataList fromJson(JsonArray jsonArray) {
-		LinkedList<Pair<JsonObject, Condition>> riftDataConditions = new LinkedList<>();
+		LinkedList<Tuple<JsonObject, Condition>> riftDataConditions = new LinkedList<>();
 		for (JsonElement json : jsonArray) {
 			JsonObject jsonObject = json.getAsJsonObject();
 			//OptRiftData riftData = OptRiftData.fromJson(jsonObject.getAsJsonObject("data"));
 			JsonObject unbakedRiftData = jsonObject.getAsJsonObject("data");
 			Condition condition = Condition.fromJson(jsonObject.getAsJsonObject("condition"));
-			riftDataConditions.add(new Pair<>(unbakedRiftData, condition));
+			riftDataConditions.add(new Tuple<>(unbakedRiftData, condition));
 		}
 		return new RiftDataList(riftDataConditions);
 	}
 
-	public RiftDataList(LinkedList<Pair<JsonObject, Condition>> riftDataConditions) {
+	public RiftDataList(LinkedList<Tuple<JsonObject, Condition>> riftDataConditions) {
 		this.riftDataConditions = riftDataConditions;
 	}
 
 	public OptRiftData getRiftData(EntranceRiftBlockEntity rift) {
-		JsonObject unbakedRiftData = riftDataConditions.stream().filter(pair -> pair.getRight().matches(rift)).findFirst().orElseThrow(() -> new RuntimeException("Could not find any matching rift data")).getLeft();
+		JsonObject unbakedRiftData = riftDataConditions.stream().filter(pair -> pair.getB().matches(rift)).findFirst().orElseThrow(() -> new RuntimeException("Could not find any matching rift data")).getA();
 		return OptRiftData.fromJson(unbakedRiftData);
 	}
 
 	public JsonArray toJson() {
 		JsonArray jsonArray = new JsonArray();
-		for (Map.Entry<JsonObject, Condition> entry : this.riftDataConditions.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)).entrySet()) {
+		for (Map.Entry<JsonObject, Condition> entry : this.riftDataConditions.stream().collect(Collectors.toMap(Tuple::getA, Tuple::getB)).entrySet()) {
 			JsonObject unbakedRiftData = entry.getKey();
 			Condition condition = entry.getValue();
 			JsonObject jsonInner = new JsonObject();
@@ -62,8 +60,8 @@ public class RiftDataList {
 		private final Optional<LinkProperties> linkProperties;
 
 		public static OptRiftData fromJson(JsonObject json) {
-			Optional<VirtualTarget> destination = Optional.ofNullable(json.get("destination")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(VirtualTarget::fromNbt);
-			Optional<LinkProperties> linkProperties = Optional.ofNullable(json.get("properties")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(LinkProperties::fromNbt);
+			Optional<VirtualTarget> destination = Optional.ofNullable(json.get("destination")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(CompoundTag.class::cast).map(VirtualTarget::fromNbt);
+			Optional<LinkProperties> linkProperties = Optional.ofNullable(json.get("properties")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(CompoundTag.class::cast).map(LinkProperties::fromNbt);
 			return new OptRiftData(destination, linkProperties);
 		}
 

@@ -14,25 +14,23 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.SpongeSchematicReader;
 import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.session.ClipboardHolder;
-
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
-
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.server.level.ServerPlayer;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
 public class WorldeditHelper {
-	static int load(ServerCommandSource source, PocketTemplate template) throws CommandSyntaxException {
-		ServerPlayerEntity player = source.getPlayer();
+	static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
+		ServerPlayer player = source.getPlayer();
 		boolean async = DimensionalDoors.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
 		Consumer<Runnable> taskAcceptor = async ? r -> source.getServer().execute(r) : Runnable::run;
 		Runnable task = () -> {
-			NbtCompound nbt = Schematic.toNbt(template.getSchematic());
+			CompoundTag nbt = Schematic.toNbt(template.getSchematic());
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			try {
 				NbtIo.writeCompressed(nbt, stream);
@@ -47,7 +45,7 @@ public class WorldeditHelper {
 			}
 			taskAcceptor.accept(() -> {
 				WorldEdit.getInstance().getSessionManager().get(FabricAdapter.adaptPlayer(player)).setClipboard(new ClipboardHolder(clipboard));
-				source.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.loadedSchem", template.getId())), true);
+				source.sendSuccess(MutableComponent.create(new TranslatableContents("commands.pocket.loadedSchem", template.getId())), true);
 			});
 		};
 		if (async) {

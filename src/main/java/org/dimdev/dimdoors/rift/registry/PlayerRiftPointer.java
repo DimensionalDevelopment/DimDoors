@@ -1,18 +1,16 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import java.util.UUID;
-
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Uuids;
 
 public class PlayerRiftPointer extends RegistryVertex {
 	public static final Codec<PlayerRiftPointer> CODEC = RecordCodecBuilder.create(instance -> {
 		return instance.group(
-				Uuids.CODEC.fieldOf("id").forGetter(a -> a.id),
-				Uuids.CODEC.fieldOf("player").forGetter(a -> a.player)
+				UUIDUtil.AUTHLIB_CODEC.fieldOf("id").forGetter(a -> a.id),
+				UUIDUtil.AUTHLIB_CODEC.fieldOf("player").forGetter(a -> a.player)
 		).apply(instance, (id, player) -> {
 			PlayerRiftPointer pointer = new PlayerRiftPointer(player);
 			pointer.id = id;
@@ -35,15 +33,15 @@ public class PlayerRiftPointer extends RegistryVertex {
 		return "PlayerRiftPointer(player=" + this.player + ")";
 	}
 
-	public static NbtCompound toNbt(PlayerRiftPointer vertex) {
-		NbtCompound nbt = new NbtCompound();
-		nbt.putUuid("id", vertex.id);
-		nbt.putUuid("player", vertex.player);
+	public static CompoundTag toNbt(PlayerRiftPointer vertex) {
+		CompoundTag nbt = new CompoundTag();
+		nbt.putUUID("id", vertex.id);
+		nbt.putUUID("player", vertex.player);
 		return nbt;
 	}
 
-	public static PlayerRiftPointer fromNbt(NbtCompound nbt) {
-		return new PlayerRiftPointer(nbt.getUuid("id"));
+	public static PlayerRiftPointer fromNbt(CompoundTag nbt) {
+		return new PlayerRiftPointer(nbt.getUUID("id"));
 	}
 
 	public UUID getPlayer() {

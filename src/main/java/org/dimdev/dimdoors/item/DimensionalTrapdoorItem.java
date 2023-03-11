@@ -1,41 +1,39 @@
 package org.dimdev.dimdoors.item;
 
 import java.util.function.Consumer;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public class DimensionalTrapdoorItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;
 
-	public DimensionalTrapdoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
+	public DimensionalTrapdoorItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
 		super(block, settings);
 		this.setupFunction = setupFunction;
 	}
 
 	@Override
-	public ActionResult place(ItemPlacementContext context) {
-		World world = context.getWorld();
-		BlockPos pos = context.getBlockPos();
+	public InteractionResult place(BlockPlaceContext context) {
+		Level world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
 
-		if (world.isClient) {
+		if (world.isClientSide) {
 			return super.place(context);
 		}
 
-		boolean replaceable = world.getBlockState(pos).canReplace(context); // Check this before calling super, since that changes the block
-		ActionResult result = super.place(context);
+		boolean replaceable = world.getBlockState(pos).canBeReplaced(context); // Check this before calling super, since that changes the block
+		InteractionResult result = super.place(context);
 
-		if (result == ActionResult.SUCCESS) {
+		if (result == InteractionResult.SUCCESS) {
 			if (!replaceable) {
-				pos = pos.offset(context.getPlayerLookDirection());
+				pos = pos.relative(context.getNearestLookingDirection());
 			}
 
 			BlockState state = world.getBlockState(pos);
@@ -46,7 +44,7 @@ public class DimensionalTrapdoorItem extends BlockItem {
 			this.setupRift(entranceRift);
 
 			// Register the rift in the registry
-			entranceRift.markDirty();
+			entranceRift.setChanged();
 			entranceRift.register();
 		}
 

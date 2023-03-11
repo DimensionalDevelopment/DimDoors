@@ -4,18 +4,15 @@ import java.util.function.Supplier;
 
 import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -29,47 +26,47 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 public interface ImplementedVirtualPocket extends VirtualPocket {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
-	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(DimensionalDoors.id("virtual_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
+	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(ResourceKey.createRegistryKey(DimensionalDoors.id("virtual_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
 
-	static ImplementedVirtualPocket deserialize(NbtElement nbt, @Nullable ResourceManager manager) {
-		return switch (nbt.getType()) {
-			case NbtType.COMPOUND -> deserialize((NbtCompound) nbt, manager);
-			case NbtType.STRING -> ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
-			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
+	static ImplementedVirtualPocket deserialize(Tag nbt, @Nullable ResourceManager manager) {
+		return switch (nbt.getId()) {
+			case NbtType.COMPOUND -> deserialize((CompoundTag) nbt, manager);
+			case NbtType.STRING -> ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
+			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
 		};
 	}
 
-	static ImplementedVirtualPocket deserialize(NbtElement nbt) {
+	static ImplementedVirtualPocket deserialize(Tag nbt) {
 		return deserialize(nbt, null);
 	}
 
-	static ImplementedVirtualPocket deserialize(NbtCompound nbt, @Nullable ResourceManager manager) {
-		Identifier id = Identifier.tryParse(nbt.getString("type"));
+	static ImplementedVirtualPocket deserialize(CompoundTag nbt, @Nullable ResourceManager manager) {
+		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
 		VirtualPocketType<?> type = REGISTRY.get(id);
 		return type != null ? type.fromNbt(nbt, manager) : VirtualPocketType.NONE.fromNbt(nbt, manager);
 	}
 
-	static ImplementedVirtualPocket deserialize(NbtCompound nbt) {
+	static ImplementedVirtualPocket deserialize(CompoundTag nbt) {
 		return deserialize(nbt, null);
 	}
 
-	static NbtElement serialize(ImplementedVirtualPocket implementedVirtualPocket, boolean allowReference) {
-		return implementedVirtualPocket.toNbt(new NbtCompound(), allowReference);
+	static Tag serialize(ImplementedVirtualPocket implementedVirtualPocket, boolean allowReference) {
+		return implementedVirtualPocket.toNbt(new CompoundTag(), allowReference);
 	}
 
-	static NbtElement serialize(ImplementedVirtualPocket implementedVirtualPocket) {
+	static Tag serialize(ImplementedVirtualPocket implementedVirtualPocket) {
 		return serialize(implementedVirtualPocket, false);
 	}
 
-	ImplementedVirtualPocket fromNbt(NbtCompound nbt, @Nullable ResourceManager manager);
+	ImplementedVirtualPocket fromNbt(CompoundTag nbt, @Nullable ResourceManager manager);
 
-	default ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+	default ImplementedVirtualPocket fromNbt(CompoundTag nbt) {
 		return fromNbt(nbt, null);
 	}
 
-	NbtElement toNbt(NbtCompound nbt, boolean allowReference);
+	Tag toNbt(CompoundTag nbt, boolean allowReference);
 
-	default NbtElement toNbt(NbtCompound nbt) {
+	default Tag toNbt(CompoundTag nbt) {
 		return this.toNbt(nbt, false);
 	}
 
@@ -84,27 +81,27 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 		VirtualPocketType<ConditionalSelector> CONDITIONAL_SELECTOR = register(DimensionalDoors.id(ConditionalSelector.KEY), ConditionalSelector::new);
 		VirtualPocketType<PathSelector> PATH_SELECTOR = register(DimensionalDoors.id(PathSelector.KEY), PathSelector::new);
 
-		ImplementedVirtualPocket fromNbt(NbtCompound nbt, @Nullable ResourceManager manager);
+		ImplementedVirtualPocket fromNbt(CompoundTag nbt, @Nullable ResourceManager manager);
 
-		default ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
+		default ImplementedVirtualPocket fromNbt(CompoundTag nbt) {
 			return fromNbt(nbt, null);
 		}
 
-		NbtCompound toNbt(NbtCompound nbt);
+		CompoundTag toNbt(CompoundTag nbt);
 
 		static void register() {
 			DimensionalDoors.apiSubscribers.forEach(d -> d.registerVirtualSingularPocketTypes(REGISTRY));
 		}
 
-		static <U extends ImplementedVirtualPocket> VirtualPocketType<U> register(Identifier id, Supplier<U> factory) {
+		static <U extends ImplementedVirtualPocket> VirtualPocketType<U> register(ResourceLocation id, Supplier<U> factory) {
 			return Registry.register(REGISTRY, id, new VirtualPocketType<U>() {
 				@Override
-				public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
+				public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
 					return factory.get().fromNbt(nbt, manager);
 				}
 
 				@Override
-				public NbtCompound toNbt(NbtCompound nbt) {
+				public CompoundTag toNbt(CompoundTag nbt) {
 					nbt.putString("type", id.toString());
 					return nbt;
 				}
@@ -136,7 +133,7 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 		}
 
 		@Override
-		public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
+		public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
 			return this;
 		}
 

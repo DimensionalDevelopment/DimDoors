@@ -1,22 +1,22 @@
 package org.dimdev.dimdoors.entity.limbo;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.entity.player.Player;
 
-public enum LimboExitReason implements StringIdentifiable {
+public enum LimboExitReason implements StringRepresentable {
 	ETERNAL_FLUID,
 	GENERIC,
 	RIFT;
 
 	@Override
-	public String asString() {
+	public String getSerializedName() {
 		return "limbo.exit." + this.name().toLowerCase();
 	}
 
-	public void broadcast(PlayerEntity player) {
+	public void broadcast(Player player) {
 		//noinspection ConstantConditions
-		player.getServer().getPlayerManager().broadcast(MutableText.of(new TranslatableTextContent(asString(), player.getGameProfile().getName())), false);
+		player.getServer().getPlayerList().broadcastSystemMessage(MutableComponent.create(new TranslatableContents(getSerializedName(), player.getGameProfile().getName())), false);
 	}
 }

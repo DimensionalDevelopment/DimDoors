@@ -3,16 +3,15 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 
 public interface AutoSyncedAddon extends PocketAddon {
-	static <T extends AutoSyncedAddon> List<T> readAutoSyncedAddonList(PacketByteBuf buf) throws IOException {
+	static <T extends AutoSyncedAddon> List<T> readAutoSyncedAddonList(FriendlyByteBuf buf) throws IOException {
 		List<T> addons = new ArrayList<>();
 		int addonCount = buf.readInt();
 		try {
 			for (int i = 0; i < addonCount; i++) {
-				addons.add((T) ((AutoSyncedAddon) PocketAddon.REGISTRY.get(buf.readIdentifier()).instance()).read(buf));
+				addons.add((T) ((AutoSyncedAddon) PocketAddon.REGISTRY.get(buf.readResourceLocation()).instance()).read(buf));
 			}
 		} catch (NullPointerException e) {
 			throw new IOException(e);
@@ -20,18 +19,18 @@ public interface AutoSyncedAddon extends PocketAddon {
 		return addons;
 	}
 
-	static PacketByteBuf writeAutoSyncedAddonList(PacketByteBuf buf, List<? extends AutoSyncedAddon> addons) throws IOException {
+	static FriendlyByteBuf writeAutoSyncedAddonList(FriendlyByteBuf buf, List<? extends AutoSyncedAddon> addons) throws IOException {
 		buf.writeInt(addons.size());
 		for (AutoSyncedAddon addon : addons) {
-			buf.writeIdentifier(addon.getType().identifier());
+			buf.writeResourceLocation(addon.getType().identifier());
 			addon.write(buf);
 		}
 		return buf;
 	}
 
 	// you can generally use PacketByteBuf#readCompoundTag for reading
-	AutoSyncedAddon read(PacketByteBuf buf) throws IOException;
+	AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException;
 
 	// you can generally use PacketByteBuf#writeCompoundTag for writing
-	PacketByteBuf write(PacketByteBuf buf) throws IOException;
+	FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException;
 }

@@ -2,28 +2,25 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 import java.util.Objects;
-
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
-import net.minecraft.item.ToolMaterials;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -34,29 +31,29 @@ import org.dimdev.dimdoors.client.ToolTipHelper;
 public class RiftBladeItem extends SwordItem {
 	public static final String ID = "rift_blade";
 
-	public RiftBladeItem(Settings settings) {
-		super(ToolMaterials.IRON, 3, -2.4F, settings);
+	public RiftBladeItem(Properties settings) {
+		super(Tiers.IRON, 3, -2.4F, settings);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@Override
-	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
-		ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".info");
+	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
+		ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
 	}
 
 	@Override
-	public boolean hasGlint(ItemStack itemStack) {
+	public boolean isFoil(ItemStack itemStack) {
 		return true;
 	}
 
 	@Override
-	public boolean canRepair(ItemStack item, ItemStack repairingItem) {
+	public boolean isValidRepairItem(ItemStack item, ItemStack repairingItem) {
 		return Objects.equals(ModItems.STABLE_FABRIC, repairingItem.getItem());
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getStackInHand(hand);
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 		HitResult hit = RaycastHelper.raycast(player, 16, 0.0F, LivingEntity.class::isInstance);
 
 		if (hit == null) {
@@ -64,53 +61,53 @@ public class RiftBladeItem extends SwordItem {
 		}
 
 		if (hit == null) {
-			hit = player.raycast(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
+			hit = player.pick(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
 		}
 
 		if (hit == null) {
-			hit = player.raycast(16, 0, false);
+			hit = player.pick(16, 0, false);
 		}
 
-		if (world.isClient) {
+		if (world.isClientSide) {
 			if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
-				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 			} else {
-				player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".rift_miss")), true);
+				player.displayClientMessage(MutableComponent.create(new TranslatableContents(this.getDescriptionId() + ".rift_miss")), true);
 				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
-				return new TypedActionResult<>(ActionResult.FAIL, stack);
+				return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 			}
 		}
 
 		if (RaycastHelper.hitsLivingEntity(hit)) {
-			double damageMultiplier = (double) stack.getDamage() / (double) stack.getMaxDamage();
+			double damageMultiplier = (double) stack.getDamageValue() / (double) stack.getMaxDamage();
 			// TODO: gaussian, instead or random
 			double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
 			double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;
 
-			Vec3d playerVec = player.getPos();
-			Vec3d entityVec = hit.getPos();
-			Vec3d offsetDirection = playerVec.subtract(entityVec).normalize();
-			offsetDirection = offsetDirection.rotateY((float) (offsetRotationYaw * Math.PI) / 180);
+			Vec3 playerVec = player.position();
+			Vec3 entityVec = hit.getLocation();
+			Vec3 offsetDirection = playerVec.subtract(entityVec).normalize();
+			offsetDirection = offsetDirection.yRot((float) (offsetRotationYaw * Math.PI) / 180);
 
-			BlockPos teleportPosition = new BlockPos(entityVec.add(offsetDirection.multiply(offsetDistance)));
-			while (world.getBlockState(teleportPosition).getMaterial().blocksMovement())
-				teleportPosition = teleportPosition.up();
-			player.teleport(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
-			player.setYaw((float) (Math.random() * 2 * Math.PI));
+			BlockPos teleportPosition = new BlockPos(entityVec.add(offsetDirection.scale(offsetDistance)));
+			while (world.getBlockState(teleportPosition).getMaterial().blocksMotion())
+				teleportPosition = teleportPosition.above();
+			player.teleportToWithTicket(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
+			player.setYRot((float) (Math.random() * 2 * Math.PI));
 
-			stack.damage(1, player, a -> a.sendToolBreakStatus(hand));
-			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+			stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		} else if (RaycastHelper.hitsDetachedRift(hit, world)) {
 			BlockHitResult blockHitResult = (BlockHitResult) hit;
 			BlockPos pos = blockHitResult.getBlockPos();
 			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
 
-			world.setBlockState(pos, ModBlocks.DIMENSIONAL_PORTAL.getDefaultState().with(DimensionalPortalBlock.FACING, blockHitResult.getSide()));
+			world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection()));
 			((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
-			stack.damage(1, player, a -> a.sendToolBreakStatus(hand));
-			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+			stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
-		return new TypedActionResult<>(ActionResult.FAIL, stack);
+		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 	}
 }

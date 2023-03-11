@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
-import net.minecraft.block.SandBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.SandBlock;
 
 public class SandstonePillarsGateway extends SchematicGateway {
     public SandstonePillarsGateway() {
@@ -10,7 +10,7 @@ public class SandstonePillarsGateway extends SchematicGateway {
     }
 
 	@Override
-	public boolean test(StructureWorldAccess structureWorldAccess, BlockPos blockPos) {
-		return structureWorldAccess.getBlockState(blockPos.down()).getBlock() instanceof SandBlock;
+	public boolean test(WorldGenLevel structureWorldAccess, BlockPos blockPos) {
+		return structureWorldAccess.getBlockState(blockPos.below()).getBlock() instanceof SandBlock;
 	}
 }

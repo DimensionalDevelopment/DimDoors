@@ -1,28 +1,26 @@
 package org.dimdev.dimdoors.listener.pocket;
 
 import java.util.List;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 public class PocketAttackBlockCallbackListener implements AttackBlockCallback {
 	@Override
-	public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
+	public InteractionResult interact(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
 		List<AttackBlockCallback> applicableAddons;
-		if (world.isClient) applicableAddons = PocketListenerUtil.applicableAddonsClient(AttackBlockCallback.class, world, pos);
+		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(AttackBlockCallback.class, world, pos);
 		else applicableAddons = PocketListenerUtil.applicableAddons(AttackBlockCallback.class, world, pos);
 
-		ActionResult result;
+		InteractionResult result;
 		for (AttackBlockCallback listener : applicableAddons) {
 			result = listener.interact(player, world, hand, pos, direction);
-			if (result != ActionResult.PASS) return result;
+			if (result != InteractionResult.PASS) return result;
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 }

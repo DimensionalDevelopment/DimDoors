@@ -14,16 +14,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.util.Pair;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.util.GraphUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -45,17 +42,17 @@ public class RiftRegistry {
 	//I know this is sorta hacky, but overworldRifts can't be set for some reason it doesn't think that the rift location exists.
 	//TODO: Fix this shit so that u can use overworldRifts instead of overworldLocations. NVM this is better cause we can teleport to locations that aren't rifts.
 	protected Map<UUID, Location> overworldLocations = new HashMap<>();
-	public static RiftRegistry fromNbt(Map<RegistryKey<World>, PocketDirectory> pocketRegistry, NbtCompound nbt) {
+	public static RiftRegistry fromNbt(Map<ResourceKey<Level>, PocketDirectory> pocketRegistry, CompoundTag nbt) {
 		// Read rifts in this dimension
 
 		RiftRegistry riftRegistry = new RiftRegistry();
 
-		NbtList riftsNBT = nbt.getList("rifts", NbtType.COMPOUND);
-		String riftTypeId = RegistryVertex.registry.getId(RegistryVertex.RegistryVertexType.RIFT).toString();
-		CompletableFuture<List<Rift>> futureRifts = CompletableFuture.supplyAsync(() -> riftsNBT.parallelStream().unordered().map(NbtCompound.class::cast).filter(nbtCompound -> nbtCompound.getString("type").equals(riftTypeId)).map(Rift::fromNbt).collect(Collectors.toList()));
+		ListTag riftsNBT = nbt.getList("rifts", NbtType.COMPOUND);
+		String riftTypeId = RegistryVertex.registry.getKey(RegistryVertex.RegistryVertexType.RIFT).toString();
+		CompletableFuture<List<Rift>> futureRifts = CompletableFuture.supplyAsync(() -> riftsNBT.parallelStream().unordered().map(CompoundTag.class::cast).filter(nbtCompound -> nbtCompound.getString("type").equals(riftTypeId)).map(Rift::fromNbt).collect(Collectors.toList()));
 
-		NbtList pocketsNBT = nbt.getList("pockets", NbtType.COMPOUND);
-		CompletableFuture<List<PocketEntrancePointer>> futurePockets = CompletableFuture.supplyAsync(() -> pocketsNBT.stream().map(NbtCompound.class::cast).map(PocketEntrancePointer::fromNbt).collect(Collectors.toList()));
+		ListTag pocketsNBT = nbt.getList("pockets", NbtType.COMPOUND);
+		CompletableFuture<List<PocketEntrancePointer>> futurePockets = CompletableFuture.supplyAsync(() -> pocketsNBT.stream().map(CompoundTag.class::cast).map(PocketEntrancePointer::fromNbt).collect(Collectors.toList()));
 
 		futureRifts.join().forEach(rift -> {
 			riftRegistry.graph.addVertex(rift);
@@ -70,10 +67,10 @@ public class RiftRegistry {
 		});
 
 		// Read the connections between links that have a source or destination in this dimension
-		NbtList linksNBT = nbt.getList("links", NbtType.COMPOUND);
-		for (NbtElement linkNBT : linksNBT) {
-			RegistryVertex from = riftRegistry.uuidMap.get(((NbtCompound) linkNBT).getUuid("from"));
-			RegistryVertex to = riftRegistry.uuidMap.get(((NbtCompound) linkNBT).getUuid("to"));
+		ListTag linksNBT = nbt.getList("links", NbtType.COMPOUND);
+		for (Tag linkNBT : linksNBT) {
+			RegistryVertex from = riftRegistry.uuidMap.get(((CompoundTag) linkNBT).getUUID("from"));
+			RegistryVertex to = riftRegistry.uuidMap.get(((CompoundTag) linkNBT).getUUID("to"));
 			if (from != null && to != null) {
 				riftRegistry.graph.addEdge(from, to);
 				// We need a system for detecting links that are incomplete after processing them in the other subregistry too
@@ -86,35 +83,35 @@ public class RiftRegistry {
 		return riftRegistry;
 	}
 
-	public NbtCompound toNbt() {
-		NbtCompound nbt = new NbtCompound();
+	public CompoundTag toNbt() {
+		CompoundTag nbt = new CompoundTag();
 		// Write rifts in this dimension
-		CompletableFuture<Pair<NbtList, NbtList>> futureRiftsAndPocketsNBT = CompletableFuture.supplyAsync(() -> {
+		CompletableFuture<Tuple<ListTag, ListTag>> futureRiftsAndPocketsNBT = CompletableFuture.supplyAsync(() -> {
 			Map<Boolean, List<RegistryVertex>> vertices = this.graph.vertexSet().parallelStream().unordered().filter(vertex -> vertex instanceof Rift || vertex instanceof PocketEntrancePointer)
 					.collect(Collectors.partitioningBy(Rift.class::isInstance));
 
-			CompletableFuture<List<NbtCompound>> futureRiftsNBT = CompletableFuture.supplyAsync(() -> vertices.get(true).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
-			CompletableFuture<List<NbtCompound>> futurePocketsNBT = CompletableFuture.supplyAsync(() -> vertices.get(false).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
+			CompletableFuture<List<CompoundTag>> futureRiftsNBT = CompletableFuture.supplyAsync(() -> vertices.get(true).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
+			CompletableFuture<List<CompoundTag>> futurePocketsNBT = CompletableFuture.supplyAsync(() -> vertices.get(false).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
 
-			NbtList riftsNBT = new NbtList();
-			NbtList pocketsNBT = new NbtList();
+			ListTag riftsNBT = new ListTag();
+			ListTag pocketsNBT = new ListTag();
 
 			riftsNBT.addAll(futureRiftsNBT.join());
 			pocketsNBT.addAll(futurePocketsNBT.join());
 
-			return new Pair<>(riftsNBT, pocketsNBT);
+			return new Tuple<>(riftsNBT, pocketsNBT);
 		});
 
 
 		// Write the connections between links that have a source or destination in this dimension
-		CompletableFuture<NbtList> futureLinksNBT = CompletableFuture.supplyAsync(() -> {
-			NbtList linksNBT = new NbtList();
+		CompletableFuture<ListTag> futureLinksNBT = CompletableFuture.supplyAsync(() -> {
+			ListTag linksNBT = new ListTag();
 			for (DefaultEdge edge : this.graph.edgeSet()) {
 				RegistryVertex from = this.graph.getEdgeSource(edge);
 				RegistryVertex to = this.graph.getEdgeTarget(edge);
-				NbtCompound linkNBT = new NbtCompound();
-				linkNBT.putUuid("from", from.id);
-				linkNBT.putUuid("to", to.id);
+				CompoundTag linkNBT = new CompoundTag();
+				linkNBT.putUUID("from", from.id);
+				linkNBT.putUUID("to", to.id);
 				linksNBT.add(linkNBT);
 			}
 			return linksNBT;
@@ -126,9 +123,9 @@ public class RiftRegistry {
 		nbt.put("last_private_pocket_exits", this.writePlayerRiftPointers(this.lastPrivatePocketExits));
 		nbt.put("overworld_rifts", this.writePlayerRiftPointers(this.overworldRifts));
 
-		Pair<NbtList, NbtList> riftsAndPocketsNBT = futureRiftsAndPocketsNBT.join();
-		nbt.put("rifts", riftsAndPocketsNBT.getLeft());
-		nbt.put("pockets", riftsAndPocketsNBT.getRight());
+		Tuple<ListTag, ListTag> riftsAndPocketsNBT = futureRiftsAndPocketsNBT.join();
+		nbt.put("rifts", riftsAndPocketsNBT.getA());
+		nbt.put("pockets", riftsAndPocketsNBT.getB());
 
 		nbt.put("links", futureLinksNBT.join());
 
@@ -136,11 +133,11 @@ public class RiftRegistry {
 	}
 
 	// TODO: parallelization
-	private Map<UUID, PlayerRiftPointer> readPlayerRiftPointers(NbtList nbt) {
+	private Map<UUID, PlayerRiftPointer> readPlayerRiftPointers(ListTag nbt) {
 		Map<UUID, PlayerRiftPointer> pointerMap = new HashMap<>();
-		for (NbtElement entryNBT : nbt) {
-			UUID player = ((NbtCompound) entryNBT).getUuid("player");
-			UUID rift = ((NbtCompound) entryNBT).getUuid("rift");
+		for (Tag entryNBT : nbt) {
+			UUID player = ((CompoundTag) entryNBT).getUUID("player");
+			UUID rift = ((CompoundTag) entryNBT).getUUID("rift");
 			PlayerRiftPointer pointer = new PlayerRiftPointer(player);
 			pointerMap.put(player, pointer);
 			this.uuidMap.put(pointer.id, pointer);
@@ -151,14 +148,14 @@ public class RiftRegistry {
 	}
 
 	// TODO: parallelization
-	private NbtList writePlayerRiftPointers(Map<UUID, PlayerRiftPointer> playerRiftPointerMap) {
-		NbtList pointers = new NbtList();
+	private ListTag writePlayerRiftPointers(Map<UUID, PlayerRiftPointer> playerRiftPointerMap) {
+		ListTag pointers = new ListTag();
 		for (Map.Entry<UUID, PlayerRiftPointer> entry : playerRiftPointerMap.entrySet()) {
-			NbtCompound entryNBT = new NbtCompound();
-			entryNBT.putUuid("player", entry.getKey());
+			CompoundTag entryNBT = new CompoundTag();
+			entryNBT.putUUID("player", entry.getKey());
 			int count = 0;
 			for (DefaultEdge edge : this.graph.outgoingEdgesOf(entry.getValue())) {
-				entryNBT.putUuid("rift", this.graph.getEdgeTarget(edge).id);
+				entryNBT.putUUID("rift", this.graph.getEdgeTarget(edge).id);
 				count++;
 			}
 			if (count != 1) throw new RuntimeException("PlayerRiftPointer points to more than one rift");

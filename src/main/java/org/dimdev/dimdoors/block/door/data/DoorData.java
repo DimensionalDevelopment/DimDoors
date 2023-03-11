@@ -15,20 +15,16 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemGroups;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.Util;
-
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.util.TriState;
-
+import net.minecraft.Util;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
@@ -37,13 +33,13 @@ import org.dimdev.dimdoors.item.ItemExtensions;
 
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public final class DoorData implements AutoCloseable {
-	private static final Map<Identifier, ItemGroup> itemGroupCache = new HashMap<Identifier, ItemGroup>();
+	private static final Map<ResourceLocation, CreativeModeTab> itemGroupCache = new HashMap<ResourceLocation, CreativeModeTab>();
 	public static final Set<Block> PARENT_BLOCKS = new HashSet<>();
 	public static final Set<Item> PARENT_ITEMS = new HashSet<>();
 	public static final List<Block> DOORS = new ArrayList<>();
 	private final String id;
 	private final UnbakedItemSettings itemSettings;
-	private final Optional<Identifier> itemGroup;
+	private final Optional<ResourceLocation> itemGroup;
 	private final UnbakedBlockSettings blockSettings;
 	private final RiftDataList riftDataList;
 	private final boolean hasToolTip;
@@ -53,7 +49,7 @@ public final class DoorData implements AutoCloseable {
 		try {
 			String id = json.get("id").getAsString();
 			UnbakedItemSettings itemSettings = UnbakedItemSettings.fromJson(json.getAsJsonObject("itemSettings"));
-			Optional<Identifier> itemGroup = Optional.ofNullable(json.getAsJsonPrimitive("itemGroup")).map(JsonPrimitive::getAsString).map(Identifier::new);
+			Optional<ResourceLocation> itemGroup = Optional.ofNullable(json.getAsJsonPrimitive("itemGroup")).map(JsonPrimitive::getAsString).map(ResourceLocation::new);
 			UnbakedBlockSettings blockSettings = UnbakedBlockSettings.fromJson(json.getAsJsonObject("blockSettings"));
 			RiftDataList riftDataList = RiftDataList.fromJson(json.getAsJsonArray("riftData"));
 			boolean hasToolTip = json.has("hasToolTip") && json.getAsJsonPrimitive("hasToolTip").getAsBoolean();
@@ -71,7 +67,7 @@ public final class DoorData implements AutoCloseable {
 		this(id, itemSettings, Optional.empty(), blockSettings, riftDataList, hasToolTip);
 	}
 
-	public DoorData(String id, UnbakedItemSettings itemSettings, Optional<Identifier> itemGroup, UnbakedBlockSettings blockSettings, RiftDataList riftDataList, boolean hasToolTip) {
+	public DoorData(String id, UnbakedItemSettings itemSettings, Optional<ResourceLocation> itemGroup, UnbakedBlockSettings blockSettings, RiftDataList riftDataList, boolean hasToolTip) {
 		this.id = id;
 		this.itemSettings = itemSettings;
 		this.itemGroup = itemGroup;
@@ -126,15 +122,15 @@ public final class DoorData implements AutoCloseable {
 			throw new UnsupportedOperationException("Already Closed");
 		}
 
-		Item parentItem = Registries.ITEM.get(new Identifier(this.itemSettings.parent));
+		Item parentItem = BuiltInRegistries.ITEM.get(new ResourceLocation(this.itemSettings.parent));
 		PARENT_ITEMS.add(parentItem);
-		Item.Settings itemSettings = ItemExtensions.getSettings(parentItem);
-		this.itemSettings.maxCount.ifPresent(itemSettings::maxCount);
-		this.itemSettings.maxDamage.ifPresent(itemSettings::maxDamageIfAbsent);
+		Item.Properties itemSettings = ItemExtensions.getSettings(parentItem);
+		this.itemSettings.maxCount.ifPresent(itemSettings::stacksTo);
+		this.itemSettings.maxDamage.ifPresent(itemSettings::defaultDurability);
 		this.itemSettings.rarity.ifPresent(itemSettings::rarity);
 		this.itemSettings.fireproof.map(b -> {
 			if (!b) return false;
-			itemSettings.fireproof();
+			itemSettings.fireResistant();
 			return false;
 		});
 //		ItemGroup group = null;
@@ -154,19 +150,19 @@ public final class DoorData implements AutoCloseable {
 //		}
 //		itemSettings.group(group != null ? group : ModItems.DIMENSIONAL_DOORS);
 
-		Block parentBlock = Registries.BLOCK.get(new Identifier(this.blockSettings.parent));
+		Block parentBlock = BuiltInRegistries.BLOCK.get(new ResourceLocation(this.blockSettings.parent));
 		DoorSoundProvider provider = parentBlock instanceof DoorSoundProvider soundProvider ? soundProvider : DoorSoundProvider.DUMMY;
 
 		PARENT_BLOCKS.add(parentBlock);
 		FabricBlockSettings blockSettings = FabricBlockSettings.copyOf(parentBlock);
 		this.blockSettings.luminance.ifPresent(blockSettings::luminance);
-		Identifier id = new Identifier(this.id);
+		ResourceLocation id = new ResourceLocation(this.id);
 		Block doorBlock = new DimensionalDoorBlock(blockSettings, provider.getCloseSound(), provider.getOpenSound());
 		Item doorItem = new DimensionalDoorItem(doorBlock, itemSettings, createSetupFunction(), hasToolTip);
-		Registry.register(Registries.BLOCK, id, doorBlock);
-		Registry.register(Registries.ITEM, id, doorItem);
+		Registry.register(BuiltInRegistries.BLOCK, id, doorBlock);
+		Registry.register(BuiltInRegistries.ITEM, id, doorItem);
 		DOORS.add(doorBlock);
-		Item.BLOCK_ITEMS.put(doorBlock, doorItem);
+		Item.BY_BLOCK.put(doorBlock, doorItem);
 		this.closed = true;
 	}
 

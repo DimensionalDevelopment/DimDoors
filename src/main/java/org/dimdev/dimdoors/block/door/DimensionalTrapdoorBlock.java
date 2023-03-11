@@ -1,67 +1,65 @@
 package org.dimdev.dimdoors.block.door;
 
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.TrapdoorBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 // TODO: Make this placeable on rifts
-public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
+public class DimensionalTrapdoorBlock extends TrapDoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
 	public DimensionalTrapdoorBlock(Block.Settings settings, SoundEvent closeSound, SoundEvent openSound) {
 		super(settings, closeSound, openSound);
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (!world.isClient && state.get(TrapdoorBlock.OPEN)) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+		if (!world.isClientSide && state.getValue(TrapDoorBlock.OPEN)) {
 			this.getRift(world, pos, state).teleport(entity);
 		}
 	}
 
 	@Nullable
 	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new EntranceRiftBlockEntity(pos, state);
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		state = state.cycle(OPEN);
-		world.setBlockState(pos, state, 2);
+		world.setBlock(pos, state, 2);
 
-		if (state.get(WATERLOGGED)) {
-			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		if (state.getValue(WATERLOGGED)) {
+			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
 
-		this.playToggleSound(player, world, pos, state.get(OPEN));
-		return ActionResult.SUCCESS;
+		this.playSound(player, world, pos, state.getValue(OPEN));
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
+	public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
 		return (EntranceRiftBlockEntity) world.getBlockEntity(pos);
 	}
 
 	@Override
-	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
-		return VoxelShapes.fullCube();
+	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+		return Shapes.block();
 	}
 }

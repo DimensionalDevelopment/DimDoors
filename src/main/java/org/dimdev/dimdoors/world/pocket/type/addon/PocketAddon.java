@@ -4,34 +4,31 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Lifecycle;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.blockbreak.BlockBreakContainer;
 
 public interface PocketAddon {
-	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<PocketAddonType<? extends PocketAddon>>(RegistryKey.ofRegistry(DimensionalDoors.id("pocket_applicable_addon_type")), Lifecycle.stable(), false)).buildAndRegister();
+	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<PocketAddonType<? extends PocketAddon>>(ResourceKey.createRegistryKey(DimensionalDoors.id("pocket_applicable_addon_type")), Lifecycle.stable(), false)).buildAndRegister();
 
-	static PocketAddon deserialize(NbtCompound nbt) {
-		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;
+	static PocketAddon deserialize(CompoundTag nbt) {
+		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;
 		return REGISTRY.get(id).fromNbt(nbt);
 	}
 
-	static PocketBuilderAddon<?> deserializeBuilder(NbtCompound nbt) {
-		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;
+	static PocketBuilderAddon<?> deserializeBuilder(CompoundTag nbt) {
+		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;
 		return REGISTRY.get(id).builderAddonInstance().fromNbt(nbt);
 	}
 
-	static NbtCompound serialize(PocketAddon addon) {
-		return addon.toNbt(new NbtCompound());
+	static CompoundTag serialize(PocketAddon addon) {
+		return addon.toNbt(new CompoundTag());
 	}
 
 
@@ -39,22 +36,22 @@ public interface PocketAddon {
 		return true;
 	}
 
-	PocketAddon fromNbt(NbtCompound nbt);
+	PocketAddon fromNbt(CompoundTag nbt);
 
-	default NbtCompound toNbt(NbtCompound nbt) {
+	default CompoundTag toNbt(CompoundTag nbt) {
 		return this.getType().toNbt(nbt);
 	}
 
 	PocketAddonType<? extends PocketAddon> getType();
 
-	Identifier getId();
+	ResourceLocation getId();
 
-	default void addAddon(Map<Identifier, PocketAddon> addons) {
+	default void addAddon(Map<ResourceLocation, PocketAddon> addons) {
 		addons.put(getId(), this);
 	}
 
 	interface PocketBuilderExtension<T extends Pocket.PocketBuilder<T, ?>> {
-		public <C extends PocketBuilderAddon<?>> C getAddon(Identifier id);
+		public <C extends PocketBuilderAddon<?>> C getAddon(ResourceLocation id);
 
 		T getSelf();
 	}
@@ -65,17 +62,17 @@ public interface PocketAddon {
 		}
 
 		// makes it possible for addons themselves to control how they are added
-		default void addAddon(Map<Identifier, PocketBuilderAddon<?>> addons) {
+		default void addAddon(Map<ResourceLocation, PocketBuilderAddon<?>> addons) {
 			addons.put(getId(), this);
 		}
 
 		void apply(Pocket pocket);
 
-		Identifier getId();
+		ResourceLocation getId();
 
-		PocketBuilderAddon<T> fromNbt(NbtCompound nbt);
+		PocketBuilderAddon<T> fromNbt(CompoundTag nbt);
 
-		default NbtCompound toNbt(NbtCompound nbt) {
+		default CompoundTag toNbt(CompoundTag nbt) {
 			return this.getType().toNbt(nbt);
 		}
 
@@ -88,29 +85,29 @@ public interface PocketAddon {
 		PocketAddonType<BlockBreakContainer> BLOCK_BREAK_CONTAINER = register(BlockBreakContainer.ID, BlockBreakContainer::new, null);
 		PocketAddonType<SkyAddon> SKY_ADDON = register(SkyAddon.ID, SkyAddon::new, SkyAddon.SkyBuilderAddon::new);
 
-		T fromNbt(NbtCompound nbt);
+		T fromNbt(CompoundTag nbt);
 
-		NbtCompound toNbt(NbtCompound nbt);
+		CompoundTag toNbt(CompoundTag nbt);
 
 		T instance();
 
 		PocketBuilderAddon<T> builderAddonInstance();
 
-		Identifier identifier();
+		ResourceLocation identifier();
 
 		static void register() {
 			DimensionalDoors.apiSubscribers.forEach(d -> d.registerPocketAddonTypes(REGISTRY));
 		}
 
-		static <U extends PocketAddon> PocketAddonType<U> register(Identifier id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {
+		static <U extends PocketAddon> PocketAddonType<U> register(ResourceLocation id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {
 			return Registry.register(REGISTRY, id, new PocketAddonType<U>() {
 				@Override
-				public U fromNbt(NbtCompound nbt) {
+				public U fromNbt(CompoundTag nbt) {
 					return (U) factory.get().fromNbt(nbt);
 				}
 
 				@Override
-				public NbtCompound toNbt(NbtCompound nbt) {
+				public CompoundTag toNbt(CompoundTag nbt) {
 					nbt.putString("type", id.toString());
 					return nbt;
 				}
@@ -127,7 +124,7 @@ public interface PocketAddon {
 				}
 
 				@Override
-				public Identifier identifier() {
+				public ResourceLocation identifier() {
 					return id;
 				}
 			});

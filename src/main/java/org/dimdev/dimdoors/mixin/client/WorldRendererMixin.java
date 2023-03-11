@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.mixin.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.Map;
 
 import org.joml.Matrix4f;
@@ -9,51 +12,45 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.BufferBuilderStorage;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.OverlayVertexConsumer;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 
-@Mixin(WorldRenderer.class)
+@Mixin(LevelRenderer.class)
 @Environment(EnvType.CLIENT)
 public abstract class WorldRendererMixin {
 
 	@Shadow
-	private ClientWorld world;
+	private ClientLevel world;
 
 	@Shadow
-	private MinecraftClient client;
+	private Minecraft client;
 
 	@Shadow
 	@Final
-	private BufferBuilderStorage bufferBuilders;
+	private RenderBuffers bufferBuilders;
 
 	@Shadow
 	private int ticks;
 
 	@Inject(method = "render",
 	at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/WorldRenderer;blockBreakingProgressions:Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;", ordinal = 1)) // bytecode order is flipped from java code order, notice the ordinal
-	public void renderCustomBreakBlockAnimation(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
-		Vec3d vec3d = camera.getPos();
-		double d = vec3d.getX();
-		double e = vec3d.getY();
-		double f = vec3d.getZ();
+	public void renderCustomBreakBlockAnimation(PoseStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
+		Vec3 vec3d = camera.getPosition();
+		double d = vec3d.x();
+		double e = vec3d.y();
+		double f = vec3d.z();
 
 		Map<BlockPos, CustomBreakBlockHandler.BreakBlockInfo> breakBlocks = CustomBreakBlockHandler.getCustomBreakBlockMap(this.ticks);
 
@@ -65,12 +62,12 @@ public abstract class WorldRendererMixin {
 			double y = (double) pos.getZ() - f;
 			if (!(h * h + x * x + y * y > 1024.0D)) {
 				int stage = entry.getValue().getStage();
-				matrices.push();
+				matrices.pushPose();
 				matrices.translate((double) pos.getX() - d, (double) pos.getY() - e, (double) pos.getZ() - f);
-				MatrixStack.Entry entry3 = matrices.peek();
-				VertexConsumer vertexConsumer2 = new OverlayVertexConsumer(this.bufferBuilders.getEffectVertexConsumers().getBuffer((RenderLayer) ModelLoader.BLOCK_DESTRUCTION_RENDER_LAYERS.get(stage)), entry3.getPositionMatrix(), entry3.getNormalMatrix(), 1.0F);
-				this.client.getBlockRenderManager().renderDamage(this.world.getBlockState(pos), pos, this.world, matrices, vertexConsumer2);
-				matrices.pop();
+				PoseStack.Pose entry3 = matrices.last();
+				VertexConsumer vertexConsumer2 = new SheetedDecalTextureGenerator(this.bufferBuilders.crumblingBufferSource().getBuffer((RenderType) ModelBakery.DESTROY_TYPES.get(stage)), entry3.pose(), entry3.normal(), 1.0F);
+				this.client.getBlockRenderer().renderBreakingTexture(this.world.getBlockState(pos), pos, this.world, matrices, vertexConsumer2);
+				matrices.popPose();
 			}
 		}
 	}

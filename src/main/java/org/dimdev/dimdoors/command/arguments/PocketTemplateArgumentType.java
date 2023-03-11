@@ -5,7 +5,9 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -13,18 +15,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
-import net.minecraft.command.CommandSource;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
-
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.SimpleTree;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 
 public class PocketTemplateArgumentType implements ArgumentType<PocketTemplate> {
-	public static final DynamicCommandExceptionType UNKNOWN_POCKET_TEMPLATE = new DynamicCommandExceptionType(s -> MutableText.of(new TranslatableTextContent("commands.pocket.unknownPocketTemplate",s)));
+	public static final DynamicCommandExceptionType UNKNOWN_POCKET_TEMPLATE = new DynamicCommandExceptionType(s -> MutableComponent.create(new TranslatableContents("commands.pocket.unknownPocketTemplate",s)));
 
 	@Override
 	public PocketTemplate parse(StringReader reader) throws CommandSyntaxException {
@@ -38,7 +35,7 @@ public class PocketTemplateArgumentType implements ArgumentType<PocketTemplate> 
 
 	@Override
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		return CommandSource.suggestMatching(getExamples(), builder);
+		return SharedSuggestionProvider.suggest(getExamples(), builder);
 	}
 
 	@Override

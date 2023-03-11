@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.minecraft.nbt.NbtCompound;
-
+import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
@@ -57,8 +56,8 @@ public class RiftData {
 		this.color = color;
 	}
 
-	public static NbtCompound toNbt(RiftData data) {
-		NbtCompound nbt = new NbtCompound();
+	public static CompoundTag toNbt(RiftData data) {
+		CompoundTag nbt = new CompoundTag();
 		if (data.destination != VirtualTarget.NoneTarget.INSTANCE) nbt.put("destination", VirtualTarget.toNbt(data.destination));
 		if (data.properties != null) nbt.put("properties", LinkProperties.toNbt(data.properties));
 		if (data.color != null) nbt.put("color", RGBA.toNbt(data.color));
@@ -67,7 +66,7 @@ public class RiftData {
 		return nbt;
 	}
 
-	public static RiftData fromNbt(NbtCompound nbt) {
+	public static RiftData fromNbt(CompoundTag nbt) {
 		RiftData data = new RiftData();
 		data.destination = nbt.contains("destination") ? VirtualTarget.fromNbt(nbt.getCompound("destination")) : VirtualTarget.NoneTarget.INSTANCE;
 		data.properties = nbt.contains("properties") ? LinkProperties.fromNbt(nbt.getCompound("properties")) : null;

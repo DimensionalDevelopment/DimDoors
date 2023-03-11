@@ -3,40 +3,37 @@ package org.dimdev.dimdoors.block.door;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.Material;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.enums.DoubleBlockHalf;
-import net.minecraft.block.piston.PistonBehavior;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Pair;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
-import net.minecraft.world.explosion.Explosion;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
 import org.dimdev.dimdoors.api.block.CustomBreakBlock;
@@ -52,36 +49,36 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 
 public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, CustomBreakBlock, AfterMoveCollidableBlock {
-	public DimensionalDoorBlock(Settings settings, SoundEvent closeSound, SoundEvent openSound) {
+	public DimensionalDoorBlock(Properties settings, SoundEvent closeSound, SoundEvent openSound) {
 		super(settings, closeSound, openSound);
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (world.isClient || entity instanceof ServerPlayerEntity) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+		if (world.isClientSide || entity instanceof ServerPlayer) {
 			return;
 		}
-		onCollision(state, world, pos, entity, entity.getPos().subtract(((LastPositionProvider) entity).getLastPos()));
-		super.onEntityCollision(state, world, pos, entity);
+		onCollision(state, world, pos, entity, entity.position().subtract(((LastPositionProvider) entity).getLastPos()));
+		super.entityInside(state, world, pos, entity);
 	}
 
 	@Override
-	public ActionResult onAfterMovePlayerCollision(BlockState state, ServerWorld world, BlockPos pos, ServerPlayerEntity player, Vec3d positionChange) {
+	public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, Vec3 positionChange) {
 		return onCollision(state, world, pos, player, positionChange);
 	}
 
-	private ActionResult onCollision(BlockState state, World world, BlockPos pos, Entity entity, Vec3d positionChange) {
-		BlockPos top = state.get(HALF) == DoubleBlockHalf.UPPER ? pos : pos.up();
-		BlockPos bottom = top.down();
+	private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, Vec3 positionChange) {
+		BlockPos top = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos : pos.above();
+		BlockPos bottom = top.below();
 		BlockState doorState = world.getBlockState(bottom);
 
 		// TODO: decide whether door should need to be open for teleportation
-		if (doorState.getBlock() != this || !doorState.get(DoorBlock.OPEN)) { // '== this' to check if not half-broken
-			return ActionResult.PASS;
+		if (doorState.getBlock() != this || !doorState.getValue(DoorBlock.OPEN)) { // '== this' to check if not half-broken
+			return InteractionResult.PASS;
 		}
-		Vec3d currentPos = entity.getPos();
-		Vec3d previousPos = currentPos.subtract(positionChange);
+		Vec3 currentPos = entity.position();
+		Vec3 previousPos = currentPos.subtract(positionChange);
 
 		// TODO: rewrite this to be usable more universally
 		// check whether portal plane was traversed
@@ -89,77 +86,77 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		double portalHeight = 2;
 		// check in DefaultTransformation for the correct offset of the portal planes
 		double portalOffsetFromCenter = 0.31;
-		Vec3d portalNormal = Vec3d.of(state.get(FACING).getOpposite().getVector());
-		Vec3d origin = Vec3d.ofBottomCenter(bottom);
-		Vec3d bottomMiddlePortalPoint = origin.add(portalNormal.multiply(portalOffsetFromCenter));
+		Vec3 portalNormal = Vec3.atLowerCornerOf(state.getValue(FACING).getOpposite().getNormal());
+		Vec3 origin = Vec3.atBottomCenterOf(bottom);
+		Vec3 bottomMiddlePortalPoint = origin.add(portalNormal.scale(portalOffsetFromCenter));
 
-		double dotCurrent = portalNormal.dotProduct(currentPos.subtract(bottomMiddlePortalPoint));
-		double dotPrevious = portalNormal.dotProduct(previousPos.subtract(bottomMiddlePortalPoint));
+		double dotCurrent = portalNormal.dot(currentPos.subtract(bottomMiddlePortalPoint));
+		double dotPrevious = portalNormal.dot(previousPos.subtract(bottomMiddlePortalPoint));
 		if (!(dotCurrent <= 0 && dotPrevious >= 0) && !(dotCurrent >= 0 && dotPrevious <= 0) || (dotCurrent == 0 && dotPrevious == 0)) {
 			// start and end point of movement are on same side of the portal plane or both inside the plane
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		}
 
-		Vec3d yVec = new Vec3d(0, 1, 0);
-		Vec3d xzVec = portalNormal.crossProduct(yVec);
+		Vec3 yVec = new Vec3(0, 1, 0);
+		Vec3 xzVec = portalNormal.cross(yVec);
 
-		Vec3d vecFromPreviousPosToPortalPlane = bottomMiddlePortalPoint.subtract(previousPos);
-		Vec3d normalizedPositionChange = positionChange.normalize();
-		Vec3d pointOfIntersection = previousPos.add(normalizedPositionChange.multiply(vecFromPreviousPosToPortalPlane.dotProduct(normalizedPositionChange) / normalizedPositionChange.dotProduct(normalizedPositionChange)));
+		Vec3 vecFromPreviousPosToPortalPlane = bottomMiddlePortalPoint.subtract(previousPos);
+		Vec3 normalizedPositionChange = positionChange.normalize();
+		Vec3 pointOfIntersection = previousPos.add(normalizedPositionChange.scale(vecFromPreviousPosToPortalPlane.dot(normalizedPositionChange) / normalizedPositionChange.dot(normalizedPositionChange)));
 
 		// figure out whether the point of Intersection is actually inside the portal plane;
-		Vec3d intersectionRelativeToPortalPlane = pointOfIntersection.subtract(bottomMiddlePortalPoint);
-		double relativeIntersectionHeight = intersectionRelativeToPortalPlane.dotProduct(yVec);
-		double relativeIntersectionWidth = intersectionRelativeToPortalPlane.dotProduct(xzVec);
+		Vec3 intersectionRelativeToPortalPlane = pointOfIntersection.subtract(bottomMiddlePortalPoint);
+		double relativeIntersectionHeight = intersectionRelativeToPortalPlane.dot(yVec);
+		double relativeIntersectionWidth = intersectionRelativeToPortalPlane.dot(xzVec);
 		if (relativeIntersectionHeight < 0 || relativeIntersectionHeight > portalHeight || Math.abs(relativeIntersectionWidth) > portalHalfWidth) {
 			// intersection is outside of plane width/ height
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		}
 
 		// TODO: replace with dimdoor cooldown?
-		if (entity.hasPortalCooldown()) {
-			entity.resetPortalCooldown();
-			return ActionResult.PASS;
+		if (entity.isOnPortalCooldown()) {
+			entity.setPortalCooldown();
+			return InteractionResult.PASS;
 		}
-		entity.resetPortalCooldown();
+		entity.setPortalCooldown();
 
 
 		this.getRift(world, pos, state).teleport(entity);
 		if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
-			world.setBlockState(top, world.getBlockState(top).with(DoorBlock.OPEN, false));
-			world.setBlockState(bottom, world.getBlockState(bottom).with(DoorBlock.OPEN, false));
+			world.setBlockAndUpdate(top, world.getBlockState(top).setValue(DoorBlock.OPEN, false));
+			world.setBlockAndUpdate(bottom, world.getBlockState(bottom).setValue(DoorBlock.OPEN, false));
 		}
-		return ActionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hitResult) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		state = state.cycle(OPEN);
-		world.setBlockState(pos, state, 10);
-		if (!world.isClient && state.get(WATERLOGGED)) {
-			world.scheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+		world.setBlock(pos, state, 10);
+		if (!world.isClientSide && state.getValue(WATERLOGGED)) {
+			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
-		world.syncWorldEvent(player, state.get(OPEN) ? this.material == Material.METAL ? 1005 : 1006 : this.material == Material.METAL ? 1011 : 1012, pos, 0);
-		world.emitGameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
-		return ActionResult.SUCCESS;
+		world.levelEvent(player, state.getValue(OPEN) ? this.material == Material.METAL ? 1005 : 1006 : this.material == Material.METAL ? 1011 : 1012, pos, 0);
+		world.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public boolean canReplace(BlockState state, ItemPlacementContext context) {
-		return super.canReplace(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT;
+	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+		return super.canBeReplaced(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT;
 	}
 
 	@Nullable
 	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
-		if (state.get(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
 			return null;
 		}
 		return new EntranceRiftBlockEntity(pos, state);
 	}
 
-	public void createDetachedRift(World world, BlockPos pos) {
+	public void createDetachedRift(Level world, BlockPos pos) {
 		createDetachedRift(world, pos, world.getBlockState(pos));
 	}
 
@@ -168,46 +165,46 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	  I fear this method may be called twice otherwise.
 	  ~CreepyCre
 	 */
-	public void createDetachedRift(World world, BlockPos pos, BlockState state) {
-		DoubleBlockHalf doubleBlockHalf = state.get(HALF);
+	public void createDetachedRift(Level world, BlockPos pos, BlockState state) {
+		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
 		BlockPos blockPos = pos;
 		BlockState blockState = world.getBlockState(pos);
 		BlockEntity blockEntity = world.getBlockEntity(pos);
 		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
-			blockPos = pos.down();
+			blockPos = pos.below();
 			blockState = world.getBlockState(blockPos);
 			blockEntity = world.getBlockEntity(blockPos);
 		}
 		if (blockEntity instanceof EntranceRiftBlockEntity
-				&& blockState.get(HALF) == DoubleBlockHalf.LOWER) {
-			world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, blockState.get(WATERLOGGED)));
+				&& blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
+			world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
 			((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 		}
 	}
 
 	@Override
-	public void onDestroyedByExplosion(World world, BlockPos pos, Explosion explosion) {
+	public void wasExploded(Level world, BlockPos pos, Explosion explosion) {
 		if(world.getBlockState(pos).isAir()) {
 			//LOGGER.log(Level.ERROR, "IS AIR");
 			return;
 		}
-		if(world.isClient()) {
+		if(world.isClientSide()) {
 			return;
 		}
 		//LOGGER.log(Level.ERROR, "WAS DESTROYED BY EXPLOSION");
 		BlockState state = world.getBlockState(pos);
-		super.onDestroyedByExplosion(world, pos, explosion);
+		super.wasExploded(world, pos, explosion);
 	}
 	@Override
-	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
+	public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
 		BlockEntity bottomEntity;
 		BlockEntity topEntity;
 
-		if (state.get(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+		if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
 			bottomEntity = world.getBlockEntity(pos);
-			topEntity = world.getBlockEntity(pos.up());
+			topEntity = world.getBlockEntity(pos.above());
 		} else {
-			bottomEntity = world.getBlockEntity(pos.down());
+			bottomEntity = world.getBlockEntity(pos.below());
 			topEntity = world.getBlockEntity(pos);
 		}
 
@@ -225,49 +222,49 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
 	@Override
-	public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player) {
-		DoubleBlockHalf doubleBlockHalf = state.get(HALF);
+	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
 		BlockPos blockPos = pos;
 		BlockState blockState = world.getBlockState(pos);
 		BlockEntity blockEntity = world.getBlockEntity(pos);
 		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
-			blockPos = pos.down();
+			blockPos = pos.below();
 			blockState = world.getBlockState(blockPos);
 			blockEntity = world.getBlockEntity(blockPos);
-			if (blockState.isOf(state.getBlock()) && blockState.get(HALF) == DoubleBlockHalf.LOWER) {
-				world.setBlockState(blockPos, world.getFluidState(blockPos).getFluid() == Fluids.WATER ? Blocks.WATER.getDefaultState() : Blocks.AIR.getDefaultState(), 35);
-				world.syncWorldEvent(player, 2001, blockPos, Block.getRawIdFromState(blockState));
+			if (blockState.is(state.getBlock()) && blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
+				world.setBlock(blockPos, world.getFluidState(blockPos).getType() == Fluids.WATER ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 35);
+				world.levelEvent(player, 2001, blockPos, Block.getId(blockState));
 			}
 			if (blockEntity instanceof EntranceRiftBlockEntity
-					&& blockState.get(HALF) == DoubleBlockHalf.LOWER
+					&& blockState.getValue(HALF) == DoubleBlockHalf.LOWER
 					&& !(player.isCreative()
 						&& !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode
 						)
 			) {
-				world.setBlockState(blockPos, ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, blockState.get(WATERLOGGED)));
+				world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
 				((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 			}
 		}
-		super.onBreak(world, pos, state, player);
+		super.playerWillDestroy(world, pos, state, player);
 
 	}
 
 	@Override
-	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
-		return VoxelShapes.fullCube();
+	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+		return Shapes.block();
 	}
 
 	@Override
 	public TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder(BlockState state, BlockPos pos) {
 		return TransformationMatrix3d.builder()
-				.inverseTranslate(Vec3d.ofCenter(pos).add(Vec3d.of(state.get(DoorBlock.FACING).getVector()).multiply(-0.31)))
-				.inverseRotate(MathUtil.directionEulerAngle(state.get(DoorBlock.FACING).getOpposite()));
+				.inverseTranslate(Vec3.atCenterOf(pos).add(Vec3.atLowerCornerOf(state.getValue(DoorBlock.FACING).getNormal()).scale(-0.31)))
+				.inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
 	}
 
 	@Override
 	public TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder(BlockState state, BlockPos pos) {
 		return TransformationMatrix3d.builder()
-				.inverseRotate(MathUtil.directionEulerAngle(state.get(DoorBlock.FACING).getOpposite()));
+				.inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
 	}
 
 
@@ -287,34 +284,34 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
 				return;
 			}
-			if (blockEntity instanceof EntranceRiftBlockEntity && state.get(HALF) == DoubleBlockHalf.LOWER) {
-				world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, state.get(WATERLOGGED)));
+			if (blockEntity instanceof EntranceRiftBlockEntity && state.getValue(HALF) == DoubleBlockHalf.LOWER) {
+				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
 				((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 			}
 		});
 	}
 
 	@Override
-	public ActionResult explode(World world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+	public InteractionResult explode(Level world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
 		if (blockEntity == null) {
-			return ActionResult.PASS;
+			return InteractionResult.PASS;
 		}
 		createDetachedRift(world, pos, state);
-		return ActionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public PistonBehavior getPistonBehavior(BlockState state) {
-		return state.get(HALF) == DoubleBlockHalf.LOWER ? PistonBehavior.BLOCK : super.getPistonBehavior(state);
+	public PushReaction getPistonPushReaction(BlockState state) {
+		return state.getValue(HALF) == DoubleBlockHalf.LOWER ? PushReaction.BLOCK : super.getPistonPushReaction(state);
 	}
 
 	@Override
-	public TypedActionResult<Pair<BlockState, Consumer<BlockEntity>>> customBreakBlock(World world, BlockPos pos, BlockState blockState, Entity breakingEntity) {
-		if (blockState.get(HALF) != DoubleBlockHalf.LOWER) {
-			return TypedActionResult.pass(null);
+	public InteractionResultHolder<Tuple<BlockState, Consumer<BlockEntity>>> customBreakBlock(Level world, BlockPos pos, BlockState blockState, Entity breakingEntity) {
+		if (blockState.getValue(HALF) != DoubleBlockHalf.LOWER) {
+			return InteractionResultHolder.pass(null);
 		}
 		RiftData data = ((EntranceRiftBlockEntity) world.getBlockEntity(pos)).getData();
-		return TypedActionResult.success(new Pair<>(ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, blockState.get(WATERLOGGED)), blockEntity -> {
+		return InteractionResultHolder.success(new Tuple<>(ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)), blockEntity -> {
 			((DetachedRiftBlockEntity) blockEntity).setData(data);
 		}));
 	}

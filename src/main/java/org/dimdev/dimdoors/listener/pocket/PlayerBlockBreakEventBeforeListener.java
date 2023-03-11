@@ -1,21 +1,19 @@
 package org.dimdev.dimdoors.listener.pocket;
 
 import java.util.List;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class PlayerBlockBreakEventBeforeListener implements PlayerBlockBreakEvents.Before {
 	@Override
-	public boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+	public boolean beforeBlockBreak(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
 		List<PlayerBlockBreakEvents.Before> applicableAddons;
-		if (world.isClient) applicableAddons = PocketListenerUtil.applicableAddonsClient(PlayerBlockBreakEvents.Before.class, world, player.getBlockPos());
-		else applicableAddons = PocketListenerUtil.applicableAddons(PlayerBlockBreakEvents.Before.class, world, player.getBlockPos());
+		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(PlayerBlockBreakEvents.Before.class, world, player.blockPosition());
+		else applicableAddons = PocketListenerUtil.applicableAddons(PlayerBlockBreakEvents.Before.class, world, player.blockPosition());
 
 		for (PlayerBlockBreakEvents.Before listener : applicableAddons) {
 			if (!listener.beforeBlockBreak(world, player, pos, state, blockEntity)) return false;

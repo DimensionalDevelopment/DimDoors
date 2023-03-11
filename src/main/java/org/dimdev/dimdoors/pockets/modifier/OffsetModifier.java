@@ -2,14 +2,11 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.math.Vec3i;
-
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -26,7 +23,7 @@ public class OffsetModifier extends AbstractModifier {
 	private Equation offsetZEquation;
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 		try {
 			offsetX = nbt.contains("offset_x") ? nbt.getString("offset_x") : "0";
 			offsetXEquation = Equation.parse(offsetX);
@@ -42,7 +39,7 @@ public class OffsetModifier extends AbstractModifier {
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		if (!offsetX.equals("0")) nbt.putString("offset_x", offsetX);

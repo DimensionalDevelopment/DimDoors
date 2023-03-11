@@ -5,12 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.mojang.datafixers.types.Type;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-
 import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class MutableBlockEntityType<T extends BlockEntity> extends BlockEntityType<T> {
 
@@ -37,9 +35,9 @@ public class MutableBlockEntityType<T extends BlockEntity> extends BlockEntityTy
 			this.blocks = blocks;
 		}
 
-		public static <T extends BlockEntity> Builder<T> create(BlockEntityFactory<? extends T> factory, Block... blocks) {
+		public static <T extends BlockEntity> org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType.Builder<T> create(BlockEntityFactory<? extends T> factory, Block... blocks) {
 			// ensure mutability
-			return new Builder<>(factory, new HashSet<>(Arrays.asList(blocks)));
+			return new org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType.Builder<>(factory, new HashSet<>(Arrays.asList(blocks)));
 		}
 
 		public MutableBlockEntityType<T> build() {
@@ -54,6 +52,6 @@ public class MutableBlockEntityType<T extends BlockEntity> extends BlockEntityTy
 
 	// exists for convenience so that no access widener for BlockEntityType.BlockEntityFactory is necessary
 	@FunctionalInterface
-	public interface BlockEntityFactory<T extends BlockEntity> extends BlockEntityType.BlockEntityFactory<T> {
+	public interface BlockEntityFactory<T extends BlockEntity> extends BlockEntityType.BlockEntitySupplier<T> {
 	}
 }

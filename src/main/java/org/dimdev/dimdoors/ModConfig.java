@@ -11,17 +11,21 @@ import java.util.Set;
 
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.RequiresRestart;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip;
+import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.util.Utils;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.minecraft.resources.ResourceLocation;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
@@ -128,7 +132,7 @@ public final class ModConfig implements ConfigData {
 			}
 		}
 
-		public boolean isAllowed(Identifier id) {
+		public boolean isAllowed(ResourceLocation id) {
 			String idStr = id.toString();
 			boolean contains = doorList.doors.contains(idStr);
 

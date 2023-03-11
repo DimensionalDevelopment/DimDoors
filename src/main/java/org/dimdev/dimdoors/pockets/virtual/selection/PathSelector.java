@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.resource.ResourceManager;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
@@ -14,14 +13,14 @@ public class PathSelector extends AbstractVirtualPocketList {
 	private String path;
 
 	@Override
-	public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
 		this.path = nbt.getString("path");
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putString("path", path);

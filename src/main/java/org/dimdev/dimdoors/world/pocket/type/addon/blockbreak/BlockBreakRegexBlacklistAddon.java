@@ -1,11 +1,9 @@
 package org.dimdev.dimdoors.world.pocket.type.addon.blockbreak;
 
 import java.io.IOException;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.ContainedAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -13,24 +11,24 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 // TODO
 public class BlockBreakRegexBlacklistAddon implements AutoSyncedAddon, ContainedAddon { //TODO
 	@Override
-	public AutoSyncedAddon read(PacketByteBuf buf) throws IOException {
+	public AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException {
 		this.fromNbt(buf.readNbt());
 		return this;
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
-		buf.writeNbt(this.toNbt(new NbtCompound()));
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+		buf.writeNbt(this.toNbt(new CompoundTag()));
 		return buf;
 	}
 
 	@Override
-	public Identifier getContainerId() {
+	public ResourceLocation getContainerId() {
 		return BlockBreakContainer.ID;
 	}
 
 	@Override
-	public PocketAddon fromNbt(NbtCompound nbt) {
+	public PocketAddon fromNbt(CompoundTag nbt) {
 		return null;
 	}
 
@@ -40,7 +38,7 @@ public class BlockBreakRegexBlacklistAddon implements AutoSyncedAddon, Contained
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return null;
 	}
 }

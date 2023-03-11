@@ -7,14 +7,11 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.NbtUtil;
 import org.dimdev.dimdoors.api.util.Path;
@@ -32,13 +29,13 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private SimpleTree<String, VirtualPocket> pocketGroups = new SimpleTree<>(String.class);
 	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
-	private SimpleTree<String, NbtElement> dataTree = new SimpleTree<>(String.class);
+	private SimpleTree<String, Tag> dataTree = new SimpleTree<>(String.class);
 
 	private PocketLoader() {
 	}
 
 	@Override
-	public void reload(ResourceManager manager) {
+	public void onResourceManagerReload(ResourceManager manager) {
 		pocketGenerators.clear();
 		pocketGroups.clear();
 		virtualPockets.clear();
@@ -83,25 +80,25 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 //		}
 //    }
 
-	public NbtElement getDataNbt(String id) {
+	public Tag getDataNbt(String id) {
 		return this.dataTree.get(Path.stringPath(id));
 	}
 
-	public NbtCompound getDataNbtCompound(String id) {
+	public CompoundTag getDataNbtCompound(String id) {
 		return NbtUtil.asNbtCompound(getDataNbt(id), "Could not convert NbtElement \"" + id + "\" to NbtCompound!");
 	}
 
-	private BiFunction<NbtElement, Path<String>, VirtualPocket> virtualPocketLoader(ResourceManager manager) {
+	private BiFunction<Tag, Path<String>, VirtualPocket> virtualPocketLoader(ResourceManager manager) {
 		return (nbt, ignore) -> VirtualPocket.deserialize(nbt, manager);
 	}
 
-	private BiFunction<NbtElement, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {
+	private BiFunction<Tag, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {
 		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an NbtCompound!"), manager);
 	}
 
-	private PocketTemplate loadPocketTemplate(NbtCompound nbt, Path<String> id) {
+	private PocketTemplate loadPocketTemplate(CompoundTag nbt, Path<String> id) {
 		try {
-			return new PocketTemplate(Schematic.fromNbt(nbt), new Identifier(id.reduce(String::concat).orElseThrow()));
+			return new PocketTemplate(Schematic.fromNbt(nbt), new ResourceLocation(id.reduce(String::concat).orElseThrow()));
 		} catch (Exception e) {
 			throw new RuntimeException("Error loading " + nbt.toString(), e);
 		}
@@ -111,7 +108,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		return new WeightedList<>(pocketGenerators.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
 
-	public VirtualPocket getGroup(Identifier group) {
+	public VirtualPocket getGroup(ResourceLocation group) {
 		return pocketGroups.get(Path.stringPath(group));
 	}
 
@@ -131,12 +128,12 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 		return this.virtualPockets;
 	}
 
-	public PocketGenerator getGenerator(Identifier id) {
+	public PocketGenerator getGenerator(ResourceLocation id) {
 		return pocketGenerators.get(Path.stringPath(id));
 	}
 
 	@Override
-	public Identifier getFabricId() {
+	public ResourceLocation getFabricId() {
 		return DimensionalDoors.id("schematics_v2");
 	}
 }

@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.enchantment;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModEnchants {
@@ -13,9 +12,9 @@ public class ModEnchants {
 
 	public static void init() {
 		STRING_THEORY_ENCHANTMENT = Registry.register(
-				Registries.ENCHANTMENT,
+				BuiltInRegistries.ENCHANTMENT,
 				DimensionalDoors.id("string_theory"),
-				new StringTheoryEnchantment(Enchantment.Rarity.UNCOMMON, EnchantmentTarget.WEARABLE, new EquipmentSlot[] {EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD})
+				new StringTheoryEnchantment(Enchantment.Rarity.UNCOMMON, EnchantmentCategory.WEARABLE, new EquipmentSlot[] {EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD})
 		);
 	}
 }

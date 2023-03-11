@@ -5,19 +5,16 @@ import java.util.function.Function;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Lifecycle;
-
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public interface Condition {
-	Registry<ConditionType<?>> REGISTRY = FabricRegistryBuilder.<ConditionType<?>, SimpleRegistry<ConditionType<?>>>from(new SimpleRegistry<>(RegistryKey.ofRegistry(DimensionalDoors.id("rift_data_condition")), Lifecycle.stable(), false)).buildAndRegister();
+	Registry<ConditionType<?>> REGISTRY = FabricRegistryBuilder.<ConditionType<?>, MappedRegistry<ConditionType<?>>>from(new MappedRegistry<>(ResourceKey.createRegistryKey(DimensionalDoors.id("rift_data_condition")), Lifecycle.stable(), false)).buildAndRegister();
 
 	boolean matches(EntranceRiftBlockEntity rift);
 
@@ -32,7 +29,7 @@ public interface Condition {
 	ConditionType<?> getType();
 
 	static Condition fromJson(JsonObject json) {
-		Identifier type = new Identifier(json.getAsJsonPrimitive("type").getAsString());
+		ResourceLocation type = new ResourceLocation(json.getAsJsonPrimitive("type").getAsString());
 		return Objects.requireNonNull(REGISTRY.get(type)).fromJson(json);
 	}
 
@@ -46,7 +43,7 @@ public interface Condition {
 		T fromJson(JsonObject json);
 
 		default String getId() {
-			return String.valueOf(REGISTRY.getId(this));
+			return String.valueOf(REGISTRY.getKey(this));
 		}
 
 		static void register() {

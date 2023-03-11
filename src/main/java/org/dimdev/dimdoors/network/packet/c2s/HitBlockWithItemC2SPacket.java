@@ -1,24 +1,21 @@
 package org.dimdev.dimdoors.network.packet.c2s;
 
 import java.io.IOException;
-
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.ServerPacketListener;
 import org.dimdev.dimdoors.network.SimplePacket;
 
 public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListener> {
-	public static final Identifier ID = DimensionalDoors.id("hit_block_with_item");
+	public static final ResourceLocation ID = DimensionalDoors.id("hit_block_with_item");
 
-	private Hand hand;
+	private InteractionHand hand;
 	private BlockPos pos;
 	private Direction direction;
 
@@ -26,25 +23,25 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListe
 	}
 
 	@Environment(EnvType.CLIENT)
-	public HitBlockWithItemC2SPacket(Hand hand, BlockPos pos, Direction direction) {
+	public HitBlockWithItemC2SPacket(InteractionHand hand, BlockPos pos, Direction direction) {
 		this.hand = hand;
 		this.pos = pos;
 		this.direction = direction;
 	}
 
 	@Override
-	public SimplePacket<ServerPacketListener> read(PacketByteBuf buf) throws IOException {
-		hand = buf.readEnumConstant(Hand.class);
+	public SimplePacket<ServerPacketListener> read(FriendlyByteBuf buf) throws IOException {
+		hand = buf.readEnum(InteractionHand.class);
 		pos = buf.readBlockPos();
-		direction = buf.readEnumConstant(Direction.class);
+		direction = buf.readEnum(Direction.class);
 		return this;
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
-		buf.writeEnumConstant(hand);
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+		buf.writeEnum(hand);
 		buf.writeBlockPos(pos);
-		buf.writeEnumConstant(direction);
+		buf.writeEnum(direction);
 		return buf;
 	}
 
@@ -54,7 +51,7 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListe
 	}
 
 	@Override
-	public Identifier channelId() {
+	public ResourceLocation channelId() {
 		return ID;
 	}
 
@@ -66,7 +63,7 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListe
 		return direction;
 	}
 
-	public Hand getHand() {
+	public InteractionHand getHand() {
 		return hand;
 	}
 }

@@ -2,23 +2,20 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 import java.util.function.Consumer;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
@@ -31,11 +28,11 @@ public class DimensionalDoorItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;
 	private boolean hasToolTip = false;
 
-	public DimensionalDoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
+	public DimensionalDoorItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
 		this(block, settings, setupFunction, false);
 	}
 
-	public DimensionalDoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, boolean hasToolTip) {
+	public DimensionalDoorItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, boolean hasToolTip) {
 		super(block, settings);
 		this.setupFunction = setupFunction;
 		this.hasToolTip = hasToolTip;
@@ -43,63 +40,63 @@ public class DimensionalDoorItem extends BlockItem {
 
 	@Environment(EnvType.CLIENT)
 	@Override
-	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
+	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		if(hasToolTip) {
-			ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".info");
+			ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
 		}
 	}
 
 	@Override
-	public ActionResult place(ItemPlacementContext context) {
-		BlockPos pos = context.getBlockPos();
+	public InteractionResult place(BlockPlaceContext context) {
+		BlockPos pos = context.getClickedPos();
 
-		if (!context.getWorld().getBlockState(pos).canReplace(context)) {
-			pos = pos.offset(context.getPlayerFacing());
+		if (!context.getLevel().getBlockState(pos).canBeReplaced(context)) {
+			pos = pos.relative(context.getHorizontalDirection());
 		}
 
-		boolean placedOnRift = context.getWorld().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT;
+		boolean placedOnRift = context.getLevel().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT;
 
-		if (!placedOnRift && !context.getPlayer().isSneaking() && isRiftNear(context.getWorld(), pos)) {
+		if (!placedOnRift && !context.getPlayer().isShiftKeyDown() && isRiftNear(context.getLevel(), pos)) {
 			// Allowing on second right click would require cancelling client-side, which
 			// is impossible (see https://github.com/MinecraftForge/MinecraftForge/issues/3272)
 			// without sending custom packets.
 
-			if (context.getWorld().isClient) {
-				context.getPlayer().sendMessage(MutableText.of(new TranslatableTextContent("rifts.entrances.rift_too_close")), true);
+			if (context.getLevel().isClientSide) {
+				context.getPlayer().displayClientMessage(MutableComponent.create(new TranslatableContents("rifts.entrances.rift_too_close")), true);
 				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 			}
 
-			return ActionResult.FAIL;
+			return InteractionResult.FAIL;
 		}
 
-		if (context.getWorld().isClient) {
+		if (context.getLevel().isClientSide) {
 			return super.place(context);
 		}
 
 		// Store the rift entity if there's a rift block there that may be broken
 		DetachedRiftBlockEntity rift = null;
 		if (placedOnRift) {
-			rift = (DetachedRiftBlockEntity) context.getWorld().getBlockEntity(pos);
+			rift = (DetachedRiftBlockEntity) context.getLevel().getBlockEntity(pos);
 			rift.setUnregisterDisabled(true);
 		}
 
-		ActionResult result = super.place(context);
-		if (result == ActionResult.SUCCESS || result == ActionResult.CONSUME) {
-			BlockState state = context.getWorld().getBlockState(pos);
+		InteractionResult result = super.place(context);
+		if (result == InteractionResult.SUCCESS || result == InteractionResult.CONSUME) {
+			BlockState state = context.getLevel().getBlockState(pos);
 			if (rift == null) {
 				// Get the rift entity (not hard coded, works with any door size)
 				@SuppressWarnings("unchecked") // Guaranteed to be IRiftProvider<TileEntityEntranceRift> because of constructor
-				EntranceRiftBlockEntity entranceRift = ((RiftProvider<EntranceRiftBlockEntity>) state.getBlock()).getRift(context.getWorld(), pos, state);
+				EntranceRiftBlockEntity entranceRift = ((RiftProvider<EntranceRiftBlockEntity>) state.getBlock()).getRift(context.getLevel(), pos, state);
 
 				// Configure the rift to its default functionality
 				this.setupRift(entranceRift);
 
 				// Register the rift in the registry
-				entranceRift.markDirty();
+				entranceRift.setChanged();
 				entranceRift.register();
 			} else {
 				// Copy from the old rift
-				EntranceRiftBlockEntity newRift = (EntranceRiftBlockEntity) context.getWorld().getBlockEntity(pos);
+				EntranceRiftBlockEntity newRift = (EntranceRiftBlockEntity) context.getLevel().getBlockEntity(pos);
 				newRift.copyFrom(rift);
 				newRift.updateType();
 			}
@@ -110,14 +107,14 @@ public class DimensionalDoorItem extends BlockItem {
 		return result;
 	}
 
-	public static boolean isRiftNear(World world, BlockPos pos) {
+	public static boolean isRiftNear(Level world, BlockPos pos) {
 		for (int x = pos.getX() - 5; x < pos.getX() + 5; x++) {
 			for (int y = pos.getY() - 5; y < pos.getY() + 5; y++) {
 				for (int z = pos.getZ() - 5; z < pos.getZ() + 5; z++) {
 					BlockPos searchPos = new BlockPos(x, y, z);
 					if (world.getBlockState(searchPos).getBlock() == ModBlocks.DETACHED_RIFT) {
 						DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(searchPos);
-						if (Math.sqrt(pos.getSquaredDistance(searchPos)) < rift.size) {
+						if (Math.sqrt(pos.distSqr(searchPos)) < rift.size) {
 							return true;
 						}
 					}

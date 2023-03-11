@@ -1,12 +1,12 @@
 package org.dimdev.dimdoors.world.feature.gateway;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
 
 public interface Gateway {
-    void generate(StructureWorldAccess world, BlockPos pos);
+    void generate(WorldGenLevel world, BlockPos pos);
 
-    default boolean isLocationValid(StructureWorldAccess world, BlockPos pos) {
+    default boolean isLocationValid(WorldGenLevel world, BlockPos pos) {
         return true;
     }
 }

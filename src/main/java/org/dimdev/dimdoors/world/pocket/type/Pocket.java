@@ -5,22 +5,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
-
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
@@ -30,22 +27,22 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	public static String KEY = "pocket";
 
-	private final Map<Identifier, PocketAddon> addons = new HashMap<>();
+	private final Map<ResourceLocation, PocketAddon> addons = new HashMap<>();
 	private int range = -1;
-	private BlockBox box; // TODO: make protected
+	private BoundingBox box; // TODO: make protected
 	public VirtualLocation virtualLocation;
 
-	public Pocket(int id, RegistryKey<World> world, int x, int z) {
+	public Pocket(int id, ResourceKey<Level> world, int x, int z) {
 		super(id, world);
 		int gridSize = DimensionalRegistry.getPocketDirectory(world).getGridSize() * 16;
-		this.box = BlockBox.create(new Vec3i(x * gridSize, 0, z * gridSize), new Vec3i((x + 1) * gridSize, 0, (z + 1) * gridSize));
+		this.box = BoundingBox.fromCorners(new Vec3i(x * gridSize, 0, z * gridSize), new Vec3i((x + 1) * gridSize, 0, (z + 1) * gridSize));
 		this.virtualLocation = new VirtualLocation(world, x, z, 0);
 	}
 
 	protected Pocket() {
 	}
 
-	public boolean hasAddon(Identifier id) {
+	public boolean hasAddon(ResourceLocation id) {
 		return addons.containsKey(id);
 	}
 
@@ -57,7 +54,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return false;
 	}
 
-	public <C extends PocketAddon> C getAddon(Identifier id) {
+	public <C extends PocketAddon> C getAddon(ResourceLocation id) {
 		return (C) addons.get(id);
 	}
 
@@ -69,11 +66,11 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public boolean isInBounds(BlockPos pos) {
-		return this.box.contains(pos);
+		return this.box.isInside(pos);
 	}
 
 	public BlockPos getOrigin() {
-		return new BlockPos(this.box.getMinX(), this.box.getMinY(), this.box.getMinZ());
+		return new BlockPos(this.box.minX(), this.box.minY(), this.box.minZ());
 	}
 
 	public void offsetOrigin(Vec3i vec) {
@@ -89,7 +86,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public void setSize(int x, int y, int z) {
-		this.box = BlockBox.create(new Vec3i(this.box.getMinX(), this.box.getMinY(), this.box.getMinZ()), new Vec3i(this.box.getMinX() + x - 1, this.box.getMinY() + y - 1, this.box.getMinZ() + z - 1));
+		this.box = BoundingBox.fromCorners(new Vec3i(this.box.minX(), this.box.minY(), this.box.minZ()), new Vec3i(this.box.minX() + x - 1, this.box.minY() + y - 1, this.box.minZ() + z - 1));
 	}
 
 	public void setRange(int range) {
@@ -103,18 +100,18 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public Vec3i getSize() {
-		return this.box.getDimensions();
+		return this.box.getLength();
 	}
 
-	public NbtCompound toNbt(NbtCompound nbt) {
+	public CompoundTag toNbt(CompoundTag nbt) {
 		super.toNbt(nbt);
 
 		nbt.putInt("range", range);
-		nbt.putIntArray("box", IntStream.of(this.box.getMinX(), this.box.getMinY(), this.box.getMinZ(), this.box.getMaxX(), this.box.getMaxY(), this.box.getMaxZ()).toArray());
+		nbt.putIntArray("box", IntStream.of(this.box.minX(), this.box.minY(), this.box.minZ(), this.box.maxX(), this.box.maxY(), this.box.maxZ()).toArray());
 		nbt.put("virtualLocation", VirtualLocation.toNbt(this.virtualLocation));
 
-		NbtList addonsTag = new NbtList();
-		addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new NbtCompound())).collect(Collectors.toList()));
+		ListTag addonsTag = new ListTag();
+		addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
 		if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
 
 		return nbt;
@@ -125,17 +122,17 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return AbstractPocketType.POCKET;
 	}
 
-	public Pocket fromNbt(NbtCompound nbt) {
+	public Pocket fromNbt(CompoundTag nbt) {
 		super.fromNbt(nbt);
 
 		this.range = nbt.getInt("range");
 		int[] box = nbt.getIntArray("box");
-		this.box = BlockBox.create(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
+		this.box = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
 		this.virtualLocation = VirtualLocation.fromNbt(nbt.getCompound("virtualLocation"));
 
 		if (nbt.contains("addons", NbtType.LIST)) {
-			for (NbtElement addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
-				PocketAddon addon = PocketAddon.deserialize((NbtCompound) addonTag);
+			for (Tag addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
+				PocketAddon addon = PocketAddon.deserialize((CompoundTag) addonTag);
 				addons.put(addon.getId(), addon);
 			}
 		}
@@ -144,26 +141,26 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public Map<BlockPos, BlockEntity> getBlockEntities() {
-		ServerWorld serverWorld = DimensionalDoors.getWorld(this.getWorld());
+		ServerLevel serverWorld = DimensionalDoors.getWorld(this.getWorld());
 		Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
-		ChunkPos.stream(new ChunkPos(new BlockPos(box.getMinX(), box.getMinY(), box.getMinZ())), new ChunkPos(new BlockPos(box.getMaxX(), box.getMaxY(), box.getMaxZ()))).forEach(chunkPos -> serverWorld.getChunk(chunkPos.x, chunkPos.z).getBlockEntities().forEach((blockPos, blockEntity) -> {
-			if (this.box.contains(blockPos)) blockEntities.put(blockPos, blockEntity);
+		ChunkPos.rangeClosed(new ChunkPos(new BlockPos(box.minX(), box.minY(), box.minZ())), new ChunkPos(new BlockPos(box.maxX(), box.maxY(), box.maxZ()))).forEach(chunkPos -> serverWorld.getChunk(chunkPos.x, chunkPos.z).getBlockEntities().forEach((blockPos, blockEntity) -> {
+			if (this.box.isInside(blockPos)) blockEntities.put(blockPos, blockEntity);
 		}));
 		return blockEntities;
 	}
 
-	public BlockBox getBox() {
+	public BoundingBox getBox() {
 		return box;
 	}
 
 	public Map<String, Double> toVariableMap(Map<String, Double> variableMap) {
 		variableMap = super.toVariableMap(variableMap);
-		variableMap.put("originX", (double) this.box.getMinX());
-		variableMap.put("originY", (double) this.box.getMinY());
-		variableMap.put("originZ", (double) this.box.getMinZ());
-		variableMap.put("width", (double) this.box.getDimensions().getX());
-		variableMap.put("height", (double) this.box.getDimensions().getY());
-		variableMap.put("length", (double) this.box.getDimensions().getZ());
+		variableMap.put("originX", (double) this.box.minX());
+		variableMap.put("originY", (double) this.box.minY());
+		variableMap.put("originZ", (double) this.box.minZ());
+		variableMap.put("width", (double) this.box.getLength().getX());
+		variableMap.put("height", (double) this.box.getLength().getY());
+		variableMap.put("length", (double) this.box.getLength().getZ());
 		variableMap.put("depth", (double) this.virtualLocation.getDepth());
 		return variableMap;
 	}
@@ -174,20 +171,20 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public void expand(int amount) {
-		this.box.expand(amount);
+		this.box.inflatedBy(amount);
 	}
 
 	public static PocketBuilder<?, Pocket> builder() {
 		return new PocketBuilder(AbstractPocketType.POCKET);
 	}
 
-	protected void setBox(BlockBox box) {
+	protected void setBox(BoundingBox box) {
 		this.box = box;
 	}
 
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
 	public static class PocketBuilder<P extends PocketBuilder<P, T>, T extends Pocket> extends AbstractPocketBuilder<P, T> {
-		private final Map<Identifier, PocketAddon.PocketBuilderAddon<?>> addons = new HashMap<>();
+		private final Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?>> addons = new HashMap<>();
 
 		private Vec3i origin = new Vec3i(0, 0, 0);
 		private Vec3i size = new Vec3i(0, 0, 0);
@@ -205,10 +202,10 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		}
 
 		// TODO: actually utilize fromTag/ toTag methods + implement them
-		public P fromNbt(NbtCompound nbt) {
+		public P fromNbt(CompoundTag nbt) {
 			if (nbt.contains("addons", NbtType.LIST)) {
-				for (NbtElement addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
-					PocketAddon.PocketBuilderAddon<?> addon = PocketAddon.deserializeBuilder((NbtCompound) addonTag);
+				for (Tag addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
+					PocketAddon.PocketBuilderAddon<?> addon = PocketAddon.deserializeBuilder((CompoundTag) addonTag);
 					addons.put(addon.getId(), addon);
 				}
 			}
@@ -216,15 +213,15 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 			return getSelf();
 		}
 
-		public NbtCompound toNbt(NbtCompound nbt) {
-			NbtList addonsTag = new NbtList();
-			addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new NbtCompound())).collect(Collectors.toList()));
+		public CompoundTag toNbt(CompoundTag nbt) {
+			ListTag addonsTag = new ListTag();
+			addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
 			if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
 
 			return nbt;
 		}
 
-		public boolean hasAddon(Identifier id) {
+		public boolean hasAddon(ResourceLocation id) {
 			return addons.containsKey(id);
 		}
 
@@ -236,7 +233,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 			return false;
 		}
 
-		public <C extends PocketAddon.PocketBuilderAddon<?>> C getAddon(Identifier id) {
+		public <C extends PocketAddon.PocketBuilderAddon<?>> C getAddon(ResourceLocation id) {
 			return (C) addons.get(id);
 		}
 
@@ -251,7 +248,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 			T instance = super.build();
 
 			instance.setRange(range);
-			instance.setBox(BlockBox.create(new Vec3i(origin.getX(), origin.getY(), origin.getZ()), new Vec3i(origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ())));
+			instance.setBox(BoundingBox.fromCorners(new Vec3i(origin.getX(), origin.getY(), origin.getZ()), new Vec3i(origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ())));
 			instance.virtualLocation = virtualLocation;
 
 			addons.values().forEach(addon -> addon.apply(instance));

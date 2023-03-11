@@ -1,94 +1,92 @@
 package org.dimdev.dimdoors.fluid;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.Item;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
-public abstract class EternalFluid extends FlowableFluid {
+public abstract class EternalFluid extends FlowingFluid {
 	@Override
 	public Fluid getFlowing() {
 		return ModFluids.FLOWING_ETERNAL_FLUID;
 	}
 
 	@Override
-	public Fluid getStill() {
+	public Fluid getSource() {
 		return ModFluids.ETERNAL_FLUID;
 	}
 
 	@Override
-	public Item getBucketItem() {
+	public Item getBucket() {
 		return ModItems.ETERNAL_FLUID_BUCKET;
 	}
 
 	@Override
 	@Environment(EnvType.CLIENT)
-	public void randomDisplayTick(World world, BlockPos blockPos, FluidState fluidState, Random random) {
+	public void animateTick(Level world, BlockPos blockPos, FluidState fluidState, RandomSource random) {
 
 	}
 
 	@Override
-	public void onRandomTick(World world, BlockPos blockPos, FluidState fluidState, Random random) {
+	public void randomTick(Level world, BlockPos blockPos, FluidState fluidState, RandomSource random) {
 
 	}
 
 	@Override
-	protected void beforeBreakingBlock(WorldAccess iWorld, BlockPos blockPos, BlockState blockState) {
+	protected void beforeDestroyingBlock(LevelAccessor iWorld, BlockPos blockPos, BlockState blockState) {
 
 	}
 
 	@Override
-	public int getFlowSpeed(WorldView worldView) {
-		return worldView.getDimension().ultrawarm() ? 4 : 2;
+	public int getSlopeFindDistance(LevelReader worldView) {
+		return worldView.dimensionType().ultraWarm() ? 4 : 2;
 	}
 
 	@Override
-	public BlockState toBlockState(FluidState fluidState) {
-		return ModBlocks.ETERNAL_FLUID.getDefaultState().with(FluidBlock.LEVEL, getBlockStateLevel(fluidState));
+	public BlockState createLegacyBlock(FluidState fluidState) {
+		return ModBlocks.ETERNAL_FLUID.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(fluidState));
 	}
 
 	@Override
-	public boolean matchesType(Fluid fluid) {
+	public boolean isSame(Fluid fluid) {
 		return fluid == ModFluids.ETERNAL_FLUID || fluid == ModFluids.FLOWING_ETERNAL_FLUID;
 	}
 
 	@Override
-	public int getLevelDecreasePerBlock(WorldView worldView) {
-		return worldView.getDimension().ultrawarm() ? 1 : 2;
+	public int getDropOff(LevelReader worldView) {
+		return worldView.dimensionType().ultraWarm() ? 1 : 2;
 	}
 
 	@Override
-	public boolean canBeReplacedWith(FluidState fluidState, BlockView blockView, BlockPos blockPos, Fluid fluid, Direction direction) {
-		return fluidState.getHeight(blockView, blockPos) >= 0.44444445F && fluid.isIn(FluidTags.WATER);
+	public boolean canBeReplacedWith(FluidState fluidState, BlockGetter blockView, BlockPos blockPos, Fluid fluid, Direction direction) {
+		return fluidState.getHeight(blockView, blockPos) >= 0.44444445F && fluid.is(FluidTags.WATER);
 	}
 
 	@Override
-	public int getTickRate(WorldView worldView) {
-		return worldView.getDimension().ultrawarm() ? 10 : 30;
+	public int getTickDelay(LevelReader worldView) {
+		return worldView.dimensionType().ultraWarm() ? 10 : 30;
 	}
 
 	@Override
-	public int getNextTickDelay(World world, BlockPos blockPos, FluidState fluidState, FluidState fluidState2) {
-		int tickDelay = this.getTickRate(world);
+	public int getSpreadDelay(Level world, BlockPos blockPos, FluidState fluidState, FluidState fluidState2) {
+		int tickDelay = this.getTickDelay(world);
 
-		if (!fluidState.isEmpty() && !fluidState2.isEmpty() && !fluidState.get(FALLING) && !fluidState2.get(FALLING) && fluidState2.getHeight(world, blockPos) > fluidState.getHeight(world, blockPos) && world.getRandom().nextInt(4) != 0) {
+		if (!fluidState.isEmpty() && !fluidState2.isEmpty() && !fluidState.getValue(FALLING) && !fluidState2.getValue(FALLING) && fluidState2.getHeight(world, blockPos) > fluidState.getHeight(world, blockPos) && world.getRandom().nextInt(4) != 0) {
 			tickDelay *= 4;
 		}
 
@@ -96,61 +94,61 @@ public abstract class EternalFluid extends FlowableFluid {
 	}
 
 	@Override
-	protected boolean isInfinite(World world) {
+	protected boolean canConvertToSource(Level world) {
 		return false;
 	}
 
 	@Override
-	protected void flow(WorldAccess world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState) {
+	protected void spreadTo(LevelAccessor world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState) {
 		if (direction == Direction.DOWN) {
-			if (world.getFluidState(pos).isIn(FluidTags.WATER)) {
-				if (blockState.getBlock() instanceof FluidBlock) {
-					world.setBlockState(pos, ModBlocks.BLACK_ANCIENT_FABRIC.getDefaultState(), 3);
+			if (world.getFluidState(pos).is(FluidTags.WATER)) {
+				if (blockState.getBlock() instanceof LiquidBlock) {
+					world.setBlock(pos, ModBlocks.BLACK_ANCIENT_FABRIC.defaultBlockState(), 3);
 				}
 
 				return;
 			}
 		}
 
-		super.flow(world, pos, blockState, direction, fluidState);
+		super.spreadTo(world, pos, blockState, direction, fluidState);
 	}
 
 	@Override
-	protected boolean hasRandomTicks() {
+	protected boolean isRandomlyTicking() {
 		return true;
 	}
 
 	@Override
-	protected float getBlastResistance() {
+	protected float getExplosionResistance() {
 		return 100000;
 	}
 
 	public static class Flowing extends EternalFluid {
 		@Override
-		protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-			super.appendProperties(builder);
+		protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
+			super.createFluidStateDefinition(builder);
 			builder.add(LEVEL);
 		}
 
 		@Override
-		public int getLevel(FluidState fluidState) {
-			return fluidState.get(LEVEL);
+		public int getAmount(FluidState fluidState) {
+			return fluidState.getValue(LEVEL);
 		}
 
 		@Override
-		public boolean isStill(FluidState fluidState) {
+		public boolean isSource(FluidState fluidState) {
 			return false;
 		}
 	}
 
 	public static class Still extends EternalFluid {
 		@Override
-		public int getLevel(FluidState fluidState) {
+		public int getAmount(FluidState fluidState) {
 			return 8;
 		}
 
 		@Override
-		public boolean isStill(FluidState fluidState) {
+		public boolean isSource(FluidState fluidState) {
 			return true;
 		}
 	}

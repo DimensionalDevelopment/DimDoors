@@ -4,14 +4,11 @@ import java.util.Collection;
 
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.resource.ResourceManager;
-
 import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
@@ -22,34 +19,34 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
-	static VirtualPocket deserialize(NbtElement nbt) {
+	static VirtualPocket deserialize(Tag nbt) {
 		return deserialize(nbt, null);
 	}
 
 
 	//TODO: split up in ImplementedVirtualPocket and VirtualPocketList
-	static VirtualPocket deserialize(NbtElement nbt, @Nullable ResourceManager manager) {
-		switch (nbt.getType()) {
+	static VirtualPocket deserialize(Tag nbt, @Nullable ResourceManager manager) {
+		switch (nbt.getId()) {
 			case NbtType.LIST: // It's a list of VirtualPocket
-				return VirtualPocketList.deserialize((NbtList) nbt, manager);
+				return VirtualPocketList.deserialize((ListTag) nbt, manager);
 			case NbtType.COMPOUND: // It's a serialized VirtualPocket
-				return ImplementedVirtualPocket.deserialize((NbtCompound) nbt, manager);
+				return ImplementedVirtualPocket.deserialize((CompoundTag) nbt, manager);
 			// TODO: throw if manager is null
 			case NbtType.STRING: // It's a reference to a resource location
-				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
+				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
 			default:
-				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
+				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
 		}
 	}
 
-	static NbtElement serialize(VirtualPocket virtualPocket, boolean allowReference) {
+	static Tag serialize(VirtualPocket virtualPocket, boolean allowReference) {
 		if (virtualPocket instanceof VirtualPocketList) {
 			return VirtualPocketList.serialize((VirtualPocketList) virtualPocket, allowReference);
 		}
 		return ImplementedVirtualPocket.serialize((ImplementedVirtualPocket) virtualPocket, allowReference);
 	}
 
-	static NbtElement serialize(VirtualPocket virtualPocket) {
+	static Tag serialize(VirtualPocket virtualPocket) {
 		return serialize(virtualPocket, false);
 	}
 

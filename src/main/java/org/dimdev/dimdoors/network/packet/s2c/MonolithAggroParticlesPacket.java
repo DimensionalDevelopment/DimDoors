@@ -1,19 +1,16 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
-
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 public class MonolithAggroParticlesPacket implements SimplePacket<ClientPacketListener> {
-	public static final Identifier ID = DimensionalDoors.id("monolith_aggro_particles");
+	public static final ResourceLocation ID = DimensionalDoors.id("monolith_aggro_particles");
 
 	private int aggro;
 
@@ -26,12 +23,12 @@ public class MonolithAggroParticlesPacket implements SimplePacket<ClientPacketLi
 	}
 
 	@Override
-	public SimplePacket<ClientPacketListener> read(PacketByteBuf buf) throws IOException {
+	public SimplePacket<ClientPacketListener> read(FriendlyByteBuf buf) throws IOException {
 		return new MonolithAggroParticlesPacket(buf.readVarInt());
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
 		buf.writeVarInt(aggro);
 		return buf;
 	}
@@ -42,7 +39,7 @@ public class MonolithAggroParticlesPacket implements SimplePacket<ClientPacketLi
 	}
 
 	@Override
-	public Identifier channelId() {
+	public ResourceLocation channelId() {
 		return ID;
 	}
 

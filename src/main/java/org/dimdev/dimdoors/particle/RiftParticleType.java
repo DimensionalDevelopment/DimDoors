@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.particle;
 
 import com.mojang.serialization.Codec;
-
-import net.minecraft.particle.ParticleType;
-
+import net.minecraft.core.particles.ParticleType;
 import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 
 public class RiftParticleType extends ParticleType<RiftParticleEffect> {
@@ -12,7 +10,7 @@ public class RiftParticleType extends ParticleType<RiftParticleEffect> {
 	}
 
 	@Override
-	public Codec<RiftParticleEffect> getCodec() {
+	public Codec<RiftParticleEffect> codec() {
 		return RiftParticleEffect.CODEC;
 	}
 }

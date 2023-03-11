@@ -8,15 +8,13 @@ import java.util.function.Supplier;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.level.Level;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -99,8 +97,8 @@ public class DimensionalDoors implements ModInitializer {
 		return dimensionalDoorItemRegistrar;
 	}
 
-	public static ServerWorld getWorld(RegistryKey<World> key) {
-        return getServer().getWorld(key);
+	public static ServerLevel getWorld(ResourceKey<Level> key) {
+        return getServer().getLevel(key);
     }
 
 	public static ModConfig getConfig() {
@@ -115,8 +113,8 @@ public class DimensionalDoors implements ModInitializer {
 		return CONFIG_ROOT.get();
 	}
 
-	public static Identifier id(String id) {
-		return new Identifier("dimdoors", id);
+	public static ResourceLocation id(String id) {
+		return new ResourceLocation("dimdoors", id);
 	}
 
 	@Override
@@ -144,11 +142,11 @@ public class DimensionalDoors implements ModInitializer {
 		ModParticleTypes.init();
 		ModCriteria.init();
 		ModEnchants.init();
-		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(Registries.ITEM);
-		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(Registries.BLOCK, dimensionalDoorItemRegistrar);
+		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(BuiltInRegistries.ITEM);
+		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(BuiltInRegistries.BLOCK, dimensionalDoorItemRegistrar);
 
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
-		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(LimboDecay.DecayLoader.getInstance());
+		ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
+		ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(LimboDecay.DecayLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(id("default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType());
 		ResourceManagerHelper.registerBuiltinResourcePack(id("classic"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().classicPocketsResourcePackActivationType.asResourcePackActivationType());
 
@@ -177,7 +175,7 @@ public class DimensionalDoors implements ModInitializer {
 
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 			((ExtendedServerPlayNetworkHandler) handler).getDimDoorsPacketHandler().unregister();
-			PocketCommand.logSetting.remove(handler.getPlayer().getUuid());
+			PocketCommand.logSetting.remove(handler.getPlayer().getUUID());
 		});
 
 		ServerChunkEvents.CHUNK_LOAD.register(new ChunkLoadListener()); // lazy pocket gen

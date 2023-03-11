@@ -1,13 +1,10 @@
 package org.dimdev.dimdoors.client;
 
 import org.joml.Matrix4f;
-
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.util.Util;
-
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.Util;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 @Environment(EnvType.CLIENT)
@@ -32,7 +29,7 @@ public final class RiftCrackRenderer {
         // changes how "together" the overall motions are
         int jCount = 10;
 
-        float time = ((Util.getEpochTimeMs() + riftRandom) % 2000000) * motionSpeed;
+        float time = ((Util.getEpochMillis() + riftRandom) % 2000000) * motionSpeed;
         double[] jitters = new double[jCount];
 
         double jitterScale = DimensionalDoors.getConfig().getGraphicsConfig().riftJitter * size * size * size / 2000f;
@@ -60,7 +57,7 @@ public final class RiftCrackRenderer {
             y *= scale;
             z *= scale;
 
-            vc.vertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter)).color(0.08f, 0.08f, 0.08f, .3f).next();
+            vc.vertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter)).color(0.08f, 0.08f, 0.08f, .3f).endVertex();
         }
     }
 }
