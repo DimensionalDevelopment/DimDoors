@@ -6,8 +6,11 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
@@ -35,8 +38,8 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 		this.add(ModBlocks.SOLID_STATIC, (blockx) -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER));
 
 		this.add(ModBlocks.UNRAVELLED_FABRIC, (blockx) -> createSilkTouchDispatchTable(blockx,
-				applyExplosionCondition(blockx, ItemEntry.builder(ModItems.FRAYED_FILAMENTS).conditionally(
-						TableBonusLootCondition.builder(Enchantments.FORTUNE, 0.1F, 0.14285715F, 0.25F, 1.0F)).alternatively(ItemEntry.builder(blockx)))));
+				applyExplosionCondition(blockx, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS).when(
+						BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.BLOCK_FORTUNE, 0.1F, 0.14285715F, 0.25F, 1.0F)).otherwise(LootItem.lootTableItem(blockx)))));
 	}
 
 	@Override

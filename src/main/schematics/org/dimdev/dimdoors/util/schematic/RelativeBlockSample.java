@@ -10,30 +10,30 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.ModifiableWorld;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelWriter;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.Vec3;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
@@ -41,7 +41,7 @@ import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
-public class RelativeBlockSample implements BlockView, ModifiableWorld {
+public class RelativeBlockSample implements BlockGetter, LevelWriter {
 	public final Schematic schematic;
 	private final int[][][] blockData;
 	private final int[][] biomeData;
@@ -49,8 +49,8 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	private final BiMap<Biome, Integer> biomePalette;
 	private final Map<BlockPos, BlockState> blockContainer;
 	private final Map<BlockPos, Biome> biomeContainer;
-	private final Map<BlockPos, NbtCompound> blockEntityContainer;
-	private final BiMap<NbtCompound, Vec3d> entityContainer;
+	private final Map<BlockPos, CompoundTag> blockEntityContainer;
+	private final BiMap<CompoundTag, Vec3> entityContainer;
 
 	public RelativeBlockSample(Schematic schematic) {
 		this.schematic = schematic;
@@ -67,7 +67,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				for (int z = 0; z < length; z++) {
-					this.setBlockState(new BlockPos(x, y, z), this.blockPalette.inverse().get(this.blockData[x][y][z]), 2);
+					this.setBlock(new BlockPos(x, y, z), this.blockPalette.inverse().get(this.blockData[x][y][z]), 2);
 				}
 			}
 		}
@@ -78,16 +78,16 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				}
 			}
 		}
-		for (NbtCompound blockEntityNbt : schematic.getBlockEntities()) {
+		for (CompoundTag blockEntityNbt : schematic.getBlockEntities()) {
 			int[] arr = blockEntityNbt.getIntArray("Pos");
 			BlockPos position = new BlockPos(arr[0], arr[1], arr[2]);
 			this.blockEntityContainer.put(position, blockEntityNbt);
 		}
 
 		this.entityContainer = HashBiMap.create();
-		for (NbtCompound entityNbt : schematic.getEntities()) {
-			NbtList doubles = entityNbt.getList("Pos", NbtType.DOUBLE);
-			this.entityContainer.put(entityNbt, new Vec3d(doubles.getDouble(0), doubles.getDouble(1), doubles.getDouble(2)));
+		for (CompoundTag entityNbt : schematic.getEntities()) {
+			ListTag doubles = entityNbt.getList("Pos", NbtType.DOUBLE);
+			this.entityContainer.put(entityNbt, new Vec3(doubles.getDouble(0), doubles.getDouble(1), doubles.getDouble(2)));
 		}
 	}
 
@@ -95,8 +95,8 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	public @Nullable BlockEntity getBlockEntity(BlockPos pos) {
 		BlockState blockState = this.getBlockState(pos);
 
-		if (blockState.getBlock() instanceof BlockEntityProvider) {
-			return ((BlockEntityProvider) blockState.getBlock()).createBlockEntity(pos, blockState);
+		if (blockState.getBlock() instanceof EntityBlock) {
+			return ((EntityBlock) blockState.getBlock()).newBlockEntity(pos, blockState);
 		}
 
 		return null;
@@ -112,62 +112,62 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		return this.blockContainer.get(pos).getFluidState();
 	}
 
-	public void place(BlockPos origin, StructureWorldAccess world, BlockPlacementType placementType, boolean biomes) {
+	public void place(BlockPos origin, WorldGenLevel world, BlockPlacementType placementType, boolean biomes) {
 		// TODO: properly implement placement types
 		this.blockContainer.forEach((pos, state) -> {
-			BlockPos actualPos = origin.add(pos);
-			world.setBlockState(actualPos, state, 0, 0);
-			if (placementType.shouldMarkForUpdate()) ((ServerWorld) world).getChunkManager().markForUpdate(actualPos);
+			BlockPos actualPos = origin.offset(pos);
+			world.setBlock(actualPos, state, 0, 0);
+			if (placementType.shouldMarkForUpdate()) ((ServerLevel) world).getChunkSource().blockChanged(actualPos);
 		});
-		for (Map.Entry<BlockPos, NbtCompound> entry : this.blockEntityContainer.entrySet()) {
+		for (Map.Entry<BlockPos, CompoundTag> entry : this.blockEntityContainer.entrySet()) {
 			BlockPos pos = entry.getKey();
-			BlockPos actualPos = origin.add(entry.getKey());
+			BlockPos actualPos = origin.offset(entry.getKey());
 
-			NbtCompound nbt = entry.getValue();
+			CompoundTag nbt = entry.getValue();
 			if(nbt.contains("Id")) {
 				nbt.put("id", nbt.get("Id")); // boogers
 				nbt.remove("Id");
 			}
 
-			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(pos), nbt);
+			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(pos), nbt);
 			if (blockEntity != null) {
-				placementType.getBlockEntityPlacer().accept(world.toServerWorld(), blockEntity);
+				placementType.getBlockEntityPlacer().accept(world.getLevel(), blockEntity);
 			}
 		}
-		for (Map.Entry<NbtCompound, Vec3d> entry : this.entityContainer.entrySet()) {
-			NbtCompound nbt = entry.getKey();
-			NbtList doubles = nbt.getList("Pos", NbtType.DOUBLE);
-			Vec3d vec = entry.getValue().add(origin.getX(), origin.getY(), origin.getZ());
+		for (Map.Entry<CompoundTag, Vec3> entry : this.entityContainer.entrySet()) {
+			CompoundTag nbt = entry.getKey();
+			ListTag doubles = nbt.getList("Pos", NbtType.DOUBLE);
+			Vec3 vec = entry.getValue().add(origin.getX(), origin.getY(), origin.getZ());
 			doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
 			doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 			doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
 			nbt.put("Pos", doubles);
-			Entity entity = EntityType.getEntityFromNbt(nbt, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
-			world.spawnEntity(entity);
+			Entity entity = EntityType.create(nbt, world.getLevel()).orElseThrow(NoSuchElementException::new);
+			world.addFreshEntity(entity);
 		}
 	}
 
-	public void place(BlockPos origin, ServerWorld world, Chunk chunk, BlockPlacementType placementType, boolean biomes) {
+	public void place(BlockPos origin, ServerLevel world, ChunkAccess chunk, BlockPlacementType placementType, boolean biomes) {
 		ChunkPos pos = chunk.getPos();
-		BlockBox chunkBox = BlockBoxUtil.getBox(chunk);
+		BoundingBox chunkBox = BlockBoxUtil.getBox(chunk);
 		Vec3i schemDimensions = new Vec3i(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
-		BlockBox schemBox = BlockBox.create(origin, origin.add(schemDimensions).add(-1, -1, -1));
+		BoundingBox schemBox = BoundingBox.fromCorners(origin, origin.offset(schemDimensions).offset(-1, -1, -1));
 		if (!schemBox.intersects(chunkBox)) return;
-		BlockBox intersection = BlockBoxUtil.intersect(schemBox, chunkBox);
+		BoundingBox intersection = BlockBoxUtil.intersect(schemBox, chunkBox);
 
-		ServerChunkManager serverChunkManager = world.getChunkManager();
+		ServerChunkCache serverChunkManager = world.getChunkSource();
 
-		ChunkSection[] sections = chunk.getSectionArray();
+		LevelChunkSection[] sections = chunk.getSections();
 
 		if (placementType.useSection()) {
-			BlockPos.stream(intersection).forEach(blockPos -> {
+			BlockPos.betweenClosedStream(intersection).forEach(blockPos -> {
 				int x = Math.floorMod(blockPos.getX(), 16);
 				int y = Math.floorMod(blockPos.getY(), 16);
 				int z = Math.floorMod(blockPos.getZ(), 16);
 				int sectionY = chunk.getSectionIndex(blockPos.getY());
-				ChunkSection section = sections[sectionY];
+				LevelChunkSection section = sections[sectionY];
 				if (section == null) {
-					section = new ChunkSection(sectionY, world.getRegistryManager().get(RegistryKeys.BIOME));
+					section = new LevelChunkSection(sectionY, world.registryAccess().registryOrThrow(Registries.BIOME));
 					sections[sectionY] = section;
 				}
 				if(section.getBlockState(x, y, z).isAir()) {
@@ -175,12 +175,12 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 					// FIXME: newState can be null in some circumstances
 					if (!newState.isAir()) {
 						section.setBlockState(x, y, z, newState, false);
-						if (placementType.shouldMarkForUpdate()) serverChunkManager.markForUpdate(blockPos);
+						if (placementType.shouldMarkForUpdate()) serverChunkManager.blockChanged(blockPos);
 					}
 				}
 			});
 		} else {
-			BlockPos.stream(intersection).forEach(blockPos -> { // FIXME: currently extremely unstable since it can try to get neighbouring chunks which can cause a deadlock
+			BlockPos.betweenClosedStream(intersection).forEach(blockPos -> { // FIXME: currently extremely unstable since it can try to get neighbouring chunks which can cause a deadlock
 				if(chunk.getBlockState(blockPos).isAir()) {
 					BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
 					if (!newState.isAir()) {
@@ -191,18 +191,18 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		}
 
 		// do the lighting thing
-		serverChunkManager.getLightingProvider().light(chunk, false);
+		serverChunkManager.getLightEngine().lightChunk(chunk, false);
 
 		// TODO: depending on size of blockEntityContainer it might be faster to iterate over BlockPos.stream(intersection) instead
 		this.blockEntityContainer.forEach((blockPos, nbt) -> {
-			BlockPos actualPos = blockPos.add(origin);
-			if (intersection.contains(actualPos)) {
+			BlockPos actualPos = blockPos.offset(origin);
+			if (intersection.isInside(actualPos)) {
 				if(nbt.contains("Id")) {
 					nbt.put("id", nbt.get("Id")); // boogers
 					nbt.remove("Id");
 				}
 
-				BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, this.getBlockState(blockPos), nbt);
+				BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(blockPos), nbt);
 				if (blockEntity != null && !(blockEntity instanceof RiftBlockEntity)) {
 					chunk.setBlockEntity(blockEntity);
 				}
@@ -210,17 +210,17 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		});
 
 		// TODO: is it ok if this is not executed with MinecraftServer#send?
-		this.entityContainer.forEach(((nbt, vec3d) -> {
-			NbtList doubles = nbt.getList("Pos", NbtType.DOUBLE);
-			Vec3d vec = vec3d.add(origin.getX(), origin.getY(), origin.getZ());
-			if (intersection.contains(new Vec3i(vec.x, vec.y, vec.z))) {
+		this.entityContainer.forEach(((nbt, Vec3) -> {
+			ListTag doubles = nbt.getList("Pos", NbtType.DOUBLE);
+			Vec3 vec = Vec3.add(origin.getX(), origin.getY(), origin.getZ());
+			if (intersection.isInside(new Vec3i(vec.x, vec.y, vec.z))) {
 				doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
 				doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 				doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
 				nbt.put("Pos", doubles);
 
-				Entity entity = EntityType.getEntityFromNbt(nbt, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
-				world.spawnEntity(entity);
+				Entity entity = EntityType.create(nbt, world.getLevel()).orElseThrow(NoSuchElementException::new);
+				world.addFreshEntity(entity);
 			}
 		}));
 	}
@@ -228,14 +228,14 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(BlockPos origin) {
 		Map<BlockPos, RiftBlockEntity> rifts = new HashMap<>();
 		this.blockEntityContainer.forEach( (blockPos, nbt) ->  {
-			BlockPos actualPos = origin.add(blockPos);
+			BlockPos actualPos = origin.offset(blockPos);
 
 			if(nbt.contains("Id")) {
 				nbt.put("id", nbt.get("Id")); // boogers
 				nbt.remove("Id");
 			}
 			BlockState state = getBlockState(blockPos);
-			BlockEntity blockEntity = BlockEntity.createFromNbt(actualPos, state, nbt);
+			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, state, nbt);
 			if (blockEntity instanceof RiftBlockEntity) {
 				rifts.put(actualPos, (RiftBlockEntity) blockEntity);
 			}
@@ -255,24 +255,24 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		return this.blockContainer;
 	}
 
-	public Map<BlockPos, NbtCompound> getBlockEntityContainer() {
+	public Map<BlockPos, CompoundTag> getBlockEntityContainer() {
 		return this.blockEntityContainer;
 	}
 
 	@Override
-	public boolean setBlockState(BlockPos pos, BlockState state, int flags, int maxUpdateDepth) {
+	public boolean setBlock(BlockPos pos, BlockState state, int flags, int maxUpdateDepth) {
 		this.blockContainer.put(pos, state);
 		return true;
 	}
 
 	@Override
 	public boolean removeBlock(BlockPos pos, boolean move) {
-		return this.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+		return this.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
 	}
 
 	@Override
-	public boolean breakBlock(BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
-		return this.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
+	public boolean destroyBlock(BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
+		return this.setBlock(pos, Blocks.AIR.defaultBlockState(), 2);
 	}
 
 	public boolean hasBiomes() {
@@ -285,7 +285,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 	}
 
 	@Override
-	public int getBottomY() {
+	public int getMinBuildHeight() {
 		return 0;
 	}
 }

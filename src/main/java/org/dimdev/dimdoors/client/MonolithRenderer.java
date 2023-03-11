@@ -63,7 +63,7 @@ public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel>
     }
 
     @Override
-    public ResourceLocation getTexture(MonolithEntity entity) {
+    public ResourceLocation getTextureLocation(MonolithEntity entity) {
         return MonolithRenderer.MONOLITH_TEXTURES.get(entity.getTextureState());
     }
 }

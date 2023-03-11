@@ -5,24 +5,24 @@ import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.ModifiableTestableWorld;
-import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelSimulatedRW;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.material.FluidState;
 
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 
-public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
+public class WorldlyBlockSample implements BlockGetter, LevelSimulatedRW {
 	private final RelativeBlockSample relativeBlockSample;
-	private final StructureWorldAccess world;
+	private final WorldGenLevel world;
 
-	public WorldlyBlockSample(RelativeBlockSample relativeBlockSample, StructureWorldAccess world) {
+	public WorldlyBlockSample(RelativeBlockSample relativeBlockSample, WorldGenLevel world) {
 		this.relativeBlockSample = relativeBlockSample;
 		this.world = world;
 	}
@@ -39,7 +39,7 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 
 	@Override
 	public <T extends BlockEntity> Optional<T> getBlockEntity(BlockPos pos, BlockEntityType<T> type) {
-		 return Optional.ofNullable(type.get(this, pos));
+		 return Optional.ofNullable(type.getBlockEntity(this, pos));
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 	}
 
 	@Override
-	public boolean setBlockState(BlockPos pos, BlockState state, int flags, int maxUpdateDepth) {
-		return this.relativeBlockSample.setBlockState(pos, state, flags, maxUpdateDepth);
+	public boolean setBlock(BlockPos pos, BlockState state, int flags, int maxUpdateDepth) {
+		return this.relativeBlockSample.setBlock(pos, state, flags, maxUpdateDepth);
 	}
 
 	@Override
@@ -63,22 +63,22 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 	}
 
 	@Override
-	public boolean breakBlock(BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
-		return this.relativeBlockSample.breakBlock(pos, drop, breakingEntity, maxUpdateDepth);
+	public boolean destroyBlock(BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) {
+		return this.relativeBlockSample.destroyBlock(pos, drop, breakingEntity, maxUpdateDepth);
 	}
 
 	@Override
-	public boolean testBlockState(BlockPos pos, Predicate<BlockState> state) {
+	public boolean isStateAtPosition(BlockPos pos, Predicate<BlockState> state) {
 		return state.test(this.getBlockState(pos));
 	}
 
 	@Override
-	public boolean testFluidState(BlockPos pos, Predicate<FluidState> state) {
+	public boolean isFluidAtPosition(BlockPos pos, Predicate<FluidState> state) {
 		throw new RuntimeException("Method Implementation missing!"); // FIXME
 	}
 
 	@Override
-	public BlockPos getTopPosition(Heightmap.Type type, BlockPos blockPos) {
+	public BlockPos getHeightmapPos(Heightmap.Types type, BlockPos blockPos) {
 		throw new RuntimeException("Method Implementation missing!"); // FIXME
 	}
 
@@ -88,7 +88,7 @@ public class WorldlyBlockSample implements BlockView, ModifiableTestableWorld {
 	}
 
 	@Override
-	public int getBottomY() {
-		return this.relativeBlockSample.getBottomY();
+	public int getMinBuildHeight() {
+		return this.relativeBlockSample.getMinBuildHeight();
 	}
 }

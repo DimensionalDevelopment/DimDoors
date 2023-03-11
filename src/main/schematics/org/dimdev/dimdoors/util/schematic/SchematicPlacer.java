@@ -8,16 +8,17 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtDouble;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -30,7 +31,7 @@ public final class SchematicPlacer {
 	private SchematicPlacer() {
 	}
 
-	public static void place(Schematic schematic, StructureWorldAccess world, BlockPos origin, BlockPlacementType placementType) {
+	public static void place(Schematic schematic, WorldGenLevel world, BlockPos origin, BlockPlacementType placementType) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
 		for (String id : schematic.getMetadata().requiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
@@ -46,7 +47,7 @@ public final class SchematicPlacer {
 		return blockSample.getAbsoluteRifts(origin);
 	}
 
-	public static void place(Schematic schematic, ServerWorld world, Chunk chunk, BlockPos origin, BlockPlacementType placementType) {
+	public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
 		for (String id : schematic.getMetadata().requiredMods()) {
 			if (!FabricLoader.getInstance().isModLoaded(id)) {
@@ -90,23 +91,23 @@ public final class SchematicPlacer {
 		return new int[0][0];
 	}
 
-	private static void placeEntities(int originX, int originY, int originZ, Schematic schematic, StructureWorldAccess world) {
-		List<NbtCompound> entityNbts = schematic.getEntities();
-		for (NbtCompound nbt : entityNbts) {
-			NbtList nbtList = Objects.requireNonNull(nbt.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().name() + "\" did not have a Pos nbt list!");
+	private static void placeEntities(int originX, int originY, int originZ, Schematic schematic, ServerLevelAccessor world) {
+		List<CompoundTag> entityNbts = schematic.getEntities();
+		for (CompoundTag nbt : entityNbts) {
+			ListTag nbtList = Objects.requireNonNull(nbt.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().name() + "\" did not have a Pos nbt list!");
 			SchematicPlacer.processPos(nbtList, originX, originY, originZ, nbt);
 
-			EntityType<?> entityType = EntityType.fromNbt(nbt).orElseThrow(AssertionError::new);
-			Entity e = entityType.create(world.toServerWorld());
+			EntityType<?> entityType = EntityType.by(nbt).orElseThrow(AssertionError::new);
+			Entity e = entityType.create(world.getLevel());
 			// TODO: fail with an exception
 			if (e != null) {
-				e.readNbt(nbt);
-				world.spawnEntityAndPassengers(e);
+				e.load(nbt);
+				world.addFreshEntity(e);
 			}
 		}
 	}
 
-	public static NbtCompound fixEntityId(NbtCompound nbt) {
+	public static CompoundTag fixEntityId(CompoundTag nbt) {
 		if (!nbt.contains("Id") && nbt.contains("id")) {
 			nbt.putString("Id", nbt.getString("id"));
 		} else if (nbt.contains("Id") && !nbt.contains("id")) {
@@ -120,13 +121,13 @@ public final class SchematicPlacer {
 		return nbt;
 	}
 
-	private static void processPos(NbtList nbtList, int originX, int originY, int originZ, NbtCompound nbt) {
+	private static void processPos(ListTag nbtList, int originX, int originY, int originZ, CompoundTag nbt) {
 		double x = nbtList.getDouble(0);
 		double y = nbtList.getDouble(1);
 		double z = nbtList.getDouble(2);
 		nbt.remove("Pos");
-		nbt.put("Pos", NbtOps.INSTANCE.createList(Stream.of(NbtDouble.of(x + originX),
-				NbtDouble.of(y + originY),
-				NbtDouble.of(z + originZ))));
+		nbt.put("Pos", NbtOps.INSTANCE.createList(Stream.of(DoubleTag.valueOf(x + originX),
+				DoubleTag.valueOf(y + originY),
+				DoubleTag.valueOf(z + originZ))));
 	}
 }

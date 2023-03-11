@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.block.entity;
 
+import java.util.function.Consumer;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -48,8 +50,8 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 		if (!world.isClientSide() && random.nextFloat() < DimensionalDoors.getConfig().getGeneralConfig().endermanSpawnChance) {
 			EnderMan enderman = EntityType.ENDERMAN.spawn(
 					(ServerLevel) world,
-					null,
-					null,
+					(CompoundTag) null,
+					(Consumer<EnderMan>) null,
 					pos,
 					MobSpawnType.STRUCTURE,
 					false,

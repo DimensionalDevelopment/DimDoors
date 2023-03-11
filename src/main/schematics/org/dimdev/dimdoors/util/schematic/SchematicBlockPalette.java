@@ -9,17 +9,19 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.command.argument.BlockArgumentParser;
-import net.minecraft.registry.Registries;
-import net.minecraft.state.property.Property;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
+import net.minecraft.commands.arguments.blocks.BlockStateParser;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 public class SchematicBlockPalette {
 	public static final UnboundedMapCodec<BlockState, Integer> CODEC = Codec.unboundedMap(Entry.CODEC, Codec.INT);
 
 	private static <T extends Comparable<T>> BlockState process(Property<T> property, String value, BlockState state) {
-		return state.with(property, property.parse(value).orElseThrow(NullPointerException::new));
+		return state.setValue(property, property.getValue(value).orElseThrow(NullPointerException::new));
 	}
 
 	public interface Entry {
@@ -28,10 +30,10 @@ public class SchematicBlockPalette {
 		static DataResult<BlockState> to(String string) {
 			StringReader reader = new StringReader(string);
 
-			BlockArgumentParser.BlockResult parser;
+			BlockStateParser.BlockResult parser;
 
 			try {
-				parser = BlockArgumentParser.block(Registries.BLOCK.getReadOnlyWrapper(), reader, true);
+				parser = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), reader, true);
 			} catch (CommandSyntaxException e) {
 				return DataResult.error(e.getMessage());
 			}
@@ -60,7 +62,7 @@ public class SchematicBlockPalette {
 
 		static String from(BlockState state) {
 			StringBuilder builder = new StringBuilder();
-			builder.append(Objects.requireNonNull(Registries.BLOCK.getId(state.getBlock())));
+			builder.append(BuiltInRegistries.BLOCK.getId(state.getBlock()));
 			// Ensures that [ and ] are only added when properties are present
 			boolean flag = true;
 			Iterator<Property<?>> iterator = state.getProperties().iterator();
@@ -74,11 +76,11 @@ public class SchematicBlockPalette {
 				builder.append(property.getName());
 				builder.append("=");
 
-				if (state.get(property) instanceof Enum<?>) {
+				if (state.getValue(property) instanceof Enum<?>) {
 					// Enum might have override toString
-					builder.append(((StringIdentifiable) state.get(property)).asString());
+					builder.append(((StringRepresentable) state.getValue(property)).getSerializedName());
 				} else {
-					builder.append(state.get(property).toString());
+					builder.append(state.getValue(property).toString());
 				}
 
 				if (iterator.hasNext()) {
