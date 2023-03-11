@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
@@ -17,7 +18,7 @@ import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 public class EternalFluidBlock extends LiquidBlock {
 	private static final EntityTarget TARGET = new EscapeTarget(true);
 
-	public EternalFluidBlock(Block.Settings settings) {
+	public EternalFluidBlock(BlockBehaviour.Properties settings) {
 		super(ModFluids.ETERNAL_FLUID, settings);
 	}
 

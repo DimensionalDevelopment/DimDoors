@@ -1,7 +1,7 @@
 package org.dimdev.test;
 
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.Rotations;
+import net.minecraft.world.phys.Vec3;
 
 import org.dimdev.dimdoors.api.util.math.AbstractMatrixd;
 
@@ -10,8 +10,8 @@ public class TestUtil {
 		return "\nexpected:\n" + expected + "\nactual:\n" + actual + "\n";
 	}
 
-	public static boolean closeEnough(Vec3d expected, Vec3d actual) {
-		return expected.squaredDistanceTo(actual) <= expected.lengthSquared() * 1E-10;
+	public static boolean closeEnough(Vec3 expected, Vec3 actual) {
+		return expected.distanceToSqr(actual) <= expected.lengthSqr() * 1E-10;
 	}
 
 	public static boolean closeEnough(AbstractMatrixd<?> expected, AbstractMatrixd<?> actual) {
@@ -33,15 +33,15 @@ public class TestUtil {
 		return true;
 	}
 
-	public static boolean closeEnough(EulerAngle expected, EulerAngle actual) {
-		float yawDiff = Math.abs(expected.getYaw() - actual.getYaw());
-		float pitchDiff = Math.abs(expected.getPitch() - actual.getPitch());
-		float rollDiff = Math.abs(expected.getRoll() - actual.getRoll());
+	public static boolean closeEnough(Rotations expected, Rotations actual) {
+		float yawDiff = Math.abs(expected.getY() - actual.getY());
+		float pitchDiff = Math.abs(expected.getX() - actual.getX());
+		float rollDiff = Math.abs(expected.getZ() - actual.getZ());
 
 		return yawDiff <= 1 && pitchDiff <= 1 && rollDiff <= 1;
 	}
 
-	public static String toString(EulerAngle angle) {
-		return "{yaw: " + angle.getYaw() + "; pitch: " + angle.getPitch() + "; roll: " + angle.getRoll() + "}";
+	public static String toString(Rotations angle) {
+		return "{yaw: " + angle.getY() + "; pitch: " + angle.getX() + "; roll: " + angle.getZ() + "}";
 	}
 }

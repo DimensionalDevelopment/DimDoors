@@ -11,5 +11,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(RedStoneWireBlock.class)
 public interface RedstoneWireBlockAccessor {
 	@Invoker
-	RedstoneSide invokeGetRenderConnectionType(BlockGetter blockView, BlockPos blockPos, Direction direction);
+	RedstoneSide invokeGetConnectingSide(BlockGetter blockView, BlockPos blockPos, Direction direction);
 }

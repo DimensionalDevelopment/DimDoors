@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PostPass.class)
 public class PostProcessShaderMixin {
 
-	@Shadow @Final private EffectInstance program;
+	@Shadow @Final private EffectInstance effect;
 
-	@Inject(method = "render(F)V", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "process", at = @At("HEAD"))
 	public void render(float time, CallbackInfo cir) {
-		program.safeGetUniform("GameTime").set(RenderSystem.getShaderGameTime());
+		effect.safeGetUniform("GameTime").set(RenderSystem.getShaderGameTime());
 	}
 
 	private Player getCameraPlayer() {

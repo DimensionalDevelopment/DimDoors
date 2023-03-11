@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 @Mixin(ServerPlayerGameMode.class)
 public class ServerPlayerInteractionManagerMixin {
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerInteractionManager;isCreative()Z", ordinal = 0), method = "interactBlock", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayerGameMode;isCreative()Z", ordinal = 0), method = "useItemOn", cancellable = true)
 	public void useItemOnBlock(ServerPlayer player, Level world, ItemStack stack, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> info) {
 		InteractionResult result = UseItemOnBlockCallback.EVENT.invoker().useItemOnBlock(player, world, hand, hitResult);
 		if (result != InteractionResult.PASS) {

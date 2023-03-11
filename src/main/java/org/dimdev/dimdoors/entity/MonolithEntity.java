@@ -291,10 +291,10 @@ public class MonolithEntity extends Mob {
         this.entityData.set(AGGRO, aggro);
     }
 
-	@Override
-	public float getScale() {
-		return getScale();
-	}
+//	@Override
+//	public float getScale() {
+//		return getScale();
+//	}
 
 	public float getScale() {
     	return this.entityData.get(SCALE);

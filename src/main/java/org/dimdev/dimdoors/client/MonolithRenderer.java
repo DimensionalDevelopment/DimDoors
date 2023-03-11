@@ -58,7 +58,7 @@ public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel>
 	}
 
 	@Override
-    protected boolean hasLabel(MonolithEntity mobEntity) {
+    protected boolean shouldShowName(MonolithEntity mobEntity) {
         return false;
     }
 

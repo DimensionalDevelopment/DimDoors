@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(RenderType.class)
 public interface RenderLayerAccessor {
 	@Invoker
-	static RenderType.CompositeRenderType callOf(String name, VertexFormat vertexFormat, VertexFormat.Mode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, RenderType.CompositeState phases) {
+	static RenderType.CompositeRenderType callCreate(String name, VertexFormat vertexFormat, VertexFormat.Mode drawMode, int expectedBufferSize, boolean hasCrumbling, boolean translucent, RenderType.CompositeState phases) {
 		throw new UnsupportedOperationException();
 	}
 }

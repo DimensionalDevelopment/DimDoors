@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(CraftingContainer.class)
 public interface CraftingInventoryAccessor {
     @Mutable
-    @Accessor("stacks")
+    @Accessor("items")
     void setInventory(NonNullList<ItemStack> inventory);
 }

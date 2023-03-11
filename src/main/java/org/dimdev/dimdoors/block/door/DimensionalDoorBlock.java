@@ -210,7 +210,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 		// TODO: Also notify player in case of error, don't crash
 		if (bottomEntity instanceof EntranceRiftBlockEntity && topEntity instanceof EntranceRiftBlockEntity) {
-			LOGGER.warn("Dimensional door at " + pos + " in world " + world + " contained two rifts, please report this. Defaulting to bottom.");
+//			LOGGER.warn("Dimensional door at " + pos + " in world " + world + " contained two rifts, please report this. Defaulting to bottom."); TODO: Figure out this.
 			return (EntranceRiftBlockEntity) bottomEntity;
 		} else if (bottomEntity instanceof EntranceRiftBlockEntity) {
 			return (EntranceRiftBlockEntity) bottomEntity;

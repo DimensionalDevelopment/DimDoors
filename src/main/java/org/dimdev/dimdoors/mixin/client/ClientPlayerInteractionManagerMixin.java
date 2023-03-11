@@ -22,21 +22,21 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
 	@Shadow
 	@Final
-	private Minecraft client;
+	private Minecraft minecraft;
 
 	@Shadow
-	protected abstract void sendSequencedPacket(ClientLevel world, PredictiveAction packetCreator);
+	protected abstract void startPrediction(ClientLevel world, PredictiveAction packetCreator);
 
-	@Inject(method = "interactBlock", cancellable = true, at = @At(value = "NEW", target = "org/apache/commons/lang3/mutable/MutableObject", remap = false))
+	@Inject(method = "useItemOn", cancellable = true, at = @At(value = "NEW", target = "org/apache/commons/lang3/mutable/MutableObject", remap = false))
 	public void useItemOnBlock(LocalPlayer player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> info) {
-		InteractionResult result = UseItemOnBlockCallback.EVENT.invoker().useItemOnBlock(player, client.level, hand, hitResult);
+		InteractionResult result = UseItemOnBlockCallback.EVENT.invoker().useItemOnBlock(player, minecraft.level, hand, hitResult);
 		if (result == InteractionResult.PASS) {
 			return;
 		}
 		info.setReturnValue(result);
 		info.cancel();
 		if (result == InteractionResult.SUCCESS) {
-			this.sendSequencedPacket(this.client.level, sequence -> new ServerboundUseItemOnPacket(hand, hitResult, sequence));
+			this.startPrediction(this.minecraft.level, sequence -> new ServerboundUseItemOnPacket(hand, hitResult, sequence));
 		}
 	}
 }

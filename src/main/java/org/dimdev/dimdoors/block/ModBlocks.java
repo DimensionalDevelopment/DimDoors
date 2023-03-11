@@ -126,7 +126,7 @@ public final class ModBlocks {
 	@RegistryEntry("red_ancient_fabric") public static final Block RED_ANCIENT_FABRIC = registerAncientFabric(DyeColor.RED);
 
 	@RegistryEntry("black_ancient_fabric") public static final Block BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
-	private static final FabricBlockSettings UNRAVELLED_FABRIC_BLOCK_SETTINGS = FabricBlockSettings.of(Material.STONE, MaterialColor.COLOR_BLACK).randomTicks().luminance(15).strength(0.3F, 0.3F);
+	private static final FabricBlockSettings UNRAVELLED_FABRIC_BLOCK_SETTINGS = FabricBlockSettings.of(Material.STONE, MaterialColor.COLOR_BLACK).luminance(15).ticksRandomly().strength(0.3F, 0.3F);
 
 	@RegistryEntry("eternal_fluid") public static final Block ETERNAL_FLUID = register(new EternalFluidBlock(FabricBlockSettings.of(Material.STONE, MaterialColor.COLOR_RED).luminance(15)));
 

@@ -23,9 +23,9 @@ import org.dimdev.dimdoors.client.ModShaders;
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
 	@Shadow
-	protected abstract ShaderInstance preloadProgram(ResourceProvider arg, String string, VertexFormat vertexFormat) throws IOException;
+	protected abstract ShaderInstance preloadShader(ResourceProvider resourceProvider, String name, VertexFormat format);
 
-	@Inject(method = "loadPrograms", at = @At(value = "INVOKE", shift = At.Shift.AFTER, ordinal = 1, target = "java/util/List.add(Ljava/lang/Object;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
+	@Inject(method = "reloadShaders", at = @At(value = "INVOKE", shift = At.Shift.AFTER, ordinal = 1, target = "java/util/List.add(Ljava/lang/Object;)Z"), locals = LocalCapture.CAPTURE_FAILSOFT)
 	public void onReload(ResourceProvider manager, CallbackInfo ci, List list, List list2) throws IOException {
 		list2.add(Pair.of(new ShaderInstance(manager, "dimensional_portal", DefaultVertexFormat.POSITION), (Consumer<ShaderInstance>) ModShaders::setDimensionalPortal));
 	}

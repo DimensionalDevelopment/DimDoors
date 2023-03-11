@@ -4,8 +4,8 @@ import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.border.WorldBorder;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.phys.Vec3;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -41,10 +41,10 @@ class TeleportUtilTest {
 				} else {
 					zValue = (int) border.getCenterZ() + random.nextInt(1000000, 10000000);
 				}
-				Vec3d oobVector = new Vec3d(xValue, 0, zValue);
-				Vec3d clampedVector = TeleportUtil.clampToWorldBorder(oobVector, border);
-				assertFalse(border.contains(oobVector.x, oobVector.z));
-				assertTrue(border.contains(clampedVector.x, clampedVector.z));
+				Vec3 oobVector = new Vec3(xValue, 0, zValue);
+				Vec3 clampedVector = TeleportUtil.clampToWorldBorder(oobVector, border);
+				assertFalse(border.isWithinBounds(oobVector.x, oobVector.z));
+				assertTrue(border.isWithinBounds(clampedVector.x, clampedVector.z));
 			}
 		}
 	}

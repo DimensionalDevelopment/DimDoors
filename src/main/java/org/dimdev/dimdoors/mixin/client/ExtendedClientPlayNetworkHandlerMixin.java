@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
 @Mixin(ClientPacketListener.class)
 public class ExtendedClientPlayNetworkHandlerMixin implements ExtendedClientPlayNetworkHandler {
 	@Final @Shadow
-	private Minecraft client;
+	private Minecraft minecraft;
 	private final ClientPacketHandler dimdoors_PacketHandler = new ClientPacketHandler((ClientPacketListener) (Object) this);
 
 	@Unique
@@ -25,6 +25,6 @@ public class ExtendedClientPlayNetworkHandlerMixin implements ExtendedClientPlay
 
 	@Unique
 	public Minecraft dimdoorsGetClient() {
-		return client;
+		return minecraft;
 	}
 }

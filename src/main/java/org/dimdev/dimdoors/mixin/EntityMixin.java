@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.api.entity.LastPositionProvider;
 public abstract class EntityMixin implements LastPositionProvider {
 	private Vec3 lastPos;
 
-	@Inject(method = "checkBlockCollision()V", at = @At("TAIL"))
+	@Inject(method = "checkInsideBlocks()V", at = @At("TAIL"))
 	public void checkBlockCollisionSaveLastPos(CallbackInfo ci) {
 		lastPos = ((Entity) (Object) this).position();
 	}

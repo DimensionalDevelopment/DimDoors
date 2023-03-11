@@ -128,21 +128,21 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 		}
 	}
 
-	@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "die", at = @At("HEAD"), cancellable = true)
 	public void checkDeathServer(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
 		if (ci.isCancelled()) {
 			if (ModDimensions.isPocketDimension(this.level)) {
-				this.incrementStat(ModStats.DEATHS_IN_POCKETS);
+				this.awardStat(ModStats.DEATHS_IN_POCKETS);
 			}
-			this.incrementStat(ModStats.TIMES_SENT_TO_LIMBO);
+			this.awardStat(ModStats.TIMES_SENT_TO_LIMBO);
 			TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 512);
 			//noinspection ConstantConditions
 			LimboEntranceSource.ofDamageSource(source).broadcast((Player) (Object) this, this.getServer());
 		}
 	}
 
-	@Inject(method = "setSpawnPoint", at = @At("TAIL"))
+	@Inject(method = "setRespawnPosition", at = @At("TAIL"))
 	public void onSpawnPointSet(ResourceKey<Level> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean bl, CallbackInfo ci) {
 		if (ModDimensions.isPocketDimension(dimension)) {
 			ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayer) (Object) this);

@@ -72,7 +72,7 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
     }
 
     @Override
-    public void setAngles(MonolithEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(MonolithEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.body.yRot = netHeadYaw * 0.017453292F;
         this.body.xRot = headPitch * 0.017453292F;
     }

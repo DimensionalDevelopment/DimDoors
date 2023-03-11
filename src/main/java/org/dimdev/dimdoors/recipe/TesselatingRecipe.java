@@ -72,7 +72,7 @@ public class TesselatingRecipe extends ShapedRecipe {
 		}
 
 		@Override
-		public void write(FriendlyByteBuf packetByteBuf, TesselatingRecipe shapedRecipe) {
+		public void toNetwork(FriendlyByteBuf packetByteBuf, TesselatingRecipe shapedRecipe) {
 			packetByteBuf.writeVarInt(shapedRecipe.getWidth());
 			packetByteBuf.writeVarInt(shapedRecipe.getHeight());
 			packetByteBuf.writeUtf(shapedRecipe.getGroup());

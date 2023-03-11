@@ -32,20 +32,21 @@ import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 public abstract class WorldRendererMixin {
 
 	@Shadow
-	private ClientLevel world;
+	private ClientLevel level;
 
+	@Final
 	@Shadow
-	private Minecraft client;
+	private Minecraft minecraft;
 
 	@Shadow
 	@Final
-	private RenderBuffers bufferBuilders;
+	private RenderBuffers renderBuffers;
 
 	@Shadow
 	private int ticks;
 
-	@Inject(method = "render",
-	at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/WorldRenderer;blockBreakingProgressions:Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;", ordinal = 1)) // bytecode order is flipped from java code order, notice the ordinal
+	@Inject(method = "renderLevel",
+	at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/LevelRenderer;destructionProgress:Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;", ordinal = 1)) // bytecode order is flipped from java code order, notice the ordinal
 	public void renderCustomBreakBlockAnimation(PoseStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
 		Vec3 vec3d = camera.getPosition();
 		double d = vec3d.x();
@@ -65,8 +66,8 @@ public abstract class WorldRendererMixin {
 				matrices.pushPose();
 				matrices.translate((double) pos.getX() - d, (double) pos.getY() - e, (double) pos.getZ() - f);
 				PoseStack.Pose entry3 = matrices.last();
-				VertexConsumer vertexConsumer2 = new SheetedDecalTextureGenerator(this.bufferBuilders.crumblingBufferSource().getBuffer((RenderType) ModelBakery.DESTROY_TYPES.get(stage)), entry3.pose(), entry3.normal(), 1.0F);
-				this.client.getBlockRenderer().renderBreakingTexture(this.world.getBlockState(pos), pos, this.world, matrices, vertexConsumer2);
+				VertexConsumer vertexConsumer2 = new SheetedDecalTextureGenerator(this.renderBuffers.crumblingBufferSource().getBuffer((RenderType) ModelBakery.DESTROY_TYPES.get(stage)), entry3.pose(), entry3.normal(), 1.0F);
+				this.minecraft.getBlockRenderer().renderBreakingTexture(this.level.getBlockState(pos), pos, this.level, matrices, vertexConsumer2);
 				matrices.popPose();
 			}
 		}

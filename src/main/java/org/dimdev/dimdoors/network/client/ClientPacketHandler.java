@@ -32,7 +32,7 @@ import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 @Environment(EnvType.CLIENT)
-public class ClientPacketHandler implements ClientPacketListener {
+public class ClientPacketHandler implements org.dimdev.dimdoors.network.client.ClientPacketListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final ClientPacketListener networkHandler;

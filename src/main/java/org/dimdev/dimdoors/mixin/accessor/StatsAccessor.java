@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(Stats.class)
 public interface StatsAccessor {
 	@Invoker
-	static ResourceLocation invokeRegister(String string, StatFormatter statFormatter) {
+	static ResourceLocation invokeMakeCustomStat(String string, StatFormatter statFormatter) {
 		throw new UnsupportedOperationException();
 	}
 }

@@ -20,7 +20,7 @@ public abstract class ArgumentTypesMixin {
 		throw new AssertionError("Nope.");
 	}
 
-	@Inject(method = "register(Lnet/minecraft/registry/Registry;)Lnet/minecraft/command/argument/serialize/ArgumentSerializer;", at = @At("RETURN"))
+	@Inject(method = "bootstrap", at = @At("RETURN"))
 	private static void register(Registry<ArgumentTypeInfo<?, ?>> registry, CallbackInfoReturnable<ArgumentTypeInfo<?, ?>> ci) {
 		register(registry, "pocket", PocketTemplateArgumentType.class, SingletonArgumentInfo.contextFree(PocketTemplateArgumentType::new));
 		register(registry, "block_placement_type", BlockPlacementTypeArgumentType.class, SingletonArgumentInfo.contextFree(BlockPlacementTypeArgumentType::blockPlacementType));

@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
@@ -22,7 +23,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 // TODO: Make this placeable on rifts
 public class DimensionalTrapdoorBlock extends TrapDoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
-	public DimensionalTrapdoorBlock(Block.Settings settings, SoundEvent closeSound, SoundEvent openSound) {
+	public DimensionalTrapdoorBlock(BlockBehaviour.Properties settings, SoundEvent closeSound, SoundEvent openSound) {
 		super(settings, closeSound, openSound);
 	}
 

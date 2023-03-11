@@ -21,21 +21,21 @@ import org.dimdev.dimdoors.world.ModDimensions;
 public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Shadow
-	public abstract void incrementStat(ResourceLocation stat);
+	public abstract void awardStat(ResourceLocation stat);
 
 	public PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
 		super(entityType, world);
 	}
 
 
-	@Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "causeFallDamage", at = @At("HEAD"), cancellable = true)
 	public void handleLimboFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
 		if (ModDimensions.isLimboDimension(level)) {
 			cir.setReturnValue(false);
 		}
 	}
 
-	@Inject(method = "onDeath", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "die", at = @At("HEAD"), cancellable = true)
 	public void checkDeath(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
 	}

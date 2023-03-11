@@ -17,10 +17,10 @@ import me.shedaniel.clothconfig2.impl.builders.DoubleFieldBuilder;
 import me.shedaniel.clothconfig2.impl.builders.IntFieldBuilder;
 import me.shedaniel.clothconfig2.impl.builders.IntListBuilder;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -33,7 +33,7 @@ public class ScreenGenerator {
 		Preconditions.checkNotNull(saveAction);
 		ConfigBuilder configBuilder = ConfigBuilder.create();
 		ConfigEntryBuilder entryBuilder = configBuilder.entryBuilder();
-		configBuilder.setTitle(MutableText.of(new TranslatableTextContent(configClass.getAnnotation(Title.class).value())));
+		configBuilder.setTitle(MutableComponent.create(new TranslatableContents(configClass.getAnnotation(Title.class).value())));
 		configBuilder.setSavingRunnable(saveAction);
 		configBuilder.setParentScreen(parent);
 		for (Field field : configClass.getDeclaredFields()) {
@@ -43,7 +43,7 @@ public class ScreenGenerator {
 				continue;
 			}
 
-			ConfigCategory category = configBuilder.getOrCreateCategory(MutableText.of(new TranslatableTextContent(configClass.getName().toLowerCase() + ":" + field.getName())));
+			ConfigCategory category = configBuilder.getOrCreateCategory(MutableComponent.create(new TranslatableContents(configClass.getName().toLowerCase() + ":" + field.getName())));
 			Object value;
 			try {
 				if (field.isAnnotationPresent(Private.class)) {
@@ -62,23 +62,22 @@ public class ScreenGenerator {
 					continue;
 				}
 
-				Optional<Text[]> tooltipSupplier = Optional.of(Optional.of(innerField)
+				Optional<Component[]> tooltipSupplier = Optional.of(Optional.of(innerField)
 						.filter(f -> f.isAnnotationPresent(Tooltips.class))
 						.map(f -> f.getAnnotation(Tooltips.class))
 						.map(Tooltips::value)
 						.map(Arrays::stream)
 						.orElse(Stream.empty())
 						.map(tooltip -> {
-							if (tooltip.absolute()) return Text.of(tooltip.value());
-							else return MutableText.of(new TranslatableTextContent(valueClass.getName().toLowerCase() + "." + innerField.getName() + ":" + tooltip.value()));
+							if (tooltip.absolute()) return Component.nullToEmpty(tooltip.value());
+							else return MutableComponent.create(new TranslatableContents(valueClass.getName().toLowerCase() + "." + innerField.getName() + ":" + tooltip.value()));
 						})
-						.map(text -> (Text) text)
-						.toArray(Text[]::new))
+						.toArray(Component[]::new))
 						.filter(texts -> texts.length > 0);
 
 				try {
 					if (innerField.getType() == boolean.class) {
-						BooleanToggleBuilder builder = entryBuilder.startBooleanToggle(MutableText.of(new TranslatableTextContent(valueClass.getName().toLowerCase() + ":" + innerField.getName())), innerField.getBoolean(value))
+						BooleanToggleBuilder builder = entryBuilder.startBooleanToggle(MutableComponent.create(new TranslatableContents(valueClass.getName().toLowerCase() + ":" + innerField.getName())), innerField.getBoolean(value))
 								.setTooltip(tooltipSupplier)
 								.setSaveConsumer(bool -> {
 									try {
@@ -90,7 +89,7 @@ public class ScreenGenerator {
 						builder.requireRestart(field.isAnnotationPresent(RequiresRestart.class));
 						category.addEntry(builder.build());
 					} else if (innerField.getType() == int.class) {
-						IntFieldBuilder builder = entryBuilder.startIntField(MutableText.of(new TranslatableTextContent(valueClass.getName().toLowerCase() + ":" + innerField.getName())), innerField.getInt(value))
+						IntFieldBuilder builder = entryBuilder.startIntField(MutableComponent.create(new TranslatableContents(valueClass.getName().toLowerCase() + ":" + innerField.getName())), innerField.getInt(value))
 								.setTooltip(tooltipSupplier)
 								.setSaveConsumer(i -> {
 									try {
@@ -102,7 +101,7 @@ public class ScreenGenerator {
 						builder.requireRestart(field.isAnnotationPresent(RequiresRestart.class));
 						category.addEntry(builder.build());
 					} else if (innerField.getType() == double.class) {
-						DoubleFieldBuilder builder = entryBuilder.startDoubleField(MutableText.of(new TranslatableTextContent(valueClass.getName().toLowerCase() + ":" + innerField.getName())), innerField.getDouble(value))
+						DoubleFieldBuilder builder = entryBuilder.startDoubleField(MutableComponent.create(new TranslatableContents(valueClass.getName().toLowerCase() + ":" + innerField.getName())), innerField.getDouble(value))
 								.setTooltip(tooltipSupplier)
 								.setSaveConsumer(d -> {
 									try {
@@ -114,7 +113,7 @@ public class ScreenGenerator {
 						builder.requireRestart(field.isAnnotationPresent(RequiresRestart.class));
 						category.addEntry(builder.build());
 					} else if (innerField.isAnnotationPresent(IntSet.class)) {
-						IntListBuilder builder = entryBuilder.startIntList(MutableText.of(new TranslatableTextContent(valueClass.getName().toLowerCase() + ":" + innerField.getName())), new ArrayList<>(((Set<Integer>) innerField.get(value))))
+						IntListBuilder builder = entryBuilder.startIntList(MutableComponent.create(new TranslatableContents(valueClass.getName().toLowerCase() + ":" + innerField.getName())), new ArrayList<>(((Set<Integer>) innerField.get(value))))
 								.setTooltip(tooltipSupplier)
 								.setSaveConsumer(set -> {
 									try {

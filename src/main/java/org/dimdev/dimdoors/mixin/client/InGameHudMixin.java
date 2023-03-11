@@ -17,9 +17,9 @@ public abstract class InGameHudMixin{
 	private int frame = 0;
 	private static final float OVERLAY_OPACITY_ADJUSTEMENT = 1.5F;
 	@Shadow
-	private int scaledHeight;
+	private int screenHeight;
 	@Shadow
-	private int scaledWidth;
+	private int screenWidth;
 
 	@Shadow
 	protected abstract Player getCameraPlayer();
