@@ -15,14 +15,14 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 public final class PocketGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final ResourceLocation ALL_DUNGEONS = DimensionalDoors.id("dungeon");
-    public static final ResourceLocation NETHER_DUNGEONS = DimensionalDoors.id("nether");
-	public static final ResourceLocation RUINS_DUNGEONS = DimensionalDoors.id("ruins");
-	public static final ResourceLocation ATLANTIS_DUNGEONS = DimensionalDoors.id("atlantis");
-	public static final ResourceLocation JUNGLE_DUNGEONS = DimensionalDoors.id("jungle");
-	public static final ResourceLocation SNOW_DUNGEONS = DimensionalDoors.id("snow");
-	public static final ResourceLocation PYRAMID_DUNGEONS = DimensionalDoors.id("pyramid");
-	public static final ResourceLocation END_DUNGEONS = DimensionalDoors.id("end");
+    public static final ResourceLocation ALL_DUNGEONS = DimensionalDoors.resource("dungeon");
+    public static final ResourceLocation NETHER_DUNGEONS = DimensionalDoors.resource("nether");
+	public static final ResourceLocation RUINS_DUNGEONS = DimensionalDoors.resource("ruins");
+	public static final ResourceLocation ATLANTIS_DUNGEONS = DimensionalDoors.resource("atlantis");
+	public static final ResourceLocation JUNGLE_DUNGEONS = DimensionalDoors.resource("jungle");
+	public static final ResourceLocation SNOW_DUNGEONS = DimensionalDoors.resource("snow");
+	public static final ResourceLocation PYRAMID_DUNGEONS = DimensionalDoors.resource("pyramid");
+	public static final ResourceLocation END_DUNGEONS = DimensionalDoors.resource("end");
 
     /*
     private static Pocket prepareAndPlacePocket(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
@@ -37,11 +37,11 @@ public final class PocketGenerator {
 
 
     public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PERSONAL), DimensionalDoors.id("private"), virtualLocation, null, null);
+		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PERSONAL), DimensionalDoors.resource("private"), virtualLocation, null, null);
     }
 
     public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-        return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DimensionalDoors.id("public"), virtualLocation, linkTo, linkProperties);
+        return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DimensionalDoors.resource("public"), virtualLocation, linkTo, linkProperties);
     }
 
     public static Pocket generateFromPocketGroupV2(ServerLevel world, ResourceLocation group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
@@ -54,7 +54,7 @@ public final class PocketGenerator {
 	}
 
 	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), DimensionalDoors.id("dungeon"), virtualLocation, linkTo, linkProperties);
+		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), DimensionalDoors.resource("dungeon"), virtualLocation, linkTo, linkProperties);
 	}
 
 	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, ResourceLocation group) {

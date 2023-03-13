@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.function.Consumer;
 
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
@@ -30,7 +30,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
 	private boolean unregisterDisabled = false;
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public double renderAngle;
 
 	public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
@@ -47,7 +47,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 			return;
 		}
 
-		if (!world.isClientSide() && random.nextFloat() < DimensionalDoors.getConfig().getGeneralConfig().endermanSpawnChance) {
+		if (!world.isClientSide() && random.nextFloat() < Constants.CONFIG_MANAGER.get().getGeneralConfig().endermanSpawnChance) {
 			EnderMan enderman = EntityType.ENDERMAN.spawn(
 					(ServerLevel) world,
 					(CompoundTag) null,
@@ -58,7 +58,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 					false
 			);
 
-			if (random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {
+			if (random.nextDouble() < Constants.CONFIG_MANAGER.get().getGeneralConfig().endermanAggressiveChance) {
 				if (enderman != null) {
 					enderman.setTarget(world.getNearestPlayer(enderman, 50));
 				}
@@ -67,12 +67,12 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
 		if (blockEntity.closing) {
 			if (blockEntity.size > 0) {
-				blockEntity.size -= DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
+				blockEntity.size -= Constants.CONFIG_MANAGER.get().getGeneralConfig().riftCloseSpeed;
 			} else {
 				world.removeBlock(pos, false);
 			}
 		} else if (!blockEntity.stabilized) {
-			blockEntity.size += DimensionalDoors.getConfig().getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
+			blockEntity.size += Constants.CONFIG_MANAGER.get().getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
 		}
 	}
 

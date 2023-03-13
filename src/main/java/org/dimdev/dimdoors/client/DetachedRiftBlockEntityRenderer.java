@@ -5,7 +5,7 @@ import java.util.Objects;
 import com.flowpowered.math.TrigMath;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -22,9 +22,9 @@ import org.dimdev.dimdoors.client.tesseract.Tesseract;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<DetachedRiftBlockEntity> {
-    public static final ResourceLocation TESSERACT_PATH = DimensionalDoors.id("textures/other/tesseract.png");
+    public static final ResourceLocation TESSERACT_PATH = DimensionalDoors.resource("textures/other/tesseract.png");
     private static final RGBA DEFAULT_COLOR = new RGBA(1, 0.5f, 1, 1);
 
     private static final Tesseract TESSERACT = new Tesseract();
@@ -41,7 +41,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 			matrices.popPose();
 		}
 
-    	if (DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore) {
+    	if (Constants.CONFIG_MANAGER.get().getGraphicsConfig().showRiftCore) {
             this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
         } else {
             long timeLeft = RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis();
@@ -56,7 +56,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
     private void renderCrack(VertexConsumer vc, PoseStack matrices, DetachedRiftBlockEntity rift) {
         matrices.pushPose();
         matrices.translate(0.5, 0.5, 0.5);
-        RiftCrackRenderer.drawCrack(matrices.last().pose(), vc, 0, CURVE, DimensionalDoors.getConfig().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
+        RiftCrackRenderer.drawCrack(matrices.last().pose(), vc, 0, CURVE, Constants.CONFIG_MANAGER.get().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
         matrices.popPose();
     }
 

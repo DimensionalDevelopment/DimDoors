@@ -16,7 +16,7 @@ import com.google.gson.JsonObject;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakCriteria.Conditions> {
-	public static final ResourceLocation ID = DimensionalDoors.id("tag_block_break");
+	public static final ResourceLocation ID = DimensionalDoors.resource("tag_block_break");
 
 	@Override
 	protected Conditions createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer) {

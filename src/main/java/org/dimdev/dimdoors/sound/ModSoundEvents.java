@@ -25,7 +25,7 @@ public final class ModSoundEvents {
 	public static final SoundEvent TESSELATING_WEAVE = register("tesselating_weave");
 
 	private static SoundEvent register(String id) {
-		ResourceLocation identifier = DimensionalDoors.id(id);
+		ResourceLocation identifier = DimensionalDoors.resource(id);
 		return Registry.register(BuiltInRegistries.SOUND_EVENT, identifier, SoundEvent.createVariableRangeEvent(identifier));
 	}
 

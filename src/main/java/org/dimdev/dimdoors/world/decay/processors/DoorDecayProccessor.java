@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
+import net.minecraftforge.registries.ForgeRegistries;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
 public class DoorDecayProccessor implements DecayProcessor {
@@ -31,7 +33,7 @@ public class DoorDecayProccessor implements DecayProcessor {
 
 	@Override
 	public DecayProcessor fromNbt(CompoundTag json) {
-		block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
+		block = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryParse(json.getString("block")));
 		entropy = json.getInt("entropy");
 		return this;
 	}
@@ -39,7 +41,7 @@ public class DoorDecayProccessor implements DecayProcessor {
 	@Override
 	public CompoundTag toNbt(CompoundTag nbt) {
 		DecayProcessor.super.toNbt(nbt);
-		nbt.putString("block", BuiltInRegistries.BLOCK.getKey(block).toString());
+		nbt.putString("block", ForgeRegistries.BLOCKS.getKey(block).toString());
 		nbt.putInt("entropy", entropy);
 		return nbt;
 	}

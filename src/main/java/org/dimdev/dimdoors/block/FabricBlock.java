@@ -12,7 +12,7 @@ import net.minecraft.world.level.material.Material;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class FabricBlock extends Block {
-	public static final TagKey<Block> BLOCK_TAG = TagKey.create(Registries.BLOCK, DimensionalDoors.id("fabric"));
+	public static final TagKey<Block> BLOCK_TAG = TagKey.create(Registries.BLOCK, DimensionalDoors.resource("fabric"));
 
 	FabricBlock(DyeColor color) {
 		super(FabricBlockSettings.of(Material.STONE, color).strength(1.2F).luminance(15));

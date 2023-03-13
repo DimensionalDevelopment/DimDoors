@@ -12,14 +12,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import org.dimdev.dimdoors.client.ModShaders;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
 	@Shadow

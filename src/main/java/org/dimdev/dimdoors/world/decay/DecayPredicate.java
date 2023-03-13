@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.world.decay;
 
 import com.mojang.serialization.Lifecycle;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
@@ -18,7 +17,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public interface DecayPredicate {
-    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<DecayPredicateType<? extends DecayPredicate>>(ResourceKey.createRegistryKey(DimensionalDoors.id("decay_predicate_type")), Lifecycle.stable(), false)).buildAndRegister();
+    Registry<DecayPredicateType<? extends DecayPredicate>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<DecayPredicateType<? extends DecayPredicate>>(ResourceKey.createRegistryKey(DimensionalDoors.resource("decay_predicate_type")), Lifecycle.stable(), false)).buildAndRegister();
 
     DecayPredicate NONE = new DecayPredicate() {
         private static final String ID = "none";
@@ -74,8 +73,8 @@ public interface DecayPredicate {
     Set<Block> constructApplicableBlocks();
 
     interface DecayPredicateType<T extends DecayPredicate> {
-        DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
-        DecayPredicateType<SimpleDecayPredicate> SIMPLE_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleDecayPredicate.KEY), SimpleDecayPredicate::new);
+        DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(DimensionalDoors.resource("none"), () -> NONE);
+        DecayPredicateType<SimpleDecayPredicate> SIMPLE_PREDICATE_TYPE = register(DimensionalDoors.resource(SimpleDecayPredicate.KEY), SimpleDecayPredicate::new);
 
         DecayPredicate fromNbt(CompoundTag nbt);
 

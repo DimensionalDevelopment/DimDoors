@@ -54,12 +54,12 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 			LOGGER.debug("Exception Stacktrace", e);
 			try {
 				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.weightEquation = Equation.newEquation(Equation.parse(DimensionalDoors.getConfig().getPocketsConfig().defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
+				this.weightEquation = Equation.newEquation(Equation.parse(Constants.CONFIG_MANAGER.get().getPocketsConfig().defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
 			} catch (EquationParseException equationParseException) {
 				LOGGER.debug("Defaulting to default weight equation for {}", this);
 				LOGGER.debug("Exception Stacktrace", e);
 				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) DimensionalDoors.getConfig().getPocketsConfig().fallbackWeight, stringBuilder -> stringBuilder.append(weight));
+				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) Constants.CONFIG_MANAGER.get().getPocketsConfig().fallbackWeight, stringBuilder -> stringBuilder.append(weight));
 			}
 		}
 	}

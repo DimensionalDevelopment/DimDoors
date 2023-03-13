@@ -52,6 +52,6 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_TO_COBBLESTONE = of("decay_to_cobblestone");
 
 	private static TagKey<Block> of(String id) {
-		return TagKey.create(Registries.BLOCK, DimensionalDoors.id(id));
+		return TagKey.create(Registries.BLOCK, DimensionalDoors.resource(id));
 	}
 }

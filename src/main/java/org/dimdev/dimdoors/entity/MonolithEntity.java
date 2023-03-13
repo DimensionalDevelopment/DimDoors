@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.entity;
 
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.client.Minecraft;
@@ -43,7 +43,7 @@ public class MonolithEntity extends Mob {
     private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
     private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
-    @Environment(EnvType.CLIENT)
+    @Environment(Dist.CLIENT)
     private static final RandomSource clientRandom = RandomSource.create();
 
     private int soundTime = 0;
@@ -69,7 +69,7 @@ public class MonolithEntity extends Mob {
     }
 
     public boolean isDangerous() {
-        return DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.level) || DimensionalDoors.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
+        return Constants.CONFIG_MANAGER.get().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.level) || Constants.CONFIG_MANAGER.get().getMonolithsConfig().dangerousLimboMonoliths);
     }
 
     @Override
@@ -193,7 +193,7 @@ public class MonolithEntity extends Mob {
         }
     }
 
-    @Environment(EnvType.CLIENT)
+    @Environment(Dist.CLIENT)
     public int getTextureState() {
         // Determine texture state from aggro progress
         return Mth.clamp(MAX_TEXTURE_STATE * this.entityData.get(AGGRO) / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
@@ -232,7 +232,7 @@ public class MonolithEntity extends Mob {
 		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
     public static void spawnParticles(int aggro) {
 		Player player = Minecraft.getInstance().player;
 		if (aggro < 120) {

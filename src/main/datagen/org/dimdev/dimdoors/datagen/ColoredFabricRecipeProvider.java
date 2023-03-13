@@ -26,7 +26,7 @@ public class ColoredFabricRecipeProvider {
 					.pattern(" X ")
 					.define('X', ModItems.WORLD_THREAD)
 					.define('D', DyeItem.byColor(dyeColor))
-					.save(exporter, DimensionalDoors.id(dyeColor.getName() + "_fabric"));
+					.save(exporter, DimensionalDoors.resource(dyeColor.getName() + "_fabric"));
 		}
 	}
 }

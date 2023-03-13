@@ -18,7 +18,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 
-import static net.fabricmc.api.EnvType.CLIENT;
+import static net.fabricmc.api.Dist.CLIENT;
 
 	public class MaskWandItem extends Item {
 	private static final Logger LOGGER = LogManager.getLogger();

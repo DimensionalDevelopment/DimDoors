@@ -34,7 +34,7 @@ public class RiftDataModifier extends AbstractModifier {
 			doorDataReference = nbt.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
-		else if (nbt.getTagType("rift_data") == NbtType.COMPOUND) doorData = nbt.getCompound("rift_data");
+		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
 
 		ids = stream(nbt.getByteArray("ids")).boxed().collect(Collectors.toList());
 		return this;

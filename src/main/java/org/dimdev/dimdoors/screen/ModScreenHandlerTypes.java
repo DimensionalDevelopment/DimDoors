@@ -6,7 +6,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModScreenHandlerTypes {
 
-	public static final MenuType<TesselatingScreenHandler> TESSELATING_LOOM = ScreenHandlerRegistry.registerSimple(DimensionalDoors.id("tesselating_loom"), TesselatingScreenHandler::new);
+	public static final MenuType<TesselatingScreenHandler> TESSELATING_LOOM = ScreenHandlerRegistry.registerSimple(DimensionalDoors.resource("tesselating_loom"), TesselatingScreenHandler::new);
 
 	public static void init() {
 	}

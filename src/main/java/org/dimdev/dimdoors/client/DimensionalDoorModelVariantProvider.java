@@ -19,7 +19,7 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 
 public class DimensionalDoorModelVariantProvider implements ModelVariantProvider {
-	private static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
+	private static final ResourceLocation childItem = DimensionalDoors.resource("item/child_item");
 
 	@Override
 	public @Nullable UnbakedModel loadModelVariant(ModelResourceLocation modelId, ModelProviderContext context) throws ModelProviderException {

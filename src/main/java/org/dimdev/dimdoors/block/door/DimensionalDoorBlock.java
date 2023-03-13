@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
@@ -129,7 +129,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		BlockPos newPos = entity.blockPosition();
 		entity.setPos(newPos.getX()+xOffset,newPos.getY(),newPos.getZ()+zOffset);
 		this.getRift(world, pos, state).teleport(entity);
-		if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
+		if (Constants.CONFIG_MANAGER.get().getDoorsConfig().closeDoorBehind) {
 			world.setBlockAndUpdate(top, world.getBlockState(top).setValue(DoorBlock.OPEN, false));
 			world.setBlockAndUpdate(bottom, world.getBlockState(bottom).setValue(DoorBlock.OPEN, false));
 		}
@@ -245,7 +245,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			if (blockEntity instanceof EntranceRiftBlockEntity
 					&& blockState.getValue(HALF) == DoubleBlockHalf.LOWER
 					&& !(player.isCreative()
-						&& !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode
+						&& !Constants.CONFIG_MANAGER.get().getDoorsConfig().placeRiftsInCreativeMode
 						)
 			) {
 				world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
@@ -280,7 +280,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return true;
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	@Override
 	public boolean isTall(BlockState cachedState) {
 		return true;
@@ -288,7 +288,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	static {
 		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-			if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
+			if (player.isCreative() && !Constants.CONFIG_MANAGER.get().getDoorsConfig().placeRiftsInCreativeMode) {
 				return;
 			}
 			if (blockEntity instanceof EntranceRiftBlockEntity && state.getValue(HALF) == DoubleBlockHalf.LOWER) {

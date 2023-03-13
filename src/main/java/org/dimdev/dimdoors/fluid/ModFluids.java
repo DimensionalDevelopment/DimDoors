@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.fluid;
 
 import java.util.function.Function;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -34,10 +34,10 @@ public class ModFluids {
 	}
 
 	public static void initClient() {
-		setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, DimensionalDoors.id("eternal_fluid"));
+		setupFluidRendering(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, DimensionalDoors.resource("eternal_fluid"));
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	private static void setupFluidRendering(Fluid still, Fluid flowing, final ResourceLocation textureFluidId) {
 		final ResourceLocation stillSpriteId = new ResourceLocation(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_still");
 		final ResourceLocation flowingSpriteId = new ResourceLocation(textureFluidId.getNamespace(), "block/" + textureFluidId.getPath() + "_flow");

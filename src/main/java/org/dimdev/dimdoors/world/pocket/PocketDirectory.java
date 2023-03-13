@@ -6,6 +6,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import org.jetbrains.annotations.TestOnly;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
@@ -14,8 +17,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.TestOnly;
-import org.dimdev.dimdoors.DimensionalDoors;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
@@ -26,11 +29,11 @@ public class PocketDirectory {
 	int privatePocketSize;
 	int publicPocketSize;
 	Map<Integer, AbstractPocket<?>> pockets;
-	private SortedMap<Integer, Integer> nextIDMap;
+	private final SortedMap<Integer, Integer> nextIDMap;
 	ResourceKey<Level> worldKey;
 
 	public PocketDirectory(ResourceKey<Level> worldKey) {
-		this.gridSize = DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize;
+		this.gridSize = Constants.CONFIG_MANAGER.get().getPocketsConfig().pocketGridSize;
 		this.worldKey = worldKey;
 		this.nextIDMap = new TreeMap<>();
 		this.pockets = new HashMap<>();

@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.particle;
 
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
@@ -20,12 +20,12 @@ public class ModParticleTypes {
 	public static final SimpleParticleType LIMBO_ASH = FabricParticleTypes.simple(false);
 
 	public static void init() {
-		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.id("monolith"), MONOLITH);
-		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.id("rift"), RIFT);
-		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.id("limbo_ash"), LIMBO_ASH);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.resource("monolith"), MONOLITH);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.resource("rift"), RIFT);
+		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.resource("limbo_ash"), LIMBO_ASH);
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public static void initClient() {
 		ParticleFactoryRegistry.getInstance().register(MONOLITH, new MonolithParticle.Factory());
 		ParticleFactoryRegistry.getInstance().register(RIFT, RiftParticle.Factory::new);

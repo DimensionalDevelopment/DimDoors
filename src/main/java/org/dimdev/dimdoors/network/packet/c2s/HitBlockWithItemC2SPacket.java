@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.network.packet.c2s;
 
 import java.io.IOException;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.network.ServerPacketListener;
 import org.dimdev.dimdoors.network.SimplePacket;
 
 public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListener> {
-	public static final ResourceLocation ID = DimensionalDoors.id("hit_block_with_item");
+	public static final ResourceLocation ID = DimensionalDoors.resource("hit_block_with_item");
 
 	private InteractionHand hand;
 	private BlockPos pos;
@@ -22,7 +22,7 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListe
 	public HitBlockWithItemC2SPacket() {
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public HitBlockWithItemC2SPacket(InteractionHand hand, BlockPos pos, Direction direction) {
 		this.hand = hand;
 		this.pos = pos;

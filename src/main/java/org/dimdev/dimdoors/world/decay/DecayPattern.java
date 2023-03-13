@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.world.decay;
 
 import java.util.Set;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;

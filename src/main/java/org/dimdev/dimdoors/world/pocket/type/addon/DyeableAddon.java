@@ -19,7 +19,7 @@ import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class DyeableAddon implements PocketAddon {
-	public static ResourceLocation ID = DimensionalDoors.id("dyeable");
+	public static ResourceLocation ID = DimensionalDoors.resource("dyeable");
 
 	private static final int BLOCKS_PAINTED_PER_DYE = 1000000;
 

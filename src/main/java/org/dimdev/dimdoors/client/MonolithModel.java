@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -14,7 +14,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class MonolithModel extends EntityModel<MonolithEntity> {
     private final ModelPart body;
 

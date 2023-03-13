@@ -43,7 +43,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable {
 	private static final Logger LOGGER = LogManager.getLogger();
-	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<PocketGeneratorType<? extends PocketGenerator>>(ResourceKey.createRegistryKey(DimensionalDoors.id("pocket_generator_type")), Lifecycle.stable(), false)).buildAndRegister();
+	public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<PocketGeneratorType<? extends PocketGenerator>>(ResourceKey.createRegistryKey(DimensionalDoors.resource("pocket_generator_type")), Lifecycle.stable(), false)).buildAndRegister();
 	public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
@@ -68,7 +68,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
 	public static PocketGenerator deserialize(Tag nbt, ResourceManager manager) {
 		switch (nbt.getId()) {
-			case NbtType.COMPOUND: // It's a serialized Modifier
+			case Tag.TAG_COMPOUND: // It's a serialized Modifier
 				return PocketGenerator.deserialize((CompoundTag) nbt, manager);
 			case NbtType.STRING: // It's a reference to a resource location
 				// TODO: throw if manager is null
@@ -121,7 +121,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	}
 
 	public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
-		if (nbt.contains("builder", NbtType.COMPOUND)) builderNbt = nbt.getCompound("builder");
+		if (nbt.contains("builder", Tag.TAG_COMPOUND)) builderNbt = nbt.getCompound("builder");
 
 		this.weight = nbt.contains("weight") ? nbt.getString("weight") : defaultWeightEquation;
 		parseWeight();
@@ -176,7 +176,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		for (Modifier modifier : modifierList) {
 			Tag modNbt = modifier.toNbt(new CompoundTag(), allowReference);
 			switch (modNbt.getId()) {
-				case NbtType.COMPOUND:
+				case Tag.TAG_COMPOUND:
 					modifiersNbt.add(modNbt);
 					break;
 				case NbtType.STRING:
@@ -299,9 +299,9 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	public abstract Vec3i getSize(PocketGenerationContext parameters);
 
 	public interface PocketGeneratorType<T extends PocketGenerator> {
-		PocketGeneratorType<SchematicGenerator> SCHEMATIC = register(DimensionalDoors.id(SchematicGenerator.KEY), SchematicGenerator::new);
-		PocketGeneratorType<ChunkGenerator> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
-		PocketGeneratorType<VoidGenerator> VOID = register(DimensionalDoors.id(VoidGenerator.KEY), VoidGenerator::new);
+		PocketGeneratorType<SchematicGenerator> SCHEMATIC = register(DimensionalDoors.resource(SchematicGenerator.KEY), SchematicGenerator::new);
+		PocketGeneratorType<ChunkGenerator> CHUNK = register(DimensionalDoors.resource(ChunkGenerator.KEY), ChunkGenerator::new);
+		PocketGeneratorType<VoidGenerator> VOID = register(DimensionalDoors.resource(VoidGenerator.KEY), VoidGenerator::new);
 
 		PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager);
 

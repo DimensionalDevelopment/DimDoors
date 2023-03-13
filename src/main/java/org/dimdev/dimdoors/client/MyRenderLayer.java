@@ -4,7 +4,7 @@ import com.flowpowered.math.vector.VectorNi;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -17,12 +17,12 @@ import org.dimdev.dimdoors.api.client.RenderLayerFactory;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ZERO;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class MyRenderLayer extends RenderType {
-    public static final ResourceLocation WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
+    public static final ResourceLocation WARP_PATH = DimensionalDoors.resource("textures/other/warp.png");
     public static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
-    private static final ResourceLocation KEY_PATH = DimensionalDoors.id("textures/other/keyhole.png");
-    private static final ResourceLocation KEYHOLE_LIGHT = DimensionalDoors.id("textures/other/keyhole_light.png");
+    private static final ResourceLocation KEY_PATH = DimensionalDoors.resource("textures/other/keyhole.png");
+    private static final ResourceLocation KEYHOLE_LIGHT = DimensionalDoors.resource("textures/other/keyhole_light.png");
     private static final RandomSource RANDOM = RandomSource.create(31100L);
 
     public MyRenderLayer(String string, VertexFormat vertexFormat, VertexFormat.Mode drawMode, int j, boolean bl, boolean bl2, Runnable runnable, Runnable runnable2) {

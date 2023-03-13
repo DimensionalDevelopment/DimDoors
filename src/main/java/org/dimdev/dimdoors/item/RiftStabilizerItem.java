@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.item;
 
 import java.util.List;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,7 @@ public class RiftStabilizerItem extends Item {
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 			} else {
 				player.displayClientMessage(MutableComponent.create(new TranslatableContents("tools.rift_miss")), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + Constants.CONFIG_MANAGER.get().getGraphicsConfig().highlightRiftCoreFor;
 				return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 			}
 		}
@@ -59,7 +59,7 @@ public class RiftStabilizerItem extends Item {
 		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		list.add(MutableComponent.create(new TranslatableContents(this.getDescriptionId() + ".info")));

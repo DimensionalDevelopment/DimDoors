@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world;
 
-import static org.dimdev.dimdoors.DimensionalDoors.id;
+import static org.dimdev.dimdoors.DimensionalDoors.resource;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -16,6 +16,6 @@ public final class ModBiomes {
     }
 
 	private static ResourceKey<Biome> register(String name) {
-		return ResourceKey.create(Registries.BIOME, id(name));
+		return ResourceKey.create(Registries.BIOME, resource(name));
 	}
 }

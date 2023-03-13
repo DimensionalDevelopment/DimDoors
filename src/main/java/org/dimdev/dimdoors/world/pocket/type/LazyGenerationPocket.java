@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import java.util.Map;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -73,8 +73,8 @@ public class LazyGenerationPocket extends Pocket {
 	public Pocket fromNbt(CompoundTag nbt) {
 		super.fromNbt(nbt);
 
-		if (nbt.contains("generator", NbtType.COMPOUND)) generator = (LazyPocketGenerator) PocketGenerator.deserialize(nbt.getCompound("generator"));
-		if (nbt.contains("to_be_genned_chunks", NbtType.INT)) toBeGennedChunkCount = nbt.getInt("to_be_genned_chunks");
+		if (nbt.contains("generator", Tag.TAG_COMPOUND)) generator = (LazyPocketGenerator) PocketGenerator.deserialize(nbt.getCompound("generator"));
+		if (nbt.contains("to_be_genned_chunks", Tag.TAG_INT)) toBeGennedChunkCount = nbt.getInt("to_be_genned_chunks");
 
 		return this;
 	}

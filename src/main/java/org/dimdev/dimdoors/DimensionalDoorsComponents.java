@@ -16,9 +16,9 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DimensionalDoorsComponents implements LevelComponentInitializer, ItemComponentInitializer, ChunkComponentInitializer {
-	public static final ComponentKey<DimensionalRegistry> DIMENSIONAL_REGISTRY_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("dimensional_registry"), DimensionalRegistry.class);
-	public static final ComponentKey<CounterComponent> COUNTER_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("counter"), CounterComponent.class);
-	public static final ComponentKey<ChunkLazilyGeneratedComponent> CHUNK_LAZILY_GENERATED_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("chunk_lazily_generated"), ChunkLazilyGeneratedComponent.class);
+	public static final ComponentKey<DimensionalRegistry> DIMENSIONAL_REGISTRY_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.resource("dimensional_registry"), DimensionalRegistry.class);
+	public static final ComponentKey<CounterComponent> COUNTER_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.resource("counter"), CounterComponent.class);
+	public static final ComponentKey<ChunkLazilyGeneratedComponent> CHUNK_LAZILY_GENERATED_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.resource("chunk_lazily_generated"), ChunkLazilyGeneratedComponent.class);
 
 	@Override
 	public void registerLevelComponentFactories(LevelComponentFactoryRegistry registry) {

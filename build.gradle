@@ -1,96 +1,69 @@
 plugins {
-	id "java"
-	id "fabric-loom" version "1.0-SNAPSHOT"
-	id "maven-publish"
-	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id 'net.minecraftforge.gradle' version '5.1+'
+	id 'com.github.johnrengelman.shadow' version '7.1.+'
+	id 'org.spongepowered.mixin' version '0.7.+'
+	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+version = '5.1.1-1.19.3'
+group = 'org.dimdev.dimdoors'
+archivesBaseName = 'DimensionalDoors'
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+minecraft {
+	mappings channel: 'parchment', version: '2023.02.26-1.19.3'
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+	runs {
+		def mixinStuff = [
+				'-Dmixin.debug.export=true',
+				'-Dmixin.hotSwap=true',
+				'-Dmixin.checks.interfaces=true',
+				'-mixin.config="dimdoors.mixin.json"'
+		]
+		client {
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+			args mixinStuff
+			mods {
+				dimdoors {
+					source sourceSets.main
+				}
+			}
+		}
+		server {
+			workingDirectory project.file('run')
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+			args mixinStuff
+			mods {
+				musictriggers {
+					source sourceSets.main
+				}
+			}
+		}
+		data {
+			workingDirectory project.file('build/datagen')
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+			args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+			mods {
+				dimdoors {
+					source sourceSets.main
+				}
+			}
+		}
+	}
+}
 
 repositories {
 	mavenCentral()
 	maven {
-		name 'ParchmentMC'
-		url = uri('https://maven.parchmentmc.org')
-	}
-	maven {
-		url "https://maven.legacyfabric.net/"
-	}
-
-	maven {
-		name = "Fabric maven"
-		url = "https://maven.fabricmc.net/"
-	}
-
-	maven {
-		url = "https://www.cursemaven.com"
+		name = 'Modrinth'
+		url = 'https://api.modrinth.com/maven'
 		content {
-			includeGroup "curse.maven"
-		}
-	}
-
-	maven {
-		url = "https://server.bbkr.space/artifactory/libs-release"
-		content {
-			includeGroup "io.github.cottonmc"
-		}
-	}
-
-	maven {
-		name = "Ladysnake Mods"
-		url = "https://ladysnake.jfrog.io/artifactory/mods"
-	}
-
-	maven {
-		url = "https://ladysnake.jfrog.io/ui/native/mods"
-	}
-
-	maven {
-		url = "https://maven.shedaniel.me/"
-	}
-
-	maven {
-		url = "https://maven.bai.lol"
-		content {
-			includeGroup "mcp.mobius.waila"
-		}
-	}
-
-	maven {
-		url = "https://jitpack.io"
-	}
-
-	maven {
-		name = "TerraformersMC"
-		url = "https://maven.terraformersmc.com/"
-	}
-
-	maven { url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
-}
-
-def includeCompile(group, artifact, version) {
-	project.dependencies {
-		modCompileOnly("$group:$artifact:$version") {
-			exclude module: "fabric-api"
-		}
-		modRuntimeOnly("$group:$artifact:$version") {
-			exclude module: "fabric-api"
-		}
-		include("$group:$artifact:$version")
-	}
-	project.publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				pom.withXml {
-					def depsNode = asNode().appendNode("dependencies")
-					def depNode = depsNode.appendNode("dependency")
-					depNode.appendNode("groupId", group)
-					depNode.appendNode("artifactId", artifact)
-					depNode.appendNode("version", version)
-					depNode.appendNode("scope", "compile")
-				}
-			}
+			includeGroup 'maven.modrinth'
 		}
 	}
 }
@@ -100,115 +73,68 @@ sourceSets {
 		java {
 			srcDir "src/main/schematics"
 			srcDir "src/main/config"
-			srcDirs "src/main/datagen"		}
+			srcDirs "src/main/datagen"
+		}
 		resources {
 			srcDirs "src/main/generated"
 		}
 	}
 }
 
-loom {
-	accessWidenerPath = file("src/main/resources/dimdoors.accesswidener")
-
-	runs {
-		datagen {
-			server()
-
-			name "Minecraft Data"
-			vmArg "-Dfabric-api.datagen"
-			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-
-			runDir "build/datagen"
-		}
-	}
+configurations {
+	shade
+	implementation.extendsFrom(shade)
+	shadow.extendsFrom shade
 }
-
-assemble.dependsOn runDatagen
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.layered() {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-1.19.3:2023.02.26@zip")
-	}
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	minecraft 'net.minecraftforge:forge:1.19.3-44.1.23'
 
-	includeCompile("com.flowpowered", "flow-math", "1.0.3")
-	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
-	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
-	includeCompile("com.github.DimensionalDevelopment", "Matrix", "1.1.2")
-	includeCompile("me.shedaniel.cloth", "cloth-config-fabric", "${project.cloth_config_version}")
-	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-base", "${project.cardinal_components_version}")
-	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-item", "${project.cardinal_components_version}")
-	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-entity", "${project.cardinal_components_version}")
-	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-level", "${project.cardinal_components_version}")
-	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-world", "${project.cardinal_components_version}")
-	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-chunk", "${project.cardinal_components_version}")
+	//mixin
+	annotationProcessor('org.spongepowered:mixin:0.8.5:processor')
 
-	modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}") {
-		exclude module: "fabric-api"
-	}
-	modCompileOnly "curse.maven:worldedit-225608:${project.worldedit_version}"
-	modCompileOnly "curse.maven:wthit-440979:${project.wthit_version}"
+	//mods
+	implementation fg.deobf('maven.modrinth:cloth-config:9.0.94+forge')
 }
 
-version = computeVersion(project.mod_version) + "-" + project.minecraft_version
-archivesBaseName = "DimensionalDoors"
+shadowJar {
+	configurations = [project.configurations.shadow]
+	classifier ''
+	mergeServiceFiles()
+}
 
-static def computeVersion(String version) {
-	if (version.contains("alpha") || version.contains("beta")) {
-		return version + "-" + Calendar.getInstance().getTime().format("dd.MM.yyyy")
+
+reobf {
+	shadowJar {
+		dependsOn createMcpToSrg
+		mappings = createMcpToSrg.output
 	}
-	return version
+}
+
+mixin {
+	add sourceSets.main, "dimdoors.refmap.json"
 }
 
 processResources {
-	inputs.property "version", project.mod_version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.mod_version
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+	from (sourceSets.main.resources.srcDirs) {
+		include 'META-INF/mods.toml'
+		expand 'version': project.version
 	}
-
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
-}
-
-java {
-	withSourcesJar()
 }
 
 jar {
-	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+	manifest {
+		attributes([
+				"Specification-Version"   : project.version,
+				"Implementation-Title"    : project.name,
+				"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+				"TweakOrder": 0,
+				"MixinConfigs": "dimdoors.mixins.json"
+		])
 	}
 }
 
-artifacts {
-	archives jar
-}
+jar.finalizedBy('reobfJar')
 
-curseforge {
-	if (project.hasProperty("curse_api_key")) {
-		apiKey = project.getProperty("curse_api_key")
-	}
-	project {
-		id = "284876"
-		changelog = file("changelog.txt").text
-		releaseType = "beta"
-		addGameVersion "${project.minecraft_version}"
-		addGameVersion "Fabric"
-		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[${project.minecraft_version}] Dimensional Doors ${version}"
-		}
-		afterEvaluate {
-			uploadTask.dependsOn("remapJar")
-		}
-	}
-	options {
-		forgeGradleIntegration = false
-	}
-}
+tasks.assemble.dependsOn shadowJar

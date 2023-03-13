@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 @Mixin(ClientPacketListener.class)
 public class ClientPlayNetworkHandlerMixin {
 //	@Shadow

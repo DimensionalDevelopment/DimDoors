@@ -5,14 +5,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.DimensionalDoors;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+
 import org.dimdev.dimdoors.api.util.NbtUtil;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
@@ -22,8 +21,7 @@ import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
-public class PocketLoader implements SimpleSynchronousResourceReloadListener {
-	private static final Logger LOGGER = LogManager.getLogger();
+public class PocketLoader extends SimplePreparableReloadListener<Void> {
 	private static final PocketLoader INSTANCE = new PocketLoader();
 	private SimpleTree<String, PocketGenerator> pocketGenerators = new SimpleTree<>(String.class);
 	private SimpleTree<String, VirtualPocket> pocketGroups = new SimpleTree<>(String.class);
@@ -35,7 +33,12 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	}
 
 	@Override
-	public void onResourceManagerReload(ResourceManager manager) {
+	protected Void prepare(ResourceManager pResourceManager, ProfilerFiller pProfiler) {
+		return null;
+	}
+
+	@Override
+	protected void apply(Void s, ResourceManager manager, ProfilerFiller filler) {
 		pocketGenerators.clear();
 		pocketGroups.clear();
 		virtualPockets.clear();
@@ -130,10 +133,5 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 
 	public PocketGenerator getGenerator(ResourceLocation id) {
 		return pocketGenerators.get(Path.stringPath(id));
-	}
-
-	@Override
-	public ResourceLocation getFabricId() {
-		return DimensionalDoors.id("schematics_v2");
 	}
 }

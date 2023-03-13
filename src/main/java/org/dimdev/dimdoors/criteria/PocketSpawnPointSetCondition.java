@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class PocketSpawnPointSetCondition extends SimpleCriterionTrigger<PocketSpawnPointSetCondition.Conditions> {
-	public static final ResourceLocation ID = DimensionalDoors.id("pocket_spawn_point_set");
+	public static final ResourceLocation ID = DimensionalDoors.resource("pocket_spawn_point_set");
 
 	@Override
 	protected Conditions createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer) {

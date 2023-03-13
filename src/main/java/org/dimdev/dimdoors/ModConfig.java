@@ -21,19 +21,13 @@ import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.util.Utils;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+
 import net.minecraft.resources.ResourceLocation;
 
-import static me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
-import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.CollapsibleObject;
-import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON;
-import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.RequiresRestart;
-import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.Tooltip;
-import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.TransitiveObject;
 
 @SuppressWarnings("FieldMayBeFinal")
 @Config(name = "dimdoors")
@@ -114,7 +108,7 @@ public final class ModConfig implements ConfigData {
 			@Tooltip public Mode mode = Mode.DISABLE;
 			@Tooltip public Set<String> doors = new HashSet<>();
 
-			@EnvironmentInterface(value = EnvType.CLIENT, itf = SelectionListEntry.Translatable.class)
+			@OnlyIn(value = Dist.CLIENT, _interface = SelectionListEntry.Translatable.class)
 			public enum Mode implements SelectionListEntry.Translatable {
 				ENABLE("dimdoors.mode.enable"),
 				DISABLE("dimdoors.mode.disable");
@@ -186,7 +180,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public double riftJitter = 1;
 	}
 
-	@EnvironmentInterface(value = EnvType.CLIENT, itf = SelectionListEntry.Translatable.class)
+	@OnlyIn(value = Dist.CLIENT, _interface = SelectionListEntry.Translatable.class)
 	public enum ExtendedResourcePackActivationType implements SelectionListEntry.Translatable {
 		NORMAL(ResourcePackActivationType.NORMAL, "resourcePackActivationType.normal"),
 		DEFAULT_ENABLED(ResourcePackActivationType.DEFAULT_ENABLED, "resourcePackActivationType.defaultEnabled"),
@@ -221,7 +215,7 @@ public final class ModConfig implements ConfigData {
 		}
 
 		private Path getConfigPath() {
-			return DimensionalDoors.getConfigRoot().resolve(definition.name() + "-config.json5");
+			return Constants.CONFIG_ROOT.toPath().resolve(definition.name() + "-config.json5");
 		}
 
 		@Override

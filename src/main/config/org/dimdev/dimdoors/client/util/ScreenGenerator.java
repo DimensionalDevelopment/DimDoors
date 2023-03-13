@@ -22,10 +22,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class ScreenGenerator {
 	public static Screen create(Screen parent, Object config, Runnable saveAction) {
 		Class<?> configClass = config.getClass();

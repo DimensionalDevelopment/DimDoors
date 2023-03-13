@@ -13,7 +13,7 @@ public class ModEnchants {
 	public static void init() {
 		STRING_THEORY_ENCHANTMENT = Registry.register(
 				BuiltInRegistries.ENCHANTMENT,
-				DimensionalDoors.id("string_theory"),
+				DimensionalDoors.resource("string_theory"),
 				new StringTheoryEnchantment(Enchantment.Rarity.UNCOMMON, EnchantmentCategory.WEARABLE, new EquipmentSlot[] {EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD})
 		);
 	}

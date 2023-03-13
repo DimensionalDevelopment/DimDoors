@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -11,12 +11,12 @@ import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPacketListener> {
-	public static final ResourceLocation ID = DimensionalDoors.id("player_inventory_slot_update");
+	public static final ResourceLocation ID = DimensionalDoors.resource("player_inventory_slot_update");
 
 	private int slot;
 	private ItemStack stack;
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public PlayerInventorySlotUpdateS2CPacket() {
 		this.stack = ItemStack.EMPTY;
 	}

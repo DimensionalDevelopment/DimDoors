@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 import java.util.Objects;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -33,13 +33,13 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 public class RiftRemoverItem extends Item {
 	public static final String ID = "rift_remover";
-	public static final ResourceLocation REMOVED_RIFT_LOOT_TABLE = DimensionalDoors.id("removed_rift");
+	public static final ResourceLocation REMOVED_RIFT_LOOT_TABLE = DimensionalDoors.resource("removed_rift");
 
 	public RiftRemoverItem(Properties settings) {
 		super(settings);
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
@@ -53,7 +53,7 @@ public class RiftRemoverItem extends Item {
 		if (world.isClientSide) {
 			if (!RaycastHelper.hitsDetachedRift(hit, world)) {
 				player.displayClientMessage(MutableComponent.create(new TranslatableContents("tools.rift_miss")), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + Constants.CONFIG_MANAGER.get().getGraphicsConfig().highlightRiftCoreFor;
 			}
 			return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 		}

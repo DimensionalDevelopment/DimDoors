@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 public class MonolithTeleportParticlesPacket implements SimplePacket<ClientPacketListener> {
-	public static final ResourceLocation ID = DimensionalDoors.id("monolith_tp_particles");
+	public static final ResourceLocation ID = DimensionalDoors.resource("monolith_tp_particles");
 
 	public MonolithTeleportParticlesPacket() {
 	}

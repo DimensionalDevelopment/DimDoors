@@ -27,7 +27,7 @@ import org.dimdev.dimdoors.util.schematic.Schematic;
 public class WorldeditHelper {
 	static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
 		ServerPlayer player = source.getPlayer();
-		boolean async = DimensionalDoors.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
+		boolean async = Constants.CONFIG_MANAGER.get().getPocketsConfig().asyncWorldEditPocketLoading;
 		Consumer<Runnable> taskAcceptor = async ? r -> source.getServer().execute(r) : Runnable::run;
 		Runnable task = () -> {
 			CompoundTag nbt = Schematic.toNbt(template.getSchematic());

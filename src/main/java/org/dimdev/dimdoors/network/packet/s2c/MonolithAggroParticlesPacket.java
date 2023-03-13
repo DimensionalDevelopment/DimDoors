@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -10,11 +10,11 @@ import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 public class MonolithAggroParticlesPacket implements SimplePacket<ClientPacketListener> {
-	public static final ResourceLocation ID = DimensionalDoors.id("monolith_aggro_particles");
+	public static final ResourceLocation ID = DimensionalDoors.resource("monolith_aggro_particles");
 
 	private int aggro;
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public MonolithAggroParticlesPacket() {
 	}
 

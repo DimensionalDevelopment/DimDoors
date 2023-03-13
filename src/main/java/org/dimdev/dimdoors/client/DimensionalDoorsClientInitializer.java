@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -17,7 +17,7 @@ import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class DimensionalDoorsClientInitializer implements ClientModInitializer {
     @Override
     public void onInitializeClient() {

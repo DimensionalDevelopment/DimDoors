@@ -31,7 +31,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		return new DisplayInfo(item.asItem().getDefaultInstance(),
 				MutableComponent.create(new TranslatableContents("dimdoors.advancement." + titleKey)),
 				MutableComponent.create(new TranslatableContents("dimdoors.advancement." + titleKey + ".desc")),
-				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
+				DimensionalDoors.resource("textures/block/unravelled_fabric.png"),
 				FrameType.TASK,
 				true,
 				true,
@@ -43,7 +43,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		return new DisplayInfo(item.asItem().getDefaultInstance(),
 				MutableComponent.create(new TranslatableContents("dimdoors.advancement." + titleKey)),
 				MutableComponent.create(new TranslatableContents("dimdoors.advancement." + titleKey + ".desc")),
-				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
+				DimensionalDoors.resource("textures/block/unravelled_fabric.png"),
 				advancementFrame,
 				true,
 				true,
@@ -126,7 +126,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.BLACK_FABRIC, "darklight"))
 				.parent(doorToAdventure)
-				.addCriterion("get_fabric", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(TagKey.create(Registries.ITEM, DimensionalDoors.id("fabric"))).build()))
+				.addCriterion("get_fabric", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(TagKey.create(Registries.ITEM, DimensionalDoors.resource("fabric"))).build()))
 				.save(advancementConsumer, "dimdoors:dimdoors/darklight");
 		Advancement enterLimbo = Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.MONOLITH_SPAWNER, "enter_limbo"))

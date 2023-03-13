@@ -1,47 +1,34 @@
 package org.dimdev.dimdoors;
 
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigHolder;
-import org.jetbrains.annotations.NotNull;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.server.ServerLifecycleHooks;
+
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.Level;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 
 import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
-import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
-import org.dimdev.dimdoors.block.door.data.condition.Condition;
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.command.ModCommands;
+import org.dimdev.dimdoors.client.ClientEvents;
 import org.dimdev.dimdoors.command.PocketCommand;
-import org.dimdev.dimdoors.criteria.ModCriteria;
-import org.dimdev.dimdoors.enchantment.ModEnchants;
-import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.entity.stat.ModStats;
-import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
-import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
@@ -51,43 +38,43 @@ import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseItemCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
-import org.dimdev.dimdoors.particle.ModParticleTypes;
-import org.dimdev.dimdoors.pockets.PocketLoader;
-import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.modifier.Modifier;
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
-import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
-import org.dimdev.dimdoors.recipe.ModRecipeTypes;
-import org.dimdev.dimdoors.rift.registry.RegistryVertex;
-import org.dimdev.dimdoors.rift.targets.Targets;
-import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.world.ModBiomes;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.LimboDecay;
-import org.dimdev.dimdoors.world.feature.ModFeatures;
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+import org.dimdev.dimdoors.registry.RegistryHandler;
 
-public class DimensionalDoors implements ModInitializer {
+@Mod(Constants.MODID)
+public class DimensionalDoors {
 	public static List<DimensionalDoorsApi> apiSubscribers = Collections.emptyList();
-	private static final Supplier<Path> CONFIG_ROOT = () -> FabricLoader.getInstance().getConfigDir().resolve("dimdoors").toAbsolutePath();
-	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootJanksonConfigSerializer::new);
-	private static MinecraftServer server;
 	private static ModContainer dimDoorsMod;
 	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
 	private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
 
-    @NotNull
-    public static MinecraftServer getServer() {
-        if (server != null) {
-            return server;
-        }
-        throw new UnsupportedOperationException("Accessed server too early!");
-    }
+	public DimensionalDoors() {
+		//FMLJavaModLoadingContext.get().getModEventBus().addListener(this::keyBindSetup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
+		RegistryHandler.init(FMLJavaModLoadingContext.get().getModEventBus());
+		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(CommonEvents.class);
+		if(FMLEnvironment.dist == Dist.CLIENT)
+			MinecraftForge.EVENT_BUS.register(ClientEvents.class);
+	}
+
+	private void clientSetup(final FMLClientSetupEvent ev) {
+
+	}
+
+	public void commonSetup(FMLCommonSetupEvent ev) {
+
+	}
+
+	public void loadComplete(FMLLoadCompleteEvent ev) {
+
+	}
+
+	@SubscribeEvent
+	public void registerCommands(RegisterCommandsEvent ev) {
+
+	}
 
 	public static DimensionalDoorBlockRegistrar getDimensionalDoorBlockRegistrar() {
 		return dimensionalDoorBlockRegistrar;
@@ -97,75 +84,20 @@ public class DimensionalDoors implements ModInitializer {
 		return dimensionalDoorItemRegistrar;
 	}
 
-	public static ServerLevel getWorld(ResourceKey<Level> key) {
-        return getServer().getLevel(key);
-    }
-
-	public static ModConfig getConfig() {
-		return CONFIG_MANAGER.get();
-	}
-
 	public static ModContainer getDimDoorsMod() {
 		return dimDoorsMod;
 	}
-
-	public static Path getConfigRoot() {
-		return CONFIG_ROOT.get();
+	
+	public static MinecraftServer getServer() {
+		return ServerLifecycleHooks.getCurrentServer();
+	}
+	
+	public static ServerLevel getWorld(ResourceKey<Level> key) {
+		return getServer().getLevel(key);
 	}
 
-	public static ResourceLocation id(String id) {
+	public static ResourceLocation resource(String id) {
 		return new ResourceLocation("dimdoors", id);
-	}
-
-	@Override
-    public void onInitialize() {
-		apiSubscribers = FabricLoader.getInstance().getEntrypoints("dimdoors:api", DimensionalDoorsApi.class);
-    	dimDoorsMod = FabricLoader.getInstance().getModContainer("dimdoors").orElseThrow(RuntimeException::new);
-    	ServerLifecycleEvents.SERVER_STARTING.register(minecraftServer -> server = minecraftServer);
-
-		registerRegistries();
-
-		ModRecipeTypes.init();
-		ModRecipeSerializers.init();
-		ModScreenHandlerTypes.init();
-        ModBlocks.init();
-        ModItems.init();
-        ModFeatures.init();
-        ModBiomes.init();
-        ModDimensions.init();
-        ModEntityTypes.init();
-		ModStats.init();
-        ModBlockEntityTypes.init();
-        ModCommands.init();
-		ModFluids.init();
-        ModSoundEvents.init();
-		ModParticleTypes.init();
-		ModCriteria.init();
-		ModEnchants.init();
-		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(BuiltInRegistries.ITEM);
-		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(BuiltInRegistries.BLOCK, dimensionalDoorItemRegistrar);
-
-		ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
-		ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(LimboDecay.DecayLoader.getInstance());
-		ResourceManagerHelper.registerBuiltinResourcePack(id("default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType());
-		ResourceManagerHelper.registerBuiltinResourcePack(id("classic"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().classicPocketsResourcePackActivationType.asResourcePackActivationType());
-
-		registerListeners();
-		apiSubscribers.forEach(DimensionalDoorsApi::postInitialize);
-    }
-
-    public static void registerRegistries() {
-		Targets.registerDefaultTargets();
-		VirtualTarget.VirtualTargetType.register();
-		ImplementedVirtualPocket.VirtualPocketType.register();
-		RegistryVertex.RegistryVertexType.register();
-		Modifier.ModifierType.register();
-		PocketGenerator.PocketGeneratorType.register();
-		AbstractPocket.AbstractPocketType.register();
-		PocketAddon.PocketAddonType.register();
-		Condition.ConditionType.register();
-		DecayPredicate.DecayPredicateType.register();
-		DecayProcessor.DecayProcessorType.register();
 	}
 
     private void registerListeners() {

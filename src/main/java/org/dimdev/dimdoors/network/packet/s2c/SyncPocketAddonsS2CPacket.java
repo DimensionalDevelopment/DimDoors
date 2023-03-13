@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
 import java.util.List;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListener> {
-	public static final ResourceLocation ID = DimensionalDoors.id("sync_pocket_addons");
+	public static final ResourceLocation ID = DimensionalDoors.resource("sync_pocket_addons");
 
 	private ResourceKey<Level> world;
 	private int gridSize;
@@ -23,7 +23,7 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 	private int pocketRange;
 	private List<AutoSyncedAddon> addons;
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public SyncPocketAddonsS2CPacket() {
 	}
 

@@ -4,7 +4,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Lifecycle;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.minecraftforge.registries.RegistryBuilder;
+
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
@@ -17,7 +18,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 public abstract class AbstractPocket<V extends AbstractPocket<?>> {
-	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(ResourceKey.createRegistryKey(DimensionalDoors.id("abstract_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
+	public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = RegistryBuilder.from(new MappedRegistry<AbstractPocketType<? extends AbstractPocket<?>>>(ResourceKey.createRegistryKey(DimensionalDoors.resource("abstract_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
 
 	protected Integer id;
 	protected ResourceKey<Level> world;
@@ -83,11 +84,11 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 	}
 
 	public interface AbstractPocketType<T extends AbstractPocket<?>> {
-		AbstractPocketType<IdReferencePocket> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder);
+		AbstractPocketType<IdReferencePocket> ID_REFERENCE = register(DimensionalDoors.resource(IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder);
 
-		AbstractPocketType<Pocket> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket::new, Pocket::builder);
-		AbstractPocketType<PrivatePocket> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
-		AbstractPocketType<LazyGenerationPocket> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
+		AbstractPocketType<Pocket> POCKET = register(DimensionalDoors.resource(Pocket.KEY), Pocket::new, Pocket::builder);
+		AbstractPocketType<PrivatePocket> PRIVATE_POCKET = register(DimensionalDoors.resource(PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
+		AbstractPocketType<LazyGenerationPocket> LAZY_GENERATION_POCKET = register(DimensionalDoors.resource(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
 
 		T fromNbt(CompoundTag nbt);

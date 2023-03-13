@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -31,7 +31,7 @@ import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class ClientPacketHandler implements org.dimdev.dimdoors.network.client.ClientPacketListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 

@@ -39,7 +39,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	@Override
 	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 		// TODO: rifts from resource
-		serializedRifts = nbt.getList("rifts", NbtType.COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
+		serializedRifts = nbt.getList("rifts", Tag.TAG_COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
 				.filter(compound -> {
 					if (compound.contains("Pos")) {
 						return true;

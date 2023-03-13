@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class RiftTrackedCriterion extends SimpleCriterionTrigger<RiftTrackedCriterion.Conditions> {
-	public static final ResourceLocation ID = DimensionalDoors.id("rift_tracked");
+	public static final ResourceLocation ID = DimensionalDoors.resource("rift_tracked");
 
 	@Override
 	protected Conditions createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer) {

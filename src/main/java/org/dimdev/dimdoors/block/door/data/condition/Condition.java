@@ -14,7 +14,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public interface Condition {
-	Registry<ConditionType<?>> REGISTRY = FabricRegistryBuilder.<ConditionType<?>, MappedRegistry<ConditionType<?>>>from(new MappedRegistry<>(ResourceKey.createRegistryKey(DimensionalDoors.id("rift_data_condition")), Lifecycle.stable(), false)).buildAndRegister();
+	Registry<ConditionType<?>> REGISTRY = FabricRegistryBuilder.<ConditionType<?>, MappedRegistry<ConditionType<?>>>from(new MappedRegistry<>(ResourceKey.createRegistryKey(DimensionalDoors.resource("rift_data_condition")), Lifecycle.stable(), false)).buildAndRegister();
 
 	boolean matches(EntranceRiftBlockEntity rift);
 
@@ -51,7 +51,7 @@ public interface Condition {
 		}
 
 		static <T extends Condition> ConditionType<T> register(String name, Function<JsonObject, T> fromJson) {
-			return Registry.register(REGISTRY, DimensionalDoors.id(name), json -> fromJson.apply(json));
+			return Registry.register(REGISTRY, DimensionalDoors.resource(name), json -> fromJson.apply(json));
 		}
 	}
 }

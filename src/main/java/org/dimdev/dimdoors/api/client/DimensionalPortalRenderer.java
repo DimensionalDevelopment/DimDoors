@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.Collections;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.ModShaders;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public final class DimensionalPortalRenderer {
 	public static final ResourceLocation WARP_PATH;
 	private static final RenderStateShard.ShaderStateShard DIMENSIONAL_PORTAL_SHADER;
@@ -38,7 +38,7 @@ public final class DimensionalPortalRenderer {
 	}
 
 	static {
-		WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
+		WARP_PATH = DimensionalDoors.resource("textures/other/warp.png");
 		DIMENSIONAL_PORTAL_SHADER = new RenderStateShard.ShaderStateShard(ModShaders::getDimensionalPortal);
 		RENDER_LAYER = RenderLayerFactory.create(
 				"dimensional_portal",

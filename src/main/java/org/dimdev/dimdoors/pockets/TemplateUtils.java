@@ -61,10 +61,10 @@ public class TemplateUtils {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");
-            table = world.getServer().getLootTables().get(DimensionalDoors.id("dungeon_chest"));
+            table = world.getServer().getLootTables().get(DimensionalDoors.resource("dungeon_chest"));
         } else {
             logger.debug("Now populating dispenser.");
-            table = world.getServer().getLootTables().get(DimensionalDoors.id("dispenser_projectiles"));
+            table = world.getServer().getLootTables().get(DimensionalDoors.resource("dispenser_projectiles"));
         }
         LootContext ctx = new LootContext.Builder(world).withRandom(world.random).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
         table.fill(inventory, ctx);

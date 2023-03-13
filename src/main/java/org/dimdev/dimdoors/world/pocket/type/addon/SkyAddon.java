@@ -11,7 +11,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class SkyAddon implements AutoSyncedAddon {
-	public static ResourceLocation ID = DimensionalDoors.id("sky");
+	public static ResourceLocation ID = DimensionalDoors.resource("sky");
 
 	private ResourceKey<Level> world;
 

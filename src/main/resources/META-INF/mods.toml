@@ -1,0 +1,39 @@
+modLoader="javafml"
+loaderVersion="[44,)"
+license="MIT"
+showAsResourcePack=false
+
+[[mods]]
+    modId="dimdoors"
+    version="${version}"
+    displayName="DimensionalDoors"
+    updateJSONURL=""
+    displayURL="https://github.com/DimensionalDevelopment/DimDoors"
+    logoFile="assets/dimdoors/icon.png"
+    authors= [
+        "StevenRS11",
+        "SenseiKiwi",
+        "Zixiken",
+        "Waterpicker",
+        "Robijnvogel",
+        "ZombieHDGaming",
+        "Runemoro",
+        "The_Computerizer"
+    ]
+    description='''
+        Bend and twist reality, creating rifts, pocket dimensions, and much more
+        '''
+
+[[dependencies.dimdoors]]
+    modId="forge"
+    mandatory=true
+    versionRange="[44,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.dimdoors]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19.3,1.20)"
+    ordering="NONE"
+    side="BOTH"

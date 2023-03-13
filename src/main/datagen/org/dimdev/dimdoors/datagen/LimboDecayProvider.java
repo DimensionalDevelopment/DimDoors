@@ -106,16 +106,16 @@ public class LimboDecayProvider implements DataProvider {
     }
 
 	protected void generatePatterns(BiConsumer<ResourceLocation, JsonObject> consumer) {
-		createSimplePattern(DimensionalDoors.id("air"), ModBlockTags.DECAY_TO_AIR, Blocks.AIR).run(consumer);
-		createSimplePattern(DimensionalDoors.id("gritty_stone"), ModBlockTags.DECAY_TO_GRITTY_STONE, ModBlocks.GRITTY_STONE).run(consumer);
-		createSimplePattern(DimensionalDoors.id("leak"), Blocks.WATER, ModBlocks.LEAK).run(consumer);
-		createSimplePattern(DimensionalDoors.id("solid_static"), ModBlockTags.DECAY_TO_SOLID_STATIC, ModBlocks.SOLID_STATIC).run(consumer);
-		createSimplePattern(DimensionalDoors.id("unraveled_fabric"), Blocks.CLAY, ModBlocks.UNRAVELLED_BLOCK).run(consumer);
-		createSimplePattern(DimensionalDoors.id("unraveled_fence"), ModBlockTags.DECAY_UNRAVELED_FENCE, ModBlocks.UNRAVELED_FENCE).run(consumer);
-		createSimplePattern(DimensionalDoors.id("unraveled_gate"), ModBlockTags.DECAY_UNRAVELED_GATE, ModBlocks.UNRAVELED_GATE).run(consumer);
-		createSimplePattern(DimensionalDoors.id("unraveled_button"), ModBlockTags.DECAY_UNRAVELED_BUTTON, ModBlocks.UNRAVELED_BUTTON).run(consumer);
-		createSimplePattern(DimensionalDoors.id("unraveled_slab"), ModBlockTags.DECAY_UNRAVELED_SLAB, ModBlocks.UNRAVELED_SLAB).run(consumer);
-		createSimplePattern(DimensionalDoors.id("unraveled_stairs"), ModBlockTags.DECAY_UNRAVELED_STAIRS, ModBlocks.UNRAVELED_STAIRS).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("air"), ModBlockTags.DECAY_TO_AIR, Blocks.AIR).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("gritty_stone"), ModBlockTags.DECAY_TO_GRITTY_STONE, ModBlocks.GRITTY_STONE).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("leak"), Blocks.WATER, ModBlocks.LEAK).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("solid_static"), ModBlockTags.DECAY_TO_SOLID_STATIC, ModBlocks.SOLID_STATIC).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("unraveled_fabric"), Blocks.CLAY, ModBlocks.UNRAVELLED_BLOCK).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("unraveled_fence"), ModBlockTags.DECAY_UNRAVELED_FENCE, ModBlocks.UNRAVELED_FENCE).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("unraveled_gate"), ModBlockTags.DECAY_UNRAVELED_GATE, ModBlocks.UNRAVELED_GATE).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("unraveled_button"), ModBlockTags.DECAY_UNRAVELED_BUTTON, ModBlocks.UNRAVELED_BUTTON).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("unraveled_slab"), ModBlockTags.DECAY_UNRAVELED_SLAB, ModBlocks.UNRAVELED_SLAB).run(consumer);
+		createSimplePattern(DimensionalDoors.resource("unraveled_stairs"), ModBlockTags.DECAY_UNRAVELED_STAIRS, ModBlocks.UNRAVELED_STAIRS).run(consumer);
 
 		createSimplePattern(new ResourceLocation("dimdoors:cobweb"), BlockTags.WOOL, COBWEB).run(consumer);
 		createSimplePattern(new ResourceLocation("dimdoors:driftwood_leaves"), BlockTags.LEAVES, ModBlocks.DRIFTWOOD_LEAVES).run(consumer);

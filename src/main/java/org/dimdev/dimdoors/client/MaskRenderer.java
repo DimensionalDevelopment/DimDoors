@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.client;
 
 //import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
-//@Environment(EnvType.CLIENT)
+//@Environment(Dist.CLIENT)
 //public class MaskRenderer extends GeoEntityRenderer<MaskEntity> {
 //    public MaskRenderer(EntityRendererFactory.Context ctx) {
 //        super(ctx, new MaskModel());

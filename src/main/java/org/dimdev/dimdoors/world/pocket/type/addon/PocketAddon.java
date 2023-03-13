@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Lifecycle;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +14,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.blockbreak.BlockBreakContainer;
 
 public interface PocketAddon {
-	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<PocketAddonType<? extends PocketAddon>>(ResourceKey.createRegistryKey(DimensionalDoors.id("pocket_applicable_addon_type")), Lifecycle.stable(), false)).buildAndRegister();
+	Registry<PocketAddonType<? extends PocketAddon>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<PocketAddonType<? extends PocketAddon>>(ResourceKey.createRegistryKey(DimensionalDoors.resource("pocket_applicable_addon_type")), Lifecycle.stable(), false)).buildAndRegister();
 
 	static PocketAddon deserialize(CompoundTag nbt) {
 		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;

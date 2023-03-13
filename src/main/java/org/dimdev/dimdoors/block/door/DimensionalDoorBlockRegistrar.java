@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -40,7 +42,6 @@ public class DimensionalDoorBlockRegistrar {
 	public DimensionalDoorBlockRegistrar(Registry<Block> registry, DimensionalDoorItemRegistrar itemRegistrar) {
 		this.registry = registry;
 		this.itemRegistrar = itemRegistrar;
-
 		init();
 		RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> handleEntry(id, object));
 	}
@@ -50,7 +51,7 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	public void handleEntry(ResourceLocation identifier, Block original) {
-		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(identifier)) {
+		if (Constants.CONFIG_MANAGER.get().getDoorsConfig().isAllowed(identifier)) {
 			if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock doorBlock) {
 				register(identifier, doorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock);
 			} else if (!(original instanceof DimensionalTrapdoorBlock) && original instanceof TrapDoorBlock trapdoorBlock) {
@@ -60,13 +61,13 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	private void register(ResourceLocation identifier, DoorSoundProvider original, BiFunction<BlockBehaviour.Properties, DoorSoundProvider, ? extends Block> constructor) {
-		ResourceLocation gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+		ResourceLocation gennedId = DimensionalDoors.resource(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
 		Block dimBlock = Registry.register(registry, gennedId, constructor.apply(FabricBlockSettings.copy((BlockBehaviour) original), original));
 		ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(dimBlock);
 		mappedDoorBlocks.put(gennedId, identifier);
 		itemRegistrar.notifyBlockMapped((Block) original, dimBlock);
 
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+		if (FabricLoader.getInstance().getEnvironmentType() == Dist.CLIENT) {
 			putCutout(dimBlock);
 		}
 	}

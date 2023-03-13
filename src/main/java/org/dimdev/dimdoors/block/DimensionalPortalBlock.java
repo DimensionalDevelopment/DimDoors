@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.block;
 
 import org.jetbrains.annotations.Nullable;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -91,7 +91,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 		return Shapes.block();
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	@Override
 	public boolean isTall(BlockState cachedState) {
 		return true;

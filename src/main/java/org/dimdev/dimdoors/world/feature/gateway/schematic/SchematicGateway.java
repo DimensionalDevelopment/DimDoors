@@ -46,7 +46,7 @@ public abstract class SchematicGateway implements Gateway, BiPredicate<WorldGenL
 	}
 
 	public final void generate(WorldGenLevel world, BlockPos pos) {
-		if (DimensionalDoors.getConfig()
+		if (Constants.CONFIG_MANAGER.get()
 				.getWorldConfig()
 				.gatewayDimBlacklist
 				.contains(world.getLevel().dimension().location().toString())

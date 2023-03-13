@@ -12,7 +12,7 @@ import org.poly2tri.geometry.polygon.PolygonPoint;
 import org.poly2tri.triangulation.TriangulationPoint;
 import org.poly2tri.triangulation.delaunay.DelaunayTriangle;
 
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 
 // https://en.wikipedia.org/wiki/L-system
@@ -28,7 +28,7 @@ import net.fabricmc.api.Environment;
 //   - - turn counter-clockwise by angle
 //   [ - save state (push to stack)
 //   ] - restore state (pop from stack)
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public final class RiftCurves {
     public static final List<PolygonInfo> CURVES = new ArrayList<>();
 

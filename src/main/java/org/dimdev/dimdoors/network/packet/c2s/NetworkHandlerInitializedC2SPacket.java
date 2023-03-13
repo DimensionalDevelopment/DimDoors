@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.network.ServerPacketListener;
 import org.dimdev.dimdoors.network.SimplePacket;
 
 public class NetworkHandlerInitializedC2SPacket implements SimplePacket<ServerPacketListener> {
-	public static final ResourceLocation ID = DimensionalDoors.id("network_handler_initialized");
+	public static final ResourceLocation ID = DimensionalDoors.resource("network_handler_initialized");
 
 	@Override
 	public SimplePacket<ServerPacketListener> read(FriendlyByteBuf buf) throws IOException {

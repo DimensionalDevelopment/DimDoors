@@ -1,8 +1,11 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import java.io.IOException;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,25 +16,29 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class PreventBlockModificationAddon implements AutoSyncedAddon, AttackBlockCallback, PlayerBlockBreakEvents.Before, UseItemOnBlockCallback {
-	public static ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");
+@Mod.EventBusSubscriber
+public class PreventBlockModificationAddon implements AutoSyncedAddon, UseItemOnBlockCallback {
+	public static ResourceLocation ID = DimensionalDoors.resource("prevent_block_modification");
 
 	//AttackBlockCallback
-	@Override
 	public InteractionResult interact(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
 		if (player.isCreative()) return InteractionResult.PASS;
 		return InteractionResult.FAIL;
 	}
 
-	@Override
-	public boolean beforeBlockBreak(Level world, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+	@SubscribeEvent
+	public void breakBlock(BlockEvent.BreakEvent ev) {
+
+	}
+
+	public static boolean beforeBlockBreak(Player player) {
 		if (player.isCreative()) return true;
 		return false;
 	}

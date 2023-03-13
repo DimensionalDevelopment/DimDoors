@@ -29,7 +29,7 @@ import org.dimdev.dimdoors.item.component.CounterComponent;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
-import static net.fabricmc.api.EnvType.CLIENT;
+import static net.fabricmc.api.Dist.CLIENT;
 
 public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	private static final Logger LOGGER = LogManager.getLogger();

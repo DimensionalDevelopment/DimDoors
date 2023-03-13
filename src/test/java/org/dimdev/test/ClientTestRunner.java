@@ -1,12 +1,12 @@
 //package org.dimdev.test;
 //
 //import net.devtech.potatounit.TestRunner;
-//import net.fabricmc.api.EnvType;
+//import net.fabricmc.api.Dist;
 //import org.junit.runners.model.InitializationError;
 //
 //public class ClientTestRunner extends TestRunner {
 //	public ClientTestRunner(Class<?> testClass) throws InitializationError, ReflectiveOperationException {
-//		super(hackyOrderMethod(testClass), EnvType.CLIENT);
+//		super(hackyOrderMethod(testClass), Dist.CLIENT);
 //	}
 //
 //	private static Class<?> hackyOrderMethod(Class<?> testClass) {

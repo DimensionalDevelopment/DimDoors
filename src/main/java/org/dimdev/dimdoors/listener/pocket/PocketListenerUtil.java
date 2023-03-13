@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.listener.pocket;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -24,7 +24,7 @@ public class PocketListenerUtil {
 		return pocket.getAddonsInstanceOf(clazz);
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public static <T> List<T> applicableAddonsClient(Class<T> clazz, Level world, BlockPos pos) {
 		ClientPacketHandler packetHandler = ((ExtendedClientPlayNetworkHandler) Minecraft.getInstance().getConnection()).getDimDoorsPacketHandler();
 

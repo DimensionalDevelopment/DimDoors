@@ -18,7 +18,7 @@ public class NbtUtil {
 	}
 
 	public static CompoundTag asNbtCompound(Tag nbt, String error) {
-		if (nbt == null || nbt.getId() == NbtType.COMPOUND) {
+		if (nbt == null || nbt.getId() == Tag.TAG_COMPOUND) {
 			return (CompoundTag) nbt;
 		}
 

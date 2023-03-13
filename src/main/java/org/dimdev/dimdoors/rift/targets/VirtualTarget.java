@@ -22,7 +22,7 @@ import org.dimdev.dimdoors.api.util.RGBA;
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {
-	public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, MappedRegistry<VirtualTargetType<?>>>from(new MappedRegistry<>(ResourceKey.createRegistryKey(DimensionalDoors.id("virtual_type")), Lifecycle.stable(), false)).buildAndRegister();
+	public static final Registry<VirtualTargetType<?>> REGISTRY = FabricRegistryBuilder.<VirtualTargetType<?>, MappedRegistry<VirtualTargetType<?>>>from(new MappedRegistry<>(ResourceKey.createRegistryKey(DimensionalDoors.resource("virtual_type")), Lifecycle.stable(), false)).buildAndRegister();
 	public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
 	protected Location location;

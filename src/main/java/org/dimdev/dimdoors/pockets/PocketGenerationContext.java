@@ -10,8 +10,8 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 public record PocketGenerationContext(ServerLevel world, VirtualLocation sourceVirtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
 	public Map<String, Double> toVariableMap(Map<String, Double> stringDoubleMap) {
 		stringDoubleMap.put("depth", (double) this.sourceVirtualLocation.getDepth());
-		stringDoubleMap.put("public_size", (double) DimensionalDoors.getConfig().getPocketsConfig().publicPocketSize);
-		stringDoubleMap.put("private_size", (double) DimensionalDoors.getConfig().getPocketsConfig().privatePocketSize);
+		stringDoubleMap.put("public_size", (double) Constants.CONFIG_MANAGER.get().getPocketsConfig().publicPocketSize);
+		stringDoubleMap.put("private_size", (double) Constants.CONFIG_MANAGER.get().getPocketsConfig().privatePocketSize);
 		return stringDoubleMap;
 	}
 }

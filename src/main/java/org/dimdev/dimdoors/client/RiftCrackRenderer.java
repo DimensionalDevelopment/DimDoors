@@ -2,12 +2,12 @@ package org.dimdev.dimdoors.client;
 
 import org.joml.Matrix4f;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import org.dimdev.dimdoors.DimensionalDoors;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public final class RiftCrackRenderer {
     public static void drawCrack(Matrix4f model, VertexConsumer vc, float riftRotation, RiftCurves.PolygonInfo poly, double size, long riftRandom) {
         // Calculate the proper size for the rift render
@@ -32,7 +32,7 @@ public final class RiftCrackRenderer {
         float time = ((Util.getEpochMillis() + riftRandom) % 2000000) * motionSpeed;
         double[] jitters = new double[jCount];
 
-        double jitterScale = DimensionalDoors.getConfig().getGraphicsConfig().riftJitter * size * size * size / 2000f;
+        double jitterScale = Constants.CONFIG_MANAGER.get().getGraphicsConfig().riftJitter * size * size * size / 2000f;
         // We use random constants here on purpose just to get different wave forms
         double xJitter = jitterScale * Math.sin(1.1f * time*size) * Math.sin(0.8f * time);
         double yJitter = jitterScale * Math.sin(1.2f * time*size) * Math.sin(0.9f * time);

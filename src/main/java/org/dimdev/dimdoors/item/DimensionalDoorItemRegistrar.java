@@ -10,7 +10,7 @@ import java.util.function.Function;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Quaternionf;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -71,7 +71,7 @@ public class DimensionalDoorItemRegistrar {
 	}
 
 	public void handleEntry(ResourceLocation identifier, Item original) {
-		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(identifier)) {
+		if (Constants.CONFIG_MANAGER.get().getDoorsConfig().isAllowed(identifier)) {
 			if (original instanceof DoubleHighBlockItem) {
 				Block block = ((DoubleHighBlockItem) original).getBlock();
 				handleEntry(identifier, original, block, AutoGenDimensionalDoorItem::new);
@@ -115,22 +115,22 @@ public class DimensionalDoorItemRegistrar {
 
 	private void register(ResourceLocation identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
 		if (!DoorData.PARENT_ITEMS.contains(original)) {
-			ResourceLocation gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+			ResourceLocation gennedId = DimensionalDoors.resource(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
 			BlockItem item = Registry.register(registry, gennedId, dimItem.apply(block));
 			placementFunctions.put(original, item::place);
-			if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+			if (FabricLoader.getInstance().getEnvironmentType() == Dist.CLIENT) {
 				registerItemRenderer(item);
 			}
 		}
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	private void registerItemRenderer(BlockItem dimItem) {
 		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, Renderer.RENDERER);
 	}
 
 	// extract renderer to inner interface so it can be removed in server environment via annotation
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	private interface Renderer {
 		UnderlaidChildItemRenderer RENDERER = new UnderlaidChildItemRenderer(Items.ENDER_PEARL);
 	}

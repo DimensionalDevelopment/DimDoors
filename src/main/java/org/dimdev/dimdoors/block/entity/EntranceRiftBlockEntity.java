@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -90,7 +90,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
 		BlockState state = this.getLevel().getBlockState(this.getBlockPos());
 		Block block = state.getBlock();
-		Vec3 targetPos = Vec3.atCenterOf(this.worldPosition).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).scale(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
+		Vec3 targetPos = Vec3.atCenterOf(this.worldPosition).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).scale(Constants.CONFIG_MANAGER.get().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
 		/*
 		Unused code that needs to be edited if there are other ways to get to limbo
 		But if it is only dimteleport and going through rifts then this code isn't nessecary
@@ -131,7 +131,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				.orElse(Direction.NORTH);
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public Transformer getTransformer() {
 		return DefaultTransformation.fromDirection(this.getOrientation());
 	}
@@ -143,7 +143,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	/**
 	 * Specifies if the portal should be rendered two blocks tall
 	 */
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public boolean isTall() {
 		return ((RiftProvider<?>) this.getBlockState().getBlock()).isTall(this.getBlockState());
 	}

@@ -20,7 +20,7 @@ import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGatewayFeatu
 import org.dimdev.dimdoors.world.feature.gateway.schematic.SchematicGatewayFeatureConfig;
 import org.dimdev.dimdoors.world.feature.gateway.schematic.TwoPillarsGateway;
 
-import static org.dimdev.dimdoors.DimensionalDoors.id;
+import static org.dimdev.dimdoors.DimensionalDoors.resource;
 
 @SuppressWarnings("unused")
 public final class ModFeatures {
@@ -28,8 +28,8 @@ public final class ModFeatures {
 	public static final SchematicGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
 	public static final SchematicGateway END_GATEWAY = new EndGateway();
 
-	public static final Feature<SchematicGatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = Registry.register(BuiltInRegistries.FEATURE, id("schematic_gateway"), new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
-	public static final Feature<NoneFeatureConfiguration> LIMBO_GATEWAY_FEATURE = Registry.register(BuiltInRegistries.FEATURE, id("limbo_gateway"), new LimboGatewayFeature());
+	public static final Feature<SchematicGatewayFeatureConfig> SCHEMATIC_GATEWAY_FEATURE = Registry.register(BuiltInRegistries.FEATURE, resource("schematic_gateway"), new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
+	public static final Feature<NoneFeatureConfiguration> LIMBO_GATEWAY_FEATURE = Registry.register(BuiltInRegistries.FEATURE, resource("limbo_gateway"), new LimboGatewayFeature());
 
 	public static void init() {
 		SANDSTONE_PILLARS_GATEWAY.init();
@@ -52,7 +52,7 @@ public final class ModFeatures {
 		public static void init() {}
 
 		public static ResourceKey<ConfiguredFeature<?, ?>> of(String id) {
-			return ResourceKey.create(Registries.CONFIGURED_FEATURE, id(id));
+			return ResourceKey.create(Registries.CONFIGURED_FEATURE, resource(id));
 		}
 	}
 
@@ -86,7 +86,7 @@ public final class ModFeatures {
 		}
 
 		public static ResourceKey<PlacedFeature> of(String id) {
-			return ResourceKey.create(Registries.PLACED_FEATURE, id(id));
+			return ResourceKey.create(Registries.PLACED_FEATURE, resource(id));
 		}
 	}
 }

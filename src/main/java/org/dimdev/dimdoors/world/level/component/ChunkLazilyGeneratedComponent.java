@@ -24,7 +24,7 @@ public class ChunkLazilyGeneratedComponent implements Component {
 
 	@Override
 	public void readFromNbt(CompoundTag nbt) {
-		if (nbt.contains("has_been_lazy_genned", NbtType.INT)) {
+		if (nbt.contains("has_been_lazy_genned", Tag.TAG_INT)) {
 			hasBeenLazyGenned = nbt.getInt("has_been_lazy_genned") == 1;
 		}
 	}

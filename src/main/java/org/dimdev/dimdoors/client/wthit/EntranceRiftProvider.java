@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 public enum EntranceRiftProvider implements IBlockComponentProvider {
 	INSTANCE;
 
-	private static final ResourceLocation ID = DimensionalDoors.id("entrance_rift_provider");
+	private static final ResourceLocation ID = DimensionalDoors.resource("entrance_rift_provider");
 
 	@Override
 	public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {

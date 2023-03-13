@@ -20,7 +20,7 @@ public class IdReference extends PocketGeneratorReference {
 		super.fromNbt(nbt, manager);
 
 		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
-		id = DimensionalDoors.id(nbt.getString("id"));
+		id = DimensionalDoors.resource(nbt.getString("id"));
 
 		return this;
 	}

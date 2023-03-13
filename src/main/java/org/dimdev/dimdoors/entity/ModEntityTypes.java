@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.entity;
 
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -31,7 +31,7 @@ public class ModEntityTypes {
         FabricDefaultAttributeRegistry.register(MASK, MonolithEntity.createMobAttributes());
     }
 
-    @Environment(EnvType.CLIENT)
+    @Environment(Dist.CLIENT)
     public static void initClient() {
         EntityRendererRegistry.register(MONOLITH, MonolithRenderer::new);
 //        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);

@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public abstract class RegistryVertex {
-	public static final Registry<RegistryVertexType<?>> registry = FabricRegistryBuilder.from(new MappedRegistry<RegistryVertexType<? extends RegistryVertex>>(ResourceKey.createRegistryKey(DimensionalDoors.id("registry_vertex")), Lifecycle.stable())).buildAndRegister();
+	public static final Registry<RegistryVertexType<?>> registry = FabricRegistryBuilder.from(new MappedRegistry<RegistryVertexType<? extends RegistryVertex>>(ResourceKey.createRegistryKey(DimensionalDoors.resource("registry_vertex")), Lifecycle.stable())).buildAndRegister();
 
 	private ResourceKey<Level> world; // The dimension to store this object in. Links are stored in both registries.
 

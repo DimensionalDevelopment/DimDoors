@@ -33,7 +33,7 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 		this.id = ResourceLocation.tryParse(nbt.getString("id"));
 
 		if (nbt.contains("addons", NbtType.LIST)) {
-			for (Tag addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
+			for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
 				addons.add((T) PocketAddon.deserialize((CompoundTag) addonTag));
 			}
 		}

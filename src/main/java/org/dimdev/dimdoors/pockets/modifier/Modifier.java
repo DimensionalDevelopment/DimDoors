@@ -21,13 +21,13 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public interface Modifier extends ReferenceSerializable {
-	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<ModifierType<? extends Modifier>>(ResourceKey.createRegistryKey(DimensionalDoors.id("modifier_type")), Lifecycle.stable(), false)).buildAndRegister();
+	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new MappedRegistry<ModifierType<? extends Modifier>>(ResourceKey.createRegistryKey(DimensionalDoors.resource("modifier_type")), Lifecycle.stable(), false)).buildAndRegister();
 
 	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
 
 	static Modifier deserialize(Tag nbt, ResourceManager manager) {
 		switch (nbt.getId()) {
-			case NbtType.COMPOUND: // It's a serialized Modifier
+			case Tag.TAG_COMPOUND: // It's a serialized Modifier
 				return Modifier.deserialize((CompoundTag) nbt, manager);
 			case NbtType.STRING: // It's a reference to a resource location
 				// TODO: throw if manager is null
@@ -94,13 +94,13 @@ public interface Modifier extends ReferenceSerializable {
 	void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	interface ModifierType<T extends Modifier> {
-		ModifierType<ShellModifier> SHELL_MODIFIER_TYPE = register(DimensionalDoors.id(ShellModifier.KEY), ShellModifier::new);
-		ModifierType<DimensionalDoorModifier> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(DimensionalDoors.id(DimensionalDoorModifier.KEY), DimensionalDoorModifier::new);
-		ModifierType<PocketEntranceModifier> PUBLIC_MODIFIER_TYPE = register(DimensionalDoors.id(PocketEntranceModifier.KEY), PocketEntranceModifier::new);
-		ModifierType<RiftDataModifier> RIFT_DATA_MODIFIER_TYPE = register(DimensionalDoors.id(RiftDataModifier.KEY), RiftDataModifier::new);
-		ModifierType<RelativeReferenceModifier> RELATIVE_REFERENCE_MODIFIER_TYPE = register(DimensionalDoors.id(RelativeReferenceModifier.KEY), RelativeReferenceModifier::new);
-		ModifierType<OffsetModifier> OFFSET_MODIFIER_TYPE = register(DimensionalDoors.id(OffsetModifier.KEY), OffsetModifier::new);
-		ModifierType<AbsoluteRiftBlockEntityModifier> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(DimensionalDoors.id(AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
+		ModifierType<ShellModifier> SHELL_MODIFIER_TYPE = register(DimensionalDoors.resource(ShellModifier.KEY), ShellModifier::new);
+		ModifierType<DimensionalDoorModifier> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(DimensionalDoors.resource(DimensionalDoorModifier.KEY), DimensionalDoorModifier::new);
+		ModifierType<PocketEntranceModifier> PUBLIC_MODIFIER_TYPE = register(DimensionalDoors.resource(PocketEntranceModifier.KEY), PocketEntranceModifier::new);
+		ModifierType<RiftDataModifier> RIFT_DATA_MODIFIER_TYPE = register(DimensionalDoors.resource(RiftDataModifier.KEY), RiftDataModifier::new);
+		ModifierType<RelativeReferenceModifier> RELATIVE_REFERENCE_MODIFIER_TYPE = register(DimensionalDoors.resource(RelativeReferenceModifier.KEY), RelativeReferenceModifier::new);
+		ModifierType<OffsetModifier> OFFSET_MODIFIER_TYPE = register(DimensionalDoors.resource(OffsetModifier.KEY), OffsetModifier::new);
+		ModifierType<AbsoluteRiftBlockEntityModifier> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(DimensionalDoors.resource(AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
 
 		Modifier fromNbt(CompoundTag nbt, ResourceManager manager);
 

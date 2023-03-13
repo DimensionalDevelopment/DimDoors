@@ -91,7 +91,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				entity.fallDistance = 0;
 				RandomSource random = RandomSource.create();
 				BlockPos.withinManhattan(location.pos.offset(0, -3, 0), 3, 2, 3).forEach((pos1 -> {
-					if (random.nextFloat() < (1 / ((float) location.pos.distSqr(pos1))) * DimensionalDoors.getConfig().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
+					if (random.nextFloat() < (1 / ((float) location.pos.distSqr(pos1))) * Constants.CONFIG_MANAGER.get().getLimboConfig().limboBlocksCorruptingOverworldAmount) {
 						Block block = location.getWorld().getBlockState(pos1).getBlock();
 						if (UnravelUtil.unravelBlocksMap.containsKey(block))
 							location.getWorld().setBlockAndUpdate(pos1, UnravelUtil.unravelBlocksMap.get(block).defaultBlockState());

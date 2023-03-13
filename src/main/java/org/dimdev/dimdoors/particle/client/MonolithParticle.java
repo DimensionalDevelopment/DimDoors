@@ -13,13 +13,13 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.MonolithRenderer;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class MonolithParticle extends Particle {
 
 	public MonolithParticle(ClientLevel world, double x, double y, double z) {
@@ -36,7 +36,7 @@ public class MonolithParticle extends Particle {
 		matrices.scale(-1.0F, -1.0F, 1.0F);
 		matrices.translate(0.0D, -1.1009999513626099D, 1.5D);
 		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().renderType(DimensionalDoors.id("textures/mob/monolith/monolith14.png")));
+		VertexConsumer vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().renderType(DimensionalDoors.resource("textures/mob/monolith/monolith14.png")));
 		MonolithRenderer.getInstance().renderToBuffer(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 		immediate.endBatch();
 	}

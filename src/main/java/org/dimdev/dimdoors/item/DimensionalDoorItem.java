@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 import java.util.function.Consumer;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -38,7 +38,7 @@ public class DimensionalDoorItem extends BlockItem {
 		this.hasToolTip = hasToolTip;
 	}
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		if(hasToolTip) {
@@ -63,7 +63,7 @@ public class DimensionalDoorItem extends BlockItem {
 
 			if (context.getLevel().isClientSide) {
 				context.getPlayer().displayClientMessage(MutableComponent.create(new TranslatableContents("rifts.entrances.rift_too_close")), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + Constants.CONFIG_MANAGER.get().getGraphicsConfig().highlightRiftCoreFor;
 			}
 
 			return InteractionResult.FAIL;

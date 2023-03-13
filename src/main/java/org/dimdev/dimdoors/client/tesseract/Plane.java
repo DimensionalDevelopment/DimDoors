@@ -4,7 +4,7 @@ import com.flowpowered.math.matrix.Matrix4f;
 import com.flowpowered.math.vector.Vector3f;
 import com.flowpowered.math.vector.Vector4f;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 
 import org.dimdev.dimdoors.api.util.RGBA;
@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.api.util.RGBA;
 import static com.flowpowered.math.TrigMath.cos;
 import static com.flowpowered.math.TrigMath.sin;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class Plane {
     Vector4f[] vectors;
 

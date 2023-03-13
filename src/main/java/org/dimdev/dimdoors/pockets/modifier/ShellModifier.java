@@ -125,7 +125,7 @@ public class ShellModifier extends AbstractLazyModifier {
 
 	@Override
 	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-		for (Tag layerNbt : nbt.getList("layers", NbtType.COMPOUND)) {
+		for (Tag layerNbt : nbt.getList("layers", Tag.TAG_COMPOUND)) {
 			CompoundTag nbtCompound = (CompoundTag) layerNbt;
 			try {
 				Layer layer = Layer.fromNbt(nbtCompound);
@@ -135,7 +135,7 @@ public class ShellModifier extends AbstractLazyModifier {
 			}
 		}
 
-		if (nbt.contains("box_to_draw_around", NbtType.INT_ARRAY)) {
+		if (nbt.contains("box_to_draw_around", Tag.TAG_INT_ARRAY)) {
 			int[] box = nbt.getIntArray("box_to_draw_around");
 			boxToDrawAround = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
 		}

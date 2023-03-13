@@ -35,7 +35,7 @@ public class NbtEquations {
 				} catch (Equation.EquationParseException e) {
 					LOGGER.error(e);
 				}
-			} else if (nbt.getTagType(key) == NbtType.COMPOUND) {
+			} else if (nbt.getTagType(key) == Tag.TAG_COMPOUND) {
 				solved.put(key, solveNbtCompoundEquations(nbt.getCompound(key), variableMap));
 			} else if (nbt.getTagType(key) == NbtType.LIST) {
 				solved.put(key, solveNbtListEquations((ListTag) nbt.get(key), variableMap));
@@ -51,7 +51,7 @@ public class NbtEquations {
 		for (Tag nbt : nbtList) {
 			if (nbt.getId() == NbtType.LIST) {
 				solved.add(solveNbtListEquations((ListTag) nbt, variableMap));
-			} else if (nbt.getId() == NbtType.COMPOUND) {
+			} else if (nbt.getId() == Tag.TAG_COMPOUND) {
 				solved.add(solveNbtCompoundEquations((CompoundTag) nbt, variableMap));
 			} else {
 				solved.add(nbt);

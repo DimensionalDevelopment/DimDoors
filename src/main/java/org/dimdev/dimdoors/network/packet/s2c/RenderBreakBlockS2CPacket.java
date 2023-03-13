@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,12 +11,12 @@ import org.dimdev.dimdoors.network.SimplePacket;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 public class RenderBreakBlockS2CPacket implements SimplePacket<ClientPacketListener> {
-	public static final ResourceLocation ID = DimensionalDoors.id("render_break_block");
+	public static final ResourceLocation ID = DimensionalDoors.resource("render_break_block");
 
 	private BlockPos pos;
 	private int stage;
 
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public RenderBreakBlockS2CPacket() {
 
 	}

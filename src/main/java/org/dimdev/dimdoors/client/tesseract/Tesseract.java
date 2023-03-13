@@ -2,12 +2,12 @@ package org.dimdev.dimdoors.client.tesseract;
 
 import com.flowpowered.math.vector.Vector4f;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 
 import org.dimdev.dimdoors.api.util.RGBA;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class Tesseract {
     private final Plane[] planes = new Plane[24];
 
@@ -181,7 +181,7 @@ public class Tesseract {
         );
     }
 
-    @Environment(EnvType.CLIENT)
+    @Environment(Dist.CLIENT)
     public void draw(org.joml.Matrix4f model, VertexConsumer vc, RGBA color, double radian) {
         for (Plane plane : this.planes) {
             plane.draw(model, vc, color, radian);

@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.listener;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;

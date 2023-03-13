@@ -69,7 +69,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
 
-		else if (nbt.getTagType("rift_data") == NbtType.COMPOUND) doorData = nbt.getCompound("rift_data");
+		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
 
 		try {
 			x = nbt.getString("x");

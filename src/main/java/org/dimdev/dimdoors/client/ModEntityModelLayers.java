@@ -5,7 +5,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModEntityModelLayers {
-	public static ModelLayerLocation MONOLITH = new ModelLayerLocation(DimensionalDoors.id("monolith"), "body");
+	public static ModelLayerLocation MONOLITH = new ModelLayerLocation(DimensionalDoors.resource("monolith"), "body");
 
 	public static void initClient() {
 		EntityModelLayerRegistry.registerModelLayer(MONOLITH, MonolithModel::getTexturedModelData);

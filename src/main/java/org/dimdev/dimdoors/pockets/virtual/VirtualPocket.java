@@ -29,7 +29,7 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 		switch (nbt.getId()) {
 			case NbtType.LIST: // It's a list of VirtualPocket
 				return VirtualPocketList.deserialize((ListTag) nbt, manager);
-			case NbtType.COMPOUND: // It's a serialized VirtualPocket
+			case Tag.TAG_COMPOUND: // It's a serialized VirtualPocket
 				return ImplementedVirtualPocket.deserialize((CompoundTag) nbt, manager);
 			// TODO: throw if manager is null
 			case NbtType.STRING: // It's a reference to a resource location

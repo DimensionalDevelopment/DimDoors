@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 
-@Environment(EnvType.CLIENT)
+@Environment(Dist.CLIENT)
 public class UnderlaidChildItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
 	private final ItemStack underlay;
 

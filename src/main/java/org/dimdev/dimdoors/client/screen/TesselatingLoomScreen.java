@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.screen.TesselatingScreenHandler;
 
 public class TesselatingLoomScreen extends AbstractContainerScreen<TesselatingScreenHandler> implements RecipeUpdateListener {
-	private static final ResourceLocation TEXTURE = DimensionalDoors.id("textures/screen/container/tesselating_loom.png");
+	private static final ResourceLocation TEXTURE = DimensionalDoors.resource("textures/screen/container/tesselating_loom.png");
 	private static final ResourceLocation RECIPE_BUTTON_TEXTURE = new ResourceLocation("textures/gui/recipe_button.png");
 
 	private final RecipeBookComponent recipeBook = new RecipeBookComponent();

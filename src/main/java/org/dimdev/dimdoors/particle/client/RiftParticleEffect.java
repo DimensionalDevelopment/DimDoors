@@ -6,7 +6,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -80,12 +80,12 @@ public class RiftParticleEffect implements ParticleOptions {
       return ModParticleTypes.RIFT;
    }
 
-   @Environment(EnvType.CLIENT)
+   @Environment(Dist.CLIENT)
    public float getColor() {
       return color;
    }
 
-   @Environment(EnvType.CLIENT)
+   @Environment(Dist.CLIENT)
    public int getAverageAge() {
       return averageAge;
    }

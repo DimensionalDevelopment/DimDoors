@@ -71,7 +71,7 @@ public class RiftKeyItem extends Item {
 	@Override
 	public ItemStack getDefaultInstance() {
 		ItemStack stack = super.getDefaultInstance();
-		stack.addTagElement("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) NbtType.INT_ARRAY));
+		stack.addTagElement("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) Tag.TAG_INT_ARRAY));
 		return stack;
 	}
 
@@ -113,26 +113,26 @@ public class RiftKeyItem extends Item {
 
 	public static boolean tryRemove(ItemStack stack, UUID id) {
 		IntArrayTag arrayTag = new IntArrayTag(UUIDUtil.uuidToIntArray(id));
-		return stack.getTag().getList("Ids", NbtType.INT_ARRAY).remove(arrayTag);
+		return stack.getTag().getList("Ids", Tag.TAG_INT_ARRAY).remove(arrayTag);
 	}
 
 	public static void add(ItemStack stack, UUID id) {
 		if (!has(stack, id)) {
-			stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).add(new IntArrayTag(UUIDUtil.uuidToIntArray(id)));
+			stack.getOrCreateTag().getList("Ids", Tag.TAG_INT_ARRAY).add(new IntArrayTag(UUIDUtil.uuidToIntArray(id)));
 		}
 	}
 
 	public static boolean has(ItemStack stack, UUID id) {
-		return stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).contains(new IntArrayTag(UUIDUtil.uuidToIntArray(id)));
+		return stack.getOrCreateTag().getList("Ids", Tag.TAG_INT_ARRAY).contains(new IntArrayTag(UUIDUtil.uuidToIntArray(id)));
 	}
 
 	public static boolean isEmpty(ItemStack stack) {
-		return stack.getOrCreateTag().getList("Ids", NbtType.INT_ARRAY).isEmpty();
+		return stack.getOrCreateTag().getList("Ids", Tag.TAG_INT_ARRAY).isEmpty();
 	}
 
 	public static List<UUID> getIds(ItemStack stack) {
 		return stack.getOrCreateTag()
-				.getList("Ids", NbtType.INT_ARRAY)
+				.getList("Ids", Tag.TAG_INT_ARRAY)
 				.stream()
 				.map(IntArrayTag.class::cast)
 				.map(IntArrayTag::getAsIntArray)

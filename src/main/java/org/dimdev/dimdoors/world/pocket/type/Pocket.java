@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -111,7 +110,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		nbt.put("virtualLocation", VirtualLocation.toNbt(this.virtualLocation));
 
 		ListTag addonsTag = new ListTag();
-		addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
+		addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).toList());
 		if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
 
 		return nbt;
@@ -130,8 +129,8 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		this.box = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
 		this.virtualLocation = VirtualLocation.fromNbt(nbt.getCompound("virtualLocation"));
 
-		if (nbt.contains("addons", NbtType.LIST)) {
-			for (Tag addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
+		if (nbt.contains("addons", Tag.TAG_LIST)) {
+			for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
 				PocketAddon addon = PocketAddon.deserialize((CompoundTag) addonTag);
 				addons.put(addon.getId(), addon);
 			}
@@ -175,7 +174,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public static PocketBuilder<?, Pocket> builder() {
-		return new PocketBuilder(AbstractPocketType.POCKET);
+		return new PocketBuilder<>(AbstractPocketType.POCKET);
 	}
 
 	protected void setBox(BoundingBox box) {
@@ -203,8 +202,8 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 		// TODO: actually utilize fromTag/ toTag methods + implement them
 		public P fromNbt(CompoundTag nbt) {
-			if (nbt.contains("addons", NbtType.LIST)) {
-				for (Tag addonTag : nbt.getList("addons", NbtType.COMPOUND)) {
+			if (nbt.contains("addons", Tag.TAG_LIST)) {
+				for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
 					PocketAddon.PocketBuilderAddon<?> addon = PocketAddon.deserializeBuilder((CompoundTag) addonTag);
 					addons.put(addon.getId(), addon);
 				}
@@ -215,7 +214,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 		public CompoundTag toNbt(CompoundTag nbt) {
 			ListTag addonsTag = new ListTag();
-			addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
+			addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).toList());
 			if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
 
 			return nbt;

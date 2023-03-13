@@ -91,7 +91,7 @@ public class MonolithAggroGoal extends Goal {
             }
 
             // Teleport the target player if various conditions are met
-            if (this.mob.getAggro() >= MAX_AGGRO && DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
+            if (this.mob.getAggro() >= MAX_AGGRO && Constants.CONFIG_MANAGER.get().getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
                 this.mob.setAggro(0);
 				this.target.teleportToWithTicket(this.target.getX(), this.target.getY() + 256, this.target.getZ());
                 this.target.level.playSound(null, new BlockPos(this.target.position()), ModSoundEvents.CRACK, SoundSource.HOSTILE, 13, 1);

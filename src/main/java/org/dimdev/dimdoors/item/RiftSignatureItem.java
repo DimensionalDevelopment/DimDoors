@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.item;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -67,7 +67,7 @@ public class RiftSignatureItem extends Item {
 			return InteractionResult.SUCCESS;
 		}
 
-		if(ModDimensions.isPrivatePocketDimension(world) && !DimensionalDoors.getConfig().getPocketsConfig().canUseRiftSignatureInPrivatePockets) {
+		if(ModDimensions.isPrivatePocketDimension(world) && !Constants.CONFIG_MANAGER.get().getPocketsConfig().canUseRiftSignatureInPrivatePockets) {
 			player.displayClientMessage(MutableComponent.create(new TranslatableContents("tools.signature_blocked")).withStyle(ChatFormatting.BLACK), true);
 			return InteractionResult.FAIL;
 		}
@@ -132,7 +132,7 @@ public class RiftSignatureItem extends Item {
 	}
 
 	@Override
-	@Environment(EnvType.CLIENT)
+	@Environment(Dist.CLIENT)
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		RotatedLocation transform = getSource(itemStack);
 		if (transform != null) {

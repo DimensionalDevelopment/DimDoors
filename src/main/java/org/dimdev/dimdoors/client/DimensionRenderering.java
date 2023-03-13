@@ -21,8 +21,8 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
 
 public class DimensionRenderering {
-    private static final ResourceLocation MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
-    private static final ResourceLocation SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
+    private static final ResourceLocation MOON_RENDER_PATH = DimensionalDoors.resource("textures/other/limbo_moon.png");
+    private static final ResourceLocation SUN_RENDER_PATH = DimensionalDoors.resource("textures/other/limbo_sun.png");
 
     public static void initClient() {
         DimensionRenderingRegistry.CloudRenderer noCloudRenderer = context -> {

@@ -26,10 +26,10 @@ public class BlockStateProvider extends FabricModelProvider {
 		generator.createDoor(ModBlocks.GOLD_DOOR);
 		generator.createDoor(ModBlocks.STONE_DOOR);
 		generator.createDoor(ModBlocks.QUARTZ_DOOR);
-		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("iron_dimensional_door")), Blocks.IRON_DOOR);
-		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("gold_dimensional_door")), ModBlocks.GOLD_DOOR);
-		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
-		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("oak_dimensional_door")), Blocks.OAK_DOOR);
+		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.resource("iron_dimensional_door")), Blocks.IRON_DOOR);
+		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.resource("gold_dimensional_door")), ModBlocks.GOLD_DOOR);
+		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.resource("quartz_dimensional_door")), ModBlocks.QUARTZ_DOOR);
+		createDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.resource("oak_dimensional_door")), Blocks.OAK_DOOR);
 //		createDoor(generator, Registry.BLOCK.get(Util.id("dungeon_door")), ModBlocks.STONE_DOOR);
 
 
