@@ -6,7 +6,6 @@ import java.util.List;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
@@ -27,6 +26,7 @@ import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.client.ClientEvents;
+import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.command.PocketCommand;
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
@@ -55,12 +55,13 @@ public class DimensionalDoors {
 		RegistryHandler.init(FMLJavaModLoadingContext.get().getModEventBus());
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(CommonEvents.class);
-		if(FMLEnvironment.dist == Dist.CLIENT)
+		if(FMLEnvironment.dist == Dist.CLIENT) {
 			MinecraftForge.EVENT_BUS.register(ClientEvents.class);
+			FMLJavaModLoadingContext.get().getModEventBus().register(DimensionalDoorsClient.class);
+		}
 	}
 
 	private void clientSetup(final FMLClientSetupEvent ev) {
-
 	}
 
 	public void commonSetup(FMLCommonSetupEvent ev) {

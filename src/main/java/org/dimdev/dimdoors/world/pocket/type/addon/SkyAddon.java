@@ -2,27 +2,31 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import java.io.IOException;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.DimensionTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraft.world.level.dimension.DimensionType;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class SkyAddon implements AutoSyncedAddon {
 	public static ResourceLocation ID = DimensionalDoors.resource("sky");
 
-	private ResourceKey<Level> world;
+	private ResourceKey<DimensionType> world;
 
-	public boolean setWorld(ResourceKey<Level> world) {
+	public boolean setWorld(ResourceKey<DimensionType> world) {
 		this.world = world;
 		return true;
 	}
 
 	@Override
 	public PocketAddon fromNbt(CompoundTag nbt) {
-		this.world = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(nbt.getString("world")));
+		this.world = ResourceKey.create(Registries.DIMENSION_TYPE, ResourceLocation.tryParse(nbt.getString("world")));
 
 		return this;
 	}
@@ -46,13 +50,13 @@ public class SkyAddon implements AutoSyncedAddon {
 		return ID;
 	}
 
-	public ResourceKey<Level> getWorld() {
+	public ResourceKey<DimensionType> getWorld() {
 		return world;
 	}
 
 	@Override
 	public AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException {
-		this.world = ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation());
+		this.world = ResourceKey.create(Registries.DIMENSION_TYPE, buf.readResourceLocation());
 		return this;
 	}
 
@@ -63,7 +67,7 @@ public class SkyAddon implements AutoSyncedAddon {
 	}
 
 	public interface SkyPocketBuilder<T extends Pocket.PocketBuilder<T, ?>> extends PocketBuilderExtension<T> {
-		default T world(ResourceKey<Level> world) {
+		default T world(ResourceKey<DimensionType> world) {
 
 			this.<SkyBuilderAddon>getAddon(ID).world = world;
 
@@ -73,7 +77,7 @@ public class SkyAddon implements AutoSyncedAddon {
 
 	public static class SkyBuilderAddon implements PocketBuilderAddon<SkyAddon> {
 
-		private ResourceKey<Level> world = Level.OVERWORLD;
+		private ResourceKey<DimensionType> world = BuiltinDimensionTypes.OVERWORLD;
 
 		@Override
 		public void apply(Pocket pocket) {
@@ -89,7 +93,7 @@ public class SkyAddon implements AutoSyncedAddon {
 
 		@Override
 		public PocketBuilderAddon<SkyAddon> fromNbt(CompoundTag nbt) {
-			this.world = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(nbt.getString("world")));
+			this.world = ResourceKey.create(Registries.DIMENSION_TYPE, ResourceLocation.tryParse(nbt.getString("world")));
 
 			return this;
 		}
@@ -110,7 +114,7 @@ public class SkyAddon implements AutoSyncedAddon {
 	}
 
 	public interface SkyPocket extends AddonProvider {
-		default boolean sky(ResourceKey<Level> world) {
+		default boolean sky(ResourceKey<DimensionType> world) {
 			ensureIsPocket();
 			if (!this.hasAddon(ID)) {
 				SkyAddon addon = new SkyAddon();

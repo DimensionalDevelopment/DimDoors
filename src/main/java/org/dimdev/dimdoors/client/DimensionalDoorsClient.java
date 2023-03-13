@@ -1,5 +1,10 @@
 package org.dimdev.dimdoors.client;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
@@ -17,12 +22,12 @@ import org.dimdev.dimdoors.network.client.ExtendedClientPlayNetworkHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 
-@Environment(Dist.CLIENT)
-public class DimensionalDoorsClientInitializer implements ClientModInitializer {
-    @Override
-    public void onInitializeClient() {
-		ModelLoadingRegistry.INSTANCE.registerVariantProvider((manager) -> new DimensionalDoorModelVariantProvider());
+@OnlyIn(Dist.CLIENT)
+public class DimensionalDoorsClient {
 
+	@SubscribeEvent
+    public static void initClient(FMLClientSetupEvent event) {
+		ModelLoadingRegistry.INSTANCE.registerVariantProvider((manager) -> new DimensionalDoorModelVariantProvider());
 		ScreenRegistry.register(ModScreenHandlerTypes.TESSELATING_LOOM, TesselatingLoomScreen::new);
         ModEntityTypes.initClient();
 		ModFluids.initClient();
