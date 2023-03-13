@@ -122,9 +122,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 			return;
 		}
 		switch (dimdoors_random.nextInt(3)) {
-			case 0 : makeLimboLikeOverworld(player); break;
-			case 1 : makeLimboLikeNether(player); break;
-			case 2 : makeLimboLikeEnd(player); break;
+			case 0 -> makeLimboLikeOverworld(player);
+			case 1 -> makeLimboLikeNether(player);
+			case 2 -> makeLimboLikeEnd(player);
 		}
 	}
 

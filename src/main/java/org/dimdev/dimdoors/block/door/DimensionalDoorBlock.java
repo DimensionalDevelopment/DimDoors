@@ -2,11 +2,13 @@ package org.dimdev.dimdoors.block.door;
 
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.Nullable;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.NetherPortalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -94,7 +97,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		double dotPrevious = portalNormal.dot(previousPos.subtract(bottomMiddlePortalPoint));
 		if (!(dotCurrent <= 0 && dotPrevious >= 0) && !(dotCurrent >= 0 && dotPrevious <= 0) || (dotCurrent == 0 && dotPrevious == 0)) {
 			// start and end point of movement are on same side of the portal plane or both inside the plane
-			return InteractionResult.PASS;
+			//return InteractionResult.PASS;
 		}
 
 		Vec3 yVec = new Vec3(0, 1, 0);
@@ -120,7 +123,11 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		entity.setPortalCooldown();
 
-
+		Direction dir = state.getValue(FACING);
+		double xOffset = dir==Direction.WEST ? -1.5d : dir==Direction.EAST ? 1.5d : 0d;
+		double zOffset = dir==Direction.NORTH ? -1.5d : dir==Direction.SOUTH ? 1.5d : 0d;
+		BlockPos newPos = entity.blockPosition();
+		entity.setPos(newPos.getX()+xOffset,newPos.getY(),newPos.getZ()+zOffset);
 		this.getRift(world, pos, state).teleport(entity);
 		if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
 			world.setBlockAndUpdate(top, world.getBlockState(top).setValue(DoorBlock.OPEN, false));

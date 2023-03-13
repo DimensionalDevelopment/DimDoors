@@ -97,8 +97,8 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 		tag(ModBlockTags.DECAY_TO_UNRAVELED_SPIKE).add(
 				reverseLookup(Blocks.END_ROD),
 				reverseLookup(Blocks.POINTED_DRIPSTONE)
-		).addTag(BlockTags.FLOWER_POTS).addTag(BlockTags.CANDLES);
-		tag(ModBlockTags.DECAY_TO_WITHER_ROSE).addTag(BlockTags.SMALL_FLOWERS).addTag(BlockTags.TALL_FLOWERS);
+		).addOptionalTag(BlockTags.FLOWER_POTS.location()).addOptionalTag(BlockTags.CANDLES.location());
+		tag(ModBlockTags.DECAY_TO_WITHER_ROSE).addOptionalTag(BlockTags.SMALL_FLOWERS.location()).addOptionalTag(BlockTags.TALL_FLOWERS.location());
 		tag(ModBlockTags.DECAY_TO_CLAY);
 		tag(ModBlockTags.DECAY_TO_CLAY);
 		tag(ModBlockTags.DECAY_CLAY_FENCE);

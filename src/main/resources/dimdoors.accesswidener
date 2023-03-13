@@ -23,7 +23,7 @@ accessible method  net/minecraft/client/renderer/LevelRenderer renderEndSky (Lco
 
 #accessible method net/minecraft/world/biome/Biome getCategory ()Lnet/minecraft/world/biome/Biome$Category;
 
-accessible field net/minecraft/block/Block LOGGER Lorg/slf4j/Logger;
+accessible field net/minecraft/world/level/block/Block LOGGER Lorg/slf4j/Logger;
 
 accessible method net/minecraft/data/worldgen/placement/OrePlacements commonOrePlacement (ILnet/minecraft/world/level/levelgen/placement/PlacementModifier;)Ljava/util/List;
 
