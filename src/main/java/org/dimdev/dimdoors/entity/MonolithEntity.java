@@ -1,12 +1,13 @@
 package org.dimdev.dimdoors.entity;
 
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.util.NbtType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -26,7 +27,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.DimensionalDoors;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -43,18 +45,18 @@ public class MonolithEntity extends Mob {
     private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
     private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
-    @Environment(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private static final RandomSource clientRandom = RandomSource.create();
 
     private int soundTime = 0;
     private final int aggroCap;
 
     MonolithEntity(Level world) {
-        this(ModEntityTypes.MONOLITH, world);
+        this(ModEntityTypes.MONOLITH.get(), world);
     }
 
     public MonolithEntity(EntityType<? extends MonolithEntity> type, Level world) {
-        super(ModEntityTypes.MONOLITH, world);
+        super(type, world);
         this.noPhysics = true;
         this.aggroCap = Mth.nextInt(this.getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
         this.setNoGravity(true);
@@ -150,7 +152,7 @@ public class MonolithEntity extends Mob {
             return;
         }
 
-        if ((player.getInventory().armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && player.getInventory().armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && player.getInventory().armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && player.getInventory().armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
+        if ((player.getInventory().armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET.get() && player.getInventory().armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE.get() && player.getInventory().armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS.get() && player.getInventory().armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS.get())) {
             return;
         }
 
@@ -193,7 +195,7 @@ public class MonolithEntity extends Mob {
         }
     }
 
-    @Environment(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public int getTextureState() {
         // Determine texture state from aggro progress
         return Mth.clamp(MAX_TEXTURE_STATE * this.entityData.get(AGGRO) / MAX_AGGRO, 0, MAX_TEXTURE_STATE);
@@ -232,7 +234,7 @@ public class MonolithEntity extends Mob {
 		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
     public static void spawnParticles(int aggro) {
 		Player player = Minecraft.getInstance().player;
 		if (aggro < 120) {
@@ -275,10 +277,10 @@ public class MonolithEntity extends Mob {
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         setAggro(nbt.getInt("Aggro"));
-        if (nbt.contains("scale", NbtType.FLOAT)) {
+        if (nbt.contains("scale", Tag.TAG_FLOAT)) {
         	setScale(nbt.getFloat("scale"));
 		}
-        if (nbt.contains("pitch", NbtType.FLOAT)) {
+        if (nbt.contains("pitch", Tag.TAG_FLOAT)) {
 			setXRot(nbt.getFloat("pitch"));
 		}
     }

@@ -1,28 +1,33 @@
 package org.dimdev.dimdoors.particle;
 
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
+
 import net.fabricmc.api.Dist;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
-import net.minecraft.core.Registry;
+
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import org.dimdev.dimdoors.DimensionalDoors;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 
 public class ModParticleTypes {
-	public static final SimpleParticleType MONOLITH = FabricParticleTypes.simple(true);
-	public static final ParticleType<RiftParticleEffect> RIFT = new RiftParticleType();
-	public static final SimpleParticleType LIMBO_ASH = FabricParticleTypes.simple(false);
+	private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, Constants.MODID);
 
-	public static void init() {
-		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.resource("monolith"), MONOLITH);
-		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.resource("rift"), RIFT);
-		Registry.register(BuiltInRegistries.PARTICLE_TYPE, DimensionalDoors.resource("limbo_ash"), LIMBO_ASH);
+	public static final RegistryObject<SimpleParticleType> MONOLITH = PARTICLE_TYPES.register("monolith", () -> new SimpleParticleType(true));
+	public static final RegistryObject<ParticleType<RiftParticleEffect>> RIFT = PARTICLE_TYPES.register("rift", RiftParticleType::new);
+	public static final RegistryObject<SimpleParticleType> LIMBO_ASH = PARTICLE_TYPES.register("limbo_ash", () -> new SimpleParticleType(false));
+
+	public static void init(IEventBus bus) {
+		PARTICLE_TYPES.register(bus);
 	}
 
 	@Environment(Dist.CLIENT)

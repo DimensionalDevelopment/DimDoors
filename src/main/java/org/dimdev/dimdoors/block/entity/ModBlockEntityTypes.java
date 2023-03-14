@@ -1,39 +1,39 @@
 package org.dimdev.dimdoors.block.entity;
 
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.ArrayUtils;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.data.DoorData;
 
 public class ModBlockEntityTypes {
-	public static final BlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = register(
-			"dimdoors:detached_rift",
-			DetachedRiftBlockEntity::new,
-			ModBlocks.DETACHED_RIFT);
+	private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, Constants.MODID);
 
-	public static final MutableBlockEntityType<EntranceRiftBlockEntity> ENTRANCE_RIFT = registerMutable(
-			"dimdoors:entrance_rift",
-			EntranceRiftBlockEntity::new,
-			ArrayUtils.add(DoorData.DOORS.toArray(new Block[0]), ModBlocks.DIMENSIONAL_PORTAL));
+	public static final RegistryObject<BlockEntityType<DetachedRiftBlockEntity>> DETACHED_RIFT = BLOCK_ENTITIES.register("detached_rift", () -> register(DetachedRiftBlockEntity::new, ModBlocks.DETACHED_RIFT.get()));
 
-    public static final BlockEntityType<TesselatingLoomBlockEntity> TESSELATING_LOOM = register("dimdoors:tesselating_loom", TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM);
+	public static final RegistryObject<MutableBlockEntityType<EntranceRiftBlockEntity>> ENTRANCE_RIFT = BLOCK_ENTITIES.register("entrance_rift", () -> registerMutable(EntranceRiftBlockEntity::new, ArrayUtils.add(DoorData.DOORS.toArray(new Block[0]), ModBlocks.DIMENSIONAL_PORTAL.get())));
+
+    public static final RegistryObject<BlockEntityType<TesselatingLoomBlockEntity>> TESSELATING_LOOM = BLOCK_ENTITIES.register("tesselating_loom", () -> register(TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM.get()));
 
 
-    private static <E extends BlockEntity> BlockEntityType<E> register(String id, FabricBlockEntityTypeBuilder.Factory<E> factory, Block... blocks) {
-		return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(factory, blocks).build());
+    private static <E extends BlockEntity> BlockEntityType<E> register(BlockEntityType.BlockEntitySupplier<E> factory, Block... blocks) {
+		return BlockEntityType.Builder.of(factory, blocks).build(null);
 	}
 
-	private static <E extends BlockEntity> MutableBlockEntityType<E> registerMutable(String id, MutableBlockEntityType.BlockEntityFactory<E> factory, Block... blocks) {
-		return Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, id, MutableBlockEntityType.Builder.create(factory, blocks).build());
+	private static <E extends BlockEntity> MutableBlockEntityType<E> registerMutable(MutableBlockEntityType.BlockEntityFactory<E> factory, Block... blocks) {
+		return MutableBlockEntityType.Builder.create(factory, blocks).build();
 	}
 
-	public static void init() {
-		//just loads the class
+	public static void init(IEventBus eventBus) {
+		BLOCK_ENTITIES.register(eventBus);
 	}
 }

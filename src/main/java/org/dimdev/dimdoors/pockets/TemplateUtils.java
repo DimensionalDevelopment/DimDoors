@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -16,7 +19,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.Logger;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
@@ -43,7 +46,7 @@ public class TemplateUtils {
 
             CompoundTag newTag;
             if ("monolith".equals(entityTag.getString("placeholder"))) {
-                MonolithEntity monolith = Objects.requireNonNull(ModEntityTypes.MONOLITH.create(null));
+                MonolithEntity monolith = Objects.requireNonNull(ModEntityTypes.MONOLITH.get().create(null));
                 monolith.setPosRaw(x, y, z);
                 monolith.setYRot(yaw);
                 monolith.setXRot(pitch);

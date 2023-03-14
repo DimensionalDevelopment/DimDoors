@@ -45,7 +45,7 @@ public final class ModItems {
 
 	public static final RegistryObject<Item> OAK_DIMENSIONAL_TRAPDOOR = ITEMS.register("wood_dimensional_trapdoor",
 			() -> create(new DimensionalTrapdoorItem(
-					ModBlocks.OAK_DIMENSIONAL_TRAPDOOR,
+					ModBlocks.OAK_DIMENSIONAL_TRAPDOOR.get(),
 					new Item.Properties().stacksTo(1),
 					rift -> rift.setDestination(
 							RandomTarget.builder()
@@ -90,7 +90,7 @@ public final class ModItems {
 			() -> create(new DimensionalEraserItem(new Item.Properties().durability(100))));
 
 	public static final RegistryObject<Item> MONOLITH_SPAWNER = ITEMS.register("monolith_spawner",
-			() -> new ForgeSpawnEggItem(() -> ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, new Item.Properties()));
+			() -> new ForgeSpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, new Item.Properties()));
 
 	public static final RegistryObject<Item> WORLD_THREAD_HELMET = ITEMS.register("world_thread_helmet",
 			() -> create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.HEAD, new Item.Properties())));
@@ -363,6 +363,10 @@ public final class ModItems {
 	public static final RegistryObject<Item> UNRAVELED_STAIRS = ITEMS.register("unraveled_stairs",
 			() -> createWithoutItemGroup(ModBlocks.UNRAVELED_STAIRS));
 	public static final Set<Item> DOOR_ITEMS = new HashSet<>();
+
+	private static Item createWithoutItemGroup(RegistryObject<Block> block) {
+		return create(block.get());
+	}
 
 	private static Item createWithoutItemGroup(Block block) {
 		return create(new BlockItem(block, (new Item.Properties())));

@@ -72,23 +72,23 @@ public class RegistryHandler {
 		DecayPredicate.DecayPredicateType.register();
 		DecayProcessor.DecayProcessorType.register();
 
-		ModRecipeTypes.init();
-		ModRecipeSerializers.init();
-		ModScreenHandlerTypes.init();
-		ModBlocks.init();
+		ModRecipeTypes.init(bus);
+		ModRecipeSerializers.init(bus);
+		ModScreenHandlerTypes.init(bus);
+		ModBlocks.init(bus);
 		ModItems.init(bus);
 		ModFeatures.init();
 		ModBiomes.init();
 		ModDimensions.init();
-		ModEntityTypes.init();
+		ModEntityTypes.init(bus);
 		ModStats.init();
-		ModBlockEntityTypes.init();
+		ModBlockEntityTypes.init(bus);
 		ModCommands.init();
 		ModFluids.init();
-		ModSoundEvents.init();
-		ModParticleTypes.init();
+		ModSoundEvents.init(bus);
+		ModParticleTypes.init(bus);
 		ModCriteria.init();
-		ModEnchants.init();
+		ModEnchants.init(bus);
 		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(BuiltInRegistries.ITEM);
 		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(BuiltInRegistries.BLOCK, dimensionalDoorItemRegistrar);
 
