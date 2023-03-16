@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block.door;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockSetType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.entity.BlockEntity;
@@ -24,8 +25,8 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 // TODO: Make this placeable on rifts
 public class DimensionalTrapdoorBlock extends TrapdoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
-	public DimensionalTrapdoorBlock(Block.Settings settings, SoundEvent closeSound, SoundEvent openSound) {
-		super(settings, closeSound, openSound);
+	public DimensionalTrapdoorBlock(Block.Settings settings, BlockSetType setType) {
+		super(settings, setType);
 	}
 
 	@Override

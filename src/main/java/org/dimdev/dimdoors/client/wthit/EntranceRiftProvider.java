@@ -30,8 +30,8 @@ public enum EntranceRiftProvider implements IBlockComponentProvider {
 		EntranceRiftBlockEntity blockEntity = ((EntranceRiftBlockEntity) accessor.getBlockEntity());
 		VirtualTarget destination = Objects.requireNonNull(blockEntity).getDestination();
 		if (destination != null) {
-			Text tKey = MutableText.of(new TranslatableTextContent(destination.getType().getTranslationKey()));
-			Text main = MutableText.of(new TranslatableTextContent("dimdoors.destination")).append(": ").append(tKey);
+			Text tKey = Text.translatable(destination.getType().getTranslationKey());
+			Text main = Text.translatable("dimdoors.destination").append(": ").append(tKey);
 			tooltip.addLine(main);
 		}
 	}

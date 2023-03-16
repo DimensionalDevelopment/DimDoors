@@ -17,10 +17,11 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 
 public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
-	public static final DynamicCommandExceptionType UNKNOWN_VALUE = new DynamicCommandExceptionType(str -> MutableText.of(new TranslatableTextContent("commands.generic.unknownValue", str)));
+	public static final DynamicCommandExceptionType UNKNOWN_VALUE = new DynamicCommandExceptionType(str -> Text.translatable("commands.generic.unknownValue", str));
 	private final Map<String, T> values;
 	private final Set<String> valueList;
 

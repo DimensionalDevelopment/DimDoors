@@ -17,6 +17,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 
@@ -29,8 +30,8 @@ import org.dimdev.dimdoors.world.ModDimensions;
 public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey) {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
-				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey)),
-				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey + ".desc")),
+				Text.translatable("dimdoors.advancement." + titleKey),
+				Text.translatable("dimdoors.advancement." + titleKey + ".desc"),
 				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
 				AdvancementFrame.TASK,
 				true,
@@ -41,8 +42,8 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey, AdvancementFrame advancementFrame) {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
-				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey)),
-				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey + ".desc")),
+				Text.translatable("dimdoors.advancement." + titleKey),
+				Text.translatable("dimdoors.advancement." + titleKey + ".desc"),
 				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
 				advancementFrame,
 				true,

@@ -101,7 +101,7 @@ public class DimensionRenderering {
 //        BufferRenderer.draw(bufferBuilder);
 
         RenderSystem.depthMask(true);
-        RenderSystem.enableTexture();
+//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 

@@ -5,6 +5,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
@@ -33,7 +34,7 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug.")));
+		EntityUtils.chat(entity, Text.translatable("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug."));
 		return false;
 	}
 

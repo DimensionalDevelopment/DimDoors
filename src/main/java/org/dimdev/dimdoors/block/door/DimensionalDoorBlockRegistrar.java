@@ -18,6 +18,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 
@@ -118,7 +119,7 @@ public class DimensionalDoorBlockRegistrar {
 		private final Block originalBlock;
 
 		public AutoGenDimensionalDoorBlock(Settings settings, DoorSoundProvider originalBlock) {
-			super(settings, originalBlock.getCloseSound(), originalBlock.getOpenSound());
+			super(settings, originalBlock.getSetType());
 			this.originalBlock = (Block) originalBlock;
 
 			BlockState state = this.getStateManager().getDefaultState();
@@ -138,7 +139,7 @@ public class DimensionalDoorBlockRegistrar {
 
 		@Override
 		public MutableText getName() {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_block_prefix")).append(originalBlock.getName());
+			return Text.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
 		}
 	}
 
@@ -146,7 +147,7 @@ public class DimensionalDoorBlockRegistrar {
 		private final Block originalBlock;
 
 		public AutoGenDimensionalTrapdoorBlock(Settings settings, DoorSoundProvider originalBlock) {
-			super(settings, originalBlock.getCloseSound(), originalBlock.getOpenSound());
+			super(settings, originalBlock.getSetType());
 			this.originalBlock = (Block) originalBlock;
 
 			BlockState state = this.getStateManager().getDefaultState();
@@ -166,7 +167,7 @@ public class DimensionalDoorBlockRegistrar {
 
 		@Override
 		public MutableText getName() {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_block_prefix")).append(originalBlock.getName());
+			return Text.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
 		}
 	}
 }

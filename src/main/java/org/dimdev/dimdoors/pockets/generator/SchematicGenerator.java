@@ -12,6 +12,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -146,7 +147,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
 		BlockPos origin = pocket.getOrigin();
 		LOGGER.info("Generating pocket from template " + templateID + " at location " + origin);
-		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ())), false));
+		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendFeedback(Text.translatable("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ()), false));
 
 
 		if (pocket instanceof LazyGenerationPocket) {

@@ -28,7 +28,7 @@ public abstract class LimboEntranceSource {
 		@Override
 		public Text getMessage(PlayerEntity player) {
 			TranslatableTextContent message = (TranslatableTextContent) this.damageSource.getDeathMessage(player).getContent();
-			return MutableText.of(new TranslatableTextContent("limbo." + message.getKey(), message.getArgs()));
+			return Text.translatable("limbo." + message.getKey(), message.getArgs());
 		}
 	}
 }

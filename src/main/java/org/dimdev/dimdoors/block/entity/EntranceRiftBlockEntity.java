@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -71,7 +72,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 					return innerTeleport(entity);
 				}
 
-				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("rifts.isLocked")));
+				EntityUtils.chat(entity, Text.translatable("rifts.isLocked"));
 			}
 			return false;
 		}

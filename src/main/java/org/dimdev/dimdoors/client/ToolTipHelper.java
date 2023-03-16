@@ -10,10 +10,10 @@ import net.minecraft.text.TranslatableTextContent;
 public class ToolTipHelper {
 	public static void processTranslation(List<Text> list, String key, Object... args) {
 		if(I18n.hasTranslation(key)) {
-			list.add(MutableText.of(new TranslatableTextContent(key, args)));
+			list.add(Text.translatable(key, args));
 		} else {
 			for (int i = 0; I18n.hasTranslation(key + i); i++) {
-				list.add(MutableText.of(new TranslatableTextContent(key + i, args)));
+				list.add(Text.translatable(key + i, args));
 			}
 		}
 	}

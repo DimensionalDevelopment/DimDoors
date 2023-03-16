@@ -213,7 +213,7 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		this.entityContainer.forEach(((nbt, vec3d) -> {
 			NbtList doubles = nbt.getList("Pos", NbtType.DOUBLE);
 			Vec3d vec = vec3d.add(origin.getX(), origin.getY(), origin.getZ());
-			if (intersection.contains(new Vec3i(vec.x, vec.y, vec.z))) {
+			if (intersection.contains(new Vec3i((int) vec.x, (int) vec.y, (int) vec.z))) {
 				doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
 				doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 				doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));

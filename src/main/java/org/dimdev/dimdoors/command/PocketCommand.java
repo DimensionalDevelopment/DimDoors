@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -68,10 +69,10 @@ public class PocketCommand {
 													UUID playerUUID = commandSource.getPlayer().getUuid();
 													if (logSetting.containsKey(playerUUID)) {
 														logSetting.remove(playerUUID);
-														commandSource.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.log.creation.off")), false);
+														commandSource.sendFeedback(Text.translatable("commands.pocket.log.creation.off"), false);
 													} else {
 														logSetting.put(playerUUID, commandSource);
-														commandSource.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.log.creation.on")), false);
+														commandSource.sendFeedback(Text.translatable("commands.pocket.log.creation.on"), false);
 													}
 													return Command.SINGLE_SUCCESS;
 												})
@@ -98,7 +99,7 @@ public class PocketCommand {
 		);
 
 		String id = template.getId().toString();
-		source.getCommandSource().sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.placedSchem", id, "" + source.getBlockPos().getX() + ", " + source.getBlockPos().getY() + ", " + source.getBlockPos().getZ(), source.world.getRegistryKey().getValue().toString())), true);
+		source.getCommandSource().sendFeedback(Text.translatable("commands.pocket.placedSchem", id, "" + source.getBlockPos().getX() + ", " + source.getBlockPos().getY() + ", " + source.getBlockPos().getZ(), source.world.getRegistryKey().getValue().toString()), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

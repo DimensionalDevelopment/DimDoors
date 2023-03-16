@@ -20,6 +20,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -47,7 +48,7 @@ public class WorldeditHelper {
 			}
 			taskAcceptor.accept(() -> {
 				WorldEdit.getInstance().getSessionManager().get(FabricAdapter.adaptPlayer(player)).setClipboard(new ClipboardHolder(clipboard));
-				source.sendFeedback(MutableText.of(new TranslatableTextContent("commands.pocket.loadedSchem", template.getId())), true);
+				source.sendFeedback(Text.translatable("commands.pocket.loadedSchem", template.getId()), true);
 			});
 		};
 		if (async) {

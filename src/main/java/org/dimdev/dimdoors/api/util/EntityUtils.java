@@ -17,12 +17,15 @@ public final class EntityUtils {
 		// Thrower
 		if (entity instanceof ProjectileEntity) topmostEntity = ((ProjectileEntity) entity).getOwner();
 		if (entity instanceof FishingBobberEntity) topmostEntity = ((FishingBobberEntity) entity).getOwner();
-		if (entity instanceof ItemEntity)
-			topmostEntity = ((ServerWorld) entity.getEntityWorld()).getEntity(((ItemEntity) entity).getThrower());
+		if (entity instanceof ItemEntity ie) {
+			if (ie.getOwner() != null) {
+				topmostEntity = ie.getOwner();
+			}
+		}
 
 		// Passengers
-		if (entity.getPrimaryPassenger() != null && !(entity instanceof PlayerEntity))
-			topmostEntity = entity.getPrimaryPassenger();
+		if (entity.getControllingPassenger() != null && !(entity instanceof PlayerEntity))
+			topmostEntity = entity.getControllingPassenger();
 		if (entity.getPassengerList().size() > 0) topmostEntity = entity.getPassengerList().get(0);
 
 		// Owned Animals

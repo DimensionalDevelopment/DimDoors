@@ -13,6 +13,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 import net.minecraft.world.border.WorldBorder;
@@ -67,10 +68,9 @@ public final class TeleportUtil {
 
 		if (entity instanceof ServerPlayerEntity) {
 			// This is what the vanilla tp command does. Let's hope this works.
-			ChunkPos chunkPos = new ChunkPos(new BlockPos(pos));
+			ChunkPos chunkPos = new ChunkPos(new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)));
 			((ServerWorld) world).getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
 			entity.stopRiding();
-
 
 			if (entity.world.getRegistryKey().equals(world.getRegistryKey())) {
 				((ServerPlayerEntity) entity).networkHandler.requestTeleport(pos.getX(), pos.getY(), pos.getZ(), yaw, pitch);
@@ -79,7 +79,7 @@ public final class TeleportUtil {
 			}
 
 			((ServerPlayerEntity) entity).networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(entity.getId(), velocity));
-			((ExtendedServerPlayNetworkHandler) ((ServerPlayerEntity) entity).networkHandler).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos(pos));
+			((ExtendedServerPlayNetworkHandler) ((ServerPlayerEntity) entity).networkHandler).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos((int) pos.x, (int) pos.y, (int) pos.z));
 
 			if (world.getRegistryKey() == ModDimensions.DUNGEON) {
 				((PlayerEntity) entity).incrementStat(ModStats.TIMES_BEEN_TO_DUNGEON);

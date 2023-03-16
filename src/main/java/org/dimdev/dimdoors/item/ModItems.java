@@ -87,13 +87,13 @@ public final class ModItems {
 
 	@RegistryEntry("monolith_spawner") public static final Item MONOLITH_SPAWNER = new SpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, new Item.Settings());
 
-	@RegistryEntry("world_thread_helmet") public static final Item WORLD_THREAD_HELMET = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.HEAD, new Item.Settings()));
+	@RegistryEntry("world_thread_helmet") public static final Item WORLD_THREAD_HELMET = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.HELMET, new Item.Settings()));
 
-	@RegistryEntry("world_thread_chestplate") public static final Item WORLD_THREAD_CHESTPLATE = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.CHEST, new Item.Settings()));
+	@RegistryEntry("world_thread_chestplate") public static final Item WORLD_THREAD_CHESTPLATE = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.CHESTPLATE, new Item.Settings()));
 
-	@RegistryEntry("world_thread_leggings") public static final Item WORLD_THREAD_LEGGINGS = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.LEGS, new Item.Settings()));
+	@RegistryEntry("world_thread_leggings") public static final Item WORLD_THREAD_LEGGINGS = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.LEGGINGS, new Item.Settings()));
 
-	@RegistryEntry("world_thread_boots") public static final Item WORLD_THREAD_BOOTS = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.FEET, new Item.Settings()));
+	@RegistryEntry("world_thread_boots") public static final Item WORLD_THREAD_BOOTS = create(new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.BOOTS, new Item.Settings()));
 
 	@RegistryEntry("mask_wand") public static final Item MASK_WAND = create(new MaskWandItem(new Item.Settings().maxCount(100)/**/));
 
@@ -257,7 +257,7 @@ public final class ModItems {
 
 	public static final ItemGroup DIMENSIONAL_DOORS = FabricItemGroup.builder(id("dimensional_doors"))
 			.icon(() -> new ItemStack(ModItems.RIFT_BLADE))
-			.entries((enabledFeatures, entries, operatorEnabled) -> {
+			.entries((enabledFeatures, entries) -> {
 				for (Field field : ModItems.class.getFields()) {
 					if (field.getType() == Item.class) {
 						try {

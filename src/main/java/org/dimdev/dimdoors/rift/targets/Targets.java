@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.Direction;
 
@@ -21,7 +22,7 @@ public final class Targets {
 
 	public static void registerDefaultTargets() {
 		DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativePos, relativeRotation, relativeVelocity) -> {
-			EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("rifts.unlinked2")));
+			EntityUtils.chat(entity, Text.translatable("rifts.unlinked2"));
 			return false;
 		});
 		DefaultTargets.registerDefaultTarget(ITEM, stack -> false);

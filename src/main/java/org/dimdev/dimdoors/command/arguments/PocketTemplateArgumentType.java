@@ -16,6 +16,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
 import net.minecraft.command.CommandSource;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 
 import org.dimdev.dimdoors.api.util.Path;
@@ -24,7 +25,7 @@ import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 
 public class PocketTemplateArgumentType implements ArgumentType<PocketTemplate> {
-	public static final DynamicCommandExceptionType UNKNOWN_POCKET_TEMPLATE = new DynamicCommandExceptionType(s -> MutableText.of(new TranslatableTextContent("commands.pocket.unknownPocketTemplate",s)));
+	public static final DynamicCommandExceptionType UNKNOWN_POCKET_TEMPLATE = new DynamicCommandExceptionType(s -> Text.translatable("commands.pocket.unknownPocketTemplate",s));
 
 	@Override
 	public PocketTemplate parse(StringReader reader) throws CommandSyntaxException {

@@ -148,12 +148,12 @@ public class DimensionalDoorItemRegistrar {
 
 		@Override
 		public Text getName(ItemStack stack) {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
+			return Text.translatable("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
 
 		@Override
 		public Text getName() {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
+			return Text.translatable("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
 
 		@Override
@@ -178,12 +178,12 @@ public class DimensionalDoorItemRegistrar {
 
 		@Override
 		public Text getName(ItemStack stack) {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
+			return Text.translatable("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
 
 		@Override
 		public Text getName() {
-			return MutableText.of(new TranslatableTextContent("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey())));
+			return Text.translatable("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
 		}
 
 		@Override

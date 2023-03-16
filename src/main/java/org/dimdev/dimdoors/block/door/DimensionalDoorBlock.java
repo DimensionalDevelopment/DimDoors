@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockSetType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DoorBlock;
@@ -52,8 +53,8 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 
 public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, CustomBreakBlock, AfterMoveCollidableBlock {
-	public DimensionalDoorBlock(Settings settings, SoundEvent closeSound, SoundEvent openSound) {
-		super(settings, closeSound, openSound);
+	public DimensionalDoorBlock(Settings settings, BlockSetType blockSetType) {
+		super(settings, blockSetType);
 	}
 
 	@Override

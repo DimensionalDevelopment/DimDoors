@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -26,7 +27,7 @@ public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<Entr
 					matrixStack.push();
 					matrixStack.translate(0.5, 0.5, 0.5);
 
-					MinecraftClient.getInstance().textRenderer.draw(Text.of(String.valueOf(idMarker.getId())), 0f, 0f, 0xffffffff, false, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider, true, 0x000000, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+					MinecraftClient.getInstance().textRenderer.draw(Text.of(String.valueOf(idMarker.getId())), 0f, 0f, 0xffffffff, false, matrixStack.peek().getPositionMatrix(), vertexConsumerProvider, TextRenderer.TextLayerType.NORMAL, 0x000000, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 
 					matrixStack.pop();
 				}

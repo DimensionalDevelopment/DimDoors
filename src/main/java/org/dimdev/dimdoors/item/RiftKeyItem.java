@@ -42,7 +42,7 @@ public class RiftKeyItem extends Item {
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
 		if (isEmpty(stack)) {
-			tooltip.add(MutableText.of(new TranslatableTextContent("item.dimdoors.rift_key.no_links")));
+			tooltip.add(Text.translatable("item.dimdoors.rift_key.no_links"));
 		} else if (context.isAdvanced()) {
 			for (UUID id : getIds(stack)) {
 				tooltip.add(Text.of(" " + id.toString()));
@@ -96,17 +96,17 @@ public class RiftKeyItem extends Item {
 				if (tryRemove(context.getStack(), rift.getId())) {
 					entranceRiftBlockEntity.setLocked(false);
 					entranceRiftBlockEntity.markDirty();
-					EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.unlocked")));
+					EntityUtils.chat(player, Text.translatable("rifts.unlocked"));
 					ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
 					return ActionResult.SUCCESS;
 				} else {
-					EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.cantUnlock")));
+					EntityUtils.chat(player, Text.translatable("rifts.cantUnlock"));
 				}
 			} else {
 				entranceRiftBlockEntity.setLocked(true);
 				add(context.getStack(), rift.getId());
 				entranceRiftBlockEntity.markDirty();
-				EntityUtils.chat(player, MutableText.of(new TranslatableTextContent("rifts.locked")));
+				EntityUtils.chat(player, Text.translatable("rifts.locked"));
 				ServerPacketHandler.get((ServerPlayerEntity) player).sync(context.getStack(), context.getHand());
  				return ActionResult.SUCCESS;
 			}

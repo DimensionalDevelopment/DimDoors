@@ -52,7 +52,7 @@ import static net.fabricmc.api.EnvType.CLIENT;
 	@Environment(CLIENT)
 	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
 		if (I18n.hasTranslation(this.getTranslationKey() + ".info")) {
-			list.add(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".info")));
+			list.add(Text.translatable(this.getTranslationKey() + ".info"));
 		}
 	}
 }

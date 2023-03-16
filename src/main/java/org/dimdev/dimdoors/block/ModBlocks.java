@@ -9,6 +9,7 @@ import org.dimdev.matrix.RegistryEntry;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockSetType;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ButtonBlock;
 import net.minecraft.block.DoorBlock;
@@ -22,6 +23,7 @@ import net.minecraft.block.PillarBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TrapdoorBlock;
+import net.minecraft.block.WoodType;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.BlockSoundGroup;
@@ -53,13 +55,13 @@ public final class ModBlocks {
 
 	@RegistryEntry("stone_player") public static final Block STONE_PLAYER = register(new Block(FabricBlockSettings.of(Material.STONE).strength(0.5F).nonOpaque()));
 
-	@RegistryEntry("gold_door") public static final Block GOLD_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).requiresTool().nonOpaque(), SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundEvents.BLOCK_IRON_DOOR_OPEN));
+	@RegistryEntry("gold_door") public static final Block GOLD_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).requiresTool().nonOpaque(), BlockSetType.IRON));
 
-	@RegistryEntry("stone_door") public static final Block STONE_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.OAK_TAN).strength(5.0F).requiresTool().nonOpaque(), SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundEvents.BLOCK_IRON_DOOR_OPEN));
+	@RegistryEntry("stone_door") public static final Block STONE_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.OAK_TAN).strength(5.0F).requiresTool().nonOpaque(), BlockSetType.IRON));
 
-	@RegistryEntry("quartz_door") public static final Block QUARTZ_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).strength(5.0F).requiresTool().nonOpaque(), SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundEvents.BLOCK_IRON_DOOR_OPEN));
+	@RegistryEntry("quartz_door") public static final Block QUARTZ_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).strength(5.0F).requiresTool().nonOpaque(), BlockSetType.IRON));
 
-	@RegistryEntry("wood_dimensional_trapdoor") public static final Block OAK_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorBlock(FabricBlockSettings.copyOf(Blocks.OAK_TRAPDOOR).luminance(state -> 10), SoundEvents.BLOCK_WOODEN_DOOR_CLOSE, SoundEvents.BLOCK_WOODEN_DOOR_OPEN));
+	@RegistryEntry("wood_dimensional_trapdoor") public static final Block OAK_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorBlock(FabricBlockSettings.copyOf(Blocks.OAK_TRAPDOOR).luminance(state -> 10), BlockSetType.OAK));
 
 	@RegistryEntry("dimensional_portal") public static final Block DIMENSIONAL_PORTAL = register(new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).strength(-1.0F, 3600000.0F).nonOpaque().dropsNothing().luminance(blockState -> 10)));
 
@@ -159,16 +161,16 @@ public final class ModBlocks {
 	@RegistryEntry("driftwood_leaves") public static final Block DRIFTWOOD_LEAVES = new LeavesBlock(AbstractBlock.Settings.copy(OAK_LEAVES));
 	@RegistryEntry("driftwood_sapling") public static final Block DRIFTWOOD_SAPLING = new Block(AbstractBlock.Settings.copy(OAK_SAPLING));
 	@RegistryEntry("driftwood_fence") public static final Block DRIFTWOOD_FENCE = new FenceBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_gate") public static final Block DRIFTWOOD_GATE = new FenceGateBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD), SoundEvents.BLOCK_FENCE_GATE_CLOSE, SoundEvents.BLOCK_FENCE_GATE_OPEN);
-	@RegistryEntry("driftwood_button") public static final Block DRIFTWOOD_BUTTON = new ButtonBlock(AbstractBlock.Settings.of(Material.DECORATION, MapColor.LIGHT_GRAY).noCollision().strength(0.5F), 20, true, SoundEvents.BLOCK_WOODEN_BUTTON_CLICK_OFF, SoundEvents.BLOCK_WOODEN_BUTTON_CLICK_ON);
+	@RegistryEntry("driftwood_gate") public static final Block DRIFTWOOD_GATE = new FenceGateBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD), WoodType.OAK); // TODO: add driftwood wood type
+	@RegistryEntry("driftwood_button") public static final Block DRIFTWOOD_BUTTON = new ButtonBlock(AbstractBlock.Settings.of(Material.DECORATION, MapColor.LIGHT_GRAY).noCollision().strength(0.5F), BlockSetType.OAK, 20, true);
 	@RegistryEntry("driftwood_slab") public static final Block DRIFTWOOD_SLAB = new SlabBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.LIGHT_GRAY));
 	@RegistryEntry("driftwood_stairs") public static final Block DRIFTWOOD_STAIRS = new StairsBlock(DRIFTWOOD_PLANKS.getDefaultState(), AbstractBlock.Settings.of(Material.WOOD,  MapColor.LIGHT_GRAY));
-	@RegistryEntry("driftwood_door") public static final Block DRIFTWOOD_DOOR = new DoorBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque(), SoundEvents.BLOCK_WOODEN_DOOR_CLOSE, SoundEvents.BLOCK_WOODEN_DOOR_OPEN);
-	@RegistryEntry("driftwood_trapdoor") public static final Block DRIFTWOOD_TRAPDOOR = new TrapdoorBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque().allowsSpawning((state, world, pos, type) -> false), SoundEvents.BLOCK_WOODEN_TRAPDOOR_CLOSE, SoundEvents.BLOCK_WOODEN_TRAPDOOR_OPEN);
+	@RegistryEntry("driftwood_door") public static final Block DRIFTWOOD_DOOR = new DoorBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque(), BlockSetType.OAK);
+	@RegistryEntry("driftwood_trapdoor") public static final Block DRIFTWOOD_TRAPDOOR = new TrapdoorBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque().allowsSpawning((state, world, pos, type) -> false), BlockSetType.OAK);
 
 	@RegistryEntry("amalgam_block") public static final Block AMALGAM_BLOCK = new Block(AbstractBlock.Settings.of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL));
-	@RegistryEntry("amalgam_door") public static final Block AMALGAM_DOOR = new DoorBlock(AbstractBlock.Settings.of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque(), SoundEvents.BLOCK_IRON_DOOR_CLOSE, SoundEvents.BLOCK_IRON_DOOR_OPEN);
-	@RegistryEntry("amalgam_trapdoor") public static final Block AMALGAM_TRAPDOOR = new TrapdoorBlock(AbstractBlock.Settings.of(Material.METAL).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque().allowsSpawning((state, world, pos, type) -> false), SoundEvents.BLOCK_IRON_TRAPDOOR_CLOSE, SoundEvents.BLOCK_IRON_TRAPDOOR_OPEN);
+	@RegistryEntry("amalgam_door") public static final Block AMALGAM_DOOR = new DoorBlock(AbstractBlock.Settings.of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque(), BlockSetType.IRON);
+	@RegistryEntry("amalgam_trapdoor") public static final Block AMALGAM_TRAPDOOR = new TrapdoorBlock(AbstractBlock.Settings.of(Material.METAL).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque().allowsSpawning((state, world, pos, type) -> false), BlockSetType.IRON);
 	@RegistryEntry("rust") public static final Block RUST = new Block(AbstractBlock.Settings.of(Material.WOOD));
 	@RegistryEntry("amalgam_slab") public static final Block AMALGAM_SLAB = createSlab(AMALGAM_BLOCK);
 	@RegistryEntry("amalgam_stairs") public static final Block AMALGAM_STAIRS = createStairs(AMALGAM_BLOCK);
@@ -252,11 +254,11 @@ public final class ModBlocks {
 	}
 
 	public static Block createFenceGate(Block block) {
-		return new FenceGateBlock(AbstractBlock.Settings.copy(block), SoundEvents.BLOCK_FENCE_GATE_CLOSE, SoundEvents.BLOCK_FENCE_GATE_OPEN);
+		return new FenceGateBlock(AbstractBlock.Settings.copy(block), WoodType.OAK); // TODO: parameterize WoodType and BlockSetType
 	}
 
 	public static Block createButton(Block block) {
-		return new ButtonBlock(AbstractBlock.Settings.copy(block).noCollision().strength(0.5F), 20, false, SoundEvents.BLOCK_STONE_BUTTON_CLICK_OFF, SoundEvents.BLOCK_STONE_BUTTON_CLICK_ON );
+		return new ButtonBlock(AbstractBlock.Settings.copy(block).noCollision().strength(0.5F), BlockSetType.STONE, 20, false);
 	}
 
 	public static Block createSlab(Block block) {

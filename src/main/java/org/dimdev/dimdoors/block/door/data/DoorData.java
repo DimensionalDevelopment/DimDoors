@@ -161,7 +161,7 @@ public final class DoorData implements AutoCloseable {
 		FabricBlockSettings blockSettings = FabricBlockSettings.copyOf(parentBlock);
 		this.blockSettings.luminance.ifPresent(blockSettings::luminance);
 		Identifier id = new Identifier(this.id);
-		Block doorBlock = new DimensionalDoorBlock(blockSettings, provider.getCloseSound(), provider.getOpenSound());
+		Block doorBlock = new DimensionalDoorBlock(blockSettings, provider.getSetType());
 		Item doorItem = new DimensionalDoorItem(doorBlock, itemSettings, createSetupFunction(), hasToolTip);
 		Registry.register(Registries.BLOCK, id, doorBlock);
 		Registry.register(Registries.ITEM, id, doorItem);

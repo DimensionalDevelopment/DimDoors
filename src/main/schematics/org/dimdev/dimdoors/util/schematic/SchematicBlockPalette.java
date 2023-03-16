@@ -33,7 +33,7 @@ public class SchematicBlockPalette {
 			try {
 				parser = BlockArgumentParser.block(Registries.BLOCK.getReadOnlyWrapper(), reader, true);
 			} catch (CommandSyntaxException e) {
-				return DataResult.error(e.getMessage());
+				return DataResult.error(e::getMessage);
 			}
 			return DataResult.success(parser.blockState());
 //			if (!string.contains("[") && !string.contains("]")) {

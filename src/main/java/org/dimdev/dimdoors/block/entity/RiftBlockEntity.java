@@ -13,13 +13,12 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
@@ -208,11 +207,11 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
 			if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity)) {
 				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos()));
-				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth())));
+				EntityUtils.chat(entity, Text.of("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
 				return true;
 			}
 		} catch (Exception e) {
-			EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("Something went wrong while trying to teleport you, please report this bug.")));
+			EntityUtils.chat(entity, Text.of("Something went wrong while trying to teleport you, please report this bug."));
 			LOGGER.error("Teleporting failed with the following exception: ", e);
 		}
 

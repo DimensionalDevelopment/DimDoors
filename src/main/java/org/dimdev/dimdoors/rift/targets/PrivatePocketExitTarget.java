@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
@@ -37,9 +38,9 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 			}
 			if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {
 				if (destLoc == null) {
-					EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.private_pocket_exit.did_not_use_rift")));
+					EntityUtils.chat(entity, Text.translatable("rifts.destinations.private_pocket_exit.did_not_use_rift"));
 				} else {
-					EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.private_pocket_exit.rift_has_closed")));
+					EntityUtils.chat(entity, Text.translatable("rifts.destinations.private_pocket_exit.rift_has_closed"));
 				}
 				return false;
 			} else {
