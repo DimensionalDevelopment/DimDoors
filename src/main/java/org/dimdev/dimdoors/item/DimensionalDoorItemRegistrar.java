@@ -161,10 +161,11 @@ public class DimensionalDoorItemRegistrar {
 			return originalItem;
 		}
 
+		@Environment(EnvType.CLIENT)
 		@Override
 		public void transform(MatrixStack matrices) {
-			matrices.scale(0.68f, 0.68f, 1);
-			matrices.translate(0.05, 0.02, 0);
+			matrices.scale(0.769f, 0.769f, 1);
+			matrices.translate(-0.06, 0.125, 0);
 		}
 	}
 
@@ -191,6 +192,7 @@ public class DimensionalDoorItemRegistrar {
 			return originalItem;
 		}
 
+		@Environment(EnvType.CLIENT)
 		@Override
 		public void transform(MatrixStack matrices) {
 			matrices.scale(0.55f, 0.55f, 0.6f);

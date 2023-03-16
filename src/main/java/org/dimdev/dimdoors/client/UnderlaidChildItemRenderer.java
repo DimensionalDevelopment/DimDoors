@@ -36,7 +36,9 @@ public class UnderlaidChildItemRenderer implements BuiltinItemRendererRegistry.D
 
 		ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
 
+		// TODO: refactor
 		matrices.push();
+		childItem.transform(matrices);
 		matrices.scale(1, 1, 0.5f);
 		itemRenderer.renderItem(underlay, ModelTransformationMode.NONE, light, overlay, matrices, vertexConsumers, null, 0);
 		matrices.pop();
@@ -47,7 +49,7 @@ public class UnderlaidChildItemRenderer implements BuiltinItemRendererRegistry.D
 		originalItemStack.setNbt(stack.getNbt());
 
 		matrices.push();
-		childItem.transform(matrices);
+//		childItem.transform(matrices);
 		itemRenderer.renderItem(originalItemStack, ModelTransformationMode.NONE, light, overlay, matrices, vertexConsumers, null, 0);
 		matrices.pop();
 
