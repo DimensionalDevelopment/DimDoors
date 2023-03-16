@@ -173,7 +173,8 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				if(section.getBlockState(x, y, z).isAir()) {
 					BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
 					// FIXME: newState can be null in some circumstances
-					if (!newState.isAir()) {
+					// TODO: is null checking the right fix or just a band-aid?
+					if (newState != null && !newState.isAir()) {
 						section.setBlockState(x, y, z, newState, false);
 						if (placementType.shouldMarkForUpdate()) serverChunkManager.markForUpdate(blockPos);
 					}
@@ -220,7 +221,9 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				nbt.put("Pos", doubles);
 
 				Entity entity = EntityType.getEntityFromNbt(nbt, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
-				world.spawnEntity(entity);
+				world.getServer().execute(() -> {
+					world.spawnEntity(entity);
+				});
 			}
 		}));
 	}

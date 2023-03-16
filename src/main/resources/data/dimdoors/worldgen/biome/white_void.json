@@ -13,9 +13,10 @@
     }
   },
   "carvers": {},
-  "category": "none",
   "downfall": 0,
-  "precipitation": "none",
+  "temperature_modifier": "none",
+  "temperature": 0.8,
+  "has_precipitation": false,
   "features": [
     [],
     [],
@@ -39,6 +40,5 @@
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []
-  },
-  "temperature": 0.8
+  }
 }
