@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.item;
+package org.dimdev.dimdoors.item.door;
 
 import java.util.function.Consumer;
 

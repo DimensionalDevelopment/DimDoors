@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
 public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallback {
 	@Override

@@ -27,7 +27,6 @@ import net.minecraft.block.WoodType;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.DyeColor;
 
 import net.fabricmc.api.EnvType;
@@ -36,8 +35,6 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
-import org.dimdev.dimdoors.block.door.data.DoorData;
-import org.dimdev.dimdoors.block.door.data.DoorDataReader;
 
 import static net.minecraft.block.Blocks.CLAY;
 import static net.minecraft.block.Blocks.GRAVEL;
@@ -232,13 +229,13 @@ public final class ModBlocks {
 
 	public static void init() {
 		Matrix.register(ModBlocks.class, Registries.BLOCK);
-		DoorDataReader.read();
+//		DoorDataReader.read();
 	}
 
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR);
-		DoorData.DOORS.forEach(door -> BlockRenderLayerMap.INSTANCE.putBlock(door, RenderLayer.getCutout()));
+//		DoorData.DOORS.forEach(door -> BlockRenderLayerMap.INSTANCE.putBlock(door, RenderLayer.getCutout()));
 	}
 
 	public static Block ancientFabricFromDye(DyeColor color) {

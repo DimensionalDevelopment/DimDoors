@@ -19,7 +19,6 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
@@ -31,7 +30,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
 public class DimensionalDoorBlockRegistrar {
 	private static final String PREFIX = "block_ag_dim_";

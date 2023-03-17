@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.block.door.data;
+package org.dimdev.dimdoors.item.door.data;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -14,13 +14,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.Pair;
 
-import org.dimdev.dimdoors.block.door.data.condition.Condition;
+import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 public class RiftDataList {
-	private final LinkedList<Pair<JsonObject, Condition>> riftDataConditions;
+	private final LinkedList<Pair<OptRiftData, Condition>> riftDataConditions;
 
 	public static RiftDataList fromJson(JsonArray jsonArray) {
 		LinkedList<Pair<JsonObject, Condition>> riftDataConditions = new LinkedList<>();
@@ -35,18 +35,17 @@ public class RiftDataList {
 	}
 
 	public RiftDataList(LinkedList<Pair<JsonObject, Condition>> riftDataConditions) {
-		this.riftDataConditions = riftDataConditions;
+		this.riftDataConditions = riftDataConditions.stream().map(pair -> new Pair<>(OptRiftData.fromJson(pair.getLeft()), pair.getRight())).collect(Collectors.toCollection(LinkedList::new));
 	}
 
 	public OptRiftData getRiftData(EntranceRiftBlockEntity rift) {
-		JsonObject unbakedRiftData = riftDataConditions.stream().filter(pair -> pair.getRight().matches(rift)).findFirst().orElseThrow(() -> new RuntimeException("Could not find any matching rift data")).getLeft();
-		return OptRiftData.fromJson(unbakedRiftData);
+		return riftDataConditions.stream().filter(pair -> pair.getRight().matches(rift)).findFirst().orElseThrow(() -> new RuntimeException("Could not find any matching rift data")).getLeft();
 	}
 
 	public JsonArray toJson() {
 		JsonArray jsonArray = new JsonArray();
-		for (Map.Entry<JsonObject, Condition> entry : this.riftDataConditions.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)).entrySet()) {
-			JsonObject unbakedRiftData = entry.getKey();
+		for (Map.Entry<OptRiftData, Condition> entry : this.riftDataConditions.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)).entrySet()) {
+			JsonObject unbakedRiftData = entry.getKey().toJson(new JsonObject());
 			Condition condition = entry.getValue();
 			JsonObject jsonInner = new JsonObject();
 			jsonInner.add("data", unbakedRiftData);
@@ -58,22 +57,22 @@ public class RiftDataList {
 
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	public static class OptRiftData {
-		private final Optional<VirtualTarget> destination;
+		private final VirtualTarget destination;
 		private final Optional<LinkProperties> linkProperties;
 
 		public static OptRiftData fromJson(JsonObject json) {
-			Optional<VirtualTarget> destination = Optional.ofNullable(json.get("destination")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(VirtualTarget::fromNbt);
+			VirtualTarget destination = Optional.of(json.get("destination")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(VirtualTarget::fromNbt).get();
 			Optional<LinkProperties> linkProperties = Optional.ofNullable(json.get("properties")).map(JsonElement::getAsJsonObject).map(j -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, j)).map(NbtCompound.class::cast).map(LinkProperties::fromNbt);
 			return new OptRiftData(destination, linkProperties);
 		}
 
-		public OptRiftData(Optional<VirtualTarget> destination, Optional<LinkProperties> linkProperties) {
+		public OptRiftData(VirtualTarget destination, Optional<LinkProperties> linkProperties) {
 			this.destination = destination;
 			this.linkProperties = linkProperties;
 		}
 
 		public JsonObject toJson(JsonObject json) {
-			this.destination.ifPresent(s -> json.add("destination", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, VirtualTarget.toNbt(s))));
+			Optional.of(this.destination).ifPresent(s -> json.add("destination", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, VirtualTarget.toNbt(s))));
 			this.linkProperties.ifPresent(s -> json.add("properties", NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, LinkProperties.toNbt(s))));
 			return json;
 		}
@@ -82,7 +81,7 @@ public class RiftDataList {
 			return linkProperties;
 		}
 
-		public Optional<VirtualTarget> getDestination() {
+		public VirtualTarget getDestination() {
 			return destination;
 		}
 	}

@@ -19,7 +19,7 @@ import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
-import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
 public class DimensionalDoorModelVariantProvider implements ModelVariantProvider {
 	private static final Identifier childItem = DimensionalDoors.id("item/child_item");

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.block.door.data.condition;
+package org.dimdev.dimdoors.item.door.data.condition;
 
 import java.util.List;
 

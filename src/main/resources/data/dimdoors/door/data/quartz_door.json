@@ -1,0 +1,27 @@
+[
+  {
+    "data": {
+      "destination": {
+        "type": "dimdoors:private_pocket_exit"
+      }
+    },
+    "condition": {
+      "type": "dimdoors:world_match",
+      "world": "dimdoors:personal_pockets"
+    }
+  },
+  {
+    "data": {
+      "destination": {
+        "type": "dimdoors:private"
+      }
+    },
+    "condition": {
+      "type": "dimdoors:inverse",
+      "condition": {
+        "type": "dimdoors:world_match",
+        "world": "dimdoors:personal_pockets"
+      }
+    }
+  }
+]

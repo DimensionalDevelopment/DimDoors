@@ -33,7 +33,7 @@ import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
-import org.dimdev.dimdoors.block.door.data.condition.Condition;
+import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.command.PocketCommand;
@@ -42,8 +42,9 @@ import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
@@ -149,6 +150,7 @@ public class DimensionalDoors implements ModInitializer {
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(PocketLoader.getInstance());
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(LimboDecay.DecayLoader.getInstance());
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(DoorRiftDataLoader.getInstance());
 		ResourceManagerHelper.registerBuiltinResourcePack(id("default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType());
 		ResourceManagerHelper.registerBuiltinResourcePack(id("classic"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().classicPocketsResourcePackActivationType.asResourcePackActivationType());
 

@@ -10,7 +10,6 @@ import org.dimdev.matrix.Registrar;
 import org.dimdev.matrix.RegistryEntry;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BucketItem;
@@ -29,6 +28,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.door.DimensionalTrapdoorItem;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
