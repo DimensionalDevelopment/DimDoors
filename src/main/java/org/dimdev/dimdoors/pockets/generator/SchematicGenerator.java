@@ -7,16 +7,18 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.chunk.ChunkAccess;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.api.util.Path;
@@ -82,7 +84,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 			int[] originInts = nbt.getIntArray("origin");
 			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
 		}
-		if (nbt.contains("placement_type", NbtType.STRING)) placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
+		if (nbt.contains("placement_type", Tag.TAG_STRING)) placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
 
 		return this;
 	}

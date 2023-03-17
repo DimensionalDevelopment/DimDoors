@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.fabricmc.fabric.api.util.NbtType;
 
 public class NbtUtil {
 	public static <T> T deserialize(Tag data, Codec<T> codec) {

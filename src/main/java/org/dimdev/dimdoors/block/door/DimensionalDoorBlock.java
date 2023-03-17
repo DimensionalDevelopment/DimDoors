@@ -2,11 +2,10 @@ package org.dimdev.dimdoors.block.door;
 
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.LogManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.NetherPortalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -37,7 +35,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.dimdev.dimdoors.DimensionalDoors;
+
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
 import org.dimdev.dimdoors.api.block.CustomBreakBlock;
 import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock;
@@ -151,7 +152,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	@Override
 	@SuppressWarnings("deprecation")
 	public boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
-		return super.canBeReplaced(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT;
+		return super.canBeReplaced(state, context) || state.getBlock() == ModBlocks.DETACHED_RIFT.get();
 	}
 
 	@Nullable
@@ -184,7 +185,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		if (blockEntity instanceof EntranceRiftBlockEntity
 				&& blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
-			world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
+			world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
 			((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 		}
 	}
@@ -248,7 +249,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 						&& !Constants.CONFIG_MANAGER.get().getDoorsConfig().placeRiftsInCreativeMode
 						)
 			) {
-				world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
+				world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
 				((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 			}
 		}
@@ -280,7 +281,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return true;
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean isTall(BlockState cachedState) {
 		return true;
@@ -318,7 +319,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			return InteractionResultHolder.pass(null);
 		}
 		RiftData data = ((EntranceRiftBlockEntity) world.getBlockEntity(pos)).getData();
-		return InteractionResultHolder.success(new Tuple<>(ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)), blockEntity -> {
+		return InteractionResultHolder.success(new Tuple<>(ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)), blockEntity -> {
 			((DetachedRiftBlockEntity) blockEntity).setData(data);
 		}));
 	}

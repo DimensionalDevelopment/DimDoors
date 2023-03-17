@@ -32,7 +32,7 @@ public class TesselatingScreenHandler extends RecipeBookMenu<Container> {
 		this(id, new SimpleContainer(10), playerInventory, new SimpleContainerData(2));
 	}
 	public TesselatingScreenHandler(int id, Container inventory, Inventory playerInventory, ContainerData propertyDelegate) {
-		super(ModScreenHandlerTypes.TESSELATING_LOOM, id);
+		super(ModScreenHandlerTypes.TESSELATING_LOOM.get(), id);
 		this.playerInventory = playerInventory;
 		this.recipeInv = inventory;
 		this.data = propertyDelegate;

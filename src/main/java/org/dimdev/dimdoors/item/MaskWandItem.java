@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -47,7 +47,7 @@ import static net.fabricmc.api.Dist.CLIENT;
 	}
 
 	@Override
-	@Environment(CLIENT)
+	@OnlyIn(CLIENT)
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		if (I18n.exists(this.getDescriptionId() + ".info")) {
 			list.add(MutableComponent.create(new TranslatableContents(this.getDescriptionId() + ".info")));

@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.api.util;
 
 import java.util.concurrent.ThreadLocalRandom;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;

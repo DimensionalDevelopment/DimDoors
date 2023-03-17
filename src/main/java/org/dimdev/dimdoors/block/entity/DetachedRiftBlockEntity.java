@@ -2,8 +2,9 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.function.Consumer;
 
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
@@ -16,7 +17,8 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.DimensionalDoors;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 
@@ -30,11 +32,11 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
 	private boolean unregisterDisabled = false;
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public double renderAngle;
 
 	public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntityTypes.DETACHED_RIFT, pos, state);
+		super(ModBlockEntityTypes.DETACHED_RIFT.get(), pos, state);
 	}
 
 	public static void tick(Level world, BlockPos pos, BlockState state, DetachedRiftBlockEntity blockEntity) {
@@ -42,7 +44,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 			return;
 		}
 
-		if (state.getBlock() != ModBlocks.DETACHED_RIFT) {
+		if (state.getBlock() != ModBlocks.DETACHED_RIFT.get()) {
 			blockEntity.setRemoved();
 			return;
 		}

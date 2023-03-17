@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,8 +21,8 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.fabricmc.fabric.api.util.NbtType;
 
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
@@ -80,13 +81,13 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 			}
 		}
 		if (nbt.contains("modifier_references")) {
-			ListTag modifiersNbt = nbt.getList("modifier_references", NbtType.STRING);
+			ListTag modifiersNbt = nbt.getList("modifier_references", Tag.TAG_STRING);
 			for (Tag nbtElement : modifiersNbt) {
 				modifierList.add(Modifier.deserialize(nbtElement, manager));
 			}
 		}
 
-		if (nbt.contains("addons", NbtType.LIST)) {
+		if (nbt.contains("addons", Tag.TAG_LIST)) {
 			ListTag addonsNbt = nbt.getList("addons", 10);
 			for (int i = 0; i < addonsNbt.size(); i++) {
 				// TODO: something with the ResourceManager??? Probably need AddonBuilder now.

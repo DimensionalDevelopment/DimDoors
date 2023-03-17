@@ -4,11 +4,12 @@ import java.util.Collection;
 
 import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.Nullable;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
+
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
@@ -27,12 +28,12 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 	//TODO: split up in ImplementedVirtualPocket and VirtualPocketList
 	static VirtualPocket deserialize(Tag nbt, @Nullable ResourceManager manager) {
 		switch (nbt.getId()) {
-			case NbtType.LIST: // It's a list of VirtualPocket
+			case Tag.TAG_LIST: // It's a list of VirtualPocket
 				return VirtualPocketList.deserialize((ListTag) nbt, manager);
 			case Tag.TAG_COMPOUND: // It's a serialized VirtualPocket
 				return ImplementedVirtualPocket.deserialize((CompoundTag) nbt, manager);
 			// TODO: throw if manager is null
-			case NbtType.STRING: // It's a reference to a resource location
+			case Tag.TAG_STRING: // It's a reference to a resource location
 				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
 			default:
 				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));

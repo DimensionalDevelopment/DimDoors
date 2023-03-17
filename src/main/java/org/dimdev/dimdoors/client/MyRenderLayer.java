@@ -4,20 +4,22 @@ import com.flowpowered.math.vector.VectorNi;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.client.RenderLayerFactory;
 
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
 import static org.lwjgl.opengl.GL11.GL_ZERO;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MyRenderLayer extends RenderType {
     public static final ResourceLocation WARP_PATH = DimensionalDoors.resource("textures/other/warp.png");
     public static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);

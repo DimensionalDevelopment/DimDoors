@@ -1,19 +1,22 @@
 package org.dimdev.dimdoors.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel> {
     public static final List<ResourceLocation> MONOLITH_TEXTURES = Stream.of(
             DimensionalDoors.resource("textures/mob/monolith/monolith0.png"),

@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.item;
 import java.util.List;
 import java.util.Objects;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -39,7 +39,7 @@ public class RiftRemoverItem extends Item {
 		super(settings);
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");

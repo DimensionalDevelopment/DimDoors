@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.api.util;
 
 import org.jgrapht.Graph;
 
-public final class GraphUtils {
+public final class GraphUtils { //TODO: Readd jgrapht
 	public static <V, E> void replaceVertex(Graph<V, E> graph, V vertex, V replace) {
 		graph.addVertex(replace);
 		for (E edge : graph.outgoingEdgesOf(vertex)) graph.addEdge(replace, graph.getEdgeTarget(edge));

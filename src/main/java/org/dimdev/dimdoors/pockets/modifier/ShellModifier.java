@@ -9,7 +9,6 @@ import com.google.common.base.MoreObjects;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;

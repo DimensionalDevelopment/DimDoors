@@ -1,21 +1,24 @@
 package org.dimdev.dimdoors.api.client;
 
+import java.util.Collections;
+
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import java.util.Collections;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.resources.ResourceLocation;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.ModShaders;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public final class DimensionalPortalRenderer {
 	public static final ResourceLocation WARP_PATH;
 	private static final RenderStateShard.ShaderStateShard DIMENSIONAL_PORTAL_SHADER;

@@ -1,13 +1,15 @@
 package org.dimdev.dimdoors.client;
 
-import org.joml.Matrix4f;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
-import net.minecraft.Util;
-import org.dimdev.dimdoors.DimensionalDoors;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Matrix4f;
 
-@Environment(Dist.CLIENT)
+import net.minecraft.Util;
+
+import org.dimdev.dimdoors.Constants;
+
+@OnlyIn(Dist.CLIENT)
 public final class RiftCrackRenderer {
     public static void drawCrack(Matrix4f model, VertexConsumer vc, float riftRotation, RiftCurves.PolygonInfo poly, double size, long riftRandom) {
         // Calculate the proper size for the rift render

@@ -1,21 +1,22 @@
 package org.dimdev.dimdoors.block;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class FabricBlock extends Block {
 	public static final TagKey<Block> BLOCK_TAG = TagKey.create(Registries.BLOCK, DimensionalDoors.resource("fabric"));
 
 	FabricBlock(DyeColor color) {
-		super(FabricBlockSettings.of(Material.STONE, color).strength(1.2F).luminance(15));
+		super(BlockBehaviour.Properties.of(Material.STONE, color).strength(1.2F).lightLevel(state -> 15));
 	}
 
 	@Override

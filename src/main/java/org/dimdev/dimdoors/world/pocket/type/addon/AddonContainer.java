@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -32,7 +32,7 @@ public abstract class AddonContainer<T extends ContainedAddon> implements Pocket
 	public PocketAddon fromNbt(CompoundTag nbt) {
 		this.id = ResourceLocation.tryParse(nbt.getString("id"));
 
-		if (nbt.contains("addons", NbtType.LIST)) {
+		if (nbt.contains("addons", Tag.TAG_LIST)) {
 			for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
 				addons.add((T) PocketAddon.deserialize((CompoundTag) addonTag));
 			}

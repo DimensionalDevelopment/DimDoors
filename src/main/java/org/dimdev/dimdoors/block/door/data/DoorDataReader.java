@@ -15,11 +15,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.fabric.api.util.TriState;
+
 import net.minecraft.Util;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Rarity;
-import org.dimdev.dimdoors.DimensionalDoors;
+
+import org.dimdev.dimdoors.Constants;
+import org.dimdev.dimdoors.api.util.TriState;
 import org.dimdev.dimdoors.block.door.data.condition.AlwaysTrueCondition;
 import org.dimdev.dimdoors.block.door.data.condition.InverseCondition;
 import org.dimdev.dimdoors.block.door.data.condition.WorldMatchCondition;
@@ -133,7 +135,7 @@ public class DoorDataReader {
 	), true);
 
 	public static void read() {
-		Path doorDir = DimensionalDoors.getConfigRoot().resolve("doors");
+		Path doorDir = Constants.CONFIG_ROOT.toPath();
 
 		if (Files.exists(doorDir) && !Files.isDirectory(doorDir)) {
 			try {

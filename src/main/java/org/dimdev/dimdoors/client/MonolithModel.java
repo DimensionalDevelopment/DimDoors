@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -14,7 +14,7 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MonolithModel extends EntityModel<MonolithEntity> {
     private final ModelPart body;
 

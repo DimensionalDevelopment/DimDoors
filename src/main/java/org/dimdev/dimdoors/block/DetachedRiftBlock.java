@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.block;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,6 +19,7 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
@@ -41,7 +42,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 	}
 
 	@Override
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);
 		// randomDisplayTick can be called before the tile entity is created in multiplayer
@@ -95,6 +96,6 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-		return createTickerHelper(type, ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntity::tick);
+		return createTickerHelper(type, ModBlockEntityTypes.DETACHED_RIFT.get(), DetachedRiftBlockEntity::tick);
 	}
 }

@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +30,7 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 	static ImplementedVirtualPocket deserialize(Tag nbt, @Nullable ResourceManager manager) {
 		return switch (nbt.getId()) {
 			case Tag.TAG_COMPOUND -> deserialize((CompoundTag) nbt, manager);
-			case NbtType.STRING -> ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
+			case Tag.TAG_STRING -> ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
 			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
 		};
 	}

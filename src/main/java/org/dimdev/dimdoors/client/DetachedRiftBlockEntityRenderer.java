@@ -2,11 +2,12 @@ package org.dimdev.dimdoors.client;
 
 import java.util.Objects;
 
-import com.flowpowered.math.TrigMath;
+import com.flowpowered.math.TrigMath; //TODO: readd FlowMath
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -14,6 +15,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -22,7 +25,7 @@ import org.dimdev.dimdoors.client.tesseract.Tesseract;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<DetachedRiftBlockEntity> {
     public static final ResourceLocation TESSERACT_PATH = DimensionalDoors.resource("textures/other/tesseract.png");
     private static final RGBA DEFAULT_COLOR = new RGBA(1, 0.5f, 1, 1);

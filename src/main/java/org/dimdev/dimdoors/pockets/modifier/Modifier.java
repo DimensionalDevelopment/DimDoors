@@ -5,8 +5,7 @@ import java.util.function.Supplier;
 
 import com.google.common.collect.Multimap;
 import com.mojang.serialization.Lifecycle;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +13,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
@@ -29,7 +31,7 @@ public interface Modifier extends ReferenceSerializable {
 		switch (nbt.getId()) {
 			case Tag.TAG_COMPOUND: // It's a serialized Modifier
 				return Modifier.deserialize((CompoundTag) nbt, manager);
-			case NbtType.STRING: // It's a reference to a resource location
+			case Tag.TAG_STRING: // It's a reference to a resource location
 				// TODO: throw if manager is null
 				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
 			default:

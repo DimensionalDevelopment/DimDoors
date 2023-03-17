@@ -1,18 +1,18 @@
 package org.dimdev.dimdoors.client.tesseract;
 
-import com.flowpowered.math.matrix.Matrix4f;
-import com.flowpowered.math.vector.Vector3f;
-import com.flowpowered.math.vector.Vector4f;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.spongepowered.math.matrix.Matrix4f;
+import org.spongepowered.math.vector.Vector3f;
+import org.spongepowered.math.vector.Vector4f;
 
 import org.dimdev.dimdoors.api.util.RGBA;
 
-import static com.flowpowered.math.TrigMath.cos;
-import static com.flowpowered.math.TrigMath.sin;
+import static org.spongepowered.math.TrigMath.cos;
+import static org.spongepowered.math.TrigMath.sin;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class Plane {
     Vector4f[] vectors;
 
@@ -28,9 +28,9 @@ public class Plane {
     }
 
     private static void drawVertex(org.joml.Matrix4f model, VertexConsumer vc, Vector4f vector, int u, int v, RGBA color) {
-        double scalar = 1d / (vector.getW() + 1);
+        double scalar = 1d / (vector.w() + 1);
         Vector3f scaled = vector.toVector3().mul(scalar);
-        vc.vertex(model, scaled.getX(), scaled.getY(), scaled.getZ())
+        vc.vertex(model, scaled.x(), scaled.y(), scaled.z())
                 .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
                 .uv(u, v)
                 .endVertex();

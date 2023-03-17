@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.MoreObjects;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
+
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -29,14 +31,14 @@ public class TagReference extends PocketGeneratorReference {
 		super.fromNbt(nbt, manager);
 
 		if (nbt.contains("required")) {
-			ListTag listNbt = nbt.getList("required", NbtType.STRING);
+			ListTag listNbt = nbt.getList("required", Tag.TAG_STRING);
 			for (int i = 0; i < listNbt.size(); i++) {
 				required.add(listNbt.getString(i));
 			}
 		}
 
 		if (nbt.contains("blackList")) {
-			ListTag listNbt = nbt.getList("blackList", NbtType.STRING);
+			ListTag listNbt = nbt.getList("blackList", Tag.TAG_STRING);
 			for (int i = 0; i < listNbt.size(); i++) {
 				blackList.add(listNbt.getString(i));
 			}

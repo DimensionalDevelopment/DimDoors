@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -24,7 +24,7 @@ public class PocketListenerUtil {
 		return pocket.getAddonsInstanceOf(clazz);
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static <T> List<T> applicableAddonsClient(Class<T> clazz, Level world, BlockPos pos) {
 		ClientPacketHandler packetHandler = ((ExtendedClientPlayNetworkHandler) Minecraft.getInstance().getConnection()).getDimDoorsPacketHandler();
 

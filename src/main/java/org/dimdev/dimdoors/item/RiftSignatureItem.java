@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -132,7 +132,7 @@ public class RiftSignatureItem extends Item {
 	}
 
 	@Override
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		RotatedLocation transform = getSource(itemStack);
 		if (transform != null) {

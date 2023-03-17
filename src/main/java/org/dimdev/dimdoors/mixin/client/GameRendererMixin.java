@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceProvider;
 import org.dimdev.dimdoors.client.ModShaders;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
 	@Shadow

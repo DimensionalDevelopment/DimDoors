@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors.block;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -62,7 +64,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 		EntranceRiftBlockEntity rift = this.getRift(world, pos, state);
 
-		world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
+		world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
 		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
 		/*
@@ -91,7 +93,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 		return Shapes.block();
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean isTall(BlockState cachedState) {
 		return true;
@@ -106,7 +108,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-		return Dummy.createTickerHelper(type, ModBlockEntityTypes.ENTRANCE_RIFT, DimensionalPortalBlock::portalTick);
+		return Dummy.createTickerHelper(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), DimensionalPortalBlock::portalTick);
 	}
 
 	private static void portalTick(Level world, BlockPos pos, BlockState state, EntranceRiftBlockEntity e) {

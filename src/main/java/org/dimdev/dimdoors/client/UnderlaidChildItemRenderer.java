@@ -1,18 +1,21 @@
 package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+
 import org.dimdev.dimdoors.item.DimensionalDoorItemRegistrar;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class UnderlaidChildItemRenderer implements BuiltinItemRendererRegistry.DynamicItemRenderer {
 	private final ItemStack underlay;
 

@@ -66,6 +66,10 @@ repositories {
 			includeGroup 'maven.modrinth'
 		}
 	}
+	maven {
+		url = "https://jitpack.io"
+	}
+
 }
 
 sourceSets {
@@ -95,6 +99,12 @@ dependencies {
 
 	//mods
 	implementation fg.deobf('maven.modrinth:cloth-config:9.0.94+forge')
+
+
+	shadow("org.spongepowered:math:2.0.1")
+	shadow("org.jgrapht:jgrapht-core:1.1.0")
+	shadow("com.github.DimensionalDevelopment:poly2tri.java:0.1.1")
+
 }
 
 shadowJar {

@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +16,7 @@ public class RenderBreakBlockS2CPacket implements SimplePacket<ClientPacketListe
 	private BlockPos pos;
 	private int stage;
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public RenderBreakBlockS2CPacket() {
 
 	}

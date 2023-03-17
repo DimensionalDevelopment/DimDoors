@@ -2,10 +2,10 @@ package org.dimdev.dimdoors.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.renderer.FogRenderer;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @Mixin(FogRenderer.class)
 public class BackgroundRendererMixin {
 //    @ModifyVariable(

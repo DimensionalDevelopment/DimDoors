@@ -6,7 +6,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 
@@ -30,7 +30,7 @@ public class ModParticleTypes {
 		PARTICLE_TYPES.register(bus);
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static void initClient() {
 		ParticleFactoryRegistry.getInstance().register(MONOLITH, new MonolithParticle.Factory());
 		ParticleFactoryRegistry.getInstance().register(RIFT, RiftParticle.Factory::new);

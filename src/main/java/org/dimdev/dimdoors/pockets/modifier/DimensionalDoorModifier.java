@@ -6,11 +6,12 @@ import java.util.Map;
 import com.google.common.base.MoreObjects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
@@ -64,7 +66,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 		doorType = (DimensionalDoorBlock) doorBlock;
 
 		// TODO: rift data via ResourceManager
-		if (nbt.getTagType("rift_data") == NbtType.STRING) {
+		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
 			doorDataReference = nbt.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
@@ -135,7 +137,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 
 		BlockState lower = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).setValue(DimensionalDoorBlock.FACING, facing);
 		BlockState upper = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
-		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.create(pos, lower);
+		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.get().create(pos, lower);
 
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));

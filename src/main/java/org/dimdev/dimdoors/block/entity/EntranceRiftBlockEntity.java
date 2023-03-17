@@ -2,10 +2,11 @@ package org.dimdev.dimdoors.block.entity;
 
 import java.util.Optional;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
@@ -20,7 +21,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.DimensionalDoors;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.Transformer;
 import org.dimdev.dimdoors.api.util.EntityUtils;
@@ -40,7 +42,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private boolean locked;
 
 	public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
+		super(ModBlockEntityTypes.ENTRANCE_RIFT.get(), pos, state);
 	}
 
 	@Override
@@ -131,7 +133,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				.orElse(Direction.NORTH);
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public Transformer getTransformer() {
 		return DefaultTransformation.fromDirection(this.getOrientation());
 	}
@@ -143,7 +145,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	/**
 	 * Specifies if the portal should be rendered two blocks tall
 	 */
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public boolean isTall() {
 		return ((RiftProvider<?>) this.getBlockState().getBlock()).isTall(this.getBlockState());
 	}

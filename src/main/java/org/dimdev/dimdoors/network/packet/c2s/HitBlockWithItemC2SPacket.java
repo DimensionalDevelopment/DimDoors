@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.network.packet.c2s;
 
 import java.io.IOException;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,7 +22,7 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListe
 	public HitBlockWithItemC2SPacket() {
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public HitBlockWithItemC2SPacket(InteractionHand hand, BlockPos pos, Direction direction) {
 		this.hand = hand;
 		this.pos = pos;

@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -59,7 +59,7 @@ public class RiftStabilizerItem extends Item {
 		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		list.add(MutableComponent.create(new TranslatableContents(this.getDescriptionId() + ".info")));

@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.recipe;
 
 import java.util.Map;
+
+import com.google.gson.JsonObject;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -11,7 +14,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import com.google.gson.JsonObject;
 
 public class TesselatingRecipe extends ShapedRecipe {
 	public final float experience;
@@ -26,12 +28,12 @@ public class TesselatingRecipe extends ShapedRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return ModRecipeSerializers.TESSELATING;
+		return ModRecipeSerializers.TESSELATING.get();
 	}
 
 	@Override
 	public RecipeType<?> getType() {
-		return ModRecipeTypes.TESSELATING;
+		return ModRecipeTypes.TESSELATING.get();
 	}
 
 	public static class Serializer implements RecipeSerializer<TesselatingRecipe> {

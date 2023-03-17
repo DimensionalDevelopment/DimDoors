@@ -14,12 +14,12 @@ import net.minecraft.core.particles.SimpleParticleType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.MonolithRenderer;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MonolithParticle extends Particle {
 
 	public MonolithParticle(ClientLevel world, double x, double y, double z) {

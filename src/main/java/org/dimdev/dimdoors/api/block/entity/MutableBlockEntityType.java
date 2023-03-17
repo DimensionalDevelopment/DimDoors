@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.mojang.datafixers.types.Type;
-import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -18,11 +18,11 @@ public class MutableBlockEntityType<T extends BlockEntity> extends BlockEntityTy
 	}
 
 	public boolean addBlock(Block block) {
-		return ((BlockEntityTypeAccessor) this).getBlocks().add(block);
+		return this.validBlocks.add(block);
 	}
 
 	public boolean removeBlock(Block block) {
-		return ((BlockEntityTypeAccessor) this).getBlocks().remove(block);
+		return this.validBlocks.remove(block);
 	}
 
 

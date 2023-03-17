@@ -4,6 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -19,12 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import org.jetbrains.annotations.Nullable;
+
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
 
 public class TesselatingRecipeJsonBuilder implements RecipeBuilder {
@@ -198,7 +201,7 @@ public class TesselatingRecipeJsonBuilder implements RecipeBuilder {
 		}
 
 		public RecipeSerializer<?> getType() {
-			return ModRecipeSerializers.TESSELATING;
+			return ModRecipeSerializers.TESSELATING.get();
 		}
 
 		public ResourceLocation getId() {

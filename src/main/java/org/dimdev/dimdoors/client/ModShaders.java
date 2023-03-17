@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.client;
 
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.renderer.ShaderInstance;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModShaders {
 	private static ShaderInstance DIMENSIONAL_PORTAL = null;
 

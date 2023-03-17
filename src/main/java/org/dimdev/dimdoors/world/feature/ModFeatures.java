@@ -66,6 +66,8 @@ public final class ModFeatures {
 		public static final ResourceKey<PlacedFeature> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
 
 		public static void init() {
+
+			net.minecraftforge.event.
 			BiomeModifications.addFeature(ctx -> ctx.hasTag(ConventionalBiomeTags.IN_OVERWORLD) &&
 					!ctx.hasTag(ConventionalBiomeTags.DESERT) &&
 					!ctx.hasTag(ConventionalBiomeTags.OCEAN),

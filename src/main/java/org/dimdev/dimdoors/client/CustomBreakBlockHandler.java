@@ -6,11 +6,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.core.BlockPos;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class CustomBreakBlockHandler {
 	private static final Map<BlockPos, BreakBlockInfo> customBreakBlockMap = new ConcurrentHashMap<>();
 	private static final ReentrantLock lock = new ReentrantLock();

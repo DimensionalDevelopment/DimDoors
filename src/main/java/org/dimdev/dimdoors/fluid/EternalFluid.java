@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.fluid;
 
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
@@ -37,7 +37,7 @@ public abstract class EternalFluid extends FlowingFluid {
 	}
 
 	@Override
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void animateTick(Level world, BlockPos blockPos, FluidState fluidState, RandomSource random) {
 
 	}

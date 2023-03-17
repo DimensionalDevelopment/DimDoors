@@ -228,7 +228,7 @@ public final class ModBlocks {
 //		DoorDataReader.read();
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public static void initClient() {
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR);
 		DoorData.DOORS.forEach(door -> BlockRenderLayerMap.INSTANCE.putBlock(door, RenderType.cutout()));

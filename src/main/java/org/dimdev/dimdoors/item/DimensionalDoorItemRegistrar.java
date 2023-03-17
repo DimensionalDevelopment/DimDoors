@@ -1,20 +1,18 @@
 package org.dimdev.dimdoors.item;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Quaternionf;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.loader.api.FabricLoader;
+
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -31,6 +29,12 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
+
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.loader.api.FabricLoader;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.function.QuadFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
@@ -124,13 +128,13 @@ public class DimensionalDoorItemRegistrar {
 		}
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private void registerItemRenderer(BlockItem dimItem) {
 		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, Renderer.RENDERER);
 	}
 
 	// extract renderer to inner interface so it can be removed in server environment via annotation
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	private interface Renderer {
 		UnderlaidChildItemRenderer RENDERER = new UnderlaidChildItemRenderer(Items.ENDER_PEARL);
 	}

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -28,7 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 
 @Mixin(LevelRenderer.class)
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class WorldRendererMixin {
 
 	@Shadow

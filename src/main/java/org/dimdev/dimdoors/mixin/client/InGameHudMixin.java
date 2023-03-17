@@ -7,11 +7,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.world.entity.player.Player;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 @Mixin(Gui.class)
 public abstract class InGameHudMixin{
 	private int frame = 0;

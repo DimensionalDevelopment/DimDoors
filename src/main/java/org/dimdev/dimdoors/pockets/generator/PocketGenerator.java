@@ -10,8 +10,7 @@ import com.google.common.collect.Multimap;
 import com.mojang.serialization.Lifecycle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
@@ -26,6 +25,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
@@ -70,7 +72,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		switch (nbt.getId()) {
 			case Tag.TAG_COMPOUND: // It's a serialized Modifier
 				return PocketGenerator.deserialize((CompoundTag) nbt, manager);
-			case NbtType.STRING: // It's a reference to a resource location
+			case Tag.TAG_STRING: // It's a reference to a resource location
 				// TODO: throw if manager is null
 				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
 			default:
@@ -136,14 +138,14 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		}
 
 		if (nbt.contains("modifier_references")) {
-			ListTag modifiersNbt = nbt.getList("modifier_references", NbtType.STRING);
+			ListTag modifiersNbt = nbt.getList("modifier_references", Tag.TAG_STRING);
 			for (Tag nbtElement : modifiersNbt) {
 				modifierList.add(Modifier.deserialize(nbtElement, manager));
 			}
 		}
 
 		if (nbt.contains("tags")) {
-			ListTag nbtList = nbt.getList("tags", NbtType.STRING);
+			ListTag nbtList = nbt.getList("tags", Tag.TAG_STRING);
 			for (int i = 0; i < nbtList.size(); i++) {
 				tags.add(nbtList.getString(i));
 			}
@@ -179,7 +181,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 				case Tag.TAG_COMPOUND:
 					modifiersNbt.add(modNbt);
 					break;
-				case NbtType.STRING:
+				case Tag.TAG_STRING:
 					modifierReferences.add(modNbt);
 					break;
 				default:

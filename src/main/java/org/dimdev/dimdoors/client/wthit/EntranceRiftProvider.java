@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 // FIXME: is not actually client sided
-public enum EntranceRiftProvider implements IBlockComponentProvider {
+public enum EntranceRiftProvider implements IBlockComponentProvider { //TODO: WAILA?
 	INSTANCE;
 
 	private static final ResourceLocation ID = DimensionalDoors.resource("entrance_rift_provider");

@@ -1,20 +1,22 @@
 package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<EntranceRiftBlockEntity> {
 	@Override
 	public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {

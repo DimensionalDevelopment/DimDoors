@@ -8,9 +8,9 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class LimboAshParticle extends BaseAshSmokeParticle {
 
 	protected LimboAshParticle(ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ, float scaleMultiplier, SpriteSet spriteProvider) {
@@ -21,7 +21,7 @@ public class LimboAshParticle extends BaseAshSmokeParticle {
 		this.gravity = -gravity;
 	}
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public record Factory(SpriteSet spriteProvider) implements ParticleProvider<SimpleParticleType> {
 		public Particle createParticle(SimpleParticleType defaultParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
 			RandomSource random = clientWorld.random;

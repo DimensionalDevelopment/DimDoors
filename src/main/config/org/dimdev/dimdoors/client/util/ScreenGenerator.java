@@ -23,9 +23,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ScreenGenerator {
 	public static Screen create(Screen parent, Object config, Runnable saveAction) {
 		Class<?> configClass = config.getClass();

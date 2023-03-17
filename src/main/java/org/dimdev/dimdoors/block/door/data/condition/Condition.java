@@ -5,11 +5,14 @@ import java.util.function.Function;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Lifecycle;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 

@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * A Transformer is a matrix stack consumer.
@@ -10,7 +10,7 @@ import net.fabricmc.api.Environment;
  * <p>It modifies the matrices' transformations.
  * It is not recommended to push/pop</p>
  */
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public interface Transformer {
 	void transform(PoseStack matrices);
 }

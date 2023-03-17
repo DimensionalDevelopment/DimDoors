@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.network.packet.s2c;
 
 import java.io.IOException;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +16,7 @@ public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPa
 	private int slot;
 	private ItemStack stack;
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public PlayerInventorySlotUpdateS2CPacket() {
 		this.stack = ItemStack.EMPTY;
 	}

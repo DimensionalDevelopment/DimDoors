@@ -1,12 +1,13 @@
 package org.dimdev.dimdoors.api.client;
 
-import org.joml.Quaternionf;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Quaternionf;
+
 import net.minecraft.core.Direction;
 
-@Environment(Dist.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public enum DefaultTransformation implements Transformer {
 	DOWN {
 		@Override

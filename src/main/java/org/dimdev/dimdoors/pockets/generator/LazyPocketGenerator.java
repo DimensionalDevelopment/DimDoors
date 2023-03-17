@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -21,7 +22,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.fabricmc.fabric.api.util.NbtType;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
@@ -65,7 +65,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 		}
 
 		if (nbt.contains("lazy_modifier_references")) {
-			ListTag modifiersNbt = nbt.getList("lazy_modifier_references", NbtType.STRING);
+			ListTag modifiersNbt = nbt.getList("lazy_modifier_references", Tag.TAG_STRING);
 			for (Tag nbtElement : modifiersNbt) {
 				// TODO: skip deserialization of single Modifiers on Exception.
 				// TODO: Modifier via ResourceManager

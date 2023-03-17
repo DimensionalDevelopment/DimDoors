@@ -15,8 +15,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.util.TriState;
+
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,6 +24,9 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
+import org.dimdev.dimdoors.api.util.TriState;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
@@ -154,8 +156,8 @@ public final class DoorData implements AutoCloseable {
 		DoorSoundProvider provider = parentBlock instanceof DoorSoundProvider soundProvider ? soundProvider : DoorSoundProvider.DUMMY;
 
 		PARENT_BLOCKS.add(parentBlock);
-		FabricBlockSettings blockSettings = FabricBlockSettings.copyOf(parentBlock);
-		this.blockSettings.luminance.ifPresent(blockSettings::luminance);
+		BlockBehaviour.Properties blockSettings = BlockBehaviour.Properties.copy(parentBlock);
+		this.blockSettings.luminance.ifPresent(value -> blockSettings.lightLevel(stack -> value));
 		ResourceLocation id = new ResourceLocation(this.id);
 		Block doorBlock = new DimensionalDoorBlock(blockSettings, provider.getCloseSound(), provider.getOpenSound());
 		Item doorItem = new DimensionalDoorItem(doorBlock, itemSettings, createSetupFunction(), hasToolTip);

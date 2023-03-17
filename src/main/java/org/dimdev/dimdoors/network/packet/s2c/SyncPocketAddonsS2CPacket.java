@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.network.packet.s2c;
 import java.io.IOException;
 import java.util.List;
 import net.fabricmc.api.Dist;
-import net.fabricmc.api.Environment;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -23,7 +23,7 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 	private int pocketRange;
 	private List<AutoSyncedAddon> addons;
 
-	@Environment(Dist.CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public SyncPocketAddonsS2CPacket() {
 	}
 

@@ -9,9 +9,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.google.common.base.MoreObjects;
-import net.fabricmc.fabric.api.util.NbtType;
+
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
+
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
@@ -30,7 +32,7 @@ public class RiftDataModifier extends AbstractModifier {
 	@Override
 	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 		// TODO: RiftData via ResourceManager
-		if (nbt.getTagType("rift_data") == NbtType.STRING) {
+		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
 			doorDataReference = nbt.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
