@@ -60,7 +60,7 @@ public class SimpleDecayPredicate implements DecayPredicate {
 
     @Override
     public boolean test(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
-        return targetBlock.getBlock() == block || targetBlock.isIn(tag);
+		return block != null ? targetBlock.isOf(block) : targetBlock.isIn(tag);
     }
 
 	@Override
