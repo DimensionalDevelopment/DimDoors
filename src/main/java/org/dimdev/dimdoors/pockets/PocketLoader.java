@@ -37,6 +37,11 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	private PocketLoader() {
 	}
 
+	public void dump() {
+		virtualPockets.forEach((path, pocketGenerator) -> LOGGER.info("Virtual Pocket: " + path + " -> " + pocketGenerator.toString()));
+		pocketGroups.forEach((path, pocketGenerator) -> LOGGER.info("Pocket Group: " + path + " -> " + pocketGenerator.toString()));
+	}
+
 	@Override
 	public void reload(ResourceManager manager) {
 		pocketGenerators.clear();

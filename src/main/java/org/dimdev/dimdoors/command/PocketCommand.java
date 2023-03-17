@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.command;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -21,6 +22,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
 import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
+import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 
@@ -78,6 +80,25 @@ public class PocketCommand {
 												})
 										)
 
+						)
+						.then(
+								literal("dump")
+										.requires(src -> src.hasPermissionLevel(4))
+										.executes(ctx -> {
+											ctx.getSource().sendFeedback(Text.of("Dumping pocket data"), false);
+											CompletableFuture.runAsync(() -> {
+												try {
+													PocketLoader.getInstance().dump();
+												} catch (Exception e) {
+													LOGGER.error("Error dumping pocket data", e);
+												}
+											}).thenRun(() -> {
+												ctx.getSource().getServer().execute(() -> {
+													ctx.getSource().sendFeedback(Text.of("Dumped pocket data"), false);
+												});
+											});
+											return Command.SINGLE_SUCCESS;
+										})
 						)
 		);
 	}
