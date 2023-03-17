@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import com.mojang.serialization.Lifecycle;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -19,7 +20,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.decay.processors.DoorDecayProccessor;
 import org.dimdev.dimdoors.world.decay.processors.DoubleDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
-import org.dimdev.dimdoors.world.decay.processors.SimpleDecayProcesor;
+import org.dimdev.dimdoors.world.decay.processors.BlockDecayProcessor;
 
 public interface DecayProcessor {
     Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_processor_type")), Lifecycle.stable(), false)).buildAndRegister();
@@ -41,7 +42,7 @@ public interface DecayProcessor {
         }
 
         @Override
-        public int process(World world, BlockPos pos, BlockState origin, BlockState target) {
+        public int process(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
             return 0;
         }
 
@@ -68,10 +69,10 @@ public interface DecayProcessor {
 
     String getKey();
 
-    int process(World world, BlockPos pos, BlockState origin, BlockState target);
+    int process(World world, BlockPos pos, BlockState origin, BlockState targetState, FluidState targetFluid);
 
     interface DecayProcessorType<T extends DecayProcessor> {
-        DecayProcessorType<SimpleDecayProcesor> SIMPLE_PROCESSOR_TYPE = register(DimensionalDoors.id(SimpleDecayProcesor.KEY), SimpleDecayProcesor::new);
+        DecayProcessorType<BlockDecayProcessor> SIMPLE_PROCESSOR_TYPE = register(DimensionalDoors.id(BlockDecayProcessor.KEY), BlockDecayProcessor::new);
         DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
         DecayProcessorType<SelfDecayProcessor> SELF = register(DimensionalDoors.id(SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
 		DecayProcessorType<? extends DecayProcessor> DOOR_PROCESSOR_TYPE = register(DimensionalDoors.id(DoorDecayProccessor.KEY), DoorDecayProccessor::new);
