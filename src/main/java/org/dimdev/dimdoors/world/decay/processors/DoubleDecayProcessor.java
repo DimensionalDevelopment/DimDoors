@@ -8,6 +8,7 @@ import net.minecraft.block.DoorBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.enums.DoorHinge;
 import net.minecraft.block.enums.DoubleBlockHalf;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -57,7 +58,7 @@ public class DoubleDecayProcessor implements DecayProcessor {
 	}
 
 	@Override
-	public int process(World world, BlockPos pos, BlockState origin, BlockState target) {
+	public int process(World world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid) {
 		if(target.getBlock() instanceof DoorBlock) {
 			BlockPos otherPos = target.get(DoorBlock.HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos.up();
 

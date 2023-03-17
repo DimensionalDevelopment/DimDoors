@@ -215,6 +215,23 @@ public final class ModBlocks {
 	@RegistryEntry("deepslate_stairs") public static final Block DEEPSLATE_STAIRS = createStairs(Blocks.DEEPSLATE);
 	@RegistryEntry("deepslate_wall") public static final Block DEEPSLATE_WALL = createWall(Blocks.DEEPSLATE);
 
+	@RegistryEntry("red_sand_slab") public static final Block RED_SAND_SLAB = createSlab(Blocks.RED_SAND);
+	@RegistryEntry("red_sand_stairs") public static final Block RED_SAND_STAIRS = createStairs(Blocks.RED_SAND);
+	@RegistryEntry("red_sand_wall") public static final Block RED_SAND_WALL = createWall(Blocks.RED_SAND);
+
+	@RegistryEntry("sand_slab") public static final Block SAND_SLAB = createSlab(Blocks.SAND);
+	@RegistryEntry("sand_stairs") public static final Block SAND_STAIRS = createStairs(Blocks.SAND);
+	@RegistryEntry("sand_wall") public static final Block SAND_WALL = createWall(Blocks.SAND);
+
+	@RegistryEntry("end_stone_slab") public static final Block END_STONE_SLAB = createSlab(Blocks.END_STONE);
+	@RegistryEntry("end_stone_stairs") public static final Block END_STONE_STAIRS = createStairs(Blocks.END_STONE);
+	@RegistryEntry("end_stone_wall") public static final Block END_STONE_WALL = createWall(Blocks.END_STONE);
+
+ 	@RegistryEntry("netherrack_fence") public static final Block NETHERRACK_FENCE = createFence(Blocks.NETHERRACK);
+ 	@RegistryEntry("netherrack_slab") public static final Block NETHERRACK_SLAB = createSlab(Blocks.NETHERRACK);
+ 	@RegistryEntry("netherrack_stairs") public static final Block NETHERRACK_STAIRS = createStairs(Blocks.NETHERRACK);
+ 	@RegistryEntry("netherrack_wall") public static final Block NETHERRACK_WALL = createWall(Blocks.NETHERRACK);
+
 	@RegistryEntry("unraveled_spike") public static final Block UNRAVELED_SPIKE = new Block(AbstractBlock.Settings.copy(UNRAVELLED_FABRIC).luminance(state -> 0));
 	@RegistryEntry("gritty_stone") public static final Block GRITTY_STONE = new Block(AbstractBlock.Settings.copy(STONE));
 	@RegistryEntry("leak") public static final Block LEAK = new Block(AbstractBlock.Settings.copy(WATER));

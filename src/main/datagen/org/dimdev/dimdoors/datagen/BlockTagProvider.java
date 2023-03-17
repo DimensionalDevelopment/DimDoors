@@ -134,9 +134,9 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 				Blocks.SAND,
 				Blocks.SOUL_SAND
 		);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_SLAB);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_STAIRS);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_WALL);
-		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_AMALGAM);
+//		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_SLAB);
+//		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_STAIRS);
+//		getOrCreateTagBuilder(ModBlockTags.DECAY_DARK_SAND_WALL);
+//		getOrCreateTagBuilder(ModBlockTags.DECAY_TO_AMALGAM);
 	}
 }

@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.datagen.FluidDecayPredicate;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
 
 public interface DecayPredicate {
@@ -82,8 +83,9 @@ public interface DecayPredicate {
     interface DecayPredicateType<T extends DecayPredicate> {
         DecayPredicateType<DecayPredicate> NONE_PREDICATE_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
         DecayPredicateType<SimpleDecayPredicate> SIMPLE_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleDecayPredicate.KEY), SimpleDecayPredicate::new);
+		DecayPredicateType<FluidDecayPredicate> FLUID_PREDICATE_TYPE = register(DimensionalDoors.id(FluidDecayPredicate.KEY), FluidDecayPredicate::new);
 
-        DecayPredicate fromNbt(NbtCompound nbt);
+		DecayPredicate fromNbt(NbtCompound nbt);
 
 		NbtCompound toNbt(NbtCompound nbt);
 
