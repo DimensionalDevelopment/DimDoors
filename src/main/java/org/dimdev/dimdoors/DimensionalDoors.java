@@ -66,6 +66,7 @@ import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.util.schematic.SchemFixer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
@@ -156,6 +157,7 @@ public class DimensionalDoors implements ModInitializer {
 
 		registerListeners();
 		apiSubscribers.forEach(DimensionalDoorsApi::postInitialize);
+		SchemFixer.run();
     }
 
     public static void registerRegistries() {
