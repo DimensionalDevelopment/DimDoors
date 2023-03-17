@@ -33,7 +33,6 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		// TODO: make this recursive
 		UUID uuid = EntityUtils.getOwner(entity).getUuid();
 		VirtualLocation virtualLocation = VirtualLocation.fromLocation(this.location);
 		if (uuid != null) {

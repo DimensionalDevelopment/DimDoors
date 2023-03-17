@@ -7,11 +7,16 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 
 public final class EntityUtils {
 	public static Entity getOwner(Entity entity) {
+		if (entity instanceof ServerPlayerEntity) {
+			return entity;
+		}
+
 		Entity topmostEntity = null;
 
 		// Thrower
@@ -24,9 +29,10 @@ public final class EntityUtils {
 		}
 
 		// Passengers
-		if (entity.getControllingPassenger() != null && !(entity instanceof PlayerEntity))
+		if (entity.getControllingPassenger() != null)
 			topmostEntity = entity.getControllingPassenger();
-		if (entity.getPassengerList().size() > 0) topmostEntity = entity.getPassengerList().get(0);
+		if (entity.getPassengerList().size() > 0)
+			topmostEntity = entity.getPassengerList().get(0);
 
 		// Owned Animals
 		if (entity instanceof MobEntity && ((MobEntity) entity).isLeashed())
@@ -46,6 +52,6 @@ public final class EntityUtils {
 	}
 
 	public static void chat(Entity entity, Text text) {
-		chat(entity, text, true);
+		chat(entity, text, false);
 	}
 }
