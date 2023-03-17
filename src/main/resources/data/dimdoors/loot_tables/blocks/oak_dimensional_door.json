@@ -7,11 +7,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dimdoors:oak_dimensional_door",
+          "name": "dimdoors:block_ag_dim_minecraft_oak_door",
           "conditions": [
             {
               "condition": "minecraft:block_state_property",
-              "block": "dimdoors:oak_dimensional_door",
+              "block": "dimdoors:block_ag_dim_minecraft_oak_door",
               "properties": {
                 "half": "lower"
               }

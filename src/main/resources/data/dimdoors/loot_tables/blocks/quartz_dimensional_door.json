@@ -7,11 +7,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dimdoors:quartz_dimensional_door",
+          "name": "dimdoors:block_ag_dim_dimdoors_quartz_door",
           "conditions": [
             {
               "condition": "minecraft:block_state_property",
-              "block": "dimdoors:quartz_dimensional_door",
+              "block": "dimdoors:block_ag_dim_dimdoors_quartz_door",
               "properties": {
                 "half": "lower"
               }
