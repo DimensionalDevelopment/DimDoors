@@ -6,6 +6,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.StructureWorldAccess;
 
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 public enum LimboGateway implements Gateway {
