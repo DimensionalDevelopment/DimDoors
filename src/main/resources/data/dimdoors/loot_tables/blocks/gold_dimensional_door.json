@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dimdoors:block_ag_dim_dimdoors_gold_door",
+          "name": "dimdoors:item_ag_dim_dimdoors_gold_door",
           "conditions": [
             {
               "condition": "minecraft:block_state_property",
