@@ -83,7 +83,7 @@ public class TesselatingRecipe extends ShapedRecipe {
 				ingredient.write(packetByteBuf);
 			}
 
-			packetByteBuf.writeItemStack(shapedRecipe.getOutput());
+			packetByteBuf.writeItemStack(shapedRecipe.getOutput(null));
 
 			packetByteBuf.writeFloat(shapedRecipe.experience);
 			packetByteBuf.writeVarInt(shapedRecipe.weavingTime);

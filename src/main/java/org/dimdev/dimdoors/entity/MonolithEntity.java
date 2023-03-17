@@ -8,6 +8,7 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.LookControl;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
@@ -20,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -76,7 +78,7 @@ public class MonolithEntity extends MobEntity {
 
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if (source != DamageSource.IN_WALL) {
+        if (!source.isOf(DamageTypes.IN_WALL)) {
             setAggro(MAX_AGGRO);
         }
         return false;
@@ -214,11 +216,11 @@ public class MonolithEntity extends MobEntity {
             this.soundTime = 100;
         }
         if (aggroPercent > 0.70 && this.soundTime < 100) {
-            this.world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
+            this.world.playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
             this.soundTime = 100 + this.getRandom().nextInt(75);
         }
         if (aggroPercent > 0.80 && this.soundTime < MAX_SOUND_COOLDOWN) {
-            this.world.playSound(null, new BlockPos(pos), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 7, 1);
+            this.world.playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING, SoundCategory.HOSTILE, 7, 1);
             this.soundTime = 250;
         }
         this.soundTime--;

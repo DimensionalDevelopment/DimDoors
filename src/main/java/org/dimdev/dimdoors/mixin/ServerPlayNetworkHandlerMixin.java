@@ -31,8 +31,8 @@ public class ServerPlayNetworkHandlerMixin {
 	protected void checkBlockCollision(PlayerMoveC2SPacket packet, CallbackInfo ci) {
 		// stolen from Entity#checkBlockCollision
 		Box box = player.getBoundingBox();
-		BlockPos blockPos = new BlockPos(box.minX + 0.001D, box.minY + 0.001D, box.minZ + 0.001D);
-		BlockPos blockPos2 = new BlockPos(box.maxX - 0.001D, box.maxY - 0.001D, box.maxZ - 0.001D);
+		BlockPos blockPos = new BlockPos((int) (box.minX + 0.001D), (int) (box.minY + 0.001D), (int) (box.minZ + 0.001D));
+		BlockPos blockPos2 = new BlockPos((int) (box.maxX - 0.001D), (int) (box.maxY - 0.001D), (int) (box.maxZ - 0.001D));
 		if (player.world.isRegionLoaded(blockPos, blockPos2)) {
 			BlockPos.Mutable mutable = new BlockPos.Mutable();
 

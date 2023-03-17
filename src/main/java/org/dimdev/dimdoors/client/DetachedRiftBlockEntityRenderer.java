@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.flowpowered.math.TrigMath;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -39,7 +40,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 			matrices.push();
 			matrices.translate(0.5, 0.5, 0.5);
 
-			MinecraftClient.getInstance().textRenderer.draw(Text.of(String.valueOf(idMarker.getId())), 0f,0f, 0xffffffff, false, matrices.peek().getPositionMatrix(), vcs, true, 0x000000, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+			MinecraftClient.getInstance().textRenderer.draw(Text.of(String.valueOf(idMarker.getId())), 0f,0f, 0xffffffff, false, matrices.peek().getPositionMatrix(), vcs, TextRenderer.TextLayerType.NORMAL, 0x000000, LightmapTextureManager.MAX_LIGHT_COORDINATE);
 
 			matrices.pop();
 		}

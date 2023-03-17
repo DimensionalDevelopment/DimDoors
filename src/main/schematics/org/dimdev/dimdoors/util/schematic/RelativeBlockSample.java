@@ -173,7 +173,8 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 				if(section.getBlockState(x, y, z).isAir()) {
 					BlockState newState = this.blockContainer.get(blockPos.subtract(origin));
 					// FIXME: newState can be null in some circumstances
-					if (!newState.isAir()) {
+					// TODO: is null checking the right fix or just a band-aid?
+					if (newState != null && !newState.isAir()) {
 						section.setBlockState(x, y, z, newState, false);
 						if (placementType.shouldMarkForUpdate()) serverChunkManager.markForUpdate(blockPos);
 					}
@@ -213,14 +214,16 @@ public class RelativeBlockSample implements BlockView, ModifiableWorld {
 		this.entityContainer.forEach(((nbt, vec3d) -> {
 			NbtList doubles = nbt.getList("Pos", NbtType.DOUBLE);
 			Vec3d vec = vec3d.add(origin.getX(), origin.getY(), origin.getZ());
-			if (intersection.contains(new Vec3i(vec.x, vec.y, vec.z))) {
+			if (intersection.contains(new Vec3i((int) vec.x, (int) vec.y, (int) vec.z))) {
 				doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
 				doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 				doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
 				nbt.put("Pos", doubles);
 
 				Entity entity = EntityType.getEntityFromNbt(nbt, world.toServerWorld()).orElseThrow(NoSuchElementException::new);
-				world.spawnEntity(entity);
+				world.getServer().execute(() -> {
+					world.spawnEntity(entity);
+				});
 			}
 		}));
 	}

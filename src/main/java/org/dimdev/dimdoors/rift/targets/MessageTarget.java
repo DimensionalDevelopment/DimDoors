@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
@@ -27,7 +28,7 @@ public class MessageTarget implements EntityTarget {
 
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent(this.message, this.messageParams)));
+		EntityUtils.chat(entity, Text.translatable(this.message, this.messageParams));
 
 		if (this.forwardTo != null) {
 			this.forwardTo.as(Targets.ENTITY).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);

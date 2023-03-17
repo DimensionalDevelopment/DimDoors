@@ -12,6 +12,7 @@
     }
   },
   "result": {
+    "_comment": "TODO: remove this recipe",
     "item": "dimdoors:wood_dimensional_trapdoor",
     "count": 1
   }

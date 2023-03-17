@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block.door;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockSetType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.DoorBlock;
@@ -30,8 +31,8 @@ import net.minecraft.world.WorldAccess;
 public class WaterLoggableDoorBlock extends DoorBlock implements Waterloggable {
 	public static final BooleanProperty WATERLOGGED = Properties.WATERLOGGED;
 
-	protected WaterLoggableDoorBlock(Settings settings, SoundEvent closeSound, SoundEvent openSound) {
-		super(settings, closeSound, openSound);
+	protected WaterLoggableDoorBlock(Settings settings, BlockSetType blockSetType) {
+		super(settings, blockSetType);
 		setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(OPEN, false).with(HINGE, DoorHinge.LEFT).with(POWERED, false).with(HALF, DoubleBlockHalf.LOWER).with(WATERLOGGED, false));
 	}
 

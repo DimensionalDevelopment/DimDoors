@@ -71,7 +71,7 @@ public class RiftSignatureItem extends Item {
 		}
 
 		if(ModDimensions.isPrivatePocketDimension(world) && !DimensionalDoors.getConfig().getPocketsConfig().canUseRiftSignatureInPrivatePockets) {
-			player.sendMessage(MutableText.of(new TranslatableTextContent("tools.signature_blocked")).formatted(Formatting.BLACK), true);
+			player.sendMessage(Text.translatable("tools.signature_blocked").formatted(Formatting.BLACK), true);
 			return ActionResult.FAIL;
 		}
 
@@ -80,13 +80,13 @@ public class RiftSignatureItem extends Item {
 		if (target == null) {
 			// The link signature has not been used. Store its current target as the first location.
 			setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.getYaw(), 0));
-			player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".stored")), true);
+			player.sendMessage(Text.translatable(this.getTranslationKey() + ".stored"), true);
 			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
 		} else {
 			// Place a rift at the saved point
 			if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
 				if (!target.getBlockState().getBlock().canMobSpawnInside()) {
-					player.sendMessage(MutableText.of(new TranslatableTextContent("tools.target_became_block")), true);
+					player.sendMessage(Text.translatable("tools.target_became_block"), true);
 					clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
 					return ActionResult.FAIL;
 				}
@@ -107,7 +107,7 @@ public class RiftSignatureItem extends Item {
 			}); // TODO: calculate damage based on position?
 
 			clearSource(stack);
-			player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".created")), true);
+			player.sendMessage(Text.translatable(this.getTranslationKey() + ".created"), true);
 			// null = send sound to the player too, we have to do this because this code is not run client-side
 			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
 		}
@@ -139,8 +139,8 @@ public class RiftSignatureItem extends Item {
 	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
 		RotatedLocation transform = getSource(itemStack);
 		if (transform != null) {
-			list.add(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().getValue())));
-			list.add(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".bound.info1", transform.getWorldId().getValue())));
+			list.add(Text.translatable(this.getTranslationKey() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().getValue()));
+			list.add(Text.translatable(this.getTranslationKey() + ".bound.info1", transform.getWorldId().getValue()));
 		} else {
 			ToolTipHelper.processTranslation(list, this.getTranslationKey() + ".unbound.info");
 		}

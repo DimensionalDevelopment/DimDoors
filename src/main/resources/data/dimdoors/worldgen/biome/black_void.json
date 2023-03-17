@@ -7,9 +7,10 @@
     "grass_color_modifier": "none"
   },
   "carvers": {},
-  "category": "none",
   "downfall": 0,
-  "precipitation": "none",
+  "temperature_modifier": "none",
+  "has_precipitation": false,
+  "temperature": 0.8,
   "features": [
     [],
     [],
@@ -33,6 +34,5 @@
     "underground_water_creature": [],
     "water_ambient": [],
     "water_creature": []
-  },
-  "temperature": 0.8
+  }
 }

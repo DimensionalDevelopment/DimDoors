@@ -24,13 +24,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.math.Vec3i;
 
 public class Schematic {
 	private static final Consumer<String> PRINT_TO_STDERR = System.err::println;
 	public static final Codec<Schematic> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
 			Codec.INT.fieldOf("Version").forGetter(Schematic::getVersion),
-			Codec.INT.optionalFieldOf("Data Version", SharedConstants.getGameVersion().getWorldVersion()).forGetter(Schematic::getDataVersion),
+			Codec.INT.optionalFieldOf("Data Version", SharedConstants.getGameVersion().getResourceVersion(ResourceType.SERVER_DATA)).forGetter(Schematic::getDataVersion),
 			SchematicMetadata.CODEC.optionalFieldOf("Metadata", SchematicMetadata.EMPTY).forGetter(Schematic::getMetadata),
 			Codec.SHORT.fieldOf("Width").forGetter(Schematic::getWidth),
 			Codec.SHORT.fieldOf("Height").forGetter(Schematic::getHeight),

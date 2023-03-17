@@ -7,11 +7,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dimdoors:iron_dimensional_door",
+          "name": "dimdoors:item_ag_dim_minecraft_iron_door",
           "conditions": [
             {
               "condition": "minecraft:block_state_property",
-              "block": "dimdoors:iron_dimensional_door",
+              "block": "dimdoors:block_ag_dim_minecraft_iron_door",
               "properties": {
                 "half": "lower"
               }

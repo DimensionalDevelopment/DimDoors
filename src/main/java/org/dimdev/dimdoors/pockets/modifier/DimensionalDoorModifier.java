@@ -134,7 +134,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
 		BlockPos pocketOrigin = manager.getPocket().getOrigin();
-		BlockPos pos = new BlockPos(xEquation.apply(variableMap) + pocketOrigin.getX(), yEquation.apply(variableMap) + pocketOrigin.getY(), zEquation.apply(variableMap) + pocketOrigin.getZ());
+		BlockPos pos = new BlockPos((int) (xEquation.apply(variableMap) + pocketOrigin.getX()), (int) (yEquation.apply(variableMap) + pocketOrigin.getY()), (int) (zEquation.apply(variableMap) + pocketOrigin.getZ()));
 
 		BlockState lower = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).with(DimensionalDoorBlock.FACING, facing);
 		BlockState upper = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).with(DimensionalDoorBlock.FACING, facing);

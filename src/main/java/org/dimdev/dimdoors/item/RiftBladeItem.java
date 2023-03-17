@@ -19,6 +19,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
@@ -75,7 +76,7 @@ public class RiftBladeItem extends SwordItem {
 			if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
 				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 			} else {
-				player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".rift_miss")), true);
+				player.sendMessage(Text.translatable(this.getTranslationKey() + ".rift_miss"), true);
 				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 				return new TypedActionResult<>(ActionResult.FAIL, stack);
 			}
@@ -92,7 +93,8 @@ public class RiftBladeItem extends SwordItem {
 			Vec3d offsetDirection = playerVec.subtract(entityVec).normalize();
 			offsetDirection = offsetDirection.rotateY((float) (offsetRotationYaw * Math.PI) / 180);
 
-			BlockPos teleportPosition = new BlockPos(entityVec.add(offsetDirection.multiply(offsetDistance)));
+			Vec3d added = entityVec.add(offsetDirection.multiply(offsetDistance));
+			BlockPos teleportPosition = new BlockPos(new Vec3i((int) added.x, (int) added. y, (int) added.z));
 			while (world.getBlockState(teleportPosition).getMaterial().blocksMovement())
 				teleportPosition = teleportPosition.up();
 			player.teleport(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());

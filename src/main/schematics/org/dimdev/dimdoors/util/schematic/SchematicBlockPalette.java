@@ -26,14 +26,18 @@ public class SchematicBlockPalette {
 		Codec<BlockState> CODEC = Codec.STRING.comapFlatMap(Entry::to, Entry::from);
 
 		static DataResult<BlockState> to(String string) {
+			// wow so hacky whooooo lets go
+//			string = string.replace("dimdoors:iron_dimensional_door", "dimdoors:block_ag_dim_minecraft_iron_door");
+//			string = string.replace("dimdoors:quartz_dimensional_door", "dimdoors:block_ag_dim_dimdoors_quartz_door");
+//			string = string.replace("dimdoors:oak_dimensional_door", "dimdoors:block_ag_dim_minecraft_oak_door");
+//			string = string.replace("dimdoors:gold_dimensional_door", "dimdoors:block_ag_dim_dimdoors_gold_door");
 			StringReader reader = new StringReader(string);
-
 			BlockArgumentParser.BlockResult parser;
 
 			try {
 				parser = BlockArgumentParser.block(Registries.BLOCK.getReadOnlyWrapper(), reader, true);
 			} catch (CommandSyntaxException e) {
-				return DataResult.error(e.getMessage());
+				return DataResult.error(e::getMessage);
 			}
 			return DataResult.success(parser.blockState());
 //			if (!string.contains("[") && !string.contains("]")) {

@@ -1,6 +1,4 @@
-[
-  {
-    "id": "private/default",
-    "type": "dimdoors:id"
-  }
-]
+{
+  "path": "dimdoors:private/",
+  "type": "dimdoors:path"
+}

@@ -17,6 +17,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
 
@@ -29,8 +30,8 @@ import org.dimdev.dimdoors.world.ModDimensions;
 public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey) {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
-				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey)),
-				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey + ".desc")),
+				Text.translatable("dimdoors.advancement." + titleKey),
+				Text.translatable("dimdoors.advancement." + titleKey + ".desc"),
 				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
 				AdvancementFrame.TASK,
 				true,
@@ -41,8 +42,8 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 
 	static AdvancementDisplay makeDisplay(ItemConvertible item, String titleKey, AdvancementFrame advancementFrame) {
 		return new AdvancementDisplay(item.asItem().getDefaultStack(),
-				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey)),
-				MutableText.of(new TranslatableTextContent("dimdoors.advancement." + titleKey + ".desc")),
+				Text.translatable("dimdoors.advancement." + titleKey),
+				Text.translatable("dimdoors.advancement." + titleKey + ".desc"),
 				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
 				advancementFrame,
 				true,
@@ -68,17 +69,17 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.parent(root)
 				.build(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
 		Advancement darkOstiology = Advancement.Builder.create()
-				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:oak_dimensional_door")), "dark_ostiology"))
-				.criterion("place_door", PlacedBlockCriterion.Conditions.block(Registries.BLOCK.get(new Identifier("dimdoors:oak_dimensional_door"))))
+				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:block_ag_dim_minecraft_oak_door")), "dark_ostiology"))
+				.criterion("place_door", PlacedBlockCriterion.Conditions.block(Registries.BLOCK.get(new Identifier("dimdoors:block_ag_dim_minecraft_oak_door"))))
 				.parent(holeInTheSky)
 				.build(advancementConsumer, "dimdoors:dimdoors/dark_ostiology");
 		Advancement.Builder.create()
-				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:iron_dimensional_door")), "public_pocket"))
+				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:block_ag_dim_minecraft_iron_door")), "public_pocket"))
 				.parent(darkOstiology)
 				.criterion("public_pocket", ChangedDimensionCriterion.Conditions.to(ModDimensions.PUBLIC))
 				.build(advancementConsumer, "dimdoors:dimdoors/public_pocket");
 		Advancement.Builder.create()
-				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:iron_dimensional_door")), "home_away_from_home"))
+				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:block_ag_dim_minecraft_iron_door")), "home_away_from_home"))
 				.parent(darkOstiology)
 				.criterion("private_pocket", ChangedDimensionCriterion.Conditions.to(ModDimensions.PERSONAL))
 				.build(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
@@ -88,7 +89,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.parent(darkOstiology)
 				.build(advancementConsumer, "dimdoors:dimdoors/out_of_time");
 		Advancement doorToAdventure = Advancement.Builder.create()
-				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:gold_dimensional_door")), "door_to_adventure"))
+				.display(makeDisplay(Registries.BLOCK.get(new Identifier("dimdoors:block_ag_dim_dimdoors_gold_door")), "door_to_adventure"))
 				.parent(holeInTheSky)
 				.criterion("enter_dungeon", ChangedDimensionCriterion.Conditions.to(ModDimensions.DUNGEON))
 				.build(advancementConsumer, "dimdoors:dimdoors/door_to_adventure");

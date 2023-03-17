@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.item;
 
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.sound.SoundEvent;
@@ -32,13 +33,13 @@ public enum ModArmorMaterials implements ArmorMaterial {
 	}
 
 	@Override
-	public int getDurability(EquipmentSlot slot) {
-		return BASE_DURABILITY[slot.getEntitySlotId()] * this.durabilityMultiplier;
+	public int getDurability(ArmorItem.Type type) {
+		return BASE_DURABILITY[type.getEquipmentSlot().getEntitySlotId()] * this.durabilityMultiplier;
 	}
 
 	@Override
-	public int getProtectionAmount(EquipmentSlot slot) {
-		return this.protectionAmounts[slot.getEntitySlotId()];
+	public int getProtection(ArmorItem.Type type) {
+		return this.protectionAmounts[type.getEquipmentSlot().getEntitySlotId()];
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EulerAngle;
@@ -45,11 +46,11 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
 		if (!ModDimensions.isPocketDimension(entity.world) && !(ModDimensions.isLimboDimension(entity.world))) {
-			chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.not_in_pocket_dim")));
+			chat(entity, Text.translatable("rifts.destinations.escape.not_in_pocket_dim"));
 			return false;
 		}
 		if (ModDimensions.isLimboDimension(entity.world) && !this.canEscapeLimbo) {
-			chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.cannot_escape_limbo")));
+			chat(entity, Text.translatable("rifts.destinations.escape.cannot_escape_limbo"));
 			return false;
 		}
 		if (entity.getEntityWorld().isClient)
@@ -105,9 +106,9 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				}));
 			} else {
 				if (destLoc == null) {
-					chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.did_not_use_rift")));
+					chat(entity, Text.translatable("rifts.destinations.escape.did_not_use_rift"));
 				} else {
-					chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.rift_has_closed")));
+					chat(entity, Text.translatable("rifts.destinations.escape.rift_has_closed"));
 				}
 				if (ModDimensions.LIMBO_DIMENSION != null) {
 					entity = TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);

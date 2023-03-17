@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.item;
+package org.dimdev.dimdoors.item.door;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -54,7 +54,7 @@ public class DimensionalDoorItem extends BlockItem {
 		BlockPos pos = context.getBlockPos();
 
 		if (!context.getWorld().getBlockState(pos).canReplace(context)) {
-			pos = pos.offset(context.getPlayerFacing());
+			pos = pos.offset(context.getPlayerLookDirection());
 		}
 
 		boolean placedOnRift = context.getWorld().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT;
@@ -65,7 +65,7 @@ public class DimensionalDoorItem extends BlockItem {
 			// without sending custom packets.
 
 			if (context.getWorld().isClient) {
-				context.getPlayer().sendMessage(MutableText.of(new TranslatableTextContent("rifts.entrances.rift_too_close")), true);
+				context.getPlayer().sendMessage(Text.translatable("rifts.entrances.rift_too_close"), true);
 				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 			}
 

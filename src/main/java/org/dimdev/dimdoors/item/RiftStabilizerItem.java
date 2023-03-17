@@ -15,6 +15,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
@@ -40,23 +41,23 @@ public class RiftStabilizerItem extends Item {
 				// TODO: not necessarily success, fix this and all other similar cases to make arm swing correct
 				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 			} else {
-				player.sendMessage(MutableText.of(new TranslatableTextContent("tools.rift_miss")), true);
+				player.sendMessage(Text.translatable("tools.rift_miss"), true);
 				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
 				return new TypedActionResult<>(ActionResult.FAIL, stack);
 			}
 		}
 
 		if (RaycastHelper.hitsDetachedRift(hit, world)) {
-			DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(new BlockPos(hit.getPos()));
+			DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(new BlockPos(new Vec3i((int) hit.getPos().x, (int) hit.getPos().y, (int) hit.getPos().z)));
 			if (!rift.stabilized && !rift.closing) {
 				rift.setStabilized(true);
 				world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1); // TODO: different sound
 				stack.damage(1, player, a -> {
 				});
-				player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".stabilized")), true);
+				player.sendMessage(Text.translatable(this.getTranslationKey() + ".stabilized"), true);
 				return new TypedActionResult<>(ActionResult.SUCCESS, stack);
 			} else {
-				player.sendMessage(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".already_stabilized")), true);
+				player.sendMessage(Text.translatable(this.getTranslationKey() + ".already_stabilized"), true);
 			}
 		}
 		return new TypedActionResult<>(ActionResult.FAIL, stack);
@@ -65,6 +66,6 @@ public class RiftStabilizerItem extends Item {
 	@Environment(EnvType.CLIENT)
 	@Override
 	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
-		list.add(MutableText.of(new TranslatableTextContent(this.getTranslationKey() + ".info")));
+		list.add(Text.translatable(this.getTranslationKey() + ".info"));
 	}
 }

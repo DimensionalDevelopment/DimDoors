@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -55,7 +56,7 @@ public class DyeableAddon implements PocketAddon {
 		int maxDye = amountOfDyeRequiredToColor(pocket);
 
 		if (this.dyeColor == color) {
-			EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pockets.dyeAlreadyAbsorbed")));
+			EntityUtils.chat(entity, Text.translatable("dimdoors.pockets.dyeAlreadyAbsorbed"));
 			return false;
 		}
 
@@ -65,15 +66,15 @@ public class DyeableAddon implements PocketAddon {
 				this.dyeColor = color;
 				this.nextDyeColor = PocketColor.NONE;
 				this.count = 0;
-				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.pocketHasBeenDyed", dyeColor)));
+				EntityUtils.chat(entity, Text.translatable("dimdoors.pocket.pocketHasBeenDyed", dyeColor));
 			} else {
 				this.count++;
-				EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color)));
+				EntityUtils.chat(entity, Text.translatable("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color));
 			}
 		} else {
 			this.nextDyeColor = color;
 			this.count = 1;
-			EntityUtils.chat(entity, MutableText.of(new TranslatableTextContent("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color)));
+			EntityUtils.chat(entity, Text.translatable("dimdoors.pocket.remainingNeededDyes", this.count, maxDye, color));
 		}
 		return true;
 	}

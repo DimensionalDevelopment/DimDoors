@@ -9,6 +9,7 @@ import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.math.random.Random;
 
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -96,7 +97,7 @@ public class MonolithAggroGoal extends Goal {
             if (this.mob.getAggro() >= MAX_AGGRO && DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
                 this.mob.setAggro(0);
 				this.target.teleport(this.target.getX(), this.target.getY() + 256, this.target.getZ());
-                this.target.world.playSound(null, new BlockPos(this.target.getPos()), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
+                this.target.world.playSound(null, new BlockPos(new Vec3i((int) this.target.getPos().x, (int) this.target.getPos().y, (int) this.target.getPos().z)), ModSoundEvents.CRACK, SoundCategory.HOSTILE, 13, 1);
                 this.target.incrementStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
                 ServerPacketHandler.get((ServerPlayerEntity) this.target).sendPacket(new MonolithTeleportParticlesPacket());
 			}

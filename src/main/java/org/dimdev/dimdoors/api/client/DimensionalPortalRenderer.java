@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.api.client;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
@@ -11,6 +14,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -60,9 +64,10 @@ public final class DimensionalPortalRenderer {
 						)
 						.build(false)
 		);
-		ModelPart.Cuboid small = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 15.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
+		Set<Direction> directions = new HashSet<>(List.of(Direction.values()));
+		ModelPart.Cuboid small = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 15.8f, 0.01F, 0, 0, 0, false, 1024, 1024, directions);
 		MODEL = new ModelPart(Collections.singletonList(small), Collections.emptyMap());
-		ModelPart.Cuboid big = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
+		ModelPart.Cuboid big = new ModelPart.Cuboid(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024, directions);
 		TALL_MODEL = new ModelPart(Collections.singletonList(big), Collections.emptyMap());
 	}
 }
