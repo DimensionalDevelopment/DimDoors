@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -34,7 +35,7 @@ public class SelfDecayProcessor implements DecayProcessor {
     }
 
     @Override
-    public int process(World world, BlockPos pos, BlockState origin, BlockState target) {
+	public int process(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
         world.setBlockState(pos, origin);
         return 0;
     }

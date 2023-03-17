@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.datagen.FluidDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.DoorDecayProccessor;
 import org.dimdev.dimdoors.world.decay.processors.DoubleDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
@@ -75,8 +76,9 @@ public interface DecayProcessor {
         DecayProcessorType<BlockDecayProcessor> SIMPLE_PROCESSOR_TYPE = register(DimensionalDoors.id(BlockDecayProcessor.KEY), BlockDecayProcessor::new);
         DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
         DecayProcessorType<SelfDecayProcessor> SELF = register(DimensionalDoors.id(SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
-		DecayProcessorType<? extends DecayProcessor> DOOR_PROCESSOR_TYPE = register(DimensionalDoors.id(DoorDecayProccessor.KEY), DoorDecayProccessor::new);
-		DecayProcessorType<? extends DecayProcessor> DOUBLE_PROCESSOR_TYPE = register(DimensionalDoors.id(DoubleDecayProcessor.KEY), DoubleDecayProcessor::new);
+		DecayProcessorType<DoorDecayProccessor> DOOR_PROCESSOR_TYPE = register(DimensionalDoors.id(DoorDecayProccessor.KEY), DoorDecayProccessor::new);
+		DecayProcessorType<DoubleDecayProcessor> DOUBLE_PROCESSOR_TYPE = register(DimensionalDoors.id(DoubleDecayProcessor.KEY), DoubleDecayProcessor::new);
+		DecayProcessorType<FluidDecayProcessor> FLUID_PROCESSOR_TYPE = register(DimensionalDoors.id(FluidDecayProcessor.KEY), FluidDecayProcessor::new);
 
 		DecayProcessor fromNbt(NbtCompound nbt);
 
