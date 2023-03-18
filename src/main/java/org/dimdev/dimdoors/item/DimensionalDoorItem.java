@@ -2,7 +2,8 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 import java.util.function.Consumer;
-import net.fabricmc.api.Dist;
+
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -16,7 +17,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.dimdev.dimdoors.DimensionalDoors;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -54,7 +56,7 @@ public class DimensionalDoorItem extends BlockItem {
 			pos = pos.relative(context.getHorizontalDirection());
 		}
 
-		boolean placedOnRift = context.getLevel().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT;
+		boolean placedOnRift = context.getLevel().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT.get();
 
 		if (!placedOnRift && !context.getPlayer().isShiftKeyDown() && isRiftNear(context.getLevel(), pos)) {
 			// Allowing on second right click would require cancelling client-side, which
@@ -112,7 +114,7 @@ public class DimensionalDoorItem extends BlockItem {
 			for (int y = pos.getY() - 5; y < pos.getY() + 5; y++) {
 				for (int z = pos.getZ() - 5; z < pos.getZ() + 5; z++) {
 					BlockPos searchPos = new BlockPos(x, y, z);
-					if (world.getBlockState(searchPos).getBlock() == ModBlocks.DETACHED_RIFT) {
+					if (world.getBlockState(searchPos).getBlock() == ModBlocks.DETACHED_RIFT.get()) {
 						DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(searchPos);
 						if (Math.sqrt(pos.distSqr(searchPos)) < rift.size) {
 							return true;

@@ -1,12 +1,19 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import java.util.Map;
+import java.util.Objects;
+
+import net.minecraftforge.common.util.LazyOptional;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+
+import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -21,14 +28,15 @@ public class LazyGenerationPocket extends Pocket {
 	public void chunkLoaded(ChunkAccess chunk) {
 		if (isDoneGenerating()) return;
 
-		ChunkLazilyGeneratedComponent lazyGenned = ChunkLazilyGeneratedComponent.get(chunk);
-		if (lazyGenned.hasBeenLazyGenned()) return;
+		ChunkLazilyGeneratedComponent lazyGenned = (ChunkLazilyGeneratedComponent)(chunk instanceof LevelChunk betterChunk ?
+				betterChunk.getCapability(Constants.COMPONENT) : LazyOptional.empty()).orElse(null);
+		if (Objects.nonNull(lazyGenned) && lazyGenned.hasBeenLazyGenned()) return;
 
 		BoundingBox chunkBox = BlockBoxUtil.getBox(chunk);
 		if (!chunkBox.intersects(getBox())) return;
 
 		generator.generateChunk(this, chunk);
-		lazyGenned.setGenned();
+		if(Objects.nonNull(lazyGenned)) lazyGenned.setGenned();
 		toBeGennedChunkCount--;
 
 		if (isDoneGenerating()) {

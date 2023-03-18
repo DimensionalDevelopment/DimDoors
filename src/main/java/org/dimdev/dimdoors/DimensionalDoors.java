@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModContainer;
@@ -23,6 +24,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 
 import org.dimdev.dimdoors.api.DimensionalDoorsApi;
+import org.dimdev.dimdoors.api.capability.IComponent;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.client.ClientEvents;
@@ -52,6 +54,7 @@ public class DimensionalDoors {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCapabilities);
 		RegistryHandler.init(FMLJavaModLoadingContext.get().getModEventBus());
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(CommonEvents.class);
@@ -70,6 +73,10 @@ public class DimensionalDoors {
 
 	public void loadComplete(FMLLoadCompleteEvent ev) {
 
+	}
+
+	public void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.register(IComponent.class);
 	}
 
 	@SubscribeEvent

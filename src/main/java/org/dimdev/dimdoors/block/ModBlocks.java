@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.block;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -157,7 +159,7 @@ public final class ModBlocks {
 	public static final RegistryObject<Block> DRIFTWOOD_GATE = BLOCKS.register("driftwood_gate", () -> new FenceGateBlock(BlockBehaviour.Properties.of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(2.0F, 3.0F).sound(SoundType.WOOD), SoundEvents.FENCE_GATE_CLOSE, SoundEvents.FENCE_GATE_OPEN));
 	public static final RegistryObject<Block> DRIFTWOOD_BUTTON = BLOCKS.register("driftwood_button", () -> new ButtonBlock(BlockBehaviour.Properties.of(Material.DECORATION, MaterialColor.COLOR_LIGHT_GRAY).noCollission().strength(0.5F), 20, true, SoundEvents.WOODEN_BUTTON_CLICK_OFF, SoundEvents.WOODEN_BUTTON_CLICK_ON));
 	public static final RegistryObject<Block> DRIFTWOOD_SLAB = BLOCKS.register("driftwood_slab", () -> new SlabBlock(BlockBehaviour.Properties.of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY)));
-	public static final RegistryObject<Block> DRIFTWOOD_STAIRS = BLOCKS.register("driftwood_stairs", () -> new StairBlock(DRIFTWOOD_PLANKS.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.WOOD,  MaterialColor.COLOR_LIGHT_GRAY)));
+	public static final RegistryObject<Block> DRIFTWOOD_STAIRS = BLOCKS.register("driftwood_stairs", () -> new StairBlock(() -> DRIFTWOOD_PLANKS.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.WOOD,  MaterialColor.COLOR_LIGHT_GRAY)));
 	public static final RegistryObject<Block> DRIFTWOOD_DOOR = BLOCKS.register("driftwood_door", () -> new DoorBlock(BlockBehaviour.Properties.of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), SoundEvents.WOODEN_DOOR_CLOSE, SoundEvents.WOODEN_DOOR_OPEN));
 	public static final RegistryObject<Block> DRIFTWOOD_TRAPDOOR = BLOCKS.register("driftwood_trapdoor", () -> new TrapDoorBlock(BlockBehaviour.Properties.of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false), SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundEvents.WOODEN_TRAPDOOR_OPEN));
 
@@ -259,6 +261,6 @@ public final class ModBlocks {
 	}
 
 	public static Block createStairs(Block block) {
-		return new StairBlock(block.defaultBlockState(), BlockBehaviour.Properties.copy(block));
+		return new StairBlock(block::defaultBlockState, BlockBehaviour.Properties.copy(block));
 	}
 }

@@ -2,9 +2,11 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.minecraftforge.api.distmarker.OnlyIn;
+
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,17 +24,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.item.component.CounterComponent;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
-import static net.fabricmc.api.Dist.CLIENT;
-
-public class RiftConfigurationToolItem extends Item implements ExtendedItem {
-	private static final Logger LOGGER = LogManager.getLogger();
+public class RiftConfigurationToolItem extends CounterItem implements ExtendedItem {
 
 	public static final String ID = "rift_configuration_tool";
 
@@ -48,15 +47,13 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 		if (world.isClientSide) {
 			return InteractionResultHolder.fail(stack);
 		} else {
-			CounterComponent counter = CounterComponent.get(stack);
-
 			if (RaycastHelper.hitsRift(hit, world)) {
 				RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 
 				if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() >= 0) {
 					EntityUtils.chat(player, Component.nullToEmpty("Id: " + ((IdMarker) rift.getDestination()).getId()));
 				} else {
-					int id = counter.increment();
+					int id = incrementCount(stack);
 
 					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
 
@@ -67,7 +64,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 
 				return InteractionResultHolder.success(stack);
 			} else {
-				EntityUtils.chat(player, Component.nullToEmpty("Current Count: " + counter.count()));
+				EntityUtils.chat(player, Component.nullToEmpty("Current Count: " + getCount(stack)));
 			}
 		}
 
@@ -78,7 +75,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	public InteractionResultHolder<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
 		if (world.isClientSide) {
 			if (player.isShiftKeyDown()) {
-				if (CounterComponent.get(player.getItemInHand(hand)).count() != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
+				if (getCount(player.getItemInHand(hand)) != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
 					return InteractionResultHolder.success(true);
 				}
 				return InteractionResultHolder.fail(false);
@@ -94,8 +91,8 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 						EntityUtils.chat(player, Component.nullToEmpty("Rift stripped of data and set to invalid id: -1"));
 						return InteractionResultHolder.success(false);
 					}
-				} else if (CounterComponent.get(stack).count() != 0) {
-					CounterComponent.get(stack).reset();
+				} else if (getCount(player.getItemInHand(hand)) != 0) {
+					resetCount(stack);
 
 					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
 
@@ -108,7 +105,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	}
 
 	@Override
-	@OnlyIn(CLIENT)
+	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		if (I18n.exists(this.getDescriptionId() + ".info")) {
 			list.add(MutableComponent.create(new TranslatableContents(this.getDescriptionId() + ".info")));

@@ -30,10 +30,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.loader.api.FabricLoader;
-
 import org.dimdev.dimdoors.Constants;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.function.QuadFunction;
@@ -56,7 +52,6 @@ public class DimensionalDoorItemRegistrar {
 
 	public DimensionalDoorItemRegistrar(Registry<Item> registry) {
 		this.registry = registry;
-
 		init();
 		RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> handleEntry(id, object));
 	}

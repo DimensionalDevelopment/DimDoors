@@ -35,14 +35,14 @@ public class DimensionalEraserItem extends Item {
 		if (hit != null && hit.getType() == HitResult.Type.ENTITY) {
 			if(((EntityHitResult) hit).getEntity() instanceof ServerPlayer) {
 				BlockPos teleportPos = ((EntityHitResult) hit).getEntity().blockPosition();
-				while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
+				while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID.get()) {
 					teleportPos = teleportPos.offset(1, 0, 1);
 				}
 				TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getDeltaMovement());
 			}
 
 			((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);
-			player.playSound(ModSoundEvents.BLOOP, 1.0f, 1.0f);
+			player.playSound(ModSoundEvents.BLOOP.get(), 1.0f, 1.0f);
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 

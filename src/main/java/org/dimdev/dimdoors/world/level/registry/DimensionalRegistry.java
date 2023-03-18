@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -13,17 +14,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.PrimaryLevelData;
-import dev.onyxstudios.cca.api.v3.component.ComponentV3;
-import org.dimdev.dimdoors.DimensionalDoorsComponents;
+
+import org.dimdev.dimdoors.Constants;
+import org.dimdev.dimdoors.api.capability.IComponent;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 
-import static org.dimdev.dimdoors.DimensionalDoors.getServer;
-
-public class DimensionalRegistry implements ComponentV3 {
+public class DimensionalRegistry implements IComponent {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
 	private Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
 	private RiftRegistry riftRegistry = new RiftRegistry();
@@ -61,7 +60,7 @@ public class DimensionalRegistry implements ComponentV3 {
 	}
 
 	@Override
-	public void writeToNbt(CompoundTag nbt) {
+	public CompoundTag writeToNbt(CompoundTag nbt) {
 		CompletableFuture<Tag> futurePocketRegistryNbt = CompletableFuture.supplyAsync(() -> {
 			List<CompletableFuture<Tuple<String, Tag>>> futurePocketRegistryNbts = new ArrayList<>();
 			pocketRegistry.forEach((key, value) -> futurePocketRegistryNbts.add(CompletableFuture.supplyAsync(() -> new Tuple<>(key.location().toString(), value.writeToNbt()))));
@@ -78,10 +77,11 @@ public class DimensionalRegistry implements ComponentV3 {
 		nbt.put("private_registry", futurePrivateRegistryNbt.join());
 
 		nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
+		return nbt;
 	}
 
 	public static DimensionalRegistry instance() {
-		return DimensionalDoorsComponents.DIMENSIONAL_REGISTRY_COMPONENT_KEY.get((PrimaryLevelData) getServer().getWorldData());
+		return Constants.DIMENSIONAL_REGISTRY_PROVIDER.getWrappedType();
 	}
 
 	public static RiftRegistry getRiftRegistry() {

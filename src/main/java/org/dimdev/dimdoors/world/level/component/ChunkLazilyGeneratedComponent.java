@@ -1,12 +1,11 @@
 package org.dimdev.dimdoors.world.level.component;
 
-import dev.onyxstudios.cca.api.v3.component.Component;
-import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import org.dimdev.dimdoors.DimensionalDoorsComponents;
+import net.minecraft.nbt.Tag;
 
-public class ChunkLazilyGeneratedComponent implements Component {
+import org.dimdev.dimdoors.api.capability.IComponent;
+
+public class ChunkLazilyGeneratedComponent implements IComponent {
 	private boolean hasBeenLazyGenned = false;
 
 	public boolean hasBeenLazyGenned() {
@@ -18,21 +17,16 @@ public class ChunkLazilyGeneratedComponent implements Component {
 		hasBeenLazyGenned = true;
 	}
 
-	public static ChunkLazilyGeneratedComponent get(ChunkAccess chunk) {
-		return DimensionalDoorsComponents.CHUNK_LAZILY_GENERATED_COMPONENT_KEY.get(chunk);
-	}
-
 	@Override
 	public void readFromNbt(CompoundTag nbt) {
-		if (nbt.contains("has_been_lazy_genned", Tag.TAG_INT)) {
+		if (nbt.contains("has_been_lazy_genned", Tag.TAG_INT))
 			hasBeenLazyGenned = nbt.getInt("has_been_lazy_genned") == 1;
-		}
 	}
 
 	@Override
-	public void writeToNbt(CompoundTag nbt) {
-		if (hasBeenLazyGenned) {
+	public CompoundTag writeToNbt(CompoundTag nbt) {
+		if (hasBeenLazyGenned)
 			nbt.putInt("has_been_lazy_genned", 1);
-		}
+		return nbt;
 	}
 }
