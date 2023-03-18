@@ -59,14 +59,16 @@ public class BlockStateProvider extends FabricModelProvider {
 				.button(ModBlocks.GRAVEL_BUTTON)
 				.fenceGate(ModBlocks.GRAVEL_GATE)
 				.slab(ModBlocks.GRAVEL_SLAB)
-				.stairs(ModBlocks.GRAVEL_STAIRS);
+				.stairs(ModBlocks.GRAVEL_STAIRS)
+				.wall(ModBlocks.GRAVEL_WALL);
 
 		generator.registerCubeAllModelTexturePool(ModBlocks.DARK_SAND)
 				.fence(ModBlocks.DARK_SAND_FENCE)
 				.button(ModBlocks.DARK_SAND_BUTTON)
 				.fenceGate(ModBlocks.DARK_SAND_GATE)
 				.slab(ModBlocks.DARK_SAND_SLAB)
-				.stairs(ModBlocks.DARK_SAND_STAIRS);
+				.stairs(ModBlocks.DARK_SAND_STAIRS)
+				.wall(ModBlocks.DARK_SAND_WALL);
 
 		generator.registerCubeAllModelTexturePool(Blocks.CLAY)
 				.fence(ModBlocks.CLAY_FENCE)
@@ -90,7 +92,33 @@ public class BlockStateProvider extends FabricModelProvider {
 				.slab(ModBlocks.MUD_SLAB)
 				.stairs(ModBlocks.MUD_STAIRS);
 
+		generator.registerCubeAllModelTexturePool(Blocks.DEEPSLATE)
+				.slab(ModBlocks.DEEPSLATE_SLAB)
+				.stairs(ModBlocks.DEEPSLATE_STAIRS)
+						.wall(ModBlocks.DEEPSLATE_WALL);
 
+		generator.registerCubeAllModelTexturePool(Blocks.RED_SAND)
+						.slab(ModBlocks.RED_SAND_SLAB)
+								.stairs(ModBlocks.RED_SAND_STAIRS)
+										.wall(ModBlocks.RED_SAND_WALL);
+
+		generator.registerCubeAllModelTexturePool(Blocks.SAND)
+				.slab(ModBlocks.SAND_SLAB)
+				.stairs(ModBlocks.SAND_STAIRS)
+				.wall(ModBlocks.SAND_WALL);
+
+		generator.registerCubeAllModelTexturePool(Blocks.END_STONE)
+				.slab(ModBlocks.END_STONE_SLAB)
+				.stairs(ModBlocks.END_STONE_STAIRS)
+				.wall(ModBlocks.END_STONE_WALL);
+
+		generator.registerCubeAllModelTexturePool(Blocks.NETHERRACK)
+				.slab(ModBlocks.NETHERRACK_SLAB)
+				.stairs(ModBlocks.NETHERRACK_STAIRS)
+				.wall(ModBlocks.NETHERRACK_WALL);
+
+		generator.registerSimpleCubeAll(ModBlocks.DRIFTWOOD_LEAVES);
+		generator.registerTintableCross(ModBlocks.DRIFTWOOD_SAPLING, BlockStateModelGenerator.TintType.NOT_TINTED); //TODO: Decide if we need potted version
 		generator.registerSimpleCubeAll(ModBlocks.GRITTY_STONE);
 
 
