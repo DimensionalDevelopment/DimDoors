@@ -20,6 +20,7 @@ import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.block.PillarBlock;
+import net.minecraft.block.PointedDripstoneBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.TrapdoorBlock;
@@ -234,7 +235,7 @@ public final class ModBlocks {
  	@RegistryEntry("netherrack_stairs") public static final Block NETHERRACK_STAIRS = createStairs(Blocks.NETHERRACK);
  	@RegistryEntry("netherrack_wall") public static final Block NETHERRACK_WALL = createWall(Blocks.NETHERRACK);
 
-	@RegistryEntry("unraveled_spike") public static final Block UNRAVELED_SPIKE = new Block(AbstractBlock.Settings.copy(UNRAVELLED_FABRIC).luminance(state -> 0));
+	@RegistryEntry("unraveled_spike") public static final Block UNRAVELED_SPIKE = new PointedDripstoneBlock(AbstractBlock.Settings.copy(UNRAVELLED_FABRIC).luminance(state -> 0)); //TODO: make this proper class later
 	@RegistryEntry("gritty_stone") public static final Block GRITTY_STONE = new Block(AbstractBlock.Settings.copy(STONE));
 	@RegistryEntry("leak") public static final Block LEAK = new Block(AbstractBlock.Settings.copy(WATER));
 

@@ -10,6 +10,7 @@ import org.dimdev.matrix.Registrar;
 import org.dimdev.matrix.RegistryEntry;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.BucketItem;
@@ -193,8 +194,6 @@ public final class ModItems {
 
 	@RegistryEntry("fabric_of_finality") public static final Item FABRIC_OF_FINALITY = create(new Item(new Item.Settings()));
 
-	@RegistryEntry("garment_of_reality") public static final Item GARMENT_OF_REALITY = create(new Item(new Item.Settings()));
-
 	@RegistryEntry("reality_sponge") public static final Item REALITY_SPONGE = create(ModBlocks.REALITY_SPONGE);
 
 	@RegistryEntry("liminal_lint") public static final Item LIMINAL_LINT = create(new Item(new Item.Settings()));
@@ -209,6 +208,14 @@ public final class ModItems {
 
 	@RegistryEntry("clod") public static final Item CLOD = new Item(new Item.Settings());
 
+	@RegistryEntry("garment_of_reality_helmet") public static final Item GARMENT_OF_REALITY_HELMET = create(new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.HELMET, new Item.Settings()));
+
+	@RegistryEntry("garment_of_reality_chestplate") public static final Item GARMENT_OF_REALITY_CHESTPLATE = create(new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.CHESTPLATE, new Item.Settings()));
+
+	@RegistryEntry("garment_of_reality_leggings") public static final Item GARMENT_OF_REALITY_LEGGINGS = create(new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.LEGGINGS, new Item.Settings()));
+
+	@RegistryEntry("garment_of_reality_boots") public static final Item GARMENT_OF_REALITY_BOOTS = create(new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.BOOTS, new Item.Settings()));
+
 	@RegistryEntry("driftwood_log") public static final Item DRIFTWOOD_LOG = create(ModBlocks.DRIFTWOOD_LOG);
 	@RegistryEntry("driftwood_planks") public static final Item DRIFTWOOD_PLANKS = create(ModBlocks.DRIFTWOOD_PLANKS);
 	@RegistryEntry("driftwood_fence") public static final Item DRIFTWOOD_FENCE = create(ModBlocks.DRIFTWOOD_FENCE);
@@ -218,35 +225,65 @@ public final class ModItems {
 	@RegistryEntry("driftwood_stairs") public static final Item DRIFTWOOD_STAIRS = create(ModBlocks.DRIFTWOOD_STAIRS);
 	@RegistryEntry("driftwood_door") public static final Item DRIFTWOOD_DOOR = create(ModBlocks.DRIFTWOOD_DOOR);
 	@RegistryEntry("driftwood_trapdoor") public static final Item DRIFTWOOD_TRAPDOOR = create(ModBlocks.DRIFTWOOD_TRAPDOOR);
+
 	@RegistryEntry("amalgam_block") public static final Item AMALGAM_BLOCK = create(ModBlocks.AMALGAM_BLOCK);
 	@RegistryEntry("amalgam_door") public static final Item AMALGAM_DOOR = create(ModBlocks.AMALGAM_DOOR);
 	@RegistryEntry("amalgam_trapdoor") public static final Item AMALGAM_TRAPDOOR = create(ModBlocks.AMALGAM_TRAPDOOR);
 	@RegistryEntry("rust") public static final Item RUST = create(ModBlocks.RUST);
 	@RegistryEntry("amalgam_slab") public static final Item AMALGAM_SLAB = create(ModBlocks.AMALGAM_SLAB);
+	@RegistryEntry("amalgam_stairs") public static final Item AMALGAM_STAIRS = create(ModBlocks.AMALGAM_STAIRS);
 	@RegistryEntry("amalgam_ore") public static final Item AMALGAM_ORE = create(ModBlocks.AMALGAM_ORE);
 	@RegistryEntry("clod_ore") public static final Item CLOD_ORE = create(ModBlocks.CLOD_ORE);
+
 	@RegistryEntry("clod_block") public static final Item CLOD_BLOCK = create(ModBlocks.CLOD_BLOCK);
 	@RegistryEntry("gravel_fence") public static final Item GRAVEL_FENCE = create(ModBlocks.GRAVEL_FENCE);
 	@RegistryEntry("gravel_gate") public static final Item GRAVEL_GATE = create(ModBlocks.GRAVEL_GATE);
 	@RegistryEntry("gravel_button") public static final Item GRAVEL_BUTTON = create(ModBlocks.GRAVEL_BUTTON);
 	@RegistryEntry("gravel_slab") public static final Item GRAVEL_SLAB = create(ModBlocks.GRAVEL_SLAB);
 	@RegistryEntry("gravel_stairs") public static final Item GRAVEL_STAIRS = create(ModBlocks.GRAVEL_STAIRS);
+	@RegistryEntry("gravel_wall") public static final Item GRAVEL_WALL = create(ModBlocks.GRAVEL_WALL);
+
 	@RegistryEntry("dark_sand") public static final Item DARK_SAND = create(ModBlocks.DARK_SAND);
 	@RegistryEntry("dark_sand_fence") public static final Item DARK_SAND_FENCE = create(ModBlocks.DARK_SAND_FENCE);
 	@RegistryEntry("dark_sand_gate") public static final Item DARK_SAND_GATE = create(ModBlocks.DARK_SAND_GATE);
 	@RegistryEntry("dark_sand_button") public static final Item DARK_SAND_BUTTON = create(ModBlocks.DARK_SAND_BUTTON);
 	@RegistryEntry("dark_sand_slab") public static final Item DARK_SAND_SLAB = create(ModBlocks.DARK_SAND_SLAB);
 	@RegistryEntry("dark_sand_stairs") public static final Item DARK_SAND_STAIRS = create(ModBlocks.DARK_SAND_STAIRS);
+	@RegistryEntry("dark_sand_wall") public static final Item DARK_SAND_WALL = create(ModBlocks.DARK_SAND_WALL);
+
 	@RegistryEntry("clay_fence") public static final Item CLAY_FENCE = create(ModBlocks.CLAY_FENCE);
 	@RegistryEntry("clay_gate") public static final Item CLAY_GATE = create(ModBlocks.CLAY_GATE);
 	@RegistryEntry("clay_button") public static final Item CLAY_BUTTON = create(ModBlocks.CLAY_BUTTON);
 	@RegistryEntry("clay_slab") public static final Item CLAY_SLAB = create(ModBlocks.CLAY_SLAB);
 	@RegistryEntry("clay_stairs") public static final Item CLAY_STAIRS = create(ModBlocks.CLAY_STAIRS);
+
 	@RegistryEntry("mud_fence") public static final Item MUD_FENCE = create(ModBlocks.MUD_FENCE);
 	@RegistryEntry("mud_gate") public static final Item MUD_GATE = create(ModBlocks.MUD_GATE);
 	@RegistryEntry("mud_button") public static final Item MUD_BUTTON = create(ModBlocks.MUD_BUTTON);
 	@RegistryEntry("mud_slab") public static final Item MUD_SLAB = create(ModBlocks.MUD_SLAB);
 	@RegistryEntry("mud_stairs") public static final Item MUD_STAIRS = create(ModBlocks.MUD_STAIRS);
+
+	@RegistryEntry("deepslate_slab") public static final Item DEEPSLATE_SLAB = create(ModBlocks.DEEPSLATE_SLAB);
+	@RegistryEntry("deepslate_stairs") public static final Item DEEPSLATE_STAIRS = create(ModBlocks.DEEPSLATE_STAIRS);
+	@RegistryEntry("deepslate_wall") public static final Item DEEPSLATE_WALL = create(ModBlocks.DEEPSLATE_WALL);
+
+	@RegistryEntry("red_sand_slab") public static final Item RED_SAND_SLAB = create(ModBlocks.RED_SAND_SLAB);
+	@RegistryEntry("red_sand_stairs") public static final Item RED_SAND_STAIRS = create(ModBlocks.RED_SAND_STAIRS);
+	@RegistryEntry("red_sand_wall") public static final Item RED_SAND_WALL = create(ModBlocks.RED_SAND_WALL);
+
+	@RegistryEntry("sand_slab") public static final Item SAND_SLAB = create(ModBlocks.SAND_SLAB);
+	@RegistryEntry("sand_stairs") public static final Item SAND_STAIRS = create(ModBlocks.SAND_STAIRS);
+	@RegistryEntry("sand_wall") public static final Item SAND_WALL = create(ModBlocks.SAND_WALL);
+
+	@RegistryEntry("end_stone_slab") public static final Item END_STONE_SLAB = create(ModBlocks.END_STONE_SLAB);
+	@RegistryEntry("end_stone_stairs") public static final Item END_STONE_STAIRS = create(ModBlocks.END_STONE_STAIRS);
+	@RegistryEntry("end_stone_wall") public static final Item END_STONE_WALL = create(ModBlocks.END_STONE_WALL);
+
+	@RegistryEntry("netherrack_fence") public static final Item NETHERRACK_FENCE = create(ModBlocks.NETHERRACK_FENCE);
+	@RegistryEntry("netherrack_slab") public static final Item NETHERRACK_SLAB = create(ModBlocks.NETHERRACK_SLAB);
+	@RegistryEntry("netherrack_stairs") public static final Item NETHERRACK_STAIRS = create(ModBlocks.NETHERRACK_STAIRS);
+	@RegistryEntry("netherrack_wall") public static final Item NETHERRACK_WALL = create(ModBlocks.NETHERRACK_WALL);
+
 	@RegistryEntry("unraveled_spike") public static final Item UNRAVELED_SPIKE = create(ModBlocks.UNRAVELED_SPIKE);
 	@RegistryEntry("unraveled_fence") public static final Item UNRAVELED_FENCE = create(ModBlocks.UNRAVELED_FENCE);
 	@RegistryEntry("unraveled_gate") public static final Item UNRAVELED_GATE = create(ModBlocks.UNRAVELED_GATE);

@@ -2,12 +2,17 @@ package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.enums.Thickness;
 import net.minecraft.data.client.BlockStateModelGenerator;
+import net.minecraft.data.client.BlockStateVariantMap;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
 import net.minecraft.data.client.TextureMap;
+import net.minecraft.data.client.VariantsBlockStateSupplier;
 import net.minecraft.registry.Registries;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
@@ -95,12 +100,12 @@ public class BlockStateProvider extends FabricModelProvider {
 		generator.registerCubeAllModelTexturePool(Blocks.DEEPSLATE)
 				.slab(ModBlocks.DEEPSLATE_SLAB)
 				.stairs(ModBlocks.DEEPSLATE_STAIRS)
-						.wall(ModBlocks.DEEPSLATE_WALL);
+				.wall(ModBlocks.DEEPSLATE_WALL);
 
 		generator.registerCubeAllModelTexturePool(Blocks.RED_SAND)
-						.slab(ModBlocks.RED_SAND_SLAB)
-								.stairs(ModBlocks.RED_SAND_STAIRS)
-										.wall(ModBlocks.RED_SAND_WALL);
+				.slab(ModBlocks.RED_SAND_SLAB)
+				.stairs(ModBlocks.RED_SAND_STAIRS)
+				.wall(ModBlocks.RED_SAND_WALL);
 
 		generator.registerCubeAllModelTexturePool(Blocks.SAND)
 				.slab(ModBlocks.SAND_SLAB)
@@ -113,6 +118,7 @@ public class BlockStateProvider extends FabricModelProvider {
 				.wall(ModBlocks.END_STONE_WALL);
 
 		generator.registerCubeAllModelTexturePool(Blocks.NETHERRACK)
+				.fence(ModBlocks.NETHERRACK_FENCE)
 				.slab(ModBlocks.NETHERRACK_SLAB)
 				.stairs(ModBlocks.NETHERRACK_STAIRS)
 				.wall(ModBlocks.NETHERRACK_WALL);
@@ -120,9 +126,24 @@ public class BlockStateProvider extends FabricModelProvider {
 		generator.registerSimpleCubeAll(ModBlocks.DRIFTWOOD_LEAVES);
 		generator.registerTintableCross(ModBlocks.DRIFTWOOD_SAPLING, BlockStateModelGenerator.TintType.NOT_TINTED); //TODO: Decide if we need potted version
 		generator.registerSimpleCubeAll(ModBlocks.GRITTY_STONE);
+		generator.registerCubeAllModelTexturePool(ModBlocks.REALITY_SPONGE);
 
+		registerPointedDripstone(generator);
 
 	}
+
+	private void registerPointedDripstone(BlockStateModelGenerator generator) {
+		generator.excludeFromSimpleItemModelGeneration(ModBlocks.UNRAVELED_SPIKE);
+		BlockStateVariantMap.DoubleProperty<Direction, Thickness> doubleProperty = BlockStateVariantMap.create(Properties.VERTICAL_DIRECTION, Properties.THICKNESS);
+		for (Thickness thickness : Thickness.values()) {
+			doubleProperty.register(Direction.UP, thickness, generator.getDripstoneVariant(Direction.UP, thickness));
+		}
+		for (Thickness thickness : Thickness.values()) {
+			doubleProperty.register(Direction.DOWN, thickness, generator.getDripstoneVariant(Direction.DOWN, thickness));
+		}
+		generator.blockStateCollector.accept(VariantsBlockStateSupplier.create(ModBlocks.UNRAVELED_SPIKE).coordinate(doubleProperty));
+	}
+
 
 	public void registerDoor(BlockStateModelGenerator generator, Block doorBlock, Block textureSource) {
 		TextureMap textureMap = TextureMap.topBottom(textureSource);
@@ -142,12 +163,15 @@ public class BlockStateProvider extends FabricModelProvider {
 	public void generateItemModels(ItemModelGenerator itemModelGenerator) {
 		itemModelGenerator.register(ModItems.FUZZY_FIREBALL, Models.GENERATED);
 		itemModelGenerator.register(ModItems.FABRIC_OF_FINALITY, Models.GENERATED);
-		itemModelGenerator.register(ModItems.GARMENT_OF_REALITY, Models.GENERATED);
 		itemModelGenerator.register(ModItems.LIMINAL_LINT, Models.GENERATED);
 		itemModelGenerator.register(ModItems.ENDURING_FIBERS, Models.GENERATED);
 		itemModelGenerator.register(ModItems.RIFT_PEARL, Models.GENERATED);
 		itemModelGenerator.register(ModItems.AMALGAM_LUMP, Models.GENERATED);
 		itemModelGenerator.register(ModItems.CLOD, Models.GENERATED);
 
+		itemModelGenerator.register(ModItems.GARMENT_OF_REALITY_BOOTS, Models.GENERATED);
+		itemModelGenerator.register(ModItems.GARMENT_OF_REALITY_CHESTPLATE, Models.GENERATED);
+		itemModelGenerator.register(ModItems.GARMENT_OF_REALITY_HELMET, Models.GENERATED);
+		itemModelGenerator.register(ModItems.GARMENT_OF_REALITY_LEGGINGS, Models.GENERATED);
 	}
 }

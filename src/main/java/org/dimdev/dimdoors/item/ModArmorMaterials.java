@@ -9,7 +9,8 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Lazy;
 
 public enum ModArmorMaterials implements ArmorMaterial {
-	WORLD_THREAD(5, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, new Lazy<>(() -> Ingredient.ofItems(ModItems.WORLD_THREAD)), "world_thread", new int[]{1, 2, 3, 1}, 0.0F, 0.0F);
+	WORLD_THREAD(5, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, new Lazy<>(() -> Ingredient.ofItems(ModItems.WORLD_THREAD)), "world_thread", new int[]{1, 2, 3, 1}, 0.0F, 0.0F),
+	GARMENT_OF_REALITY(5, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, new Lazy<>(() -> Ingredient.ofItems(ModItems.INFRANGIBLE_FIBER)), "garment_of_reality", new int[]{1, 2, 3, 1}, 0.0F, 0.0F); //TODO: DEFINE TRAITS
 
 	private static final int[] BASE_DURABILITY = new int[]{13, 15, 16, 11};
 	private final int durabilityMultiplier;
