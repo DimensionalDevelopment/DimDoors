@@ -10,6 +10,7 @@ import net.minecraft.nbt.NbtCompound;
 
 public final class RGBA implements Cloneable, Comparable<RGBA>, Iterable<Float> {
 	public static final RGBA NONE = new RGBA(0, 0, 0, 0);
+	public static final RGBA WHITE = new RGBA(1, 1, 1, 1);
 
 	private final float red;
 	private final float green;
