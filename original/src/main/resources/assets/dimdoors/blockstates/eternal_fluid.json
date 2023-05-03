@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "level=0":  { "model": "dimdoors:block/no_texture" },
+    "level=1":  { "model": "dimdoors:block/no_texture" },
+    "level=2":  { "model": "dimdoors:block/no_texture" },
+    "level=3":  { "model": "dimdoors:block/no_texture" },
+    "level=4":  { "model": "dimdoors:block/no_texture" },
+    "level=5":  { "model": "dimdoors:block/no_texture" },
+    "level=6":  { "model": "dimdoors:block/no_texture" },
+    "level=7":  { "model": "dimdoors:block/no_texture" },
+    "level=8":  { "model": "dimdoors:block/no_texture" },
+    "level=9":  { "model": "dimdoors:block/no_texture" },
+    "level=10":  { "model": "dimdoors:block/no_texture" },
+    "level=11":  { "model": "dimdoors:block/no_texture" },
+    "level=12":  { "model": "dimdoors:block/no_texture" },
+    "level=13":  { "model": "dimdoors:block/no_texture" },
+    "level=14":  { "model": "dimdoors:block/no_texture" },
+    "level=15":  { "model": "dimdoors:block/no_texture" }
+  }
+}

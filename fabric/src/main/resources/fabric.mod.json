@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "id": "dimdoors",
+  "version": "${version}",
+  "name": "DimensionalDoors",
+  "description": "Bend and twist reality, creating rifts, pocket dimensions, and much more",
+  "authors": [
+    "StevenRS11",
+    "SenseiKiwi",
+    "Zixiken",
+    "Waterpicker",
+    "Robijnvogel",
+    "ZombieHDGaming",
+    "Runemoro"
+  ],
+  "contact": {
+    "homepage": "https://dimdev.org/",
+    "sources": "https://github.com/DimensionalDevelopment/DimDoors",
+    "issues": "https://github.com/DimensionalDevelopment/DimDoors/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/dimdoors/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "org.dimdev.dimdoors.DimensionalDoors"
+    ],
+    "client": [
+      "org.dimdev.dimdoors.client.DimensionalDoorsClientInitializer"
+    ],
+    "modmenu": [
+      "org.dimdev.dimdoors.client.config.ModMenuImpl"
+    ],
+    "cardinal-components": [
+      "org.dimdev.dimdoors.DimensionalDoorsComponents"
+    ],
+    "fabric-datagen": [
+      "org.dimdev.dimdoors.datagen.DatagenInitializer"
+    ]
+  },
+  "mixins": [
+    "dimdoors.mixins.json",
+    "dimdoors-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*",
+    "minecraft": ">=1.19.4",
+    "architectury": ">=8.1.79"
+  },
+  "custom": {
+    "cardinal-components": [
+      "dimdoors:dimensional_registry",
+      "dimdoors:counter",
+      "dimdoors:chunk_lazily_generated",
+      "dimdoors:player_modifiers"
+    ],
+    "waila:plugins": {
+      "id": "dimdoors:wthit_plugin",
+      "initializer": "org.dimdev.dimdoors.client.wthit.WthitPlugin"
+    },
+    "loom:injected_interfaces": {
+      "net/minecraft/class_2323": ["org/dimdev/dimdoors/block/DoorSoundProvider"],
+      "net/minecraft/class_2533": ["org/dimdev/dimdoors/block/DoorSoundProvider"]
+    }
+  }
+}

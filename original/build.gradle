@@ -1,0 +1,223 @@
+plugins {
+	id "java"
+	id "fabric-loom" version "1.1-SNAPSHOT"
+	id "maven-publish"
+	id "com.matthewprenger.cursegradle" version "1.4.0"
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+	mavenCentral()
+
+	maven {
+		url "https://maven.legacyfabric.net/"
+	}
+
+	maven {
+		name = "Fabric maven"
+		url = "https://maven.fabricmc.net/"
+	}
+
+	maven {
+		url = "https://www.cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
+
+	maven {
+		url = "https://server.bbkr.space/artifactory/libs-release"
+		content {
+			includeGroup "io.github.cottonmc"
+		}
+	}
+
+	maven {
+		name = "Ladysnake Mods"
+		url = "https://ladysnake.jfrog.io/artifactory/mods"
+	}
+
+	maven {
+		url = "https://ladysnake.jfrog.io/ui/native/mods"
+	}
+
+	maven {
+		url = "https://maven.shedaniel.me/"
+	}
+
+	maven {
+		url = "https://maven.bai.lol"
+		content {
+			includeGroup "mcp.mobius.waila"
+		}
+	}
+
+	maven {
+		url = "https://jitpack.io"
+	}
+
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}
+
+	maven { url "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" }
+}
+
+def includeCompile(group, artifact, version) {
+	project.dependencies {
+		modCompileOnly("$group:$artifact:$version") {
+			exclude module: "fabric-api"
+		}
+		modRuntimeOnly("$group:$artifact:$version") {
+			exclude module: "fabric-api"
+		}
+		include("$group:$artifact:$version")
+	}
+	project.publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom.withXml {
+					def depsNode = asNode().appendNode("dependencies")
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", group)
+					depNode.appendNode("artifactId", artifact)
+					depNode.appendNode("version", version)
+					depNode.appendNode("scope", "compile")
+				}
+			}
+		}
+	}
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir "src/main/schematics"
+			srcDir "src/main/config"
+			srcDirs "src/main/datagen"		}
+		resources {
+			srcDirs "src/main/generated"
+		}
+	}
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/dimdoors.accesswidener")
+
+	runs {
+		datagen {
+			server()
+
+			name "Minecraft Data"
+			vmArg "-Dfabric-api.datagen"
+			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+
+			runDir "build/datagen"
+		}
+	}
+}
+
+assemble.dependsOn runDatagen
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_version}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+	includeCompile("com.flowpowered", "flow-math", "1.0.3")
+	includeCompile("org.jgrapht", "jgrapht-core", "1.1.0")
+	includeCompile("com.github.DimensionalDevelopment", "poly2tri.java", "0.1.1")
+	includeCompile("com.github.DimensionalDevelopment", "Matrix", "1.1.2")
+	includeCompile("me.shedaniel.cloth", "cloth-config-fabric", "${project.cloth_config_version}")
+	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-base", "${project.cardinal_components_version}")
+	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-item", "${project.cardinal_components_version}")
+	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-entity", "${project.cardinal_components_version}")
+	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-level", "${project.cardinal_components_version}")
+	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-world", "${project.cardinal_components_version}")
+	includeCompile("dev.onyxstudios.cardinal-components-api", "cardinal-components-chunk", "${project.cardinal_components_version}")
+
+	modCompileOnly("com.terraformersmc:modmenu:${project.modmenu_version}") {
+		exclude module: "fabric-api"
+	}
+	modCompileOnly "curse.maven:worldedit-225608:${project.worldedit_version}"
+	modCompileOnly "curse.maven:wthit-440979:${project.wthit_version}"
+
+	testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
+}
+
+version = computeVersion(project.mod_version) + "-" + project.minecraft_version
+archivesBaseName = "DimensionalDoors"
+
+static def computeVersion(String version) {
+	if (version.contains("alpha") || version.contains("beta")) {
+		return version + "-" + Calendar.getInstance().getTime().format("dd.MM.yyyy")
+	}
+	return version
+}
+
+processResources {
+	inputs.property "version", project.mod_version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.mod_version
+	}
+
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 17
+}
+
+java {
+	withSourcesJar()
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}"}
+	}
+}
+
+artifacts {
+	archives jar
+}
+
+curseforge {
+	if (project.hasProperty("curse_api_key")) {
+		apiKey = project.getProperty("curse_api_key")
+	}
+	project {
+		id = "284876"
+		changelog = file("changelog.txt").text
+		releaseType = "beta"
+		addGameVersion "${project.minecraft_version}"
+		addGameVersion "Fabric"
+		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
+			displayName = "[${project.minecraft_version}] Dimensional Doors ${version}"
+		}
+		afterEvaluate {
+			uploadTask.dependsOn("remapJar")
+		}
+	}
+	options {
+		forgeGradleIntegration = false
+	}
+}
+
+test {
+//	workingDir = file("test")
+//
+//	systemProperty("fabric.dli.config", file(".gradle/loom-cache/launch.cfg").getAbsolutePath())
+	useJUnitPlatform()
+}
+//
+//tasks.test.doFirst {test ->
+//	if (!test.workingDir.exists()) {
+//		test.workingDir.mkdirs();
+//	}
+//}

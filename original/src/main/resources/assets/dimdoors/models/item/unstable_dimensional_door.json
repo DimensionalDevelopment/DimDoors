@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "dimdoors:item/unstable_dimensional_door"
+  }
+}

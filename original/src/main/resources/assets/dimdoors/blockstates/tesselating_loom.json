@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "dimdoors:block/tesselating_loom",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "dimdoors:block/tesselating_loom"
+    },
+    "facing=south": {
+      "model": "dimdoors:block/tesselating_loom",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "dimdoors:block/tesselating_loom",
+      "y": 270
+    }
+  }
+}
