@@ -4,8 +4,10 @@ import java.util.function.Function;
 
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
+import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -26,9 +28,12 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
 import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModFluids {
+	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.FLUID);
+
 	public static final FlowingFluid ETERNAL_FLUID = register("dimdoors:eternal_fluid", new EternalFluid.Still());
 	public static final FlowableFluid FLOWING_ETERNAL_FLUID = register("dimdoors:flowing_eternal_fluid", new EternalFluid.Flowing());
 

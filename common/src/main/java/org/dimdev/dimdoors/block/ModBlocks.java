@@ -1,8 +1,16 @@
 package org.dimdev.dimdoors.block;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.RegistrySupplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.block.*;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -10,74 +18,44 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.matrix.Matrix;
 import org.dimdev.matrix.Registrar;
 import org.dimdev.matrix.RegistryEntry;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockSetType;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ButtonBlock;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.ExperienceDroppingBlock;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.block.FenceGateBlock;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.MapColor;
-import net.minecraft.block.Material;
-import net.minecraft.block.PillarBlock;
-import net.minecraft.block.PointedDripstoneBlock;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.block.TrapdoorBlock;
-//<<<<<<< HEAD
-import net.minecraft.block.WoodType;
-//=======
-import net.minecraft.block.WallBlock;
-//>>>>>>> 9ba9cc82 (Pushed current datagen stuff I forgot to push.)
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.registry.Registries;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.DyeColor;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-
-import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
-
-import static net.minecraft.block.Blocks.CLAY;
-import static net.minecraft.block.Blocks.GRAVEL;
-import static net.minecraft.block.Blocks.MUD;
 import static net.minecraft.block.Blocks.OAK_LEAVES;
 import static net.minecraft.block.Blocks.OAK_SAPLING;
 import static net.minecraft.block.Blocks.STONE;
 import static net.minecraft.block.Blocks.WATER;
-import static net.minecraft.world.level.block.Blocks.CLAY;
-import static net.minecraft.world.level.block.Blocks.GRAVEL;
-import static net.minecraft.world.level.block.Blocks.MUD;
+import static net.minecraft.world.level.block.Blocks.*;
 
 @Registrar(element = Block.class, modid = "dimdoors")
 public final class ModBlocks {
-	public static final Map<DyeColor, Block> FABRIC_BLOCKS = new HashMap<>();
+	public static final Map<DyeColor, RegistrySupplier<Block>> FABRIC_BLOCKS = new HashMap<DyeColor, RegistrySupplier<Block>>();
 
-	private static final Map<DyeColor, Block> ANCIENT_FABRIC_BLOCKS = new HashMap<>();
+	private static final Map<DyeColor, RegistrySupplier<Block>> ANCIENT_FABRIC_BLOCKS = new HashMap<DyeColor, RegistrySupplier<Block>>();
 
-	@RegistryEntry("stone_player") public static final Block STONE_PLAYER = register(new Block(FabricBlockSettings.of(Material.STONE).strength(0.5F).nonOpaque()));
+	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.BLOCK);
 
-	@RegistryEntry("gold_door") public static final Block GOLD_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.GOLD).strength(5.0F).requiresTool().nonOpaque(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> STONE_PLAYER = register("stone_player", () -> new Block(of(Material.STONE).strength(0.5F).noOcclusion()));
 
-	@RegistryEntry("stone_door") public static final Block STONE_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.METAL, MapColor.OAK_TAN).strength(5.0F).requiresTool().nonOpaque(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(of(Material.METAL, MaterialColor.GOLD).strength(5.0F).requiresCorrectToolForDrops().noCollission(), BlockSetType.IRON));
 
-	@RegistryEntry("quartz_door") public static final Block QUARTZ_DOOR = register(new DoorBlock(FabricBlockSettings.of(Material.STONE, MapColor.OFF_WHITE).strength(5.0F).requiresTool().nonOpaque(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> STONE_DOOR = register("stone_door", () -> new DoorBlock(of(Material.METAL, MaterialColor.WOOD).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
 
-	@RegistryEntry("wood_dimensional_trapdoor") public static final Block OAK_DIMENSIONAL_TRAPDOOR = register(new DimensionalTrapdoorBlock(FabricBlockSettings.copyOf(Blocks.OAK_TRAPDOOR).luminance(state -> 10), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(of(Material.STONE, MaterialColor.TERRACOTTA_WHITE).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
 
-	@RegistryEntry("dimensional_portal") public static final Block DIMENSIONAL_PORTAL = register(new DimensionalPortalBlock(FabricBlockSettings.of(Material.AIR).collidable(false).strength(-1.0F, 3600000.0F).nonOpaque().dropsNothing().luminance(blockState -> 10)));
+	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = register("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
 
-	@RegistryEntry("detached_rift") public static final Block DETACHED_RIFT = register(new DetachedRiftBlock(FabricBlockSettings.of(Material.AIR).strength(-1.0F, 3600000.0F).noCollision().nonOpaque()));
+	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = register("dimensional_portal", () -> new DimensionalPortalBlock(of(Material.AIR).noCollission().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
+
+	public static final RegistrySupplier<Block> DETACHED_RIFT = register("detached_rift", () -> new DetachedRiftBlock(Setti.of(Material.AIR).strength(-1.0F, 3600000.0F).noCollision().nonOpaque()));
 
 	@RegistryEntry("white_fabric") public static final Block WHITE_FABRIC = registerFabric(DyeColor.WHITE);
 
@@ -143,9 +121,9 @@ public final class ModBlocks {
 	@RegistryEntry("red_ancient_fabric") public static final Block RED_ANCIENT_FABRIC = registerAncientFabric(DyeColor.RED);
 
 	@RegistryEntry("black_ancient_fabric") public static final Block BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
-	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
+	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = of(Material.STONE, MaterialColor.COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
 
-	@RegistryEntry("eternal_fluid") public static final Block ETERNAL_FLUID = register(new EternalFluidBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
+	@RegistryEntry("eternal_fluid") public static final Block ETERNAL_FLUID = register(new EternalFluidBlock(of(Material.STONE, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
 
 	@RegistryEntry("decayed_block") public static final Block DECAYED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
@@ -167,29 +145,29 @@ public final class ModBlocks {
 	public static final Block REALITY_SPONGE = new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS);
 
 	//Decay graph filler.
-	@RegistryEntry("driftwood_wood") public static final Block DRIFTWOOD_WOOD = new PillarBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_log") public static final Block DRIFTWOOD_LOG = new PillarBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_planks") public static final Block DRIFTWOOD_PLANKS = new Block(AbstractBlock.Settings.of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_leaves") public static final Block DRIFTWOOD_LEAVES = new LeavesBlock(AbstractBlock.Settings.copy(OAK_LEAVES));
-	@RegistryEntry("driftwood_sapling") public static final Block DRIFTWOOD_SAPLING = new Block(AbstractBlock.Settings.copy(OAK_SAPLING));
-	@RegistryEntry("driftwood_fence") public static final Block DRIFTWOOD_FENCE = new FenceBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_gate") public static final Block DRIFTWOOD_GATE = new FenceGateBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD), WoodType.OAK); // TODO: add driftwood wood type
-	@RegistryEntry("driftwood_button") public static final Block DRIFTWOOD_BUTTON = new ButtonBlock(AbstractBlock.Settings.of(Material.DECORATION, MapColor.LIGHT_GRAY).noCollision().strength(0.5F), BlockSetType.OAK, 20, true);
-	@RegistryEntry("driftwood_slab") public static final Block DRIFTWOOD_SLAB = new SlabBlock(AbstractBlock.Settings.of(Material.WOOD, MapColor.LIGHT_GRAY));
-	@RegistryEntry("driftwood_stairs") public static final Block DRIFTWOOD_STAIRS = new StairsBlock(DRIFTWOOD_PLANKS.getDefaultState(), AbstractBlock.Settings.of(Material.WOOD,  MapColor.LIGHT_GRAY));
-	@RegistryEntry("driftwood_door") public static final Block DRIFTWOOD_DOOR = new DoorBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque(), BlockSetType.OAK);
-	@RegistryEntry("driftwood_trapdoor") public static final Block DRIFTWOOD_TRAPDOOR = new TrapdoorBlock(AbstractBlock.Settings.of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque().allowsSpawning((state, world, pos, type) -> false), BlockSetType.OAK);
+	@RegistryEntry("driftwood_wood") public static final Block DRIFTWOOD_WOOD = new PillarBlock(of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F).sounds(BlockSoundGroup.WOOD));
+	@RegistryEntry("driftwood_log") public static final Block DRIFTWOOD_LOG = new PillarBlock(of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F).sounds(BlockSoundGroup.WOOD));
+	@RegistryEntry("driftwood_planks") public static final Block DRIFTWOOD_PLANKS = new Block(of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
+	@RegistryEntry("driftwood_leaves") public static final Block DRIFTWOOD_LEAVES = new LeavesBlock(of(OAK_LEAVES));
+	@RegistryEntry("driftwood_sapling") public static final Block DRIFTWOOD_SAPLING = new Block(of(OAK_SAPLING));
+	@RegistryEntry("driftwood_fence") public static final Block DRIFTWOOD_FENCE = new FenceBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
+	@RegistryEntry("driftwood_gate") public static final Block DRIFTWOOD_GATE = new FenceGateBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD), WoodType.OAK); // TODO: add driftwood wood type
+	@RegistryEntry("driftwood_button") public static final Block DRIFTWOOD_BUTTON = new ButtonBlock(of(Material.DECORATION, MapColor.LIGHT_GRAY).noCollision().strength(0.5F), BlockSetType.OAK, 20, true);
+	@RegistryEntry("driftwood_slab") public static final Block DRIFTWOOD_SLAB = new SlabBlock(of(Material.WOOD, MapColor.LIGHT_GRAY));
+	@RegistryEntry("driftwood_stairs") public static final Block DRIFTWOOD_STAIRS = new StairsBlock(DRIFTWOOD_PLANKS.getDefaultState(), of(Material.WOOD,  MapColor.LIGHT_GRAY));
+	@RegistryEntry("driftwood_door") public static final Block DRIFTWOOD_DOOR = new DoorBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque(), BlockSetType.OAK);
+	@RegistryEntry("driftwood_trapdoor") public static final Block DRIFTWOOD_TRAPDOOR = new TrapdoorBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque().allowsSpawning((state, world, pos, type) -> false), BlockSetType.OAK);
 
-	@RegistryEntry("amalgam_block") public static final Block AMALGAM_BLOCK = new Block(AbstractBlock.Settings.of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL));
-	@RegistryEntry("amalgam_door") public static final Block AMALGAM_DOOR = new DoorBlock(AbstractBlock.Settings.of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque(), BlockSetType.IRON);
-	@RegistryEntry("amalgam_trapdoor") public static final Block AMALGAM_TRAPDOOR = new TrapdoorBlock(AbstractBlock.Settings.of(Material.METAL).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque().allowsSpawning((state, world, pos, type) -> false), BlockSetType.IRON);
-	@RegistryEntry("rust") public static final Block RUST = new Block(AbstractBlock.Settings.of(Material.WOOD));
+	@RegistryEntry("amalgam_block") public static final Block AMALGAM_BLOCK = new Block(of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL));
+	@RegistryEntry("amalgam_door") public static final Block AMALGAM_DOOR = new DoorBlock(of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque(), BlockSetType.IRON);
+	@RegistryEntry("amalgam_trapdoor") public static final Block AMALGAM_TRAPDOOR = new TrapdoorBlock(of(Material.METAL).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque().allowsSpawning((state, world, pos, type) -> false), BlockSetType.IRON);
+	@RegistryEntry("rust") public static final Block RUST = new Block(of(Material.WOOD));
 	@RegistryEntry("amalgam_slab") public static final Block AMALGAM_SLAB = createSlab(AMALGAM_BLOCK);
 	@RegistryEntry("amalgam_stairs") public static final Block AMALGAM_STAIRS = createStairs(AMALGAM_BLOCK);
-	@RegistryEntry("amalgam_ore") public static final Block AMALGAM_ORE = new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F));
+	@RegistryEntry("amalgam_ore") public static final Block AMALGAM_ORE = new DropExperienceBlock(of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F));
 
-	@RegistryEntry("clod_ore") public static final Block CLOD_ORE = new Block(BlockBehaviour.Properties.of(Material.WOOD));
-	@RegistryEntry("clod_block") public static final Block CLOD_BLOCK = new Block(BlockBehaviour.Properties.of(Material.WOOD));
+	@RegistryEntry("clod_ore") public static final Block CLOD_ORE = new Block(of(Material.WOOD));
+	@RegistryEntry("clod_block") public static final Block CLOD_BLOCK = new Block(of(Material.WOOD));
 
 	@RegistryEntry("gravel_fence") public static final Block GRAVEL_FENCE = createFence(GRAVEL);
 	@RegistryEntry("gravel_gate") public static final Block GRAVEL_GATE = createFenceGate(GRAVEL);
@@ -198,7 +176,7 @@ public final class ModBlocks {
 	@RegistryEntry("gravel_stairs") public static final Block GRAVEL_STAIRS = createStairs(GRAVEL);
 	@RegistryEntry("gravel_wall") public static final Block GRAVEL_WALL = createWall(GRAVEL);
 
-	@RegistryEntry("dark_sand") public static final Block DARK_SAND = new Block(AbstractBlock.Settings.of(Material.AGGREGATE, MapColor.BLACK).strength(0.5F).sounds(BlockSoundGroup.SAND));
+	@RegistryEntry("dark_sand") public static final Block DARK_SAND = new Block(of(Material.AGGREGATE, MapColor.BLACK).strength(0.5F).sounds(BlockSoundGroup.SAND));
 	@RegistryEntry("dark_sand_fence") public static final Block DARK_SAND_FENCE = createFence(DARK_SAND);
 	@RegistryEntry("dark_sand_gate") public static final Block DARK_SAND_GATE = createFenceGate(DARK_SAND);
 	@RegistryEntry("dark_sand_button") public static final Block DARK_SAND_BUTTON = createButton(DARK_SAND);
@@ -245,66 +223,83 @@ public final class ModBlocks {
  	@RegistryEntry("netherrack_stairs") public static final Block NETHERRACK_STAIRS = createStairs(Blocks.NETHERRACK);
  	@RegistryEntry("netherrack_wall") public static final Block NETHERRACK_WALL = createWall(Blocks.NETHERRACK);
 
-	@RegistryEntry("unraveled_spike") public static final Block UNRAVELED_SPIKE = new PointedDripstoneBlock(AbstractBlock.Settings.copy(UNRAVELLED_FABRIC).luminance(state -> 0)); //TODO: make this proper class later
-	@RegistryEntry("gritty_stone") public static final Block GRITTY_STONE = new Block(AbstractBlock.Settings.copy(STONE));
-	@RegistryEntry("leak") public static final Block LEAK = new Block(AbstractBlock.Settings.copy(WATER));
+	@RegistryEntry("unraveled_spike") public static final Block UNRAVELED_SPIKE = new PointedDripstoneBlock(of(UNRAVELLED_FABRIC).luminance(state -> 0)); //TODO: make this proper class later
+	@RegistryEntry("gritty_stone") public static final Block GRITTY_STONE = new Block(of(STONE));
+	@RegistryEntry("leak") public static final Block LEAK = new Block(of(WATER));
 
-	private static Block register(Block block) {
+	public static void init() {
+		BLOCKS.register();
+	}
+
+	private static RegistrySupplier<Block> registerWithoutTab(String name, Supplier<Block> block) {
+		return BLOCKS.register(name, block);
+	}
+
+	private static RegistrySupplier<Block> registerAncientFabric(DyeColor color) {
+		RegistrySupplier<Block> block = register(color.getSerializedName() + "_ancient_fabric", () -> new AncientFabricBlock(color));
+		ANCIENT_FABRIC_BLOCKS.put(color, block);
 		return block;
 	}
 
-	private static Block registerAncientFabric(DyeColor color) {
-		Block block = new AncientFabricBlock(color);
-		ANCIENT_FABRIC_BLOCKS.put(color, block);
-		return register(block);
-	}
-
-	private static Block registerFabric(DyeColor color) {
-		Block block = new FabricBlock(color);
+	private static RegistrySupplier<Block> registerFabric(DyeColor color) {
+		RegistrySupplier<Block> block = register(color.getSerializedName() + "_fabric", () -> new AncientFabricBlock(color));
 		FABRIC_BLOCKS.put(color, block);
-		return register(block);
+		return block;
 	}
 
-	public static void init() {
-		Matrix.register(ModBlocks.class, Registries.BLOCK);
-//		DoorDataReader.read();
-	}
-
-	@Environment(EnvType.CLIENT)
-	public static void initClient() {
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR);
+//	@Environment(EnvType.CLIENT)
+//	public static void initClient() {
+//		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR);
 //		DoorData.DOORS.forEach(door -> BlockRenderLayerMap.INSTANCE.putBlock(door, RenderLayer.getCutout()));
-	}
+//	}
 
-	public static Block ancientFabricFromDye(DyeColor color) {
+	public static RegistrySupplier<Block> ancientFabricFromDye(DyeColor color) {
 		return ANCIENT_FABRIC_BLOCKS.get(color);
 	}
 
-	public static Block fabricFromDye(DyeColor color) {
+	public static RegistrySupplier<Block> fabricFromDye(DyeColor color) {
 		return FABRIC_BLOCKS.get(color);
 	}
 
-	public static Block createFence(Block block) {
-		return new FenceBlock(BlockBehaviour.Properties.copy(block));
+	public static RegistrySupplier<Block> register(String name, Supplier<Block> block) {
+		var supplier = BLOCKS.register(name, block);
+		ModItems.register(name, properties -> new BlockItem(block.get(), properties));
+		return supplier;
 	}
 
-	public static Block createFenceGate(Block block) {
-		return new FenceGateBlock(BlockBehaviour.Properties.copy(block), WoodType.OAK); // TODO: parameterize WoodType and BlockSetType
+	public static RegistrySupplier<Block> registerFence(String name, Block block) {
+		return register(name, () -> new FenceBlock(of(block)));
 	}
 
-	public static Block createButton(Block block) {
-		return new ButtonBlock(BlockBehaviour.Properties.copy(block).noCollission().strength(0.5F), BlockSetType.STONE, 20, false);
+	public static RegistrySupplier<Block> registerFenceGate(String name, Block block) {
+		return register(name, () -> new FenceGateBlock(of(block), WoodType.OAK)); // TODO: parameterize WoodType and BlockSetType
 	}
 
-	public static Block createSlab(Block block) {
-		return new SlabBlock(BlockBehaviour.Properties.copy(block));
+	public static RegistrySupplier<Block> registerButton(String name, Block block) {
+		return register(name, () -> new ButtonBlock(of(block).noCollission().strength(0.5F), BlockSetType.STONE, 20, false));
 	}
 
-	public static Block createStairs(Block block) {
-		return new StairBlock(block.defaultBlockState(), BlockBehaviour.Properties.copy(block));
+	public static RegistrySupplier<Block> registerSlab(String name, Block block) {
+		return register(name, () -> new SlabBlock(of(block)));
 	}
 
-	public static Block createWall(Block block) {
-		return new WallBlock(BlockBehaviour.Properties.copy(block));
+	public static RegistrySupplier<Block> registerStairs(String name, Block block) {
+		return register(name, () -> new StairBlock(block.defaultBlockState(), of(block)));
+	}
+
+	public static RegistrySupplier<Block> registerWall(String name, Block block) {
+		return register(name, () -> new WallBlock(of(block)));
+	}
+	
+	private static BlockBehaviour.Properties of(Material material, MaterialColor color) {
+		return BlockBehaviour.Properties.of(material, color);
+	}
+
+	private static BlockBehaviour.Properties of(Material material) {
+		return of(material);
+	}
+
+	private static BlockBehaviour.Properties of(Block block) {
+		return BlockBehaviour.Properties.copy(block);
 	}
 }

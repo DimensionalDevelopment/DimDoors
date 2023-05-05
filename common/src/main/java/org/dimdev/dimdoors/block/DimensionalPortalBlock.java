@@ -1,71 +1,63 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.HorizontalFacingBlock;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.entity.Entity;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.jetbrains.annotations.Nullable;
 
 // TODO: copy over all the necessary bits from DimensionalDoorBlock
 public class DimensionalPortalBlock extends Block implements RiftProvider<EntranceRiftBlockEntity> {
-	public static DirectionProperty FACING = HorizontalFacingBlock.FACING;
+	public static DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-	public DimensionalPortalBlock(Settings settings) {
+	public DimensionalPortalBlock(BlockBehaviour.Properties settings) {
 		super(settings);
-		this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
 	}
 
 	@Override
-	public EntranceRiftBlockEntity getRift(World world, BlockPos pos, BlockState state) {
+	public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
 		return (EntranceRiftBlockEntity) world.getBlockEntity(pos);
 	}
 
 	@Nullable
 	@Override
-	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new EntranceRiftBlockEntity(pos, state);
 	}
 
 	@Override
-	public BlockRenderType getRenderType(BlockState state) {
-		return BlockRenderType.ENTITYBLOCK_ANIMATED;
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
-	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (world.isClient) {
+	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
+		if (world.isClientSide) {
 			return;
 		}
 
@@ -73,7 +65,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 		EntranceRiftBlockEntity rift = this.getRift(world, pos, state);
 
-		world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
+		world.setBlock(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
 		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
 		/*
@@ -85,21 +77,22 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 	}
 
-	public BlockState rotate(BlockState state, BlockRotation rotation) {
-		return state.with(FACING, rotation.rotate(state.get(FACING)));
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
 	}
 
-	public BlockState mirror(BlockState state, BlockMirror mirror) {
-		return state.rotate(mirror.getRotation(state.get(FACING)));
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(FACING);
 	}
 
 	@Override
-	public VoxelShape getRaycastShape(BlockState state, BlockView world, BlockPos pos) {
-		return VoxelShapes.fullCube();
+	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+		return Shapes.block();
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -109,15 +102,15 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 	}
 
 	@Override
-	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify) {
-		if (world.isClient) return;
-		((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setPortalDestination((ServerWorld) world);
+	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify) {
+		if (world.isClientSide) return;
+		((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setPortalDestination((ServerLevel) world);
 	}
 
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-		return Dummy.checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT, DimensionalPortalBlock::portalTick);
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+		return Dummy.checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), DimensionalPortalBlock::portalTick);
 	}
 
 	private static void portalTick(Level world, BlockPos pos, BlockState state, EntranceRiftBlockEntity e) {
