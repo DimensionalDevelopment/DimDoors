@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.item.TooltipContext;
@@ -39,7 +40,7 @@ import org.dimdev.dimdoors.world.ModDimensions;
 public class RiftSignatureItem extends Item {
 	public static final String ID = "rift_signature";
 
-	public RiftSignatureItem(Settings settings) {
+	public RiftSignatureItem(Item.Properties settings) {
 		super(settings);
 	}
 

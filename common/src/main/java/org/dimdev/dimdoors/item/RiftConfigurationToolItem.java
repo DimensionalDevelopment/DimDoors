@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 
+import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +41,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	public static final String ID = "rift_configuration_tool";
 
 	RiftConfigurationToolItem() {
-		super(new Item.Settings().maxCount(1).maxDamage(16));
+		super(new Item.Properties().stacksTo(1).durability(16));
 	}
 
 	@Override

@@ -25,6 +25,10 @@ import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -35,8 +39,8 @@ import org.dimdev.dimdoors.client.ToolTipHelper;
 public class RiftBladeItem extends SwordItem {
 	public static final String ID = "rift_blade";
 
-	public RiftBladeItem(Settings settings) {
-		super(ToolMaterials.IRON, 3, -2.4F, settings);
+	public RiftBladeItem(Item.Properties settings) {
+		super(Tiers.IRON, 3, -2.4F, settings);
 	}
 
 	@Environment(EnvType.CLIENT)

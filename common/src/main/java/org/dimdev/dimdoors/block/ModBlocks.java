@@ -2,14 +2,7 @@ package org.dimdev.dimdoors.block;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.*;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.*;
@@ -21,21 +14,13 @@ import net.minecraft.world.level.material.MaterialColor;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.matrix.Matrix;
-import org.dimdev.matrix.Registrar;
-import org.dimdev.matrix.RegistryEntry;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static net.minecraft.block.Blocks.OAK_LEAVES;
-import static net.minecraft.block.Blocks.OAK_SAPLING;
-import static net.minecraft.block.Blocks.STONE;
-import static net.minecraft.block.Blocks.WATER;
 import static net.minecraft.world.level.block.Blocks.*;
 
-@Registrar(element = Block.class, modid = "dimdoors")
 public final class ModBlocks {
 	public static final Map<DyeColor, RegistrySupplier<Block>> FABRIC_BLOCKS = new HashMap<DyeColor, RegistrySupplier<Block>>();
 
@@ -43,7 +28,7 @@ public final class ModBlocks {
 
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.BLOCK);
 
-	public static final RegistrySupplier<Block> STONE_PLAYER = register("stone_player", () -> new Block(of(Material.STONE).strength(0.5F).noOcclusion()));
+	public static final RegistrySupplier<Block> STONE_PLAYER = registerWithoutTab("stone_player", () -> new Block(of(Material.STONE).strength(0.5F).noOcclusion()));
 
 	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(of(Material.METAL, MaterialColor.GOLD).strength(5.0F).requiresCorrectToolForDrops().noCollission(), BlockSetType.IRON));
 
@@ -51,181 +36,180 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(of(Material.STONE, MaterialColor.TERRACOTTA_WHITE).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
 
-	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = register("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTab("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
 
 	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = register("dimensional_portal", () -> new DimensionalPortalBlock(of(Material.AIR).noCollission().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
 
-	public static final RegistrySupplier<Block> DETACHED_RIFT = register("detached_rift", () -> new DetachedRiftBlock(Setti.of(Material.AIR).strength(-1.0F, 3600000.0F).noCollision().nonOpaque()));
+	public static final RegistrySupplier<Block> DETACHED_RIFT = register("detached_rift", () -> new DetachedRiftBlock(of(Material.AIR, MaterialColor.COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
 
-	@RegistryEntry("white_fabric") public static final Block WHITE_FABRIC = registerFabric(DyeColor.WHITE);
+	public static final RegistrySupplier<Block> WHITE_FABRIC = registerFabric(DyeColor.WHITE);
 
-	@RegistryEntry("orange_fabric") public static final Block ORANGE_FABRIC = registerFabric(DyeColor.ORANGE);
+	public static final RegistrySupplier<Block> ORANGE_FABRIC = registerFabric(DyeColor.ORANGE);
 
-	@RegistryEntry("magenta_fabric") public static final Block MAGENTA_FABRIC = registerFabric(DyeColor.MAGENTA);
+	public static final RegistrySupplier<Block> MAGENTA_FABRIC = registerFabric(DyeColor.MAGENTA);
 
-	@RegistryEntry("light_blue_fabric") public static final Block LIGHT_BLUE_FABRIC = registerFabric(DyeColor.LIGHT_BLUE);
+	public static final RegistrySupplier<Block> LIGHT_BLUE_FABRIC = registerFabric(DyeColor.LIGHT_BLUE);
 
-	@RegistryEntry("yellow_fabric") public static final Block YELLOW_FABRIC = registerFabric(DyeColor.YELLOW);
+	public static final RegistrySupplier<Block> YELLOW_FABRIC = registerFabric(DyeColor.YELLOW);
 
-	@RegistryEntry("lime_fabric") public static final Block LIME_FABRIC = registerFabric(DyeColor.LIME);
+	public static final RegistrySupplier<Block> LIME_FABRIC = registerFabric(DyeColor.LIME);
 
-	@RegistryEntry("pink_fabric") public static final Block PINK_FABRIC = registerFabric(DyeColor.PINK);
+	public static final RegistrySupplier<Block> PINK_FABRIC = registerFabric(DyeColor.PINK);
 
-	@RegistryEntry("gray_fabric") public static final Block GRAY_FABRIC = registerFabric(DyeColor.GRAY);
+	public static final RegistrySupplier<Block> GRAY_FABRIC = registerFabric(DyeColor.GRAY);
 
-	@RegistryEntry("light_gray_fabric") public static final Block LIGHT_GRAY_FABRIC = registerFabric(DyeColor.LIGHT_GRAY);
+	public static final RegistrySupplier<Block> LIGHT_GRAY_FABRIC = registerFabric(DyeColor.LIGHT_GRAY);
 
-	@RegistryEntry("cyan_fabric") public static final Block CYAN_FABRIC = registerFabric(DyeColor.CYAN);
+	public static final RegistrySupplier<Block> CYAN_FABRIC = registerFabric(DyeColor.CYAN);
 
-	@RegistryEntry("purple_fabric") public static final Block PURPLE_FABRIC = registerFabric(DyeColor.PURPLE);
+	public static final RegistrySupplier<Block> PURPLE_FABRIC = registerFabric(DyeColor.PURPLE);
 
-	@RegistryEntry("blue_fabric") public static final Block BLUE_FABRIC = registerFabric(DyeColor.BLUE);
+	public static final RegistrySupplier<Block> BLUE_FABRIC = registerFabric(DyeColor.BLUE);
 
-	@RegistryEntry("brown_fabric") public static final Block BROWN_FABRIC = registerFabric(DyeColor.BROWN);
+	public static final RegistrySupplier<Block> BROWN_FABRIC = registerFabric(DyeColor.BROWN);
 
-	@RegistryEntry("green_fabric") public static final Block GREEN_FABRIC = registerFabric(DyeColor.GREEN);
+	public static final RegistrySupplier<Block> GREEN_FABRIC = registerFabric(DyeColor.GREEN);
 
-	@RegistryEntry("red_fabric") public static final Block RED_FABRIC = registerFabric(DyeColor.RED);
+	public static final RegistrySupplier<Block> RED_FABRIC = registerFabric(DyeColor.RED);
 
-	@RegistryEntry("black_fabric") public static final Block BLACK_FABRIC = registerFabric(DyeColor.BLACK);
+	public static final RegistrySupplier<Block> BLACK_FABRIC = registerFabric(DyeColor.BLACK);
 
 
-	@RegistryEntry("white_ancient_fabric") public static final Block WHITE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.WHITE);
+	public static final RegistrySupplier<Block> WHITE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.WHITE);
 
-	@RegistryEntry("orange_ancient_fabric") public static final Block ORANGE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.ORANGE);
+	public static final RegistrySupplier<Block> ORANGE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.ORANGE);
 
-	@RegistryEntry("magenta_ancient_fabric") public static final Block MAGENTA_ANCIENT_FABRIC = registerAncientFabric(DyeColor.MAGENTA);
+	public static final RegistrySupplier<Block> MAGENTA_ANCIENT_FABRIC = registerAncientFabric(DyeColor.MAGENTA);
 
-	@RegistryEntry("light_blue_ancient_fabric") public static final Block LIGHT_BLUE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.LIGHT_BLUE);
+	public static final RegistrySupplier<Block> LIGHT_BLUE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.LIGHT_BLUE);
 
-	@RegistryEntry("yellow_ancient_fabric") public static final Block YELLOW_ANCIENT_FABRIC = registerAncientFabric(DyeColor.YELLOW);
+	public static final RegistrySupplier<Block> YELLOW_ANCIENT_FABRIC = registerAncientFabric(DyeColor.YELLOW);
 
-	@RegistryEntry("lime_ancient_fabric") public static final Block LIME_ANCIENT_FABRIC = registerAncientFabric(DyeColor.LIME);
+	public static final RegistrySupplier<Block> LIME_ANCIENT_FABRIC = registerAncientFabric(DyeColor.LIME);
 
-	@RegistryEntry("pink_ancient_fabric") public static final Block PINK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.PINK);
+	public static final RegistrySupplier<Block> PINK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.PINK);
 
-	@RegistryEntry("gray_ancient_fabric") public static final Block GRAY_ANCIENT_FABRIC = registerAncientFabric(DyeColor.GRAY);
+	public static final RegistrySupplier<Block> GRAY_ANCIENT_FABRIC = registerAncientFabric(DyeColor.GRAY);
 
-	@RegistryEntry("light_gray_ancient_fabric") public static final Block LIGHT_GRAY_ANCIENT_FABRIC = registerAncientFabric(DyeColor.LIGHT_GRAY);
+	public static final RegistrySupplier<Block> LIGHT_GRAY_ANCIENT_FABRIC = registerAncientFabric(DyeColor.LIGHT_GRAY);
 
-	@RegistryEntry("cyan_ancient_fabric") public static final Block CYAN_ANCIENT_FABRIC = registerAncientFabric(DyeColor.CYAN);
+	public static final RegistrySupplier<Block> CYAN_ANCIENT_FABRIC = registerAncientFabric(DyeColor.CYAN);
 
-	@RegistryEntry("purple_ancient_fabric") public static final Block PURPLE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.PURPLE);
+	public static final RegistrySupplier<Block> PURPLE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.PURPLE);
 
-	@RegistryEntry("blue_ancient_fabric") public static final Block BLUE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLUE);
+	public static final RegistrySupplier<Block> BLUE_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLUE);
 
-	@RegistryEntry("brown_ancient_fabric") public static final Block BROWN_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BROWN);
+	public static final RegistrySupplier<Block> BROWN_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BROWN);
 
-	@RegistryEntry("green_ancient_fabric") public static final Block GREEN_ANCIENT_FABRIC = registerAncientFabric(DyeColor.GREEN);
+	public static final RegistrySupplier<Block> GREEN_ANCIENT_FABRIC = registerAncientFabric(DyeColor.GREEN);
 
-	@RegistryEntry("red_ancient_fabric") public static final Block RED_ANCIENT_FABRIC = registerAncientFabric(DyeColor.RED);
+	public static final RegistrySupplier<Block> RED_ANCIENT_FABRIC = registerAncientFabric(DyeColor.RED);
 
-	@RegistryEntry("black_ancient_fabric") public static final Block BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
+	public static final RegistrySupplier<Block> BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
 	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = of(Material.STONE, MaterialColor.COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
 
-	@RegistryEntry("eternal_fluid") public static final Block ETERNAL_FLUID = register(new EternalFluidBlock(of(Material.STONE, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
+	public static final RegistrySupplier<Block> ETERNAL_FLUID = register("eternal_fluid", () -> new EternalFluidBlock(of(Material.STONE, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
 
-	@RegistryEntry("decayed_block") public static final Block DECAYED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> DECAYED_BLOCK = registerWithoutTab("decayed_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	@RegistryEntry("unfolded_block") public static final Block UNFOLDED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> UNFOLDED_BLOCK = registerWithoutTab("unfolded_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	@RegistryEntry("unwarped_block") public static final Block UNWARPED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> UNWARPED_BLOCK = registerWithoutTab("unwarped_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	@RegistryEntry("unravelled_block") public static final Block UNRAVELLED_BLOCK = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> UNRAVELLED_BLOCK = registerWithoutTab("unravelled_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	@RegistryEntry("unravelled_fabric") public static final Block UNRAVELLED_FABRIC = register(new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> UNRAVELLED_FABRIC = register("unravelled_fabric", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	@RegistryEntry("marking_plate") public static final Block MARKING_PLATE = register(new MarkingPlateBlock(FabricBlockSettings.of(Material.METAL, DyeColor.BLACK).nonOpaque()));
+	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTab("marking_plate", () -> new MarkingPlateBlock(of(Material.METAL, DyeColor.BLACK).noOcclusion()));
 
-	@RegistryEntry("solid_static") public static final Block SOLID_STATIC = register(new UnravelledFabricBlock(FabricBlockSettings.of(Material.STONE).strength(7, 25).ticksRandomly().requiresTool().sounds(BlockSoundGroup.SAND)));
+	public static final RegistrySupplier<Block> SOLID_STATIC = register("solid_static", () -> new UnravelledFabricBlock(of(Material.STONE).strength(7, 25).randomTicks().requiresCorrectToolForDrops().sound(SoundType.SAND)));
 
-	@RegistryEntry("tesselating_loom") public static final Block TESSELATING_LOOM = register(new TesselatingLoomBlock(FabricBlockSettings.copy(Blocks.LOOM)));
+	public static final RegistrySupplier<Block> TESSELATING_LOOM = register("tesselating_loom", () -> new TesselatingLoomBlock(of(LOOM)));
 
-	@RegistryEntry("reality_sponge")
-	public static final Block REALITY_SPONGE = new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS);
+	public static final RegistrySupplier<Block> REALITY_SPONGE = register("reality_sponge", () -> new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	//Decay graph filler.
-	@RegistryEntry("driftwood_wood") public static final Block DRIFTWOOD_WOOD = new PillarBlock(of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_log") public static final Block DRIFTWOOD_LOG = new PillarBlock(of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_planks") public static final Block DRIFTWOOD_PLANKS = new Block(of(Material.WOOD, MapColor.LIGHT_GRAY).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_leaves") public static final Block DRIFTWOOD_LEAVES = new LeavesBlock(of(OAK_LEAVES));
-	@RegistryEntry("driftwood_sapling") public static final Block DRIFTWOOD_SAPLING = new Block(of(OAK_SAPLING));
-	@RegistryEntry("driftwood_fence") public static final Block DRIFTWOOD_FENCE = new FenceBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD));
-	@RegistryEntry("driftwood_gate") public static final Block DRIFTWOOD_GATE = new FenceGateBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(2.0F, 3.0F).sounds(BlockSoundGroup.WOOD), WoodType.OAK); // TODO: add driftwood wood type
-	@RegistryEntry("driftwood_button") public static final Block DRIFTWOOD_BUTTON = new ButtonBlock(of(Material.DECORATION, MapColor.LIGHT_GRAY).noCollision().strength(0.5F), BlockSetType.OAK, 20, true);
-	@RegistryEntry("driftwood_slab") public static final Block DRIFTWOOD_SLAB = new SlabBlock(of(Material.WOOD, MapColor.LIGHT_GRAY));
-	@RegistryEntry("driftwood_stairs") public static final Block DRIFTWOOD_STAIRS = new StairsBlock(DRIFTWOOD_PLANKS.getDefaultState(), of(Material.WOOD,  MapColor.LIGHT_GRAY));
-	@RegistryEntry("driftwood_door") public static final Block DRIFTWOOD_DOOR = new DoorBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque(), BlockSetType.OAK);
-	@RegistryEntry("driftwood_trapdoor") public static final Block DRIFTWOOD_TRAPDOOR = new TrapdoorBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.getDefaultMapColor()).strength(3.0F).sounds(BlockSoundGroup.WOOD).nonOpaque().allowsSpawning((state, world, pos, type) -> false), BlockSetType.OAK);
+	public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = register("driftwood_wood", () -> new RotatedPillarBlock(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_LOG = register("driftwood_log", () -> new RotatedPillarBlock(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_PLANKS = register("driftwood_planks", () -> new Block(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_LEAVES = register("driftwood_leaves", () -> new LeavesBlock(of(OAK_LEAVES)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_SAPLING = register("driftwood_sapling", () -> new Block(of(OAK_SAPLING)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_FENCE = register("driftwood_fence", () -> new FenceBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_GATE = register("driftwood_gate", () -> new FenceGateBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(2.0F, 3.0F).sound(SoundType.WOOD), WoodType.OAK)); // TODO: add driftwood wood type
+	public static final RegistrySupplier<Block> DRIFTWOOD_BUTTON = register("driftwood_button", () -> new ButtonBlock(of(Material.DECORATION, MaterialColor.COLOR_LIGHT_GRAY).noCollission().strength(0.5F), BlockSetType.OAK, 20, true));
+	public static final RegistrySupplier<Block> DRIFTWOOD_SLAB = register("driftwood_slab", () -> new SlabBlock(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_STAIRS = register("driftwood_stairs", () -> new StairBlock(DRIFTWOOD_PLANKS.get().defaultBlockState(), of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_DOOR = register("driftwood_door", () -> new DoorBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = register("driftwood_trapdoor", () -> new TrapDoorBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false), BlockSetType.OAK));
 
-	@RegistryEntry("amalgam_block") public static final Block AMALGAM_BLOCK = new Block(of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F, 6.0F).sounds(BlockSoundGroup.METAL));
-	@RegistryEntry("amalgam_door") public static final Block AMALGAM_DOOR = new DoorBlock(of(Material.METAL, MapColor.LIGHT_GRAY).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque(), BlockSetType.IRON);
-	@RegistryEntry("amalgam_trapdoor") public static final Block AMALGAM_TRAPDOOR = new TrapdoorBlock(of(Material.METAL).requiresTool().strength(5.0F).sounds(BlockSoundGroup.METAL).nonOpaque().allowsSpawning((state, world, pos, type) -> false), BlockSetType.IRON);
-	@RegistryEntry("rust") public static final Block RUST = new Block(of(Material.WOOD));
-	@RegistryEntry("amalgam_slab") public static final Block AMALGAM_SLAB = createSlab(AMALGAM_BLOCK);
-	@RegistryEntry("amalgam_stairs") public static final Block AMALGAM_STAIRS = createStairs(AMALGAM_BLOCK);
-	@RegistryEntry("amalgam_ore") public static final Block AMALGAM_ORE = new DropExperienceBlock(of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F));
+	public static final RegistrySupplier<Block> AMALGAM_BLOCK = register("amalgam_block", () -> new Block(of(Material.METAL, MaterialColor.COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
+	public static final RegistrySupplier<Block> AMALGAM_DOOR = register("amalgam_door", () -> new DoorBlock(of(Material.METAL, MaterialColor.COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> AMALGAM_TRAPDOOR = register("amalgam_trapdoor", () -> new TrapDoorBlock(of(Material.METAL).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).isValidSpawn((state, world, pos, type) -> false), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> RUST = register("rust", () -> new Block(of(Material.WOOD)));
+	public static final RegistrySupplier<Block> AMALGAM_SLAB = registerSlab("amalgam_slab", AMALGAM_BLOCK);
+	public static final RegistrySupplier<Block> AMALGAM_STAIRS = registerStairs("amalgam_stairs", AMALGAM_BLOCK);
+	public static final RegistrySupplier<Block> AMALGAM_ORE = register("amalgam_ore", () -> new DropExperienceBlock(of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
 
-	@RegistryEntry("clod_ore") public static final Block CLOD_ORE = new Block(of(Material.WOOD));
-	@RegistryEntry("clod_block") public static final Block CLOD_BLOCK = new Block(of(Material.WOOD));
+	public static final RegistrySupplier<Block> CLOD_ORE = register("clod_ore", () -> new Block(of(Material.AMETHYST)));
+	public static final RegistrySupplier<Block> CLOD_BLOCK = register("clod_block", () -> new Block(of(Material.AMETHYST)));
 
-	@RegistryEntry("gravel_fence") public static final Block GRAVEL_FENCE = createFence(GRAVEL);
-	@RegistryEntry("gravel_gate") public static final Block GRAVEL_GATE = createFenceGate(GRAVEL);
-	@RegistryEntry("gravel_button") public static final Block GRAVEL_BUTTON = createButton(GRAVEL);
-	@RegistryEntry("gravel_slab") public static final Block GRAVEL_SLAB = createSlab(GRAVEL);
-	@RegistryEntry("gravel_stairs") public static final Block GRAVEL_STAIRS = createStairs(GRAVEL);
-	@RegistryEntry("gravel_wall") public static final Block GRAVEL_WALL = createWall(GRAVEL);
+	public static final RegistrySupplier<Block> GRAVEL_FENCE = registerFence("gravel_fence", GRAVEL);
+	public static final RegistrySupplier<Block> GRAVEL_GATE = registerFenceGate("gravel_gate", GRAVEL);
+	public static final RegistrySupplier<Block> GRAVEL_BUTTON = registerButton("gravel_button", GRAVEL);
+	public static final RegistrySupplier<Block> GRAVEL_SLAB = registerSlab("gravel_slab", GRAVEL);
+	public static final RegistrySupplier<Block> GRAVEL_STAIRS = registerStairs("gravel_stairs", GRAVEL);
+	public static final RegistrySupplier<Block> GRAVEL_WALL = registerWall("gravel_wall", GRAVEL);
 
-	@RegistryEntry("dark_sand") public static final Block DARK_SAND = new Block(of(Material.AGGREGATE, MapColor.BLACK).strength(0.5F).sounds(BlockSoundGroup.SAND));
-	@RegistryEntry("dark_sand_fence") public static final Block DARK_SAND_FENCE = createFence(DARK_SAND);
-	@RegistryEntry("dark_sand_gate") public static final Block DARK_SAND_GATE = createFenceGate(DARK_SAND);
-	@RegistryEntry("dark_sand_button") public static final Block DARK_SAND_BUTTON = createButton(DARK_SAND);
-	@RegistryEntry("dark_sand_slab") public static final Block DARK_SAND_SLAB = createSlab(DARK_SAND);
-	@RegistryEntry("dark_sand_stairs") public static final Block DARK_SAND_STAIRS = createStairs(DARK_SAND);
-	@RegistryEntry("dark_sand_wall") public static final Block DARK_SAND_WALL = createWall(DARK_SAND);
+	public static final RegistrySupplier<Block> DARK_SAND = register("dark_sand", () -> new Block(of(Material.SAND, MaterialColor.COLOR_BLACK).strength(0.5F).sound(SoundType.SAND)));
+	public static final RegistrySupplier<Block> DARK_SAND_FENCE = registerFence("dark_sand_fence", DARK_SAND);
+	public static final RegistrySupplier<Block> DARK_SAND_GATE = registerFenceGate("dark_sand_gate", DARK_SAND);
+	public static final RegistrySupplier<Block> DARK_SAND_BUTTON = registerButton("dark_sand_button", DARK_SAND);
+	public static final RegistrySupplier<Block> DARK_SAND_SLAB = registerSlab("dark_sand_slab", DARK_SAND);
+	public static final RegistrySupplier<Block> DARK_SAND_STAIRS = registerStairs("dark_sand_stairs", DARK_SAND);
+	public static final RegistrySupplier<Block> DARK_SAND_WALL = registerWall("dark_sand_wall", DARK_SAND);
 
-	@RegistryEntry("clay_fence") public static final Block CLAY_FENCE = createFence(CLAY);
-	@RegistryEntry("clay_gate") public static final Block CLAY_GATE = createFenceGate(CLAY);
-	@RegistryEntry("clay_button") public static final Block CLAY_BUTTON = createButton(CLAY);
-	@RegistryEntry("clay_slab") public static final Block CLAY_SLAB = createSlab(CLAY);
-	@RegistryEntry("clay_stairs") public static final Block CLAY_STAIRS = createStairs(CLAY);
+	public static final RegistrySupplier<Block> CLAY_FENCE = registerFence("clay_fence", CLAY);
+	public static final RegistrySupplier<Block> CLAY_GATE = registerFenceGate("clay_gate", CLAY);
+	public static final RegistrySupplier<Block> CLAY_BUTTON = registerButton("clay_button", CLAY);
+	public static final RegistrySupplier<Block> CLAY_SLAB = registerSlab("clay_slab", CLAY);
+	public static final RegistrySupplier<Block> CLAY_STAIRS = registerStairs("clay_stairs", CLAY);
 
-	@RegistryEntry("mud_fence") public static final Block MUD_FENCE = createFence(MUD);
-	@RegistryEntry("mud_gate") public static final Block MUD_GATE = createFenceGate(MUD);
-	@RegistryEntry("mud_button") public static final Block MUD_BUTTON = createButton(MUD);
-	@RegistryEntry("mud_slab") public static final Block MUD_SLAB = createSlab(MUD);
-	@RegistryEntry("mud_stairs") public static final Block MUD_STAIRS = createStairs(MUD);
+	public static final RegistrySupplier<Block> MUD_FENCE = registerFence("mud_fence", MUD);
+	public static final RegistrySupplier<Block> MUD_GATE = registerFenceGate("mud_gate", MUD);
+	public static final RegistrySupplier<Block> MUD_BUTTON = registerButton("mud_button", MUD);
+	public static final RegistrySupplier<Block> MUD_SLAB = registerSlab("mud_slab", MUD);
+	public static final RegistrySupplier<Block> MUD_STAIRS = registerStairs("mud_stairs", MUD);
 
-	@RegistryEntry("unraveled_fence") public static final Block UNRAVELED_FENCE = createFence(UNRAVELLED_FABRIC);
-	@RegistryEntry("unraveled_gate") public static final Block UNRAVELED_GATE = createFenceGate(UNRAVELLED_FABRIC);
-	@RegistryEntry("unraveled_button") public static final Block UNRAVELED_BUTTON = createButton(UNRAVELLED_FABRIC);
-	@RegistryEntry("unraveled_slab") public static final Block UNRAVELED_SLAB = createSlab(UNRAVELLED_FABRIC);
-	@RegistryEntry("unraveled_stairs") public static final Block UNRAVELED_STAIRS = createStairs(UNRAVELLED_FABRIC);
+	public static final RegistrySupplier<Block> UNRAVELED_FENCE = registerFence("unraveled_fence", UNRAVELLED_FABRIC);
+	public static final RegistrySupplier<Block> UNRAVELED_GATE = registerFenceGate("unraveled_gate", UNRAVELLED_FABRIC);
+	public static final RegistrySupplier<Block> UNRAVELED_BUTTON = registerButton("unraveled_button", UNRAVELLED_FABRIC);
+	public static final RegistrySupplier<Block> UNRAVELED_SLAB = registerSlab("unraveled_slab", UNRAVELLED_FABRIC);
+	public static final RegistrySupplier<Block> UNRAVELED_STAIRS = registerStairs("unraveled_stairs", UNRAVELLED_FABRIC);
 
-	@RegistryEntry("deepslate_slab") public static final Block DEEPSLATE_SLAB = createSlab(Blocks.DEEPSLATE);
-	@RegistryEntry("deepslate_stairs") public static final Block DEEPSLATE_STAIRS = createStairs(Blocks.DEEPSLATE);
-	@RegistryEntry("deepslate_wall") public static final Block DEEPSLATE_WALL = createWall(Blocks.DEEPSLATE);
+	public static final RegistrySupplier<Block> DEEPSLATE_SLAB = registerSlab("deepslate_slab", Blocks.DEEPSLATE);
+	public static final RegistrySupplier<Block> DEEPSLATE_STAIRS = registerStairs("deepslate_stairs", Blocks.DEEPSLATE);
+	public static final RegistrySupplier<Block> DEEPSLATE_WALL = registerWall("deepslate_wall", Blocks.DEEPSLATE);
 
-	@RegistryEntry("red_sand_slab") public static final Block RED_SAND_SLAB = createSlab(Blocks.RED_SAND);
-	@RegistryEntry("red_sand_stairs") public static final Block RED_SAND_STAIRS = createStairs(Blocks.RED_SAND);
-	@RegistryEntry("red_sand_wall") public static final Block RED_SAND_WALL = createWall(Blocks.RED_SAND);
+	public static final RegistrySupplier<Block> RED_SAND_SLAB = registerSlab("red_sand_slab", Blocks.RED_SAND);
+	public static final RegistrySupplier<Block> RED_SAND_STAIRS = registerStairs("red_sand_stairs", Blocks.RED_SAND);
+	public static final RegistrySupplier<Block> RED_SAND_WALL = registerWall("red_sand_wall", Blocks.RED_SAND);
 
-	@RegistryEntry("sand_slab") public static final Block SAND_SLAB = createSlab(Blocks.SAND);
-	@RegistryEntry("sand_stairs") public static final Block SAND_STAIRS = createStairs(Blocks.SAND);
-	@RegistryEntry("sand_wall") public static final Block SAND_WALL = createWall(Blocks.SAND);
+	public static final RegistrySupplier<Block> SAND_SLAB = registerSlab("sand_slab", Blocks.SAND);
+	public static final RegistrySupplier<Block> SAND_STAIRS = registerStairs("sand_stairs", Blocks.SAND);
+	public static final RegistrySupplier<Block> SAND_WALL = registerWall("sand_wall", Blocks.SAND);
 
-	@RegistryEntry("end_stone_slab") public static final Block END_STONE_SLAB = createSlab(Blocks.END_STONE);
-	@RegistryEntry("end_stone_stairs") public static final Block END_STONE_STAIRS = createStairs(Blocks.END_STONE);
-	@RegistryEntry("end_stone_wall") public static final Block END_STONE_WALL = createWall(Blocks.END_STONE);
+	public static final RegistrySupplier<Block> END_STONE_SLAB = registerSlab("end_stone_slab", Blocks.END_STONE);
+	public static final RegistrySupplier<Block> END_STONE_STAIRS = registerStairs("end_stone_stairs", Blocks.END_STONE);
+	public static final RegistrySupplier<Block> END_STONE_WALL = registerWall("end_stone_wall", Blocks.END_STONE);
 
- 	@RegistryEntry("netherrack_fence") public static final Block NETHERRACK_FENCE = createFence(Blocks.NETHERRACK);
- 	@RegistryEntry("netherrack_slab") public static final Block NETHERRACK_SLAB = createSlab(Blocks.NETHERRACK);
- 	@RegistryEntry("netherrack_stairs") public static final Block NETHERRACK_STAIRS = createStairs(Blocks.NETHERRACK);
- 	@RegistryEntry("netherrack_wall") public static final Block NETHERRACK_WALL = createWall(Blocks.NETHERRACK);
+ 	public static final RegistrySupplier<Block> NETHERRACK_FENCE = registerFence("netherrack_fence", Blocks.NETHERRACK);
+ 	public static final RegistrySupplier<Block> NETHERRACK_SLAB = registerSlab("netherrack_slab", Blocks.NETHERRACK);
+ 	public static final RegistrySupplier<Block> NETHERRACK_STAIRS = registerStairs("netherrack_stairs", Blocks.NETHERRACK);
+ 	public static final RegistrySupplier<Block> NETHERRACK_WALL = registerWall("netherrack_wall", Blocks.NETHERRACK);
 
-	@RegistryEntry("unraveled_spike") public static final Block UNRAVELED_SPIKE = new PointedDripstoneBlock(of(UNRAVELLED_FABRIC).luminance(state -> 0)); //TODO: make this proper class later
-	@RegistryEntry("gritty_stone") public static final Block GRITTY_STONE = new Block(of(STONE));
-	@RegistryEntry("leak") public static final Block LEAK = new Block(of(WATER));
+	public static final RegistrySupplier<Block> UNRAVELED_SPIKE = register("unraveled_spike", () -> new PointedDripstoneBlock(of(UNRAVELLED_FABRIC.get()).lightLevel(state -> 0))); //TODO: make this proper class later
+	public static final RegistrySupplier<Block> GRITTY_STONE = register("gritty_stone", () -> new Block(of(STONE)));
+	public static final RegistrySupplier<Block> LEAK = register("leak", () -> new Block(of(WATER)));
 
 	public static void init() {
 		BLOCKS.register();
@@ -271,24 +255,48 @@ public final class ModBlocks {
 		return register(name, () -> new FenceBlock(of(block)));
 	}
 
+	public static RegistrySupplier<Block> registerFence(String name, RegistrySupplier<Block> block) {
+		return registerFence(name, block.get());
+	}
+
 	public static RegistrySupplier<Block> registerFenceGate(String name, Block block) {
 		return register(name, () -> new FenceGateBlock(of(block), WoodType.OAK)); // TODO: parameterize WoodType and BlockSetType
+	}
+
+	public static RegistrySupplier<Block> registerFenceGate(String name, RegistrySupplier<Block> block) {
+		return registerFenceGate(name, block.get());
 	}
 
 	public static RegistrySupplier<Block> registerButton(String name, Block block) {
 		return register(name, () -> new ButtonBlock(of(block).noCollission().strength(0.5F), BlockSetType.STONE, 20, false));
 	}
 
+	public static RegistrySupplier<Block> registerButton(String name, RegistrySupplier<Block> block) {
+		return registerButton(name, block.get());
+	}
+
 	public static RegistrySupplier<Block> registerSlab(String name, Block block) {
 		return register(name, () -> new SlabBlock(of(block)));
+	}
+
+	public static RegistrySupplier<Block> registerSlab(String name, RegistrySupplier<Block> block) {
+		return registerSlab(name, block.get());
 	}
 
 	public static RegistrySupplier<Block> registerStairs(String name, Block block) {
 		return register(name, () -> new StairBlock(block.defaultBlockState(), of(block)));
 	}
 
+	public static RegistrySupplier<Block> registerStairs(String name, RegistrySupplier<Block> block) {
+		return registerStairs(name, block.get());
+	}
+
 	public static RegistrySupplier<Block> registerWall(String name, Block block) {
 		return register(name, () -> new WallBlock(of(block)));
+	}
+
+	public static RegistrySupplier<Block> registerWall(String name, RegistrySupplier<Block> block) {
+		return registerWall(name, block.get());
 	}
 	
 	private static BlockBehaviour.Properties of(Material material, MaterialColor color) {
@@ -296,7 +304,11 @@ public final class ModBlocks {
 	}
 
 	private static BlockBehaviour.Properties of(Material material) {
-		return of(material);
+		return BlockBehaviour.Properties.of(material);
+	}
+
+	private static BlockBehaviour.Properties of(Material material, DyeColor dyeColor) {
+		return BlockBehaviour.Properties.of(material, dyeColor);
 	}
 
 	private static BlockBehaviour.Properties of(Block block) {

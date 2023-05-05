@@ -10,13 +10,16 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public class DimensionalTrapdoorItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;
 
-	public DimensionalTrapdoorItem(Block block, Settings settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
+	public DimensionalTrapdoorItem(Block block, Item.Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
 		super(block, settings);
 		this.setupFunction = setupFunction;
 	}

@@ -21,16 +21,17 @@ import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import net.minecraft.world.item.Item;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 public class RiftStabilizerItem extends Item {
-	public RiftStabilizerItem(Settings settings) {
+	public RiftStabilizerItem(Item.Properties settings) {
 		super(settings);
 	}
-
+	
 	@Override
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
