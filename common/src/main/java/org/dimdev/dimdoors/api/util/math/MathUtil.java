@@ -1,14 +1,12 @@
 package org.dimdev.dimdoors.api.util.math;
 
-import java.util.Map;
-
+import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Map;
 
 public final class MathUtil {
 	public static <T> T weightedRandom(Map<T, Float> weights) {
@@ -17,7 +15,7 @@ public final class MathUtil {
 		for (float weight : weights.values()) {
 			totalWeight += weight;
 		}
-		Random random = Random.create();
+		RandomSource random = RandomSource.create();
 		float f = random.nextFloat() * totalWeight;
 		for (Map.Entry<T, Float> e : weights.entrySet()) {
 			f -= e.getValue();
@@ -35,19 +33,19 @@ public final class MathUtil {
 		return new Rotations(pitch, yaw, roll);
 	}
 
-	public static EulerAngle entityEulerAngle(Entity entity) {
-		return new EulerAngle(entity.getPitch(), entity.getYaw(), 0);
+	public static Rotations entityEulerAngle(Entity entity) {
+		return new Rotations(entity.getXRot(), entity.getYRot(), 0);
 	}
 
-	public static float yaw(Vec3d vector) {
+	public static float yaw(Vec3 vector) {
 		return (float) Math.toDegrees(-Math.atan2(vector.x, vector.z));
 	}
 
-	public static float pitch(Vec3d vector) {
+	public static float pitch(Vec3 vector) {
 		return (float) Math.toDegrees(Math.asin(-vector.y));
 	}
 
-	public static EulerAngle directionEulerAngle(Direction direction) {
+	public static Rotations directionEulerAngle(Direction direction) {
 		switch (direction) {
 			case DOWN:
 				return EulerAngleDirection.DOWN.getAngle();
@@ -66,22 +64,22 @@ public final class MathUtil {
 	}
 
 	public enum EulerAngleDirection {
-		DOWN(new EulerAngle(90, 0, 0)),
-		UP(new EulerAngle(-90, 0, 0)),
-		NORTH(new EulerAngle(0, -180, 0)),
-		SOUTH(new EulerAngle(0, 0, 0)),
-		WEST(new EulerAngle(0, 90, 0)),
-		EAST(new EulerAngle(0, -90, 0));
+		DOWN(new Rotations(90, 0, 0)),
+		UP(new Rotations(-90, 0, 0)),
+		NORTH(new Rotations(0, -180, 0)),
+		SOUTH(new Rotations(0, 0, 0)),
+		WEST(new Rotations(0, 90, 0)),
+		EAST(new Rotations(0, -90, 0));
 
 
 
-		private final EulerAngle angle;
+		private final Rotations angle;
 
-		EulerAngleDirection(EulerAngle angle) {
+		EulerAngleDirection(Rotations angle) {
 			this.angle = angle;
 		}
 
-		public EulerAngle getAngle() {
+		public Rotations getAngle() {
 			return angle;
 		}
 	}
