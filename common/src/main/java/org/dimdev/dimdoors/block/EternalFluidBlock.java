@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.block;
 
-import dev.architectury.core.block.ArchitecturyLiquidBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
@@ -12,12 +12,11 @@ import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.entity.limbo.LimboExitReason;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
-
-public class EternalFluidBlock extends ArchitecturyLiquidBlock {
+public class EternalFluidBlock extends LiquidBlock {
 	private static final EntityTarget TARGET = new EscapeTarget(true);
 
-	public EternalFluidBlock(Properties properties) {
-		super(() -> ModFluids.ETERNAL_FLUID, properties);
+	public EternalFluidBlock(Properties settings) {
+		super(ModFluids.ETERNAL_FLUID.get(), settings);
 	}
 
 

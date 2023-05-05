@@ -13,6 +13,7 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.minecraft.world.item.Item;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -22,7 +23,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import static org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle;
 
 public class DimensionalEraserItem extends Item {
-	public DimensionalEraserItem(Settings settings) {
+	public DimensionalEraserItem(Item.Properties settings) {
 		super(settings);
 	}
 

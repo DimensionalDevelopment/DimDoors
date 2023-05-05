@@ -1,15 +1,15 @@
 package org.dimdev.dimdoors.block;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class UnravelUtil {
 	public static final Set<Block> whitelistedBlocksForLimboRemoval = new HashSet<>();
@@ -34,7 +34,7 @@ public class UnravelUtil {
 		unravelItemsMap.put(Items.COBBLESTONE, Items.GRAVEL);
 		unravelItemsMap.put(Items.GRAVEL, Items.SANDSTONE);
 		unravelItemsMap.put(Items.SANDSTONE, Items.SAND);
-		unravelItemsMap.put(Items.SAND, ModItems.UNRAVELLED_FABRIC);
+		unravelItemsMap.put(Items.SAND, ModBlocks.UNRAVELLED_FABRIC.get().asItem());
 
 		for(Item item : unravelItemsMap.keySet()) {
 			Item item2 = unravelItemsMap.get(item);
@@ -42,6 +42,6 @@ public class UnravelUtil {
 				unravelBlocksMap.put(((BlockItem)item).getBlock(), ((BlockItem)item2).getBlock());
 			}
 		}
-		unravelBlocksMap.put(Blocks.WATER, ModBlocks.UNFOLDED_BLOCK);
+		unravelBlocksMap.put(Blocks.WATER, ModBlocks.UNFOLDED_BLOCK.get());
 	}
 }

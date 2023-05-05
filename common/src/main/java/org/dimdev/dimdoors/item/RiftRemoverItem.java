@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.item;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,6 +29,7 @@ import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import net.minecraft.world.item.Item;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -38,7 +40,7 @@ public class RiftRemoverItem extends Item {
 	public static final String ID = "rift_remover";
 	public static final Identifier REMOVED_RIFT_LOOT_TABLE = DimensionalDoors.id("removed_rift");
 
-	public RiftRemoverItem(Settings settings) {
+	public RiftRemoverItem(Item.Properties settings) {
 		super(settings);
 	}
 

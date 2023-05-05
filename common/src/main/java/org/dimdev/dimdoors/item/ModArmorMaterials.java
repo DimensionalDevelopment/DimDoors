@@ -1,12 +1,9 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Lazy;
 import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -36,17 +33,18 @@ public enum ModArmorMaterials implements ArmorMaterial {
 	}
 
 	@Override
-	public int getDurability(ArmorItem.Type type) {
-		return BASE_DURABILITY[type.getEquipmentSlot().getEntitySlotId()] * this.durabilityMultiplier;
+	public int getDurabilityForType(ArmorItem.Type type) {
+		return BASE_DURABILITY[type.getSlot().ordinal()] * this.durabilityMultiplier;
+	}
+
+
+	@Override
+	public int getDefenseForType(ArmorItem.Type type) {
+		return this.protectionAmounts[type.getSlot().ordinal()];
 	}
 
 	@Override
-	public int getProtection(ArmorItem.Type type) {
-		return this.protectionAmounts[type.getEquipmentSlot().getEntitySlotId()];
-	}
-
-	@Override
-	public int getEnchantability() {
+	public int getEnchantmentValue() {
 		return this.enchantability;
 	}
 

@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import net.minecraft.world.item.Item;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
@@ -28,7 +29,7 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 public class StabilizedRiftSignatureItem extends Item { // TODO: common superclass with rift signature
 	public static final String ID = "stabilized_rift_signature";
 
-	public StabilizedRiftSignatureItem(Settings settings) {
+	public StabilizedRiftSignatureItem(Item.Properties settings) {
 		super(settings);
 	}
 

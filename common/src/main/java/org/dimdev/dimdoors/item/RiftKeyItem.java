@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -35,7 +36,7 @@ import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 public class RiftKeyItem extends Item {
-	public RiftKeyItem(Settings settings) {
+	public RiftKeyItem(Item.Properties settings) {
 		super(settings);
 	}
 
