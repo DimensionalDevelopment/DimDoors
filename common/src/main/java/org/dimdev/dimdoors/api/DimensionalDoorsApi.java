@@ -14,16 +14,8 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 // TODO: javadocs for everything, refactoring
 public interface DimensionalDoorsApi {
-	default void registerVirtualTargetTypes(Registry<VirtualTarget.VirtualTargetType<?>> registry) {
-	}
 
 	default void registerVirtualSingularPocketTypes(Registry<ImplementedVirtualPocket.VirtualPocketType<?>> registry) {
-	}
-
-	default void registerModifierTypes(Registry<Modifier.ModifierType<?>> registry) {
-	}
-
-	default void registerPocketGeneratorTypes(Registry<PocketGenerator.PocketGeneratorType<?>> registry) {
 	}
 
 	default void registerAbstractPocketTypes(Registry<AbstractPocket.AbstractPocketType<?>> registry) {

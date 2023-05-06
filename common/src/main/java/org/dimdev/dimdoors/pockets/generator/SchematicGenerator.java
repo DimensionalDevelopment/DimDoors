@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -77,7 +78,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 	}
 
 	@Override
-	public PocketGenerator fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
 		super.fromNbt(nbt, manager);
 
 		this.id = nbt.getString("id"); // TODO: should we force having the "dimdoors:" in the json?

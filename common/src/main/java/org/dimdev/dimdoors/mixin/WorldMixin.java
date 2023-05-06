@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.api.block.CustomBreakBlock;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -23,26 +23,31 @@ import java.util.function.Consumer;
 @Mixin(Level.class)
 public abstract class WorldMixin {
 
+	@Shadow public abstract FluidState getFluidState(BlockPos arg);
+
 	/*
-	I thought about redirecting the entire break method to be handled by the block itself,
-	but I am not quite sure what that would mean for compatibility with other mixins,
-	since then a large part of the method would need to be canceled. This is rather hacky, but it should fulfill the purpose best
-	~CreepyCre
-	 */
+            I thought about redirecting the entire break method to be handled by the block itself,
+            but I am not quite sure what that would mean for compatibility with other mixins,
+            since then a large part of the method would need to be canceled. This is rather hacky, but it should fulfill the purpose best
+            ~CreepyCre
+             */
+	/*
+		Original mixin had a breakingEntity. Mixins are being a but so removed to get working.
+		- Waterpicker
+	*/
 	@Redirect(method = "destroyBlock",
 			at = @At(value = "INVOKE_ASSIGN",
 					target = "Lnet/minecraft/world/level/Level;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;",
 					ordinal = 0))
-	private FluidState replaceFluidStateWithCustomHackyFluidState(FluidState original, BlockPos pos, boolean drop, @Nullable Entity breakingEntity, int maxUpdateDepth) { //TODO: Fix
-		Level world = (Level) (Object) this;
+	private FluidState replaceFluidStateWithCustomHackyFluidState(Level world, BlockPos pos) { //TODO: Fix
 		BlockState blockState = world.getBlockState(pos);
 		Block block = blockState.getBlock();
 		if (!(block instanceof CustomBreakBlock)) {
-			return original;
+			return world.getFluidState(pos);
 		}
-		InteractionResultHolder<Pair<BlockState, Consumer<BlockEntity>>> result = ((CustomBreakBlock) block).customBreakBlock(world, pos, blockState, breakingEntity);
+		InteractionResultHolder<Pair<BlockState, Consumer<BlockEntity>>> result = ((CustomBreakBlock) block).customBreakBlock(world, pos, blockState, null);
 		if (!result.getResult().consumesAction()) {
-			return original;
+			return getFluidState(pos);
 		}
 		Pair<BlockState, Consumer<BlockEntity>> pair = result.getObject();
 		return new CustomBreakBlock.HackyFluidState(pair.getFirst(), pair.getSecond());

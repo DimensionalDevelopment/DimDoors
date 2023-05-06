@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.pockets.virtual;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Lifecycle;
+import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.NbtCompound;
@@ -32,10 +33,10 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 	Registry<VirtualPocketType<? extends ImplementedVirtualPocket>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<VirtualPocketType<? extends ImplementedVirtualPocket>>(RegistryKey.ofRegistry(DimensionalDoors.id("virtual_pocket_type")), Lifecycle.stable(), false)).buildAndRegister();
 
 	static ImplementedVirtualPocket deserialize(NbtElement nbt, @Nullable ResourceManager manager) {
-		return switch (nbt.getType()) {
+		return switch (nbt.getId()) {
 			case NbtType.COMPOUND -> deserialize((NbtCompound) nbt, manager);
 			case NbtType.STRING -> ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
-			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
+			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
 		};
 	}
 
@@ -84,7 +85,7 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 		VirtualPocketType<ConditionalSelector> CONDITIONAL_SELECTOR = register(DimensionalDoors.id(ConditionalSelector.KEY), ConditionalSelector::new);
 		VirtualPocketType<PathSelector> PATH_SELECTOR = register(DimensionalDoors.id(PathSelector.KEY), PathSelector::new);
 
-		ImplementedVirtualPocket fromNbt(NbtCompound nbt, @Nullable ResourceManager manager);
+		ImplementedVirtualPocket fromNbt(CompoundTag nbt, @Nullable ResourceManager manager);
 
 		default ImplementedVirtualPocket fromNbt(NbtCompound nbt) {
 			return fromNbt(nbt, null);

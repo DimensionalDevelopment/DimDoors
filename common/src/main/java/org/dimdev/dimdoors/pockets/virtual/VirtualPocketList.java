@@ -19,13 +19,13 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 	private String resourceKey = null;
 
 	public static VirtualPocketList deserialize(NbtElement nbt, @Nullable ResourceManager manager) {
-		switch (nbt.getType()) {
+		switch (nbt.getId()) {
 			case NbtType.LIST:
 				return deserialize((NbtList) nbt, manager);
 			case NbtType.STRING:
 				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
 			default:
-				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
+				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
 		}
 	}
 

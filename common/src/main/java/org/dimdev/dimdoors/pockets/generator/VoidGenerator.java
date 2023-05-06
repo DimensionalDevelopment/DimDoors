@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.pockets.generator;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,7 +54,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
 		super.fromNbt(nbt, manager);
 
 		try {

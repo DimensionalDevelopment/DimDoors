@@ -4,12 +4,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.mojang.serialization.Lifecycle;
-import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
-import dev.architectury.registry.registries.options.RegistrarOption;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import net.minecraft.nbt.CompoundTag;
@@ -128,12 +125,10 @@ public abstract class VirtualTarget implements Target {
 			});
 		}
 
-		static void register() {
-			DimensionalDoors.apiSubscribers.forEach(d -> d.registerVirtualTargetTypes(REGISTRY));
-		}
+		static void register() {}
 
 		@SuppressWarnings("unchecked")
-		static <T extends VirtualTarget> VirtualTargetType<T> register(String id, Function<CompoundTag, T> fromNbt, Function<T, CompoundTag> toNbt, RGBA color) {
+		static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, Function<CompoundTag, T> fromNbt, Function<T, CompoundTag> toNbt, RGBA color) {
 			return REGISTRY.register(new ResourceLocation(id), () -> new VirtualTargetType<T>() {
 				@Override
 				public T fromNbt(CompoundTag nbt) {

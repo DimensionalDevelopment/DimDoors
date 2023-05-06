@@ -1,78 +1,71 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import java.util.Collection;
-import java.util.function.Supplier;
-
 import com.google.common.collect.Multimap;
-import com.mojang.serialization.Lifecycle;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.util.NbtType;
-
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import java.util.Collection;
+import java.util.function.Supplier;
+
 public interface Modifier extends ReferenceSerializable {
-	Registry<ModifierType<? extends Modifier>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<ModifierType<? extends Modifier>>(RegistryKey.ofRegistry(DimensionalDoors.id("modifier_type")), Lifecycle.stable(), false)).buildAndRegister();
+	Registrar<ModifierType<? extends Modifier>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ModifierType<? extends Modifier>>builder(DimensionalDoors.id("modifier_type")).build();
 
 	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
 
-	static Modifier deserialize(NbtElement nbt, ResourceManager manager) {
-		switch (nbt.getType()) {
-			case NbtType.COMPOUND: // It's a serialized Modifier
-				return Modifier.deserialize((NbtCompound) nbt, manager);
-			case NbtType.STRING: // It's a reference to a resource location
+	static Modifier deserialize(Tag nbt, ResourceManager manager) {
+		return switch (nbt.getId()) {
+			case Tag.TAG_COMPOUND -> // It's a serialized Modifier
+					Modifier.deserialize((CompoundTag) nbt, manager);
+			case Tag.TAG_STRING -> // It's a reference to a resource location
 				// TODO: throw if manager is null
-				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
-			default:
-				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
-		}
+					ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(Tag -> deserialize(Tag, manager)));
+			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
+		};
 	}
 
-	static Modifier deserialize(NbtElement nbt) {
+	static Modifier deserialize(Tag nbt) {
 		return deserialize(nbt, null);
 	}
 
-	static Modifier deserialize(NbtCompound nbt, ResourceManager manager) {
-		Identifier id = Identifier.tryParse(nbt.getString("type")); // TODO: return some NONE Modifier if type cannot be found or deserialization fails.
+	static Modifier deserialize(CompoundTag nbt, ResourceManager manager) {
+		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type")); // TODO: return some NONE Modifier if type cannot be found or deserialization fails.
 		return REGISTRY.get(id).fromNbt(nbt, manager);
 	}
 
-	static Modifier deserialize(NbtCompound nbt) {
+	static Modifier deserialize(CompoundTag nbt) {
 		return deserialize(nbt, null);
 	}
 
-	static NbtElement serialize(Modifier modifier, boolean allowReference) {
-		return modifier.toNbt(new NbtCompound(), allowReference);
+	static Tag serialize(Modifier modifier, boolean allowReference) {
+		return modifier.toNbt(new CompoundTag(), allowReference);
 	}
 
-	static NbtElement serialize(Modifier modifier) {
+	static Tag serialize(Modifier modifier) {
 		return serialize(modifier, false);
 	}
 
 
-	Modifier fromNbt(NbtCompound nbt, ResourceManager manager);
+	Modifier fromNbt(CompoundTag nbt, ResourceManager manager);
 
-	default Modifier fromNbt(NbtCompound nbt) {
+	default Modifier fromNbt(CompoundTag nbt) {
 		return fromNbt(nbt, null);
 	}
 
-	default NbtElement toNbt(NbtCompound nbt, boolean allowReference) {
+	default Tag toNbt(CompoundTag nbt, boolean allowReference) {
 		return this.getType().toNbt(nbt);
 	}
 
-	default NbtElement toNbt(NbtCompound nbt) {
+	default Tag toNbt(CompoundTag nbt) {
 		return toNbt(nbt, false);
 	}
 
@@ -97,35 +90,33 @@ public interface Modifier extends ReferenceSerializable {
 	void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	interface ModifierType<T extends Modifier> {
-		ModifierType<ShellModifier> SHELL_MODIFIER_TYPE = register(DimensionalDoors.id(ShellModifier.KEY), ShellModifier::new);
-		ModifierType<DimensionalDoorModifier> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(DimensionalDoors.id(DimensionalDoorModifier.KEY), DimensionalDoorModifier::new);
-		ModifierType<PocketEntranceModifier> PUBLIC_MODIFIER_TYPE = register(DimensionalDoors.id(PocketEntranceModifier.KEY), PocketEntranceModifier::new);
-		ModifierType<RiftDataModifier> RIFT_DATA_MODIFIER_TYPE = register(DimensionalDoors.id(RiftDataModifier.KEY), RiftDataModifier::new);
-		ModifierType<RelativeReferenceModifier> RELATIVE_REFERENCE_MODIFIER_TYPE = register(DimensionalDoors.id(RelativeReferenceModifier.KEY), RelativeReferenceModifier::new);
-		ModifierType<OffsetModifier> OFFSET_MODIFIER_TYPE = register(DimensionalDoors.id(OffsetModifier.KEY), OffsetModifier::new);
-		ModifierType<AbsoluteRiftBlockEntityModifier> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(DimensionalDoors.id(AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
+		RegistrySupplier<ModifierType<ShellModifier>> SHELL_MODIFIER_TYPE = register(DimensionalDoors.id(ShellModifier.KEY), ShellModifier::new);
+		RegistrySupplier<ModifierType<DimensionalDoorModifier>> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(DimensionalDoors.id(DimensionalDoorModifier.KEY), DimensionalDoorModifier::new);
+		RegistrySupplier<ModifierType<Modifier>> PUBLIC_MODIFIER_TYPE = register(DimensionalDoors.id(PocketEntranceModifier.KEY), PocketEntranceModifier::new);
+		RegistrySupplier<ModifierType<RiftDataModifier>> RIFT_DATA_MODIFIER_TYPE = register(DimensionalDoors.id(RiftDataModifier.KEY), RiftDataModifier::new);
+		RegistrySupplier<ModifierType<RelativeReferenceModifier>> RELATIVE_REFERENCE_MODIFIER_TYPE = register(DimensionalDoors.id(RelativeReferenceModifier.KEY), RelativeReferenceModifier::new);
+		RegistrySupplier<ModifierType<OffsetModifier>> OFFSET_MODIFIER_TYPE = register(DimensionalDoors.id(OffsetModifier.KEY), OffsetModifier::new);
+		RegistrySupplier<ModifierType<Modifier>> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(DimensionalDoors.id(AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
 
-		Modifier fromNbt(NbtCompound nbt, ResourceManager manager);
+		Modifier fromNbt(CompoundTag nbt, ResourceManager manager);
 
-		default Modifier fromNbt(NbtCompound nbt) {
+		default Modifier fromNbt(CompoundTag nbt) {
 			return fromNbt(nbt, null);
 		}
 
-		NbtCompound toNbt(NbtCompound nbt);
+		CompoundTag toNbt(CompoundTag nbt);
 
-		static void register() {
-			DimensionalDoors.apiSubscribers.forEach(d -> d.registerModifierTypes(REGISTRY));
-		}
+		static void register() {}
 
-		static <U extends Modifier> ModifierType<U> register(Identifier id, Supplier<U> factory) {
-			return Registry.register(REGISTRY, id, new ModifierType<U>() {
+		static <U extends Modifier> RegistrySupplier<ModifierType<U>> register(ResourceLocation id, Supplier<U> factory) {
+			return REGISTRY.register(id, () -> new ModifierType<U>() {
 				@Override
-				public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
+				public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 					return factory.get().fromNbt(nbt, manager);
 				}
 
 				@Override
-				public NbtCompound toNbt(NbtCompound nbt) {
+				public CompoundTag toNbt(CompoundTag nbt) {
 					nbt.putString("type", id.toString());
 					return nbt;
 				}

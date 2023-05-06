@@ -29,7 +29,7 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 
 	//TODO: split up in ImplementedVirtualPocket and VirtualPocketList
 	static VirtualPocket deserialize(NbtElement nbt, @Nullable ResourceManager manager) {
-		switch (nbt.getType()) {
+		switch (nbt.getId()) {
 			case NbtType.LIST: // It's a list of VirtualPocket
 				return VirtualPocketList.deserialize((NbtList) nbt, manager);
 			case NbtType.COMPOUND: // It's a serialized VirtualPocket
@@ -38,7 +38,7 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 			case NbtType.STRING: // It's a reference to a resource location
 				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.asString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
 			default:
-				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
+				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
 		}
 	}
 

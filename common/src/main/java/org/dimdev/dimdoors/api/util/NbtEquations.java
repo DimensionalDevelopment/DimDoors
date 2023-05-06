@@ -2,12 +2,14 @@ package org.dimdev.dimdoors.api.util;
 
 import java.util.Map;
 
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.ListTag;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
@@ -41,7 +43,7 @@ public class NbtEquations {
 			} else if (nbt.getType(key) == NbtType.COMPOUND) {
 				solved.put(key, solveNbtCompoundEquations(nbt.getCompound(key), variableMap));
 			} else if (nbt.getType(key) == NbtType.LIST) {
-				solved.put(key, solveNbtListEquations((NbtList) nbt.get(key), variableMap));
+				solved.put(key, solveListTagEquations((ListTag) nbt.get(key), variableMap));
 			} else {
 				solved.put(key, nbt.get(key));
 			}
@@ -49,12 +51,12 @@ public class NbtEquations {
 		return solved;
 	}
 
-	public static NbtList solveNbtListEquations(NbtList nbtList, Map<String, Double> variableMap) {
-		NbtList solved = new NbtList();
-		for (NbtElement nbt : nbtList) {
-			if (nbt.getType() == NbtType.LIST) {
-				solved.add(solveNbtListEquations((NbtList) nbt, variableMap));
-			} else if (nbt.getType() == NbtType.COMPOUND) {
+	public static ListTag solveListTagEquations(ListTag ListTag, Map<String, Double> variableMap) {
+		ListTag solved = new ListTag();
+		for (Tag nbt : ListTag) {
+			if (nbt.getId() == Tag.TAG_LIST) {
+				solved.add(solveListTagEquations((ListTag) nbt, variableMap));
+			} else if (nbt.getId() == Tag.TAG_COMPOUND) {
 				solved.add(solveNbtCompoundEquations((NbtCompound) nbt, variableMap));
 			} else {
 				solved.add(nbt);

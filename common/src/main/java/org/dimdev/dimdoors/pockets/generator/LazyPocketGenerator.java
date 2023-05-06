@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,7 +56,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public PocketGenerator fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
 		super.fromNbt(nbt, manager);
 
 		if (nbt.contains("lazy_modifiers")) {

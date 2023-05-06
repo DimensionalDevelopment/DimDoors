@@ -9,6 +9,7 @@ import com.mojang.serialization.Lifecycle;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
@@ -32,7 +33,7 @@ public interface Condition {
 	ConditionType<?> getType();
 
 	static Condition fromJson(JsonObject json) {
-		Identifier type = new Identifier(json.getAsJsonPrimitive("type").getAsString());
+		ResourceLocation type = new ResourceLocation(json.getAsJsonPrimitive("type").getAsString());
 		return Objects.requireNonNull(REGISTRY.get(type)).fromJson(json);
 	}
 
