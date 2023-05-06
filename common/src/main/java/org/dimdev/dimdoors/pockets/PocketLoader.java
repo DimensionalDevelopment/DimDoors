@@ -5,6 +5,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,14 +28,14 @@ import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
-public class PocketLoader implements SimpleSynchronousResourceReloadListener {
+public class PocketLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final PocketLoader INSTANCE = new PocketLoader();
 	private SimpleTree<String, PocketGenerator> pocketGenerators = new SimpleTree<>(String.class);
 	private SimpleTree<String, VirtualPocket> pocketGroups = new SimpleTree<>(String.class);
 	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
-	private SimpleTree<String, NbtElement> dataTree = new SimpleTree<>(String.class);
+	private SimpleTree<String, Tag> dataTree = new SimpleTree<>(String.class);
 
 	private PocketLoader() {
 	}
@@ -43,7 +46,7 @@ public class PocketLoader implements SimpleSynchronousResourceReloadListener {
 	}
 
 	@Override
-	public void reload(ResourceManager manager) {
+	public void onResourceManagerReload(ResourceManager manager) {
 		pocketGenerators.clear();
 		pocketGroups.clear();
 		virtualPockets.clear();

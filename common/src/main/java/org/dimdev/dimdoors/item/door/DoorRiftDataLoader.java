@@ -3,10 +3,16 @@ package org.dimdev.dimdoors.item.door;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +28,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
 
 // TODO: make it async?
-public final class DoorRiftDataLoader implements SimpleSynchronousResourceReloadListener {
+public final class DoorRiftDataLoader implements ResourceManagerReloadListener {
 	private static final DoorRiftDataLoader INSTANCE = new DoorRiftDataLoader();
 	private static final Logger LOGGER = LogManager.getLogger("DoorRiftDataLoader");
 	private static final Gson GSON = new GsonBuilder().create();
@@ -40,12 +46,7 @@ public final class DoorRiftDataLoader implements SimpleSynchronousResourceReload
 	}
 
 	@Override
-	public Identifier getFabricId() {
-		return DimensionalDoors.id("door_rift_data");
-	}
-
-	@Override
-	public void reload(ResourceManager manager) {
+	public void onResourceManagerReload(ResourceManager manager) {
 		itemRiftData.clear();
 		Map<Identifier, Resource> resources = manager.findResources("door/data", id -> id.getPath().endsWith(".json"));
 		resources.forEach((id, resource) -> {
