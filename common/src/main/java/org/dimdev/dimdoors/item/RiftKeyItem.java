@@ -58,11 +58,6 @@ public class RiftKeyItem extends Item {
 	}
 
 	@Override
-	public boolean isNbtSynced() {
-		return super.isNbtSynced();
-	}
-
-	@Override
 	public int getMaxUseTime(ItemStack stack) {
 		return 30;
 	}

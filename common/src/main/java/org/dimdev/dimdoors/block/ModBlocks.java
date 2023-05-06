@@ -1,7 +1,11 @@
 package org.dimdev.dimdoors.block;
 
+import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -231,11 +235,11 @@ public final class ModBlocks {
 		return block;
 	}
 
-//	@Environment(EnvType.CLIENT)
-//	public static void initClient() {
-//		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR);
+	@Environment(EnvType.CLIENT)
+	public static void initClient() {
+		RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR.get(), ModBlocks.GOLD_DOOR.get());
 //		DoorData.DOORS.forEach(door -> BlockRenderLayerMap.INSTANCE.putBlock(door, RenderLayer.getCutout()));
-//	}
+	}
 
 	public static RegistrySupplier<Block> ancientFabricFromDye(DyeColor color) {
 		return ANCIENT_FABRIC_BLOCKS.get(color);

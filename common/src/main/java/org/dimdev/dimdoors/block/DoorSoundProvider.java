@@ -1,18 +1,18 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.block.BlockSetType;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 
 public interface DoorSoundProvider {
 	public static final DoorSoundProvider DUMMY = new DoorSoundProvider() {};
 
 	// TODO: remove these two
 	public default SoundEvent getOpenSound() {
-		return SoundEvents.BLOCK_WOODEN_DOOR_OPEN;
+		return SoundEvents.WOODEN_DOOR_OPEN;
 	}
 	public default SoundEvent getCloseSound() {
-		return SoundEvents.BLOCK_WOODEN_DOOR_CLOSE;
+		return SoundEvents.WOODEN_DOOR_CLOSE;
 	}
 
 	default BlockSetType getSetType() {

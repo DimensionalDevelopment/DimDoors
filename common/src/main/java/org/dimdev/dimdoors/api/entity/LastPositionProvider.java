@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.api.entity;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.phys.Vec3;
 
 public interface LastPositionProvider {
-	Vec3d getLastPos();
+	Vec3 getLastPos();
 }

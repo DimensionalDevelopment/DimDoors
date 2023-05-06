@@ -11,9 +11,8 @@ accessible method net/minecraft/entity/Entity setRotation (FF)V
 extendable    class    net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
 
 # for HackyFluidState
-extendable    class    net/minecraft/fluid/FluidState
-accessible    field    net/minecraft/state/State    codec    Lcom/mojang/serialization/MapCodec;
-#Lnet/minecraft/state/State;codec:Lcom/mojang/serialization/MapCodec;
+extendable class net/minecraft/world/level/material/FluidState
+accessible field net/minecraft/world/level/block/state/StateHolder propertiesCodec Lcom/mojang/serialization/MapCodec;#Lnet/minecraft/state/State;codec:Lcom/mojang/serialization/MapCodec;
 
 # for lazy pocket gen/ getting all currently loaded chunks
 accessible method net/minecraft/server/world/ThreadedAnvilChunkStorage entryIterator ()Ljava/lang/Iterable;

@@ -1,23 +1,26 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.MutableText;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.World;
-
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
@@ -34,82 +37,81 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 	}
 
 	@Override
-	public boolean hasGlint(ItemStack stack) {
-		return stack.getNbt() != null && stack.getNbt().contains("destination");
+	public boolean isFoil(ItemStack stack) {
+		return stack.getTag() != null && stack.getTag().contains("destination");
 	}
 
 	@Override
-	public ActionResult useOnBlock(ItemUsageContext itemUsageContext) {
-		PlayerEntity player = itemUsageContext.getPlayer();
-		World world = itemUsageContext.getWorld();
-		BlockPos pos = itemUsageContext.getBlockPos();
-		Hand hand = itemUsageContext.getHand();
-		Direction side = itemUsageContext.getSide();
+	public InteractionResult useOn(UseOnContext itemUsageContext) {
+		Player player = itemUsageContext.getPlayer();
+		Level world = itemUsageContext.getLevel();
+		BlockPos pos = itemUsageContext.getClickedPos()();
+		InteractionHand hand = itemUsageContext.getHand();
+		Direction side = itemUsageContext.getClickedFace();
 
-		ItemPlacementContext itemPlacementContext = new ItemPlacementContext(itemUsageContext);
+		BlockPlaceContext itemPlacementContext = new BlockPlaceContext(itemUsageContext);
 
-		ItemStack stack = player.getStackInHand(hand);
-		pos = world.getBlockState(pos).getBlock().canReplace(world.getBlockState(pos), new ItemPlacementContext(itemUsageContext)) ? pos : pos.offset(side);
+		ItemStack stack = player.getItemInHand(hand);
+		pos = world.getBlockState(pos).getBlock().canBeReplaced(world.getBlockState(pos), new BlockPlaceContext(itemUsageContext)) ? pos : pos.relative(side);
 		// Fail if the player can't place a block there
-		if (!player.canPlaceOn(pos, side.getOpposite(), stack)) {
-			return ActionResult.FAIL;
+		if (!player.mayUseItemAt(pos, side.getOpposite(), stack)) {
+			return InteractionResult.FAIL;
 		}
 
-		if (world.isClient) {
-			return ActionResult.SUCCESS;
+		if (world.isClientSide) {
+			return InteractionResult.SUCCESS;
 		}
 
 		RotatedLocation target = getTarget(stack);
 
 		if (target == null) {
 			// The link signature has not been used. Store its current target as the first location.
-			setSource(stack, new RotatedLocation(world.getRegistryKey(), pos, player.getYaw(), 0));
-			player.sendMessage(Text.translatable(this.getTranslationKey() + ".stored"), true);
-			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+			setSource(stack, new RotatedLocation(world.dimension(), pos, player.getYRot(), 0));
+			player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stored"), true);
+			world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START.get(), SoundSource.BLOCKS, 0.6f, 1);
 		} else {
 			// Place a rift at the target point
 			if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
-				if (!target.getBlockState().getBlock().canReplace(world.getBlockState(target.getBlockPos()), itemPlacementContext)) {
-					player.sendMessage(Text.translatable("tools.target_became_block"), true);
+				if (!target.getBlockState().getBlock().canBeReplaced(world.getBlockState(target.getBlockPos()), itemPlacementContext)) {
+					player.displayClientMessage(Component.translatable("tools.target_became_block"), true);
 					// Don't clear source, stabilized signatures always stay bound
-					return ActionResult.FAIL;
+					return InteractionResult.FAIL;
 				}
-				World targetWorld = DimensionalDoors.getWorld(target.world);
-				targetWorld.setBlockState(target.getBlockPos(), ModBlocks.DETACHED_RIFT.getDefaultState());
+				Level targetWorld = DimensionalDoors.getWorld(target.world);
+				targetWorld.setBlockAndUpdate(target.getBlockPos(), ModBlocks.DETACHED_RIFT.get().defaultBlockState());
 				DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
 				rift1.register();
 			}
 
 			// Place a rift at the source point
-			world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
+			world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
 			DetachedRiftBlockEntity rift2 = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
-			rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerWorld) world, pos), target));
+			rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerLevel) world, pos), target));
 			rift2.register();
 
-			stack.damage(1, player, playerEntity -> {
-			});
+			stack.hurtAndBreak(1, player, playerEntity -> {});
 
-			player.sendMessage(Text.translatable(this.getTranslationKey() + ".created"), true);
-			world.playSound(null, player.getBlockPos(), ModSoundEvents.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+			player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".created"), true);
+			world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_END.get(), SoundSource.BLOCKS, 0.6f, 1);
 		}
 
-		return ActionResult.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	public static void setSource(ItemStack itemStack, RotatedLocation destination) {
-		if (!itemStack.hasNbt()) itemStack.setNbt(new NbtCompound());
-		itemStack.getNbt().put("destination", RotatedLocation.serialize(destination));
+		if (!itemStack.hasTag()) itemStack.setTag(new CompoundTag());
+		itemStack.getTag().put("destination", RotatedLocation.serialize(destination));
 	}
 
 	public static void clearSource(ItemStack itemStack) {
-		if (itemStack.hasNbt()) {
-			itemStack.getNbt().remove("destination");
+		if (itemStack.hasTag()) {
+			itemStack.getTag().remove("destination");
 		}
 	}
 
 	public static RotatedLocation getTarget(ItemStack itemStack) {
-		if (itemStack.hasNbt() && itemStack.getNbt().contains("destination")) {
-			return RotatedLocation.deserialize(itemStack.getNbt().getCompound("destination"));
+		if (itemStack.hasTag() && itemStack.getTag().contains("destination")) {
+			return RotatedLocation.deserialize(itemStack.getTag().getCompound("destination"));
 		} else {
 			return null;
 		}
