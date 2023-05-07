@@ -1,32 +1,19 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.stream.Collectors;
-
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerTask;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
-
-import net.fabricmc.fabric.api.util.NbtType;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
@@ -35,16 +22,19 @@ import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 public abstract class LazyPocketGenerator extends PocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static boolean currentlyGenerating = false;
-	public static Queue<Chunk> generationQueue = new LinkedList<>();
+	public static Queue<ChunkAccess> generationQueue = new LinkedList<>();
 
 
 	protected List<LazyModifier> lazyModifierList = new ArrayList<>();
 
-	public void generateChunk(LazyGenerationPocket pocket, Chunk chunk) {
+	public void generateChunk(LazyGenerationPocket pocket, ChunkAccess chunk) {
 		lazyModifierList.forEach(modifier -> modifier.applyToChunk(pocket, chunk));
 	}
 
@@ -60,7 +50,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 		super.fromNbt(nbt, manager);
 
 		if (nbt.contains("lazy_modifiers")) {
-			NbtList modifiersNbt = nbt.getList("lazy_modifiers", 10);
+			ListTag modifiersNbt = nbt.getList("lazy_modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
 				// TODO: skip deserialization of single Modifiers on Exception.
 				// TODO: Modifier via ResourceManager
@@ -69,8 +59,8 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 		}
 
 		if (nbt.contains("lazy_modifier_references")) {
-			NbtList modifiersNbt = nbt.getList("lazy_modifier_references", NbtType.STRING);
-			for (NbtElement nbtElement : modifiersNbt) {
+			ListTag modifiersNbt = nbt.getList("lazy_modifier_references", Tag.TAG_STRING);
+			for (Tag nbtElement : modifiersNbt) {
 				// TODO: skip deserialization of single Modifiers on Exception.
 				// TODO: Modifier via ResourceManager
 				lazyModifierList.add((LazyModifier) Modifier.deserialize(nbtElement, manager));
@@ -81,18 +71,18 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		if (lazyModifierList.size() > 0) {
-			List<NbtElement> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new NbtCompound(), allowReference)).collect(Collectors.toList());
+			List<Tag> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new CompoundTag(), allowReference)).toList();
 
-			NbtList lazyModifiersNbt = new NbtList();
-			lazyModifiersNbt.addAll(lazyModNbts.stream().filter(NbtCompound.class::isInstance).collect(Collectors.toList()));
+			ListTag lazyModifiersNbt = new ListTag();
+			lazyModifiersNbt.addAll(lazyModNbts.stream().filter(CompoundTag.class::isInstance).toList());
 			nbt.put("lazy_modifiers", lazyModifiersNbt);
 
-			NbtList lazyModifierReferences = new NbtList();
-			lazyModifiersNbt.addAll(lazyModNbts.stream().filter(NbtString.class::isInstance).collect(Collectors.toList()));
+			ListTag lazyModifierReferences = new ListTag();
+			lazyModifiersNbt.addAll(lazyModNbts.stream().filter(StringTag.class::isInstance).toList());
 			nbt.put("lazy_modifier_references", lazyModifierReferences);
 		}
 
@@ -133,12 +123,11 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 
 	abstract public LazyPocketGenerator getNewInstance();
 
-	public void setupChunk(Pocket pocket, Chunk chunk, boolean setupLootTables) {
+	public void setupChunk(Pocket pocket, ChunkAccess chunk, boolean setupLootTables) {
 		MinecraftServer server = DimensionalDoors.getServer();
-		chunk.getBlockEntityPositions().stream().map(chunk::getBlockEntity).forEach(blockEntity -> { // RiftBlockEntities should already be initialized here
-			if (setupLootTables && blockEntity instanceof Inventory) {
-				Inventory inventory = (Inventory) blockEntity;
-				server.send(new ServerTask(server.getTicks(), () -> {
+		chunk.getBlockEntitiesPos().stream().map(chunk::getBlockEntity).forEach(blockEntity -> { // RiftBlockEntities should already be initialized here
+			if (setupLootTables && blockEntity instanceof Container inventory) {
+				server.tell(new TickTask(server.getTickCount(), () -> {
 					if (inventory.isEmpty()) {
 						if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
 							TemplateUtils.setupLootTable(DimensionalDoors.getWorld(pocket.getWorld()), blockEntity, inventory, LOGGER);

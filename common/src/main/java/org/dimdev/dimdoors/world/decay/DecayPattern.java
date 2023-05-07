@@ -1,20 +1,19 @@
 package org.dimdev.dimdoors.world.decay;
 
+import dev.architectury.event.Event;
+import dev.architectury.event.EventFactory;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+
 import java.util.Set;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-
 public class DecayPattern {
-    public static final Event<EntropyEvent> ENTROPY_EVENT = EventFactory.createArrayBacked(EntropyEvent.class, (world, pos, entorpy) -> {}, entropyEvents -> (world, pos, entorpy) -> {
+    public static final Event<EntropyEvent> ENTROPY_EVENT = EventFactory.of(entropyEvents -> (world, pos, entorpy) -> {
         for (EntropyEvent event : entropyEvents) event.entropy(world, pos, entorpy);
     });
 
@@ -28,17 +27,17 @@ public class DecayPattern {
         this.processor = processor;
     }
 
-    public static DecayPattern deserialize(NbtCompound nbt) {
+    public static DecayPattern deserialize(CompoundTag nbt) {
         DecayPredicate predicate = DecayPredicate.deserialize(nbt.getCompound("predicate"));
         DecayProcessor processor = DecayProcessor.deserialize(nbt.getCompound("processor"));
         return DecayPattern.builder().predicate(predicate).processor(processor).create();
     }
 
-    public boolean test(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+    public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
         return predicate.test(world, pos, origin, targetBlock, targetFluid);
     }
 
-    public void process(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+    public void process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
         ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos, origin, targetBlock, targetFluid));
     }
 
@@ -74,6 +73,6 @@ public class DecayPattern {
     }
 
     private interface EntropyEvent {
-        void entropy(World world, BlockPos pos, int entorpy);
+        void entropy(Level world, BlockPos pos, int entorpy);
     }
 }

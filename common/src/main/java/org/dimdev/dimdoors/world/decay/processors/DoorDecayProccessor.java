@@ -8,6 +8,7 @@ import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.enums.DoorHinge;
 import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
@@ -32,14 +33,14 @@ public class DoorDecayProccessor implements DecayProcessor {
 	}
 
 	@Override
-	public DecayProcessor fromNbt(NbtCompound json) {
+	public DecayProcessor fromNbt(CompoundTag json) {
 		block = Registries.BLOCK.get(Identifier.tryParse(json.getString("block")));
 		entropy = json.getInt("entropy");
 		return this;
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
+	public CompoundTag toNbt(CompoundTag nbt) {
 		DecayProcessor.super.toNbt(nbt);
 		nbt.putString("block", Registries.BLOCK.getId(block).toString());
 		nbt.putInt("entropy", entropy);

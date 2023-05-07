@@ -2,10 +2,9 @@ package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-import net.minecraft.world.gen.feature.FeatureConfig;
-
-public class SchematicGatewayFeatureConfig implements FeatureConfig {
+public class SchematicGatewayFeatureConfig implements FeatureConfiguration {
     public static final Codec<SchematicGatewayFeatureConfig> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
 			Codec.STRING.fieldOf("gatewayId").forGetter(SchematicGatewayFeatureConfig::getGatewayId)
 	).apply(instance, SchematicGatewayFeatureConfig::new));

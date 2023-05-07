@@ -15,9 +15,6 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 // TODO: javadocs for everything, refactoring
 public interface DimensionalDoorsApi {
 
-	default void registerVirtualSingularPocketTypes(Registry<ImplementedVirtualPocket.VirtualPocketType<?>> registry) {
-	}
-
 	default void registerAbstractPocketTypes(Registry<AbstractPocket.AbstractPocketType<?>> registry) {
 	}
 
@@ -29,9 +26,4 @@ public interface DimensionalDoorsApi {
 
 	default void postInitialize() {}
 
-	default void registerDecayProcessors(Registry<DecayProcessor.DecayProcessorType<? extends DecayProcessor>> registry) {
-	}
-
-	default void registerDecayPredicates(Registry<DecayPredicate.DecayPredicateType<? extends DecayPredicate>> registry) {
-	}
 }

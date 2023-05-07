@@ -1,24 +1,14 @@
 package org.dimdev.dimdoors.command;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-
-import net.fabricmc.loader.api.FabricLoader;
-
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
 import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
@@ -26,29 +16,34 @@ import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class PocketCommand {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	// TODO: probably move somewhere else
-	public static final Map<UUID, ServerCommandSource> logSetting = new HashMap<>();
+	public static final Map<UUID, CommandSourceStack> logSetting = new HashMap<>();
 
-	public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(
 				literal("pocket")
-						.requires(source -> source.hasPermissionLevel(2))
+						.requires(source -> source.hasPermission(2))
 						.then(
 								literal("schematic")
 										.then(
 												literal("place")
 														.then(
 																argument("pocket_template", new PocketTemplateArgumentType())
-																		.executes(ctx -> place(ctx.getSource().getPlayer(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementType.SECTION_NO_UPDATE))
+																		.executes(ctx -> place(ctx.getSource().getPlayerOrException(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementType.SECTION_NO_UPDATE))
 																		.then(
 																				argument("placement_type", new BlockPlacementTypeArgumentType())
-																						.executes(ctx -> place(ctx.getSource().getPlayer(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementTypeArgumentType.getBlockPlacementType(ctx, "placement_type")))
+																						.executes(ctx -> place(ctx.getSource().getPlayerOrException(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementTypeArgumentType.getBlockPlacementType(ctx, "placement_type")))
 																		)
 														)
 										)
@@ -65,16 +60,16 @@ public class PocketCommand {
 								literal("log")
 										// TODO: make command toggle logging of pocket creation to console if used from console
 										.then(literal("creation")
-												.requires(commandSource -> commandSource.getEntity() instanceof ServerPlayerEntity)
+												.requires(commandSource -> commandSource.getEntity() instanceof ServerPlayer)
 												.executes(ctx -> {
-													ServerCommandSource commandSource = ctx.getSource();
-													UUID playerUUID = commandSource.getPlayer().getUuid();
+													CommandSourceStack commandSource = ctx.getSource();
+													UUID playerUUID = commandSource.getPlayerOrException().getUUID();
 													if (logSetting.containsKey(playerUUID)) {
 														logSetting.remove(playerUUID);
-														commandSource.sendFeedback(Text.translatable("commands.pocket.log.creation.off"), false);
+														commandSource.sendSuccess(Component.translatable("commands.pocket.log.creation.off"), false);
 													} else {
 														logSetting.put(playerUUID, commandSource);
-														commandSource.sendFeedback(Text.translatable("commands.pocket.log.creation.on"), false);
+														commandSource.sendSuccess(Component.translatable("commands.pocket.log.creation.on"), false);
 													}
 													return Command.SINGLE_SUCCESS;
 												})
@@ -83,9 +78,9 @@ public class PocketCommand {
 						)
 						.then(
 								literal("dump")
-										.requires(src -> src.hasPermissionLevel(4))
+										.requires(src -> src.hasPermission(4))
 										.executes(ctx -> {
-											ctx.getSource().sendFeedback(Text.of("Dumping pocket data"), false);
+											ctx.getSource().sendSuccess(Component.literal("Dumping pocket data"), false);
 											CompletableFuture.runAsync(() -> {
 												try {
 													PocketLoader.getInstance().dump();
@@ -94,7 +89,7 @@ public class PocketCommand {
 												}
 											}).thenRun(() -> {
 												ctx.getSource().getServer().execute(() -> {
-													ctx.getSource().sendFeedback(Text.of("Dumped pocket data"), false);
+													ctx.getSource().sendSuccess(Component.literal("Dumped pocket data"), false);
 												});
 											});
 											return Command.SINGLE_SUCCESS;
@@ -103,7 +98,7 @@ public class PocketCommand {
 		);
 	}
 
-	private static int load(ServerCommandSource source, PocketTemplate template) throws CommandSyntaxException {
+	private static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
 		try {
 			return WorldeditHelper.load(source, template);
 		} catch (NoClassDefFoundError e) {
@@ -111,16 +106,16 @@ public class PocketCommand {
 		}
 	}
 
-	private static int place(ServerPlayerEntity source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
+	private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
 		SchematicPlacer.place(
 				template.getSchematic(),
-				source.getWorld(),
-				source.getBlockPos(),
+				source.getLevel(),
+				source.blockPosition(),
 				blockPlacementType
 		);
 
 		String id = template.getId().toString();
-		source.getCommandSource().sendFeedback(Text.translatable("commands.pocket.placedSchem", id, "" + source.getBlockPos().getX() + ", " + source.getBlockPos().getY() + ", " + source.getBlockPos().getZ(), source.world.getRegistryKey().getValue().toString()), true);
+		source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level.dimension().location().toString()), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

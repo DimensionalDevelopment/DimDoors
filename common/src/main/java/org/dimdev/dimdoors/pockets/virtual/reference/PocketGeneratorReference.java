@@ -9,6 +9,15 @@ import java.util.stream.StreamSupport;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,7 +55,7 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
 	protected final List<Modifier> modifierList = Lists.newArrayList();
-	protected final List<NbtCompound> addons = new ArrayList<>();
+	protected final List<CompoundTag> addons = new ArrayList<>();
 
 	private void parseWeight() {
 		try {
@@ -67,7 +76,7 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 	}
 
 	@Override
-	public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
 		if (nbt.contains("weight")) { // override referenced pockets weight
 			this.weight = nbt.getString("weight");
 			parseWeight();
@@ -76,20 +85,20 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		if (nbt.contains("setup_loot")) setupLoot = nbt.getBoolean("setup_loot");
 
 		if (nbt.contains("modifiers")) {
-			NbtList modifiersNbt = nbt.getList("modifiers", 10);
+			ListTag modifiersNbt = nbt.getList("modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
 				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i), manager));
 			}
 		}
 		if (nbt.contains("modifier_references")) {
-			NbtList modifiersNbt = nbt.getList("modifier_references", NbtType.STRING);
-			for (NbtElement nbtElement : modifiersNbt) {
+			ListTag modifiersNbt = nbt.getList("modifier_references", Tag.TAG_STRING);
+			for (Tag nbtElement : modifiersNbt) {
 				modifierList.add(Modifier.deserialize(nbtElement, manager));
 			}
 		}
 
-		if (nbt.contains("addons", NbtType.LIST)) {
-			NbtList addonsNbt = nbt.getList("addons", 10);
+		if (nbt.contains("addons", Tag.TAG_LIST)) {
+			ListTag addonsNbt = nbt.getList("addons", 10);
 			for (int i = 0; i < addonsNbt.size(); i++) {
 				// TODO: something with the ResourceManager??? Probably need AddonBuilder now.
 				addons.add(addonsNbt.getCompound(i));
@@ -100,20 +109,20 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 	}
 
 	@Override
-	protected NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 
 		if (weight != null) nbt.putString("weight", weight);
 
 		if (setupLoot != null) nbt.putBoolean("setup_loot", setupLoot);
 
-		NbtList modifiersNbt = new NbtList();
+		ListTag modifiersNbt = new ListTag();
 		// TODO: deserialize with ResourceManager
 		for (Modifier modifier : modifierList) {
-			modifiersNbt.add(modifier.toNbt(new NbtCompound()));
+			modifiersNbt.add(modifier.toNbt(new CompoundTag()));
 		}
 		if (modifiersNbt.size() > 0) nbt.put("modifiers", modifiersNbt);
 
-		NbtList addonsNbt = new NbtList();
+		ListTag addonsNbt = new ListTag();
 		// TODO: something with the ResourceManager??? Probably need AddonBuilder now.
 		addonsNbt.addAll(addons);
 		if (addonsNbt.size() > 0) nbt.put("addons", addonsNbt);
@@ -156,7 +165,7 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		LazyPocketGenerator.currentlyGenerating = true;
 		// ensure we aren't missing any chunks that were already loaded previously
 		// for lazy gen
-		Set<Chunk> alreadyLoadedChunks = StreamSupport.stream(parameters.world().getChunkManager().threadedAnvilChunkStorage.entryIterator().spliterator(), false).map(ChunkHolder::getWorldChunk).filter(Objects::nonNull).collect(Collectors.toSet());
+		Set<ChunkAccess> alreadyLoadedChunks = StreamSupport.stream(parameters.world().getChunkSource().chunkMap.getChunks().spliterator(), false).map(ChunkHolder::getTickingChunk).filter(Objects::nonNull).collect(Collectors.toSet());
 
 		Pocket pocket = generator.prepareAndPlacePocket(parameters, builder);
 		BlockPos originalOrigin = pocket.getOrigin();
@@ -182,11 +191,11 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 			LazyPocketGenerator.currentlyGenerating = false;
 
 			while (!LazyPocketGenerator.generationQueue.isEmpty()) {
-				Chunk chunk = LazyPocketGenerator.generationQueue.remove();
+				ChunkAccess chunk = LazyPocketGenerator.generationQueue.remove();
 
 				LazyCompatibleModifier.runQueuedModifications(chunk);
 				MinecraftServer server = DimensionalDoors.getServer();
-				DimensionalDoors.getServer().send(new ServerTask(server.getTicks(), () -> (lazyPocket).chunkLoaded(chunk)));
+				DimensionalDoors.getServer().tell(new TickTask(server.getTickCount(), () -> (lazyPocket).chunkLoaded(chunk)));
 			}
 			LazyCompatibleModifier.runLeftoverModifications(DimensionalDoors.getWorld(lazyPocket.getWorld()));
 		} else {

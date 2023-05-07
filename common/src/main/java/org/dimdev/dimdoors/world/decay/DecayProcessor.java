@@ -2,33 +2,37 @@ package org.dimdev.dimdoors.world.decay;
 
 import java.util.function.Supplier;
 
-import com.mojang.serialization.Lifecycle;
-
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.SimpleRegistry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.datagen.FluidDecayProcessor;
-import org.dimdev.dimdoors.world.decay.processors.DoorDecayProccessor;
-import org.dimdev.dimdoors.world.decay.processors.DoubleDecayProcessor;
-import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
-import org.dimdev.dimdoors.world.decay.processors.BlockDecayProcessor;
+import org.dimdev.dimdoors.world.decay.processors.*;
 
 public interface DecayProcessor {
-    Registry<DecayProcessorType<? extends DecayProcessor>> REGISTRY = FabricRegistryBuilder.from(new SimpleRegistry<DecayProcessorType<? extends DecayProcessor>>(RegistryKey.ofRegistry(DimensionalDoors.id("decay_processor_type")), Lifecycle.stable(), false)).buildAndRegister();
+    Registrar<DecayProcessorType<? extends DecayProcessor>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayProcessorType<? extends DecayProcessor>>builder(DimensionalDoors.id("decay_processor_type")).build();
 
     DecayProcessor NONE = new DecayProcessor() {
         @Override
-        public DecayProcessor fromNbt(NbtCompound nbt) {
+        public DecayProcessor fromNbt(CompoundTag nbt) {
             return this;
         }
 
@@ -43,26 +47,26 @@ public interface DecayProcessor {
         }
 
         @Override
-        public int process(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+        public int process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
             return 0;
         }
 
         private static final String ID = "none";
     };
 
-    static DecayProcessor deserialize(NbtCompound nbt) {
-        Identifier id = Identifier.tryParse(nbt.getString("type"));
-        return REGISTRY.getOrEmpty(id).orElse(DecayProcessorType.NONE_PROCESSOR_TYPE).fromNbt(nbt);
+    static DecayProcessor deserialize(CompoundTag nbt) {
+        ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
+        return REGISTRY.delegate(id).orElse(DecayProcessorType.NONE_PROCESSOR_TYPE).fromNbt(nbt);
     }
 
-    static NbtCompound serialize(DecayProcessor modifier) {
-        return modifier.toNbt(new NbtCompound());
+    static CompoundTag serialize(DecayProcessor modifier) {
+        return modifier.toNbt(new CompoundTag());
     }
 
 
-    DecayProcessor fromNbt(NbtCompound nbt);
+    DecayProcessor fromNbt(CompoundTag nbt);
 
-    default NbtCompound toNbt(NbtCompound nbt) {
+    default CompoundTag toNbt(CompoundTag nbt) {
         return this.getType().toNbt(nbt);
     }
 
@@ -70,33 +74,31 @@ public interface DecayProcessor {
 
     String getKey();
 
-    int process(World world, BlockPos pos, BlockState origin, BlockState targetState, FluidState targetFluid);
+    int process(Level world, BlockPos pos, BlockState origin, BlockState targetState, FluidState targetFluid);
 
     interface DecayProcessorType<T extends DecayProcessor> {
-        DecayProcessorType<BlockDecayProcessor> SIMPLE_PROCESSOR_TYPE = register(DimensionalDoors.id(BlockDecayProcessor.KEY), BlockDecayProcessor::new);
-        DecayProcessorType<DecayProcessor> NONE_PROCESSOR_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
-        DecayProcessorType<SelfDecayProcessor> SELF = register(DimensionalDoors.id(SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
-		DecayProcessorType<DoorDecayProccessor> DOOR_PROCESSOR_TYPE = register(DimensionalDoors.id(DoorDecayProccessor.KEY), DoorDecayProccessor::new);
-		DecayProcessorType<DoubleDecayProcessor> DOUBLE_PROCESSOR_TYPE = register(DimensionalDoors.id(DoubleDecayProcessor.KEY), DoubleDecayProcessor::new);
-		DecayProcessorType<FluidDecayProcessor> FLUID_PROCESSOR_TYPE = register(DimensionalDoors.id(FluidDecayProcessor.KEY), FluidDecayProcessor::new);
+        RegistrySupplier<DecayProcessorType<BlockDecayProcessor>> SIMPLE_PROCESSOR_TYPE = register(DimensionalDoors.id(BlockDecayProcessor.KEY), BlockDecayProcessor::new);
+        RegistrySupplier<DecayProcessorType<DecayProcessor>> NONE_PROCESSOR_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
+        RegistrySupplier<DecayProcessorType<SelfDecayProcessor>> SELF = register(DimensionalDoors.id(SelfDecayProcessor.KEY), SelfDecayProcessor::instance);
+		RegistrySupplier<DecayProcessorType<DoorDecayProccessor>> DOOR_PROCESSOR_TYPE = register(DimensionalDoors.id(DoorDecayProccessor.KEY), DoorDecayProccessor::new);
+		RegistrySupplier<DecayProcessorType<DoubleDecayProcessor>> DOUBLE_PROCESSOR_TYPE = register(DimensionalDoors.id(DoubleDecayProcessor.KEY), DoubleDecayProcessor::new);
+		RegistrySupplier<DecayProcessorType<FluidDecayProcessor>> FLUID_PROCESSOR_TYPE = register(DimensionalDoors.id(FluidDecayProcessor.KEY), FluidDecayProcessor::new);
 
-		DecayProcessor fromNbt(NbtCompound nbt);
+		DecayProcessor fromNbt(CompoundTag nbt);
 
-		NbtCompound toNbt(NbtCompound nbt);
+		CompoundTag toNbt(CompoundTag nbt);
 
-        static void register() {
-            DimensionalDoors.apiSubscribers.forEach(d -> d.registerDecayProcessors(REGISTRY));
-        }
+        static void register() {}
 
-        static <U extends DecayProcessor> DecayProcessorType<U> register(Identifier id, Supplier<U> factory) {
-            return Registry.register(REGISTRY, id, new DecayProcessorType<U>() {
+        static <U extends DecayProcessor> RegistrySupplier<DecayProcessorType<U>> register(ResourceLocation id, Supplier<U> factory) {
+            return REGISTRY.register(id, new DecayProcessorType<U>() {
                 @Override
-                public DecayProcessor fromNbt(NbtCompound nbt) {
+                public DecayProcessor fromNbt(CompoundTag nbt) {
                     return factory.get().fromNbt(nbt);
                 }
 
                 @Override
-                public NbtCompound toNbt(NbtCompound nbt) {
+                public CompoundTag toNbt(CompoundTag nbt) {
                     nbt.putString("type", id.toString());
                     return nbt;
                 }

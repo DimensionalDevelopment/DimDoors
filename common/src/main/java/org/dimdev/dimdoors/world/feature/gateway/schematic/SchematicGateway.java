@@ -1,17 +1,10 @@
 package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
-import java.util.function.BiPredicate;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.StructureWorldAccess;
-
+import net.minecraft.world.level.WorldGenLevel;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
@@ -19,7 +12,12 @@ import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 import org.dimdev.dimdoors.world.feature.gateway.Gateway;
 
-public abstract class SchematicGateway implements Gateway, BiPredicate<StructureWorldAccess, BlockPos> {
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.util.function.BiPredicate;
+
+public abstract class SchematicGateway implements Gateway, BiPredicate<WorldGenLevel, BlockPos> {
 	private Schematic schematic;
 	private final String id;
 	public static final BiMap<String, SchematicGateway> ID_SCHEMATIC_MAP = HashBiMap.create();
@@ -47,11 +45,11 @@ public abstract class SchematicGateway implements Gateway, BiPredicate<Structure
 		}
 	}
 
-	public final void generate(StructureWorldAccess world, BlockPos pos) {
+	public final void generate(WorldGenLevel world, BlockPos pos) {
 		if (DimensionalDoors.getConfig()
 				.getWorldConfig()
 				.gatewayDimBlacklist
-				.contains(world.toServerWorld().getRegistryKey().getValue().toString())
+				.contains(world.getLevel().dimension().location().toString())
 		) {
 			return;
 		}
@@ -69,6 +67,6 @@ public abstract class SchematicGateway implements Gateway, BiPredicate<Structure
 	 * @param world - the world in which to generate the gateway
 	 * @param pos   - the position at which the schematic is placed
 	 */
-	protected void generateRandomBits(StructureWorldAccess world, BlockPos pos) {
+	protected void generateRandomBits(WorldGenLevel world, BlockPos pos) {
 	}
 }

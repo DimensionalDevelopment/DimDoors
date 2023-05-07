@@ -34,16 +34,16 @@ public abstract class VirtualTarget implements Target {
 
 	protected Location location;
 
-	public static VirtualTarget fromNbt(NbtCompound nbt) {
-		Identifier id = new Identifier(nbt.getString("type"));
+	public static VirtualTarget fromNbt(CompoundTag nbt) {
+		ResourceLocation id = new ResourceLocation(nbt.getString("type"));
 		return Objects.requireNonNull(REGISTRY.get(id), "Unknown virtual target type " + id).fromNbt(nbt);
 	}
 
-	public static NbtCompound toNbt(VirtualTarget virtualTarget) {
-		Identifier id = REGISTRY.getId(virtualTarget.getType());
+	public static CompoundTag toNbt(VirtualTarget virtualTarget) {
+		ResourceLocation id = REGISTRY.getId(virtualTarget.getType());
 		String type = id.toString();
 
-		NbtCompound nbt = virtualTarget.getType().toNbt(virtualTarget);
+		CompoundTag nbt = virtualTarget.getType().toNbt(virtualTarget);
 		nbt.putString("type", type);
 
 		return nbt;

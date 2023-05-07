@@ -6,14 +6,13 @@ import dev.architectury.platform.Mod;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.GameInstance;
-import net.minecraft.client.gui.screens.Screen;
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -22,6 +21,7 @@ import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.command.PocketCommand;
 import org.dimdev.dimdoors.criteria.ModCriteria;
+import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
@@ -48,14 +48,14 @@ import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
+import java.nio.file.Path;
 import java.util.List;
-
-import static net.fabricmc.loader.api.FabricLoader.getInstance;
+import java.util.function.Supplier;
 
 public class DimensionalDoors {
 	public static final String MOD_ID = "dimdoors";
 	public static List<DimensionalDoorsApi> apiSubscribers;
-	private Mod dimDoorsMod;
+	private static Mod dimDoorsMod;
 
 	public static ResourceLocation id(String id) {
 		return new ResourceLocation(MOD_ID, id);
@@ -69,7 +69,19 @@ public class DimensionalDoors {
 		return getServer().getLevel(world);
 	}
 
-	public void onInitialize() {
+	private static Supplier<Path> CONFIG_ROOT = () -> dimDoorsMod.getFilePaths().get(0);
+
+	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootJanksonConfigSerializer::new);
+
+	public static ModConfig getConfig() {
+		return CONFIG_MANAGER.get();
+	}
+
+	public static Path getConfigRoot() {
+		return CONFIG_ROOT.get();
+	}
+
+	public static void init() {
 		dimDoorsMod = Platform.getMod(MOD_ID);
 
 		dimDoorsMod.registerConfigurationScreen(ModMenu::getConfigScreen); //TODO: Move to client.

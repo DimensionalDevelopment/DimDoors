@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.world.feature.gateway.schematic;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Blocks;
 
 public class EndGateway extends SchematicGateway{
 	public EndGateway() {
@@ -10,7 +10,7 @@ public class EndGateway extends SchematicGateway{
 	}
 
 	@Override
-	public boolean test(StructureWorldAccess structureWorldAccess, BlockPos blockPos) {
-		return structureWorldAccess.getBlockState(blockPos.down()).isOf(Blocks.END_STONE);
+	public boolean test(WorldGenLevel structureWorldAccess, BlockPos blockPos) {
+		return structureWorldAccess.getBlockState(blockPos.below()).is(Blocks.END_STONE);
 	}
 }

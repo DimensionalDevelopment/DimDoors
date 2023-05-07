@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.world.decay.processors;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -20,7 +21,7 @@ public class SelfDecayProcessor implements DecayProcessor {
     }
 
     @Override
-    public DecayProcessor fromNbt(NbtCompound nbt) {
+    public DecayProcessor fromNbt(CompoundTag nbt) {
         return this;
     }
 

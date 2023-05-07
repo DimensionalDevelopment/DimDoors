@@ -1,32 +1,21 @@
 package org.dimdev.dimdoors.pockets;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.NbtUtil;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.api.util.SimpleTree;
-import org.dimdev.dimdoors.api.util.WeightedList;
+import org.dimdev.dimdoors.api.util.*;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.schematic.Schematic;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 public class PocketLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -91,25 +80,25 @@ public class PocketLoader implements ResourceManagerReloadListener {
 //		}
 //    }
 
-	public NbtElement getDataNbt(String id) {
+	public Tag getDataNbt(String id) {
 		return this.dataTree.get(Path.stringPath(id));
 	}
 
-	public NbtCompound getDataNbtCompound(String id) {
-		return NbtUtil.asNbtCompound(getDataNbt(id), "Could not convert NbtElement \"" + id + "\" to NbtCompound!");
+	public CompoundTag getDataNbtCompound(String id) {
+		return NbtUtil.asNbtCompound(getDataNbt(id), "Could not convert Tag \"" + id + "\" to CompoundTag!");
 	}
 
-	private BiFunction<NbtElement, Path<String>, VirtualPocket> virtualPocketLoader(ResourceManager manager) {
+	private BiFunction<Tag, Path<String>, VirtualPocket> virtualPocketLoader(ResourceManager manager) {
 		return (nbt, ignore) -> VirtualPocket.deserialize(nbt, manager);
 	}
 
-	private BiFunction<NbtElement, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {
-		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an NbtCompound!"), manager);
+	private BiFunction<Tag, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {
+		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an CompoundTag!"), manager);
 	}
 
-	private PocketTemplate loadPocketTemplate(NbtCompound nbt, Path<String> id) {
+	private PocketTemplate loadPocketTemplate(CompoundTag nbt, Path<String> id) {
 		try {
-			return new PocketTemplate(Schematic.fromNbt(nbt), new Identifier(id.reduce(String::concat).orElseThrow()));
+			return new PocketTemplate(Schematic.fromNbt(nbt), new ResourceLocation(id.reduce(String::concat).orElseThrow()));
 		} catch (Exception e) {
 			throw new RuntimeException("Error loading " + nbt.toString(), e);
 		}
@@ -119,7 +108,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		return new WeightedList<>(pocketGenerators.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
 
-	public VirtualPocket getGroup(Identifier group) {
+	public VirtualPocket getGroup(ResourceLocation group) {
 		return pocketGroups.get(Path.stringPath(group));
 	}
 
@@ -139,12 +128,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		return this.virtualPockets;
 	}
 
-	public PocketGenerator getGenerator(Identifier id) {
+	public PocketGenerator getGenerator(ResourceLocation id) {
 		return pocketGenerators.get(Path.stringPath(id));
-	}
-
-	@Override
-	public Identifier getFabricId() {
-		return DimensionalDoors.id("schematics_v2");
 	}
 }

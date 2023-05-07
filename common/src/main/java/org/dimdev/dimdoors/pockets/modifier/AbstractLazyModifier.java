@@ -1,8 +1,11 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtString;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 
 public abstract class AbstractLazyModifier implements LazyModifier {
 	private String resourceKey = null;
@@ -18,9 +21,9 @@ public abstract class AbstractLazyModifier implements LazyModifier {
 	}
 
 	@Override
-	public NbtElement toNbt(NbtCompound nbt, boolean allowReference) {
+	public Tag toNbt(Tag nbt, boolean allowReference) {
 		if (allowReference && this.getResourceKey() != null) {
-			return NbtString.of(this.getResourceKey());
+			return StringTag.valueOf(this.getResourceKey());
 		}
 		return toNbtInternal(nbt, allowReference);
 	}
@@ -28,7 +31,7 @@ public abstract class AbstractLazyModifier implements LazyModifier {
 	// utility so the first part of toNbt can be extracted into default method
 	// at this point we know for a fact, that we need to serialize into the NbtCompound
 	// overwrite in subclass
-	protected NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		return this.getType().toNbt(nbt);
 	}
 }

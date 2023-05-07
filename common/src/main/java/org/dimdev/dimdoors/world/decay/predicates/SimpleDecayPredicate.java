@@ -1,23 +1,21 @@
 package org.dimdev.dimdoors.world.decay.predicates;
 
+import com.google.common.collect.Streams;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import org.dimdev.dimdoors.world.decay.DecayPredicate;
+
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.Streams;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
 
 public class SimpleDecayPredicate implements DecayPredicate {
     public static final String KEY = "block";
@@ -33,24 +31,24 @@ public class SimpleDecayPredicate implements DecayPredicate {
 	}
 
 	@Override
-    public DecayPredicate fromNbt(NbtCompound nbt) {
+    public DecayPredicate fromNbt(CompoundTag nbt) {
 		String name = nbt.getString("entry");
 
-		if(name.startsWith("#")) tag = TagKey.of(RegistryKeys.BLOCK, Identifier.tryParse(name.substring(1)));
-		else block = Registries.BLOCK.get(Identifier.tryParse(name));
+		if(name.startsWith("#")) tag = TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(name.substring(1)));
+		else block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(name));
         return this;
     }
 
     @Override
-    public NbtCompound toNbt(NbtCompound nbt) {
+    public CompoundTag toNbt(CompoundTag nbt) {
         DecayPredicate.super.toNbt(nbt);
-        nbt.putString("entry", tag != null ? "#" + tag.id().toString() : Registries.BLOCK.getId(block).toString());
+        nbt.putString("entry", tag != null ? "#" + tag.location().toString() : BuiltInRegistries.BLOCK.getKey(block).toString());
         return nbt;
     }
 
     @Override
     public DecayPredicateType<? extends DecayPredicate> getType() {
-        return DecayPredicateType.SIMPLE_PREDICATE_TYPE;
+        return DecayPredicateType.SIMPLE_PREDICATE_TYPE.get();
     }
 
     @Override
@@ -59,13 +57,13 @@ public class SimpleDecayPredicate implements DecayPredicate {
     }
 
     @Override
-    public boolean test(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
-		return block != null ? targetBlock.isOf(block) : targetBlock.isIn(tag);
+    public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+		return block != null ? targetBlock.is(block) : targetBlock.is(tag);
     }
 
 	@Override
 	public Set<Block> constructApplicableBlocks() {
-		return block != null ? Set.of(block) : Streams.stream(Registries.BLOCK.iterateEntries(tag)).map(RegistryEntry::value).collect(Collectors.toSet());
+		return block != null ? Set.of(block) : Streams.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(tag)).map(Holder::value).collect(Collectors.toSet());
 	}
 
 	public static Builder builder() {

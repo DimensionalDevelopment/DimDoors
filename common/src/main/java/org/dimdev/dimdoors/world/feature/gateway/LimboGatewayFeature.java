@@ -1,17 +1,18 @@
 package org.dimdev.dimdoors.world.feature.gateway;
 
-import net.minecraft.world.gen.feature.DefaultFeatureConfig;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.util.FeatureContext;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 
-public class LimboGatewayFeature extends Feature<DefaultFeatureConfig> {
+public class LimboGatewayFeature extends Feature<NoneFeatureConfiguration> {
     public LimboGatewayFeature() {
-        super(DefaultFeatureConfig.CODEC);
+        super(NoneFeatureConfiguration.CODEC);
     }
 
 	@Override
-	public boolean generate(FeatureContext<DefaultFeatureConfig> context) {
-		LimboGateway.INSTANCE.generate(context.getWorld(), context.getOrigin());
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		LimboGateway.INSTANCE.generate(context.level(), context.origin());
 		return true;
+
 	}
 }

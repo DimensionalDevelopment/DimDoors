@@ -3,13 +3,19 @@ package org.dimdev.dimdoors.world.pocket.type;
 import java.util.Map;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
 import net.fabricmc.fabric.api.util.NbtType;
 
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -21,13 +27,13 @@ public class LazyGenerationPocket extends Pocket {
 	private LazyPocketGenerator generator;
 	private int toBeGennedChunkCount = 0;
 
-	public void chunkLoaded(Chunk chunk) {
+	public void chunkLoaded(ChunkAccess chunk) {
 		if (isDoneGenerating()) return;
 
 		ChunkLazilyGeneratedComponent lazyGenned = ChunkLazilyGeneratedComponent.get(chunk);
 		if (lazyGenned.hasBeenLazyGenned()) return;
 
-		BlockBox chunkBox = BlockBoxUtil.getBox(chunk);
+		BoundingBox chunkBox = BlockBoxUtil.getBox(chunk);
 		if (!chunkBox.intersects(getBox())) return;
 
 		generator.generateChunk(this, chunk);
@@ -48,16 +54,16 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	public void init() {
-		BlockBox box = getBox();
+		BoundingBox box = getBox();
 
-		toBeGennedChunkCount = (Math.floorDiv(box.getMaxX(), 16) - Math.floorDiv(box.getMinX(), 16) + 1) * (Math.floorDiv(box.getMaxZ(), 16) - Math.floorDiv(box.getMinZ(), 16) + 1);
+		toBeGennedChunkCount = (Math.floorDiv(box.maxX(), 16) - Math.floorDiv(box.minX(), 16) + 1) * (Math.floorDiv(box.maxZ(), 16) - Math.floorDiv(box.minZ(), 16) + 1);
 	}
 
 	@Override
-	public NbtCompound toNbt(NbtCompound nbt) {
+	public CompoundTag toNbt(CompoundTag nbt) {
 		super.toNbt(nbt);
 
-		if (generator != null) nbt.put("generator", generator.toNbt(new NbtCompound()));
+		if (generator != null) nbt.put("generator", generator.toNbt(new CompoundTag()));
 		if (toBeGennedChunkCount > 0) nbt.putInt("to_be_genned_chunks", toBeGennedChunkCount);
 
 		return nbt;
@@ -65,7 +71,7 @@ public class LazyGenerationPocket extends Pocket {
 
 	@Override
 	public AbstractPocketType<?> getType() {
-		return AbstractPocketType.LAZY_GENERATION_POCKET;
+		return AbstractPocketType.LAZY_GENERATION_POCKET.get();
 	}
 
 	public static String getKEY() {
@@ -73,11 +79,11 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	@Override
-	public Pocket fromNbt(NbtCompound nbt) {
+	public Pocket fromNbt(CompoundTag nbt) {
 		super.fromNbt(nbt);
 
-		if (nbt.contains("generator", NbtType.COMPOUND)) generator = (LazyPocketGenerator) PocketGenerator.deserialize(nbt.getCompound("generator"));
-		if (nbt.contains("to_be_genned_chunks", NbtType.INT)) toBeGennedChunkCount = nbt.getInt("to_be_genned_chunks");
+		if (nbt.contains("generator", Tag.TAG_COMPOUND)) generator = (LazyPocketGenerator) PocketGenerator.deserialize(nbt.getCompound("generator"));
+		if (nbt.contains("to_be_genned_chunks", Tag.TAG_INT)) toBeGennedChunkCount = nbt.getInt("to_be_genned_chunks");
 
 		return this;
 	}
@@ -89,7 +95,7 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	public static LazyGenerationPocketBuilder<?, LazyGenerationPocket> builderLazyGenerationPocket() {
-		return new LazyGenerationPocketBuilder<>(AbstractPocketType.LAZY_GENERATION_POCKET);
+		return new LazyGenerationPocketBuilder<>(AbstractPocketType.LAZY_GENERATION_POCKET.get());
 	}
 
 	public static class LazyGenerationPocketBuilder<P extends LazyGenerationPocketBuilder<P, T>, T extends LazyGenerationPocket> extends PocketBuilder<P, T> {

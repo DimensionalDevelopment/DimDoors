@@ -4,6 +4,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.common.base.MoreObjects;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +53,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	private Direction facing;
 	private String doorTypeString;
 	private DimensionalDoorBlock doorType;
-	private NbtCompound doorData;
+	private CompoundTag doorData;
 	private String doorDataReference;
 
 	private String x;
@@ -52,7 +64,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	private Equation zEquation;
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 		String facingString = nbt.getString("facing");
 		facing = Direction.byName(nbt.getString("facing"));
 		if (facing == null || facing.getAxis().isVertical()) {
@@ -60,19 +72,19 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 		}
 
 		doorTypeString = nbt.getString("door_type");
-		Block doorBlock = Registries.BLOCK.get(Identifier.tryParse(doorTypeString));
+		Block doorBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(doorTypeString));
 		if (!(doorBlock instanceof DimensionalDoorBlock)) {
 			throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
 		}
 		doorType = (DimensionalDoorBlock) doorBlock;
 
 		// TODO: rift data via ResourceManager
-		if (nbt.getType("rift_data") == NbtType.STRING) {
+		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
 			doorDataReference = nbt.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
 		}
 
-		else if (nbt.getType("rift_data") == NbtType.COMPOUND) doorData = nbt.getCompound("rift_data");
+		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
 
 		try {
 			x = nbt.getString("x");
@@ -89,10 +101,10 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
-		nbt.putString("facing", facing.asString());
+		nbt.putString("facing", facing.getSerializedName());
 		nbt.putString("door_type", doorTypeString);
 		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
 		else if (doorData != null) nbt.put("rift_data", doorData);
@@ -122,7 +134,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 
 	@Override
 	public ModifierType<? extends Modifier> getType() {
-		return ModifierType.DIMENSIONAL_DOOR_MODIFIER_TYPE;
+		return ModifierType.DIMENSIONAL_DOOR_MODIFIER_TYPE.get();
 	}
 
 	@Override
@@ -136,14 +148,14 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 		BlockPos pocketOrigin = manager.getPocket().getOrigin();
 		BlockPos pos = new BlockPos((int) (xEquation.apply(variableMap) + pocketOrigin.getX()), (int) (yEquation.apply(variableMap) + pocketOrigin.getY()), (int) (zEquation.apply(variableMap) + pocketOrigin.getZ()));
 
-		BlockState lower = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).with(DimensionalDoorBlock.FACING, facing);
-		BlockState upper = doorType.getDefaultState().with(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).with(DimensionalDoorBlock.FACING, facing);
-		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.instantiate(pos, lower);
+		BlockState lower = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
+		BlockState upper = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
+		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.get().create(pos, lower);
 
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));
 		} else {
-			NbtCompound solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
+			CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
 			rift.setData(RiftData.fromNbt(solvedDoorData));
 		}
 
@@ -156,16 +168,16 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 				chunk.setBlockState(pos, lower, false);
 				chunk.setBlockEntity(rift);
 			});
-			queueChunkModificationTask(new ChunkPos(pos.up()), chunk -> {
-				chunk.setBlockState(pos.up(), upper, false);
+			queueChunkModificationTask(new ChunkPos(pos.above()), chunk -> {
+				chunk.setBlockState(pos.above(), upper, false);
 			});
 		} else {
-			ServerWorld world = parameters.world();
+			ServerLevel world = parameters.world();
 
-			world.setBlockState(pos, lower);
-			world.setBlockState(pos.up(), upper);
+			world.setBlockAndUpdate(pos, lower);
+			world.setBlockAndUpdate(pos.above(), upper);
 
-			world.addBlockEntity(rift);
+			world.setBlockEntity(rift);
 		}
 	}
 
