@@ -2,19 +2,12 @@ package org.dimdev.dimdoors.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.World;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +38,7 @@ public class StabilizedRiftSignatureItem extends Item { // TODO: common supercla
 	public InteractionResult useOn(UseOnContext itemUsageContext) {
 		Player player = itemUsageContext.getPlayer();
 		Level world = itemUsageContext.getLevel();
-		BlockPos pos = itemUsageContext.getClickedPos()();
+		BlockPos pos = itemUsageContext.getClickedPos();
 		InteractionHand hand = itemUsageContext.getHand();
 		Direction side = itemUsageContext.getClickedFace();
 

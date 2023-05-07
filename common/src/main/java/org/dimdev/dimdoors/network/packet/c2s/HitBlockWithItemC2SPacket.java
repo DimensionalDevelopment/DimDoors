@@ -1,26 +1,23 @@
 package org.dimdev.dimdoors.network.packet.c2s;
 
-import java.io.IOException;
-
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-
+import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.network.ServerPacketListener;
-import org.dimdev.dimdoors.network.SimplePacket;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
 
-public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListener> {
-	public static final Identifier ID = DimensionalDoors.id("hit_block_with_item");
+import java.util.function.Supplier;
 
-	private Hand hand;
+public class HitBlockWithItemC2SPacket {
+	public static final ResourceLocation ID = DimensionalDoors.id("hit_block_with_item");
+
+	private InteractionHand hand;
 	private BlockPos pos;
 	private Direction direction;
 
@@ -28,37 +25,27 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListe
 	}
 
 	@Environment(EnvType.CLIENT)
-	public HitBlockWithItemC2SPacket(Hand hand, BlockPos pos, Direction direction) {
+	public HitBlockWithItemC2SPacket(InteractionHand hand, BlockPos pos, Direction direction) {
 		this.hand = hand;
 		this.pos = pos;
 		this.direction = direction;
 	}
 
-	@Override
-	public SimplePacket<ServerPacketListener> read(FriendlyByteBuf buf) throws IOException {
-		hand = buf.readEnumConstant(Hand.class);
-		pos = buf.readBlockPos();
-		direction = buf.readEnumConstant(Direction.class);
-		return this;
+	public HitBlockWithItemC2SPacket(FriendlyByteBuf buf) {
+		this(buf.readEnum(InteractionHand.class), buf.readBlockPos(), buf.readEnum(Direction.class));
 	}
 
-	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
-		buf.writeEnumConstant(hand);
+	public FriendlyByteBuf write(FriendlyByteBuf buf) {
+		buf.writeEnum(hand);
 		buf.writeBlockPos(pos);
-		buf.writeEnumConstant(direction);
+		buf.writeEnum(direction);
 		return buf;
 	}
 
-	@Override
-	public void apply(ServerPacketListener listener) {
-		listener.onAttackBlock(this);
+	public void apply(Supplier<NetworkManager.PacketContext> context) {
+		ServerPacketHandler.get((ServerPlayer) context.get().getPlayer()).onAttackBlock(this);
 	}
 
-	@Override
-	public ResourceLocation channelId() {
-		return ID;
-	}
 
 	public BlockPos getPos() {
 		return pos;
@@ -68,7 +55,7 @@ public class HitBlockWithItemC2SPacket implements SimplePacket<ServerPacketListe
 		return direction;
 	}
 
-	public Hand getHand() {
+	public InteractionHand getHand() {
 		return hand;
 	}
 }

@@ -1,21 +1,14 @@
 package org.dimdev.dimdoors.api.util.math;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
-
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.util.Mth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.util.Pair;
-import net.minecraft.util.math.MathHelper;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 //@FunctionalInterface
 public interface Equation {
@@ -149,7 +142,7 @@ public interface Equation {
 			})));
 
 			// clamp
-			parseRules.add(new FunctionParser("clamp", 3, 3, (stringDoubleMap, equations) -> MathHelper.clamp(equations[0].apply(stringDoubleMap), equations[1].apply(stringDoubleMap), equations[2].apply(stringDoubleMap))));
+			parseRules.add(new FunctionParser("clamp", 3, 3, (stringDoubleMap, equations) -> Mth.clamp(equations[0].apply(stringDoubleMap), equations[1].apply(stringDoubleMap), equations[2].apply(stringDoubleMap))));
 
 			// rand
 			parseRules.add(new FunctionParser("random", 0,0, ((stringDoubleMap, equations) -> Math.random())));
@@ -209,7 +202,7 @@ public interface Equation {
 					for (String currentSymbol : this.operations.keySet()) {
 						if (depth == 0 && substring.startsWith(currentSymbol)) {
 							final Pair<String[], BiFunction<Map<String, Double>, Equation[], Double>> operation = this.operations.get(currentSymbol);
-							final String[] symbols = operation.getLeft();
+							final String[] symbols = operation.getFirst();
 							List<Pair<Integer, Integer>> partIndices = new ArrayList<>(symbols.length + 1);
 							partIndices.add(new Pair<>(i + currentSymbol.length(), toParse.length()));
 
@@ -237,10 +230,10 @@ public interface Equation {
 							Equation[] equations = new Equation[partIndices.size()];
 							for (int j = 0; j < partIndices.size(); j++) {
 								Pair<Integer, Integer> pair = partIndices.get(j);
-								equations[partIndices.size() - j - 1] = Equation.parse(toParse.substring(pair.getLeft(), pair.getRight()));
+								equations[partIndices.size() - j - 1] = Equation.parse(toParse.substring(pair.getFirst(), pair.getSecond()));
 							}
 
-							return Optional.of(newEquation(stringDoubleMap -> operation.getRight().apply(stringDoubleMap, equations), stringBuilder -> {
+							return Optional.of(newEquation(stringDoubleMap -> operation.getSecond().apply(stringDoubleMap, equations), stringBuilder -> {
 								for (int j = 0; j < symbols.length; j++) {
 									equations[j].visit(stringBuilder).append(symbols[symbols.length - 1 - j]);
 								}

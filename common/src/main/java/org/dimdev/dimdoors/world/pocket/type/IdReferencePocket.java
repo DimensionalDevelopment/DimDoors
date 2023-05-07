@@ -46,7 +46,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 	}
 
 	public static IdReferencePocketBuilder builder() {
-		return new IdReferencePocketBuilder(AbstractPocketType.ID_REFERENCE);
+		return new IdReferencePocketBuilder(AbstractPocketType.ID_REFERENCE.get());
 	}
 
 	public static class IdReferencePocketBuilder extends AbstractPocketBuilder<IdReferencePocketBuilder, IdReferencePocket> {

@@ -25,6 +25,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
@@ -53,7 +54,7 @@ public class ClientPacketHandler implements ClientPacketListener {
 	private int pocketRange = 1;
 	private List<AutoSyncedAddon> addons = new ArrayList<>();
 
-	public void init() {
+	public static void init() {
 		if (initialized) throw new RuntimeException("ClientPacketHandler has already been initialized.");
 		initialized = true;
 		registerReceiver(PlayerInventorySlotUpdateS2CPacket.ID, PlayerInventorySlotUpdateS2CPacket::new);
@@ -61,15 +62,14 @@ public class ClientPacketHandler implements ClientPacketListener {
 		registerReceiver(MonolithAggroParticlesPacket.ID, MonolithAggroParticlesPacket::new);
 		registerReceiver(MonolithTeleportParticlesPacket.ID, MonolithTeleportParticlesPacket::new);
 		registerReceiver(RenderBreakBlockS2CPacket.ID, RenderBreakBlockS2CPacket::new);
-
-		sendPacket(new NetworkHandlerInitializedC2SPacket());
 	}
 
-	public static boolean sendPacket(SimplePacket<?> packet) {
+	public static <T> boolean sendPacket(T packet) {
+
 		try {
-			NetworkManager.send.send(packet.channelId(), packet.write(PacketByteBufs.create()));
+			DimensionalDoors.NETWORK.sendToServer(packet);
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.error(e);
 			return false;
 		}

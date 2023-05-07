@@ -1,29 +1,19 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
-import java.util.Map;
-import java.util.function.Supplier;
-
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.ResourceKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.Level;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
+
+import java.util.Map;
+import java.util.function.Supplier;
 
 public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 	public static final Registrar<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<AbstractPocketType<? extends AbstractPocket<?>>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
@@ -108,7 +98,6 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		AbstractPocketBuilder<?, T> builder();
 
 		static void register() {
-			DimensionalDoors.apiSubscribers.forEach(d -> d.registerAbstractPocketTypes(REGISTRY));
 		}
 
 		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> RegistrySupplier<AbstractPocketType<U>> register(ResourceLocation id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {

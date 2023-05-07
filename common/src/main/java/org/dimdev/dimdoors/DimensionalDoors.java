@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors;
 
 import dev.architectury.event.events.common.ChunkEvent;
+import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.event.events.common.PlayerEvent;
+import dev.architectury.networking.NetworkChannel;
 import dev.architectury.platform.Mod;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.ReloadListenerRegistry;
@@ -14,7 +16,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.api.DimensionalDoorsApi;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.config.ModMenu;
@@ -28,17 +29,23 @@ import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
 import org.dimdev.dimdoors.item.door.data.condition.Condition;
+import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
+import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
+import org.dimdev.dimdoors.rift.registry.RegistryVertex;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.util.schematic.SchemFixer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
@@ -49,12 +56,10 @@ import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.nio.file.Path;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class DimensionalDoors {
 	public static final String MOD_ID = "dimdoors";
-	public static List<DimensionalDoorsApi> apiSubscribers;
 	private static Mod dimDoorsMod;
 
 	public static ResourceLocation id(String id) {
@@ -80,6 +85,8 @@ public class DimensionalDoors {
 	public static Path getConfigRoot() {
 		return CONFIG_ROOT.get();
 	}
+
+	public static final NetworkChannel NETWORK = NetworkChannel.create(DimensionalDoors.id("server"));
 
 	public static void init() {
 		dimDoorsMod = Platform.getMod(MOD_ID);
@@ -113,7 +120,6 @@ public class DimensionalDoors {
 //		ResourceManagerHelper.registerBuiltinResourcePack(id("classic"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().classicPocketsResourcePackActivationType.asResourcePackActivationType());
 
 		registerListeners();
-		apiSubscribers.forEach(DimensionalDoorsApi::postInitialize);
 		SchemFixer.run();
 	}
 
@@ -131,8 +137,11 @@ public class DimensionalDoors {
 		DecayProcessor.DecayProcessorType.register();
 	}
 
-	private void registerListeners() {
-		PlayerEvent.PLAYER_JOIN.register((handler) -> ((ExtendedServerPlayNetworkHandler) handler).getDimDoorsPacketHandler().init());
+	private static void registerListeners() {
+		PlayerEvent.PLAYER_JOIN.register((handler) -> {
+			ServerPacketHandler.sendPacket(handler, new NetworkHandlerInitializedC2SPacket());
+			((ExtendedServerPlayNetworkHandler) handler).getDimDoorsPacketHandler().init();
+		});
 
 		PlayerEvent.PLAYER_QUIT.register((handler) -> {
 			((ExtendedServerPlayNetworkHandler) handler).getDimDoorsPacketHandler().unregister();
@@ -142,7 +151,7 @@ public class DimensionalDoors {
 		ChunkEvent.CHUNK_LOAD.register(new ChunkLoadListener()); // lazy pocket gen
 
 
-		AttackBlockCallback.EVENT.register(new AttackBlockCallbackListener());
+		InteractionEvent.LEFT_CLICK_BLOCK.register(new AttackBlockCallbackListener());
 
 
 		AttackBlockCallback.EVENT.register(new PocketAttackBlockCallbackListener());

@@ -18,6 +18,6 @@ public enum AlwaysTrueCondition implements Condition {
 
 	@Override
 	public ConditionType<?> getType() {
-		return ConditionType.ALWAYS_TRUE;
+		return ConditionType.ALWAYS_TRUE.get();
 	}
 }

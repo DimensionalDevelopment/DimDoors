@@ -1,17 +1,12 @@
 package org.dimdev.dimdoors.block.entity;
 
+import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.block.Block;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
-
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -19,6 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
+import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -29,14 +26,15 @@ public class ModBlockEntityTypes {
 	public static final RegistrySupplier<BlockEntityType<DetachedRiftBlockEntity>> DETACHED_RIFT = register(
 			"dimdoors:detached_rift",
 			DetachedRiftBlockEntity::new,
-			ModBlocks.DETACHED_RIFT);
+			ModBlocks.DETACHED_RIFT.get()
+	);
 
 	public static final RegistrySupplier<MutableBlockEntityType<EntranceRiftBlockEntity>> ENTRANCE_RIFT = registerMutable(
 			"dimdoors:entrance_rift",
 			EntranceRiftBlockEntity::new,
-			ModBlocks.DIMENSIONAL_PORTAL);
+			ModBlocks.DIMENSIONAL_PORTAL.get());
 
-    public static final RegistrySupplier<BlockEntityType<TesselatingLoomBlockEntity>> TESSELATING_LOOM = register("dimdoors:tesselating_loom", TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM);
+    public static final RegistrySupplier<BlockEntityType<TesselatingLoomBlockEntity>> TESSELATING_LOOM = register("dimdoors:tesselating_loom", TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM.get());
 
 
     private static <E extends BlockEntity> RegistrySupplier<BlockEntityType<E>> register(String id, BiFunction<BlockPos, BlockState, E> factory, Block... blocks) {
@@ -53,5 +51,11 @@ public class ModBlockEntityTypes {
 
 	public static void init() {
 		BLOCK_ENTITY_TYPES.register();
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static void initClient() {
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), context -> new EntranceRiftBlockEntityRenderer());
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), ctx -> new DetachedRiftBlockEntityRenderer());
 	}
 }

@@ -2,17 +2,9 @@ package org.dimdev.dimdoors.entity.ai;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.math.random.Random;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
@@ -48,11 +40,11 @@ public class MonolithAggroGoal extends Goal {
         return playerEntity != null && this.mob.hasLineOfSight(playerEntity) && playerEntity.distanceTo(this.mob) < 50 ? playerEntity : null;
     }
 
-    public boolean canStart() {
+    public boolean canUse() {
         return (this.target = this.getTarget()) != null && this.target.distanceTo(this.mob) <= 50;
     }
 
-    public boolean shouldContinue() {
+    public boolean canContinueToUse() {
         return (this.target = this.getTarget()) != null && this.target.distanceTo(this.mob) <= 50;
     }
 

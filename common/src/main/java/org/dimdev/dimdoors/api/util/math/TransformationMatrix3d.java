@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.api.util.math;
 
 import net.minecraft.core.Rotations;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.phys.Vec3;
 
 public class TransformationMatrix3d extends TransformationMatrixdImpl<TransformationMatrix3d> {

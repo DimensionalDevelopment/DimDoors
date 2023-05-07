@@ -1,23 +1,16 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import java.util.Map;
-import java.util.function.Supplier;
-
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.REsourceLocation;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.blockbreak.BlockBreakContainer;
+
+import java.util.Map;
+import java.util.function.Supplier;
 
 public interface PocketAddon {
 	Registrar<PocketAddonType<? extends PocketAddon>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketAddonType<? extends PocketAddon>>builder(DimensionalDoors.id("pocket_applicable_addon_type")).build();
@@ -100,9 +93,7 @@ public interface PocketAddon {
 
 		ResourceLocation identifier();
 
-		static void register() {
-			DimensionalDoors.apiSubscribers.forEach(d -> d.registerPocketAddonTypes(REGISTRY));
-		}
+		static void register() {}
 
 		static <U extends PocketAddon> RegistrySupplier<PocketAddonType<U>> register(ResourceLocation id, Supplier<U> factory, Supplier<PocketBuilderAddon<U>> addonSupplier) {
 			return REGISTRY.register(id, () -> new PocketAddonType<U>() {

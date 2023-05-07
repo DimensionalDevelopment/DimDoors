@@ -93,8 +93,8 @@ public class RiftRegistry {
 			Map<Boolean, List<RegistryVertex>> vertices = this.graph.vertexSet().parallelStream().unordered().filter(vertex -> vertex instanceof Rift || vertex instanceof PocketEntrancePointer)
 					.collect(Collectors.partitioningBy(Rift.class::isInstance));
 
-			CompletableFuture<List<NbtCompound>> futureRiftsNBT = CompletableFuture.supplyAsync(() -> vertices.get(true).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
-			CompletableFuture<List<NbtCompound>> futurePocketsNBT = CompletableFuture.supplyAsync(() -> vertices.get(false).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
+			CompletableFuture<List<NbtCompound>> futureRiftsNBT = CompletableFuture.supplyAsync(() -> vertices.get(true).parallelStream().map(RegistryVertex::serialize).collect(Collectors.toList()));
+			CompletableFuture<List<NbtCompound>> futurePocketsNBT = CompletableFuture.supplyAsync(() -> vertices.get(false).parallelStream().map(RegistryVertex::serialize).collect(Collectors.toList()));
 
 			NbtList riftsNBT = new NbtList();
 			NbtList pocketsNBT = new NbtList();
