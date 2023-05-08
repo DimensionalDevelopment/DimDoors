@@ -1,26 +1,12 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Rotations;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.RandomSource;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -46,7 +32,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	public double renderAngle;
 
 	public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntityTypes.DETACHED_RIFT, pos, state);
+		super(ModBlockEntityTypes.DETACHED_RIFT.get(), pos, state);
 	}
 
 	public static void tick(Level world, BlockPos pos, BlockState state, DetachedRiftBlockEntity blockEntity) {

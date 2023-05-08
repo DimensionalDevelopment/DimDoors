@@ -1,10 +1,8 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.resource.ResourceManager;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
@@ -24,12 +22,12 @@ public class PocketEntranceModifier extends AbstractModifier {
 	}
 
 	@Override
-	public Modifier fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 		return new PocketEntranceModifier(nbt.getInt("id"));
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putInt("id", id);
@@ -46,7 +44,7 @@ public class PocketEntranceModifier extends AbstractModifier {
 
 	@Override
 	public ModifierType<? extends Modifier> getType() {
-		return ModifierType.PUBLIC_MODIFIER_TYPE;
+		return ModifierType.PUBLIC_MODIFIER_TYPE.get();
 	}
 
 	@Override

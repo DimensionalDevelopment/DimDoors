@@ -1,27 +1,16 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.chunk.Chunk;
-
-import net.fabricmc.fabric.api.util.NbtType;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.api.util.Path;
@@ -37,12 +26,17 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class SchematicGenerator extends LazyPocketGenerator{
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "schematic";
 
 	private String id;
-	private Identifier templateID;
+	private ResourceLocation templateID;
 	private BlockPlacementType placementType = BlockPlacementType.SECTION_NO_UPDATE;
 
 	private final List<RiftBlockEntity> rifts = new ArrayList<>();
@@ -63,12 +57,12 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		return this.id;
 	}
 
-	public Identifier getTemplateID() {
+	public ResourceLocation getTemplateID() {
 		return templateID;
 	}
 
 	@Override
-	public void generateChunk(LazyGenerationPocket pocket, Chunk chunk) {
+	public void generateChunk(LazyGenerationPocket pocket, LevelChunk chunk) {
 		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 		template.place(pocket, chunk, origin, placementType);
@@ -83,17 +77,17 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 		this.id = nbt.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
 		this.templateID = DimensionalDoors.id(id);
-		if (nbt.contains("origin", NbtType.INT_ARRAY)) {
+		if (nbt.contains("origin", Tag.TAG_INT_ARRAY)) {
 			int[] originInts = nbt.getIntArray("origin");
 			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
 		}
-		if (nbt.contains("placement_type", NbtType.STRING)) placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
+		if (nbt.contains("placement_type", Tag.TAG_STRING)) placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
 
 		return this;
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putString("id", this.id);
@@ -139,16 +133,16 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		ServerWorld world = parameters.world();
+		ServerLevel world = parameters.world();
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 
 		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 
-		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.getRegistryKey()).newPocket(builder);
+		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.dimension()).newPocket(builder);
 		BlockPos origin = pocket.getOrigin();
 		LOGGER.info("Generating pocket from template " + templateID + " at location " + origin);
-		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendFeedback(Text.translatable("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ()), false));
+		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendSuccess(Component.translatable("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ()), false));
 
 
 		if (pocket instanceof LazyGenerationPocket) {
@@ -165,7 +159,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 
 	@Override
 	public PocketGeneratorType<? extends PocketGenerator> getType() {
-		return PocketGeneratorType.SCHEMATIC;
+		return PocketGeneratorType.SCHEMATIC.get();
 	}
 
 	@Override

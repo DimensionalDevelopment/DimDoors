@@ -6,17 +6,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.architectury.utils.GameInstance;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 import net.minecraft.world.InteractionHand;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.RGBA;
@@ -42,7 +37,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 			matrices.pushPose();
 			matrices.translate(0.5, 0.5, 0.5);
 
-            GameInstance.getClient().font.drawInBatch(Component.literal(String.valueOf(idMarker.getId())), 0f,0f, 0xffffffff, false, matrices.last().pose(), vcs, TextRenderer.TextLayerType.NORMAL, 0x000000, LightmapTextureManager.MAX_LIGHT_COORDINATE);
+            GameInstance.getClient().font.drawInBatch(Component.literal(String.valueOf(idMarker.getId())), 0f,0f, 0xffffffff, false, matrices.last().pose(), vcs, Font.DisplayMode.NORMAL, 0x000000, LightTexture.FULL_BRIGHT);
 
 			matrices.popPose();
 		}

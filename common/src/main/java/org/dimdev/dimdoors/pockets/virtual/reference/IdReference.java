@@ -1,14 +1,9 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import com.google.common.base.MoreObjects;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Identifier;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;

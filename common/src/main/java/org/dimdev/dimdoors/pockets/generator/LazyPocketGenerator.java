@@ -12,6 +12,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -29,12 +30,12 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static boolean currentlyGenerating = false;
-	public static Queue<ChunkAccess> generationQueue = new LinkedList<>();
+	public static Queue<LevelChunk> generationQueue = new LinkedList<>();
 
 
 	protected List<LazyModifier> lazyModifierList = new ArrayList<>();
 
-	public void generateChunk(LazyGenerationPocket pocket, ChunkAccess chunk) {
+	public void generateChunk(LazyGenerationPocket pocket, LevelChunk chunk) {
 		lazyModifierList.forEach(modifier -> modifier.applyToChunk(pocket, chunk));
 	}
 

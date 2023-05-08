@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.Level;
+import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.config.ModMenu;
@@ -30,6 +31,12 @@ import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
 import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
+import org.dimdev.dimdoors.listener.ChunkLoadListener;
+import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.PocketAttackBlockCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseItemCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
@@ -113,6 +120,8 @@ public class DimensionalDoors {
 		ModCriteria.init();
 		ModEnchants.init();
 
+		ServerPacketHandler.init();
+
 		ReloadListenerRegistry.register(PackType.SERVER_DATA, PocketLoader.getInstance());
 		ReloadListenerRegistry.register(PackType.SERVER_DATA, LimboDecay.DecayLoader.getInstance());
 		ReloadListenerRegistry.register(PackType.SERVER_DATA, DoorRiftDataLoader.getInstance());
@@ -148,17 +157,17 @@ public class DimensionalDoors {
 			PocketCommand.logSetting.remove(handler.getUUID());
 		});
 
-		ChunkEvent.CHUNK_LOAD.register(new ChunkLoadListener()); // lazy pocket gen
+		ChunkEvent.LOAD_DATA.register(new ChunkLoadListener()); // lazy pocket gen
 
 
 		InteractionEvent.LEFT_CLICK_BLOCK.register(new AttackBlockCallbackListener());
 
 
-		AttackBlockCallback.EVENT.register(new PocketAttackBlockCallbackListener());
-		PlayerBlockBreakEvents.BEFORE.register(new PlayerBlockBreakEventBeforeListener());
-		UseItemCallback.EVENT.register(new UseItemCallbackListener());
+		InteractionEvent.LEFT_CLICK_BLOCK.register(new PocketAttackBlockCallbackListener());
+//		PlayerBlockBreakEvents.BEFORE.register(new PlayerBlockBreakEventBeforeListener()); TODO: Fix
+		InteractionEvent.RIGHT_CLICK_ITEM.register(new UseItemCallbackListener());
 		UseItemOnBlockCallback.EVENT.register(new UseItemOnBlockCallbackListener());
-		UseBlockCallback.EVENT.register(new UseBlockCallbackListener());
+		InteractionEvent.RIGHT_CLICK_BLOCK.register(new UseBlockCallbackListener());
 
 		// placing doors on rifts
 		UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());

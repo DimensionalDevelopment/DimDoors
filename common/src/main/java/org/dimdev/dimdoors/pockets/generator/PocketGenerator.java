@@ -1,17 +1,14 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.google.common.collect.Multimap;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,24 +17,6 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3i;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.util.NbtType;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
@@ -52,6 +31,12 @@ import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -79,7 +64,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	}
 
 	public static PocketGenerator deserialize(Tag nbt, ResourceManager manager) {
-		return switch (nbt.getType()) {
+		return switch (nbt.getId()) {
 			case Tag.TAG_COMPOUND -> // It's a serialized Modifier
 					PocketGenerator.deserialize((CompoundTag) nbt, manager);
 			case Tag.TAG_STRING -> // It's a reference to a resource location

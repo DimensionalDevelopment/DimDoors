@@ -1,17 +1,11 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import com.google.common.collect.Maps;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.resource.ResourceManager;
-
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
@@ -19,6 +13,10 @@ import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ConditionalSelector extends AbstractVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -40,10 +38,10 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 	}
 
 	@Override
-	public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
-		NbtList conditionalPockets = nbt.getList("pockets", 10);
+	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
+		ListTag conditionalPockets = nbt.getList("pockets", 10);
 		for (int i = 0; i < conditionalPockets.size(); i++) {
-			NbtCompound pocket = conditionalPockets.getCompound(i);
+			CompoundTag pocket = conditionalPockets.getCompound(i);
 			String condition = pocket.getString("condition");
 			if (pocketMap.containsKey(condition)) continue;
 			try {
@@ -57,12 +55,12 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
-		NbtList conditionalPockets = new NbtList();
+		ListTag conditionalPockets = new ListTag();
 		pocketMap.forEach((condition, pocket) -> {
-			NbtCompound compound = new NbtCompound();
+			CompoundTag compound = new CompoundTag();
 			compound.putString("condition", condition);
 			compound.put("pocket", VirtualPocket.serialize(pocket, allowReference));
 			conditionalPockets.add(compound);
@@ -93,7 +91,7 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 
 	@Override
 	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-		return VirtualPocketType.CONDITIONAL_SELECTOR;
+		return VirtualPocketType.CONDITIONAL_SELECTOR.get();
 	}
 
 	@Override

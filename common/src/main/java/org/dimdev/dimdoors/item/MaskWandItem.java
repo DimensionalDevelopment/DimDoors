@@ -1,31 +1,21 @@
 package org.dimdev.dimdoors.item;
 
-import java.util.List;
-
+import net.fabricmc.api.Environment;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.world.World;
-
-import net.fabricmc.api.Environment;
+import java.util.List;
 
 import static net.fabricmc.api.EnvType.CLIENT;
 
@@ -55,11 +45,11 @@ import static net.fabricmc.api.EnvType.CLIENT;
 		return InteractionResultHolder.success(stack);
 	}
 
-	@Override
 	@Environment(CLIENT)
-	public void appendTooltip(ItemStack itemStack, World world, List<Text> list, TooltipContext tooltipContext) {
-		if (I18n.hasTranslation(this.getTranslationKey() + ".info")) {
-			list.add(Text.translatable(this.getTranslationKey() + ".info"));
+	@Override
+	public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+		if (I18n.exists(this.getDescriptionId() + ".info")) {
+			list.add(Component.translatable(this.getDescriptionId() + ".info"));
 		}
 	}
 }

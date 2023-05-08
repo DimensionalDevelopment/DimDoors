@@ -1,28 +1,19 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
-
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A target that is not an actual object in the game such as a block or a block
@@ -93,17 +84,17 @@ public abstract class VirtualTarget implements Target {
 	public interface VirtualTargetType<T extends VirtualTarget> {
 		RegistrySupplier<VirtualTargetType<RandomTarget>> AVAILABLE_LINK = register("dimdoors:available_link",RandomTarget::fromNbt, RandomTarget::toNbt, VirtualTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<RandomTarget>> DUNGEON = register("dimdoors:dungeon", DungeonTarget::fromNbt, DungeonTarget::toNbt, VirtualTarget.COLOR);
-		RegistrySupplier<VirtualTargetType<EscapeTarget>> ESCAPE = register("dimdoors:escape", EscapeTarget::fromNbt, EscapeTarget::toNbt, VirtualTarget.COLOR);
-		RegistrySupplier<VirtualTargetType<GlobalReference>> GLOBAL = register("dimdoors:global", GlobalReference::fromNbt, GlobalReference::toNbt, VirtualTarget.COLOR);
+		RegistrySupplier<VirtualTargetType<VirtualTarget>> ESCAPE = register("dimdoors:escape", EscapeTarget::fromNbt, EscapeTarget::toNbt, VirtualTarget.COLOR);
+		RegistrySupplier<VirtualTargetType<VirtualTarget>> GLOBAL = register("dimdoors:global", GlobalReference::fromNbt, GlobalReference::toNbt, VirtualTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<LimboTarget>> LIMBO = register("dimdoors:limbo", a -> LimboTarget.INSTANCE, a -> new CompoundTag(), VirtualTarget.COLOR);
-		RegistrySupplier<VirtualTargetType<LocalReference>> LOCAL = register("dimdoors:local", LocalReference::fromNbt, LocalReference::toNbt, VirtualTarget.COLOR);
-		RegistrySupplier<VirtualTargetType<PublicPocketTarget>> PUBLIC_POCKET = register("dimdoors:public_pocket", PublicPocketTarget::fromNbt, PublicPocketTarget::toNbt, VirtualTarget.COLOR);
-		RegistrySupplier<VirtualTargetType<PocketEntranceMarker>> POCKET_ENTRANCE = register("dimdoors:pocket_entrance", PocketEntranceMarker::fromNbt, PocketEntranceMarker::toNbt, VirtualTarget.COLOR);
+		RegistrySupplier<VirtualTargetType<VirtualTarget>> LOCAL = register("dimdoors:local", LocalReference::fromNbt, LocalReference::toNbt, VirtualTarget.COLOR);
+		RegistrySupplier<VirtualTargetType<VirtualTarget>> PUBLIC_POCKET = register("dimdoors:public_pocket", PublicPocketTarget::fromNbt, PublicPocketTarget::toNbt, VirtualTarget.COLOR);
+		RegistrySupplier<VirtualTargetType<VirtualTarget>> POCKET_ENTRANCE = register("dimdoors:pocket_entrance", PocketEntranceMarker::fromNbt, PocketEntranceMarker::toNbt, VirtualTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<PocketExitMarker>> POCKET_EXIT = register("dimdoors:pocket_exit", a -> new PocketExitMarker(), a -> new CompoundTag(), VirtualTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<PrivatePocketTarget>> PRIVATE = register("dimdoors:private", a -> new PrivatePocketTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<PrivatePocketExitTarget>> PRIVATE_POCKET_EXIT = register("dimdoors:private_pocket_exit", a -> new PrivatePocketExitTarget(), a -> new CompoundTag(), PrivatePocketExitTarget.COLOR);
-		RegistrySupplier<VirtualTargetType<RelativeReference>> RELATIVE = register("dimdoors:relative", RelativeReference::fromNbt, RelativeReference::toNbt, VirtualTarget.COLOR);
-		RegistrySupplier<VirtualTargetType<IdMarker>> ID_MARKER = register("dimdoors:id_marker", IdMarker::fromNbt, IdMarker::toNbt, VirtualTarget.COLOR);
+		RegistrySupplier<VirtualTargetType<VirtualTarget>> RELATIVE = register("dimdoors:relative", RelativeReference::fromNbt, RelativeReference::toNbt, VirtualTarget.COLOR);
+		RegistrySupplier<VirtualTargetType<VirtualTarget>> ID_MARKER = register("dimdoors:id_marker", IdMarker::fromNbt, IdMarker::toNbt, VirtualTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<UnstableTarget>> UNSTABLE = register("dimdoors:unstable", nbt -> new UnstableTarget(), t -> new CompoundTag(), VirtualTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<NoneTarget>> NONE = register("dimdoors:none", nbt -> NoneTarget.INSTANCE, i -> new CompoundTag(), COLOR);
 		Map<VirtualTargetType<?>, String> TRANSLATION_KEYS = new Object2ObjectArrayMap<>();
@@ -157,7 +148,7 @@ public abstract class VirtualTarget implements Target {
 
 		@Override
 		public VirtualTargetType<? extends VirtualTarget> getType() {
-			return VirtualTargetType.NONE;
+			return VirtualTargetType.NONE.get();
 		}
 
 		@Override

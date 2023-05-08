@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.core.Rotations;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 
@@ -18,16 +17,16 @@ public class IdMarker extends VirtualTarget implements EntityTarget {
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.ID_MARKER;
+		return VirtualTargetType.ID_MARKER.get();
 	}
 
-	public static NbtCompound toNbt(IdMarker target) {
-		NbtCompound nbt = new NbtCompound();
+	public static CompoundTag toNbt(IdMarker target) {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putInt("id", target.id);
 		return nbt;
 	}
 
-	public static IdMarker fromNbt(NbtCompound nbt) {
+	public static IdMarker fromNbt(CompoundTag nbt) {
 		return new IdMarker(nbt.getInt("id"));
 	}
 
@@ -36,8 +35,8 @@ public class IdMarker extends VirtualTarget implements EntityTarget {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		EntityUtils.chat(entity, Text.of("This rift is configured for pocket dungeons. Its id is " + this.id));
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+		EntityUtils.chat(entity, Component.literal("This rift is configured for pocket dungeons. Its id is " + this.id));
 		return false;
 	}
 }

@@ -1,21 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Sets;
-
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Heightmap;
-
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.levelgen.Heightmap;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
@@ -29,6 +18,9 @@ import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
 	private final float newRiftWeight;
@@ -138,13 +130,13 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
 			if (virtualLocation.getDepth() <= 0) {
 				// This will lead to the overworld
-				ServerWorld world = DimensionalDoors.getWorld(virtualLocation.getWorld());
-				BlockPos pos = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
+				ServerLevel world = DimensionalDoors.getWorld(virtualLocation.getWorld());
+				BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
 				if (pos.getY() == -1) {
 					// No blocks at that XZ (hole in bedrock)
 					pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getX());
 				}
-				world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState());
+				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
 
 				RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
 				DetachedRiftBlockEntity riftEntity = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
@@ -185,11 +177,11 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
 		RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
 		fromBe.setDestination(RiftReference.tryMakeLocal(from, to));
-		fromBe.markDirty();
+		fromBe.setChanged();
 		if (toBe.getProperties() != null) {
 			toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().getLinksRemaining() - 1));
 			toBe.updateProperties();
-			toBe.markDirty();
+			toBe.setChanged();
 		}
 	}
 
@@ -231,7 +223,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.AVAILABLE_LINK;
+		return VirtualTargetType.AVAILABLE_LINK.get();
 	}
 
 	public static CompoundTag toNbt(RandomTarget target) {

@@ -1,15 +1,15 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftPointer superclass?
 	private int pocketId;
 
-	public PocketEntrancePointer(RegistryKey<World> pocketDim, int pocketId) {
+	public PocketEntrancePointer(ResourceKey<Level> pocketDim, int pocketId) {
 		this.setWorld(pocketDim);
 		this.pocketId = pocketId;
 	}
@@ -26,17 +26,17 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 		return "PocketEntrancePointer(pocketDim=" + this.getWorld() + ", pocketId=" + this.pocketId + ")";
 	}
 
-	public static NbtCompound toNbt(PocketEntrancePointer vertex) {
-		NbtCompound nbt = new NbtCompound();
-		nbt.putUuid("id", vertex.id);
-		nbt.putString("pocketDim", vertex.getWorld().getValue().toString());
+	public static CompoundTag toNbt(PocketEntrancePointer vertex) {
+		CompoundTag nbt = new CompoundTag();
+		nbt.putUUID("id", vertex.id);
+		nbt.putString("pocketDim", vertex.getWorld().location().toString());
 		nbt.putInt("pocketId", vertex.pocketId);
 		return nbt;
 	}
 
-	public static PocketEntrancePointer fromNbt(NbtCompound nbt) {
-		PocketEntrancePointer pointer = new PocketEntrancePointer(RegistryKey.of(RegistryKeys.WORLD, new Identifier(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
-		pointer.id = nbt.getUuid("id");
+	public static PocketEntrancePointer fromNbt(CompoundTag nbt) {
+		PocketEntrancePointer pointer = new PocketEntrancePointer(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
+		pointer.id = nbt.getUUID("id");
 		return pointer;
 	}
 

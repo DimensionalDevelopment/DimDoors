@@ -4,9 +4,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.Util;
 import org.joml.Matrix4f;
 
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.util.Util;
-
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 

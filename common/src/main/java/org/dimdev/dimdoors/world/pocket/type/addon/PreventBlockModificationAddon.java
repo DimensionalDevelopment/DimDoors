@@ -1,77 +1,75 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import java.io.IOException;
-
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.common.InteractionEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class PreventBlockModificationAddon implements AutoSyncedAddon, AttackBlockCallback, PlayerBlockBreakEvents.Before, UseItemOnBlockCallback {
+import java.io.IOException;
+
+public class PreventBlockModificationAddon implements AutoSyncedAddon, InteractionEvent.LeftClickBlock/*, PlayerBlockBreakEvents.Before TODO: Figure out*/, UseItemOnBlockCallback {
 	public static ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");
 
 	//AttackBlockCallback
-	@Override
-	public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction) {
-		if (player.isCreative()) return ActionResult.PASS;
-		return ActionResult.FAIL;
-	}
 
 	@Override
-	public boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-		if (player.isCreative()) return true;
-		return false;
+	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face) {
+		if (player.isCreative()) return EventResult.pass();
+		return EventResult.interruptFalse();
 	}
 
+//	@Override TODO: Figure out
+//	public boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+//		if (player.isCreative()) return true;
+//		return false;
+//	}
+
+
 	@Override
-	public ActionResult useItemOnBlock(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
-		if (player.isCreative()) return ActionResult.PASS;
-		if (player.getStackInHand(hand).getItem() instanceof BlockItem) {
+	public InteractionResult useItemOnBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
+		if (player.isCreative()) return InteractionResult.PASS;
+		if (player.getItemInHand(hand).getItem() instanceof BlockItem) {
 			BlockPos blockPos = hitResult.getBlockPos();
 			BlockState blockState = world.getBlockState(blockPos);
-			ActionResult result = blockState.onUse(world, player, hand, hitResult);
-			if (result.isAccepted()) return result;
+			InteractionResult result = blockState.use(world, player, hand, hitResult);
+			if (result.consumesAction()) return result;
 
-			return ActionResult.FAIL;
+			return InteractionResult.FAIL;
 		}
-		return ActionResult.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Override
-	public AutoSyncedAddon read(PacketByteBuf buf) throws IOException {
+	public AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException {
 		return this;
 	}
 
 	@Override
-	public PacketByteBuf write(PacketByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
 		return buf;
 	}
 
 	@Override
-	public PocketAddon fromNbt(NbtCompound nbt) {
+	public PocketAddon fromNbt(CompoundTag nbt) {
 		return this;
 	}
 
 	@Override
 	public PocketAddonType<? extends PocketAddon> getType() {
-		return PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON;
+		return PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get();
 	}
 
 	@Override
@@ -87,18 +85,18 @@ public class PreventBlockModificationAddon implements AutoSyncedAddon, AttackBlo
 		}
 
 		@Override
-		public Identifier getId() {
+		public ResourceLocation getId() {
 			return ID;
 		}
 
 		@Override
-		public PocketBuilderAddon<PreventBlockModificationAddon> fromNbt(NbtCompound nbt) {
+		public PocketBuilderAddon<PreventBlockModificationAddon> fromNbt(CompoundTag nbt) {
 			return this;
 		}
 
 		@Override
 		public PocketAddonType<PreventBlockModificationAddon> getType() {
-			return PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON;
+			return PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get();
 		}
 	}
 }

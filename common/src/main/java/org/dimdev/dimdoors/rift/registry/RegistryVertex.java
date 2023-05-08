@@ -1,26 +1,22 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import org.dimdev.dimdoors.DimensionalDoors;
+
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
-import com.mojang.serialization.Lifecycle;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
-import org.dimdev.dimdoors.DimensionalDoors;
-
 public abstract class RegistryVertex {
-	public static final Registry<RegistryVertexType<?>> registry = FabricRegistryBuilder.from(new SimpleRegistry<RegistryVertexType<? extends RegistryVertex>>(RegistryKey.ofRegistry(DimensionalDoors.id("registry_vertex")), Lifecycle.stable())).buildAndRegister();
+	public static final Registrar<RegistryVertexType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<RegistryVertexType<? extends RegistryVertex>>builder(DimensionalDoors.id("registry_vertex")).build();
 
-	private RegistryKey<World> world; // The dimension to store this object in. Links are stored in both registries.
+	private ResourceKey<Level> world; // The dimension to store this object in. Links are stored in both registries.
 
 	protected UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
 
@@ -42,14 +38,14 @@ public abstract class RegistryVertex {
 		return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";
 	}
 
-	public static RegistryVertex fromNbt(NbtCompound nbt) {
-		return Objects.requireNonNull(registry.get(new Identifier(nbt.getString("type")))).fromNbt(nbt);
+	public static RegistryVertex fromNbt(CompoundTag nbt) {
+		return Objects.requireNonNull(REGISTRY.get(new ResourceLocation(nbt.getString("type")))).fromNbt(nbt);
 	}
 
-	public static NbtCompound toNbt(RegistryVertex registryVertex) {
-		String type = registry.getId(registryVertex.getType()).toString();
+	public static CompoundTag toNbt(RegistryVertex registryVertex) {
+		String type = REGISTRY.getId(registryVertex.getType()).toString();
 
-		NbtCompound nbt = registryVertex.getType().toNbt(registryVertex);
+		CompoundTag nbt = registryVertex.getType().toNbt(registryVertex);
 		nbt.putString("type", type);
 
 		return nbt;
@@ -63,11 +59,11 @@ public abstract class RegistryVertex {
 		this.id = id;
 	}
 
-	protected RegistryKey<World> getWorld() {
+	protected ResourceKey<Level> getWorld() {
 		return world;
 	}
 
-	protected void setWorld(RegistryKey<World> world) {
+	protected void setWorld(ResourceKey<Level> world) {
 		this.world = world;
 	}
 
@@ -80,19 +76,19 @@ public abstract class RegistryVertex {
 		static void register() {
 		}
 
-		T fromNbt(NbtCompound nbt);
+		T fromNbt(CompoundTag nbt);
 
-		NbtCompound toNbt(RegistryVertex virtualType);
+		CompoundTag toNbt(RegistryVertex virtualType);
 
-		static <T extends RegistryVertex> RegistryVertexType<T> register(String id, Function<NbtCompound, T> fromNbt, Function<T, NbtCompound> toNbt) {
-			return Registry.register(registry, id, new RegistryVertexType<T>() {
+		static <T extends RegistryVertex> RegistryVertexType<T> register(String id, Function<CompoundTag, T> fromNbt, Function<T, CompoundTag> toNbt) {
+			return REGISTRY.register(id, () -> new RegistryVertexType<T>() {
 				@Override
-				public T fromNbt(NbtCompound nbt) {
+				public T fromNbt(CompoundTag nbt) {
 					return fromNbt.apply(nbt);
 				}
 
 				@Override
-				public NbtCompound toNbt(RegistryVertex registryVertex) {
+				public CompoundTag toNbt(RegistryVertex registryVertex) {
 					return toNbt.apply((T) registryVertex);
 				}
 			});

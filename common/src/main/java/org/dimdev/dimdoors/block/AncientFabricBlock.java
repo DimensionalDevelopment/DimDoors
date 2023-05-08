@@ -1,10 +1,5 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.util.DyeColor;
-
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;

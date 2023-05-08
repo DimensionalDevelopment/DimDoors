@@ -19,6 +19,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -27,8 +28,6 @@ import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
-
-import java.util.logging.Level;
 
 public class MonolithEntity extends Mob {
     public static final int MAX_AGGRO = 250;
@@ -48,11 +47,11 @@ public class MonolithEntity extends Mob {
     private final int aggroCap;
 
     MonolithEntity(Level world) {
-        this(ModEntityTypes.MONOLITH, world);
+        this(ModEntityTypes.MONOLITH.get(), world);
     }
 
     public MonolithEntity(EntityType<? extends MonolithEntity> type, Level world) {
-        super(ModEntityTypes.MONOLITH, world);
+        super(type, world);
         this.noPhysics = true;
         this.aggroCap = Mth.nextInt(this.getRandom(), MIN_AGGRO_CAP, MAX_AGGRO_CAP);
         this.setNoGravity(true);
@@ -68,7 +67,7 @@ public class MonolithEntity extends Mob {
     }
 
     public boolean isDangerous() {
-        return DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.world) || DimensionalDoors.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
+        return DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.level) || DimensionalDoors.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
     }
 
     @Override

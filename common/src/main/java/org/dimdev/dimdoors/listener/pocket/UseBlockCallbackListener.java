@@ -1,26 +1,26 @@
 package org.dimdev.dimdoors.listener.pocket;
 
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.common.InteractionEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-
-public class UseBlockCallbackListener implements UseBlockCallback {
+public class UseBlockCallbackListener implements InteractionEvent.RightClickBlock {
 	@Override
-	public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hitResult) {
-		List<UseBlockCallback> applicableAddons;
-		if (world.isClient) applicableAddons = PocketListenerUtil.applicableAddonsClient(UseBlockCallback.class, world, player.getBlockPos());
-		else applicableAddons = PocketListenerUtil.applicableAddons(UseBlockCallback.class, world, player.getBlockPos());
+	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face) {
+		List<InteractionEvent.RightClickBlock> applicableAddons;
+		var world = player.getLevel();
+		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(InteractionEvent.RightClickBlock.class, world, pos);
+		else applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.RightClickBlock.class, world, pos);
 
-		for (UseBlockCallback listener : applicableAddons) {
-			ActionResult result = listener.interact(player, world, hand, hitResult);
-			if (result != ActionResult.PASS) return result;
+		for (InteractionEvent.RightClickBlock listener : applicableAddons) {
+			EventResult result = listener.click(player, hand, pos, face);
+			if (result != EventResult.pass()) return result;
 		}
-		return ActionResult.PASS;
+		return EventResult.pass();
 	}
 }

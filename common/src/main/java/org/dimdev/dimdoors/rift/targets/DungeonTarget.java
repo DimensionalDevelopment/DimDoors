@@ -1,22 +1,21 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class DungeonTarget extends RandomTarget {
-	private final Identifier dungeonGroup;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-	public DungeonTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack, Identifier dungeonGroup) {
+public class DungeonTarget extends RandomTarget {
+	private final ResourceLocation dungeonGroup;
+
+	public DungeonTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack, ResourceLocation dungeonGroup) {
 		super(newRiftWeight, weightMaximum, coordFactor, positiveDepthFactor, negativeDepthFactor, acceptedGroups, noLink, noLinkBack);
 		this.dungeonGroup = dungeonGroup;
 	}
@@ -26,8 +25,8 @@ public class DungeonTarget extends RandomTarget {
 		return PocketGenerator.generateDungeonPocketV2(location, linkTo, props, this.dungeonGroup);
 	}
 
-	public static NbtCompound toNbt(DungeonTarget target) {
-		NbtCompound nbt = RandomTarget.toNbt(target);
+	public static CompoundTag toNbt(DungeonTarget target) {
+		CompoundTag nbt = RandomTarget.toNbt(target);
 
 		nbt.putString("dungeonGroup", target.dungeonGroup.toString());
 
@@ -38,7 +37,7 @@ public class DungeonTarget extends RandomTarget {
 		return new DungeonTargetBuilder();
 	}
 
-	public static DungeonTarget fromNbt(NbtCompound nbt) {
+	public static DungeonTarget fromNbt(CompoundTag nbt) {
 		return new DungeonTarget(
 				nbt.getFloat("newRiftWeight"),
 				nbt.getDouble("weightMaximum"),
@@ -48,13 +47,13 @@ public class DungeonTarget extends RandomTarget {
 				Arrays.stream(nbt.getIntArray("acceptedGroups")).boxed().collect(Collectors.toSet()),
 				nbt.getBoolean("noLink"),
 				nbt.getBoolean("noLinkBack"),
-				new Identifier(nbt.getString("dungeonGroup"))
+				new ResourceLocation(nbt.getString("dungeonGroup"))
 		);
 	}
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.DUNGEON;
+		return VirtualTargetType.DUNGEON.get();
 	}
 
 	@Override
@@ -63,12 +62,12 @@ public class DungeonTarget extends RandomTarget {
 	}
 
 	public static class DungeonTargetBuilder extends RandomTargetBuilder {
-		private Identifier dungeonGroup = PocketGenerator.ALL_DUNGEONS;
+		private ResourceLocation dungeonGroup = PocketGenerator.ALL_DUNGEONS;
 
 		DungeonTargetBuilder() {
 		}
 
-		public void dungeonGroup(Identifier dungeonGroup) {
+		public void dungeonGroup(ResourceLocation dungeonGroup) {
 			this.dungeonGroup = dungeonGroup;
 		}
 

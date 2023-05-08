@@ -1,14 +1,12 @@
 package org.dimdev.dimdoors.pockets;
 
-import java.util.Map;
-
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.world.ServerWorld;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+
+import java.util.Map;
 
 public record PocketGenerationContext(ServerLevel world, VirtualLocation sourceVirtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
 	public Map<String, Double> toVariableMap(Map<String, Double> stringDoubleMap) {

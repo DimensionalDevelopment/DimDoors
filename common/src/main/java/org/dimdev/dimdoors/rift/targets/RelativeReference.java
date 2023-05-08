@@ -1,8 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.Vec3i;
-
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class RelativeReference extends RiftReference {
@@ -14,7 +13,7 @@ public class RelativeReference extends RiftReference {
 
 	@Override
 	public Location getReferencedLocation() {
-		return new Location(this.location.world, this.location.pos.add(this.offset));
+		return new Location(this.location.world, this.location.pos.offset(this.offset));
 	}
 
 	public Vec3i getOffset() {
@@ -23,16 +22,16 @@ public class RelativeReference extends RiftReference {
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.RELATIVE;
+		return VirtualTargetType.RELATIVE.get();
 	}
 
-	public static NbtCompound toNbt(RelativeReference target) {
-		NbtCompound nbt = new NbtCompound();
+	public static CompoundTag toNbt(RelativeReference target) {
+		CompoundTag nbt = new CompoundTag();
 		nbt.putIntArray("offset", new int[]{target.offset.getX(), target.offset.getY(), target.offset.getZ()});
 		return nbt;
 	}
 
-	public static RelativeReference fromNbt(NbtCompound nbt) {
+	public static RelativeReference fromNbt(CompoundTag nbt) {
 		int[] offset = nbt.getIntArray("offset");
 		return new RelativeReference(new Vec3i(offset[0], offset[1], offset[2]));
 	}

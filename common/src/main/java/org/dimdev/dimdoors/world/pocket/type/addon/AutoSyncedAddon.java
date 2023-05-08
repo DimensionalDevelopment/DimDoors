@@ -2,12 +2,11 @@ package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public interface AutoSyncedAddon extends PocketAddon {
-	static <T extends AutoSyncedAddon> List<T> readAutoSyncedAddonList(FriendlyByteBuf buf) throws IOException {
+	static <T extends AutoSyncedAddon> List<T> readAutoSyncedAddonList(FriendlyByteBuf buf) {
 		List<T> addons = new ArrayList<>();
 		int addonCount = buf.readInt();
 		try {
@@ -15,12 +14,12 @@ public interface AutoSyncedAddon extends PocketAddon {
 				addons.add((T) ((AutoSyncedAddon) PocketAddon.REGISTRY.get(buf.readResourceLocation()).instance()).read(buf));
 			}
 		} catch (NullPointerException e) {
-			throw new IOException(e);
+//			throw new IOException(e); //TODO: Figure out alt
 		}
 		return addons;
 	}
 
-	static FriendlyByteBuf writeAutoSyncedAddonList(FriendlyByteBuf buf, List<? extends AutoSyncedAddon> addons) throws IOException {
+	static FriendlyByteBuf writeAutoSyncedAddonList(FriendlyByteBuf buf, List<? extends AutoSyncedAddon> addons) {
 		buf.writeInt(addons.size());
 		for (AutoSyncedAddon addon : addons) {
 			buf.writeResourceLocation(addon.getType().identifier());
@@ -30,8 +29,8 @@ public interface AutoSyncedAddon extends PocketAddon {
 	}
 
 	// you can generally use FriendlyByteBuf#readCompoundTag for reading
-	AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException;
+	AutoSyncedAddon read(FriendlyByteBuf buf);
 
 	// you can generally use FriendlyByteBuf#writeCompoundTag for writing
-	FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException;
+	FriendlyByteBuf write(FriendlyByteBuf buf);
 }

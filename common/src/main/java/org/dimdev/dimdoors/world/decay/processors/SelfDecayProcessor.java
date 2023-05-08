@@ -1,12 +1,10 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.FluidState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
 import static org.dimdev.dimdoors.world.decay.DecayProcessor.DecayProcessorType.SELF;
@@ -27,7 +25,7 @@ public class SelfDecayProcessor implements DecayProcessor {
 
     @Override
     public DecayProcessorType<? extends DecayProcessor> getType() {
-        return SELF;
+        return SELF.get();
     }
 
     @Override
@@ -36,8 +34,8 @@ public class SelfDecayProcessor implements DecayProcessor {
     }
 
     @Override
-	public int process(World world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
-        world.setBlockState(pos, origin);
+	public int process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+        world.setBlockAndUpdate(pos, origin);
         return 0;
     }
 }

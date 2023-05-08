@@ -1,13 +1,5 @@
 package org.dimdev.dimdoors.util.schematic;
 
-import java.nio.ByteBuffer;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -18,19 +10,21 @@ import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.SharedConstants;
-import net.minecraft.block.BlockState;
 import net.minecraft.core.Vec3i;
-import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.nio.ByteBuffer;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class Schematic {
 	private static final Consumer<String> PRINT_TO_STDERR = System.err::println;
@@ -143,7 +137,7 @@ public class Schematic {
 	public void setEntities(Collection<? extends Entity> entities) {
 		this.setEntities(entities.stream().map((e) -> {
 			CompoundTag nbt = new CompoundTag();
-			e.saveSelfNbt(nbt);
+			e.saveAsPassenger(nbt);
 			return nbt;
 		}).collect(Collectors.toList()));
 	}

@@ -1,17 +1,17 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
+import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.network.SimplePacket;
-import org.dimdev.dimdoors.network.client.ClientPacketListener;
+import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
-public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPacketListener> {
+public class PlayerInventorySlotUpdateS2CPacket {
 	public static final ResourceLocation ID = DimensionalDoors.id("player_inventory_slot_update");
 
 	private int slot;
@@ -27,28 +27,19 @@ public class PlayerInventorySlotUpdateS2CPacket implements SimplePacket<ClientPa
 		this.stack = stack;
 	}
 
-	@Override
-	public SimplePacket<ClientPacketListener> read(FriendlyByteBuf buf) throws IOException {
-		slot = buf.readInt();
-		stack = buf.readItem();
-		return this;
+	public PlayerInventorySlotUpdateS2CPacket(FriendlyByteBuf buf) {
+		this(buf.readInt(),
+		buf.readItem());
 	}
 
-	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) {
 		buf.writeInt(slot);
 		buf.writeItem(stack);
 		return buf;
 	}
 
-	@Override
-	public void apply(ClientPacketListener listener) {
-		listener.onPlayerInventorySlotUpdate(this);
-	}
-
-	@Override
-	public ResourceLocation channelId() {
-		return ID;
+	public void apply(Supplier<NetworkManager.PacketContext> context) {
+		ClientPacketHandler.getHandler().onPlayerInventorySlotUpdate(this);
 	}
 
 	public int getSlot() {

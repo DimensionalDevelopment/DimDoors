@@ -5,13 +5,6 @@ import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -65,7 +58,7 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 		EntranceRiftBlockEntity rift = this.getRift(world, pos, state);
 
-		world.setBlock(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
+		world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
 		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
 		/*

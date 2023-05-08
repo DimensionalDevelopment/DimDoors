@@ -1,19 +1,17 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -28,25 +26,25 @@ public class DimensionalEraserItem extends Item {
 	}
 
 	@Override
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getStackInHand(hand);
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
 
-		HitResult hit = RaycastHelper.raycast(player, RaycastHelper.REACH_DISTANCE, 1.0F, a -> !(a instanceof PlayerEntity));
+		HitResult hit = RaycastHelper.raycast(player, RaycastHelper.REACH_DISTANCE, 1.0F, a -> !(a instanceof Player));
 
 		if (hit != null && hit.getType() == HitResult.Type.ENTITY) {
-			if(((EntityHitResult) hit).getEntity() instanceof ServerPlayerEntity) {
-				BlockPos teleportPos = ((EntityHitResult) hit).getEntity().getBlockPos();
+			if(((EntityHitResult) hit).getEntity() instanceof ServerPlayer) {
+				BlockPos teleportPos = ((EntityHitResult) hit).getEntity().blockPosition();
 				while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
-					teleportPos = teleportPos.add(1, 0, 1);
+					teleportPos = teleportPos.offset(1, 0, 1);
 				}
-				TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.withY(255), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getVelocity());
+				TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getDeltaMovement());
 			}
 
 			((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);
-			player.playSound(ModSoundEvents.BLOOP, 1.0f, 1.0f);
-			return new TypedActionResult<>(ActionResult.SUCCESS, stack);
+			player.playSound(ModSoundEvents.BLOOP.get(), 1.0f, 1.0f);
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 
-		return new TypedActionResult<>(ActionResult.FAIL, stack);
+		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 	}
 }

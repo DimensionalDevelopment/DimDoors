@@ -1,21 +1,19 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.DoorBlock;
-import net.minecraft.block.TrapdoorBlock;
-import net.minecraft.block.enums.DoorHinge;
-import net.minecraft.block.enums.DoubleBlockHalf;
-import net.minecraft.fluid.FluidState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
-
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoorHingeSide;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 
 public class DoorDecayProccessor implements DecayProcessor {
@@ -34,7 +32,7 @@ public class DoorDecayProccessor implements DecayProcessor {
 
 	@Override
 	public DecayProcessor fromNbt(CompoundTag json) {
-		block = Registries.BLOCK.get(Identifier.tryParse(json.getString("block")));
+		block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
 		entropy = json.getInt("entropy");
 		return this;
 	}
@@ -42,34 +40,34 @@ public class DoorDecayProccessor implements DecayProcessor {
 	@Override
 	public CompoundTag toNbt(CompoundTag nbt) {
 		DecayProcessor.super.toNbt(nbt);
-		nbt.putString("block", Registries.BLOCK.getId(block).toString());
+		nbt.putString("block", BuiltInRegistries.BLOCK.getKey(block).toString());
 		nbt.putInt("entropy", entropy);
 		return nbt;
 	}
 
 	@Override
 	public DecayProcessorType<? extends DecayProcessor> getType() {
-		return DecayProcessorType.DOOR_PROCESSOR_TYPE;
+		return DecayProcessorType.DOOR_PROCESSOR_TYPE.get();
 	}
 
 	@Override
 	public String getKey() {
-		return null;
+		return KEY;
 	}
 
 	@Override
-	public int process(World world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid) {
+	public int process(Level world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid) {
 		if(target.getBlock() instanceof DoorBlock) {
-			BlockPos otherPos = target.get(DoorBlock.HALF) == DoubleBlockHalf.UPPER ? pos.down() : pos.up();
+			BlockPos otherPos = target.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos.above();
 
-			Direction facing = target.get(DoorBlock.FACING);
+			Direction facing = target.getValue(DoorBlock.FACING);
 
-			if(target.get(DoorBlock.OPEN)) facing = target.get(DoorBlock.HINGE) == DoorHinge.RIGHT ? facing.rotateYCounterclockwise() : facing.rotateYClockwise();
+			if(target.getValue(DoorBlock.OPEN)) facing = target.getValue(DoorBlock.HINGE) == DoorHingeSide.RIGHT ? facing.getCounterClockWise() : facing.getClockWise();
 
-			BlockState newState = block.getDefaultState().with(TrapdoorBlock.OPEN, true).with(TrapdoorBlock.FACING, facing);
+			BlockState newState = block.defaultBlockState().setValue(TrapDoorBlock.OPEN, true).setValue(TrapDoorBlock.FACING, facing);
 
-			world.setBlockState(pos, newState);
-			world.setBlockState(otherPos, newState);
+			world.setBlockAndUpdate(pos, newState);
+			world.setBlockAndUpdate(otherPos, newState);
 
 			return entropy;
 		}

@@ -1,27 +1,26 @@
 package org.dimdev.dimdoors.listener.pocket;
 
+import dev.architectury.event.CompoundEventResult;
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.common.InteractionEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
-
-public class UseItemCallbackListener implements UseItemCallback {
+public class UseItemCallbackListener implements InteractionEvent.RightClickItem {
 	@Override
-	public TypedActionResult<ItemStack> interact(PlayerEntity player, World world, Hand hand) {
-		List<UseItemCallback> applicableAddons;
-		if (world.isClient) applicableAddons = PocketListenerUtil.applicableAddonsClient(UseItemCallback.class, world, player.getBlockPos());
-		else applicableAddons = PocketListenerUtil.applicableAddons(UseItemCallback.class, world, player.getBlockPos());
+	public CompoundEventResult<ItemStack> click(Player player, InteractionHand hand) {
+		List<InteractionEvent.RightClickItem> applicableAddons;
+		var world = player.getLevel();
+		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(InteractionEvent.RightClickItem.class, world, player.blockPosition());
+		else applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.RightClickItem.class, world, player.blockPosition());
 
-		for (UseItemCallback listener : applicableAddons) {
-			TypedActionResult<ItemStack> result = listener.interact(player, world, hand);
-			if (result.getResult() != ActionResult.PASS) return result;
+		for (InteractionEvent.RightClickItem listener : applicableAddons) {
+			CompoundEventResult<ItemStack> result = listener.click(player, hand);
+			if (result.result() != EventResult.pass()) return result;
 		}
-		return TypedActionResult.pass(player.getStackInHand(hand));
+		return CompoundEventResult.pass();
 	}
 }

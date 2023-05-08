@@ -2,15 +2,9 @@ package org.dimdev.dimdoors.api.util;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.NbtIntArray;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
 
 public class BlockBoxUtil {
 	public static IntArrayTag toNbt(BoundingBox box) {
@@ -19,7 +13,7 @@ public class BlockBoxUtil {
 
 	public static BoundingBox getBox(ChunkAccess chunk) {
 		ChunkPos pos = chunk.getPos();
-		return BoundingBox.fromCorners(new Vec3i(pos.getStartX(), chunk.getBottomY(), pos.getStartZ()), new Vec3i(pos.getEndX(), chunk.getTopY() - 1, pos.getEndZ()));
+		return BoundingBox.fromCorners(new Vec3i(pos.getMinBlockX(), chunk.getMinBuildHeight(), pos.getMinBlockZ()), new Vec3i(pos.getMaxBlockX(), chunk.getMaxBuildHeight() - 1, pos.getMaxBlockZ()));
 	}
 
 	public static BoundingBox intersect(BoundingBox box1, BoundingBox box2) {

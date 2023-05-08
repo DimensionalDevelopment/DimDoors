@@ -1,12 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Rotations;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -21,17 +19,17 @@ public class LimboTarget extends VirtualTarget implements EntityTarget {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		BlockPos teleportPos = entity.getBlockPos();
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+		BlockPos teleportPos = entity.blockPosition();
 		while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
-			teleportPos = teleportPos.add(1, 0, 1);
+			teleportPos = teleportPos.offset(1, 0, 1);
 		}
-		TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, teleportPos.withY(255), relativeAngle, relativeVelocity);
+		TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), relativeAngle, relativeVelocity);
 		return true;
 	}
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.LIMBO;
+		return VirtualTargetType.LIMBO.get();
 	}
 }

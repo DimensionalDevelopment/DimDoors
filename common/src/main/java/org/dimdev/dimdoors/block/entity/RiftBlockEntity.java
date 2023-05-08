@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.block.entity;
 
-import java.util.Objects;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -17,27 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.EntityUtils;
@@ -45,7 +24,6 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.MessageTarget;
@@ -53,6 +31,9 @@ import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public abstract class RiftBlockEntity extends BlockEntity implements Target, EntityTarget {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -104,41 +85,41 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 		this.data.setDestination(destination);
 		if (destination != null) {
 			if (this.level != null && this.worldPosition != null) {
-				destination.setLocation(new Location((ServerWorld) this.level, this.worldPosition));
+				destination.setLocation(new Location((ServerLevel) this.level, this.worldPosition));
 			}
 			if (this.isRegistered()) destination.register();
 		}
 		this.riftStateChanged = true;
-		this.markDirty();
+		this.setChanged();
 		this.updateColor();
 	}
 
 	public void setColor(RGBA color) {
 		this.data.setColor(color);
-		this.markDirty();
+		this.setChanged();
 	}
 
 	public void setProperties(LinkProperties properties) {
 		this.data.setProperties(properties);
 		this.updateProperties();
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Override
-	public NbtCompound toInitialChunkDataNbt() {
-		for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) {
-			ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
-		}
-		return super.toInitialChunkDataNbt();
+	public CompoundTag getUpdateTag() {
+//		for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) { TODO: Multiplat this.
+//			ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
+//		}
+		return super.getUpdateTag();
 	}
 
 	public void markStateChanged() {
 		this.riftStateChanged = true;
-		this.markDirty();
+		this.setChanged();
 	}
 
 	public boolean isRegistered() { // TODO: do we need to implement this for v2?
-		return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.level != null && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerWorld) this.level, this.worldPosition));
+		return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.level != null && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerLevel) this.level, this.worldPosition));
 	}
 
 	public void register() {
@@ -146,7 +127,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 			return;
 		}
 
-		Location loc = new Location((ServerWorld) this.level, this.worldPosition);
+		Location loc = new Location((ServerLevel) this.level, this.worldPosition);
 		DimensionalRegistry.getRiftRegistry().addRift(loc);
 		if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) this.data.getDestination().register();
 		this.updateProperties();
@@ -155,19 +136,19 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
 	public void updateProperties() {
 		if (this.isRegistered())
-			DimensionalRegistry.getRiftRegistry().setProperties(new Location((ServerWorld) this.level, this.worldPosition), this.data.getProperties());
-		this.markDirty();
+			DimensionalRegistry.getRiftRegistry().setProperties(new Location((ServerLevel) this.level, this.worldPosition), this.data.getProperties());
+		this.setChanged();
 	}
 
 	public void unregister() {
 		if (this.isRegistered()) {
-			DimensionalRegistry.getRiftRegistry().removeRift(new Location((ServerWorld) this.level, this.worldPosition));
+			DimensionalRegistry.getRiftRegistry().removeRift(new Location((ServerLevel) this.level, this.worldPosition));
 		}
 	}
 
 	public void updateType() {
 		if (!this.isRegistered()) return;
-		Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location((ServerWorld) this.level, this.worldPosition));
+		Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location((ServerLevel) this.level, this.worldPosition));
 		rift.setDetached(this.isDetached());
 		rift.markDirty();
 	}
@@ -175,7 +156,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 	public void handleTargetGone(Location location) {
 		if (this.data.getDestination().shouldInvalidate(location)) {
 			this.data.setDestination(VirtualTarget.NoneTarget.INSTANCE);
-			this.markDirty();
+			this.setChanged();
 		}
 
 		this.updateColor();
@@ -190,7 +171,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 			return new MessageTarget("rifts.unlinked1");
 		} else {
 			//noinspection ConstantConditions
-			this.data.getDestination().setLocation(new Location((ServerWorld) this.level, this.worldPosition));
+			this.data.getDestination().setLocation(new Location((ServerLevel) this.level, this.worldPosition));
 			return this.data.getDestination();
 		}
 	}
@@ -209,20 +190,20 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 			Block block = state.getBlock();
 			if (block instanceof CoordinateTransformerBlock) {
 				CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
-				TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getPos());
-				TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getPos());
-				relativePos = transformer.transformTo(transformationBuilder, entity.getPos());
+				TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getBlockPos());
+				TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getBlockPos());
+				relativePos = transformer.transformTo(transformationBuilder, entity.position());
 				relativeAngle = transformer.rotateTo(rotatorBuilder, relativeAngle);
 				relativeVelocity = transformer.rotateTo(rotatorBuilder, relativeVelocity);
 			}
 
 			if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity)) {
-				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerWorld) entity.level, entity.getBlockPos()));
-				EntityUtils.chat(entity, Text.of("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
+				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level, entity.blockPosition()));
+				EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
 				return true;
 			}
 		} catch (Exception e) {
-			EntityUtils.chat(entity, Text.of("Something went wrong while trying to teleport you, please report this bug."));
+			EntityUtils.chat(entity, Component.literal("Something went wrong while trying to teleport you, please report this bug."));
 			LOGGER.error("Teleporting failed with the following exception: ", e);
 		}
 
@@ -236,11 +217,11 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 		} else if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
 			this.data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
 		} else {
-			this.data.getDestination().setLocation(new Location((ServerWorld) this.level, this.worldPosition));
+			this.data.getDestination().setLocation(new Location((ServerLevel) this.level, this.worldPosition));
 			RGBA newColor = this.data.getDestination().getColor();
 			if (this.data.getColor() == null && newColor != null || !Objects.equals(this.data.getColor(), newColor)) {
 				this.data.setColor(newColor);
-				this.markDirty();
+				this.setChanged();
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.pockets.modifier;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -10,7 +11,7 @@ import java.util.function.Consumer;
 public interface LazyCompatibleModifier extends Modifier {
 	LinkedHashMap<ChunkPos, Queue<Consumer<ChunkAccess>>> chunkModificationQueue = new LinkedHashMap<>();
 
-	static void runQueuedModifications(ChunkAccess chunk) {
+	static void runQueuedModifications(LevelChunk chunk) {
 		Queue<Consumer<ChunkAccess>> tasks = chunkModificationQueue.remove(chunk.getPos());
 		if (tasks == null) return;
 		Iterator<Consumer<ChunkAccess>> iterator = tasks.iterator();

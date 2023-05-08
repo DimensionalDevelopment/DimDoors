@@ -23,10 +23,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "org.dimdev.dimdoors.fabric.DimensionalDoorsForge"
+      "org.dimdev.dimdoors.DimensionalDoorsFabric"
     ],
     "client": [
-      "org.dimdev.dimdoors.client.DimensionalDoorsClientInitializer"
+      "org.dimdev.dimdoors.client.DimensionalDoorsClientFabric"
     ],
     "cardinal-components": [
       "org.dimdev.dimdoors.DimensionalDoorsComponents"

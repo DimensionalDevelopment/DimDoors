@@ -1,12 +1,9 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-
+import net.minecraft.core.Rotations;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.EntityUtils;
@@ -27,8 +24,8 @@ public class MessageTarget implements EntityTarget {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
-		EntityUtils.chat(entity, Text.translatable(this.message, this.messageParams));
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+		EntityUtils.chat(entity, Component.translatable(this.message, this.messageParams));
 
 		if (this.forwardTo != null) {
 			this.forwardTo.as(Targets.ENTITY).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);

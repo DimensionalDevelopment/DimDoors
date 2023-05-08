@@ -1,22 +1,19 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class VoidGenerator extends LazyPocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -30,7 +27,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.world().getRegistryKey()).newPocket(builder);
+		Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.world().dimension()).newPocket(builder);
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		pocket.setSize((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
 
@@ -39,7 +36,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 
 	@Override
 	public PocketGeneratorType<? extends PocketGenerator> getType() {
-		return PocketGeneratorType.VOID;
+		return PocketGeneratorType.VOID.get();
 	}
 
 	@Override
@@ -73,7 +70,7 @@ public class VoidGenerator extends LazyPocketGenerator {
 	}
 
 	@Override
-	public NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		nbt.putString("width", width);

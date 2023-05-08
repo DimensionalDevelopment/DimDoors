@@ -44,7 +44,7 @@ public class FluidDecayProcessor implements DecayProcessor {
 
 	@Override
 	public DecayProcessorType<? extends DecayProcessor> getType() {
-		return DecayProcessorType.FLUID_PROCESSOR_TYPE;
+		return DecayProcessorType.FLUID_PROCESSOR_TYPE.get();
 	}
 
 	@Override

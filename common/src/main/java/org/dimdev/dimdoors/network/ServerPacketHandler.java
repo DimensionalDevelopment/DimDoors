@@ -65,7 +65,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 		}
 	}
 
-	public boolean sendPacket(SimplePacket<?> packet) {
+	public <T> boolean sendPacket(T packet) {
 		return sendPacket(getPlayer(), packet);
 	}
 

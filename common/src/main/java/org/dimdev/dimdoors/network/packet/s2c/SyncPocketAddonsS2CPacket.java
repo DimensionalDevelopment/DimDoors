@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
+import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.registries.Registries;
@@ -8,14 +9,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.network.SimplePacket;
-import org.dimdev.dimdoors.network.client.ClientPacketListener;
+import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.function.Supplier;
 
-public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListener> {
+public class SyncPocketAddonsS2CPacket {
 	public static final ResourceLocation ID = DimensionalDoors.id("sync_pocket_addons");
 
 	private ResourceKey<Level> world;
@@ -36,18 +36,15 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 		this.addons = addons;
 	}
 
-	@Override
-	public SimplePacket<ClientPacketListener> read(FriendlyByteBuf buf) throws IOException {
-		this.world = buf.readResourceKey(Registries.DIMENSION);
-		this.gridSize = buf.readInt();
-		this.pocketId = buf.readInt();
-		this.pocketRange = buf.readInt();
-		this.addons = AutoSyncedAddon.readAutoSyncedAddonList(buf);
-		return this;
+	public SyncPocketAddonsS2CPacket(FriendlyByteBuf buf) {
+		this(buf.readResourceKey(Registries.DIMENSION),
+		buf.readInt(),
+		buf.readInt(),
+		buf.readInt(),
+		AutoSyncedAddon.readAutoSyncedAddonList(buf));
 	}
 
-	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) {
 		buf.writeResourceKey(world);
 		buf.writeInt(gridSize);
 		buf.writeInt(pocketId);
@@ -56,14 +53,8 @@ public class SyncPocketAddonsS2CPacket implements SimplePacket<ClientPacketListe
 		return buf;
 	}
 
-	@Override
-	public void apply(ClientPacketListener listener) {
-		listener.onSyncPocketAddons(this);
-	}
-
-	@Override
-	public ResourceLocation channelId() {
-		return ID;
+	public void apply(Supplier<NetworkManager.PacketContext> context) {
+		ClientPacketHandler.getHandler().onSyncPocketAddons(this);
 	}
 
 	public int getGridSize() {

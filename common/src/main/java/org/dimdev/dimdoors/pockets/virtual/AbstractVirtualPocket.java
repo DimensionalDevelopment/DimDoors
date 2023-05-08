@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtString;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 public abstract class AbstractVirtualPocket implements ImplementedVirtualPocket {
@@ -22,13 +20,13 @@ public abstract class AbstractVirtualPocket implements ImplementedVirtualPocket 
 	@Override
 	public Tag toNbt(CompoundTag nbt, boolean allowReference) {
 		if (allowReference && this.getResourceKey() != null) {
-			return NbtString.of(this.getResourceKey());
+			return StringTag.valueOf(this.getResourceKey());
 		}
 		return toNbtInternal(nbt, allowReference);
 	}
 
 	// utility so the first part of toNbt can be extracted into default method
-	// at this point we know for a fact, that we need to serialize into the NbtCompound
+	// at this point we know for a fact, that we need to serialize into the CompoundTag
 	// overwrite in subclass
 	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		return this.getType().toNbt(nbt);

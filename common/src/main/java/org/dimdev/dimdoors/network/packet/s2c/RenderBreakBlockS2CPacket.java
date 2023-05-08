@@ -1,17 +1,17 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
+import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.network.SimplePacket;
-import org.dimdev.dimdoors.network.client.ClientPacketListener;
+import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 
-import java.io.IOException;
+import java.util.function.Supplier;
 
-public class RenderBreakBlockS2CPacket implements SimplePacket<ClientPacketListener> {
+public class RenderBreakBlockS2CPacket {
 	public static final ResourceLocation ID = DimensionalDoors.id("render_break_block");
 
 	private BlockPos pos;
@@ -27,28 +27,18 @@ public class RenderBreakBlockS2CPacket implements SimplePacket<ClientPacketListe
 		this.stage = stage;
 	}
 
-	@Override
-	public SimplePacket<ClientPacketListener> read(FriendlyByteBuf buf) throws IOException {
-		pos = buf.readBlockPos();
-		stage = buf.readInt();
-		return this;
+	public RenderBreakBlockS2CPacket(FriendlyByteBuf buf) {
+		this(buf.readBlockPos(), buf.readInt());
 	}
 
-	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) {
 		buf.writeBlockPos(pos);
 		buf.writeInt(stage);
 		return buf;
 	}
 
-	@Override
-	public void apply(ClientPacketListener listener) {
-		listener.onRenderBreakBlock(this);
-	}
-
-	@Override
-	public ResourceLocation channelId() {
-		return ID;
+	public void apply(Supplier<NetworkManager.PacketContext> context) {
+		ClientPacketHandler.getHandler().onRenderBreakBlock(this);
 	}
 
 	public BlockPos getPos() {

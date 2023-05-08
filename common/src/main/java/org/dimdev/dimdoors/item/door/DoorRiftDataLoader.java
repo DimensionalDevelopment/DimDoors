@@ -1,31 +1,21 @@
 package org.dimdev.dimdoors.item.door;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.item.Item;
-import net.minecraft.registry.Registries;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 // TODO: make it async?
 public final class DoorRiftDataLoader implements ResourceManagerReloadListener {
@@ -48,17 +38,17 @@ public final class DoorRiftDataLoader implements ResourceManagerReloadListener {
 	@Override
 	public void onResourceManagerReload(ResourceManager manager) {
 		itemRiftData.clear();
-		Map<Identifier, Resource> resources = manager.findResources("door/data", id -> id.getPath().endsWith(".json"));
+		Map<ResourceLocation, Resource> resources = manager.listResources("door/data", id -> id.getPath().endsWith(".json"));
 		resources.forEach((id, resource) -> {
 			String name = id.getPath().substring(id.getPath().lastIndexOf('/') + 1, id.getPath().lastIndexOf('.'));
-			Identifier itemId = new Identifier(id.getNamespace(), name);
-			if (!Registries.ITEM.containsId(itemId)) {
+			ResourceLocation itemId = new ResourceLocation(id.getNamespace(), name);
+			if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
 				LOGGER.error("Could not find item " + itemId + " for door data " + id);
 				return;
 			}
-			Item item = Registries.ITEM.get(itemId);
+			Item item = BuiltInRegistries.ITEM.get(itemId);
 			try {
-				JsonArray json = GSON.fromJson(resource.getReader(), JsonArray.class);
+				JsonArray json = GSON.fromJson(resource.openAsReader(), JsonArray.class);
 				RiftDataList dataList = RiftDataList.fromJson(json);
 				itemRiftData.put(item, dataList);
 			} catch (IOException e) {

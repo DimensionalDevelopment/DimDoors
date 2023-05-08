@@ -1,16 +1,9 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.math.Direction;
-
-import org.dimdev.dimdoors.api.rift.target.DefaultTargets;
-import org.dimdev.dimdoors.api.rift.target.EntityTarget;
-import org.dimdev.dimdoors.api.rift.target.FluidTarget;
-import org.dimdev.dimdoors.api.rift.target.ItemTarget;
-import org.dimdev.dimdoors.api.rift.target.RedstoneTarget;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.material.Fluid;
+import org.dimdev.dimdoors.api.rift.target.*;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
@@ -22,7 +15,7 @@ public final class Targets {
 
 	public static void registerDefaultTargets() {
 		DefaultTargets.registerDefaultTarget(ENTITY, (entity, relativePos, relativeRotation, relativeVelocity) -> {
-			EntityUtils.chat(entity, Text.translatable("rifts.unlinked2"));
+			EntityUtils.chat(entity, Component.translatable("rifts.unlinked2"));
 			return false;
 		});
 		DefaultTargets.registerDefaultTarget(ITEM, stack -> false);

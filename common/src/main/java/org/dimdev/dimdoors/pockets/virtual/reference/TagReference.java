@@ -1,22 +1,19 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.MoreObjects;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.nbt.NbtString;
-import net.minecraft.resource.ResourceManager;
-
-import net.fabricmc.fabric.api.util.NbtType;
-
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TagReference extends PocketGeneratorReference {
 	public static final String KEY = "tag";
@@ -28,18 +25,18 @@ public class TagReference extends PocketGeneratorReference {
 	private WeightedList<PocketGenerator, PocketGenerationContext> pockets;
 
 	@Override
-	public ImplementedVirtualPocket fromNbt(NbtCompound nbt, ResourceManager manager) {
+	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
 		super.fromNbt(nbt, manager);
 
 		if (nbt.contains("required")) {
-			NbtList listNbt = nbt.getList("required", NbtType.STRING);
+			ListTag listNbt = nbt.getList("required", Tag.TAG_STRING);
 			for (int i = 0; i < listNbt.size(); i++) {
 				required.add(listNbt.getString(i));
 			}
 		}
 
 		if (nbt.contains("blackList")) {
-			NbtList listNbt = nbt.getList("blackList", NbtType.STRING);
+			ListTag listNbt = nbt.getList("blackList", Tag.TAG_STRING);
 			for (int i = 0; i < listNbt.size(); i++) {
 				blackList.add(listNbt.getString(i));
 			}
@@ -51,21 +48,21 @@ public class TagReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	protected NbtCompound toNbtInternal(NbtCompound nbt, boolean allowReference) {
+	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
 		if (required.size() > 0) {
-			NbtList listNbt = new NbtList();
+			ListTag listNbt = new ListTag();
 			for (String nbtStr : required) {
-				listNbt.add(NbtString.of(nbtStr));
+				listNbt.add(StringTag.valueOf(nbtStr));
 			}
 			nbt.put("required", listNbt);
 		}
 
 		if (blackList.size() > 0) {
-			NbtList list = new NbtList();
+			ListTag list = new ListTag();
 			for (String nbtStr : blackList) {
-				list.add(NbtString.of(nbtStr));
+				list.add(StringTag.valueOf(nbtStr));
 			}
 			nbt.put("blackList", list);
 		}
@@ -80,7 +77,7 @@ public class TagReference extends PocketGeneratorReference {
 
 	@Override
 	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-		return VirtualPocketType.TAG_REFERENCE;
+		return VirtualPocketType.TAG_REFERENCE.get();
 	}
 
 	@Override

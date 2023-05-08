@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -14,24 +11,15 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.math.BlockBox;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-
-import net.fabricmc.fabric.api.util.NbtType;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -75,7 +63,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 		if (rifts != null) {
 			riftsNbt = rifts.values().parallelStream().unordered().map(rift -> {
 				CompoundTag e = new CompoundTag();
-				rift.writeNbt(e);
+				rift.saveAdditional(e);
 				return e;
 			}).collect(Collectors.toCollection(ListTag::new));
 		} else {

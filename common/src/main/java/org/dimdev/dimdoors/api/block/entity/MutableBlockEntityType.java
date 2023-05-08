@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.api.block.entity;
 
 import com.mojang.datafixers.types.Type;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;

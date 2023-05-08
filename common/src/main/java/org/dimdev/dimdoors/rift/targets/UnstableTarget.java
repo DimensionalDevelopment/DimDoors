@@ -1,24 +1,23 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import java.util.Collections;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.EulerAngle;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-
+import net.minecraft.core.Rotations;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 
+import java.util.Collections;
+
 public class UnstableTarget extends VirtualTarget implements EntityTarget {
-	private static final Random RANDOM = Random.create();
+	private static final RandomSource RANDOM = RandomSource.create();
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.UNSTABLE;
+		return VirtualTargetType.UNSTABLE.get();
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3d relativePos, EulerAngle relativeAngle, Vec3d relativeVelocity) {
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
 		if (RANDOM.nextBoolean()) {
 			return RandomTarget.builder()
 					.acceptedGroups(Collections.singleton(0))

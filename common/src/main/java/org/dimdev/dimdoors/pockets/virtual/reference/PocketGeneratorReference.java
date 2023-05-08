@@ -1,38 +1,18 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerTask;
-import net.minecraft.server.world.ChunkHolder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.Chunk;
-
-import net.fabricmc.fabric.api.util.NbtType;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
@@ -47,6 +27,13 @@ import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -165,7 +152,7 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		LazyPocketGenerator.currentlyGenerating = true;
 		// ensure we aren't missing any chunks that were already loaded previously
 		// for lazy gen
-		Set<ChunkAccess> alreadyLoadedChunks = StreamSupport.stream(parameters.world().getChunkSource().chunkMap.getChunks().spliterator(), false).map(ChunkHolder::getTickingChunk).filter(Objects::nonNull).collect(Collectors.toSet());
+		Set<LevelChunk> alreadyLoadedChunks = StreamSupport.stream(parameters.world().getChunkSource().chunkMap.getChunks().spliterator(), false).map(ChunkHolder::getTickingChunk).filter(Objects::nonNull).collect(Collectors.toSet());
 
 		Pocket pocket = generator.prepareAndPlacePocket(parameters, builder);
 		BlockPos originalOrigin = pocket.getOrigin();
@@ -191,7 +178,7 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 			LazyPocketGenerator.currentlyGenerating = false;
 
 			while (!LazyPocketGenerator.generationQueue.isEmpty()) {
-				ChunkAccess chunk = LazyPocketGenerator.generationQueue.remove();
+				LevelChunk chunk = LazyPocketGenerator.generationQueue.remove();
 
 				LazyCompatibleModifier.runQueuedModifications(chunk);
 				MinecraftServer server = DimensionalDoors.getServer();

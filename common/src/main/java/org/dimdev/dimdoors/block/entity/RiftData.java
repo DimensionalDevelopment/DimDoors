@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.block.entity;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtCompound;
-
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;

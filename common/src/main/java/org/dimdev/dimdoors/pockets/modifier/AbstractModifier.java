@@ -26,7 +26,7 @@ public abstract class AbstractModifier implements Modifier {
 	}
 
 	// utility so the first part of toNbt can be extracted into default method
-	// at this point we know for a fact, that we need to serialize into the NbtCompound
+	// at this point we know for a fact, that we need to serialize into the CompoundTag
 	// overwrite in subclass
 	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		return this.getType().toNbt(nbt);

@@ -1,31 +1,18 @@
 package org.dimdev.dimdoors.world.decay;
 
-import java.util.function.Supplier;
-
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.block.BlockState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.datagen.FluidDecayProcessor;
 import org.dimdev.dimdoors.world.decay.processors.*;
+
+import java.util.function.Supplier;
 
 public interface DecayProcessor {
     Registrar<DecayProcessorType<? extends DecayProcessor>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayProcessorType<? extends DecayProcessor>>builder(DimensionalDoors.id("decay_processor_type")).build();
@@ -38,7 +25,7 @@ public interface DecayProcessor {
 
         @Override
         public DecayProcessorType<? extends DecayProcessor> getType() {
-            return DecayProcessorType.NONE_PROCESSOR_TYPE;
+            return DecayProcessorType.NONE_PROCESSOR_TYPE.get();
         }
 
         @Override
@@ -56,7 +43,7 @@ public interface DecayProcessor {
 
     static DecayProcessor deserialize(CompoundTag nbt) {
         ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
-        return REGISTRY.delegate(id).orElse(DecayProcessorType.NONE_PROCESSOR_TYPE).fromNbt(nbt);
+        return REGISTRY.delegate(id).orElseGet(DecayProcessorType.NONE_PROCESSOR_TYPE).fromNbt(nbt);
     }
 
     static CompoundTag serialize(DecayProcessor modifier) {
@@ -91,7 +78,7 @@ public interface DecayProcessor {
         static void register() {}
 
         static <U extends DecayProcessor> RegistrySupplier<DecayProcessorType<U>> register(ResourceLocation id, Supplier<U> factory) {
-            return REGISTRY.register(id, new DecayProcessorType<U>() {
+            return REGISTRY.register(id, () -> new DecayProcessorType<U>() {
                 @Override
                 public DecayProcessor fromNbt(CompoundTag nbt) {
                     return factory.get().fromNbt(nbt);
