@@ -41,7 +41,7 @@ public class RiftRegistry {
 		RiftRegistry riftRegistry = new RiftRegistry();
 
 		ListTag riftsNBT = nbt.getList("rifts", Tag.TAG_COMPOUND);
-		String riftTypeId = RegistryVertex.REGISTRY.getId(RegistryVertex.RegistryVertexType.RIFT).toString();
+		String riftTypeId = RegistryVertex.REGISTRY.getId(RegistryVertex.RegistryVertexType.RIFT.get()).toString();
 		CompletableFuture<List<Rift>> futureRifts = CompletableFuture.supplyAsync(() -> riftsNBT.parallelStream().unordered().map(CompoundTag.class::cast).filter(nbtCompound -> nbtCompound.getString("type").equals(riftTypeId)).map(Rift::fromNbt).collect(Collectors.toList()));
 
 		ListTag pocketsNBT = nbt.getList("pockets", Tag.TAG_COMPOUND);

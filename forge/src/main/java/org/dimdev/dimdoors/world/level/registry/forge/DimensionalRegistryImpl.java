@@ -1,10 +1,10 @@
-package org.dimdev.dimdoors.world.level.component.forge;
+package org.dimdev.dimdoors.world.level.registry.forge;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -13,24 +13,25 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ChunkLazilyGeneratedComponentImpl {
-    public static final ResourceLocation IDENTIFIER = DimensionalDoors.id("chunk_lazily_generated");
-    public static final Capability<ChunkLazilyGeneratedComponent> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});
+public class DimensionalRegistryImpl {
+    public static final ResourceLocation IDENTIFIER = DimensionalDoors.id("dimensional_registry");
 
-    public static ChunkLazilyGeneratedComponent get(LevelChunk  chunk) {
-        return chunk.getCapability(INSTANCE).resolve().get();
+    public static final Capability<DimensionalRegistry> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});
+
+    public static DimensionalRegistry instance() {
+        return DimensionalDoors.getServer().overworld().getCapability(INSTANCE).resolve().get();
     }
 
     public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-        private final ChunkLazilyGeneratedComponent backend = new ChunkLazilyGeneratedComponent();
-        private final LazyOptional<ChunkLazilyGeneratedComponent> optionalData = LazyOptional.of(() -> backend);
+        private final DimensionalRegistry backend = new DimensionalRegistry();
+        private final LazyOptional<DimensionalRegistry> optionalData = LazyOptional.of(() -> backend);
         @Override
         public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
-            return ChunkLazilyGeneratedComponentImpl.INSTANCE.orEmpty(capability, optionalData);
+            return DimensionalRegistryImpl.INSTANCE.orEmpty(capability, optionalData);
         }
 
         @Override
@@ -45,10 +46,12 @@ public class ChunkLazilyGeneratedComponentImpl {
             this.backend.readFromNbt(arg);
         }
 
-        public static void attach(final AttachCapabilitiesEvent<ChunkAccess> event) {
-            final Provider provider = new Provider();
+        public static void attach(final AttachCapabilitiesEvent<ServerLevel> event) {
+            if(event.getObject().dimension().equals(Level.OVERWORLD)) {
+                final DimensionalRegistryImpl.Provider provider = new DimensionalRegistryImpl.Provider();
 
-            event.addCapability(ChunkLazilyGeneratedComponentImpl.IDENTIFIER, provider);
+                event.addCapability(DimensionalRegistryImpl.IDENTIFIER, provider);
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 
 	@Override
 	public RegistryVertexType<? extends RegistryVertex> getType() {
-		return RegistryVertexType.ENTRANCE;
+		return RegistryVertexType.ENTRANCE.get();
 	}
 
 	public String toString() {

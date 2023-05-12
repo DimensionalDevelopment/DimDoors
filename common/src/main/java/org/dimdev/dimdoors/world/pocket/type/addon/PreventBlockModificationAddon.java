@@ -18,8 +18,6 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.io.IOException;
-
 public class PreventBlockModificationAddon implements AutoSyncedAddon, InteractionEvent.LeftClickBlock/*, PlayerBlockBreakEvents.Before TODO: Figure out*/, UseItemOnBlockCallback {
 	public static ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");
 
@@ -53,12 +51,12 @@ public class PreventBlockModificationAddon implements AutoSyncedAddon, Interacti
 	}
 
 	@Override
-	public AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException {
+	public AutoSyncedAddon read(FriendlyByteBuf buf) {
 		return this;
 	}
 
 	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) {
 		return buf;
 	}
 

@@ -27,7 +27,7 @@ public class PlayerRiftPointer extends RegistryVertex {
 
 	@Override
 	public RegistryVertexType<? extends RegistryVertex> getType() {
-		return RegistryVertexType.PLAYER;
+		return RegistryVertexType.PLAYER.get();
 	}
 
 	public String toString() {

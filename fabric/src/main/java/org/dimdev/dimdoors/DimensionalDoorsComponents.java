@@ -8,24 +8,20 @@ import dev.onyxstudios.cca.api.v3.item.ItemComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.item.ItemComponentInitializer;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.level.LevelComponentInitializer;
-
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.item.component.CounterComponent;
 import org.dimdev.dimdoors.item.component.fabric.CounterComponentImpl;
-import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 import org.dimdev.dimdoors.world.level.component.fabric.ChunkLazilyGeneratedComponentImpl;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.fabric.DimensionalRegistryImpl;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DimensionalDoorsComponents implements LevelComponentInitializer, ItemComponentInitializer, ChunkComponentInitializer {
-	public static final ComponentKey<DimensionalRegistry> DIMENSIONAL_REGISTRY_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("dimensional_registry"), DimensionalRegistry.class);
+	public static final ComponentKey<DimensionalRegistryImpl> DIMENSIONAL_REGISTRY_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("dimensional_registry"), DimensionalRegistryImpl.class);
 	public static final ComponentKey<CounterComponentImpl> COUNTER_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("counter"), CounterComponentImpl.class);
 	public static final ComponentKey<ChunkLazilyGeneratedComponentImpl> CHUNK_LAZILY_GENERATED_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("chunk_lazily_generated"), ChunkLazilyGeneratedComponentImpl.class);
 
 	@Override
 	public void registerLevelComponentFactories(LevelComponentFactoryRegistry registry) {
-		registry.register(DIMENSIONAL_REGISTRY_COMPONENT_KEY, level -> new DimensionalRegistry());
+		registry.register(DIMENSIONAL_REGISTRY_COMPONENT_KEY, level -> new DimensionalRegistryImpl());
 	}
 
 	@Override

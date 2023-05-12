@@ -6,13 +6,14 @@ import com.sk89q.jnbt.NBTInputStream;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.SpongeSchematicReader;
-import com.sk89q.worldedit.fabric.FabricAdapter;
 import com.sk89q.worldedit.session.ClipboardHolder;
+import com.sk89q.worldedit.session.SessionOwner;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.text.Text;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.util.schematic.Schematic;
@@ -43,8 +44,8 @@ public class WorldeditHelper {
 				throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayInputStream
 			}
 			taskAcceptor.accept(() -> {
-				WorldEdit.getInstance().getSessionManager().get(FabricAdapter.adaptPlayer(player)).setClipboard(new ClipboardHolder(clipboard));
-				source.sendFeedback(Text.translatable("commands.pocket.loadedSchem", template.getId()), true);
+				WorldEdit.getInstance().getSessionManager().get(getSessionOwner(player)).setClipboard(new ClipboardHolder(clipboard));
+				source.sendSuccess(Component.translatable("commands.pocket.loadedSchem", template.getId()), true);
 			});
 		};
 		if (async) {
@@ -55,4 +56,8 @@ public class WorldeditHelper {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	@ExpectPlatform
+	public static SessionOwner getSessionOwner(ServerPlayer player) {
+		throw new RuntimeException();
+	}
 }

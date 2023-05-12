@@ -4,14 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.render.*;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
@@ -56,7 +51,7 @@ public class DimensionRenderering {
                 } else {
 
                     if (key.equals(Level.END)) {
-                        context.gameRenderer().getMinecraft().levelRenderer.renderEndSky(matrices);
+//                        context.gameRenderer().getMinecraft().levelRenderer.renderEndSky(matrices);
                     } else if (key.equals(ModDimensions.LIMBO)) {
                         renderLimboSky(matrices);
                     }

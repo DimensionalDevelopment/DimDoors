@@ -7,7 +7,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.item.component.forge.CounterComponentImpl;
+import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 import org.dimdev.dimdoors.world.level.component.forge.ChunkLazilyGeneratedComponentImpl;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.forge.DimensionalRegistryImpl;
 
 import java.util.function.Consumer;
 
@@ -18,15 +21,16 @@ public class DimensionalDoorsForge {
         EventBuses.registerModEventBus(DimensionalDoors.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         DimensionalDoors.init();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<FMLClientSetupEvent>) event -> {DimensionalDoorsClient.init());
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<FMLClientSetupEvent>) event -> DimensionalDoorsClient.init());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterCapabilitiesEvent>) registerCapabilitiesEvent -> {
             registerCapabilitiesEvent.register(CounterComponentImpl.class);
-            registerCapabilitiesEvent.register(ChunkLazilyGeneratedComponentImpl.class);
+            registerCapabilitiesEvent.register(ChunkLazilyGeneratedComponent.class);
+            registerCapabilitiesEvent.register(DimensionalRegistry.class);
         });
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CounterComponentImpl.Provider::attach);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ChunkLazilyGeneratedComponentImpl.Provider::attach);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ChunkLazilyGeneratedComponentImpl.Provider::attach);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(DimensionalRegistryImpl.Provider::attach);
     }
 }

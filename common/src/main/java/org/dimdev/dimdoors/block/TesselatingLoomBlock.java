@@ -52,9 +52,8 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 	}
 
 	@Nullable
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> entityType) {
-		return createFurnaceTicker(level, entityType, ModBlockEntityTypes.TESSELATING_LOOM);
+	public BlockEntityTicker<TesselatingLoomBlockEntity> getTicker(Level level, BlockState blockState, BlockEntityType entityType) {
+		return createFurnaceTicker(level, entityType, ModBlockEntityTypes.TESSELATING_LOOM.get());
 	}
 
 	@Nullable
@@ -90,7 +89,7 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public boolean hasComparatorOutput(BlockState state) {
+	public boolean hasAnalogOutputSignal(BlockState state) {
 		return true;
 	}
 
@@ -117,7 +116,7 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 
 	@Nullable
 	protected static BlockEntityTicker<TesselatingLoomBlockEntity> createFurnaceTicker(Level level, BlockEntityType<?> entityType, BlockEntityType<TesselatingLoomBlockEntity> entityTypeE) {
-		return level.isClientSide() ? null : checkType(entityType, entityTypeE, TesselatingLoomBlockEntity::serverTick);
+		return level.isClientSide() ? null : (BlockEntityTicker<TesselatingLoomBlockEntity>) checkType(entityType, entityTypeE, TesselatingLoomBlockEntity::serverTick);
 	}
 
 	@Override

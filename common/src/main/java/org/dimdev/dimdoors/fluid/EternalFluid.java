@@ -34,7 +34,7 @@ public abstract class EternalFluid extends FlowingFluid {
 
 	@Override
 	public Item getBucket() {
-		return ModItems.ETERNAL_FLUID_BUCKET;
+		return ModItems.ETERNAL_FLUID_BUCKET.get();
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public abstract class EternalFluid extends FlowingFluid {
 
 	@Override
 	protected BlockState createLegacyBlock(FluidState fluidState) {
-		return ModBlocks.ETERNAL_FLUID.defaultBlockState().setValue(LEVEL, getLegacyLevel(fluidState));
+		return ModBlocks.ETERNAL_FLUID.get().defaultBlockState().setValue(LEVEL, getLegacyLevel(fluidState));
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public abstract class EternalFluid extends FlowingFluid {
 		if (direction == Direction.DOWN) {
 			if (levelAccessor.getFluidState(blockPos).is(FluidTags.WATER)) {
 				if (blockState.getBlock() instanceof LiquidBlock) {
-					levelAccessor.setBlock(blockPos, ModBlocks.BLACK_ANCIENT_FABRIC.defaultBlockState(), 3);
+					levelAccessor.setBlock(blockPos, ModBlocks.BLACK_ANCIENT_FABRIC.get().defaultBlockState(), 3);
 				}
 
 				return;

@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.block.entity;
 
-import java.util.Optional;
-
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Rotations;
@@ -17,10 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.Transformer;
@@ -34,6 +30,8 @@ import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
+
+import java.util.Optional;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
@@ -91,7 +89,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
 		BlockState state = this.getLevel().getBlockState(this.getBlockPos());
 		Block block = state.getBlock();
-		Vec3 targetPos = Vec3.atCenterOf(this.getBlockPos()).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).multiply(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
+		Vec3 targetPos = Vec3.atCenterOf(this.getBlockPos()).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).scale(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
 		/*
 		Unused code that needs to be edited if there are other ways to get to limbo
 		But if it is only dimteleport and going through rifts then this code isn't nessecary

@@ -112,7 +112,7 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
 	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = of(Material.STONE, MaterialColor.COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
 
-	public static final RegistrySupplier<Block> ETERNAL_FLUID = register("eternal_fluid", () -> new EternalFluidBlock(of(Material.STONE, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
+	public static final RegistrySupplier<EternalFluidBlock> ETERNAL_FLUID = register("eternal_fluid", () -> new EternalFluidBlock(of(Material.STONE, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
 
 	public static final RegistrySupplier<Block> DECAYED_BLOCK = registerWithoutTab("decayed_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
@@ -249,7 +249,7 @@ public final class ModBlocks {
 		return FABRIC_BLOCKS.get(color);
 	}
 
-	public static RegistrySupplier<Block> register(String name, Supplier<Block> block) {
+	public static <T extends Block> RegistrySupplier<T> register(String name, Supplier<T> block) {
 		var supplier = BLOCKS.register(name, block);
 		ModItems.register(name, properties -> new BlockItem(block.get(), properties));
 		return supplier;

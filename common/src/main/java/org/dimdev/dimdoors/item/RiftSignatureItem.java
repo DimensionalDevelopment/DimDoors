@@ -129,7 +129,7 @@ public class RiftSignatureItem extends Item {
 	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
 		RotatedLocation transform = getSource(itemStack);
 		if (transform != null) {
-			list.add(Component.translatable(this.getDescriptionId() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().getValue()));
+			list.add(Component.translatable(this.getDescriptionId() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().location()));
 			list.add(Component.translatable(this.getDescriptionId() + ".bound.info1", transform.getWorldId().location()));
 		} else {
 			ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".unbound.info");

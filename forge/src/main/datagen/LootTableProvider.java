@@ -44,7 +44,7 @@ public class LootTableProvider extends net.minecraft.data.loot.LootTableProvider
 
 			this.add(ModBlocks.SOLID_STATIC.get(), (blockx) -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER.get()));
 
-			this.add(ModBlocks.UNRAVELLED_FABRIC.get(), (blockx) -> createSilkTouchDispatchTable(blockx, applyExplosionCondition(blockx, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get()).when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.BLOCK_FORTUNE, 0.1F, 0.14285715F, 0.25F, 1.0F)).otherwise(LootItem.lootTableItem(blockx)))));
+			this.add(ModBlocks.UNRAVELLED_FABRIC.get(), (blockx) -> BlockLootSubProvider.createSilkTouchDispatchTable(blockx, applyExplosionCondition(blockx, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get()).when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.BLOCK_FORTUNE, 0.1F, 0.14285715F, 0.25F, 1.0F)).otherwise(LootItem.lootTableItem(blockx)))));
 		}
 	}
 

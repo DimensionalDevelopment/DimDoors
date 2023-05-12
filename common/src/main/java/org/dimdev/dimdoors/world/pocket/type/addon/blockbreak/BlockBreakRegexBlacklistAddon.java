@@ -7,18 +7,16 @@ import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.ContainedAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.io.IOException;
-
 // TODO
 public class BlockBreakRegexBlacklistAddon implements AutoSyncedAddon, ContainedAddon { //TODO
 	@Override
-	public AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException {
+	public AutoSyncedAddon read(FriendlyByteBuf buf) {
 		this.fromNbt(buf.readNbt());
 		return this;
 	}
 
 	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) {
 		buf.writeNbt(this.toNbt(new CompoundTag()));
 		return buf;
 	}

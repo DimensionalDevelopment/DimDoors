@@ -1,5 +1,18 @@
 package org.dimdev.dimdoors.world.level.registry;
 
+import com.mojang.datafixers.util.Pair;
+import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.pocket.PocketDirectory;
+import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,38 +20,12 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.mojang.datafixers.util.Pair;
-import dev.onyxstudios.cca.api.v3.component.ComponentV3;
-
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.dedicated.DedicatedServer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.world.World;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelProperties;
-
-import org.dimdev.dimdoors.DimensionalDoorsComponents;
-import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.PocketDirectory;
-import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
-
-import static org.dimdev.dimdoors.DimensionalDoors.getServer;
-
-public class DimensionalRegistry implements ComponentV3 {
+public class DimensionalRegistry {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
 	private Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
 	private RiftRegistry riftRegistry = new RiftRegistry();
 	private PrivateRegistry privateRegistry = new PrivateRegistry();
 
-	@Override
 	public void readFromNbt(CompoundTag nbt) {
 		int riftDataVersion = nbt.getInt("RiftDataVersion");
 		if (riftDataVersion < RIFT_DATA_VERSION) {
@@ -69,7 +56,6 @@ public class DimensionalRegistry implements ComponentV3 {
 		this.privateRegistry = futurePrivateRegistry.join();
 	}
 
-	@Override
 	public void writeToNbt(CompoundTag nbt) {
 		CompletableFuture<Tag> futurePocketRegistryNbt = CompletableFuture.supplyAsync(() -> {
 			List<CompletableFuture<Pair<String, Tag>>> futurePocketRegistryNbts = new ArrayList<>();
@@ -89,8 +75,9 @@ public class DimensionalRegistry implements ComponentV3 {
 		nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
 	}
 
+	@ExpectPlatform
 	public static DimensionalRegistry instance() {
-		return DimensionalDoorsComponents.DIMENSIONAL_REGISTRY_COMPONENT_KEY.get(((DedicatedServer) getServer()).getProperties());
+		throw new RuntimeException();
 	}
 
 	public static RiftRegistry getRiftRegistry() {

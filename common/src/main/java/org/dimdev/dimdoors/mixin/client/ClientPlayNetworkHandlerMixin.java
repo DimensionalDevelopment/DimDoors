@@ -1,12 +1,7 @@
 package org.dimdev.dimdoors.mixin.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import org.dimdev.dimdoors.network.client.ClientPacketListener;
-import org.spongepowered.asm.mixin.Mixin;
-
-@Environment(EnvType.CLIENT)
-@Mixin(ClientPacketListener.class)
+//@Environment(EnvType.CLIENT)
+//@Mixin(ClientPacketListener.class)
 public class ClientPlayNetworkHandlerMixin {
 //	@Shadow
 //	private ClientWorld world;

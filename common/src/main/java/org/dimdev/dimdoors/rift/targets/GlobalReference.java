@@ -22,7 +22,7 @@ public class GlobalReference extends RiftReference {
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.GLOBAL;
+		return VirtualTargetType.GLOBAL.get();
 	}
 
 	public static CompoundTag toNbt(GlobalReference virtualTarget) {

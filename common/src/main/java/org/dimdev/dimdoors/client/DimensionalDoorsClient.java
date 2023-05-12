@@ -10,7 +10,6 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
@@ -22,22 +21,22 @@ public class DimensionalDoorsClient {
     public static void init() {
 //		ModelLoadingRegistry.INSTANCE.registerVariantProvider((manager) -> new DimensionalDoorModelVariantProvider());
 
-		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM, TesselatingLoomScreen::new);
+		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
         ModEntityTypes.initClient();
-		ModFluids.initClient();
+//		ModFluids.initClient();
         ModBlockEntityTypes.initClient();
         ModBlocks.initClient();
 		ModEntityModelLayers.initClient();
 		ModParticleTypes.initClient();
 
-		DimensionRenderering.initClient();
+//		DimensionRenderering.initClient();
 
 		registerListeners();
 
 		ClientPacketHandler.init();
     }
 
-    private void registerListeners() {
+    private static void registerListeners() {
 		ClientReloadShadersEvent.EVENT.register((provider, sink) -> {
 			try {
 				sink.registerShader(new ShaderInstance(provider, "dimensional_portal", DefaultVertexFormat.POSITION), ModShaders::setDimensionalPortal);

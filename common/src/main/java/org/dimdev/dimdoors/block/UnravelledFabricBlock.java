@@ -6,6 +6,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.decay.LimboDecay;
 
 public class UnravelledFabricBlock extends Block {
 	public static final String ID = "unravelled_fabric";

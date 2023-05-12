@@ -30,7 +30,7 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 
 	@Override
 	public RegistryVertexType<? extends RegistryVertex> getType() {
-		return RegistryVertexType.RIFT_PLACEHOLDER;
+		return RegistryVertexType.RIFT_PLACEHOLDER.get();
 	}
 
 	public static CompoundTag toNbt(RiftPlaceholder vertex) {

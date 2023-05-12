@@ -94,7 +94,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	private final Map<ResourceLocation, Integer> recipe2xp_map = Maps.newHashMap();
 
 	public TesselatingLoomBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntityTypes.TESSELATING_LOOM, pos, state);
+		super(ModBlockEntityTypes.TESSELATING_LOOM.get(), pos, state);
 		this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
 		((CraftingInventoryAccessor) craftingInventory).setInventory(inventory);
 	}
@@ -367,7 +367,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 	@Override
 	public CompoundTag getUpdateTag() {
-		return this.saveMetadata();
+		return this.saveWithFullMetadata();
 	}
 
 	public void grantExperience(Player player) {

@@ -5,7 +5,6 @@
   "mixins": [
     "ArgumentTypesMixin",
     "BlockMixin",
-    "DoorBlockMixin",
     "EntityMixin",
     "ExplosionMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
@@ -16,7 +15,6 @@
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",
     "ServerWorldMixin",
-    "TrapDoorMixin",
     "WorldMixin",
     "accessor.ChunkGeneratorAccessor",
     "accessor.CraftingInventoryAccessor",
@@ -25,19 +23,15 @@
     "accessor.EntityAccessor",
     "accessor.GenerationSettingsAccessor",
     "accessor.ListTagAccessor",
-    "accessor.RedstoneWireBlockAccessor",
-    "accessor.StatsAccessor"
+    "accessor.RedstoneWireBlockAccessor"
   ],
   "client": [
     "client.BackgroundRendererMixin",
     "client.ClientPlayerInteractionManagerMixin",
-    "client.ClientPlayNetworkHandlerMixin",
     "client.ExtendedClientPlayNetworkHandlerMixin",
-    "client.GameRendererMixin",
     "client.InGameHudMixin",
     "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",
-    "client.accessor.RenderLayerAccessor",
     "client.accessor.WorldRendererAccessor"
   ],
   "injectors": {

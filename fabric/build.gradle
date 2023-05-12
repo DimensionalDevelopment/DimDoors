@@ -31,6 +31,8 @@ repositories {
     maven {
         url "https://cursemaven.com"
     }
+    maven { url "https://maven.bai.lol" }
+    maven { url "https://maven.enginehub.org/repo/" }
 }
 
 dependencies {
@@ -48,6 +50,10 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+
+    modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
+    modApi "lol.bai:badpackets:fabric-0.2.0"
+    modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.minecraft_version}:${rootProject.worldedit}"
 }
 
 processResources {

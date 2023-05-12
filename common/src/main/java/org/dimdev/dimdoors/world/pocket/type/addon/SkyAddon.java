@@ -9,8 +9,6 @@ import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.io.IOException;
-
 public class SkyAddon implements AutoSyncedAddon {
 	public static ResourceLocation ID = DimensionalDoors.id("sky");
 
@@ -52,13 +50,13 @@ public class SkyAddon implements AutoSyncedAddon {
 	}
 
 	@Override
-	public AutoSyncedAddon read(FriendlyByteBuf buf) throws IOException {
+	public AutoSyncedAddon read(FriendlyByteBuf buf) {
 		this.world = ResourceKey.create(Registries.DIMENSION, buf.readResourceLocation());
 		return this;
 	}
 
 	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) throws IOException {
+	public FriendlyByteBuf write(FriendlyByteBuf buf) {
 		buf.writeResourceLocation(world.location());
 		return buf;
 	}
