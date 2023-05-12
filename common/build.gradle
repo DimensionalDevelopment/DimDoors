@@ -30,8 +30,6 @@ dependencies {
     modApi "me.shedaniel.cloth:cloth-config:9.0.94"
     modApi "mcp.mobius.waila:wthit-api:fabric-${wthitVersion}"
 
-    modApi "curse.maven:worldedit-225608:4445118"
-
     modApi "com.flowpowered:flow-math:1.0.3"
     include "com.flowpowered:flow-math:1.0.3"
     modApi "org.jgrapht:jgrapht-core:1.1.0"
