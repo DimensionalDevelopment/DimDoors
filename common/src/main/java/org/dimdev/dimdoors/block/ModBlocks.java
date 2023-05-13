@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -17,20 +18,21 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
-import org.dimdev.dimdoors.item.ModItems;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 import static net.minecraft.world.level.block.Blocks.*;
+import static org.dimdev.dimdoors.item.ModItems.DIMENSIONAL_DOORS;
 
 public final class ModBlocks {
+	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.BLOCK);
+	public static final DeferredRegister<Item> BLOCK_ITEMS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.ITEM);
+
 	public static final Map<DyeColor, RegistrySupplier<Block>> FABRIC_BLOCKS = new HashMap<DyeColor, RegistrySupplier<Block>>();
 
 	private static final Map<DyeColor, RegistrySupplier<Block>> ANCIENT_FABRIC_BLOCKS = new HashMap<DyeColor, RegistrySupplier<Block>>();
-
-	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.BLOCK);
 
 	public static final RegistrySupplier<Block> STONE_PLAYER = registerWithoutTab("stone_player", () -> new Block(of(Material.STONE).strength(0.5F).noOcclusion()));
 
@@ -112,7 +114,9 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
 	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = of(Material.STONE, MaterialColor.COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
 
-	public static final RegistrySupplier<EternalFluidBlock> ETERNAL_FLUID = register("eternal_fluid", () -> new EternalFluidBlock(of(Material.STONE, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
+	public static final RegistrySupplier<LiquidBlock> ETERNAL_FLUID = register("eternal_fluid", () -> {
+		return new EternalFluidBlock(of(Material.LAVA, MaterialColor.COLOR_RED).lightLevel(state -> 15));
+	});
 
 	public static final RegistrySupplier<Block> DECAYED_BLOCK = registerWithoutTab("decayed_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
@@ -138,13 +142,13 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> DRIFTWOOD_PLANKS = register("driftwood_planks", () -> new Block(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
 	public static final RegistrySupplier<Block> DRIFTWOOD_LEAVES = register("driftwood_leaves", () -> new LeavesBlock(of(OAK_LEAVES)));
 	public static final RegistrySupplier<Block> DRIFTWOOD_SAPLING = register("driftwood_sapling", () -> new Block(of(OAK_SAPLING)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_FENCE = register("driftwood_fence", () -> new FenceBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_GATE = register("driftwood_gate", () -> new FenceGateBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(2.0F, 3.0F).sound(SoundType.WOOD), WoodType.OAK)); // TODO: add driftwood wood type
-	public static final RegistrySupplier<Block> DRIFTWOOD_BUTTON = register("driftwood_button", () -> new ButtonBlock(of(Material.DECORATION, MaterialColor.COLOR_LIGHT_GRAY).noCollission().strength(0.5F), BlockSetType.OAK, 20, true));
-	public static final RegistrySupplier<Block> DRIFTWOOD_SLAB = register("driftwood_slab", () -> new SlabBlock(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_STAIRS = register("driftwood_stairs", () -> new StairBlock(DRIFTWOOD_PLANKS.get().defaultBlockState(), of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_DOOR = register("driftwood_door", () -> new DoorBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK));
-	public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = register("driftwood_trapdoor", () -> new TrapDoorBlock(of(Material.WOOD, DRIFTWOOD_PLANKS.get().defaultMaterialColor()).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> DRIFTWOOD_FENCE = registerFence("driftwood_fence", DRIFTWOOD_PLANKS);
+	public static final RegistrySupplier<Block> DRIFTWOOD_GATE = registerFenceGate("driftwood_gate", DRIFTWOOD_PLANKS); // TODO: add driftwood wood type
+	public static final RegistrySupplier<Block> DRIFTWOOD_BUTTON = registerButton("driftwood_button", DRIFTWOOD_PLANKS);
+	public static final RegistrySupplier<Block> DRIFTWOOD_SLAB = registerSlab("driftwood_slab", DRIFTWOOD_PLANKS);
+	public static final RegistrySupplier<Block> DRIFTWOOD_STAIRS = registerStairs("driftwood_stairs", DRIFTWOOD_PLANKS);
+	public static final RegistrySupplier<Block> DRIFTWOOD_DOOR = register("driftwood_door", () -> new DoorBlock(of(Material.WOOD, MaterialColor.COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = register("driftwood_trapdoor", () -> new TrapDoorBlock(of(Material.WOOD, MaterialColor.COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false), BlockSetType.OAK));
 
 	public static final RegistrySupplier<Block> AMALGAM_BLOCK = register("amalgam_block", () -> new Block(of(Material.METAL, MaterialColor.COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
 	public static final RegistrySupplier<Block> AMALGAM_DOOR = register("amalgam_door", () -> new DoorBlock(of(Material.METAL, MaterialColor.COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion(), BlockSetType.IRON));
@@ -217,6 +221,7 @@ public final class ModBlocks {
 
 	public static void init() {
 		BLOCKS.register();
+		BLOCK_ITEMS.register();
 	}
 
 	private static RegistrySupplier<Block> registerWithoutTab(String name, Supplier<Block> block) {
@@ -251,7 +256,8 @@ public final class ModBlocks {
 
 	public static <T extends Block> RegistrySupplier<T> register(String name, Supplier<T> block) {
 		var supplier = BLOCKS.register(name, block);
-		ModItems.register(name, properties -> new BlockItem(block.get(), properties));
+		BLOCK_ITEMS.register(name, () -> new BlockItem(supplier.get(), new Item.Properties().arch$tab(DIMENSIONAL_DOORS)));
+
 		return supplier;
 	}
 
@@ -260,7 +266,7 @@ public final class ModBlocks {
 	}
 
 	public static RegistrySupplier<Block> registerFence(String name, RegistrySupplier<Block> block) {
-		return registerFence(name, block.get());
+		return register(name, () -> new FenceBlock(of(block.get())));
 	}
 
 	public static RegistrySupplier<Block> registerFenceGate(String name, Block block) {
@@ -268,7 +274,7 @@ public final class ModBlocks {
 	}
 
 	public static RegistrySupplier<Block> registerFenceGate(String name, RegistrySupplier<Block> block) {
-		return registerFenceGate(name, block.get());
+		return register(name, () -> new FenceGateBlock(of(block.get()), WoodType.OAK)); // TODO: parameterize WoodType and BlockSetType
 	}
 
 	public static RegistrySupplier<Block> registerButton(String name, Block block) {
@@ -276,7 +282,7 @@ public final class ModBlocks {
 	}
 
 	public static RegistrySupplier<Block> registerButton(String name, RegistrySupplier<Block> block) {
-		return registerButton(name, block.get());
+		return register(name, () -> new ButtonBlock(of(block.get()).noCollission().strength(0.5F), BlockSetType.STONE, 20, false));
 	}
 
 	public static RegistrySupplier<Block> registerSlab(String name, Block block) {
@@ -284,7 +290,7 @@ public final class ModBlocks {
 	}
 
 	public static RegistrySupplier<Block> registerSlab(String name, RegistrySupplier<Block> block) {
-		return registerSlab(name, block.get());
+		return register(name, () -> new SlabBlock(of(block.get())));
 	}
 
 	public static RegistrySupplier<Block> registerStairs(String name, Block block) {
@@ -292,7 +298,10 @@ public final class ModBlocks {
 	}
 
 	public static RegistrySupplier<Block> registerStairs(String name, RegistrySupplier<Block> block) {
-		return registerStairs(name, block.get());
+		return register(name, () -> {
+			var b = block.get();
+			return new StairBlock(b.defaultBlockState(), of(b));
+		});
 	}
 
 	public static RegistrySupplier<Block> registerWall(String name, Block block) {
@@ -300,7 +309,7 @@ public final class ModBlocks {
 	}
 
 	public static RegistrySupplier<Block> registerWall(String name, RegistrySupplier<Block> block) {
-		return registerWall(name, block.get());
+		return register(name, () -> new WallBlock(of(block.get())));
 	}
 	
 	private static BlockBehaviour.Properties of(Material material, MaterialColor color) {

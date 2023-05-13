@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:generic",
+  "pools": [
+    {
+      "rolls": 2,
+      "bonus_rolls": 2,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:acacia_boat",
+          "conditions": [
+            {
+              "condition": "minecraft:random_chance",
+              "chance": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

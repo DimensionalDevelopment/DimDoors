@@ -19,34 +19,33 @@ import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class ModBlockEntityTypes {
 	private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.BLOCK_ENTITY_TYPE);
 
 	public static final RegistrySupplier<BlockEntityType<DetachedRiftBlockEntity>> DETACHED_RIFT = register(
-			"dimdoors:detached_rift",
+			"detached_rift",
 			DetachedRiftBlockEntity::new,
-			ModBlocks.DETACHED_RIFT.get()
+			ModBlocks.DETACHED_RIFT
 	);
 
 	public static final RegistrySupplier<MutableBlockEntityType<EntranceRiftBlockEntity>> ENTRANCE_RIFT = registerMutable(
-			"dimdoors:entrance_rift",
+			"entrance_rift",
 			EntranceRiftBlockEntity::new,
-			ModBlocks.DIMENSIONAL_PORTAL.get());
+			ModBlocks.DIMENSIONAL_PORTAL);
 
-    public static final RegistrySupplier<BlockEntityType<TesselatingLoomBlockEntity>> TESSELATING_LOOM = register("dimdoors:tesselating_loom", TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM.get());
+    public static final RegistrySupplier<BlockEntityType<TesselatingLoomBlockEntity>> TESSELATING_LOOM = register("tesselating_loom", TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM);
 
 
-    private static <E extends BlockEntity> RegistrySupplier<BlockEntityType<E>> register(String id, BiFunction<BlockPos, BlockState, E> factory, Block... blocks) {
-		return BLOCK_ENTITY_TYPES.register(id, of(factory, blocks));
+    private static <E extends BlockEntity> RegistrySupplier<BlockEntityType<E>> register(String id, BiFunction<BlockPos, BlockState, E> factory, RegistrySupplier<Block>... blocks) {
+		return BLOCK_ENTITY_TYPES.register(id, () -> {
+			return BlockEntityType.Builder.of(factory::apply, Stream.of(blocks).map(Supplier::get).toArray(Block[]::new)).build(null);
+		});
 	}
 
-	public static <E extends BlockEntity> Supplier<BlockEntityType<E>> of(BiFunction<BlockPos, BlockState, E> blockEntityFunction, Block... blocks) {
-		throw new RuntimeException();
-	}
-
-	private static <E extends BlockEntity> RegistrySupplier<MutableBlockEntityType<E>> registerMutable(String id, MutableBlockEntityType.BlockEntityFactory<E> factory, Block... blocks) {
-		return BLOCK_ENTITY_TYPES.register(id, MutableBlockEntityType.Builder.create(factory, blocks)::build);
+	private static <E extends BlockEntity> RegistrySupplier<MutableBlockEntityType<E>> registerMutable(String id, MutableBlockEntityType.BlockEntityFactory<E> factory, RegistrySupplier<Block>... blocks) {
+		return BLOCK_ENTITY_TYPES.register(id, MutableBlockEntityType.Builder.create(factory, Stream.of(blocks).map(Supplier::get).toArray(Block[]::new))::build);
 	}
 
 	public static void init() {

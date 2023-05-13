@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "dimdoors:item_ag_dim_dimdoors_quartz_door",
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "dimdoors:block_ag_dim_dimdoors_quartz_door",
+              "properties": {
+                "half": "lower"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

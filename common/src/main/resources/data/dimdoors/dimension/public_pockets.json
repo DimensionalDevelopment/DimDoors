@@ -1,0 +1,12 @@
+{
+  "generator": {
+    "type": "dimdoors:blank",
+    "seed": 0,
+    "biome_source": {
+      "seed": 0,
+      "type": "minecraft:fixed",
+      "biome": "dimdoors:black_void"
+    }
+  },
+  "type": "dimdoors:pocket"
+}

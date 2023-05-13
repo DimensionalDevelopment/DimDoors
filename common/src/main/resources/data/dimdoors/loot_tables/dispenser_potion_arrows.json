@@ -1,0 +1,1048 @@
+{
+  "pools": [
+    {
+      "name": "water",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:water\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 4
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "mundane",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:mundane\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 4
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "thick",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:thick\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 4
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "awkward",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:awkward\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 4
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "night_vision",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:night_vision\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "night_vision_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_night_vision\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "invisibility",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:invisibility\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "invisibility_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_invisibility\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "leaping",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:leaping\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "leaping_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_leaping\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "leaping_II",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:strong_leaping\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "fire_resistance",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:fire_resistance\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "fire_resistance_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_fire_resistance\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "swiftness",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:swiftness\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "swiftness_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_swiftness\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "swiftness_II",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:strong_swiftness\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "slowness",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:slowness\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "slowness_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_slowness\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "water_breathing",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:water_breathing\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "water_breathing_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_water_breathing\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "healing",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:healing\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "healing_II",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:strong_healing\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "harming",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:harming\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "harming_II",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:strong_harming\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "poison",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:poison\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "poison_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_poison\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "poison_II",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:strong_poison\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "regeneration",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:regeneration\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "regeneration_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_regeneration\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "regeneration_II",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:strong_regeneration\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "strength",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:strength\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "strength_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_strength\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "strength_II",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:strong_strength\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "weakness",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:weakness\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "weakness_long",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:long_weakness\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 1
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    },
+    {
+      "name": "luck",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:tipped_arrow",
+          "functions": [
+            {
+              "function": "set_nbt",
+              "tag": "{Potion: \"minecraft:luck\"}"
+            },
+            {
+              "function": "set_count",
+              "count": {
+                "min": 2,
+                "max": 5
+              }
+            }
+          ],
+          "weight": 3
+        },
+        {
+          "type": "empty",
+          "name": "minecraft:air",
+          "weight": 25
+        }
+      ]
+    }
+  ]
+}

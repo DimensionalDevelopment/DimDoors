@@ -135,9 +135,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 		this.doOnDeathStuff(source, ci);
 		if (ci.isCancelled()) {
 			if (ModDimensions.isPocketDimension(this.level)) {
-				this.awardStat(ModStats.DEATHS_IN_POCKETS);
+				this.awardStat(ModStats.DEATHS_IN_POCKETS.get());
 			}
-			this.awardStat(ModStats.TIMES_SENT_TO_LIMBO);
+			this.awardStat(ModStats.TIMES_SENT_TO_LIMBO.get());
 			TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 512);
 			//noinspection ConstantConditions
 			LimboEntranceSource.ofDamageSource(source).broadcast((Player) (Object) this, this.getServer());

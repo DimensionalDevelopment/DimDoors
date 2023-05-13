@@ -1,20 +1,21 @@
 package org.dimdev.dimdoors.item;
 
 import dev.architectury.core.item.ArchitecturyBucketItem;
+import dev.architectury.core.item.ArchitecturyRecordItem;
+import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.item.door.DimensionalTrapdoorItem;
-import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -25,21 +26,21 @@ import static org.dimdev.dimdoors.DimensionalDoors.id;
 public final class ModItems {
 	// DO NOT REMOVE!!!
 	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.ITEM);
-
-	public static final RegistrySupplier<Item> OAK_DIMENSIONAL_TRAPDOOR = register("wood_dimensional_trapdoor", properties -> new DimensionalTrapdoorItem(
-			ModBlocks.OAK_DIMENSIONAL_TRAPDOOR.get(),
-			properties.stacksTo(1),
-			rift -> rift.setDestination(
-					RandomTarget.builder()
-							.acceptedGroups(Collections.singleton(0))
-							.coordFactor(1)
-							.negativeDepthFactor(80)
-							.positiveDepthFactor(Double.MAX_VALUE)
-							.weightMaximum(100)
-							.noLink(false)
-							.newRiftWeight(0)
-							.build())
-	));
+//
+//	public static final RegistrySupplier<Item> OAK_DIMENSIONAL_TRAPDOOR = register("wood_dimensional_trapdoor", properties -> new DimensionalTrapdoorItem(
+//			ModBlocks.OAK_DIMENSIONAL_TRAPDOOR.get(),
+//			properties.stacksTo(1),
+//			rift -> rift.setDestination(
+//					RandomTarget.builder()
+//							.acceptedGroups(Collections.singleton(0))
+//							.coordFactor(1)
+//							.negativeDepthFactor(80)
+//							.positiveDepthFactor(Double.MAX_VALUE)
+//							.weightMaximum(100)
+//							.noLink(false)
+//							.newRiftWeight(0)
+//							.build())
+//	));
 
 	public static final RegistrySupplier<Item> WORLD_THREAD = register("world_thread", Item::new);
 
@@ -63,7 +64,7 @@ public final class ModItems {
 
 	public static final RegistrySupplier<Item> DIMENSIONAL_ERASER = register("dimensional_eraser", properties -> new DimensionalEraserItem(properties.durability(100)));
 
-	public static final RegistrySupplier<Item> MONOLITH_SPAWNER = register("monolith_spawner", properties -> new SpawnEggItem(ModEntityTypes.MONOLITH.get(), 0xffffff, 0xffffff, properties));
+	public static final RegistrySupplier<Item> MONOLITH_SPAWNER = register("monolith_spawner", properties -> new ArchitecturySpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, properties));
 
 	public static final RegistrySupplier<Item> WORLD_THREAD_HELMET = register("world_thread_helmet", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.HELMET, properties));
 
@@ -77,9 +78,9 @@ public final class ModItems {
 
 	public static final RegistrySupplier<Item> STABLE_FABRIC = register("stable_fabric", Item::new);
 
-	public static final RegistrySupplier<Item> CREEPY_RECORD = register("creepy_record", properties -> new RecordItem(10, ModSoundEvents.CREEPY.get(), properties, 317));
+	public static final RegistrySupplier<Item> CREEPY_RECORD = register("creepy_record", properties -> new ArchitecturyRecordItem(10, ModSoundEvents.CREEPY, properties, 317));
 
-	public static final RegistrySupplier<Item> WHITE_VOID_RECORD = register("white_void_record", properties -> new RecordItem(10, ModSoundEvents.WHITE_VOID.get(), properties, 225));
+	public static final RegistrySupplier<Item> WHITE_VOID_RECORD = register("white_void_record", properties -> new ArchitecturyRecordItem(10, ModSoundEvents.WHITE_VOID, properties, 225));
 
 	public static final RegistrySupplier<Item> ETERNAL_FLUID_BUCKET = register("eternal_fluid_bucket", properties -> new ArchitecturyBucketItem(ModFluids.ETERNAL_FLUID, properties.craftRemainder(Items.BUCKET).stacksTo(1)));
 

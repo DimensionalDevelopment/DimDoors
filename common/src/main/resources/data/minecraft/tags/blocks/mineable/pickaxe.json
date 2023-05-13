@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "dimdoors:stone_player",
+    "dimdoors:gold_door",
+    "dimdoors:quartz_door",
+    "dimdoors:solid_static"
+  ]
+}

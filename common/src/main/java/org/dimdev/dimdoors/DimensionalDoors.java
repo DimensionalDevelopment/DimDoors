@@ -1,8 +1,9 @@
 package org.dimdev.dimdoors;
 
+import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.ChunkEvent;
 import dev.architectury.event.events.common.InteractionEvent;
-import dev.architectury.event.events.common.PlayerEvent;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.networking.NetworkChannel;
 import dev.architectury.platform.Mod;
 import dev.architectury.platform.Platform;
@@ -10,6 +11,7 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -18,16 +20,17 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.command.ModCommands;
-import org.dimdev.dimdoors.command.PocketCommand;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
 import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
@@ -37,8 +40,8 @@ import org.dimdev.dimdoors.listener.pocket.PocketAttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseItemCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
-import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -68,6 +71,8 @@ import java.util.function.Supplier;
 public class DimensionalDoors {
 	public static final String MOD_ID = "dimdoors";
 	private static Mod dimDoorsMod;
+	private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
+	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
 
 	public static ResourceLocation id(String id) {
 		return new ResourceLocation(MOD_ID, id);
@@ -89,8 +94,9 @@ public class DimensionalDoors {
 		return CONFIG_MANAGER.get();
 	}
 
+	@ExpectPlatform
 	public static Path getConfigRoot() {
-		return CONFIG_ROOT.get();
+		throw new RuntimeException();
 	}
 
 	public static final NetworkChannel NETWORK = NetworkChannel.create(DimensionalDoors.id("server"));
@@ -105,20 +111,23 @@ public class DimensionalDoors {
 		ModRecipeTypes.init();
 		ModRecipeSerializers.init();
 		ModScreenHandlerTypes.init();
-		ModBlocks.init();
+		ModSoundEvents.init();
+		ModFluids.init();
+		ModEntityTypes.init();
 		ModItems.init();
+		ModBlocks.init();
 		ModFeatures.init();
 		ModBiomes.init();
 		ModDimensions.init();
-		ModEntityTypes.init();
 		ModStats.init();
 		ModBlockEntityTypes.init();
 		ModCommands.init();
-		ModFluids.init();
-		ModSoundEvents.init();
 		ModParticleTypes.init();
 		ModCriteria.init();
 		ModEnchants.init();
+
+		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar();
+		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(dimensionalDoorItemRegistrar);
 
 		ServerPacketHandler.init();
 
@@ -147,15 +156,9 @@ public class DimensionalDoors {
 	}
 
 	private static void registerListeners() {
-		PlayerEvent.PLAYER_JOIN.register((handler) -> {
-			ServerPacketHandler.sendPacket(handler, new NetworkHandlerInitializedC2SPacket());
-			((ExtendedServerPlayNetworkHandler) handler).getDimDoorsPacketHandler().init();
-		});
+		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
 
-		PlayerEvent.PLAYER_QUIT.register((handler) -> {
-			((ExtendedServerPlayNetworkHandler) handler).getDimDoorsPacketHandler().unregister();
-			PocketCommand.logSetting.remove(handler.getUUID());
-		});
+//		PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
 
 		ChunkEvent.LOAD_DATA.register(new ChunkLoadListener()); // lazy pocket gen
 

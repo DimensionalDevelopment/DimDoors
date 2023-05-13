@@ -1,24 +1,10 @@
 package org.dimdev.dimdoors.mixin;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.api.block.CustomBreakBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import java.util.function.Consumer;
 
 @Mixin(Level.class)
 public abstract class WorldMixin {
@@ -35,43 +21,43 @@ public abstract class WorldMixin {
 		Original mixin had a breakingEntity. Mixins are being a but so removed to get working.
 		- Waterpicker
 	*/
-	@Redirect(method = "destroyBlock",
-			at = @At(value = "INVOKE_ASSIGN",
-					target = "Lnet/minecraft/world/level/Level;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;",
-					ordinal = 0))
-	private FluidState replaceFluidStateWithCustomHackyFluidState(Level world, BlockPos pos) { //TODO: Fix
-		BlockState blockState = world.getBlockState(pos);
-		Block block = blockState.getBlock();
-		if (!(block instanceof CustomBreakBlock)) {
-			return world.getFluidState(pos);
-		}
-		InteractionResultHolder<Pair<BlockState, Consumer<BlockEntity>>> result = ((CustomBreakBlock) block).customBreakBlock(world, pos, blockState, null);
-		if (!result.getResult().consumesAction()) {
-			return getFluidState(pos);
-		}
-		Pair<BlockState, Consumer<BlockEntity>> pair = result.getObject();
-		return new CustomBreakBlock.HackyFluidState(pair.getFirst(), pair.getSecond());
-	}
-
-	@Inject(method = "destroyBlock",
-			locals = LocalCapture.CAPTURE_FAILHARD,
-			at = @At(value = "INVOKE",
-					target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
-					ordinal = 0,
-					shift = At.Shift.AFTER))
-	private void applyBlockEntityModification(BlockPos pos, boolean drop, Entity breakingEntity, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir, BlockState blockState, FluidState fluidState) {
-		if (!(fluidState instanceof CustomBreakBlock.HackyFluidState)) {
-			return;
-		}
-		Consumer<BlockEntity> blockEntityConsumer = ((CustomBreakBlock.HackyFluidState) fluidState).getBlockEntityConsumer();
-		if (blockEntityConsumer == null) {
-			return;
-		}
-		BlockEntity blockEntity = ((Level) (Object) this).getBlockEntity(pos);
-		if (blockEntity != null) {
-			blockEntityConsumer.accept(blockEntity);
-		}
-	}
+//	@Redirect(method = "destroyBlock",
+//			at = @At(value = "INVOKE_ASSIGN",
+//					target = "Lnet/minecraft/world/level/Level;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;",
+//					ordinal = 0))
+//	private FluidState replaceFluidStateWithCustomHackyFluidState(Level world, BlockPos pos) { //TODO: Fix
+//		BlockState blockState = world.getBlockState(pos);
+//		Block block = blockState.getBlock();
+//		if (!(block instanceof CustomBreakBlock)) {
+//			return world.getFluidState(pos);
+//		}
+//		InteractionResultHolder<Pair<BlockState, Consumer<BlockEntity>>> result = ((CustomBreakBlock) block).customBreakBlock(world, pos, blockState, null);
+//		if (!result.getResult().consumesAction()) {
+//			return getFluidState(pos);
+//		}
+//		Pair<BlockState, Consumer<BlockEntity>> pair = result.getObject();
+//		return new CustomBreakBlock.HackyFluidState(pair.getFirst(), pair.getSecond());
+//	}
+//
+//	@Inject(method = "destroyBlock",
+//			locals = LocalCapture.CAPTURE_FAILHARD,
+//			at = @At(value = "INVOKE",
+//					target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
+//					ordinal = 0,
+//					shift = At.Shift.AFTER))
+//	private void applyBlockEntityModification(BlockPos pos, boolean drop, Entity breakingEntity, int maxUpdateDepth, CallbackInfoReturnable<Boolean> cir, BlockState blockState, FluidState fluidState) {
+//		if (!(fluidState instanceof CustomBreakBlock.HackyFluidState)) {
+//			return;
+//		}
+//		Consumer<BlockEntity> blockEntityConsumer = ((CustomBreakBlock.HackyFluidState) fluidState).getBlockEntityConsumer();
+//		if (blockEntityConsumer == null) {
+//			return;
+//		}
+//		BlockEntity blockEntity = ((Level) (Object) this).getBlockEntity(pos);
+//		if (blockEntity != null) {
+//			blockEntityConsumer.accept(blockEntity);
+//		}
+//	}
 
 	/*
 	This is where I'd inject if it turns out the method used above does actually have an issue

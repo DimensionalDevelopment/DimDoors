@@ -1,0 +1,10 @@
+{
+  "type":"mul",
+  "argument1":75,
+  "argument2":{
+  "type": "minecraft:noise",
+  "noise": "dimdoors:limbo/x_shift",
+  "xz_scale": 0.675,
+  "y_scale": 4.0
+}
+}

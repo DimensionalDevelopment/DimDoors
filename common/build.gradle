@@ -28,14 +28,12 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
     modApi "me.shedaniel.cloth:cloth-config:9.0.94"
-    modApi "mcp.mobius.waila:wthit-api:fabric-${wthitVersion}"
+    modCompileOnlyApi "mcp.mobius.waila:wthit-api:fabric-${wthitVersion}"
 
     modApi "com.flowpowered:flow-math:1.0.3"
-    include "com.flowpowered:flow-math:1.0.3"
     modApi "org.jgrapht:jgrapht-core:1.1.0"
-    include "org.jgrapht:jgrapht-core:1.1.0"
     modApi "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
-    include "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
+
     modApi "com.sk89q.worldedit:worldedit-core:${rootProject.worldedit}"
 }
 

@@ -54,6 +54,8 @@ public final class ModDimensions {
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getLevel(PUBLIC);
             ModDimensions.DUNGEON_POCKET_DIMENSION = server.getLevel(DUNGEON);
         });
-        DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CHUNK_GENERATOR).register("blank", () -> BlankChunkGenerator.CODEC);
+        var deffered =DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CHUNK_GENERATOR);
+        deffered.register("blank", () -> BlankChunkGenerator.CODEC);
+        deffered.register();
     }
 }

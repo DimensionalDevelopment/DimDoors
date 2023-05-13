@@ -42,13 +42,20 @@ repositories {
         url "https://cursemaven.com"
     }
     maven { url "https://maven.enginehub.org/repo/" }
+    maven {
+        url = "https://maven.shedaniel.me/"
+    }
+    mavenCentral()
+    maven {
+        url = "https://jitpack.io"
+    }
 }
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
-
+    modApi "me.shedaniel.cloth:cloth-config-forge:9.0.94"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 

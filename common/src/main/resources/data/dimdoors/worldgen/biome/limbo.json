@@ -1,0 +1,68 @@
+{
+  "carvers": {},
+  "category": "none",
+  "downfall": 0.0,
+  "temperature": 0.2,
+  "has_precipitation": false,
+  "temperature_modifier": "none",
+  "effects": {
+    "fog_color": 4210752,
+    "water_color": 1052688,
+    "foliage_color": 0,
+    "water_fog_color": 0,
+    "sky_color": 4210752,
+    "grass_color": 4210752,
+    "mood_sound": {
+      "sound": "dimdoors:crack",
+      "tick_delay": 6000,
+      "block_search_context": 8,
+      "offset": 2
+    },
+    "music": {
+      "sound": "dimdoors:creepy",
+      "min_delay": 0,
+      "max_delay": 12000,
+      "replace_current_music": true
+    },
+    "particle": {
+      "options": {
+        "type": "dimdoors:limbo_ash"
+      },
+      "probability": 0.118093334
+    }
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [
+      "dimdoors:limbo_gateway"
+    ],
+    [],
+    [
+      "dimdoors:solid_static_ore"
+    ],
+    [],
+    [],
+    []
+  ],
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "dimdoors:monolith",
+        "maxCount": 1,
+        "minCount": 1,
+        "weight": 100
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  }
+}

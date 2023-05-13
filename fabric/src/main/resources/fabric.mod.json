@@ -50,10 +50,6 @@
       "dimdoors:counter",
       "dimdoors:chunk_lazily_generated",
       "dimdoors:player_modifiers"
-    ],
-    "waila:plugins": {
-      "id": "dimdoors:wthit_plugin",
-      "initializer": "org.dimdev.dimdoors.client.wthit.WthitPlugin"
-    }
+    ]
   }
 }

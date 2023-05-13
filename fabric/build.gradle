@@ -33,6 +33,13 @@ repositories {
     }
     maven { url "https://maven.bai.lol" }
     maven { url "https://maven.enginehub.org/repo/" }
+    mavenCentral()
+    maven {
+        url = "https://jitpack.io"
+    }
+    maven {
+        url = "https://maven.shedaniel.me/"
+    }
 }
 
 dependencies {
@@ -40,6 +47,7 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:9.0.94"
 
     includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}")
     includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
@@ -50,6 +58,10 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+
+    includeCompile "com.flowpowered:flow-math:1.0.3"
+    includeCompile "org.jgrapht:jgrapht-core:1.1.0"
+    includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     modApi "lol.bai:badpackets:fabric-0.2.0"

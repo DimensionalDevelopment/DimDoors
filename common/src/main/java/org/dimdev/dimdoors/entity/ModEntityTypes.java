@@ -19,13 +19,13 @@ public class ModEntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.ENTITY_TYPE);
 
     public static final RegistrySupplier<EntityType<MonolithEntity>> MONOLITH = register(
-            "dimdoors:monolith",
+            "monolith",
             MonolithEntity::new,
 			2f, 2.7f, false
     );
 
     public static final RegistrySupplier<EntityType<MaskEntity>> MASK = register(
-            "dimdoors:mask",
+            "mask",
             MaskEntity::new,
             0.9375f, 0.9375f, true
     );
@@ -43,6 +43,6 @@ public class ModEntityTypes {
     }
 
     private static <E extends Entity> RegistrySupplier<EntityType<E>> register(String id, EntityType.EntityFactory<E> factory, float width, float height, boolean fixed) {
-        return ENTITY_TYPES.register(id, () -> EntityType.Builder.of(factory, MobCategory.MONSTER).sized(width, height).canSpawnFarFromPlayer().fireImmune().build(null));
+        return ENTITY_TYPES.register(id, () -> EntityType.Builder.of(factory, MobCategory.MONSTER).sized(width, height).canSpawnFarFromPlayer().fireImmune().build(id));
     }
 }

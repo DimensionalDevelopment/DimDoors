@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "dimdoors:white_ancient_fabric",
+    "dimdoors:orange_ancient_fabric",
+    "dimdoors:magenta_ancient_fabric",
+    "dimdoors:light_blue_ancient_fabric",
+    "dimdoors:yellow_ancient_fabric",
+    "dimdoors:lime_ancient_fabric",
+    "dimdoors:pink_ancient_fabric",
+    "dimdoors:gray_ancient_fabric",
+    "dimdoors:light_gray_ancient_fabric",
+    "dimdoors:cyan_ancient_fabric",
+    "dimdoors:purple_ancient_fabric",
+    "dimdoors:blue_ancient_fabric",
+    "dimdoors:brown_ancient_fabric",
+    "dimdoors:green_ancient_fabric",
+    "dimdoors:red_ancient_fabric",
+    "dimdoors:black_ancient_fabric"
+  ]
+}
