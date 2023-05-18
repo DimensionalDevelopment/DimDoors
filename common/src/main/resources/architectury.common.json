@@ -1,3 +1,7 @@
 {
-  "accessWidener": "dimdoors.accesswidener"
+  "accessWidener": "dimdoors.accesswidener",
+  "injected_interfaces": {
+    "net/minecraft/class_2323": ["org/dimdev/dimdoors/block/DoorSoundProvider"],
+    "net/minecraft/class_2533": ["org/dimdev/dimdoors/block/DoorSoundProvider"]
+  }
 }

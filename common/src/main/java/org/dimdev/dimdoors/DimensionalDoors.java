@@ -11,7 +11,6 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -174,5 +173,9 @@ public class DimensionalDoors {
 
 		// placing doors on rifts
 		UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());
+	}
+
+	public static DimensionalDoorItemRegistrar getDimensionalDoorItemRegistrar() {
+		return dimensionalDoorItemRegistrar;
 	}
 }

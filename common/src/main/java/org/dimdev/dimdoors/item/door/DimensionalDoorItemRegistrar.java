@@ -1,50 +1,76 @@
 package org.dimdev.dimdoors.item.door;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import dev.architectury.platform.Platform;
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.utils.Env;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DoubleHighBlockItem;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.function.TriFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
+import org.dimdev.dimdoors.item.ItemExtensions;
+import org.dimdev.dimdoors.item.door.data.RiftDataList;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
+import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
+import org.joml.Quaternionf;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 public class DimensionalDoorItemRegistrar {
 	public static final String PREFIX = "item_ag_dim_";
+
+	private final Registrar<Item> registry;
+
 	private final Map<Block, Block> blocksAlreadyNotifiedAbout = new HashMap<>();
 	private final Map<Block, Triple<ResourceLocation, Item, Function<Block, BlockItem>>> toBeMapped = new HashMap<>();
 
-	private final Map<Item, Function<ItemPlacementContext, ActionResult>> placementFunctions = new HashMap<>();
+	private final Map<Item, Function<BlockPlaceContext, InteractionResult>> placementFunctions = new HashMap<>();
 
-	public DimensionalDoorItemRegistrar(Registry<Item> registry) {
-		this.registry = registry;
+	public DimensionalDoorItemRegistrar() {
+		this.registry = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.ITEM);
 
 		init();
-		RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> handleEntry(id, object));
+		RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.ITEM, registrar -> registrar.entrySet().forEach((entry) ->  handleEntry(entry.getKey().location(), entry.getValue())));
 	}
 
 	public boolean isRegistered(Item item) {
 		return placementFunctions.containsKey(item);
 	}
 
-	public ActionResult place(Item item, ItemPlacementContext context) {
+	public InteractionResult place(Item item, BlockPlaceContext context) {
 		return placementFunctions.get(item).apply(context);
 	}
 
-//	private void init() {
-//		new ArrayList<>(registry.getEntrySet())
-//				.forEach(entry -> handleEntry(entry.getKey().getValue(), entry.getValue()));
-//	}
+	private void init() {
+		new ArrayList<>(registry.entrySet())
+				.forEach(entry -> handleEntry(entry.getKey().location(), entry.getValue()));
+	}
 
 	public void handleEntry(ResourceLocation identifier, Item original) {
 		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(identifier)) {
-			if (original instanceof DoubleHighBlockItem) {
-				Block block = ((DoubleHighBlockItem) original).getBlock();
+			if (original instanceof DoubleHighBlockItem doubleHighBlockItem) {
+				Block block = doubleHighBlockItem.getBlock();
 				handleEntry(identifier, original, block, AutoGenDimensionalDoorItem::new);
 			} else if (original instanceof BlockItem) {
 				Block originalBlock = ((BlockItem) original).getBlock();
@@ -57,12 +83,12 @@ public class DimensionalDoorItemRegistrar {
 		}
 	}
 
-	private void handleEntry(Identifier identifier, Item original, Block originalBlock, TriFunction<Block, Item.Settings, Item, ? extends BlockItem> constructor) {
+	private void handleEntry(ResourceLocation identifier, Item original, Block originalBlock, TriFunction<Block, Item.Properties, Item, ? extends BlockItem> constructor) {
 
 		if (!(originalBlock instanceof DimensionalDoorBlock)
 				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
-				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapdoorBlock)) {
-			Item.Settings settings = ItemExtensions.getSettings(original)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
+				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapDoorBlock)) {
+			Item.Properties settings = ItemExtensions.getSettings(original)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
 
 			Function<Block, BlockItem> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, original);
 
@@ -80,22 +106,22 @@ public class DimensionalDoorItemRegistrar {
 			blocksAlreadyNotifiedAbout.put(original, dimBlock);
 			return;
 		}
-		Triple<Identifier, Item, Function<Block, BlockItem>> triple = toBeMapped.get(original);
+		Triple<ResourceLocation, Item, Function<Block, BlockItem>> triple = toBeMapped.get(original);
 		register(triple.getLeft(), triple.getMiddle(), dimBlock, triple.getRight());
 	}
 
-	private void register(Identifier identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
-		Identifier gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
-		BlockItem item = Registry.register(registry, gennedId, dimItem.apply(block));
+	private void register(ResourceLocation identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
+		ResourceLocation gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
+		BlockItem item = registry.register(gennedId, () -> dimItem.apply(block)).get();
 		placementFunctions.put(original, item::place);
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+		if (Platform.getEnvironment() == Env.CLIENT) {
 			registerItemRenderer(item);
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
 	private void registerItemRenderer(BlockItem dimItem) {
-		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, Renderer.RENDERER);
+//		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, Renderer.RENDERER); TODO: Enable
 	}
 
 	// extract renderer to inner interface so it can be removed in server environment via annotation
@@ -107,7 +133,7 @@ public class DimensionalDoorItemRegistrar {
 	private static class AutoGenDimensionalDoorItem extends DimensionalDoorItem implements ChildItem {
 		private final Item originalItem;
 
-		public AutoGenDimensionalDoorItem(Block block, Settings settings, Item originalItem) {
+		public AutoGenDimensionalDoorItem(Block block, Properties settings, Item originalItem) {
 			super(block, settings, null);
 			this.originalItem = originalItem;
 		}
@@ -125,13 +151,8 @@ public class DimensionalDoorItemRegistrar {
 		}
 
 		@Override
-		public Text getName(ItemStack stack) {
-			return Text.translatable("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
-		}
-
-		@Override
-		public Text getName() {
-			return Text.translatable("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
+		public MutableComponent getName(ItemStack stack) {
+			return Component.translatable("dimdoors.autogen_item_prefix", I18n.get(originalItem.getDescriptionId()));
 		}
 
 		@Override
@@ -141,7 +162,7 @@ public class DimensionalDoorItemRegistrar {
 
 		@Environment(EnvType.CLIENT)
 		@Override
-		public void transform(MatrixStack matrices) {
+		public void transform(PoseStack matrices) {
 			matrices.scale(0.769f, 0.769f, 1);
 			matrices.translate(-0.06, 0.125, 0);
 		}
@@ -150,7 +171,7 @@ public class DimensionalDoorItemRegistrar {
 	private static class AutoGenDimensionalTrapdoorItem extends DimensionalTrapdoorItem implements ChildItem {
 		private final Item originalItem;
 
-		public AutoGenDimensionalTrapdoorItem(Block block, Settings settings, Item originalItem) {
+		public AutoGenDimensionalTrapdoorItem(Block block, Properties settings, Item originalItem) {
 			super(block, settings, null);
 			this.originalItem = originalItem;
 		}
@@ -168,13 +189,8 @@ public class DimensionalDoorItemRegistrar {
 		}
 
 		@Override
-		public Text getName(ItemStack stack) {
-			return Text.translatable("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
-		}
-
-		@Override
-		public Text getName() {
-			return Text.translatable("dimdoors.autogen_item_prefix", I18n.translate(originalItem.getTranslationKey()));
+		public MutableComponent getName(ItemStack stack) {
+			return Component.translatable("dimdoors.autogen_item_prefix", I18n.get(originalItem.getDescriptionId()));
 		}
 
 		@Override
@@ -184,17 +200,17 @@ public class DimensionalDoorItemRegistrar {
 
 		@Environment(EnvType.CLIENT)
 		@Override
-		public void transform(MatrixStack matrices) {
+		public void transform(PoseStack matrices) {
 			matrices.scale(0.55f, 0.55f, 0.6f);
 			matrices.translate(0.05, -0.05, 0.41);
-			matrices.multiply(new Quaternionf().rotateXYZ(90, 0, 0));
+			matrices.mulPose(new Quaternionf().rotateXYZ(90, 0, 0));
 		}
 	}
 
 	public interface ChildItem {
 		Item getOriginalItem();
 
-		default void transform(MatrixStack matrices) {
+		default void transform(PoseStack matrices) {
 		}
 	}
 }

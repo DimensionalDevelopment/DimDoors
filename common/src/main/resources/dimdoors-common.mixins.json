@@ -5,6 +5,7 @@
   "mixins": [
     "ArgumentTypesMixin",
     "BlockMixin",
+    "DoorBlockMixin",
     "EntityMixin",
     "ExplosionMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
@@ -15,6 +16,7 @@
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",
     "ServerWorldMixin",
+    "TrapDoorMixin",
     "WorldMixin",
     "accessor.ChunkGeneratorAccessor",
     "accessor.CraftingInventoryAccessor",
