@@ -133,9 +133,10 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 		BlockPos pocketOrigin = manager.getPocket().getOrigin();
 		BlockPos pos = new BlockPos((int) (xEquation.apply(variableMap) + pocketOrigin.getX()), (int) (yEquation.apply(variableMap) + pocketOrigin.getY()), (int) (zEquation.apply(variableMap) + pocketOrigin.getZ()));
 
-		BlockState lower = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
+		BlockState lower = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).setValue(DimensionalDoorBlock.FACING, facing);
 		BlockState upper = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
 		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.get().create(pos, lower);
+		rift.setLevel(parameters.world());
 
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));

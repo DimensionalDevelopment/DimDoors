@@ -1,0 +1,104 @@
+[
+  {
+    "id": "classic/ruins/broken_pillars",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/buggy_top_entry",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/collapsed_single_tunnel",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/crumbled_hall",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/door_totem_ruins",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/exit_cube",
+    "type": "dimdoors:id",
+    "weight": 2
+  },
+  {
+    "id": "classic/ruins/exit_ruins_with_hidden_door",
+    "type": "dimdoors:id",
+    "weight": 2
+  },
+  {
+    "id": "classic/ruins/heart_of_disorder",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/hot_suspense",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/jump_pass",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/rope_bridge",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/ruins_oh_no",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/simple_drop_hall",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/simple_small_t",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/simple_stairs_down",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/simple_stairs_up",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/small_desert",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/small_exit_prison",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/small_maze",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/small_pond",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/spiral_hallway",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/transfer_tunnel",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/u_trap_right",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/u_turn_right",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "classic/ruins/u_turn_left",
+    "type": "dimdoors:id"
+  }
+]

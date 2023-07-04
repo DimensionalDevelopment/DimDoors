@@ -236,8 +236,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		if (!(pocket instanceof LazyGenerationPocket)) { // should not iterate over that which does not exist & area may be massive, getBlockEntities() might force generation
 			if (setupLootTables) // temp
 				pocket.getBlockEntities().forEach((blockPos, blockEntity) -> {
-					if (/*setupLootTables &&*/ blockEntity instanceof Container) { // comment in if needed
-						Container inventory = (Container) blockEntity;
+					if (/*setupLootTables &&*/ blockEntity instanceof Container inventory) { // comment in if needed
 						if (inventory.isEmpty()) {
 							if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
 								TemplateUtils.setupLootTable(world, blockEntity, inventory, LOGGER);

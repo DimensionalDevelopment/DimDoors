@@ -8,6 +8,18 @@ architectury {
 }
 
 loom {
+    runs {
+        data {
+            inherit client
+            name "Data Generation"
+            vmArg "-Dfabric-api.datagen"
+            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.modid=dimdoors"
+
+            runDir "build/datagen"
+        }
+    }
+
     accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
@@ -74,6 +86,11 @@ processResources {
     filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
+
+    from(rootProject.file("common/src/main/resources")) {
+        include("**/**")
+        duplicatesStrategy = DuplicatesStrategy.WARN
+    }
 }
 
 shadowJar {
@@ -103,6 +120,19 @@ sourcesJar {
 components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
         skip()
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "src/main/datagen"
+        }
+        resources {
+            srcDirs += [
+                    'src/main/generated'
+            ]
+        }
     }
 }
 

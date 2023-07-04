@@ -1,0 +1,42 @@
+{
+  "width": "5 + 16 * public_size",
+  "length": "5 + 16 * public_size",
+  "type": "dimdoors:void",
+  "builder": {
+    "type": "dimdoors:lazy_gen_pocket"
+  },
+  "modifiers": [
+    {
+      "layers": [
+        {
+          "block_state": "dimdoors:black_fabric",
+          "thickness": "4"
+        },
+        {
+          "block_state": "dimdoors:black_ancient_fabric",
+          "thickness": "1"
+        }
+      ],
+      "type": "dimdoors:shell"
+    },
+    {
+      "door_type": "dimdoors:block_ag_dim_minecraft_iron_door",
+      "x": "width/2",
+      "facing": "north",
+      "y": "0",
+      "z": "-1",
+      "type": "dimdoors:door",
+      "rift_data": {
+        "destination": {
+          "type": "dimdoors:id_marker",
+          "id": 0
+        }
+      }
+    },
+    {
+      "type": "dimdoors:pocket_entrance",
+      "id": 0
+    }
+  ],
+  "height": "5 + 16 * min(15, public_size)"
+}

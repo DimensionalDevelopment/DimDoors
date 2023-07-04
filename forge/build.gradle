@@ -8,15 +8,6 @@ architectury {
 }
 
 loom {
-    runs {
-        data {
-            data()
-            programArgs("--all", "--mod", "dimdoors")
-            programArgs("--output", project(":common").file("src/main/generated/resources").absolutePath)
-            programArgs("--existing", project(":common").file("src/main/resources").absolutePath)
-        }
-    }
-
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
     forge {
@@ -71,6 +62,11 @@ processResources {
     filesMatching("META-INF/mods.toml") {
         expand "version": project.version
     }
+
+    from(rootProject.file("common/src/main/resources")) {
+        include("**/**")
+        duplicatesStrategy = DuplicatesStrategy.WARN
+    }
 }
 
 shadowJar {
@@ -103,13 +99,6 @@ components.java {
     }
 }
 
-sourceSets {
-    main {
-        java {
-            srcDir "src/main/datagen"
-        }
-    }
-}
 
 publishing {
     publications {

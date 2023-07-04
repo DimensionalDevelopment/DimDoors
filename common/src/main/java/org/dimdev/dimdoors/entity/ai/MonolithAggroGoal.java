@@ -97,7 +97,7 @@ public class MonolithAggroGoal extends Goal {
                 this.mob.setAggro(0);
 				this.target.teleportTo(this.target.getX(), this.target.getY() + 256, this.target.getZ());
                 this.target.level.playSound(null, new BlockPos(new Vec3i((int) this.target.position().x, (int) this.target.position().y, (int) this.target.position().z)), ModSoundEvents.CRACK.get(), SoundSource.HOSTILE, 13, 1);
-                this.target.awardStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH.get());
+                this.target.awardStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
                 ServerPacketHandler.get((ServerPlayer) this.target).sendPacket(new MonolithTeleportParticlesPacket());
 			}
         }

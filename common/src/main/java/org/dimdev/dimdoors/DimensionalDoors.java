@@ -130,14 +130,20 @@ public class DimensionalDoors {
 
 		ServerPacketHandler.init();
 
+		initBuiltinPacks();
+
 		ReloadListenerRegistry.register(PackType.SERVER_DATA, PocketLoader.getInstance());
 		ReloadListenerRegistry.register(PackType.SERVER_DATA, LimboDecay.DecayLoader.getInstance());
 		ReloadListenerRegistry.register(PackType.SERVER_DATA, DoorRiftDataLoader.getInstance());
-//		ResourceManagerHelper.registerBuiltinResourcePack(id("default"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().defaultPocketsResourcePackActivationType.asResourcePackActivationType()); TODO:Figure out how to do this multiplat
-//		ResourceManagerHelper.registerBuiltinResourcePack(id("classic"), dimDoorsMod, CONFIG_MANAGER.get().getPocketsConfig().classicPocketsResourcePackActivationType.asResourcePackActivationType());
+
 
 		registerListeners();
 		SchemFixer.run();
+	}
+
+	@ExpectPlatform
+	private static void initBuiltinPacks() {
+		throw new RuntimeException();
 	}
 
 	public static void registerRegistries() {
@@ -177,5 +183,9 @@ public class DimensionalDoors {
 
 	public static DimensionalDoorItemRegistrar getDimensionalDoorItemRegistrar() {
 		return dimensionalDoorItemRegistrar;
+	}
+
+	public static DimensionalDoorBlockRegistrar getDimensionalDoorBlockRegistrar() {
+		return dimensionalDoorBlockRegistrar;
 	}
 }

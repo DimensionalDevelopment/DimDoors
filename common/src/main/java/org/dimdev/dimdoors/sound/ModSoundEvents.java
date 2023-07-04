@@ -2,11 +2,8 @@ package org.dimdev.dimdoors.sound;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.item.crafting.RecipeType;
-
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public final class ModSoundEvents {
@@ -33,6 +30,7 @@ public final class ModSoundEvents {
 	}
 
 	public static void init() {
+		SOUND_EVENTS.register();
 		//just loads the class
 	}
 }

@@ -1,0 +1,45 @@
+{
+  "builder": {
+    "type": "dimdoors:private_pocket"
+  },
+  "width": "5 + 16 * private_size",
+  "length": "5 + 16 * private_size",
+  "type": "dimdoors:void",
+  "modifiers": [
+    {
+      "layers": [
+        {
+          "block_state": "dimdoors:white_fabric",
+          "thickness": "4"
+        },
+        {
+          "block_state": "dimdoors:white_ancient_fabric",
+          "thickness": "1"
+        }
+      ],
+      "type": "dimdoors:shell"
+    },
+    {
+      "door_type": "dimdoors:block_ag_dim_dimdoors_quartz_door",
+      "x": "width/2",
+      "facing": "north",
+      "y": "0",
+      "z": "-1",
+      "type": "dimdoors:door",
+      "rift_data": {
+        "destination": {
+          "ifDestination": {
+            "type": "dimdoors:private_pocket_exit"
+          },
+          "weight": 1.0,
+          "type": "dimdoors:pocket_entrance"
+        }
+      }
+    },
+    {
+      "type": "dimdoors:pocket_entrance",
+      "id": 0
+    }
+  ],
+  "height": "5 + 16 * min(15, private_size)"
+}

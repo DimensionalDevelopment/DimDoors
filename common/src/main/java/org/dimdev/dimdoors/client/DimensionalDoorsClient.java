@@ -19,8 +19,6 @@ import java.io.IOException;
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClient {
     public static void init() {
-//		ModelLoadingRegistry.INSTANCE.registerVariantProvider((manager) -> new DimensionalDoorModelVariantProvider());
-
 		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
         ModEntityTypes.initClient();
 //		ModFluids.initClient();

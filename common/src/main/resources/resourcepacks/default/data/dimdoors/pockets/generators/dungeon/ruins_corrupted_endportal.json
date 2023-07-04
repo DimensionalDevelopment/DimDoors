@@ -1,0 +1,23 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "dungeon/ruins_corrupted_endportal",
+  "builder": {
+    "type": "dimdoors:lazy_gen_pocket"
+  },
+  "modifiers": [
+    {
+      "layers": [
+        {
+          "block_state": "dimdoors:black_ancient_fabric",
+          "thickness": "1"
+        }
+      ],
+      "type": "dimdoors:shell"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "dimdoors:rift_data/pocket_entrance"
+    }
+  ]
+}

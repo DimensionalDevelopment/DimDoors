@@ -56,15 +56,14 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (world.isClientSide || entity instanceof ServerPlayer) {
+		if (world.isClientSide/* || entity instanceof ServerPlayer*/) {
 			return;
 		}
 		onCollision(state, world, pos, entity, entity.position().subtract(((LastPositionProvider) entity).getLastPos()));
-		super.entityInside(state, world, pos, entity);
 	}
 
 
-	@Override
+//	@Override
 	public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, Vec3 positionChange) {
 		return onCollision(state, world, pos, player, positionChange);
 	}

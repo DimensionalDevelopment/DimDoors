@@ -1,0 +1,15 @@
+{
+  "type": "dimdoors:schematic",
+  "setup_loot": true,
+  "id": "dungeon/ruins_lava_trap",
+  "builder": {
+    "type": "dimdoors:lazy_gen_pocket"
+  },
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "dimdoors:rift_data/pocket_entrance"
+    }
+  ]
+}

@@ -79,7 +79,7 @@ public final class TeleportUtil {
 			((ExtendedServerPlayNetworkHandler) (serverPlayer.connection)).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos((int) pos.x, (int) pos.y, (int) pos.z));
 
 			if (world.dimension() == ModDimensions.DUNGEON) {
-				serverPlayer.awardStat(ModStats.TIMES_BEEN_TO_DUNGEON.get());
+				serverPlayer.awardStat(ModStats.TIMES_BEEN_TO_DUNGEON);
 			}
 		} else {
 			if (entity.level.dimension().equals(world.dimension())) {
