@@ -27,6 +27,7 @@ import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
 import org.dimdev.dimdoors.item.ItemExtensions;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
@@ -88,7 +89,7 @@ public class DimensionalDoorItemRegistrar {
 		if (!(originalBlock instanceof DimensionalDoorBlock)
 				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
 				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapDoorBlock)) {
-			Item.Properties settings = ItemExtensions.getSettings(original)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
+			Item.Properties settings = ItemExtensions.getSettings(original).arch$tab(ModItems.DIMENSIONAL_DOORS)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
 
 			Function<Block, BlockItem> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, original);
 

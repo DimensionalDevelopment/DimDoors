@@ -1,20 +1,14 @@
 package org.dimdev.dimdoors.recipe;
 
-import java.util.Map;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
+
+import java.util.Map;
 
 public class TesselatingRecipe extends ShapedRecipe {
 	public final float experience;
@@ -42,7 +36,7 @@ public class TesselatingRecipe extends ShapedRecipe {
 		@Override
 		public TesselatingRecipe fromJson(ResourceLocation id, JsonObject jsonObject) {
 			String string = GsonHelper.getAsString(jsonObject, "group", "");
-			Map<String, Ingredient> map = ShapedRecipe.keyFromJson(GsonHelper.convertToJsonObject(jsonObject, "key"));
+			Map<String, Ingredient> map = ShapedRecipe.keyFromJson(GsonHelper.getAsJsonObject(jsonObject, "key"));
 			String[] strings = ShapedRecipe.shrink(ShapedRecipe.patternFromJson(GsonHelper.getAsJsonArray(jsonObject, "pattern")));
 			int i = strings[0].length();
 			int j = strings.length;
