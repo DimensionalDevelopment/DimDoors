@@ -114,7 +114,7 @@ public class DimensionalDoorBlockRegistrar {
 		builder.add(properties.toArray(new Property[0]));
 	}
 
-	private static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {
+	public static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {
 		private final Block originalBlock;
 
 		public AutoGenDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
@@ -139,6 +139,10 @@ public class DimensionalDoorBlockRegistrar {
 		@Override
 		public MutableComponent getName() {
 			return Component.translatable("dimdoors.autogen_block_prefix", originalBlock.getName());
+		}
+
+		public Block getOriginalBlock() {
+			return originalBlock;
 		}
 	}
 

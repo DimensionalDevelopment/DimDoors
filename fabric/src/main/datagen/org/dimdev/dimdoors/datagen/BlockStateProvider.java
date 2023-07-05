@@ -8,16 +8,21 @@ import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
+import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DripstoneThickness;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.item.ModItems;
+
+import static net.minecraft.data.models.model.TextureMapping.getBlockTexture;
+import static net.minecraft.data.models.model.TextureMapping.getItemTexture;
 
 public class BlockStateProvider extends FabricModelProvider {
 	public BlockStateProvider(FabricDataOutput dataGenerator) {
@@ -29,11 +34,14 @@ public class BlockStateProvider extends FabricModelProvider {
 		generator.createDoor(ModBlocks.GOLD_DOOR.get());
 		generator.createDoor(ModBlocks.STONE_DOOR.get());
 		generator.createDoor(ModBlocks.QUARTZ_DOOR.get());
-		registerDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_iron_door")), Blocks.IRON_DOOR);
-		registerDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_gold_door")), ModBlocks.GOLD_DOOR.get());
-		registerDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_quartz_door")), ModBlocks.QUARTZ_DOOR.get());
-		registerDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_oak_door")), Blocks.OAK_DOOR);
-		registerDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_stone_door")), ModBlocks.STONE_DOOR.get());
+
+		BuiltInRegistries.BLOCK.stream().filter(a -> a instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock).map(a -> (DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock) a).forEach(a -> registerAutoGenDoor(generator, a));
+
+//		registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_iron_door")), Blocks.IRON_DOOR);
+//		registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_gold_door")), ModBlocks.GOLD_DOOR.get());
+//		registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_quartz_door")), ModBlocks.QUARTZ_DOOR.get());
+//		registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_oak_door")), Blocks.OAK_DOOR);
+//		registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_stone_door")), ModBlocks.STONE_DOOR.get());
 
 
 		generator.woodProvider(ModBlocks.DRIFTWOOD_LOG.get()).log(ModBlocks.DRIFTWOOD_LOG.get()).wood(ModBlocks.DRIFTWOOD_WOOD.get());
@@ -154,6 +162,21 @@ public class BlockStateProvider extends FabricModelProvider {
 		ResourceLocation identifier7 = ModelTemplates.DOOR_TOP_RIGHT.create(doorBlock, textureMap, generator.modelOutput);
 		ResourceLocation identifier8 = ModelTemplates.DOOR_TOP_RIGHT_OPEN.create(doorBlock, textureMap, generator.modelOutput);
 		generator.createSimpleFlatItemModel(doorBlock.asItem());
+		generator.blockStateOutput.accept(BlockModelGenerators.createDoor(doorBlock, identifier, identifier2, identifier3, identifier4, identifier5, identifier6, identifier7, identifier8));
+	}
+
+	public void registerAutoGenDoor(BlockModelGenerators generator, DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock doorBlock) {
+		Block textureSource = doorBlock.getOriginalBlock();
+
+		ResourceLocation identifier = getBlockTexture(textureSource, "_bottom_left");
+		ResourceLocation identifier2 = getBlockTexture(textureSource, "_bottom_left_open");
+		ResourceLocation identifier3 = getBlockTexture(textureSource, "_bottom_right");
+		ResourceLocation identifier4 = getBlockTexture(textureSource, "_bottom_right_open");
+		ResourceLocation identifier5 = getBlockTexture(textureSource, "_top_left");
+		ResourceLocation identifier6 = getBlockTexture(textureSource, "_top_left_open");
+		ResourceLocation identifier7 = getBlockTexture(textureSource, "_top_right");
+		ResourceLocation identifier8 = getBlockTexture(textureSource, "_top_right_open");
+		ModelTemplates.TWO_LAYERED_ITEM.create(ModelLocationUtils.getModelLocation(doorBlock), TextureMapping.layered(getItemTexture(Items.ENDER_PEARL), getItemTexture(textureSource.asItem())), generator.modelOutput);
 		generator.blockStateOutput.accept(BlockModelGenerators.createDoor(doorBlock, identifier, identifier2, identifier3, identifier4, identifier5, identifier6, identifier7, identifier8));
 	}
 

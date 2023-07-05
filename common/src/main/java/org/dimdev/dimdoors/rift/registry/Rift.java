@@ -61,7 +61,8 @@ public class Rift extends RegistryVertex {
 	}
 
 	public void markDirty() {
-		((RiftBlockEntity) this.location.getBlockEntity()).updateColor();
+		if(this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) riftBlockEntity.updateColor();
+
 		for (Location location : DimensionalRegistry.getRiftRegistry().getSources(this.location)) {
 			DimensionalRegistry.getRiftRegistry().getRift(location).targetChanged(this);
 		}

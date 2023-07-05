@@ -44,7 +44,7 @@ sourceSets {
             srcDir "src/main/config"
         }
         resources {
-            srcDirs "src/main/generated"
+            srcDirs "common/src/main/resources"
         }
     }
 }
