@@ -15,9 +15,10 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 		pack.addProvider(BlockStateProvider::new);
 		pack.addProvider((DataProvider.Factory<DataProvider>) DimdoorsRecipeProvider::new);
 		pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) AdvancementProvider::new);
-		pack.addProvider((DataProvider.Factory<DataProvider>) org.dimdev.dimdoors.datagen.LootTableProvider::new);
+		pack.addProvider(org.dimdev.dimdoors.datagen.LootTableProvider::new);
 		pack.addProvider((DataProvider.Factory<DataProvider>) org.dimdev.dimdoors.datagen.LimboDecayProvider::new);
 		pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) BlockTagProvider::new);
+		pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) ItemTagProvider::new);
 	}
 
 	@Override

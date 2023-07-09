@@ -31,6 +31,6 @@ public class DimensionalDoorsComponents implements WorldComponentInitializer, It
 
 	@Override
 	public void registerWorldComponentFactories(WorldComponentFactoryRegistry worldComponentFactoryRegistry) {
-		worldComponentFactoryRegistry.register(DIMENSIONAL_REGISTRY_COMPONENT_KEY, level -> new DimensionalRegistryImpl());
+		worldComponentFactoryRegistry.register(DIMENSIONAL_REGISTRY_COMPONENT_KEY, DimensionalRegistryImpl::createImpl);
 	}
 }

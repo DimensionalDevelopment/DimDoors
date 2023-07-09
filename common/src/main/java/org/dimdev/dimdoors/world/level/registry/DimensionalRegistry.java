@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.world.level.registry;
 
 import com.mojang.datafixers.util.Pair;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -22,11 +21,11 @@ import java.util.stream.Collectors;
 
 public class DimensionalRegistry {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
-	private Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
-	private RiftRegistry riftRegistry = new RiftRegistry();
-	private PrivateRegistry privateRegistry = new PrivateRegistry();
+	private static Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
+	private static RiftRegistry riftRegistry = new RiftRegistry();
+	private static PrivateRegistry privateRegistry = new PrivateRegistry();
 
-	public void readFromNbt(CompoundTag nbt) {
+	public static void readFromNbt(CompoundTag nbt) {
 		int riftDataVersion = nbt.getInt("RiftDataVersion");
 		if (riftDataVersion < RIFT_DATA_VERSION) {
 			nbt = RiftSchemas.update(riftDataVersion, nbt);
@@ -53,10 +52,10 @@ public class DimensionalRegistry {
 		CompletableFuture<RiftRegistry> futureRiftRegistry = CompletableFuture.supplyAsync(() -> RiftRegistry.fromNbt(pocketRegistry, riftRegistryNbt));
 		riftRegistry = futureRiftRegistry.join();
 
-		this.privateRegistry = futurePrivateRegistry.join();
+		privateRegistry = futurePrivateRegistry.join();
 	}
 
-	public void writeToNbt(CompoundTag nbt) {
+	public static void writeToNbt(CompoundTag nbt) {
 		CompletableFuture<Tag> futurePocketRegistryNbt = CompletableFuture.supplyAsync(() -> {
 			List<CompletableFuture<Pair<String, Tag>>> futurePocketRegistryNbts = new ArrayList<>();
 			pocketRegistry.forEach((key, value) -> futurePocketRegistryNbts.add(CompletableFuture.supplyAsync(() -> new Pair<>(key.location().toString(), value.writeToNbt()))));
@@ -75,17 +74,12 @@ public class DimensionalRegistry {
 		nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
 	}
 
-	@ExpectPlatform
-	public static DimensionalRegistry instance() {
-		throw new RuntimeException();
-	}
-
 	public static RiftRegistry getRiftRegistry() {
-		return instance().riftRegistry;
+		return riftRegistry;
 	}
 
 	public static PrivateRegistry getPrivateRegistry() {
-		return instance().privateRegistry;
+		return privateRegistry;
 	}
 
 	public static PocketDirectory getPocketDirectory(ResourceKey<Level> key) {
@@ -93,6 +87,6 @@ public class DimensionalRegistry {
 			throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
 		}
 
-		return instance().pocketRegistry.computeIfAbsent(key, PocketDirectory::new);
+		return pocketRegistry.computeIfAbsent(key, PocketDirectory::new);
 	}
 }

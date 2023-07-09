@@ -25,12 +25,6 @@ public class ServerPlayNetworkHandlerMixin {
 	@Shadow
 	private double firstGoodZ;
 
-	@Shadow private double lastGoodX;
-
-	@Shadow private double lastGoodY;
-
-	@Shadow private double lastGoodZ;
-
 	@Inject(method = "handleMovePlayer", at = @At("TAIL"))
 	protected void checkBlockCollision(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
 		// stolen from Entity#checkBlockCollision
@@ -47,7 +41,7 @@ public class ServerPlayNetworkHandlerMixin {
 						mutable.set(i, j, k);
 						BlockState blockState = player.level.getBlockState(mutable);
 						Block block = blockState.getBlock();
-						if (block instanceof AfterMoveCollidableBlock && ((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.getLevel(), mutable, player, player.position().subtract(lastGoodX, lastGoodY, lastGoodZ)).consumesAction()) {
+						if (block instanceof AfterMoveCollidableBlock && ((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.getLevel(), mutable, player, player.position().subtract(firstGoodX, firstGoodY, firstGoodZ)).consumesAction()) {
 							done = true;
 						}
 						if (done) {

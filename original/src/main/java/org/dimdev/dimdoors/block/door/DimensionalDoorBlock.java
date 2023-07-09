@@ -60,7 +60,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	@Override
 	@SuppressWarnings("deprecation")
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity) {
-		if (world.isClient || entity instanceof ServerPlayerEntity) {
+		if (world.isClient/* || entity instanceof ServerPlayerEntity*/) {
 			return;
 		}
 		onCollision(state, world, pos, entity, entity.getPos().subtract(((LastPositionProvider) entity).getLastPos()));

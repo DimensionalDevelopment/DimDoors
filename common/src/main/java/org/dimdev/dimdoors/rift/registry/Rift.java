@@ -48,16 +48,18 @@ public class Rift extends RegistryVertex {
 	@Override
 	public void targetGone(RegistryVertex target) {
 		super.targetGone(target);
-		RiftBlockEntity riftTileEntity = (RiftBlockEntity) this.location.getBlockEntity();
-		if (target instanceof Rift) {
-			riftTileEntity.handleTargetGone(((Rift) target).location);
+
+		if(this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) {
+			if (target instanceof Rift) {
+				riftBlockEntity.handleTargetGone(((Rift) target).location);
+			}
+			riftBlockEntity.updateColor();
 		}
-		riftTileEntity.updateColor();
 	}
 
 	public void targetChanged(RegistryVertex target) {
 		LOGGER.debug("Rift " + this + " notified of target " + target + " having changed. Updating color.");
-		((RiftBlockEntity) this.location.getBlockEntity()).updateColor();
+		if(this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) riftBlockEntity.updateColor();
 	}
 
 	public void markDirty() {
@@ -66,6 +68,10 @@ public class Rift extends RegistryVertex {
 		for (Location location : DimensionalRegistry.getRiftRegistry().getSources(this.location)) {
 			DimensionalRegistry.getRiftRegistry().getRift(location).targetChanged(this);
 		}
+	}
+
+	private void updateColor() {
+		if(this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) riftBlockEntity.updateColor();
 	}
 
 	@Override

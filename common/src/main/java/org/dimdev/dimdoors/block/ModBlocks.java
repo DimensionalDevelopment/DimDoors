@@ -235,7 +235,7 @@ public final class ModBlocks {
 	}
 
 	private static RegistrySupplier<Block> registerFabric(DyeColor color) {
-		RegistrySupplier<Block> block = register(color.getSerializedName() + "_fabric", () -> new AncientFabricBlock(color));
+		RegistrySupplier<Block> block = register(color.getSerializedName() + "_fabric", () -> new FabricBlock(color));
 		FABRIC_BLOCKS.put(color, block);
 		return block;
 	}

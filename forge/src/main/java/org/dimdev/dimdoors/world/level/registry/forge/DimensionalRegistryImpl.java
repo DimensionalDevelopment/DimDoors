@@ -22,13 +22,8 @@ public class DimensionalRegistryImpl {
 
     public static final Capability<DimensionalRegistry> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});
 
-    public static DimensionalRegistry instance() {
-        return DimensionalDoors.getServer().overworld().getCapability(INSTANCE).resolve().get();
-    }
-
     public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
-        private final DimensionalRegistry backend = new DimensionalRegistry();
-        private final LazyOptional<DimensionalRegistry> optionalData = LazyOptional.of(() -> backend);
+        private final LazyOptional<DimensionalRegistry> optionalData = LazyOptional.empty();
         @Override
         public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
             return DimensionalRegistryImpl.INSTANCE.orEmpty(capability, optionalData);
@@ -37,13 +32,13 @@ public class DimensionalRegistryImpl {
         @Override
         public CompoundTag serializeNBT() {
             var nbt = new CompoundTag();
-            this.backend.writeToNbt(nbt);
+            DimensionalRegistry.writeToNbt(nbt);
             return nbt;
         }
 
         @Override
         public void deserializeNBT(CompoundTag arg) {
-            this.backend.readFromNbt(arg);
+            DimensionalRegistry.readFromNbt(arg);
         }
 
         public static void attach(final AttachCapabilitiesEvent<ServerLevel> event) {
