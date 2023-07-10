@@ -14,7 +14,8 @@ public class RiftParticle extends SimpleAnimatedParticle {
         this.zd = velocityZ;
 
         this.quadSize *= 0.55f;
-        this.age = ageSpread - ageSpread / 2 + this.random.nextInt(2000);
+        // FIXME: Math.min is just a band-aid fix to prevent a crash, need to ensure (age <= lifetime)
+        this.age = Math.min(ageSpread - ageSpread / 2 + this.random.nextInt(2000), this.lifetime);
 
         this.setColor(color, color, color);
         this.setSpriteFromAge(spriteProvider);
