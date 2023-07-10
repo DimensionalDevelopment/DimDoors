@@ -56,7 +56,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (world.isClientSide/* || entity instanceof ServerPlayer*/) {
+		if (world.isClientSide || entity instanceof ServerPlayer /* DO NOT REMOVE, THIS MAKES SURE onCollision IS CALLED IN onAfterMovePlayerCollision (fixes bug with anti-cheat)*/) {
 			return;
 		}
 		onCollision(state, world, pos, entity, entity.position().subtract(((LastPositionProvider) entity).getLastPos()));
@@ -86,7 +86,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		double portalHeight = 2;
 		// check in DefaultTransformation for the correct offset of the portal planes
 		double portalOffsetFromCenter = 0.31;
-		Vec3 portalNormal = Vec3.atLowerCornerOf(state.getValue(FACING).getOpposite().getNormal().north());
+		Vec3 portalNormal = Vec3.atLowerCornerOf(state.getValue(FACING).getOpposite().getNormal());
 		Vec3 origin = Vec3.atBottomCenterOf(bottom);
 		Vec3 bottomMiddlePortalPoint = origin.add(portalNormal.scale(portalOffsetFromCenter));
 
@@ -255,7 +255,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	@Override
 	public TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder(BlockState state, BlockPos pos) {
 		return TransformationMatrix3d.builder()
-				.inverseTranslate(Vec3.atCenterOf(pos).add(Vec3.atCenterOf(state.getValue(DoorBlock.FACING).getNormal()).scale(-0.31)))
+				.inverseTranslate(Vec3.atCenterOf(pos).add(Vec3.atLowerCornerOf(state.getValue(DoorBlock.FACING).getNormal()).scale(-0.31)))
 				.inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
 	}
 

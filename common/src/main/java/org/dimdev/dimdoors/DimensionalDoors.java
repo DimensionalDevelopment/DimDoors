@@ -17,6 +17,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.Level;
+import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
@@ -165,8 +166,7 @@ public class DimensionalDoors {
 
 //		PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
 
-		ChunkEvent.LOAD_DATA.register(new ChunkLoadListener()); // lazy pocket gen
-
+		ChunkServedCallback.EVENT.register(new ChunkLoadListener()); // lazy pocket gen
 
 		InteractionEvent.LEFT_CLICK_BLOCK.register(new AttackBlockCallbackListener());
 

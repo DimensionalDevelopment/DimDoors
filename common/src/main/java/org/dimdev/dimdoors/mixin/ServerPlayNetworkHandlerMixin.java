@@ -29,8 +29,8 @@ public class ServerPlayNetworkHandlerMixin {
 	protected void checkBlockCollision(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
 		// stolen from Entity#checkBlockCollision
 		AABB box = player.getBoundingBox();
-		BlockPos blockPos = new BlockPos((int) (box.minX + 0.001D), (int) (box.minY + 0.001D), (int) (box.minZ + 0.001D));
-		BlockPos blockPos2 = new BlockPos((int) (box.maxX - 0.001D), (int) (box.maxY - 0.001D), (int) (box.maxZ - 0.001D));
+		BlockPos blockPos = BlockPos.containing(box.minX + 1.0E-7D, box.minY + 1.0E-7D, box.minZ + 1.0E-7D);
+		BlockPos blockPos2 = BlockPos.containing(box.maxX - 1.0E-7D, box.maxY - 1.0E-7D, box.maxZ - 1.0E-7D);
 		if (player.level.hasChunksAt(blockPos, blockPos2)) {
 			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
