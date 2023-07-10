@@ -16,6 +16,7 @@
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",
     "ServerWorldMixin",
+    "ThreadedAnvilChunkStorageMixin",
     "TrapDoorMixin",
     "WorldMixin",
     "accessor.ChunkGeneratorAccessor",
