@@ -119,7 +119,7 @@ public class LimboDecayProvider implements DataProvider {
 		createPatterData(DimensionalDoors.id("mud_stairs"), ModBlockTags.DECAY_TO_MUD_STAIRS, ModBlocks.MUD_STAIRS.get()).run(consumer);
 		Stream.of(DyeColor.values()).map(DyeColor::getSerializedName).forEach(name -> {
 			createPatterData(DimensionalDoors.id(name + "_terracotta"), getBlock(ResourceLocation.tryParse(name + "_glazed_terracotta")), getBlock(ResourceLocation.tryParse(name + "_terracotta"))).run(consumer);
-			createPatterData(DimensionalDoors.id(name + "_concrete_powder"), getBlock(ResourceLocation.tryParse(name + "_powered_concrete")), getBlock(ResourceLocation.tryParse(name + "_concrete"))).run(consumer);
+			createPatterData(DimensionalDoors.id(name + "_concrete_powder"), getBlock(ResourceLocation.tryParse(name + "_concrete_powder")), getBlock(ResourceLocation.tryParse(name + "_concrete"))).run(consumer);
 		});
 		createPatterData(DimensionalDoors.id("glass"), ModBlockTags.DECAY_TO_GLASS, Blocks.GLASS).run(consumer);
 		createPatterData(DimensionalDoors.id("gravel"), ModBlockTags.DECAY_TO_GRAVEL, Blocks.GRAVEL).run(consumer);
