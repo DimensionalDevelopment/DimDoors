@@ -13,7 +13,7 @@ loom {
             inherit client
             name "Data Generation"
             vmArg "-Dfabric-api.datagen"
-            vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
+            vmArg "-Dfabric-api.datagen.output-dir=${project(":common").file("src/main/generated")}"
             vmArg "-Dfabric-api.datagen.modid=dimdoors"
 
             runDir "build/datagen"
@@ -115,6 +115,7 @@ sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 components.java {
@@ -130,7 +131,7 @@ sourceSets {
         }
         resources {
             srcDirs += [
-                    'src/main/generated'
+                    project(":common").file("src/main/generated")
             ]
         }
     }
