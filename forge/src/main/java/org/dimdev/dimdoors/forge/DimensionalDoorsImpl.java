@@ -35,7 +35,7 @@ public class DimensionalDoorsImpl {
 
     public static Pack createPack(String id, String name) {
         var resourcePath = ModList.get().getModFileById(DimensionalDoors.MOD_ID).getFile().findResource("resourcepacks", id);
-        return Pack.readMetaAndCreate("id", Component.literal("name"), false,
+        return Pack.readMetaAndCreate("builtin/" + id, Component.literal(name), false,
                 (path) -> new PathPackResources(path, resourcePath, false), PackType.SERVER_DATA, Pack.Position.BOTTOM, PackSource.BUILT_IN);
     }
 }

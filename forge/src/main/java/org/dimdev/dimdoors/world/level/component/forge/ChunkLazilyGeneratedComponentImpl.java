@@ -49,7 +49,7 @@ public class ChunkLazilyGeneratedComponentImpl {
         }
 
         @SubscribeEvent
-        public static void attach(final AttachCapabilitiesEvent<ChunkAccess> event) {
+        public static void attach(final AttachCapabilitiesEvent<LevelChunk> event) {
             final Provider provider = new Provider();
 
             event.addCapability(ChunkLazilyGeneratedComponentImpl.IDENTIFIER, provider);

@@ -103,6 +103,16 @@ components.java {
     }
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs += [
+                    project(":common").file("src/main/generated")
+            ]
+        }
+    }
+}
+
 
 publishing {
     publications {
