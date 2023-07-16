@@ -11,6 +11,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.component.CounterComponent;
@@ -54,6 +56,7 @@ public class CounterComponentImpl implements CounterComponent {
         return provider.getCapability(INSTANCE).resolve().get();
     }
 
+    @Mod.EventBusSubscriber(modid = DimensionalDoors.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
         private final CounterComponentImpl backend = new CounterComponentImpl();
 
@@ -73,6 +76,7 @@ public class CounterComponentImpl implements CounterComponent {
             this.backend.readFromNbt(arg);
         }
 
+        @SubscribeEvent
         public static void attach(final AttachCapabilitiesEvent<ItemStack> event) {
             if(event.getObject().is(ModItems.RIFT_CONFIGURATION_TOOL.get())) {
                 final CounterComponentImpl.Provider provider = new CounterComponentImpl.Provider();

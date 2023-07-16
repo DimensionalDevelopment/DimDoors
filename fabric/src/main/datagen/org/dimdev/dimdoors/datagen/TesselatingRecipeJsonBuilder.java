@@ -202,7 +202,7 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return ModRecipeSerializers.TESSELATING;
+			return ModRecipeSerializers.TESSELATING.get();
 		}
 
 		public ResourceLocation getId() {

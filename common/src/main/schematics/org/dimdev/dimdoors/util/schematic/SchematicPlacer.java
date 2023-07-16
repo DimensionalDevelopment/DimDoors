@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.util.schematic;
 
+import dev.architectury.platform.Platform;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -30,7 +31,7 @@ public final class SchematicPlacer {
 	public static void place(Schematic schematic, WorldGenLevel world, BlockPos origin, BlockPlacementType placementType) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
 		for (String id : schematic.getMetadata().requiredMods()) {
-			if (!FabricLoader.getInstance().isModLoaded(id)) {
+			if (!Platform.isModLoaded(id)) {
 				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}
@@ -46,7 +47,7 @@ public final class SchematicPlacer {
 	public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
 		for (String id : schematic.getMetadata().requiredMods()) {
-			if (!FabricLoader.getInstance().isModLoaded(id)) {
+			if (!Platform.isModLoaded(id)) {
 				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}

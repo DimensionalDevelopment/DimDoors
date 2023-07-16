@@ -12,6 +12,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +27,7 @@ public class ChunkLazilyGeneratedComponentImpl {
         return chunk.getCapability(INSTANCE).resolve().get();
     }
 
+    @Mod.EventBusSubscriber(modid = DimensionalDoors.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
         private final ChunkLazilyGeneratedComponent backend = new ChunkLazilyGeneratedComponent();
         private final LazyOptional<ChunkLazilyGeneratedComponent> optionalData = LazyOptional.of(() -> backend);
@@ -45,6 +48,7 @@ public class ChunkLazilyGeneratedComponentImpl {
             this.backend.readFromNbt(arg);
         }
 
+        @SubscribeEvent
         public static void attach(final AttachCapabilitiesEvent<ChunkAccess> event) {
             final Provider provider = new Provider();
 

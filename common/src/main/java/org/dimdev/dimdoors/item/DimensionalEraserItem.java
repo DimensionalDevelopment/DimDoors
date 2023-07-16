@@ -38,10 +38,10 @@ public class DimensionalEraserItem extends Item {
 					teleportPos = teleportPos.offset(1, 0, 1);
 				}
 				TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getDeltaMovement());
+			} else {
+				((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);
+				player.playSound(ModSoundEvents.BLOOP.get(), 1.0f, 1.0f);
 			}
-
-			((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);
-			player.playSound(ModSoundEvents.BLOOP.get(), 1.0f, 1.0f);
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 

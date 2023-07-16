@@ -20,8 +20,10 @@ public class ModStats {
 
 	private static ResourceLocation register(String string, StatFormatter statFormatter) {
 		ResourceLocation resourceLocation = DimensionalDoors.id(string);
-		Registry.register(BuiltInRegistries.CUSTOM_STAT, string, resourceLocation);
-		CUSTOM.get(resourceLocation, statFormatter);
+		STATS.register(string, () -> {
+//			CUSTOM.get(resourceLocation, statFormatter);
+			return resourceLocation;
+		});
 		return resourceLocation;
 	}
 

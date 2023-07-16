@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors;
 
 import dev.architectury.platform.forge.EventBuses;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -29,8 +31,10 @@ public class DimensionalDoorsForge {
             registerCapabilitiesEvent.register(DimensionalRegistry.class);
         });
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(CounterComponentImpl.Provider::attach);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ChunkLazilyGeneratedComponentImpl.Provider::attach);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(DimensionalRegistryImpl.Provider::attach);
+//        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(AttachCapabilitiesEvent.class, event -> {
+//            CounterComponentImpl.Provider.attach(event)
+//        });
+//        FMLJavaModLoadingContext.get().getModEventBus().addListener(ChunkLazilyGeneratedComponentImpl.Provider::attach);
+//        FMLJavaModLoadingContext.get().getModEventBus().addListener(DimensionalRegistryImpl.Provider::attach);
     }
 }

@@ -39,13 +39,11 @@ public class ModBlockEntityTypes {
 
 
     private static <E extends BlockEntity> RegistrySupplier<BlockEntityType<E>> register(String id, BiFunction<BlockPos, BlockState, E> factory, RegistrySupplier<Block>... blocks) {
-		return BLOCK_ENTITY_TYPES.register(id, () -> {
-			return BlockEntityType.Builder.of(factory::apply, Stream.of(blocks).map(Supplier::get).toArray(Block[]::new)).build(null);
-		});
+		return BLOCK_ENTITY_TYPES.register(id, () -> BlockEntityType.Builder.of(factory::apply, Stream.of(blocks).map(Supplier::get).toArray(Block[]::new)).build(null));
 	}
 
 	private static <E extends BlockEntity> RegistrySupplier<MutableBlockEntityType<E>> registerMutable(String id, MutableBlockEntityType.BlockEntityFactory<E> factory, RegistrySupplier<Block>... blocks) {
-		return BLOCK_ENTITY_TYPES.register(id, MutableBlockEntityType.Builder.create(factory, Stream.of(blocks).map(Supplier::get).toArray(Block[]::new))::build);
+		return BLOCK_ENTITY_TYPES.register(id, () -> MutableBlockEntityType.Builder.create(factory, Stream.of(blocks).map(Supplier::get).toArray(Block[]::new)).build());
 	}
 
 	public static void init() {

@@ -5,6 +5,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.dimdev.dimdoors.mixin.accessor.BlockEntityTypeAccessor;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,9 +26,8 @@ public class MutableBlockEntityType<T extends BlockEntity> extends BlockEntityTy
 		return getBlocks(this).remove(block);
 	}
 
-	@ExpectPlatform
 	public static Set<Block> getBlocks(BlockEntityType<?> type) {
-		throw new RuntimeException();
+		return ((BlockEntityTypeAccessor) type).getBlocks();
 	}
 
 	public static final class Builder<T extends BlockEntity> {

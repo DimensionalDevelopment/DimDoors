@@ -2,15 +2,21 @@ package org.dimdev.dimdoors.block.door;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import dev.architectury.event.events.common.LifecycleEvent;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.utils.Env;
+import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
@@ -27,6 +33,7 @@ import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 public class DimensionalDoorBlockRegistrar {
@@ -41,35 +48,42 @@ public class DimensionalDoorBlockRegistrar {
 		this.registry = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.BLOCK);
 		this.itemRegistrar = itemRegistrar;
 
-		init();
-		RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> registrar.entrySet().forEach((entry) -> handleEntry(entry.getKey().location(), entry.getValue())));
+		if(Platform.isFabric()) {
+			init();
+		}
+
+		RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
+			new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
+		});
+
+		LifecycleEvent.SETUP.register(() -> mappedDoorBlocks.keySet().stream().map(BuiltInRegistries.BLOCK::get).forEach(a -> ModBlockEntityTypes.ENTRANCE_RIFT.get().addBlock(a)));
 	}
 
 	private void init() {
-		new ArrayList<>(registry.entrySet()).forEach(entry -> handleEntry(entry.getKey().location(), entry.getValue()));
+		new ArrayList<>(registry.entrySet()).forEach(entry -> handleEntry(registry, entry.getKey().location(), entry.getValue()));
 	}
 
-	public void handleEntry(ResourceLocation ResourceLocation, Block original) {
+	public void handleEntry(Registrar<Block> registrar, ResourceLocation ResourceLocation, Block original) {
 		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(ResourceLocation)) {
 			if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock doorBlock) {
-				register(ResourceLocation, doorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock);
+				register(registrar, ResourceLocation, doorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock);
 			} else if (!(original instanceof DimensionalTrapdoorBlock) && original instanceof TrapDoorBlock trapdoorBlock) {
-				register(ResourceLocation, trapdoorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalTrapdoorBlock);
+				register(registrar, ResourceLocation, trapdoorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalTrapdoorBlock);
 			}
 		}
 	}
 
-	private void register(ResourceLocation location, DoorSoundProvider original, BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> constructor) {
+	private void register(Registrar<Block> registrar, ResourceLocation location, DoorSoundProvider original, BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> constructor) {
 		ResourceLocation gennedId = DimensionalDoors.id(PREFIX + location.getNamespace() + "_" + location.getPath());
 
 		if(mappedDoorBlocks.containsKey(gennedId)) return;
 
-		Block dimBlock = registry.register(gennedId, () -> constructor.apply(BlockBehaviour.Properties.copy((BlockBehaviour) original), original)).get();
-		ModBlockEntityTypes.ENTRANCE_RIFT.get().addBlock(dimBlock); //TODO: Add
+		Block dimBlock = registrar.register(gennedId, () -> constructor.apply(BlockBehaviour.Properties.copy((BlockBehaviour) original), original)).get();
+//		ModBlockEntityTypes.ENTRANCE_RIFT.get().addBlock(dimBlock); //TODO: Add
 		mappedDoorBlocks.put(gennedId, location);
 		itemRegistrar.notifyBlockMapped((Block) original, dimBlock);
 
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+		if (Platform.getEnvironment() == Env.CLIENT) {
 			putCutout(dimBlock);
 		}
 	}

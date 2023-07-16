@@ -23,7 +23,7 @@ public class TesselatingRecipe extends ShapedRecipe {
 
 	@Override
 	public RecipeSerializer<?> getSerializer() {
-		return ModRecipeSerializers.TESSELATING;
+		return ModRecipeSerializers.TESSELATING.get();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.feature;
 
+import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.registry.level.biome.BiomeModifications;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -26,12 +27,14 @@ public final class ModFeatures {
 	public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.FEATURE);
 
 	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> SCHEMATIC_GATEWAY_FEATURE = FEATURES.register("schematic_gateway", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
-	public static final RegistrySupplier<Feature<NoneFeatureConfiguration>> LIMBO_GATEWAY_FEATURE = FEATURES.register("limbo_gateway", () -> new LimboGatewayFeature());
+	public static final RegistrySupplier<Feature<NoneFeatureConfiguration>> LIMBO_GATEWAY_FEATURE = FEATURES.register("limbo_gateway", LimboGatewayFeature::new);
 
 	public static void init() {
-		SANDSTONE_PILLARS_GATEWAY.init();
-		TWO_PILLARS_GATEWAY.init();
-		END_GATEWAY.init();
+		LifecycleEvent.SETUP.register(() -> {
+			SANDSTONE_PILLARS_GATEWAY.init();
+			TWO_PILLARS_GATEWAY.init();
+			END_GATEWAY.init();
+		});
 
 		FEATURES.register();
 

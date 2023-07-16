@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dev.architectury.platform.Platform;
+import dev.architectury.utils.GameInstance;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
@@ -49,7 +51,7 @@ public class PocketCommand {
 										)
 										.then(
 												literal("load")
-														.requires(source -> FabricLoader.getInstance().isModLoaded("worldedit"))
+														.requires(source -> Platform.isModLoaded("worldedit"))
 														.then(
 																argument("pocket_template", new PocketTemplateArgumentType())
 																		.executes(ctx -> load(ctx.getSource(), PocketTemplateArgumentType.getValue(ctx, "pocket_template")))

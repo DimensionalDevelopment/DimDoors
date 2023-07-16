@@ -12,6 +12,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +24,7 @@ public class DimensionalRegistryImpl {
 
     public static final Capability<DimensionalRegistry> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});
 
+    @Mod.EventBusSubscriber(modid = DimensionalDoors.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
         private final LazyOptional<DimensionalRegistry> optionalData = LazyOptional.empty();
         @Override
@@ -41,6 +44,7 @@ public class DimensionalRegistryImpl {
             DimensionalRegistry.readFromNbt(arg);
         }
 
+        @SubscribeEvent
         public static void attach(final AttachCapabilitiesEvent<ServerLevel> event) {
             if(event.getObject().dimension().equals(Level.OVERWORLD)) {
                 final DimensionalRegistryImpl.Provider provider = new DimensionalRegistryImpl.Provider();

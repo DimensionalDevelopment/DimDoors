@@ -11,6 +11,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
@@ -51,8 +52,13 @@ public class DimensionalDoorItemRegistrar {
 	public DimensionalDoorItemRegistrar() {
 		this.registry = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.ITEM);
 
-		init();
-		RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.ITEM, registrar -> registrar.entrySet().forEach((entry) ->  handleEntry(entry.getKey().location(), entry.getValue())));
+		if(Platform.isFabric()) {
+			init();
+		}
+
+		RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.ITEM, registrar -> {
+			new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
+		});
 	}
 
 	public boolean isRegistered(Item item) {
@@ -64,27 +70,26 @@ public class DimensionalDoorItemRegistrar {
 	}
 
 	private void init() {
-		new ArrayList<>(registry.entrySet())
-				.forEach(entry -> handleEntry(entry.getKey().location(), entry.getValue()));
+		new ArrayList<>(registry.entrySet()).forEach(entry -> handleEntry(registry, entry.getKey().location(), entry.getValue()));
 	}
 
-	public void handleEntry(ResourceLocation identifier, Item original) {
+	public void handleEntry(Registrar<Item> registrar, ResourceLocation identifier, Item original) {
 		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(identifier)) {
 			if (original instanceof DoubleHighBlockItem doubleHighBlockItem) {
 				Block block = doubleHighBlockItem.getBlock();
-				handleEntry(identifier, original, block, AutoGenDimensionalDoorItem::new);
+				handleEntry(registrar, identifier, original, block, AutoGenDimensionalDoorItem::new);
 			} else if (original instanceof BlockItem) {
 				Block originalBlock = ((BlockItem) original).getBlock();
 				if (originalBlock instanceof DoorBlock) {
-					handleEntry(identifier, original, originalBlock, AutoGenDimensionalDoorItem::new);
+					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalDoorItem::new);
 				} else {
-					handleEntry(identifier, original, originalBlock, AutoGenDimensionalTrapdoorItem::new);
+					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalTrapdoorItem::new);
 				}
 			}
 		}
 	}
 
-	private void handleEntry(ResourceLocation identifier, Item original, Block originalBlock, TriFunction<Block, Item.Properties, Item, ? extends BlockItem> constructor) {
+	private void handleEntry(Registrar<Item> registrar, ResourceLocation identifier, Item original, Block originalBlock, TriFunction<Block, Item.Properties, Item, ? extends BlockItem> constructor) {
 
 		if (!(originalBlock instanceof DimensionalDoorBlock)
 				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
@@ -98,7 +103,7 @@ public class DimensionalDoorItemRegistrar {
 				return;
 			}
 
-			register(identifier, original, blocksAlreadyNotifiedAbout.get(originalBlock), dimItemConstructor);
+			register(registrar, identifier, original, blocksAlreadyNotifiedAbout.get(originalBlock), dimItemConstructor);
 		}
 	}
 
@@ -108,12 +113,12 @@ public class DimensionalDoorItemRegistrar {
 			return;
 		}
 		Triple<ResourceLocation, Item, Function<Block, BlockItem>> triple = toBeMapped.get(original);
-		register(triple.getLeft(), triple.getMiddle(), dimBlock, triple.getRight());
+		register(registry, triple.getLeft(), triple.getMiddle(), dimBlock, triple.getRight());
 	}
 
-	private void register(ResourceLocation identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
+	private void register(Registrar<Item> registrar, ResourceLocation identifier, Item original, Block block, Function<Block, BlockItem> dimItem) {
 		ResourceLocation gennedId = DimensionalDoors.id(PREFIX + identifier.getNamespace() + "_" + identifier.getPath());
-		BlockItem item = registry.register(gennedId, () -> dimItem.apply(block)).get();
+		BlockItem item = registrar.register(gennedId, () -> dimItem.apply(block)).get();
 		placementFunctions.put(original, item::place);
 		if (Platform.getEnvironment() == Env.CLIENT) {
 			registerItemRenderer(item);
