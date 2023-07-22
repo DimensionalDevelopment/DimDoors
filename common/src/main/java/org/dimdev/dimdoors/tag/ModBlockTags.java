@@ -4,6 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.ModBlocks;
 
 public class ModBlockTags {
 	public static final TagKey<Block> MINOR_PLANTS = of("minor_plants");
@@ -43,7 +44,6 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_BUTTON = of("decay_to_driftwood_button");
 	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_SLAB = of("decay_to_driftwood_slab");
 	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_STAIRS = of("decay_to_driftwood_stairs");
-
 	public static final TagKey<Block> DECAY_TO_CHEST = of("decay_to_chest");
 	public static final TagKey<Block> DECAY_TO_SKELETON_SKULL = of("decay_to_skeleton_skull");
 	public static final TagKey<Block> DECAY_TO_SKELETON_WALL_SKULL = of("decay_to_skeleton_wall_skull");
@@ -121,6 +121,7 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_TOSTONE_BRICK_STAIRS = of("decay_tostone_brick_stairs");
 	public static final TagKey<Block> DECAY_TOSTONE_BRICK_WALL = of("decay_tostone_brick_wall");
 	public static final TagKey<Block> DECAY_TO_DRIFTWOOD_LOG = of("decay_to_driftwood_log");
+	public static final TagKey<Block> DECAY_TO_UNRAVELED_FABRIC = of("decay_to_unraveled_fabric");
 
 	private static TagKey<Block> of(String id) {
 		return TagKey.create(Registries.BLOCK, DimensionalDoors.id(id));

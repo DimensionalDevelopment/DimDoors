@@ -162,7 +162,6 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> CLOD_BLOCK = register("clod_block", () -> new Block(of(Material.AMETHYST)));
 
 	public static final RegistrySupplier<Block> GRAVEL_FENCE = registerFence("gravel_fence", GRAVEL);
-	public static final RegistrySupplier<Block> GRAVEL_GATE = registerFenceGate("gravel_gate", GRAVEL);
 	public static final RegistrySupplier<Block> GRAVEL_BUTTON = registerButton("gravel_button", GRAVEL);
 	public static final RegistrySupplier<Block> GRAVEL_SLAB = registerSlab("gravel_slab", GRAVEL);
 	public static final RegistrySupplier<Block> GRAVEL_STAIRS = registerStairs("gravel_stairs", GRAVEL);
@@ -170,7 +169,6 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> DARK_SAND = register("dark_sand", () -> new Block(of(Material.SAND, MaterialColor.COLOR_BLACK).strength(0.5F).sound(SoundType.SAND)));
 	public static final RegistrySupplier<Block> DARK_SAND_FENCE = registerFence("dark_sand_fence", DARK_SAND);
-	public static final RegistrySupplier<Block> DARK_SAND_GATE = registerFenceGate("dark_sand_gate", DARK_SAND);
 	public static final RegistrySupplier<Block> DARK_SAND_BUTTON = registerButton("dark_sand_button", DARK_SAND);
 	public static final RegistrySupplier<Block> DARK_SAND_SLAB = registerSlab("dark_sand_slab", DARK_SAND);
 	public static final RegistrySupplier<Block> DARK_SAND_STAIRS = registerStairs("dark_sand_stairs", DARK_SAND);
@@ -181,6 +179,8 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> CLAY_BUTTON = registerButton("clay_button", CLAY);
 	public static final RegistrySupplier<Block> CLAY_SLAB = registerSlab("clay_slab", CLAY);
 	public static final RegistrySupplier<Block> CLAY_STAIRS = registerStairs("clay_stairs", CLAY);
+
+	public static final RegistrySupplier<Block> CLAY_WALL = registerWall("clay_wall", CLAY);
 
 	public static final RegistrySupplier<Block> MUD_FENCE = registerFence("mud_fence", MUD);
 	public static final RegistrySupplier<Block> MUD_GATE = registerFenceGate("mud_gate", MUD);

@@ -68,7 +68,6 @@ public class BlockStateProvider extends FabricModelProvider {
 		generator.family(Blocks.GRAVEL)
 				.fence(ModBlocks.GRAVEL_FENCE.get())
 				.button(ModBlocks.GRAVEL_BUTTON.get())
-				.fenceGate(ModBlocks.GRAVEL_GATE.get())
 				.slab(ModBlocks.GRAVEL_SLAB.get())
 				.stairs(ModBlocks.GRAVEL_STAIRS.get())
 				.wall(ModBlocks.GRAVEL_WALL.get());
@@ -76,7 +75,6 @@ public class BlockStateProvider extends FabricModelProvider {
 		generator.family(ModBlocks.DARK_SAND.get())
 				.fence(ModBlocks.DARK_SAND_FENCE.get())
 				.button(ModBlocks.DARK_SAND_BUTTON.get())
-				.fenceGate(ModBlocks.DARK_SAND_GATE.get())
 				.slab(ModBlocks.DARK_SAND_SLAB.get())
 				.stairs(ModBlocks.DARK_SAND_STAIRS.get())
 				.wall(ModBlocks.DARK_SAND_WALL.get());

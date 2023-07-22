@@ -73,9 +73,9 @@ public class LimboDecayProvider implements DataProvider {
 		createPatterData(DimensionalDoors.id("gritty_stone"), ModBlockTags.DECAY_TO_GRITTY_STONE, ModBlocks.GRITTY_STONE.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("leak"), Fluids.WATER, ModBlocks.LEAK.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("solid_static"), ModBlockTags.DECAY_TO_SOLID_STATIC, ModBlocks.SOLID_STATIC.get()).run(consumer);
-		createPatterData(DimensionalDoors.id("unraveled_fabric"), Blocks.CLAY, ModBlocks.UNRAVELLED_BLOCK.get()).run(consumer);
+		createPatterData(DimensionalDoors.id("unraveled_fabric"), ModBlockTags.DECAY_TO_UNRAVELED_FABRIC, ModBlocks.UNRAVELLED_FABRIC.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("unraveled_fence"), ModBlockTags.DECAY_UNRAVELED_FENCE, ModBlocks.UNRAVELED_FENCE.get()).run(consumer);
-		createPatterData(DimensionalDoors.id("unraveled_gate"), ModBlockTags.DECAY_UNRAVELED_GATE, ModBlocks.UNRAVELED_GATE.get()).run(consumer);
+		createPatterData(DimensionalDoors.id("unraveled_gate"), ModBlocks.UNRAVELED_GATE, ModBlocks.UNRAVELED_GATE.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("unraveled_button"), ModBlockTags.DECAY_UNRAVELED_BUTTON, ModBlocks.UNRAVELED_BUTTON.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("unraveled_slab"), ModBlockTags.DECAY_UNRAVELED_SLAB, ModBlocks.UNRAVELED_SLAB.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("unraveled_stairs"), ModBlockTags.DECAY_UNRAVELED_STAIRS, ModBlocks.UNRAVELED_STAIRS.get()).run(consumer);
@@ -94,13 +94,13 @@ public class LimboDecayProvider implements DataProvider {
 		createPatterData(DimensionalDoors.id("water"), Blocks.SNOW, Fluids.WATER).run(consumer);
 		createPatterData(DimensionalDoors.id("clay"), ModBlockTags.DECAY_TO_CLAY, Blocks.CLAY).run(consumer);
 		createPatterData(DimensionalDoors.id("clay_fence"), ModBlockTags.DECAY_CLAY_FENCE, ModBlocks.CLAY_FENCE.get()).run(consumer);
-		createPatterData(DimensionalDoors.id("clay_gate"), ModBlockTags.DECAY_CLAY_GATE, ModBlocks.CLAY_GATE.get()).run(consumer);
-		createPatterData(DimensionalDoors.id("clay_button"), ModBlockTags.DECAY_CLAY_BUTTON, ModBlocks.CLAY_BUTTON.get()).run(consumer);
-		createPatterData(DimensionalDoors.id("clay_slab"), ModBlockTags.DECAY_CLAY_SLAB, ModBlocks.CLAY_SLAB.get()).run(consumer);
+		createPatterData(DimensionalDoors.id("clay_gate"), ModBlocks.MUD_GATE, ModBlocks.CLAY_GATE.get()).run(consumer);
+		createPatterData(DimensionalDoors.id("clay_wall"), Blocks.BRICK_WALL, ModBlocks.CLAY_WALL).run(consumer);
+		createPatterData(DimensionalDoors.id("clay_button"), ModBlocks.CLAY_BUTTON, ModBlocks.CLAY_BUTTON.get()).run(consumer);
+		createPatterData(DimensionalDoors.id("clay_slab"), ModBlocks.CLAY_SLAB, ModBlocks.CLAY_SLAB.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("clay_stairs"), ModBlockTags.DECAY_CLAY_STAIRS, ModBlocks.CLAY_STAIRS.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("dark_sand"), ModBlockTags.DECAY_TO_DARK_SAND, ModBlocks.DARK_SAND.get()).run(consumer);
-	 	createPatterData(DimensionalDoors.id("dark_sand_fence"), ModBlockTags.DECAY_DARK_SAND_FENCE, ModBlocks.DARK_SAND_FENCE.get()).run(consumer);
-	 	createPatterData(DimensionalDoors.id("dark_sand_gate"), ModBlockTags.DECAY_DARK_SAND_GATE, ModBlocks.DARK_SAND_GATE.get()).run(consumer);
+	 	createPatterData(DimensionalDoors.id("dark_sand_fence"), ModBlocks.GRAVEL_FENCE, ModBlocks.DARK_SAND_FENCE.get()).run(consumer);
 	 	createPatterData(DimensionalDoors.id("dark_sand_button"), ModBlockTags.DECAY_DARK_SAND_BUTTON, ModBlocks.DARK_SAND_BUTTON.get()).run(consumer);
 	 	createPatterData(DimensionalDoors.id("dark_sand_slab"), ModBlockTags.DECAY_DARK_SAND_SLAB, ModBlocks.DARK_SAND_SLAB.get()).run(consumer);
 	 	createPatterData(DimensionalDoors.id("dark_sand_stairs"), ModBlockTags.DECAY_DARK_SAND_STAIRS, ModBlocks.DARK_SAND_STAIRS.get()).run(consumer);
@@ -124,7 +124,6 @@ public class LimboDecayProvider implements DataProvider {
 		createPatterData(DimensionalDoors.id("glass"), ModBlockTags.DECAY_TO_GLASS, Blocks.GLASS).run(consumer);
 		createPatterData(DimensionalDoors.id("gravel"), ModBlockTags.DECAY_TO_GRAVEL, Blocks.GRAVEL).run(consumer);
 		createPatterData(DimensionalDoors.id("gravel_fence"), ModBlockTags.DECAY_TO_GRAVEL_FENCE, ModBlocks.GRAVEL_FENCE.get()).run(consumer);
-		createPatterData(DimensionalDoors.id("gravel_gate"), ModBlockTags.DECAY_TO_GRAVEL_GATE, ModBlocks.GRAVEL_GATE.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("gravel_button"), ModBlockTags.DECAY_TO_GRAVEL_BUTTON, ModBlocks.GRAVEL_BUTTON.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("gravel_slab"), ModBlockTags.DECAY_TO_GRAVEL_SLAB, ModBlocks.GRAVEL_SLAB.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("gravel_stairs"), ModBlockTags.DECAY_TO_GRAVEL_STAIRS, ModBlocks.GRAVEL_STAIRS.get()).run(consumer);
