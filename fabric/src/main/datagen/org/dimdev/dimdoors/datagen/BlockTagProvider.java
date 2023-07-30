@@ -152,7 +152,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
 		add(ModBlockTags.DECAY_TO_MUD,
 				Blocks.DIRT,
-				Blocks.GRASS,
+				Blocks.GRASS_BLOCK,
 				Blocks.PODZOL,
 				Blocks.MYCELIUM,
 				ModBlocks.DRIFTWOOD_PLANKS.get(),
@@ -243,6 +243,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 				.add(Blocks.GOLD_BLOCK.builtInRegistryHolder().key());
 
 
+		add(ModBlockTags.DECAY_TO_DRIFTWOOD_PLANK).addOptionalTag(BlockTags.PLANKS.location());
 	}
 
 	private TagAppender<Block> add(TagKey<Block> tag, Block... blocks) {
