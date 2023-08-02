@@ -67,14 +67,12 @@ shadowJar {
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    inputFile.set(shadowJar.archiveFile)
     dependsOn shadowJar
     archiveClassifier = "forge"
 }
 
-jar {
-    archiveClassifier = "dev"
-}
+jar.archiveClassifier = "dev"
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
