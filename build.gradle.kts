@@ -19,6 +19,12 @@ subprojects {
     loom.silentMojangMappingsLicense()
 
     repositories {
+        mavenCentral()
+        maven("https://maven.shedaniel.me/")
+        maven("https://jitpack.io")
+        maven("https://maven.bai.lol")
+        maven("https://cursemaven.com").content { includeGroup("curse.maven") }
+        maven("https://maven.enginehub.org/repo/")
         maven("https://maven.parchmentmc.org")
     }
 

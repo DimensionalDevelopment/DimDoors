@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 architectury {
@@ -25,21 +25,6 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
-}
-
-repositories {
-    maven { url "https://maven.bai.lol" }
-    maven {
-        url "https://cursemaven.com"
-    }
-    maven { url "https://maven.enginehub.org/repo/" }
-    maven {
-        url = "https://maven.shedaniel.me/"
-    }
-    mavenCentral()
-    maven {
-        url = "https://jitpack.io"
-    }
 }
 
 dependencies {
@@ -78,17 +63,17 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier "forge"
+    archiveClassifier = "forge"
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 }
 
 sourcesJar {
@@ -110,20 +95,5 @@ sourceSets {
                     project(":common").file("src/main/generated")
             ]
         }
-    }
-}
-
-
-publishing {
-    publications {
-        mavenForge(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
     }
 }
