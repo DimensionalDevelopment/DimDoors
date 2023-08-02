@@ -43,7 +43,7 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-    modApi "me.shedaniel.cloth:cloth-config-fabric:9.0.94"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
 
     includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}")
     includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
@@ -60,7 +60,7 @@ dependencies {
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
-    modApi "lol.bai:badpackets:fabric-0.2.0"
+    modApi "lol.bai:badpackets:fabric-0.4.1"
     modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.minecraft_version}:${rootProject.worldedit}"
 }
 
@@ -91,9 +91,7 @@ remapJar {
     archiveClassifier = "fabric"
 }
 
-jar {
-    archiveClassifier = "dev"
-}
+jar.archiveClassifier = "dev"
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar

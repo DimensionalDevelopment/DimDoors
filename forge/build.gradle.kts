@@ -35,7 +35,7 @@ dependencies {
 
     "common"(project(":common", "namedElements")) { isTransitive = false }
     "shadowCommon"(project(":common", "transformProductionForge")) { isTransitive = false }
-    modApi("me.shedaniel.cloth:cloth-config-forge:9.0.94")
+    modApi("me.shedaniel.cloth:cloth-config-forge:${project.properties["cloth_config_version"]}")
 
     include("com.flowpowered:flow-math:1.0.3")
     include("org.jgrapht:jgrapht-core:1.1.0")
