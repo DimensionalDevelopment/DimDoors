@@ -88,3 +88,5 @@ components {
             withVariantsFromConfiguration(project.configurations.shadowRuntimeElements.get()) { skip() }
     }
 }
+
+sourceSets.main.get().resources.srcDirs(project(":common").file("src/main/generated"))
