@@ -40,9 +40,4 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 
 			this.dropSelf(ModBlocks.TESSELATING_LOOM.get());
 		}
-
-	@Override
-	public void accept(BiConsumer<ResourceLocation, LootTable.Builder> resourceLocationBuilderBiConsumer) {
-
-	}
 }
