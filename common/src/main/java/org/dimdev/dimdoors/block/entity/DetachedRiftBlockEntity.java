@@ -40,7 +40,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 			return;
 		}
 
-		if (state.getBlock() != ModBlocks.DETACHED_RIFT) {
+		if (state.getBlock() != ModBlocks.DETACHED_RIFT.get()) {
 			blockEntity.setRemoved();
 			return;
 		}

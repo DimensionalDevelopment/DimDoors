@@ -17,6 +17,11 @@ public class UnstableTarget extends VirtualTarget implements EntityTarget {
 	}
 
 	@Override
+	public VirtualTarget copy() {
+		return this;
+	}
+
+	@Override
 	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
 		if (RANDOM.nextBoolean()) {
 			return RandomTarget.builder()

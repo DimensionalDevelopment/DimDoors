@@ -28,6 +28,11 @@ public class LocalReference extends RiftReference {
 		return VirtualTargetType.LOCAL.get();
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new LocalReference(target);
+	}
+
 	public static CompoundTag toNbt(LocalReference localReference) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putIntArray("target", new int[]{localReference.target.getX(), localReference.target.getY(), localReference.target.getZ()});

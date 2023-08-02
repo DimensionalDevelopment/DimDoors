@@ -20,6 +20,11 @@ public class IdMarker extends VirtualTarget implements EntityTarget {
 		return VirtualTargetType.ID_MARKER.get();
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new IdMarker(id);
+	}
+
 	public static CompoundTag toNbt(IdMarker target) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putInt("id", target.id);

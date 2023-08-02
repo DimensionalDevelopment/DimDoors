@@ -40,8 +40,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 	public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);
 		// randomDisplayTick can be called before the tile entity is created in multiplayer
-		if (!(blockEntity instanceof DetachedRiftBlockEntity)) return;
-		DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) blockEntity;
+		if (!(blockEntity instanceof DetachedRiftBlockEntity rift)) return;
 
 		boolean outsidePocket = !ModDimensions.isPocketDimension(world);
 		double speed = 0.1;

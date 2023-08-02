@@ -80,7 +80,7 @@ public class RiftDataList {
 		}
 
 		public VirtualTarget getDestination() {
-			return destination;
+			return destination.copy();
 		}
 	}
 }

@@ -226,6 +226,11 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		return VirtualTargetType.AVAILABLE_LINK.get();
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new RandomTarget(newRiftWeight, weightMaximum, coordFactor, positiveDepthFactor, negativeDepthFactor, acceptedGroups, noLink, noLinkBack);
+	}
+
 	public static CompoundTag toNbt(RandomTarget target) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("newRiftWeight", target.newRiftWeight);

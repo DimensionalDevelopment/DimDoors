@@ -5,6 +5,7 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -12,11 +13,12 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
+import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 
 public class ModParticleTypes {
 	public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.PARTICLE_TYPE);
 	public static final RegistrySupplier<SimpleParticleType> MONOLITH = REGISTRY.register("monolith", () -> new SimpleParticleType(true) {});
-	public static final RegistrySupplier<RiftParticleType> RIFT = REGISTRY.register("rift", () -> new RiftParticleType());
+	public static final RegistrySupplier<RiftParticleType> RIFT = REGISTRY.register("rift", RiftParticleType::new);
 	public static final RegistrySupplier<SimpleParticleType> LIMBO_ASH = REGISTRY.register("limbo_ash", () -> new SimpleParticleType(false) {});
 
 	public static void init() {
@@ -26,7 +28,7 @@ public class ModParticleTypes {
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
 		ParticleProviderRegistry.register(MONOLITH, (particleOptions, clientLevel, x, y, z, g, h, i) -> new MonolithParticle(clientLevel, x, y, z));
-		ParticleProviderRegistry.register(RIFT, RiftParticle.Factory::new);
+		ParticleProviderRegistry.register(RIFT, spriteSet -> new RiftParticle.Factory(spriteSet));
 		ParticleProviderRegistry.register(LIMBO_ASH, LimboAshParticle.Factory::new);
 	}
 }

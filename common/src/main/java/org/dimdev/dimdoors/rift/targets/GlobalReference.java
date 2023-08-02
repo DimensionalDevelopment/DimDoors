@@ -25,6 +25,11 @@ public class GlobalReference extends RiftReference {
 		return VirtualTargetType.GLOBAL.get();
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new GlobalReference(target);
+	}
+
 	public static CompoundTag toNbt(GlobalReference virtualTarget) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.put("target", Location.toNbt(virtualTarget.getReferencedLocation()));

@@ -59,6 +59,11 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 		return VirtualTargetType.POCKET_ENTRANCE.get();
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new PocketEntranceMarker(weight, ifDestination, otherwiseDestination);
+	}
+
 	public static CompoundTag toNbt(PocketEntranceMarker target) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("weight", target.weight);

@@ -124,6 +124,11 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 		return VirtualTargetType.ESCAPE.get();
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new EscapeTarget(canEscapeLimbo);
+	}
+
 	public static CompoundTag toNbt(EscapeTarget virtualTarget) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);

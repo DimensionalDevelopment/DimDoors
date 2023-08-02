@@ -25,6 +25,11 @@ public class RelativeReference extends RiftReference {
 		return VirtualTargetType.RELATIVE.get();
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new RelativeReference(offset);
+	}
+
 	public static CompoundTag toNbt(RelativeReference target) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putIntArray("offset", new int[]{target.offset.getX(), target.offset.getY(), target.offset.getZ()});

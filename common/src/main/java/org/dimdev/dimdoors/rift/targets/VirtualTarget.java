@@ -81,7 +81,9 @@ public abstract class VirtualTarget implements Target {
 		return false;
 	}
 
-	public interface VirtualTargetType<T extends VirtualTarget> {
+    public abstract VirtualTarget copy();
+
+    public interface VirtualTargetType<T extends VirtualTarget> {
 		RegistrySupplier<VirtualTargetType<RandomTarget>> AVAILABLE_LINK = register("dimdoors:available_link", RandomTarget::fromNbt, RandomTarget::toNbt, VirtualTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<RandomTarget>> DUNGEON = register("dimdoors:dungeon", DungeonTarget::fromNbt, DungeonTarget::toNbt, VirtualTarget.COLOR);
 		RegistrySupplier<VirtualTargetType<EscapeTarget>> ESCAPE = register("dimdoors:escape", EscapeTarget::fromNbt, EscapeTarget::toNbt, VirtualTarget.COLOR);
@@ -159,6 +161,11 @@ public abstract class VirtualTarget implements Target {
 		@Override
 		public int hashCode() {
 			return System.identityHashCode(INSTANCE);
+		}
+
+		@Override
+		public VirtualTarget copy() {
+			return INSTANCE;
 		}
 
 		@Override

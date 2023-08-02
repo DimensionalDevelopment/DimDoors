@@ -43,6 +43,11 @@ public class PublicPocketTarget extends RestoringTarget {
 		return VirtualTargetType.PUBLIC_POCKET.get();
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new PublicPocketTarget(wrappedDestination);
+	}
+
 	public static CompoundTag toNbt(PublicPocketTarget target) {
 		CompoundTag nbt = new CompoundTag();
 		if (target.wrappedDestination != null)
