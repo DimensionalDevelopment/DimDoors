@@ -68,7 +68,7 @@ public class DimensionalDoorBlockRegistrar {
 			if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock doorBlock) {
 				register(registrar, ResourceLocation, doorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock);
 			} else if (!(original instanceof DimensionalTrapdoorBlock) && original instanceof TrapDoorBlock trapdoorBlock) {
-				register(registrar, ResourceLocation, trapdoorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalTrapdoorBlock);
+//				register(registrar, ResourceLocation, trapdoorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalTrapdoorBlock); //TODO: readd once plan for handling trapdoors is figured out.
 			}
 		}
 	}

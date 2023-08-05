@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.particle;
 
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.ParticleProvider;
+import dev.architectury.utils.Env;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -13,7 +12,6 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
-import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
 
 public class ModParticleTypes {
 	public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.PARTICLE_TYPE);
@@ -23,12 +21,11 @@ public class ModParticleTypes {
 
 	public static void init() {
 		REGISTRY.register();
+		if (Platform.getEnvironment() == Env.CLIENT) {
+			ParticleProviderRegistry.register(MONOLITH, (particleOptions, clientLevel, x, y, z, g, h, i) -> new MonolithParticle(clientLevel, x, y, z));
+			ParticleProviderRegistry.register(RIFT, RiftParticle.Factory::new);
+			ParticleProviderRegistry.register(LIMBO_ASH, LimboAshParticle.Factory::new);
+		}
 	}
 
-	@Environment(EnvType.CLIENT)
-	public static void initClient() {
-		ParticleProviderRegistry.register(MONOLITH, (particleOptions, clientLevel, x, y, z, g, h, i) -> new MonolithParticle(clientLevel, x, y, z));
-		ParticleProviderRegistry.register(RIFT, spriteSet -> new RiftParticle.Factory(spriteSet));
-		ParticleProviderRegistry.register(LIMBO_ASH, LimboAshParticle.Factory::new);
-	}
 }

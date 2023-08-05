@@ -6,18 +6,25 @@ import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItem;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.rift.targets.RandomTarget;
+import org.dimdev.dimdoors.rift.targets.UnstableTarget;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -95,8 +102,6 @@ public final class ModItems {
 	public static final RegistrySupplier<Item> ENDURING_FIBERS = register("enduring_fibers", Item::new);
 
 	public static final RegistrySupplier<Item> RIFT_PEARL = register("rift_pearl", Item::new);
-
-	public static final RegistrySupplier<Item> FABRIC_OF_REALITY = register("fabric_of_reality", Item::new);
 
 	public static final RegistrySupplier<Item> AMALGAM_LUMP = register("amalgam_lump", Item::new);
 

@@ -83,7 +83,7 @@ public class DimensionalDoorItemRegistrar {
 				if (originalBlock instanceof DoorBlock) {
 					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalDoorItem::new);
 				} else {
-					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalTrapdoorItem::new);
+//					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalTrapdoorItem::new); //TODO: Readd once plan for trapdoors is fully fleshed out.
 				}
 			}
 		}

@@ -25,7 +25,6 @@ public class DimensionalDoorsClient {
         ModBlockEntityTypes.initClient();
         ModBlocks.initClient();
 		ModEntityModelLayers.initClient();
-		ModParticleTypes.initClient();
 
 //		DimensionRenderering.initClient();
 

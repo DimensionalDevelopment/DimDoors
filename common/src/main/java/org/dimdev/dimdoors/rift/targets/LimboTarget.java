@@ -21,7 +21,7 @@ public class LimboTarget extends VirtualTarget implements EntityTarget {
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
 		BlockPos teleportPos = entity.blockPosition();
-		while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
+		while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID.get()) {
 			teleportPos = teleportPos.offset(1, 0, 1);
 		}
 		TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), relativeAngle, relativeVelocity);

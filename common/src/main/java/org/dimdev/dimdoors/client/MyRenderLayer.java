@@ -30,7 +30,7 @@ public class MyRenderLayer extends RenderType {
 
     public static RenderType CRACK = RenderType.create("crack",
 			DefaultVertexFormat.POSITION_COLOR,
-			VertexFormat.Mode.QUADS,
+			VertexFormat.Mode.TRIANGLES,
 			256,
 			false,
 			false,

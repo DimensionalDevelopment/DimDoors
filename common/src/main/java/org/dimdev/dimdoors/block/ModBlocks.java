@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 
 import java.util.HashMap;
@@ -44,9 +45,9 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTab("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
 
-	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = register("dimensional_portal", () -> new DimensionalPortalBlock(of(Material.AIR).noCollission().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
+	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", () -> new DimensionalPortalBlock(of(Material.AIR).noCollission().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
 
-	public static final RegistrySupplier<Block> DETACHED_RIFT = register("detached_rift", () -> new DetachedRiftBlock(of(Material.AIR, MaterialColor.COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
+	public static final RegistrySupplier<Block> DETACHED_RIFT = registerWithoutTab("detached_rift", () -> new DetachedRiftBlock(of(Material.AIR, MaterialColor.COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
 
 	public static final RegistrySupplier<Block> WHITE_FABRIC = registerFabric(DyeColor.WHITE);
 
@@ -242,8 +243,7 @@ public final class ModBlocks {
 
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
-		RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR.get(), ModBlocks.GOLD_DOOR.get());
-//		DoorData.DOORS.forEach(door -> BlockRenderLayerMap.INSTANCE.putBlock(door, RenderLayer.getCutout()));
+		RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR.get(), ModBlocks.GOLD_DOOR.get(), ModBlocks.DRIFTWOOD_LEAVES.get(), ModBlocks.UNRAVELED_SPIKE.get());
 	}
 
 	public static RegistrySupplier<Block> ancientFabricFromDye(DyeColor color) {

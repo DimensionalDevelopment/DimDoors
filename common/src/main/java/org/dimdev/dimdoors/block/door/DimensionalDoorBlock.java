@@ -16,6 +16,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
@@ -244,7 +245,6 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			}
 		}
 		super.playerWillDestroy(world, pos, state, player);
-
 	}
 
 	@Override
@@ -276,35 +276,6 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	public boolean isTall(BlockState cachedState) {
 		return true;
 	}
-
-	@Override
-	public void playerDestroy(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
-		super.playerDestroy(world, player, pos, state, blockEntity, itemStack);
-		if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
-			return;
-		}
-
-		if (blockEntity instanceof EntranceRiftBlockEntity && state.getValue(HALF) == DoubleBlockHalf.LOWER) {
-			world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
-			((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
-		}
-	}
-/*
-	Saved incase needed.
-	- Waterpicker
-* */
-//	static {
-//		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
-//			if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
-//				return;
-//			}
-//			if (blockEntity instanceof EntranceRiftBlockEntity && state.get(HALF) == DoubleBlockHalf.LOWER) {
-//				world.setBlockState(pos, ModBlocks.DETACHED_RIFT.getDefaultState().with(WATERLOGGED, state.get(WATERLOGGED)));
-//				((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
-//			}
-//		});
-//	}
-
 
 	@Override
 	public InteractionResult explode(Level world, BlockPos pos, BlockState state, BlockEntity blockEntity) {

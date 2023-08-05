@@ -1,4 +1,9 @@
 package org.dimdev.dimdoors.block;
 
-public class UnravelledSpikeBlock {
+import net.minecraft.world.level.block.PointedDripstoneBlock;
+
+public class UnravelledSpikeBlock extends PointedDripstoneBlock {
+    public UnravelledSpikeBlock(Properties properties) {
+        super(properties);
+    }
 }

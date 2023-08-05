@@ -18,7 +18,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.particle.client.RiftParticleEffect;
+import org.dimdev.dimdoors.particle.client.RiftParticleOptions;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +46,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 		double speed = 0.1;
 
 		if (rift.closing) {
-			world.addParticle(RiftParticleEffect.of(outsidePocket),
+			world.addParticle(RiftParticleOptions.of(outsidePocket),
 					pos.getX() + .5,
 					pos.getY() + .5,
 					pos.getZ() + .5,
@@ -56,7 +56,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 			);
 		}
 
-		world.addParticle(RiftParticleEffect.of(outsidePocket, rift.stabilized),
+		world.addParticle(RiftParticleOptions.of(outsidePocket, rift.stabilized),
 				pos.getX() + .5,
 				pos.getY() + .5,
 				pos.getZ() + .5,

@@ -39,6 +39,9 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 				} else {
 					EntityUtils.chat(entity, Component.translatable("rifts.destinations.private_pocket_exit.rift_has_closed"));
 				}
+
+				LimboTarget.INSTANCE.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
+
 				return false;
 			} else {
 				((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);

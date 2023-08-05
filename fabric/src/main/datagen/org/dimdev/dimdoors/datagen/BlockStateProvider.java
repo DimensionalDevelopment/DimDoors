@@ -8,6 +8,8 @@ import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
+import net.minecraft.data.models.blockstates.Variant;
+import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
@@ -17,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DripstoneThickness;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.item.ModItems;
@@ -84,7 +87,8 @@ public class BlockStateProvider extends FabricModelProvider {
 				.fenceGate(ModBlocks.CLAY_GATE.get())
 				.button(ModBlocks.CLAY_BUTTON.get())
 				.slab(ModBlocks.CLAY_SLAB.get())
-				.stairs(ModBlocks.CLAY_STAIRS.get());
+				.stairs(ModBlocks.CLAY_STAIRS.get())
+				.wall(ModBlocks.CLAY_WALL.get());
 
 
 	generator.family(ModBlocks.UNRAVELLED_FABRIC.get())
@@ -137,17 +141,21 @@ public class BlockStateProvider extends FabricModelProvider {
 	}
 
 	private void registerPointedDripstone(BlockModelGenerators generator) {
-		generator.skipAutoItemBlock(ModBlocks.UNRAVELED_SPIKE.get());
 		PropertyDispatch.C2<Direction, DripstoneThickness> doubleProperty = PropertyDispatch.properties(BlockStateProperties.VERTICAL_DIRECTION, BlockStateProperties.DRIPSTONE_THICKNESS);
 		for (DripstoneThickness thickness : DripstoneThickness.values()) {
-			doubleProperty.select(Direction.UP, thickness, generator.createPointedDripstoneVariant(Direction.UP, thickness));
+			doubleProperty.select(Direction.UP, thickness, createPointedUnraveledspikeVariant(generator, Direction.UP, thickness));
 		}
 		for (DripstoneThickness thickness : DripstoneThickness.values()) {
-			doubleProperty.select(Direction.DOWN, thickness, generator.createPointedDripstoneVariant(Direction.DOWN, thickness));
+			doubleProperty.select(Direction.DOWN, thickness, createPointedUnraveledspikeVariant(generator, Direction.DOWN, thickness));
 		}
 		generator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(ModBlocks.UNRAVELED_SPIKE.get()).with(doubleProperty));
 	}
 
+	public final Variant createPointedUnraveledspikeVariant(BlockModelGenerators generators, Direction direction, DripstoneThickness dripstoneThickness) {
+		String string = "_" + direction.getSerializedName() + "_" + dripstoneThickness.getSerializedName();
+		TextureMapping textureMapping = TextureMapping.cross(TextureMapping.getBlockTexture(ModBlocks.UNRAVELED_SPIKE.get(), string));
+		return Variant.variant().with(VariantProperties.MODEL, ModelTemplates.POINTED_DRIPSTONE.createWithSuffix(Blocks.POINTED_DRIPSTONE, string, textureMapping, generators.modelOutput));
+	}
 
 	public void registerDoor(BlockModelGenerators generator, Block doorBlock, Block textureSource) {
 		TextureMapping textureMap = TextureMapping.door(textureSource);
@@ -174,7 +182,7 @@ public class BlockStateProvider extends FabricModelProvider {
 		ResourceLocation identifier6 = getBlockTexture(textureSource, "_top_left_open");
 		ResourceLocation identifier7 = getBlockTexture(textureSource, "_top_right");
 		ResourceLocation identifier8 = getBlockTexture(textureSource, "_top_right_open");
-		ModelTemplates.TWO_LAYERED_ITEM.create(ModelLocationUtils.getModelLocation(doorBlock), TextureMapping.layered(getItemTexture(Items.ENDER_PEARL), getItemTexture(textureSource.asItem())), generator.modelOutput);
+		ModelTemplates.TWO_LAYERED_ITEM.create(ModelLocationUtils.getModelLocation(doorBlock), TextureMapping.layered(DimensionalDoors.id("item/dimdoor_back"), getItemTexture(textureSource.asItem())), generator.modelOutput);
 		generator.blockStateOutput.accept(BlockModelGenerators.createDoor(doorBlock, identifier, identifier2, identifier3, identifier4, identifier5, identifier6, identifier7, identifier8));
 	}
 
