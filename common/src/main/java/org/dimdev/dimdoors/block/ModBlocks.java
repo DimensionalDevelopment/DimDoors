@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.block;
 
-import dev.architectury.core.block.ArchitecturyLiquidBlock;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.material.MaterialColor;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
-import org.dimdev.dimdoors.fluid.ModFluids;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -117,9 +115,9 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
 	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = of(Material.STONE, MaterialColor.COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
 
-	public static final RegistrySupplier<LiquidBlock> ETERNAL_FLUID = register("eternal_fluid", () -> new ArchitecturyLiquidBlock(ModFluids.ETERNAL_FLUID, of(Material.LAVA, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
-
-	public static final RegistrySupplier<LiquidBlock> LEAK = register("leak", () -> new ArchitecturyLiquidBlock(ModFluids.LEAK, BlockBehaviour.Properties.of(Material.WATER, MaterialColor.COLOR_GRAY)));
+	public static final RegistrySupplier<LiquidBlock> ETERNAL_FLUID = register("eternal_fluid", () -> {
+		return new EternalFluidBlock(of(Material.LAVA, MaterialColor.COLOR_RED).lightLevel(state -> 15));
+	});
 
 	public static final RegistrySupplier<Block> DECAYED_BLOCK = registerWithoutTab("decayed_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
@@ -220,6 +218,7 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> UNRAVELED_SPIKE = register("unraveled_spike", () -> new PointedDripstoneBlock(of(UNRAVELLED_FABRIC.get()).lightLevel(state -> 0))); //TODO: make this proper class later
 	public static final RegistrySupplier<Block> GRITTY_STONE = register("gritty_stone", () -> new Block(of(STONE)));
+	public static final RegistrySupplier<Block> LEAK = register("leak", () -> new Block(of(WATER)));
 
 	public static void init() {
 		BLOCKS.register();
