@@ -2,27 +2,26 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
+import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
+import dev.architectury.registry.client.particle.ParticleProviderRegistry;
+import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.gui.registry.GuiRegistry;
-import me.shedaniel.autoconfig.gui.registry.api.GuiProvider;
-import me.shedaniel.autoconfig.gui.registry.api.GuiRegistryAccess;
 import me.shedaniel.autoconfig.util.Utils;
-import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.network.chat.Component;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
-import org.dimdev.dimdoors.particle.ModParticleTypes;
+import org.dimdev.dimdoors.particle.client.LimboAshParticle;
+import org.dimdev.dimdoors.particle.client.MonolithParticle;
+import org.dimdev.dimdoors.particle.client.RiftParticle;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 
 import java.io.IOException;
@@ -37,17 +36,21 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.dimdev.dimdoors.particle.ModParticleTypes.*;
+
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClient {
 	private static final ConfigEntryBuilder ENTRY_BUILDER = ConfigEntryBuilder.create();
 
 	public static void init() {
 		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
-        ModEntityTypes.initClient();
+		initEntitiesClient();
 //		ModFluids.initClient();
-        ModBlockEntityTypes.initClient();
+        initBlockEntitiesClient();
         ModBlocks.initClient();
 		ModEntityModelLayers.initClient();
+
+		registerParticles();
 
 		AutoConfig.getGuiRegistry(ModConfig.class).registerPredicateProvider((i18n, field, config, defaults, registry) -> Collections.singletonList(ENTRY_BUILDER
 				.startStrList(Component.translatable(i18n), ((Set<String>) Utils.getUnsafely(field, config, defaults)).stream().toList())
@@ -59,6 +62,17 @@ public class DimensionalDoorsClient {
 
 		ClientPacketHandler.init();
     }
+	@Environment(EnvType.CLIENT)
+	public static void initEntitiesClient() {
+		EntityRendererRegistry.register(ModEntityTypes.MONOLITH, MonolithRenderer::new);
+//        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
+	}
+
+	@Environment(EnvType.CLIENT)
+	public static void initBlockEntitiesClient() {
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), context -> new EntranceRiftBlockEntityRenderer());
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), ctx -> new DetachedRiftBlockEntityRenderer());
+	}
 
 	private static Predicate<Field> isListOfType(Type... types) {
 		return field -> {
@@ -90,5 +104,11 @@ public class DimensionalDoorsClient {
 				throw new RuntimeException(e);
 			}
 		});
+	}
+
+	public static void registerParticles() {
+		ParticleProviderRegistry.register(MONOLITH, (particleOptions, clientLevel, x, y, z, g, h, i) -> new MonolithParticle(clientLevel, x, y, z));
+		ParticleProviderRegistry.register(RIFT, RiftParticle.Factory::new);
+		ParticleProviderRegistry.register(LIMBO_ASH, LimboAshParticle.Factory::new);
 	}
 }

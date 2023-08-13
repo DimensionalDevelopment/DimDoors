@@ -49,10 +49,4 @@ public class ModBlockEntityTypes {
 	public static void init() {
 		BLOCK_ENTITY_TYPES.register();
 	}
-
-	@Environment(EnvType.CLIENT)
-	public static void initClient() {
-		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), context -> new EntranceRiftBlockEntityRenderer());
-		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), ctx -> new DetachedRiftBlockEntityRenderer());
-	}
 }

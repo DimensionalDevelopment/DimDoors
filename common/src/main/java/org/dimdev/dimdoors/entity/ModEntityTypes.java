@@ -36,12 +36,6 @@ public class ModEntityTypes {
         EntityAttributeRegistry.register(MASK, MonolithEntity::createMobAttributes);
     }
 
-    @Environment(EnvType.CLIENT)
-    public static void initClient() {
-        EntityRendererRegistry.register(MONOLITH, MonolithRenderer::new);
-//        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
-    }
-
     private static <E extends Entity> RegistrySupplier<EntityType<E>> register(String id, EntityType.EntityFactory<E> factory, float width, float height, boolean fixed) {
         return ENTITY_TYPES.register(id, () -> EntityType.Builder.of(factory, MobCategory.MONSTER).sized(width, height).canSpawnFarFromPlayer().fireImmune().build(id));
     }
