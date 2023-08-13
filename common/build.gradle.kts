@@ -20,8 +20,8 @@ dependencies {
 
     modApi("com.sk89q.worldedit:worldedit-core:${project.properties["worldedit"]}")
 
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${project.properties["rei_version"]}")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin:${project.properties["rei_version"]}")
+//    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${project.properties["rei_version"]}")
+//    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin:${project.properties["rei_version"]}")
 }
 
 sourceSets.main {

@@ -1,4 +1,6 @@
 {
-  "parent": "dimdoors:block/fullbright",
-  "textures": { "all": "dimdoors:block/eternal_fluid_flow" }
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dimdoors:block/eternal_fluid_flow"
+  }
 }

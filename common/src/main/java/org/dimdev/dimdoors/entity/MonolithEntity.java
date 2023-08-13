@@ -40,8 +40,6 @@ public class MonolithEntity extends Mob {
     private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
     private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
-    @Environment(EnvType.CLIENT)
-    private static final RandomSource clientRandom = RandomSource.create();
 
     private int soundTime = 0;
     private final int aggroCap;
@@ -229,23 +227,6 @@ public class MonolithEntity extends Mob {
 	@Override
 	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
 		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
-	}
-
-	@Environment(EnvType.CLIENT)
-    public static void spawnParticles(int aggro) {
-		Player player = Minecraft.getInstance().player;
-		if (aggro < 120) {
-			return;
-		}
-		int count = 10 * aggro / MAX_AGGRO;
-		for (int i = 1; i < count; ++i) {
-			//noinspection ConstantConditions
-			player.level.addParticle(ParticleTypes.PORTAL, player.getX() + (clientRandom.nextDouble() - 0.5D) * 3.0,
-					player.getY() + clientRandom.nextDouble() * player.getBbHeight() - 0.75D,
-					player.getZ() + (clientRandom.nextDouble() - 0.5D) * player.getBbWidth(),
-					(clientRandom.nextDouble() - 0.5D) * 2.0D, -clientRandom.nextDouble(),
-					(clientRandom.nextDouble() - 0.5D) * 2.0D);
-		}
 	}
 
     public float getAggroProgress() {

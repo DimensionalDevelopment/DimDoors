@@ -159,8 +159,6 @@ public class DimensionalDoors {
 	}
 
 	private static void registerListeners() {
-		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
-
 //		PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
 
 		ChunkServedCallback.EVENT.register(new ChunkLoadListener()); // lazy pocket gen

@@ -18,6 +18,8 @@ import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket.spawnParticles;
+
 @Environment(EnvType.CLIENT)
 public class ClientPacketHandler implements ClientPacketListener {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -96,7 +98,7 @@ public class ClientPacketHandler implements ClientPacketListener {
 
 	@Override
 	public void onMonolithAggroParticles(MonolithAggroParticlesPacket packet) {
-		Minecraft.getInstance().execute(() -> MonolithEntity.spawnParticles(packet.getAggro()));
+		Minecraft.getInstance().execute(() -> spawnParticles(packet.getAggro()));
 	}
 
 	@Override

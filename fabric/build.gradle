@@ -71,9 +71,9 @@ dependencies {
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     modApi "com.terraformersmc:modmenu:6.3.1"
 
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rei_version"
+//    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
+//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
+//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rei_version"
 }
 
 processResources {
