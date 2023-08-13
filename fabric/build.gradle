@@ -38,12 +38,18 @@ def includeCompile(entry) {
     }
 }
 
+repositories {
+   maven {
+       url = "https://maven.terraformersmc.com/releases/"
+   }
+}
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-    modApi "me.shedaniel.cloth:cloth-config-fabric:9.0.94"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:10.1.105"
 
     includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}")
     includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
@@ -62,6 +68,12 @@ dependencies {
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     modApi "lol.bai:badpackets:fabric-0.2.0"
     modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.minecraft_version}:${rootProject.worldedit}"
+    modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
+    modApi "com.terraformersmc:modmenu:6.3.1"
+
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric:$rei_version"
 }
 
 processResources {

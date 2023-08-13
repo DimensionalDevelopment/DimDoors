@@ -30,10 +30,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
- * Provides methods for applying Limbo decay. Limbo decay refers to the effect that most blocks placed in Limbo
- * naturally change into stone, then cobble, then gravel, and finally Unraveled Fabric as time passes.
+ * Provides methods for applying decay. Decay refers to the effect that most blocks placed next to certain blocks like unraveled fabric
+ * change into simpler forms ultimately becoming in most cases unraveled Fabric as time passes.
  */
-public final class LimboDecay {
+public final class Decay {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<ResourceKey<Level>, Set<DecayTask>> DECAY_QUEUE = new HashMap<>();
 
@@ -46,7 +46,7 @@ public final class LimboDecay {
 	public static void applySpreadDecay(ServerLevel world, BlockPos pos) {
 		//Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
 		//full spread decay checks, which can also shift its performance impact on the game.
-		if (RANDOM.nextDouble() < DimensionalDoors.getConfig().getLimboConfig().decaySpreadChance) {
+		if (RANDOM.nextDouble() < DimensionalDoors.getConfig().getDecayConfig().decaySpreadChance) {
 			BlockState origin = world.getBlockState(pos);
 
 			//Apply decay to the blocks above, below, and on all four sides.
@@ -83,7 +83,7 @@ public final class LimboDecay {
 				ExtendedServerPlayNetworkHandler.get(player.connection).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, 5));
 			});
 			world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), ModSoundEvents.TEARING.get(), SoundSource.BLOCKS, 0.5f, 1f);
-			queueDecay(world, pos, origin, pattern, DimensionalDoors.getConfig().getLimboConfig().limboDecay);
+			queueDecay(world, pos, origin, pattern, DimensionalDoors.getConfig().getDecayConfig().decayDelay);
 			break;
 		}
 	}

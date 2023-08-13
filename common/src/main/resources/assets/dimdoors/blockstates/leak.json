@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "level=0": {
+      "model": "minecraft:block/air"
+    },
+    "level=1": {
+      "model": "minecraft:block/air"
+    },
+    "level=2": {
+      "model": "minecraft:block/air"
+    },
+    "level=3": {
+      "model": "minecraft:block/air"
+    },
+    "level=4": {
+      "model": "minecraft:block/air"
+    },
+    "level=5": {
+      "model": "minecraft:block/air"
+    },
+    "level=6": {
+      "model": "minecraft:block/air"
+    },
+    "level=7": {
+      "model": "minecraft:block/air"
+    },
+    "level=8": {
+      "model": "minecraft:block/air"
+    },
+    "level=9": {
+      "model": "minecraft:block/air"
+    },
+    "level=10": {
+      "model": "minecraft:block/air"
+    },
+    "level=11": {
+      "model": "minecraft:block/air"
+    },
+    "level=12": {
+      "model": "minecraft:block/air"
+    },
+    "level=13": {
+      "model": "minecraft:block/air"
+    },
+    "level=14": {
+      "model": "minecraft:block/air"
+    },
+    "level=15": {
+      "model": "minecraft:block/air"
+    }
+  }
+}

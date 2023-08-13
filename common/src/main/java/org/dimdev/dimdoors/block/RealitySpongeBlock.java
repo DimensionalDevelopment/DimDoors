@@ -6,7 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.dimdev.dimdoors.world.decay.LimboDecay;
+import org.dimdev.dimdoors.world.decay.Decay;
 
 public class RealitySpongeBlock extends Block {
 
@@ -20,8 +20,7 @@ public class RealitySpongeBlock extends Block {
 			BlockPos currentPos = pos.relative(direction);
 
 			if(!world.isEmptyBlock(currentPos)) {
-				System.out.println("Decaying.");
-				LimboDecay.decayBlock(world, currentPos, state);
+				Decay.decayBlock(world, currentPos, state);
 			}
 		}
 	}

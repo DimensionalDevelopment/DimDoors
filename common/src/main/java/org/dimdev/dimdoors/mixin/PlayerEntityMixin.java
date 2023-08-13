@@ -42,7 +42,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Unique
 	protected void doOnDeathStuff(DamageSource source, CallbackInfo ci) {
-		if (ModDimensions.isPocketDimension(this.level) || DimensionalDoors.getConfig().getLimboConfig().universalLimbo) {
+		if (ModDimensions.isPocketDimension(this.level) || DimensionalDoors.getConfig().getLimboConfig().shouldUseLimbo(this.level.dimension())) {
 			((EntityAccessor) this).setRemovalReason(null);
 			this.dead = false;
 			this.setHealth(this.getMaxHealth());

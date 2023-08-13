@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors;
 
 import dev.architectury.event.events.client.ClientPlayerEvent;
-import dev.architectury.event.events.common.ChunkEvent;
 import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.networking.NetworkChannel;
@@ -60,7 +59,7 @@ import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.LimboDecay;
+import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -104,8 +103,6 @@ public class DimensionalDoors {
 	public static void init() {
 		dimDoorsMod = Platform.getMod(MOD_ID);
 
-		dimDoorsMod.registerConfigurationScreen(ModMenu::getConfigScreen); //TODO: Move to client.
-
 		registerRegistries();
 
 		ModRecipeTypes.init();
@@ -134,7 +131,7 @@ public class DimensionalDoors {
 		initBuiltinPacks();
 
 		ReloadListenerRegistry.register(PackType.SERVER_DATA, PocketLoader.getInstance());
-		ReloadListenerRegistry.register(PackType.SERVER_DATA, LimboDecay.DecayLoader.getInstance());
+		ReloadListenerRegistry.register(PackType.SERVER_DATA, Decay.DecayLoader.getInstance());
 		ReloadListenerRegistry.register(PackType.SERVER_DATA, DoorRiftDataLoader.getInstance());
 
 
@@ -187,5 +184,9 @@ public class DimensionalDoors {
 
 	public static DimensionalDoorBlockRegistrar getDimensionalDoorBlockRegistrar() {
 		return dimensionalDoorBlockRegistrar;
+	}
+
+	public static Mod getDimDoorsMod() {
+		return dimDoorsMod;
 	}
 }

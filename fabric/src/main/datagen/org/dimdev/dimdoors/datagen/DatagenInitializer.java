@@ -12,7 +12,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 	public void onInitializeDataGenerator(FabricDataGenerator generator) {
 		var pack = generator.createPack();
 
-		pack.addProvider(BlockStateProvider::new);
+		pack.addProvider(DimDoorsModelProvider::new);
 		pack.addProvider((DataProvider.Factory<DataProvider>) DimdoorsRecipeProvider::new);
 		pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) AdvancementProvider::new);
 		pack.addProvider(org.dimdev.dimdoors.datagen.LootTableProvider::new);

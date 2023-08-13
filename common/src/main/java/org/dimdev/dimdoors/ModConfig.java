@@ -8,17 +8,16 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.*;
@@ -51,6 +50,10 @@ public final class ModConfig implements ConfigData {
 	@Category("doors")
 	private Doors doors = new Doors();
 
+	@TransitiveObject
+	@Category("decay")
+	private Decay decay = new Decay();
+
 	public General getGeneralConfig() {
 		return this.general;
 	}
@@ -81,6 +84,10 @@ public final class ModConfig implements ConfigData {
 
 	public Doors getDoorsConfig() {
 		return this.doors;
+	}
+
+	public Decay getDecayConfig() {
+		return decay;
 	}
 
 	public static class General {
@@ -160,11 +167,31 @@ public final class ModConfig implements ConfigData {
 	}
 
 	public static class Limbo {
-		@Tooltip public boolean universalLimbo = false;
+
+		@CollapsibleObject
+		@RequiresRestart
+		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList(List.of(), true);
 		@Tooltip public boolean hardcoreLimbo = false;
-		@Tooltip public double decaySpreadChance = 1.0;
-		@Tooltip public int limboDecay = 40;
 		@Tooltip public float limboBlocksCorruptingOverworldAmount = 5;
+		public boolean shouldUseLimbo(ResourceKey<Level> level) {
+			return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level.location().toString());
+		}
+
+		public static final class WorldList {
+			@Tooltip public List<String> list;
+			@Tooltip public boolean blacklist;
+
+			public WorldList(List<String> list, boolean blacklist) {
+				this.list = list;
+				this.blacklist = blacklist;
+			}
+		}
+	}
+
+	public static class Decay {
+		@Tooltip public double decaySpreadChance = 1.0;
+
+		@Tooltip public int decayDelay = 40;
 	}
 
 	public static class Graphics {
