@@ -8,6 +8,8 @@ import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import org.dimdev.dimdoors.client.ModRecipeBookTypes;
+import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 
 public class TesselatingScreenHandler extends RecipeBookMenu<Container> {
 	public static final int INPUT1_SLOT = 0;
@@ -100,7 +102,7 @@ public class TesselatingScreenHandler extends RecipeBookMenu<Container> {
 
 	@Override
 	public RecipeBookType getRecipeBookType() {
-		return RecipeBookType.CRAFTING;
+		return ModRecipeBookTypes.TESSELLATING;
 	}
 
 	@Override

@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.fabric;
 
+import com.chocohead.mm.api.ClassTinkerers;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.world.inventory.RecipeBookType;
 
 import java.nio.file.Path;
 

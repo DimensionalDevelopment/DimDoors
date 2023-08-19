@@ -2,6 +2,7 @@ package org.dimdev.dimdoors;
 
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.InteractionEvent;
+import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.networking.NetworkChannel;
 import dev.architectury.platform.Mod;
@@ -15,12 +16,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.client.ModRecipeBookGroups;
+import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.criteria.ModCriteria;
@@ -65,6 +69,8 @@ import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.nio.file.Path;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class DimensionalDoors {
@@ -174,6 +180,8 @@ public class DimensionalDoors {
 
 		// placing doors on rifts
 		UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());
+
+		TickEvent.SERVER_LEVEL_PRE.register(Decay::tick);
 	}
 
 	public static DimensionalDoorItemRegistrar getDimensionalDoorItemRegistrar() {

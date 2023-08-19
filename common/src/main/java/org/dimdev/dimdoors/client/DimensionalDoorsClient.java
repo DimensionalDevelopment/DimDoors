@@ -12,13 +12,22 @@ import me.shedaniel.autoconfig.util.Utils;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.dimdev.dimdoors.ModConfig;
+import org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
@@ -28,6 +37,7 @@ import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
+import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 
 import java.io.IOException;
@@ -52,11 +62,9 @@ public class DimensionalDoorsClient {
 		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
 
 		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
-		initEntitiesClient();
 //		ModFluids.initClient();
-        initBlockEntitiesClient();
-        ModBlocks.initClient();
-		ModEntityModelLayers.initClient();
+		initBlockEntitiesClient();
+		ModBlocks.initClient();
 
 		AutoConfig.getGuiRegistry(ModConfig.class).registerPredicateProvider((i18n, field, config, defaults, registry) -> Collections.singletonList(ENTRY_BUILDER
 				.startStrList(Component.translatable(i18n), ((Set<String>) Utils.getUnsafely(field, config, defaults)).stream().toList())
@@ -67,11 +75,13 @@ public class DimensionalDoorsClient {
 		registerListeners();
 
 		ClientPacketHandler.init();
+
+
     }
 
 	@Environment(EnvType.CLIENT)
-	public static void initEntitiesClient() {
-		EntityRendererRegistry.register(ModEntityTypes.MONOLITH, MonolithRenderer::new);
+	public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer) {
+		consumer.accept(ModEntityTypes.MONOLITH.get(), MonolithRenderer::new);
 //        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
 	}
 

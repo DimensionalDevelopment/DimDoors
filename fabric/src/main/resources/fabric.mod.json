@@ -34,7 +34,10 @@
     "fabric-datagen": [
       "org.dimdev.dimdoors.datagen.DatagenInitializer"
     ],
-    "modmenu": [ "org.dimdev.dimdoors.compat.ModMenuCompat" ]
+    "modmenu": [ "org.dimdev.dimdoors.compat.ModMenuCompat" ],
+    "mm:early_risers": [
+      "org.dimdev.dimdoors.EarlyRiser"
+    ]
   },
   "mixins": [
     "dimdoors.mixins.json",

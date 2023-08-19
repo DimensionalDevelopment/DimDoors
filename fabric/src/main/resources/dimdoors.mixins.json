@@ -1,11 +1,15 @@
 {
   "required": true,
-  "package": "net.examplemod.mixin.fabric",
+  "package": "org.dimdev.dimdoors.fabric.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
+    "client.RecipeBookCategoriesAccessor",
+    "client.RecipeBookCategoriesMixin",
+    "client.RecipeBookManagerMixin"
   ],
   "mixins": [
+    "RecipeBookSettingsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

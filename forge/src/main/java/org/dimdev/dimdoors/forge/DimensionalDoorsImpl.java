@@ -5,6 +5,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -37,5 +38,9 @@ public class DimensionalDoorsImpl {
         var resourcePath = ModList.get().getModFileById(DimensionalDoors.MOD_ID).getFile().findResource("resourcepacks", id);
         return Pack.readMetaAndCreate("builtin/" + id, Component.literal(name), false,
                 (path) -> new PathPackResources(path, resourcePath, false), PackType.SERVER_DATA, Pack.Position.BOTTOM, PackSource.BUILT_IN);
+    }
+
+    public static RecipeBookType createTeselattingRecipeBookType() {
+        return RecipeBookType.create("TESSELLATING");
     }
 }

@@ -65,6 +65,8 @@ dependencies {
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 
+    includeCompile "com.github.Chocohead:Fabric-ASM:v2.3"
+
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     modApi "lol.bai:badpackets:fabric-0.2.0"
     modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.minecraft_version}:${rootProject.worldedit}"

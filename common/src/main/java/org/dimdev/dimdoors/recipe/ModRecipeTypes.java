@@ -16,10 +16,11 @@ public class ModRecipeTypes {
 	public static RegistrySupplier<RecipeType<TesselatingRecipe>> TESSELATING = register("tesselating");
 
 	private static <T extends ShapedRecipe> RegistrySupplier<RecipeType<T>> register(String name) {
-		return RECIPES_TYPES.register(name, () -> new RecipeType<T>() {
+		var id = DimensionalDoors.id(name);
+		return RECIPES_TYPES.register(id, () -> new RecipeType<T>() {
 			@Override
 			public String toString() {
-				return name;
+				return id.toString();
 			}
 		});
 	} ;
