@@ -9,7 +9,8 @@
     "client.RecipeBookManagerMixin"
   ],
   "mixins": [
-    "RecipeBookSettingsAccessor"
+    "RecipeBookSettingsAccessor",
+    "client.PlaceRecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

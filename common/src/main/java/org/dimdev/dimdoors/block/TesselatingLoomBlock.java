@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
-import org.dimdev.dimdoors.screen.TesselatingScreenHandler;
+import org.dimdev.dimdoors.screen.TessellatingContainer;
 import org.jetbrains.annotations.Nullable;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
@@ -95,7 +95,7 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 
 	@Override
 	public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
-		return TesselatingScreenHandler.getRedstoneSignalFromBlockEntity(level.getBlockEntity(blockPos));
+		return TessellatingContainer.getRedstoneSignalFromBlockEntity(level.getBlockEntity(blockPos));
 	}
 
 	@Override

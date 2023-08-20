@@ -11,7 +11,7 @@ public class ModScreenHandlerTypes {
 	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.MENU);
 
 	@SuppressWarnings("removal")
-	public static final RegistrySupplier<MenuType<TesselatingScreenHandler>> TESSELATING_LOOM = MENU_TYPES.register("tesselating", () -> MenuRegistry.of(TesselatingScreenHandler::new));
+	public static final RegistrySupplier<MenuType<TessellatingContainer>> TESSELATING_LOOM = MENU_TYPES.register("tesselating", () -> MenuRegistry.of(TessellatingContainer::new));
 
 	public static void init() {
 		MENU_TYPES.register();

@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.block.entity;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -11,6 +12,8 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -23,21 +26,22 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.mixin.accessor.CraftingInventoryAccessor;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
-import org.dimdev.dimdoors.screen.TesselatingScreenHandler;
+import org.dimdev.dimdoors.screen.TessellatingContainer;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer, RecipeHolder, StackedContentsCompatible {
@@ -78,25 +82,17 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		}
 	};
 
-	public CraftingContainer craftingInventory = new CraftingContainer(null, 3, 3) {
-		@Override
-		public void setChanged() {
-			super.setChanged();
-			TesselatingLoomBlockEntity.this.setChanged();
-		}
-	};
-
 	public NonNullList<ItemStack> inventory;
 	public ItemStack output = ItemStack.EMPTY;
 	private Recipe<?> lastRecipe;
-	private final List<TesselatingScreenHandler> openContainers = new ArrayList<>();
+	private final List<TessellatingContainer> openContainers = new ArrayList<>();
 
-	private final Map<ResourceLocation, Integer> recipe2xp_map = Maps.newHashMap();
+	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
+
 
 	public TesselatingLoomBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.TESSELATING_LOOM.get(), pos, state);
 		this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
-		((CraftingInventoryAccessor) craftingInventory).setInventory(inventory);
 	}
 
 	@Override
@@ -127,7 +123,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	@Nullable
 	@Override
 	public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
-		return new TesselatingScreenHandler(syncId, this, inv, dataAccess);
+		return new TessellatingContainer(syncId, this, inv, dataAccess);
 	}
 
 	@Override
@@ -209,7 +205,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		for (TesselatingScreenHandler c : openContainers) c.slotsChanged(this);
+		for (TessellatingContainer c : openContainers) c.slotsChanged(this);
 	}
 
 	@Override
@@ -246,22 +242,22 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 		if (lastRecipe != null) {
 			TesselatingRecipe mapRecipe = manager.byType(ModRecipeTypes.TESSELATING.get()).get(lastRecipe);
-			if (mapRecipe != null && mapRecipe.matches(craftingInventory, level)) {
+			if (mapRecipe != null && mapRecipe.matches(this, level)) {
 				return Optional.of(lastRecipe);
 			}
 		}
-		return manager.getRecipeFor(ModRecipeTypes.TESSELATING.get(), craftingInventory, level);
+		return manager.getRecipeFor(ModRecipeTypes.TESSELATING.get(), this, level);
 	}
 
 
 	private Optional<ItemStack> getResult() {
-		Optional<ItemStack> maybe_result = getCurrentRecipe().map(recipe -> recipe.assemble(craftingInventory, null));
+		Optional<ItemStack> maybe_result = getCurrentRecipe().map(recipe -> recipe.assemble(this, null));
 
 		return Optional.of(maybe_result.orElse(ItemStack.EMPTY));
 	}
 
 	protected boolean canSmelt(ItemStack result, TesselatingRecipe recipe) {
-		if (recipe.matches(this.craftingInventory, null)) {
+		if (recipe.matches(this, null)) {
 			ItemStack outstack = output;
 			if (outstack.isEmpty()) {
 				return true;
@@ -276,7 +272,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	private int getWeavingTime() {
-		return getCurrentRecipe().map(a -> a.weavingTime).orElse(DEFAULT_WEAVE_TIME);
+		return getCurrentRecipe().map(a -> a.weavingTime()).orElse(DEFAULT_WEAVE_TIME);
 	}
 
 	protected void smelt(ItemStack result, TesselatingRecipe recipe) {
@@ -295,7 +291,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 				this.setRecipeUsed(recipe);
 			}
 
-			NonNullList<ItemStack> remaining = recipe.getRemainingItems(craftingInventory);
+			NonNullList<ItemStack> remaining = recipe.getRemainingItems(this);
 			NonNullList<ItemStack> drops = NonNullList.create();
 
 			for (int i = 0; i < 9; i++) {
@@ -370,42 +366,32 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		return this.saveWithFullMetadata();
 	}
 
-	public void grantExperience(Player player) {
-		List<Recipe<?>> list = Lists.newArrayList();
+	public void awardUsedRecipesAndPopExperience(ServerPlayer player) {
+		List<Recipe<?>> list = this.getRecipesToAwardAndPopExperience(player.getLevel(), player.position());
+		player.awardRecipes(list);
+		this.recipesUsed.clear();
+	}
 
-		for (Map.Entry<ResourceLocation, Integer> entry : this.recipe2xp_map.entrySet()) {
-			player.getLevel().getRecipeManager().byKey(entry.getKey()).ifPresent((p_213993_3_) -> {
-				list.add(p_213993_3_);
-				spawnExpOrbs(player, entry.getValue(), ((TesselatingRecipe) p_213993_3_).experience);
+	public List<Recipe<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 popVec) {
+		ArrayList<Recipe<?>> list = Lists.newArrayList();
+		for (Object2IntMap.Entry entry : this.recipesUsed.object2IntEntrySet()) {
+			level.getRecipeManager().byKey((ResourceLocation)entry.getKey()).ifPresent(recipe -> {
+				list.add((Recipe<?>)recipe);
+				createExperience(level, popVec, entry.getIntValue(), ((AbstractCookingRecipe)recipe).getExperience());
 			});
 		}
-		player.awardRecipes(list);
-		this.recipe2xp_map.clear();
+		return list;
 	}
 
-	private static void spawnExpOrbs(Player player, int pCount, float experience)
-	{
-		if (experience == 0.0F) {
-			pCount = 0;
+	private static void createExperience(ServerLevel level, Vec3 popVec, int recipeIndex, float experience) {
+		int i = Mth.floor((float)recipeIndex * experience);
+		float f = Mth.frac((float)recipeIndex * experience);
+		if (f != 0.0f && Math.random() < (double)f) {
+			++i;
 		}
-		else if (experience < 1.0F)
-		{
-			int i = Mth.floor((float) pCount * experience);
-			if (i < Mth.ceil((float) pCount * experience)
-					&& Math.random() < (double) ((float) pCount * experience - (float) i))
-			{
-				++i;
-			}
-			pCount = i;
-		}
-
-		while (pCount > 0)
-		{
-			int j = ExperienceOrb.getExperienceValue(pCount);
-			pCount -= j;
-			player.level.addFreshEntity(new ExperienceOrb(player.level, player.getX(), player.getY() + 0.5D, player.getZ() + 0.5D, j));
-		}
+		ExperienceOrb.award(level, popVec, i);
 	}
+
 
 //	public record WeavingResult()
 }

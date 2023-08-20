@@ -14,16 +14,16 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.screen.TesselatingScreenHandler;
+import org.dimdev.dimdoors.screen.TessellatingContainer;
 
-public class TesselatingLoomScreen extends AbstractContainerScreen<TesselatingScreenHandler> implements RecipeUpdateListener {
+public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingContainer> implements RecipeUpdateListener {
 	private static final ResourceLocation TEXTURE = DimensionalDoors.id("textures/screen/container/tesselating_loom.png");
 	private static final ResourceLocation RECIPE_BUTTON_TEXTURE = new ResourceLocation("textures/gui/recipe_button.png");
 
 	private final RecipeBookComponent recipeBook = new RecipeBookComponent();
 	private boolean narrow;
 
-	public TesselatingLoomScreen(TesselatingScreenHandler handler, Inventory inventory, Component title) {
+	public TesselatingLoomScreen(TessellatingContainer handler, Inventory inventory, Component title) {
 		super(handler, inventory, title);
 	}
 

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.screen;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -8,10 +9,10 @@ import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 import org.dimdev.dimdoors.client.ModRecipeBookTypes;
-import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 
-public class TesselatingScreenHandler extends RecipeBookMenu<Container> {
+public class TessellatingContainer extends RecipeBookMenu<Container> {
 	public static final int INPUT1_SLOT = 0;
 	public static final int INPUT2_SLOT = 1;
 	public static final int INPUT3_SLOT = 2;
@@ -25,16 +26,16 @@ public class TesselatingScreenHandler extends RecipeBookMenu<Container> {
 	protected Container recipeInv;
 	protected ContainerData data;
 
-	public TesselatingScreenHandler(int id, Inventory playerInventory) {
+	public TessellatingContainer(int id, Inventory playerInventory) {
 		this(id, new SimpleContainer(10), playerInventory, new SimpleContainerData(2));
 	}
-	public TesselatingScreenHandler(int id, Container inventory, Inventory playerInventory, ContainerData propertyDelegate) {
+	public TessellatingContainer(int id, Container inventory, Inventory playerInventory, ContainerData propertyDelegate) {
 		super(ModScreenHandlerTypes.TESSELATING_LOOM.get(), id);
 		this.playerInventory = playerInventory;
 		this.recipeInv = inventory;
 		this.data = propertyDelegate;
 
-		this.addSlot(new Slot(recipeInv, 0, 124, 35));
+		this.addSlot(new ResultSlot(playerInventory.player, recipeInv, 0, 124, 35));
 
 		for(int i = 0; i < 3; ++i) {
 			for(int j = 0; j < 3; ++j) {
@@ -155,5 +156,41 @@ public class TesselatingScreenHandler extends RecipeBookMenu<Container> {
 
 	public boolean isWeaving() {
 		return this.data.get(DATA_WEAVE_TIME) > 0;
+	}
+
+	public static class ResultSlot extends Slot {
+		private final Player player;
+		private int removeCount;
+
+		public ResultSlot(Player player, Container container, int slot, int x, int y) {
+			super(container, slot, x, y);
+			this.player = player;
+		}
+
+		@Override
+		public boolean mayPlace(ItemStack stack) {
+			return false;
+		}
+
+		@Override
+		public ItemStack remove(int amount) {
+			if (this.hasItem()) {
+				this.removeCount += Math.min(amount, this.getItem().getCount());
+			}
+
+			return super.remove(amount);
+		}
+
+		@Override
+		public void onTake(Player player, ItemStack stack) {
+			this.checkTakeAchievements(stack);
+			super.onTake(player, stack);
+		}
+
+		@Override
+		protected void checkTakeAchievements(ItemStack stack) {
+			stack.onCraftedBy(this.player.level, this.player, this.removeCount);
+			if(this.player instanceof ServerPlayer serverPlayer && this.container instanceof TesselatingLoomBlockEntity container) container.awardUsedRecipesAndPopExperience(serverPlayer);
+		}
 	}
 }
