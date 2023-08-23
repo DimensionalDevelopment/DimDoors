@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "minecraft:desert, minecraft:mesa",
+  "features": "dimdoors:two_pillars",
+  "step": "surface_structures"
+}

@@ -20,13 +20,15 @@ import static org.dimdev.dimdoors.DimensionalDoors.id;
 
 @SuppressWarnings("unused")
 public final class ModFeatures {
-	public static final SchematicGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
-	public static final SchematicGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
-	public static final SchematicGateway END_GATEWAY = new EndGateway();
+	public static final SandstonePillarsGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
+	public static final TwoPillarsGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
+	public static final EndGateway END_GATEWAY = new EndGateway();
 
 	public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.FEATURE);
 
-	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> SCHEMATIC_GATEWAY_FEATURE = FEATURES.register("schematic_gateway", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
+	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> SANDSTONE_PILLARS_GATEWAY_FEATURE = FEATURES.register("two_pillars", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
+	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> TWO_PILLARS_GATEWAY_FEATURE = FEATURES.register("sandstone_pillars", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
+	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> END_GATEWAY_FEATURE = FEATURES.register("schematic_gateway", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
 	public static final RegistrySupplier<Feature<NoneFeatureConfiguration>> LIMBO_GATEWAY_FEATURE = FEATURES.register("limbo_gateway", LimboGatewayFeature::new);
 
 	public static void init() {
@@ -68,13 +70,13 @@ public final class ModFeatures {
 		public static final ResourceKey<PlacedFeature> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
 
 		public static void init() {
-			BiomeModifications.addProperties(context -> Placed.isOverworld(context) && !Placed.isDesert(context) && !Placed.isOcean(context), (context, mutable) -> mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, SANDSTONE_PILLARS));
-			BiomeModifications.addProperties(ModFeatures.Placed::isDesert, (context, mutable) -> mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, SANDSTONE_PILLARS));
-			BiomeModifications.addProperties(ModFeatures.Placed::isEnd, (context, mutable) -> mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, END_GATEWAY));
+//			BiomeModifications.addProperties(context -> Placed.isOverworld(context) && !Placed.isDesert(context) && !Placed.isOcean(context), (context, mutable) -> mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, TWO_PILLARS));
+//			BiomeModifications.addProperties(ModFeatures.Placed::isDesert, (context, mutable) -> mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, SANDSTONE_PILLARS));
+//			BiomeModifications.addProperties(ModFeatures.Placed::isEnd, (context, mutable) -> mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.LOCAL_MODIFICATIONS, END_GATEWAY));
 
 //			BiomeModifications.addFeature(ctx -> ctx.hasTag(ConventionalBiomeTags.IN_OVERWORLD) &&
-//					!ctx.hasTag(ConventionalBiomeTags.DESERT) &&
-//					!ctx.hasTag(ConventionalBiomeTags.OCEAN),
+//							!ctx.hasTag(ConventionalBiomeTags.DESERT) &&
+//							!ctx.hasTag(ConventionalBiomeTags.OCEAN),
 //					GenerationStep.Feature.SURFACE_STRUCTURES,
 //					TWO_PILLARS
 //			);
