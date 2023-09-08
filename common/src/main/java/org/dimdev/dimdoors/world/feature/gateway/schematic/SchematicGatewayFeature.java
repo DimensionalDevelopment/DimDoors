@@ -11,7 +11,7 @@ public class SchematicGatewayFeature extends Feature<SchematicGatewayFeatureConf
 
     @Override
     public boolean place(FeaturePlaceContext<SchematicGatewayFeatureConfig> featureContext) {
-        if (featureContext.level().isEmptyBlock(featureContext.origin()) && featureContext.config().getGateway().test(featureContext.level(), featureContext.origin())) {
+        if (featureContext.config().getGateway().test(featureContext.level(), featureContext.origin())) {
 			featureContext.config().getGateway().generate(featureContext.level(), featureContext.origin());
             return true;
         }

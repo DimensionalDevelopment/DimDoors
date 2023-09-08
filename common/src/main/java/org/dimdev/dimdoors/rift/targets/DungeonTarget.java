@@ -67,8 +67,9 @@ public class DungeonTarget extends RandomTarget {
 		DungeonTargetBuilder() {
 		}
 
-		public void dungeonGroup(ResourceLocation dungeonGroup) {
+		public DungeonTargetBuilder dungeonGroup(ResourceLocation dungeonGroup) {
 			this.dungeonGroup = dungeonGroup;
+			return this;
 		}
 
 		@Override

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.effect.DimensionSpecialEffectsExtensions;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;

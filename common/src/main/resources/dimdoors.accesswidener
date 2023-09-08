@@ -39,3 +39,6 @@ accessible method net/minecraft/world/item/crafting/ShapedRecipe dissolvePattern
 accessible method net/minecraft/world/item/crafting/Ingredient valueFromJson (Lcom/google/gson/JsonObject;)Lnet/minecraft/world/item/crafting/Ingredient$Value;
 
 accessible class net/minecraft/core/particles/SimpleParticleType
+
+accessible class net/minecraft/world/level/levelgen/structure/structures/NetherFortressPieces$NetherBridgePiece
+accessible class net/minecraft/world/level/levelgen/structure/structures/NetherFortressPieces$PieceWeight

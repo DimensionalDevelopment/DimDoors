@@ -61,6 +61,7 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.schematic.SchemFixer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.ModStructures;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 import org.dimdev.dimdoors.world.decay.Decay;
@@ -122,6 +123,7 @@ public class DimensionalDoors {
 		ModFeatures.init();
 		ModBiomes.init();
 		ModDimensions.init();
+		ModStructures.init();
 		ModStats.init();
 		ModBlockEntityTypes.init();
 		ModCommands.init();

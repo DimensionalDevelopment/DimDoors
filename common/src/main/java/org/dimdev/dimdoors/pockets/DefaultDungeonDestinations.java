@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.targets.DungeonTarget;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
@@ -72,7 +74,8 @@ public interface DefaultDungeonDestinations { // TODO: lower weights?
 	}
 
 	static VirtualTarget getGateway() {
-		return RandomTarget.builder()
+		return DungeonTarget.builder()
+				.dungeonGroup(DimensionalDoors.id("dungeon"))
 				.acceptedGroups(Collections.singleton(0))
 				.coordFactor(1)
 				.negativeDepthFactor(Double.POSITIVE_INFINITY)

@@ -25,17 +25,16 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 
 	//TODO: split up in ImplementedVirtualPocket and VirtualPocketList
 	static VirtualPocket deserialize(Tag nbt, @Nullable ResourceManager manager) {
-		switch (nbt.getId()) {
-			case Tag.TAG_LIST: // It's a list of VirtualPocket
-				return VirtualPocketList.deserialize((ListTag) nbt, manager);
-			case Tag.TAG_COMPOUND: // It's a serialized VirtualPocket
-				return ImplementedVirtualPocket.deserialize((CompoundTag) nbt, manager);
+		return switch (nbt.getId()) {
+			case Tag.TAG_LIST -> // It's a list of VirtualPocket
+					VirtualPocketList.deserialize((ListTag) nbt, manager);
+			case Tag.TAG_COMPOUND -> // It's a serialized VirtualPocket
+					ImplementedVirtualPocket.deserialize((CompoundTag) nbt, manager);
 			// TODO: throw if manager is null
-			case Tag.TAG_STRING: // It's a reference to a resource location
-				return ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
-			default:
-				throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
-		}
+			case Tag.TAG_STRING -> // It's a reference to a resource location
+					ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
+			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
+		};
 	}
 
 	static Tag serialize(VirtualPocket virtualPocket, boolean allowReference) {
