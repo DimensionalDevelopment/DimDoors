@@ -6,7 +6,6 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.Random;
 
@@ -18,8 +17,8 @@ public class BlockDimensionalDoorIron extends BlockDimensionalDoor {
         super(Material.IRON);
         setHardness(1.0F);
         setResistance(2000.0F);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setRegistryName(DimDoors.getResource(ID));
+        setTranslationKey(ID);
     }
 
     @Override

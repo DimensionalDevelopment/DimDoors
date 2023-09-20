@@ -70,6 +70,7 @@ dependencies {
 
     //Lombok
     annotationProcessor("org.projectlombok:lombok:${project.lombok_version}")
+    compileOnly("org.projectlombok:lombok:${project.lombok_version}")
 
     //Shaded Libraries
     shade("com.flowpowered:flow-math:${project.flowmath_version}")
@@ -79,7 +80,6 @@ dependencies {
     //Compile Only
     compileOnly("com.github.DimensionalDevelopment:AnnotatedNBT:${project.annotatednbt_version}")
     compileOnly("io.github.opencubicchunks:cubicchunks:${project.cubicchunks_version}")
-    compileOnly("org.projectlombok:lombok:${project.lombok_version}")
 
     //Runtime Stuff
     runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))

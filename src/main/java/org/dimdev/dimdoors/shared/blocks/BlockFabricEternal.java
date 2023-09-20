@@ -5,7 +5,6 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.dimdev.dimdoors.DimDoors;
@@ -20,8 +19,8 @@ public class BlockFabricEternal extends BlockEmptyDrops { // TODO: make this a g
 
     public BlockFabricEternal() {
         super(ETERNAL_FABRIC);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setRegistryName(ID);
+        setRegistryName(DimDoors.getResource(ID));
+        setTranslationKey(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(-1);
         setResistance(6000000.0F);

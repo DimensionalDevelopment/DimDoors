@@ -4,7 +4,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModItems;
 
@@ -17,8 +16,8 @@ public class BlockDimensionalDoorWood extends BlockDimensionalDoor { // TODO: al
     public BlockDimensionalDoorWood() {
         super(Material.WOOD);
         setHardness(1.0F);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
+        setRegistryName(DimDoors.getResource(ID));
     }
 
     @Override

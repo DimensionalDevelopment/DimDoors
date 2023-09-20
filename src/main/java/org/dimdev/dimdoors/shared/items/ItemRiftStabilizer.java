@@ -26,8 +26,8 @@ public class ItemRiftStabilizer extends Item {
         setMaxStackSize(1);
         setMaxDamage(6); // TODO: Add more uses and make it reduce rift growth speed instead?
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
+        setRegistryName(DimDoors.getResource(ID));
     }
 
     @Override
@@ -60,6 +60,6 @@ public class ItemRiftStabilizer extends Item {
     @Override
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
-        tooltip.add(I18n.format(I18n.format(getRegistryName() + ".info")));
+        tooltip.add(I18n.format(I18n.format(getTranslationKey() + ".info")));
     }
 }

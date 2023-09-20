@@ -24,8 +24,8 @@ public class ItemRiftRemover extends Item {
 
     public ItemRiftRemover() {
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
+        setRegistryName(DimDoors.getResource(ID));
         setMaxStackSize(1);
         setMaxDamage(100);
     }

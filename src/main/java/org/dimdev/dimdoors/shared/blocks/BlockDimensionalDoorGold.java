@@ -5,7 +5,6 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModItems;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 
 import java.util.*;
 
@@ -16,8 +15,8 @@ public class BlockDimensionalDoorGold extends BlockDimensionalDoor {
     public BlockDimensionalDoorGold() {
         super(Material.IRON);
         setHardness(1.0F);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
+        setRegistryName(DimDoors.getResource(ID));
     }
 
     @Override

@@ -5,7 +5,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 
@@ -17,8 +16,8 @@ public class BlockDimensionalTrapdoorWood extends BlockDimensionalTrapdoor { // 
 
     public BlockDimensionalTrapdoorWood() {
         super(Material.WOOD);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setRegistryName(ID);
+        setRegistryName(DimDoors.getResource(ID));
+        setTranslationKey(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(1.0F);
         setSoundType(SoundType.WOOD);

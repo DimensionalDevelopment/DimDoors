@@ -88,8 +88,8 @@ public class DimDoors {
         VirtualTarget.registry.put("relative", RelativeReference.class);
         // Register entities
         EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class,
-                "monoliths", 0, DimDoors.instance, 70, 1, true);
-        EntityRegistry.registerEgg(new ResourceLocation(DimDoors.MODID, "mob_monolith"), 0, 0xffffff);
+                "monolith", 0, DimDoors.instance, 70, 1, true);
+        EntityRegistry.registerEgg(getResource("mob_monolith"), 0, 0xffffff);
         // Register tile entities
         TileEntity.register("dimdoors:entrance_rift", TileEntityEntranceRift.class);
         TileEntity.register("dimdoors:floating_rift", TileEntityFloatingRift.class);
@@ -138,5 +138,9 @@ public class DimDoors {
 
     public static void chat(Entity entity, String text, Object... translationArgs) {
         entity.sendMessage(new TextComponentTranslation(text, translationArgs));
+    }
+
+    public static ResourceLocation getResource(String path) {
+        return new ResourceLocation(MODID,path);
     }
 }

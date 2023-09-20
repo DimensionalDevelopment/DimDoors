@@ -30,8 +30,8 @@ public class ItemRiftSignature extends Item {
         setMaxStackSize(1);
         setMaxDamage(1);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
+        setRegistryName(DimDoors.getResource(ID));
     }
 
     @SideOnly(Side.CLIENT)
@@ -106,8 +106,8 @@ public class ItemRiftSignature extends Item {
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         RotatedLocation transform = getSource(stack);
         if (Objects.nonNull(transform))
-            tooltip.add(I18n.format(I18n.format(getRegistryName() + ".bound.info", transform.getLocation().getX(),
+            tooltip.add(I18n.format(I18n.format(getTranslationKey() + ".bound.info", transform.getLocation().getX(),
                     transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().dim)));
-        else tooltip.add(I18n.format(getRegistryName() + ".unbound.info"));
+        else tooltip.add(I18n.format(getTranslationKey() + ".unbound.info"));
     }
 }

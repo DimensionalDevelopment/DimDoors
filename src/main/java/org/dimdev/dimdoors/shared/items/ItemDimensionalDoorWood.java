@@ -5,7 +5,6 @@ import java.util.Collections;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorWood;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.shared.rifts.targets.RandomTarget;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
 
@@ -14,8 +13,8 @@ public class ItemDimensionalDoorWood extends ItemDimensionalDoor {
     public ItemDimensionalDoorWood() {
         super(ModBlocks.WARP_DIMENSIONAL_DOOR);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(BlockDimensionalDoorWood.ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorWood.ID));
+        setTranslationKey(BlockDimensionalDoorWood.ID);
+        setRegistryName(DimDoors.getResource(BlockDimensionalDoorWood.ID));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.shared.items;
 
-import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorGold;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
@@ -17,8 +16,8 @@ public class ItemDimensionalDoorGold extends ItemDimensionalDoor {
     public ItemDimensionalDoorGold() {
         super(ModBlocks.GOLD_DIMENSIONAL_DOOR);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(BlockDimensionalDoorGold.ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorGold.ID));
+        setTranslationKey(BlockDimensionalDoorGold.ID);
+        setRegistryName(DimDoors.getResource(BlockDimensionalDoorGold.ID));
     }
 
     @Override

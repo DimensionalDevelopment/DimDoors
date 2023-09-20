@@ -70,4 +70,4 @@ item.stabilized_rift_signature.bound.info=Duce la (%d, %d, %d) în dimensiunea #
 item.stabilized_rift_signature.unbound.info=Primul clic stochează o locație; \nalte clicuri crează fisuri conectând \nprima și ultima conectiuni împreună.
 item.unstable_dimensional_door.info=Atenție: Duce la o destinație aleatorie
 item.oak_dimensional_door.info=Plasează pe blocul sub o fisură \npentru a crea un portal sau \nplasează ori unde într-o dimensiune \nde buzunar pentru a ieșii.
-entity.dimdoors.monolith.name=Monolit
+entity.monolith.name=Monolit

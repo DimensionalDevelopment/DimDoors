@@ -84,7 +84,7 @@ item.stabilized_rift_signature.bound.info=Mène aux coordonnées (%d, %d, %d) à
 item.stabilized_rift_signature.unbound.info=Le premier clic stocke un emplacement, \nles autres clics créent des fissurent qui lient \nle premier et les derniers emplacements ensemble.
 item.unstable_dimensional_door.info=Attention : mène vers une destination aléatoire
 item.oak_dimensional_door.info=Placez sur le bloc sous une \nfissure pour créer un portail, \nou placez n'importe où dans une \ndimension de poche pour sortir.
-entity.dimdoors.monolith.name=Monolithe
+entity.monolith.name=Monolithe
 
 commands.dimteleport.usage=/dimteleport <dimension> <x> <y> <z> [lacet] [tanage]
 commands.fabricconvert.usage=/fabricconvert

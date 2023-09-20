@@ -4,14 +4,13 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDoorQuartz;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.item.ItemDoor;
-import net.minecraft.util.ResourceLocation;
 
 public class ItemDoorQuartz extends ItemDoor {
 
     public ItemDoorQuartz() {
         super(ModBlocks.QUARTZ_DOOR);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(BlockDoorQuartz.ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDoorQuartz.ID));
+        setTranslationKey(BlockDoorQuartz.ID);
+        setRegistryName(DimDoors.getResource(BlockDoorQuartz.ID));
     }
 }

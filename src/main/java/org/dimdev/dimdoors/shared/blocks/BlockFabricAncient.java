@@ -8,7 +8,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModCreativeTabs;
 
@@ -22,19 +21,14 @@ public class BlockFabricAncient extends BlockColored {
     public BlockFabricAncient() {
         super(Material.ROCK);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setRegistryName(ID);
+        setRegistryName(DimDoors.getResource(ID));
+        setTranslationKey(ID);
         setDefaultState(getDefaultState().withProperty(COLOR, EnumDyeColor.BLACK));
         setHardness(-1);
         setResistance(6000000.0F);
         disableStats();
         setSoundType(SoundType.STONE);
         setLightLevel(1);
-    }
-
-    @Override
-    public int quantityDropped(Random random) {
-        return 1;
     }
 
     @Override

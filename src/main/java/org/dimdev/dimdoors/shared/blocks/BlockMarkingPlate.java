@@ -6,7 +6,6 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -20,8 +19,8 @@ public class BlockMarkingPlate extends Block {
 
     public BlockMarkingPlate() {
         super(FABRIC);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setRegistryName(ID);
+        setRegistryName(DimDoors.getResource(ID));
+        setTranslationKey(ID);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
         setHardness(0.1F);
         setSoundType(SoundType.STONE);

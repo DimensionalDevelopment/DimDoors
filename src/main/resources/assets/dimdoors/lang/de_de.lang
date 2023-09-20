@@ -54,4 +54,4 @@ item.stabilized_rift_signature.unbound.info=Erster Klick speichert die Position,
 item.unstable_dimensional_door.info=Vorsicht: Führt zu einem zufälligen Ziel
 item.oak_dimensional_door.info=Platziere auf dem Block unterhalb eines \nSpalts, um ein Portal zu erstellen, \noder platziere irgendwo in einer \nkleinen Dimension, um sie zu verlassen.
 
-entity.dimdoors.monolith.name=Monolith
+entity.monolith.name=Monolith

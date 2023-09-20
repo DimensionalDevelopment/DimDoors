@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.FoodStats;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -16,6 +17,8 @@ import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
 import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
+
+import java.util.Objects;
 
 public final class EventHandler {
 
@@ -37,8 +40,11 @@ public final class EventHandler {
             player.extinguish();
             if(!player.getActivePotionEffects().isEmpty()) player.clearActivePotions();
             player.setHealth(entity.getMaxHealth());
-            player.getFoodStats().setFoodLevel(20);
-            player.getFoodStats().setFoodSaturationLevel(6f);
+            FoodStats food = player.getFoodStats();
+            if(Objects.nonNull(food)) {
+                food.setFoodLevel(20);
+                food.setFoodSaturationLevel(6f);
+            }
             teleportToLimbo(player);
             event.setCanceled(true);
         }

@@ -4,7 +4,6 @@ import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDoorGold;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import net.minecraft.item.ItemDoor;
-import net.minecraft.util.ResourceLocation;
 
 public class ItemDoorGold extends ItemDoor {
 
@@ -12,7 +11,7 @@ public class ItemDoorGold extends ItemDoor {
         super(ModBlocks.GOLD_DOOR);
         setMaxStackSize(16);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(BlockDoorGold.ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDoorGold.ID));
+        setTranslationKey(BlockDoorGold.ID);
+        setRegistryName(DimDoors.getResource(BlockDoorGold.ID));
     }
 }

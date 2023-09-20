@@ -84,4 +84,4 @@ item.stabilized_rift_signature.bound.info=Leidt naar (%d, %d, %d) in dimensie #%
 item.stabilized_rift_signature.unbound.info=De eerste klik slaat een locatie op, \nandere klikken creëren scheuren die de eerste \nen laatste locaties met elkaar verbinden.
 item.unstable_dimensional_door.info=Pas op: Leidt naar een willekeurige bestemming
 item.oak_dimensional_door.info=Plaats op het blok onder een scheur \nom een portaal te creëren, \nof plaats het ergens in een \nbroekzak dimensie om deze te verlaten.
-entity.dimdoors.monolith.name=Monoliet
+entity.monolith.name=Monoliet

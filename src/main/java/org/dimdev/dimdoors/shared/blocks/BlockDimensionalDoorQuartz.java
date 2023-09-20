@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.shared.blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.items.ModItems;
 
@@ -16,8 +15,8 @@ public class BlockDimensionalDoorQuartz extends BlockDimensionalDoor {
     public BlockDimensionalDoorQuartz() {
         super(Material.ROCK);
         setHardness(0.1F);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
+        setRegistryName(DimDoors.getResource(ID));
     }
 
     @Override

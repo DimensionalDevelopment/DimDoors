@@ -53,4 +53,4 @@ item.stabilized_rift_signature.bound.info=Ведёт в (%d, %d, %d) в изме
 item.stabilized_rift_signature.unbound.info=Первое нажатие сохраняет расположение, \nостальные нажатия создают разломы, соединяющие \nпервое и последнее расположения вместе.
 item.unstable_dimensional_door.info=Внимание: Ведёт неизвестно куда
 item.oak_dimensional_door.info=Поставьте на блок под \nразломом, чтобы создать портал \nили поставьте куда угодно в \nкарманном измерении, чтобы выйти из него.
-entity.dimdoors.monolith.name=Монолит
+entity.monolith.name=Монолит

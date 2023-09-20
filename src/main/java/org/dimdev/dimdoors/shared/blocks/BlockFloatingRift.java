@@ -13,7 +13,6 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -27,8 +26,8 @@ public class BlockFloatingRift extends BlockSpecialAir implements ITileEntityPro
     public static final String ID = "rift";
 
     public BlockFloatingRift() {
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
-        setRegistryName(ID);
+        setRegistryName(DimDoors.getResource(ID));
+        setTranslationKey(ID);
         setTickRandomly(true);
         setResistance(6000000.0F); // Same as bedrock
         setLightLevel(0.5f);

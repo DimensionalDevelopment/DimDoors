@@ -53,6 +53,8 @@ tile.eternal_fabric.name=Eternal Fabric
 tile.unravelled_fabric.name=Unraveled Fabric
 tile.rift.name=Rift Scar
 
+tile.marking_plate.name=Marking Plate
+
 item.gold_door.name=Gold Door
 item.quartz_door.name=Quartz Door
 
@@ -91,21 +93,21 @@ item.woven_world_thread_chestplate.name=Woven World Thread Chestplate
 item.rift_key.bound.info=Bound
 item.rift_key.unbound.info=Unbound
 
-item.iron_dimensional_door.info=Place on the block under a rift \nto activate that rift or place \nanywhere else to create a \npocket dimension.
-item.gold_dimensional_door.info=Similar to a Dimensional Door \nbut keeps a pocket dimension \nloaded if placed on the inside.
+item.iron_dimensional_door.info=Place on the block under a rift to activate that rift or place anywhere else to create a pocket dimension.
+item.gold_dimensional_door.info=Similar to a Dimensional Door but keeps a pocket dimension loaded if placed on the inside.
 item.quartz_dimensional_door.info=Creates a pathway to your personal pocket.
-item.rift_blade.info=Opens temporary doors on rifts \nand has a teleport attack.
-item.rift_remover.info=Use near exposed rift \nto remove it and \nany nearby rifts.
+item.rift_blade.info=Opens temporary doors on rifts and has a teleport attack.
+item.rift_remover.info=Use near exposed rift to remove it and any nearby rifts.
 item.rift_signature.bound.info=Leads to (%d, %d, %d) at dimension #%d
-item.rift_signature.unbound.info=First click stores a location; \nsecond click creates a pair of \nrifts linking the two locations.
+item.rift_signature.unbound.info=First click stores a location; second click creates a pair of rifts linking the two locations.
 item.stabilized_rift_signature.bound.info=Leads to (%d, %d, %d) at dimension #%d
-item.stabilized_rift_signature.unbound.info=First click stores a location, \nother clicks create rifts linking \nthe first and last locations together.
+item.stabilized_rift_signature.unbound.info=First click stores a location, other clicks create rifts linking the first and last locations together.
 item.unstable_dimensional_door.info=Caution: Leads to random destination
-item.oak_dimensional_door.info=Place on the block under a rift \nto create a portal, or place anywhere \nin a pocket dimension to exit.
+item.oak_dimensional_door.info=Place on the block under a rift to create a portal, or place anywhere in a pocket dimension to exit.
 
 item.record.creepy.desc=Creepy - The sound of Limbo
 
-entity.dimdoors.monolith.name=Monolith
+entity.monolith.name=Monolith
 
 commands.dimteleport.usage=/dimteleport <dimension> <x> <y> <z> [yaw] [pitch]
 commands.fabricconvert.usage=/fabricconvert

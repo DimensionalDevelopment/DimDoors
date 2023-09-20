@@ -20,8 +20,8 @@ public class ItemWovenWorldThreadArmor extends ItemArmor {
 
     public ItemWovenWorldThreadArmor(String name, int renderIndex, EntityEquipmentSlot equipmentSlot) {
         super(WOVEN_WORLD_THREAD, renderIndex, equipmentSlot);
-        setRegistryName(name);
-        setRegistryName(DimDoors.MODID, name);
+        setTranslationKey(name);
+        setRegistryName(DimDoors.getResource(name));
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
     }
 }

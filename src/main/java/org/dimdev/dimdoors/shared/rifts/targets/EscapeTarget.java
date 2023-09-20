@@ -5,7 +5,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.dimdoors.DimDoors;
@@ -16,6 +18,7 @@ import org.dimdev.dimdoors.shared.world.limbo.WorldProviderLimbo;
 import org.dimdev.pocketlib.VirtualLocation;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString
 public class EscapeTarget extends VirtualTarget implements IEntityTarget { // TODO: createRift option
@@ -44,17 +47,29 @@ public class EscapeTarget extends VirtualTarget implements IEntityTarget { // TO
                 DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.cannot_escape_limbo");
                 return false;
             }
-            Location destLoc = RiftRegistry.instance().getOverworldRift(entity.getUniqueID());
-            if (Objects.nonNull(destLoc) && destLoc.getTileEntity() instanceof TileEntityRift || canEscapeLimbo)
-                TeleportUtils.teleport(entity, VirtualLocation.fromLocation(
-                        new Location(entity.world, entity.getPosition())).projectToWorld(false));
+            UUID uuid = entity.getUniqueID();
+            if (Objects.isNull(uuid)) return false;
             else {
-                if (Objects.nonNull(destLoc))
-                    DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.did_not_use_rift");
-                else DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.rift_has_closed");
-                TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity));
+                Location destLoc = RiftRegistry.instance().getOverworldRift(uuid);
+                if((Objects.isNull(destLoc) || !(destLoc.getTileEntity() instanceof TileEntityRift)) && !this.canEscapeLimbo) {
+                    if(Objects.isNull(destLoc))
+                        DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.did_not_use_rift");
+                    else DimDoors.sendTranslatedMessage(entity, "rifts.destinations.escape.rift_has_closed");
+                    TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity));
+                } else {
+                    int dim = 0;
+                    BlockPos pos = null;
+                    if(entity instanceof EntityPlayer) {
+                        EntityPlayer player = (EntityPlayer)entity;
+                        dim = player.getSpawnDimension();
+                        pos = player.getBedLocation(dim);
+                    }
+                    if(Objects.isNull(pos)) TeleportUtils.teleport(entity, VirtualLocation.fromLocation(new Location(
+                            entity.world, entity.getPosition())).projectToWorld(false));
+                    else TeleportUtils.teleport(entity,dim,pos.getX(),pos.getY(),pos.getZ(),entity.rotationYaw,entity.rotationPitch);
+                }
+                return true;
             }
-            return true;
         } return false;
     }
 }

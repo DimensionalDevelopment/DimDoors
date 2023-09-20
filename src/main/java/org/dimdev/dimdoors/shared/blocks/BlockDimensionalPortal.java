@@ -6,7 +6,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -22,19 +21,14 @@ public class BlockDimensionalPortal extends BlockDimensionalDoor { // TODO: conv
         super(Material.PORTAL); // This is the only way to make it collide with water but not other entities, but still have a collision box.
         setHardness(1.0F);
         setLightLevel(0.5F);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
+        setRegistryName(DimDoors.getResource(ID));
         setDefaultState(super.getDefaultState().withProperty(OPEN, true));
     }
 
     @Override
     public Item getItem() {
         return null;
-    }
-
-    @Override
-    public boolean isCollidable() {
-        return true;
     }
 
     @Override

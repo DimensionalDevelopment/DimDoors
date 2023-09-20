@@ -53,4 +53,4 @@ item.stabilized_rift_signature.bound.info=Porta a (%d, %d, %d) nella dimensione 
 item.stabilized_rift_signature.unbound.info=Al primo clic salva la posizione; al \nsecondo clic crea fratture che \ncollegano la prima e ultima posizione.
 item.unstable_dimensional_door.info=Attenziione: Porta a una destinazione casuale
 item.oak_dimensional_door.info=Piazzalo sul blocco sotto una \nfrattura per creare un portale, \no piazzalo da qualunque altra parte \nin una dimensione tascabile per uscire.
-entity.dimdoors.monolith.name=Monolito
+entity.monolith.name=Monolito

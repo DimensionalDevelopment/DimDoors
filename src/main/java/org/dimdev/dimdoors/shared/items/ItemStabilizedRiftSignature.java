@@ -30,8 +30,8 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         setMaxStackSize(1);
         setMaxDamage(20);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, ID));
+        setTranslationKey(ID);
+        setRegistryName(DimDoors.getResource(ID));
     }
 
     @SideOnly(Side.CLIENT)
@@ -102,8 +102,8 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
     public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
         RotatedLocation transform = getTarget(stack);
         if (Objects.nonNull(transform))
-            tooltip.add(I18n.format(getRegistryName() + ".bound.info", transform.getLocation().getX(),
+            tooltip.add(I18n.format(getTranslationKey() + ".bound.info", transform.getLocation().getX(),
                     transform.getLocation().getY(), transform.getLocation().getZ(), transform.getLocation().dim));
-        else tooltip.add(I18n.format(getRegistryName() + ".unbound.info"));
+        else tooltip.add(I18n.format(getTranslationKey() + ".unbound.info"));
     }
 }

@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.shared.items;
 import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoorQuartz;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
-import net.minecraft.util.ResourceLocation;
 import org.dimdev.dimdoors.shared.rifts.targets.PrivatePocketTarget;
 import org.dimdev.dimdoors.shared.rifts.targets.PrivatePocketExitTarget;
 import org.dimdev.dimdoors.shared.tileentities.TileEntityEntranceRift;
@@ -14,8 +13,8 @@ public class ItemDimensionalDoorQuartz extends ItemDimensionalDoor {
     public ItemDimensionalDoorQuartz() {
         super(ModBlocks.PERSONAL_DIMENSIONAL_DOOR);
         setCreativeTab(ModCreativeTabs.DIMENSIONAL_DOORS_CREATIVE_TAB);
-        setRegistryName(BlockDimensionalDoorQuartz.ID);
-        setRegistryName(new ResourceLocation(DimDoors.MODID, BlockDimensionalDoorQuartz.ID));
+        setTranslationKey(BlockDimensionalDoorQuartz.ID);
+        setRegistryName(DimDoors.getResource(BlockDimensionalDoorQuartz.ID));
     }
 
     @Override
