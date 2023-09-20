@@ -13,9 +13,7 @@ import org.dimdev.dimdoors.shared.ModConfig;
 import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.pocketlib.WorldProviderPocket;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class GatewayGenerator implements IWorldGenerator {
     private static final int CLUSTER_GROWTH_CHANCE = 80;
@@ -52,7 +50,10 @@ public class GatewayGenerator implements IWorldGenerator {
         // Check if we're allowed to generate rift clusters in this dimension.
         // If so, randomly decide whether to one.
         boolean clusterGenerated = false;
-        if (Arrays.binarySearch(ModConfig.world.clusterDimBlacklist, world.provider.getDimensionType().getId()) == -1) {
+        Set<Integer> badClusterDimensions = new HashSet<>();
+        for(int i : ModConfig.world.clusterDimBlacklist)
+            badClusterDimensions.add(i);
+        if(!badClusterDimensions.contains(world.provider.getDimension())) {
             double clusterGenChance = ModConfig.world.clusterGenChance;
             while (clusterGenChance > 0.0) {
                 if (random.nextDouble() < clusterGenChance) {
@@ -82,7 +83,10 @@ public class GatewayGenerator implements IWorldGenerator {
 
         // Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
         // This only happens if a rift cluster was NOT generated.
-        if (!clusterGenerated && Arrays.binarySearch(ModConfig.world.gatewayDimBlacklist, world.provider.getDimensionType().getId()) == -1) {
+        Set<Integer> badGatewayDimensions = new HashSet<>();
+        for(int i : ModConfig.world.gatewayDimBlacklist)
+            badGatewayDimensions.add(i);
+        if (!clusterGenerated && !badGatewayDimensions.contains(world.provider.getDimension())) {
             double gatewayGenChance = ModConfig.world.gatewayGenChance;
             while (gatewayGenChance > 0.0) {
                 if (random.nextDouble() < gatewayGenChance) {
