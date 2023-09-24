@@ -17,6 +17,7 @@ import net.minecraft.world.level.levelgen.structure.structures.NetherFortressPie
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
+import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.targets.DungeonTarget;
 import org.dimdev.dimdoors.world.ModStructures;
 
@@ -119,7 +120,7 @@ public class NetherGatewayPiece extends NetherFortressPieces.NetherBridgePiece {
             placeBlock(level, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState(), 3, 3, 3, box);
             level.getBlockEntity(getWorldPos(3,3,3), ModBlockEntityTypes.ENTRANCE_RIFT.get()).ifPresent(rift -> {
                 rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
-                rift.setDestination(DefaultDungeonDestinations.getGateway());
+                rift.setDestination(DefaultDungeonDestinations.getGateway(PocketGenerator.NETHER_DUNGEONS));
             });
 
             for (int x = 0; x <= 6; ++x)

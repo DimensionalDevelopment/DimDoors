@@ -97,7 +97,7 @@ public class RelativeReferenceModifier extends AbstractModifier {
 		}
 
 		public static ConnectionType fromString(String name) {
-			return "one_way".equals(name) ? ONE_WAY : BOTH;
+			return "one_way".equalsIgnoreCase(name) ? ONE_WAY : BOTH;
 		}
 
 	}

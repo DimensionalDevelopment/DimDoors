@@ -91,9 +91,7 @@ public class RiftDataModifier extends AbstractModifier {
 		if (doorData == null) {
 			riftBlockEntityConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
 		} else {
-			CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
-
-			riftBlockEntityConsumer = rift -> rift.setData(RiftData.fromNbt(solvedDoorData));
+			riftBlockEntityConsumer = solveData(doorData, variableMap);
 		}
 
 		manager.foreachConsume((id, rift) -> {
@@ -104,6 +102,12 @@ public class RiftDataModifier extends AbstractModifier {
 				return false;
 			}
 		});
+	}
+
+	private Consumer<RiftBlockEntity> solveData(CompoundTag doorData, Map<String, Double> variableMap) {
+		CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
+
+		return rift -> rift.setData(RiftData.fromNbt(solvedDoorData));
 	}
 
 	@Override

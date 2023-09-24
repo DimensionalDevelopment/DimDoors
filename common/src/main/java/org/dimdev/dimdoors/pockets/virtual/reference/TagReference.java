@@ -87,14 +87,17 @@ public class TagReference extends PocketGeneratorReference {
 	// TODO: this will break if pockets change in between (which they could if we add a tool for creating pocket json config stuff ingame)
 	@Override
 	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters) {
-		if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact);
-		return pockets.peekNextRandomWeighted(parameters);
+		return selectPocket(parameters);
 	}
 
 	@Override
 	public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
-		if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact);
-		return pockets.getNextRandomWeighted(parameters);
+		return selectPocket(parameters);
+	}
+
+	private PocketGenerator selectPocket(PocketGenerationContext parameters) {
+		if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact != null && exact);
+		return pockets.peekNextRandomWeighted(parameters);
 	}
 
 	@Override

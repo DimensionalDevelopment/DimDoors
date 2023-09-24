@@ -72,7 +72,9 @@ public class VirtualLocation {
 			}
 		} else if (ModDimensions.isLimboDimension(location.getWorld())) { // TODO: convert to interface on worldprovider
 			virtualLocation = new VirtualLocation(location.world, location.getX(), location.getZ(), DimensionalDoors.getConfig().getDungeonsConfig().maxDungeonDepth);
-		} // TODO: nether coordinate transform
+		} else if(location.getWorld() != null) {// TODO: nether coordinate transform
+			virtualLocation = new VirtualLocation(location.world, location.getX(), location.getY(), 5);
+		}
 
 		if (virtualLocation == null) {
 			return new VirtualLocation(OVERWORLD, location.getX(), location.getZ(), 5);

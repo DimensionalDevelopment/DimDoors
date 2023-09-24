@@ -33,6 +33,11 @@ public class DungeonTarget extends RandomTarget {
 		return nbt;
 	}
 
+	@Override
+	public VirtualTarget copy() {
+		return new DungeonTarget(getNewRiftWeight(), getNewRiftWeight(), getCoordFactor(), getPositiveDepthFactor(), getNegativeDepthFactor(), getAcceptedGroups(), isNoLink(), isNoLinkBack(), dungeonGroup);
+	}
+
 	public static DungeonTargetBuilder builder() {
 		return new DungeonTargetBuilder();
 	}
@@ -54,11 +59,6 @@ public class DungeonTarget extends RandomTarget {
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {
 		return VirtualTargetType.DUNGEON.get();
-	}
-
-	@Override
-	public Target receiveOther() {
-		return super.receiveOther();
 	}
 
 	public static class DungeonTargetBuilder extends RandomTargetBuilder {

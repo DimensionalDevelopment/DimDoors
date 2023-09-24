@@ -4,12 +4,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
+import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.DungeonTarget;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.RandomTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+
+import static org.dimdev.dimdoors.pockets.PocketGenerator.ALL_DUNGEONS;
 
 public interface DefaultDungeonDestinations { // TODO: lower weights?
 	LinkProperties POCKET_LINK_PROPERTIES = LinkProperties.builder()
@@ -74,8 +77,12 @@ public interface DefaultDungeonDestinations { // TODO: lower weights?
 	}
 
 	static VirtualTarget getGateway() {
+		return getGateway(ALL_DUNGEONS);
+	}
+
+	static VirtualTarget getGateway(ResourceLocation resourceLocation) {
 		return DungeonTarget.builder()
-				.dungeonGroup(DimensionalDoors.id("dungeon"))
+				.dungeonGroup(resourceLocation)
 				.acceptedGroups(Collections.singleton(0))
 				.coordFactor(1)
 				.negativeDepthFactor(Double.POSITIVE_INFINITY)
