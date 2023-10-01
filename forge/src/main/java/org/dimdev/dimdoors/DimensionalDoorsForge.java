@@ -21,6 +21,7 @@ import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.item.component.forge.CounterComponentImpl;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
+import org.dimdev.dimdoors.world.ModBiomeModifiers;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 import org.dimdev.dimdoors.world.level.component.forge.ChunkLazilyGeneratedComponentImpl;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -36,7 +37,7 @@ public class DimensionalDoorsForge {
         EventBuses.registerModEventBus(DimensionalDoors.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         DimensionalDoors.init();
 
-        var list = new WeightedList<>();
+        ModBiomeModifiers.init();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterRecipeBookCategoriesEvent>) event1 -> {
             ModRecipeBookTypes.init();

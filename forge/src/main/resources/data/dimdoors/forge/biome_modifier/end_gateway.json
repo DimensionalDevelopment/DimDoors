@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_end",
+  "features": "dimdoors:end_gateway",
+  "step": "surface_structures"
+}

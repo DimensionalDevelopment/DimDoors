@@ -53,8 +53,6 @@ dependencies {
 
     includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}")
     includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
-    includeCompile("curse.maven:cardinal-components-entity-${project.project.cardinal_components}:${project.cardinal_components_entity}")
-    includeCompile("curse.maven:cardinal-components-level-${project.project.cardinal_components}:${project.cardinal_components_level}")
     includeCompile("curse.maven:cardinal-components-world-${project.project.cardinal_components}:${project.cardinal_components_world}")
     includeCompile("curse.maven:cardinal-components-chunk-${project.project.cardinal_components}:${project.cardinal_components_chunk}")
 

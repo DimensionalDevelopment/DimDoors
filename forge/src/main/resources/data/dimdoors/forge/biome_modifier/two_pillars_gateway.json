@@ -1,6 +1,7 @@
 {
-  "type": "forge:add_features",
-  "biomes": "minecraft:desert, minecraft:mesa",
+  "type": "dimdoors:add_features",
+  "whiteList": "#minecraft:is_overworld",
+  "blackList": "#minecraft:water_on_map_outlines",
   "features": "dimdoors:two_pillars",
   "step": "surface_structures"
 }
