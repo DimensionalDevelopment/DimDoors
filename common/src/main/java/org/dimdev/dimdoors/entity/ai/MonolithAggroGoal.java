@@ -36,7 +36,7 @@ public class MonolithAggroGoal extends Goal {
     }
 
     private Player getTarget() {
-        Player playerEntity = this.mob.level.getNearestPlayer(this.targetPredicate, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+        Player playerEntity = this.mob.level().getNearestPlayer(this.targetPredicate, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         return playerEntity != null && this.mob.hasLineOfSight(playerEntity) && playerEntity.distanceTo(this.mob) < 50 ? playerEntity : null;
     }
 
@@ -96,7 +96,7 @@ public class MonolithAggroGoal extends Goal {
             if (this.mob.getAggro() >= MAX_AGGRO && DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
                 this.mob.setAggro(0);
 				this.target.teleportTo(this.target.getX(), this.target.getY() + 256, this.target.getZ());
-                this.target.level.playSound(null, new BlockPos(new Vec3i((int) this.target.position().x, (int) this.target.position().y, (int) this.target.position().z)), ModSoundEvents.CRACK.get(), SoundSource.HOSTILE, 13, 1);
+                this.target.level().playSound(null, new BlockPos(new Vec3i((int) this.target.position().x, (int) this.target.position().y, (int) this.target.position().z)), ModSoundEvents.CRACK.get(), SoundSource.HOSTILE, 13, 1);
                 this.target.awardStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
                 ServerPacketHandler.get((ServerPlayer) this.target).sendPacket(new MonolithTeleportParticlesPacket());
 			}

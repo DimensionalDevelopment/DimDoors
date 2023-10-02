@@ -16,7 +16,7 @@ public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakC
 	public static final ResourceLocation ID = DimensionalDoors.id("tag_block_break");
 
 	@Override
-	protected Conditions createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer) {
+	protected Conditions createInstance(JsonObject obj, ContextAwarePredicate playerPredicate, DeserializationContext predicateDeserializer) {
 		return new Conditions(playerPredicate, TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(obj.get("tag").getAsString())));
 	}
 
@@ -32,7 +32,7 @@ public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakC
 	public static class Conditions extends AbstractCriterionTriggerInstance {
 		private final TagKey<Block> blockTag;
 
-		public Conditions(EntityPredicate.Composite playerPredicate, TagKey<Block> blockTag) {
+		public Conditions(ContextAwarePredicate playerPredicate, TagKey<Block> blockTag) {
 			super(ID, playerPredicate);
 			this.blockTag = Objects.requireNonNull(blockTag);
 		}

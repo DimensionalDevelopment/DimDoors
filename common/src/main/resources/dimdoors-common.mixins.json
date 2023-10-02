@@ -24,7 +24,6 @@
     "WorldMixin",
     "accessor.BlockEntityTypeAccessor",
     "accessor.ChunkGeneratorAccessor",
-    "accessor.CraftingInventoryAccessor",
     "accessor.DefaultParticleTypeAccessor",
     "accessor.DirectionAccessor",
     "accessor.EntityAccessor",

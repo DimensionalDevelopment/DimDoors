@@ -164,7 +164,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 				int sectionY = chunk.getSectionIndex(blockPos.getY());
 				LevelChunkSection section = sections[sectionY];
 				if (section == null) {
-					section = new LevelChunkSection(sectionY, world.registryAccess().registryOrThrow(Registries.BIOME));
+					section = new LevelChunkSection(world.registryAccess().registryOrThrow(Registries.BIOME));
 					sections[sectionY] = section;
 				}
 				if(section.getBlockState(x, y, z).isAir()) {

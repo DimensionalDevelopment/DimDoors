@@ -142,7 +142,7 @@ public class SchematicGenerator extends LazyPocketGenerator{
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.dimension()).newPocket(builder);
 		BlockPos origin = pocket.getOrigin();
 		LOGGER.info("Generating pocket from template " + templateID + " at location " + origin);
-		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendSuccess(Component.translatable("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ()), false));
+		PocketCommand.logSetting.values().forEach(commandSource -> commandSource.sendSuccess(() -> Component.translatable("commands.pocket.log.creation.generating", templateID, origin.getX(), origin.getY(), origin.getZ()), false));
 
 
 		if (pocket instanceof LazyGenerationPocket) {

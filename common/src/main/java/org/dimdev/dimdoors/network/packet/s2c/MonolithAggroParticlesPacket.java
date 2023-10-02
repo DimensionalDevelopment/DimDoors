@@ -57,7 +57,7 @@ public class MonolithAggroParticlesPacket {
 		int count = 10 * aggro / MAX_AGGRO;
 		for (int i = 1; i < count; ++i) {
 			//noinspection ConstantConditions
-			player.level.addParticle(ParticleTypes.PORTAL, player.getX() + (clientRandom.nextDouble() - 0.5D) * 3.0,
+			player.level().addParticle(ParticleTypes.PORTAL, player.getX() + (clientRandom.nextDouble() - 0.5D) * 3.0,
 					player.getY() + clientRandom.nextDouble() * player.getBbHeight() - 0.75D,
 					player.getZ() + (clientRandom.nextDouble() - 0.5D) * player.getBbWidth(),
 					(clientRandom.nextDouble() - 0.5D) * 2.0D, -clientRandom.nextDouble(),

@@ -198,7 +198,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 			}
 
 			if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity)) {
-				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level, entity.blockPosition()));
+				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level(), entity.blockPosition()));
 				EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
 				return true;
 			}

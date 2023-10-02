@@ -15,10 +15,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.fluid.ModFluids;
 
@@ -26,7 +23,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static net.minecraft.world.level.block.Blocks.CLAY;
+import static net.minecraft.world.level.block.Blocks.SAND;
+import static net.minecraft.world.level.block.Blocks.STONE;
+import static net.minecraft.world.level.block.Blocks.WATER;
 import static net.minecraft.world.level.block.Blocks.*;
+import static net.minecraft.world.level.block.state.BlockBehaviour.Properties.copy;
+import static net.minecraft.world.level.material.MapColor.*;
 import static org.dimdev.dimdoors.item.ModItems.DIMENSIONAL_DOORS;
 
 public final class ModBlocks {
@@ -37,19 +40,19 @@ public final class ModBlocks {
 
 	private static final Map<DyeColor, RegistrySupplier<Block>> ANCIENT_FABRIC_BLOCKS = new HashMap<DyeColor, RegistrySupplier<Block>>();
 
-	public static final RegistrySupplier<Block> STONE_PLAYER = registerWithoutTab("stone_player", () -> new Block(of(Material.STONE).strength(0.5F).noOcclusion()));
+	public static final RegistrySupplier<Block> STONE_PLAYER = registerWithoutTab("stone_player", () -> new Block(copy(STONE).strength(0.5F).noOcclusion()));
 
-	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(of(Material.METAL, MaterialColor.GOLD).strength(5.0F).requiresCorrectToolForDrops().noCollission(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(copy(IRON_BLOCK).mapColor(GOLD).strength(5.0F).requiresCorrectToolForDrops().noCollission(), BlockSetType.IRON));
 
-	public static final RegistrySupplier<Block> STONE_DOOR = register("stone_door", () -> new DoorBlock(of(Material.METAL, MaterialColor.WOOD).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> STONE_DOOR = register("stone_door", () -> new DoorBlock(copy(STONE).mapColor(WOOD).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
 
-	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(of(Material.STONE, MaterialColor.TERRACOTTA_WHITE).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(copy(STONE).mapColor(TERRACOTTA_WHITE).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
 
 	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTab("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
 
-	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", () -> new DimensionalPortalBlock(of(Material.AIR).noCollission().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
+	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", () -> new DimensionalPortalBlock(copy(AIR).noCollission().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
 
-	public static final RegistrySupplier<Block> DETACHED_RIFT = registerWithoutTab("detached_rift", () -> new DetachedRiftBlock(of(Material.AIR, MaterialColor.COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
+	public static final RegistrySupplier<Block> DETACHED_RIFT = registerWithoutTab("detached_rift", () -> new DetachedRiftBlock(copy(AIR).mapColor(COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
 
 	public static final RegistrySupplier<Block> WHITE_FABRIC = registerFabric(DyeColor.WHITE);
 
@@ -115,11 +118,11 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> RED_ANCIENT_FABRIC = registerAncientFabric(DyeColor.RED);
 
 	public static final RegistrySupplier<Block> BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
-	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = of(Material.STONE, MaterialColor.COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
+	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = copy(STONE).mapColor(COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
 
-	public static final RegistrySupplier<LiquidBlock> ETERNAL_FLUID = registerWithoutTab("eternal_fluid", () -> new EternalFluidBlock(of(Material.LAVA, MaterialColor.COLOR_RED).lightLevel(state -> 15)));
+	public static final RegistrySupplier<LiquidBlock> ETERNAL_FLUID = registerWithoutTab("eternal_fluid", () -> new EternalFluidBlock(copy(LAVA).mapColor(COLOR_RED).lightLevel(state -> 15)));
 
-	public static final RegistrySupplier<LiquidBlock> LEAK = registerWithoutTab("leak", () -> new ArchitecturyLiquidBlock(ModFluids.LEAK, of(WATER)));
+	public static final RegistrySupplier<LiquidBlock> LEAK = registerWithoutTab("leak", () -> new ArchitecturyLiquidBlock(ModFluids.LEAK, copy(WATER)));
 
 	public static final RegistrySupplier<Block> DECAYED_BLOCK = registerWithoutTab("decayed_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
@@ -131,18 +134,18 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> UNRAVELLED_FABRIC = register("unravelled_fabric", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTab("marking_plate", () -> new MarkingPlateBlock(of(Material.METAL, DyeColor.BLACK).noOcclusion()));
+	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTab("marking_plate", () -> new MarkingPlateBlock(copy(IRON_BLOCK).mapColor(DyeColor.BLACK).noOcclusion()));
 
-	public static final RegistrySupplier<Block> SOLID_STATIC = register("solid_static", () -> new UnravelledFabricBlock(of(Material.STONE).strength(7, 25).randomTicks().requiresCorrectToolForDrops().sound(SoundType.SAND)));
+	public static final RegistrySupplier<Block> SOLID_STATIC = register("solid_static", () -> new UnravelledFabricBlock(copy(STONE).strength(7, 25).randomTicks().requiresCorrectToolForDrops().sound(SoundType.SAND)));
 
 	public static final RegistrySupplier<Block> TESSELATING_LOOM = register("tesselating_loom", () -> new TesselatingLoomBlock(of(LOOM)));
 
 	public static final RegistrySupplier<Block> REALITY_SPONGE = register("reality_sponge", () -> new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	//Decay graph filler.
-	public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = register("driftwood_wood", () -> new RotatedPillarBlock(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_LOG = register("driftwood_log", () -> new RotatedPillarBlock(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_PLANKS = register("driftwood_planks", () -> new Block(of(Material.WOOD, MaterialColor.COLOR_LIGHT_GRAY).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = register("driftwood_wood", () -> new RotatedPillarBlock(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_LOG = register("driftwood_log", () -> new RotatedPillarBlock(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_PLANKS = register("driftwood_planks", () -> new Block(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
 	public static final RegistrySupplier<Block> DRIFTWOOD_LEAVES = register("driftwood_leaves", () -> new LeavesBlock(of(OAK_LEAVES)));
 	public static final RegistrySupplier<Block> DRIFTWOOD_SAPLING = register("driftwood_sapling", () -> new Block(of(OAK_SAPLING)));
 	public static final RegistrySupplier<Block> DRIFTWOOD_FENCE = registerFence("driftwood_fence", DRIFTWOOD_PLANKS);
@@ -150,19 +153,19 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> DRIFTWOOD_BUTTON = registerButton("driftwood_button", DRIFTWOOD_PLANKS);
 	public static final RegistrySupplier<Block> DRIFTWOOD_SLAB = registerSlab("driftwood_slab", DRIFTWOOD_PLANKS);
 	public static final RegistrySupplier<Block> DRIFTWOOD_STAIRS = registerStairs("driftwood_stairs", DRIFTWOOD_PLANKS);
-	public static final RegistrySupplier<Block> DRIFTWOOD_DOOR = register("driftwood_door", () -> new DoorBlock(of(Material.WOOD, MaterialColor.COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK));
-	public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = register("driftwood_trapdoor", () -> new TrapDoorBlock(of(Material.WOOD, MaterialColor.COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> DRIFTWOOD_DOOR = register("driftwood_door", () -> new DoorBlock(copy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = register("driftwood_trapdoor", () -> new TrapDoorBlock(copy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false), BlockSetType.OAK));
 
-	public static final RegistrySupplier<Block> AMALGAM_BLOCK = register("amalgam_block", () -> new Block(of(Material.METAL, MaterialColor.COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
-	public static final RegistrySupplier<Block> AMALGAM_DOOR = register("amalgam_door", () -> new DoorBlock(of(Material.METAL, MaterialColor.COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion(), BlockSetType.IRON));
-	public static final RegistrySupplier<Block> AMALGAM_TRAPDOOR = register("amalgam_trapdoor", () -> new TrapDoorBlock(of(Material.METAL).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).isValidSpawn((state, world, pos, type) -> false), BlockSetType.IRON));
-	public static final RegistrySupplier<Block> RUST = register("rust", () -> new Block(of(Material.WOOD)));
+	public static final RegistrySupplier<Block> AMALGAM_BLOCK = register("amalgam_block", () -> new Block(copy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
+	public static final RegistrySupplier<Block> AMALGAM_DOOR = register("amalgam_door", () -> new DoorBlock(copy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> AMALGAM_TRAPDOOR = register("amalgam_trapdoor", () -> new TrapDoorBlock(copy(IRON_BLOCK).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).isValidSpawn((state, world, pos, type) -> false), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> RUST = register("rust", () -> new Block(copy(OAK_WOOD)));
 	public static final RegistrySupplier<Block> AMALGAM_SLAB = registerSlab("amalgam_slab", AMALGAM_BLOCK);
 	public static final RegistrySupplier<Block> AMALGAM_STAIRS = registerStairs("amalgam_stairs", AMALGAM_BLOCK);
-	public static final RegistrySupplier<Block> AMALGAM_ORE = register("amalgam_ore", () -> new DropExperienceBlock(of(Material.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
+	public static final RegistrySupplier<Block> AMALGAM_ORE = register("amalgam_ore", () -> new DropExperienceBlock(copy(STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
 
-	public static final RegistrySupplier<Block> CLOD_ORE = register("clod_ore", () -> new Block(of(Material.AMETHYST)));
-	public static final RegistrySupplier<Block> CLOD_BLOCK = register("clod_block", () -> new Block(of(Material.AMETHYST)));
+	public static final RegistrySupplier<Block> CLOD_ORE = register("clod_ore", () -> new Block(copy(Blocks.AMETHYST_BLOCK)));
+	public static final RegistrySupplier<Block> CLOD_BLOCK = register("clod_block", () -> new Block(copy(Blocks.AMETHYST_BLOCK)));
 
 	public static final RegistrySupplier<Block> GRAVEL_FENCE = registerFence("gravel_fence", GRAVEL);
 	public static final RegistrySupplier<Block> GRAVEL_BUTTON = registerButton("gravel_button", GRAVEL);
@@ -170,7 +173,7 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> GRAVEL_STAIRS = registerStairs("gravel_stairs", GRAVEL);
 	public static final RegistrySupplier<Block> GRAVEL_WALL = registerWall("gravel_wall", GRAVEL);
 
-	public static final RegistrySupplier<Block> DARK_SAND = register("dark_sand", () -> new Block(of(Material.SAND, MaterialColor.COLOR_BLACK).strength(0.5F).sound(SoundType.SAND)));
+	public static final RegistrySupplier<Block> DARK_SAND = register("dark_sand", () -> new Block(copy(SAND).mapColor(COLOR_BLACK).strength(0.5F).sound(SoundType.SAND)));
 	public static final RegistrySupplier<Block> DARK_SAND_FENCE = registerFence("dark_sand_fence", DARK_SAND);
 	public static final RegistrySupplier<Block> DARK_SAND_BUTTON = registerButton("dark_sand_button", DARK_SAND);
 	public static final RegistrySupplier<Block> DARK_SAND_SLAB = registerSlab("dark_sand_slab", DARK_SAND);
@@ -205,9 +208,9 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> RED_SAND_STAIRS = registerStairs("red_sand_stairs", Blocks.RED_SAND);
 	public static final RegistrySupplier<Block> RED_SAND_WALL = registerWall("red_sand_wall", Blocks.RED_SAND);
 
-	public static final RegistrySupplier<Block> SAND_SLAB = registerSlab("sand_slab", Blocks.SAND);
-	public static final RegistrySupplier<Block> SAND_STAIRS = registerStairs("sand_stairs", Blocks.SAND);
-	public static final RegistrySupplier<Block> SAND_WALL = registerWall("sand_wall", Blocks.SAND);
+	public static final RegistrySupplier<Block> SAND_SLAB = registerSlab("sand_slab", SAND);
+	public static final RegistrySupplier<Block> SAND_STAIRS = registerStairs("sand_stairs", SAND);
+	public static final RegistrySupplier<Block> SAND_WALL = registerWall("sand_wall", SAND);
 
 	public static final RegistrySupplier<Block> END_STONE_SLAB = registerSlab("end_stone_slab", Blocks.END_STONE);
 	public static final RegistrySupplier<Block> END_STONE_STAIRS = registerStairs("end_stone_stairs", Blocks.END_STONE);
@@ -313,19 +316,19 @@ public final class ModBlocks {
 		return register(name, () -> new WallBlock(of(block.get())));
 	}
 	
-	private static BlockBehaviour.Properties of(Material material, MaterialColor color) {
-		return BlockBehaviour.Properties.of(material, color);
-	}
-
-	private static BlockBehaviour.Properties of(Material material) {
-		return BlockBehaviour.Properties.of(material);
-	}
-
-	private static BlockBehaviour.Properties of(Material material, DyeColor dyeColor) {
-		return BlockBehaviour.Properties.of(material, dyeColor);
-	}
+//	private static BlockBehaviour.Properties of(Material material, MaterialColor color) {
+//		return BlockBehaviour.Properties.of(material, color);
+//	}
+//
+//	private static BlockBehaviour.Properties of(Material material) {
+//		return BlockBehaviour.Properties.of(material);
+//	}
+//
+//	private static BlockBehaviour.Properties of(Material material, DyeColor dyeColor) {
+//		return BlockBehaviour.Properties.of(material, dyeColor);
+//	}
 
 	private static BlockBehaviour.Properties of(Block block) {
-		return BlockBehaviour.Properties.copy(block);
+		return copy(block);
 	}
 }

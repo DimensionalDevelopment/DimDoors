@@ -16,6 +16,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
@@ -46,6 +47,7 @@ public class RiftSignatureItem extends Item {
 		Level world = itemUsageContext.getLevel();
 		BlockPos pos = itemUsageContext.getClickedPos();
 		InteractionHand hand = itemUsageContext.getHand();
+		BlockState state = world.getBlockState(pos);
 		Direction side = itemUsageContext.getClickedFace();
 
 		BlockPlaceContext placementContext = new BlockPlaceContext(itemUsageContext);
@@ -76,8 +78,8 @@ public class RiftSignatureItem extends Item {
 			world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START.get(), SoundSource.BLOCKS, 0.6f, 1);
 		} else {
 			// Place a rift at the saved point
-			if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT) {
-				if (!target.getBlockState().getBlock().isPossibleToRespawnInThis()) {
+			if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT.get()) {
+				if (!target.getBlockState().getBlock().isPossibleToRespawnInThis(state)) {
 					player.displayClientMessage(Component.translatable("tools.target_became_block"), true);
 					clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
 					return InteractionResult.FAIL;

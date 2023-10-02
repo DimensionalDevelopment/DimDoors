@@ -59,12 +59,12 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.save(advancementConsumer, "dimdoors:dimdoors/string_theory");
 		Advancement holeInTheSky = Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL.get(), "hole_in_the_sky"))
-				.addCriterion("encounter_rift", new RiftTrackedCriterion.Conditions(EntityPredicate.Composite.ANY))
+				.addCriterion("encounter_rift", new RiftTrackedCriterion.Conditions(ContextAwarePredicate.ANY))
 				.parent(root)
 				.save(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
 		Advancement darkOstiology = Advancement.Builder.advancement()
 				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door")), "dark_ostiology"))
-				.addCriterion("place_door", PlacedBlockTrigger.TriggerInstance.placedBlock(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door"))))
+				.addCriterion("place_door", EnterBlockTrigger.TriggerInstance.entersBlock(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door"))))
 				.parent(holeInTheSky)
 				.save(advancementConsumer, "dimdoors:dimdoors/dark_ostiology");
 		Advancement.Builder.advancement()
@@ -79,7 +79,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.save(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
 		Advancement.Builder.advancement()
 				.display(makeDisplay(Blocks.RESPAWN_ANCHOR, "out_of_time"))
-				.addCriterion("spawn", new PocketSpawnPointSetCondition.Conditions(EntityPredicate.Composite.ANY))
+				.addCriterion("spawn", new PocketSpawnPointSetCondition.Conditions(ContextAwarePredicate.ANY))
 				.parent(darkOstiology)
 				.save(advancementConsumer, "dimdoors:dimdoors/out_of_time");
 		Advancement doorToAdventure = Advancement.Builder.advancement()

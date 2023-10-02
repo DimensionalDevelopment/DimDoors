@@ -135,7 +135,7 @@ public class ChunkGenerator extends PocketGenerator {
 				genWorldChunkGenerator.applyCarvers(protoRegion, genWorld.getSeed(), config, genWorld.getBiomeManager(), genWorld.structureManager(), protoChunk, carver);
 				ProtoChunk pChunk = ((ProtoChunk) protoChunk);
 				if (pChunk.getStatus() == ChunkStatus.SURFACE) pChunk.setStatus(ChunkStatus.CARVERS);
-				else pChunk.setStatus(ChunkStatus.LIQUID_CARVERS);
+				else pChunk.setStatus(ChunkStatus.CARVERS);
 			}
 		}
 		for (ChunkAccess protoChunk : protoChunks) {

@@ -19,7 +19,7 @@ public class TwoPillarsGateway extends SchematicGateway {
 				//Check that the block is supported by an opaque block.
 				//This prevents us from building over a cliff, on the peak of a mountain,
 				//or the surface of the ocean or a frozen lake.
-				if (world.getBlockState(pos.offset(xc, -1, zc)).getMaterial().isSolid()) {
+				if (world.getBlockState(pos.offset(xc, -1, zc)).isSolid()) {
 					//Randomly choose whether to place bricks or not. The math is designed so that the
 					//chances of placing a block decrease as we get farther from the gateway's center.
 					int i = Math.abs(xc) + Math.abs(zc);

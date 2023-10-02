@@ -78,7 +78,7 @@ public class TessellatingContainer extends RecipeBookMenu<Container> {
 
 	@Override
 	public boolean recipeMatches(Recipe<? super Container> recipe) {
-		return recipe.matches(recipeInv, playerInventory.player.level);
+		return recipe.matches(recipeInv, playerInventory.player.level());
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class TessellatingContainer extends RecipeBookMenu<Container> {
 
 		@Override
 		protected void checkTakeAchievements(ItemStack stack) {
-			stack.onCraftedBy(this.player.level, this.player, this.removeCount);
+			stack.onCraftedBy(this.player.level(), this.player, this.removeCount);
 			if(this.player instanceof ServerPlayer serverPlayer && this.container instanceof TesselatingLoomBlockEntity container) container.awardUsedRecipesAndPopExperience(serverPlayer);
 		}
 	}

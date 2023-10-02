@@ -55,7 +55,7 @@ public class DimTeleportCommand {
 
     private static int teleport(Entity entity, ServerLevel dimension, Vec3 pos, Rotations angle) {
     	if(entity instanceof Player) {
-			DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUUID(), new Location((ServerLevel) entity.getLevel(), entity.blockPosition()));
+			DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUUID(), new Location((ServerLevel) entity.level(), entity.blockPosition()));
 		}
 		TeleportUtil.teleport(entity, dimension, pos, angle, entity.getDeltaMovement());
         return Command.SINGLE_SUCCESS;

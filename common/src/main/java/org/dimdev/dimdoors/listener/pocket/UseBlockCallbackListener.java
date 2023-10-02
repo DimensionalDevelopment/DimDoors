@@ -13,7 +13,7 @@ public class UseBlockCallbackListener implements InteractionEvent.RightClickBloc
 	@Override
 	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face) {
 		List<InteractionEvent.RightClickBlock> applicableAddons;
-		var world = player.getLevel();
+		var world = player.level();
 		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(InteractionEvent.RightClickBlock.class, world, pos);
 		else applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.RightClickBlock.class, world, pos);
 

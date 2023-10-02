@@ -65,7 +65,7 @@ public class MonolithEntity extends Mob {
     }
 
     public boolean isDangerous() {
-        return DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.level) || DimensionalDoors.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
+        return DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && (ModDimensions.isLimboDimension(this.level()) || DimensionalDoors.getConfig().getMonolithsConfig().dangerousLimboMonoliths);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class MonolithEntity extends Mob {
     @Override
     protected void customServerAiStep() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
-        if (!(ModDimensions.isLimboDimension(this.level) || ModDimensions.isPocketDimension(this.level))) {
+        if (!(ModDimensions.isLimboDimension(this.level()) || ModDimensions.isPocketDimension(this.level()))) {
             this.remove(RemovalReason.DISCARDED);
             super.customServerAiStep();
             return;
@@ -151,7 +151,7 @@ public class MonolithEntity extends Mob {
             return;
         }
 
-        if (!this.level.isClientSide) {
+        if (!this.level().isClientSide) {
             if (player.distanceTo(this) > 70) {
                 return;
             }
@@ -160,7 +160,7 @@ public class MonolithEntity extends Mob {
             // Server side...
             // Rapidly increase the aggro level if this Monolith can see the player
             if (visibility) {
-                if (ModDimensions.isLimboDimension(this.level)) {
+                if (ModDimensions.isLimboDimension(this.level())) {
                     if (this.isDangerous()) {
                         aggro++;
                     } else {
@@ -209,11 +209,11 @@ public class MonolithEntity extends Mob {
             this.soundTime = 100;
         }
         if (aggroPercent > 0.70 && this.soundTime < 100) {
-            this.level.playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING.get(), SoundSource.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
+            this.level().playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING.get(), SoundSource.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
             this.soundTime = 100 + this.getRandom().nextInt(75);
         }
         if (aggroPercent > 0.80 && this.soundTime < MAX_SOUND_COOLDOWN) {
-            this.level.playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING.get(), SoundSource.HOSTILE, 7, 1);
+            this.level().playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING.get(), SoundSource.HOSTILE, 7, 1);
             this.soundTime = 250;
         }
         this.soundTime--;

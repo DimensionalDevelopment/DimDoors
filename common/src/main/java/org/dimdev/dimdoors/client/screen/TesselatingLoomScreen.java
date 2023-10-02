@@ -1,13 +1,10 @@
 package org.dimdev.dimdoors.client.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -43,7 +40,7 @@ public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingC
 	}
 
 
-	public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 		if (this.recipeBook.isVisible() && this.narrow) {
 			this.renderBg(matrices, delta, mouseX, mouseY);
@@ -58,17 +55,14 @@ public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingC
 		this.recipeBook.renderTooltip(matrices, this.leftPos, this.topPos, mouseX, mouseY);
 	}
 
-	protected void renderBg(PoseStack matrices, float delta, int mouseX, int mouseY) {
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, TEXTURE);
+	protected void renderBg(GuiGraphics matrices, float delta, int mouseX, int mouseY) {
 		int i = this.leftPos;
 		int j = (this.height - this.imageHeight) / 2;
-		GuiComponent.blit(matrices, i, j, 0, 0, this.imageWidth, this.imageWidth);
+		matrices.blit(TEXTURE, i, j, 0, 0, this.imageWidth, this.imageWidth);
 
 		if (this.menu.isWeaving()) {
 			int k = (this.menu).getBurnProgress(22);
-			GuiComponent.blit(matrices, i + 89, j + 34, 176, 0, k + 1, 16);
+			matrices.blit(TEXTURE, i + 89, j + 34, 176, 0, k + 1, 16);
 		}
 	}
 

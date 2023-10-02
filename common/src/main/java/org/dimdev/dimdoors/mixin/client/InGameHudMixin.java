@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,6 +32,6 @@ public abstract class InGameHudMixin{
 //		}
 //	}
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
-	public void renderOverlayMixin(PoseStack matrices, float tickDelta, CallbackInfo ci) {
+	public void renderOverlayMixin(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci) {
 	}
 }

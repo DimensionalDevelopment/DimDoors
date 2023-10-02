@@ -7,14 +7,15 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import org.dimdev.dimdoors.DimensionalDoors;
+
+import static net.minecraft.world.level.block.Blocks.STONE;
 
 public class FabricBlock extends Block {
 	public static final TagKey<Block> BLOCK_TAG = TagKey.create(Registries.BLOCK, DimensionalDoors.id("fabric"));
 
 	FabricBlock(DyeColor color) {
-		super(Properties.of(Material.STONE, color).strength(1.2F).lightLevel(state -> 15));
+		super(Properties.copy(STONE).mapColor(color).strength(1.2F).lightLevel(state -> 15));
 	}
 
 	@Override

@@ -11,7 +11,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
     // Remove the next line if you don't want to depend on the API
     modApi("dev.architectury:architectury:${project.properties["architectury_version"]}")
-    modApi("me.shedaniel.cloth:cloth-config:9.0.94")
+    modApi("me.shedaniel.cloth:cloth-config:${rootProject.properties["cloth_config"]}")
     modCompileOnlyApi("mcp.mobius.waila:wthit-api:fabric-${project.properties["wthitVersion"]}")
 
     modApi("com.flowpowered:flow-math:1.0.3")

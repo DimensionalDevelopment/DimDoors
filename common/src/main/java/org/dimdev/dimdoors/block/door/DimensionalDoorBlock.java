@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -50,9 +49,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+import static net.minecraft.world.level.material.PushReaction.BLOCK;
+
 public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, CustomBreakBlock, AfterMoveCollidableBlock {
 	public DimensionalDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
-		super(settings, blockSetType);
+		super(settings.pushReaction(BLOCK), blockSetType);
 	}
 
 	@Override
@@ -137,7 +138,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		if (!world.isClientSide && state.getValue(WATERLOGGED)) {
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
-		world.levelEvent(player, state.getValue(OPEN) ? this.material == Material.METAL ? 1005 : 1006 : this.material == Material.METAL ? 1011 : 1012, pos, 0);
+		this.playSound(player, world, pos, (Boolean)state.getValue(OPEN));
 		world.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
 		return InteractionResult.SUCCESS;
 	}
@@ -284,11 +285,6 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		createDetachedRift(world, pos, state);
 		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	public PushReaction getPistonPushReaction(BlockState state) {
-		return state.getValue(HALF) == DoubleBlockHalf.LOWER ? PushReaction.BLOCK : super.getPistonPushReaction(state);
 	}
 
 	@Override

@@ -22,7 +22,10 @@ subprojects {
         mavenCentral()
         maven("https://maven.shedaniel.me/")
         maven("https://jitpack.io")
-        maven("https://maven.bai.lol")
+        maven("https://maven.bai.lol").content {
+            includeGroup("lol.bai")
+            includeGroup("mcp.mobius.waila")
+        }
         maven("https://cursemaven.com").content { includeGroup("curse.maven") }
         maven("https://maven.enginehub.org/repo/")
         maven("https://maven.parchmentmc.org")

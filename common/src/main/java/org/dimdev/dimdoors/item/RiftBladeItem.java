@@ -89,7 +89,7 @@ public class RiftBladeItem extends SwordItem {
 
 			Vec3 added = entityVec.add(offsetDirection.scale(offsetDistance));
 			BlockPos teleportPosition = new BlockPos(new Vec3i((int) added.x, (int) added. y, (int) added.z));
-			while (world.getBlockState(teleportPosition).getMaterial().blocksMotion())
+			while (world.getBlockState(teleportPosition).blocksMotion())
 				teleportPosition = teleportPosition.above();
 			player.teleportTo(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
 			player.setYRot((float) (Math.random() * 2 * Math.PI));

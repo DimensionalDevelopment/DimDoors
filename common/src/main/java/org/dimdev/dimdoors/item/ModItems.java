@@ -8,10 +8,8 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.*;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -118,7 +116,8 @@ public final class ModItems {
 	
 	public static final Set<Item> DOOR_ITEMS = new HashSet<>();
 
-	public static final CreativeTabRegistry.TabSupplier DIMENSIONAL_DOORS = CreativeTabRegistry.create(id("dimensional_doors"), () -> new ItemStack(ModItems.RIFT_BLADE.get()));
+	public static DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CREATIVE_MODE_TAB);
+	public static final RegistrySupplier<CreativeModeTab> DIMENSIONAL_DOORS = CREATIVE_TABS.register("dimensional_doors", () -> CreativeTabRegistry.create(builder -> builder.icon(() -> new ItemStack(ModItems.RIFT_BLADE.get())).title(Component.literal("Dimensional Doors"))));
 
 	public static RegistrySupplier<Item> register(String name, Function<Item.Properties, Item> item) {
 		return register(name, () -> item.apply(new Item.Properties().arch$tab(DIMENSIONAL_DOORS)));
@@ -128,6 +127,7 @@ public final class ModItems {
 	}
 
 	public static void init() {
+		CREATIVE_TABS.register();
 		REGISTRY.register();
 	}
 }

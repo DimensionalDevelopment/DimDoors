@@ -53,7 +53,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	@Inject(method = "tick", at = @At("HEAD"))
 	public void playerTickMixin(CallbackInfo ci) {
 		if (dimdoors_random.nextFloat() <= RANDOM_ACTION_CHANCE) {
-			if(ModDimensions.isLimboDimension(((Player)(Object)(this)).getLevel())) {
+			if(ModDimensions.isLimboDimension(((Player)(Object)(this)).level())) {
 				tryMakingLimboLikeOtherDimensions((Player)(Object)this);
 			}
 		}
@@ -134,7 +134,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	public void checkDeathServer(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
 		if (ci.isCancelled()) {
-			if (ModDimensions.isPocketDimension(this.level)) {
+			if (ModDimensions.isPocketDimension(this.level())) {
 				this.awardStat(ModStats.DEATHS_IN_POCKETS);
 			}
 			this.awardStat(ModStats.TIMES_SENT_TO_LIMBO);

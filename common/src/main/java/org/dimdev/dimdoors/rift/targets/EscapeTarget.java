@@ -41,27 +41,27 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 
 	@Override
 	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
-		if (!ModDimensions.isPocketDimension(entity.level) && !(ModDimensions.isLimboDimension(entity.level))) {
+		if (!ModDimensions.isPocketDimension(entity.level()) && !(ModDimensions.isLimboDimension(entity.level()))) {
 			chat(entity, Component.translatable("rifts.destinations.escape.not_in_pocket_dim"));
 			return false;
 		}
-		if (ModDimensions.isLimboDimension(entity.level) && !this.canEscapeLimbo) {
+		if (ModDimensions.isLimboDimension(entity.level()) && !this.canEscapeLimbo) {
 			chat(entity, Component.translatable("rifts.destinations.escape.cannot_escape_limbo"));
 			return false;
 		}
-		if (entity.getLevel().isClientSide)
+		if (entity.level().isClientSide)
 			return false;
 		UUID uuid = entity.getUUID();
 		if (uuid != null) {
 			//Location destLoc = DimensionalRegistry.getRiftRegistry().getOverworldRift(uuid);
-			if (entity.level.getPlayerByUUID(uuid) == null) {
+			if (entity.level().getPlayerByUUID(uuid) == null) {
 				LOGGER.log(Level.ERROR, "Tried to get player for escape target from uuid, but player does not exist, uh oh");
 				return false;
 			}
 			LOGGER.log(Level.INFO, "sending player from limbo to their spawnpoint, good luck!");
 			Location destLoc;
-			if (((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnPosition() != null) {
-				destLoc = new Location(((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnPosition());
+			if (((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition() != null) {
+				destLoc = new Location(((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition());
 			} else {
 				destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getSharedSpawnPos());
 

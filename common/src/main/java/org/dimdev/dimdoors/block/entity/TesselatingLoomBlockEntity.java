@@ -24,7 +24,10 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.RecipeHolder;
+import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -33,7 +36,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.mixin.accessor.CraftingInventoryAccessor;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
@@ -261,7 +263,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 			ItemStack outstack = output;
 			if (outstack.isEmpty()) {
 				return true;
-			} else if (!outstack.sameItem(result)) {
+			} else if (!ItemStack.isSameItem(outstack, result)) {
 				return false;
 			} else {
 				return (outstack.getCount() + result.getCount() <= outstack.getMaxStackSize());
@@ -301,7 +303,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 				if (!remainingStack.isEmpty()) {
 					if (current.isEmpty()) {
 						inventory.set(i, remainingStack);
-					} else if (ItemStack.isSame(current, remainingStack) && ItemStack.matches(current, remainingStack)) {
+					} else if (ItemStack.matches(current, remainingStack)) {
 						current.grow(remainingStack.getCount());
 					} else {
 						drops.add(remainingStack);
@@ -367,7 +369,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	public void awardUsedRecipesAndPopExperience(ServerPlayer player) {
-		List<Recipe<?>> list = this.getRecipesToAwardAndPopExperience(player.getLevel(), player.position());
+		List<Recipe<?>> list = this.getRecipesToAwardAndPopExperience(player.serverLevel(), player.position());
 		player.awardRecipes(list);
 		this.recipesUsed.clear();
 	}

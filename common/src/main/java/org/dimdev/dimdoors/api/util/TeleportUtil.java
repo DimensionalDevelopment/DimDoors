@@ -69,7 +69,7 @@ public final class TeleportUtil {
 			((ServerLevel) world).getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
 			entity.stopRiding();
 
-			if (entity.level.dimension().equals(world.dimension())) {
+			if (entity.level().dimension().equals(world.dimension())) {
 				serverPlayer.connection.teleport(pos.x(), pos.y(), pos.z(), yaw, pitch);
 			} else {
 				entity = teleport(entity, (ServerLevel) world, new PortalInfo(pos, velocity, yaw, pitch));
@@ -82,7 +82,7 @@ public final class TeleportUtil {
 				serverPlayer.awardStat(ModStats.TIMES_BEEN_TO_DUNGEON);
 			}
 		} else {
-			if (entity.level.dimension().equals(world.dimension())) {
+			if (entity.level().dimension().equals(world.dimension())) {
 				entity.moveTo(pos.x(), pos.y(), pos.z(), yaw, pitch);
 			} else {
 				entity = teleport(entity, (ServerLevel) world, new PortalInfo(pos, velocity, yaw, pitch));
@@ -122,7 +122,7 @@ public final class TeleportUtil {
 		);
 	}
 	public static  <E extends Entity> E teleportUntargeted(E entity, Level world) {
-		double actualScale = entity.level.dimensionType().coordinateScale() / world.dimensionType().coordinateScale();
+		double actualScale = entity.level().dimensionType().coordinateScale() / world.dimensionType().coordinateScale();
 		return teleport(
 				entity,
 				world,
@@ -132,7 +132,7 @@ public final class TeleportUtil {
 	}
 
 	public static  <E extends Entity> E teleportUntargeted(E entity, Level world, double y) {
-		double actualScale = entity.level.dimensionType().coordinateScale() / world.dimensionType().coordinateScale();
+		double actualScale = entity.level().dimensionType().coordinateScale() / world.dimensionType().coordinateScale();
 		return teleport(
 				entity,
 				world,
