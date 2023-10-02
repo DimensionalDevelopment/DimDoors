@@ -170,7 +170,7 @@ public final class ModConfig implements ConfigData {
 
 		@CollapsibleObject
 		@RequiresRestart
-		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList(List.of(), true);
+		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList(List.of(), false);
 		@Tooltip public boolean hardcoreLimbo = false;
 		@Tooltip public float limboBlocksCorruptingOverworldAmount = 5;
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {
