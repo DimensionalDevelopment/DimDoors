@@ -189,7 +189,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 		}
 
 		// do the lighting thing
-		serverChunkManager.getLightEngine().lightChunk(chunk, false);
+		serverChunkManager.getLightEngine().initializeLight(chunk, true);
 
 		// TODO: depending on size of blockEntityContainer it might be faster to iterate over BlockPos.stream(intersection) instead
 		this.blockEntityContainer.forEach((blockPos, nbt) -> {
