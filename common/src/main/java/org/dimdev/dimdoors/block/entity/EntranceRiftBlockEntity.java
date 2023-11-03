@@ -111,11 +111,19 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 			TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getBlockPos());
 			TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getBlockPos());
 			targetPos = transformer.transformOut(transformationBuilder, relativePos);
+
+			//TODO:offset entity one block infront of door
+
 			relativeAngle = transformer.rotateOut(rotatorBuilder, relativeAngle);
 			relativeVelocity = transformer.rotateOut(rotatorBuilder, relativeVelocity);
 		}
 
 		// TODO: open door
+		Direction direction = getOrientation().getOpposite();
+
+
+
+		targetPos= targetPos.add((double) direction.getNormal().getX() /2, (double) direction.getNormal().getY() /2, (double) direction.getNormal().getZ() /2);
 
 		TeleportUtil.teleport(entity, this.level, targetPos, relativeAngle, relativeVelocity);
 

@@ -17,10 +17,13 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.apache.commons.compress.compressors.lz77support.LZ77Compressor;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
+import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
@@ -45,7 +48,8 @@ public class RiftSignatureItem extends Item {
 	public InteractionResult useOn(UseOnContext itemUsageContext) {
 		Player player = itemUsageContext.getPlayer();
 		Level world = itemUsageContext.getLevel();
-		BlockPos pos = itemUsageContext.getClickedPos();
+		// get block two blocks above the clicked block
+		BlockPos pos = itemUsageContext.getClickedPos().above().above();
 		InteractionHand hand = itemUsageContext.getHand();
 		BlockState state = world.getBlockState(pos);
 		Direction side = itemUsageContext.getClickedFace();
@@ -90,6 +94,10 @@ public class RiftSignatureItem extends Item {
 				rift1.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerLevel) world, pos)));
 				rift1.register();
 			}
+			else if (target.getBlockState().getBlock() instanceof DimensionalDoorBlock) {
+			//todo: place rift on top of doors without breaking them
+			}
+
 
 			// Place a rift at the target point
 			world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
