@@ -27,7 +27,7 @@ public class EternalFluidBlock extends ArchitecturyLiquidBlock {
 		}
 
 		try {
-			if (TARGET.receiveEntity(entity, Vec3.ZERO, MathUtil.entityEulerAngle(entity), entity.getDeltaMovement())) {
+			if (TARGET.receiveEntity(entity, Vec3.ZERO, MathUtil.entityEulerAngle(entity), entity.getDeltaMovement(), null)) {
 				if (entity instanceof Player) {
 					LimboExitReason.ETERNAL_FLUID.broadcast((Player) entity);
 				}

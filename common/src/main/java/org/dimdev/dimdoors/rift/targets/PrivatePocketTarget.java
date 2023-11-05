@@ -30,7 +30,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
 		UUID uuid = EntityUtils.getOwner(entity).getUUID();
 		VirtualLocation virtualLocation = VirtualLocation.fromLocation(this.location);
 		if (uuid != null) {
@@ -75,13 +75,13 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 				if (pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getDyeColor())) {
 					entity.remove(Entity.RemovalReason.DISCARDED);
 				} else {
-					((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
+					((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
 				}
 			} else {
-				((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
+				((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
 			}
 		} else {
-			((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
+			((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
 			DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, this.location);
 		}
 	}
