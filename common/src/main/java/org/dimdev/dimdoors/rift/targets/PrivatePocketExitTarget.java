@@ -23,7 +23,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
 		Location destLoc;
 		// TODO: make this recursive
 		UUID uuid = EntityUtils.getOwner(entity).getUUID();
@@ -40,11 +40,11 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 					EntityUtils.chat(entity, Component.translatable("rifts.destinations.private_pocket_exit.rift_has_closed"));
 				}
 
-				LimboTarget.INSTANCE.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
+				LimboTarget.INSTANCE.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
 
 				return false;
 			} else {
-				((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
+				((EntityTarget) destLoc.getBlockEntity()).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
 				return true;
 			}
 		} else {

@@ -40,7 +40,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location2) {
 		if (!ModDimensions.isPocketDimension(entity.level()) && !(ModDimensions.isLimboDimension(entity.level()))) {
 			chat(entity, Component.translatable("rifts.destinations.escape.not_in_pocket_dim"));
 			return false;

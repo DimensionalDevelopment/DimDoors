@@ -8,6 +8,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.dimdoors.api.util.Location;
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
 	private final float weight;
@@ -29,7 +30,7 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
 		EntityUtils.chat(entity, Component.translatable("The entrance of this dungeon has not been converted. If this is a normally generated pocket, please report this bug."));
 		return false;
 	}

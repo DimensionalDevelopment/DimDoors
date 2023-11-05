@@ -26,6 +26,7 @@ import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
+import org.dimdev.dimdoors.rift.targets.LocationProvider;
 import org.dimdev.dimdoors.rift.targets.MessageTarget;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
@@ -184,6 +185,9 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 			Vec3 relativePos = new Vec3(0, 0, 0);
 			Rotations relativeAngle = new Rotations(entity.getXRot(), entity.getYRot(), 0);
 			Vec3 relativeVelocity = entity.getDeltaMovement();
+
+			var location = this.getTarget() instanceof LocationProvider provider ? provider.getLocation() : null;
+
 			EntityTarget target = this.getTarget().as(Targets.ENTITY);
 
 			BlockState state = this.getLevel().getBlockState(this.getBlockPos());
@@ -197,7 +201,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 				relativeVelocity = transformer.rotateTo(rotatorBuilder, relativeVelocity);
 			}
 
-			if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity)) {
+		if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
 				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level(), entity.blockPosition()));
 				EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
 				return true;

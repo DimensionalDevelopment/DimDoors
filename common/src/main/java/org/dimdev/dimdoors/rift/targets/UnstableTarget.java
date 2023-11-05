@@ -5,6 +5,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.util.Location;
 
 import java.util.Collections;
 
@@ -22,7 +23,7 @@ public class UnstableTarget extends VirtualTarget implements EntityTarget {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
 		if (RANDOM.nextBoolean()) {
 			return RandomTarget.builder()
 					.acceptedGroups(Collections.singleton(0))
@@ -35,9 +36,9 @@ public class UnstableTarget extends VirtualTarget implements EntityTarget {
 					.newRiftWeight(1)
 					.build()
 					.as(Targets.ENTITY)
-					.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
+					.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
 		}
 
-		return LimboTarget.INSTANCE.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity);
+		return LimboTarget.INSTANCE.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
 	}
 }

@@ -6,6 +6,7 @@ import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -19,7 +20,7 @@ public class LimboTarget extends VirtualTarget implements EntityTarget {
 	}
 
 	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
 		BlockPos teleportPos = entity.blockPosition();
 		while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID.get()) {
 			teleportPos = teleportPos.offset(1, 0, 1);

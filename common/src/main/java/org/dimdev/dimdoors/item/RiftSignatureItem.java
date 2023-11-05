@@ -17,11 +17,16 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.apache.commons.compress.compressors.lz77support.LZ77Compressor;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
+import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -45,6 +50,7 @@ public class RiftSignatureItem extends Item {
 	public InteractionResult useOn(UseOnContext itemUsageContext) {
 		Player player = itemUsageContext.getPlayer();
 		Level world = itemUsageContext.getLevel();
+		// get block one block above the clicked block
 		BlockPos pos = itemUsageContext.getClickedPos();
 		InteractionHand hand = itemUsageContext.getHand();
 		BlockState state = world.getBlockState(pos);
@@ -77,25 +83,40 @@ public class RiftSignatureItem extends Item {
 			player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stored"), true);
 			world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START.get(), SoundSource.BLOCKS, 0.6f, 1);
 		} else {
+			RiftBlockEntity rift1;
+			RiftBlockEntity rift2;
+
 			// Place a rift at the saved point
-			if (target.getBlockState().getBlock() != ModBlocks.DETACHED_RIFT.get()) {
-				if (!target.getBlockState().getBlock().isPossibleToRespawnInThis(state)) {
-					player.displayClientMessage(Component.translatable("tools.target_became_block"), true);
-					clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
-					return InteractionResult.FAIL;
-				}
-				Level sourceWorld = DimensionalDoors.getWorld(target.world);
-				sourceWorld.setBlockAndUpdate(target.getBlockPos(), ModBlocks.DETACHED_RIFT.get().defaultBlockState());
-				DetachedRiftBlockEntity rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
-				rift1.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerLevel) world, pos)));
-				rift1.register();
+            if (target.getBlockState().getBlock() instanceof RiftProvider<?> provider) {
+				rift1 = provider.getRift(target.getWorld(),target.pos,target.getBlockState());
+            } else {
+
+                if (!target.getBlockState().getBlock().isPossibleToRespawnInThis(state)) {
+                    player.displayClientMessage(Component.translatable("tools.target_became_block"), true);
+                    clearSource(stack); // TODO: But is this fair? It's a rather hidden way of unbinding your signature!
+                    return InteractionResult.FAIL;
+                }
+                Level sourceWorld = DimensionalDoors.getWorld(target.world);
+                sourceWorld.setBlockAndUpdate(target.getBlockPos(), ModBlocks.DETACHED_RIFT.get().defaultBlockState());
+                rift1 = (DetachedRiftBlockEntity) target.getBlockEntity();
+                rift1.register();
+            }
+			rift1.setDestination(RiftReference.tryMakeRelative(target, new Location((ServerLevel) world, pos)));
+
+
+			if (world.getBlockState(pos).getBlock() instanceof RiftProvider<?> provider) {
+				rift2 = provider.getRift(world, pos, world.getBlockState(pos));
 			}
+			else{
+				pos = pos.above();
+				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
+				rift2 = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
+				rift2.register();
+			}
+			rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerLevel) world, pos), target));
 
 			// Place a rift at the target point
-			world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
-			DetachedRiftBlockEntity rift2 = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
-			rift2.setDestination(RiftReference.tryMakeRelative(new Location((ServerLevel) world, pos), target));
-			rift2.register();
+
 
 			stack.hurtAndBreak(1, player, a -> {}); // TODO: calculate damage based on position?
 

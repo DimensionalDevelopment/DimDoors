@@ -17,7 +17,7 @@ import java.util.Set;
  * such that when the target rift is gone, the destination is notified and invalidated
  * (see shouldInvalidate)
  */
-public abstract class RiftReference extends VirtualTarget {
+public abstract class RiftReference extends VirtualTarget implements LocationProvider {
 	public RiftReference() {
 	}
 
@@ -29,6 +29,11 @@ public abstract class RiftReference extends VirtualTarget {
 		} else {
 			return new LocalReference(to.pos);
 		}
+	}
+
+	@Override
+	public Location getLocation() {
+		return getReferencedLocation();
 	}
 
 	public static RiftReference tryMakeRelative(Location from, Location to) {
