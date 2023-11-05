@@ -48,8 +48,8 @@ public class RiftSignatureItem extends Item {
 	public InteractionResult useOn(UseOnContext itemUsageContext) {
 		Player player = itemUsageContext.getPlayer();
 		Level world = itemUsageContext.getLevel();
-		// get block two blocks above the clicked block
-		BlockPos pos = itemUsageContext.getClickedPos().above().above();
+		// get block one block above the clicked block
+		BlockPos pos = itemUsageContext.getClickedPos().above();
 		InteractionHand hand = itemUsageContext.getHand();
 		BlockState state = world.getBlockState(pos);
 		Direction side = itemUsageContext.getClickedFace();

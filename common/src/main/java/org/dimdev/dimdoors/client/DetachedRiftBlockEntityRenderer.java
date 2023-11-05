@@ -56,7 +56,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 
     private void renderCrack(VertexConsumer vc, PoseStack matrices, DetachedRiftBlockEntity rift) {
         matrices.pushPose();
-        matrices.translate(0.5, 0.5, 0.5);
+        matrices.translate(0.5, 1.5, 0.5);
         RiftCrackRenderer.drawCrack(matrices.last().pose(), vc, 0, RiftCurves.CURVES.get(rift.getCurveID()), DimensionalDoors.getConfig().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
         matrices.popPose();
     }

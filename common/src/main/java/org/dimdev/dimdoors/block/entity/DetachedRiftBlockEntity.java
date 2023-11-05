@@ -140,4 +140,13 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	public void setLocked(boolean locked) {
 		// NO-OP
 	}
+	@Override
+	public CompoundTag getUpdateTag() {
+		CompoundTag tag = super.getUpdateTag();
+		tag.putFloat("size", this.size);
+		tag.putInt("curveID", this.curveID);
+		return tag;
+
+	}
+
 }
