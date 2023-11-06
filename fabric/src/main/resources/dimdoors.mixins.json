@@ -6,11 +6,11 @@
   "client": [
     "client.RecipeBookCategoriesAccessor",
     "client.RecipeBookCategoriesMixin",
-    "client.RecipeBookManagerMixin"
+    "client.RecipeBookManagerMixin",
+    "client.PlaceRecipeMixin"
   ],
   "mixins": [
     "RecipeBookSettingsAccessor",
-    "client.PlaceRecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
