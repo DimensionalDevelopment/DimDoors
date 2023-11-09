@@ -361,6 +361,10 @@
   "text.autoconfig.dimdoors.option.limbo.worldsLeadingToLimbo.list.@Tooltip": "List of the ids for worlds in the blacklsit/whitelist.",
   "text.autoconfig.dimdoors.option.limbo.worldsLeadingToLimbo.blacklist": "Is it a blacklist?",
   "text.autoconfig.dimdoors.option.limbo.worldsLeadingToLimbo.blacklist.@Tooltip": "Boolean that determines if list is a blacklist or white list for worlds.",
+  "text.autoconfig.dimdoors.option.limbo.limboReturnDistance.@Tooltip": "Distance from spawn that limbo returns you",
+  "text.autoconfig.dimdoors.option.limbo.limboReturnDistance": "Limbo Return Radius",
+
+
 
   "text.autoconfig.dimdoors.category.graphics": "Graphics Settings",
   "text.autoconfig.dimdoors.option.graphics.highlightRiftCoreFor": "Time to Highlight Rift Core",

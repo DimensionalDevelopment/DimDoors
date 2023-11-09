@@ -39,9 +39,12 @@ import java.util.function.BiFunction;
 
 public class RiftSignatureItem extends Item {
 	public static final String ID = "rift_signature";
+	public boolean shouldclear;
 
-	public RiftSignatureItem(Item.Properties settings) {
+	public RiftSignatureItem(Item.Properties settings, boolean clear) {
+
 		super(settings);
+		shouldclear = clear;
 	}
 
 	@Override
@@ -111,11 +114,11 @@ public class RiftSignatureItem extends Item {
 //            }
 
 			if(placedRiftLogic != null) {
-				placedRiftLogic.getRift(target.getWorld(), target.pos).ifPresent(a -> a.setDestination(RiftReference.tryMakeRelative(target, source)));
+				placedRiftLogic.getRift((ServerLevel) world, pos).ifPresent(a -> a.setDestination(RiftReference.tryMakeRelative(source, target)));
 			}
 
-			if((placedRiftLogic = PlacementLogic.getLogic(world, pos)) != null) {
-				placedRiftLogic.getRift((ServerLevel) world, pos).ifPresent(a -> a.setDestination(RiftReference.tryMakeRelative(source, target)));
+			if((placedRiftLogic = PlacementLogic.getLogic(target.getWorld(), target.pos)) != null) {
+				placedRiftLogic.getRift(target.getWorld(), target.pos).ifPresent(a -> a.setDestination(RiftReference.tryMakeRelative(target, source)));
 			}
 
 
@@ -135,8 +138,9 @@ public class RiftSignatureItem extends Item {
 
 
 			stack.hurtAndBreak(1, player, a -> {}); // TODO: calculate damage based on position?
-
-			clearSource(stack);
+			if(shouldclear){
+				clearSource(stack);
+			}
 			player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".created"), true);
 			// null = send sound to the player too, we have to do this because this code is not run client-side
 			world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_END.get(), SoundSource.BLOCKS, 0.6f, 1);
