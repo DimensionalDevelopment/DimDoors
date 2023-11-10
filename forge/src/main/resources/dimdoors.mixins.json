@@ -6,7 +6,8 @@
   "client": [
   ],
   "mixins": [
-    "TessellatingRecipeMixin"
+    "TessellatingRecipeMixin",
+    "ServerPlayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

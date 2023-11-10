@@ -50,10 +50,20 @@ dependencies {
 }
 
 processResources {
-    inputs.property "version", project.version
+//    inputs.property "version", project.version
+//    inputs.property "minecraft_version", minecraft_version
+//    inputs.property "architectury_version", architectury_version
+//    inputs.property "cloth_config_version", cloth_config
+
+    def props = [
+            "version": project.version,
+            "minecraft_version": minecraft_version,
+            "architectury_version": architectury_version,
+            "cloth_config_version": cloth_config
+    ]
 
     filesMatching("META-INF/mods.toml") {
-        expand "version": project.version
+        expand props
     }
 
     from(rootProject.file("common/src/main/resources")) {

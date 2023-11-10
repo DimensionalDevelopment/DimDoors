@@ -11,17 +11,26 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
+import org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.ModRecipeBookGroups;
 import org.dimdev.dimdoors.client.ModRecipeBookTypes;
@@ -68,11 +77,14 @@ import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
 public class DimensionalDoors {
 	public static final String MOD_ID = "dimdoors";
@@ -130,6 +142,15 @@ public class DimensionalDoors {
 		ModParticleTypes.init();
 		ModCriteria.init();
 		ModEnchants.init();
+
+		RegisterRecipeBookCategoriesEvent.EVENT.register(event -> {
+			ModRecipeBookTypes.init();
+			ModRecipeBookGroups.init();
+
+			event.registerAggregateCategory(ModRecipeBookGroups.TESSELATING_SEARCH.get(), List.of(ModRecipeBookGroups.TESSELATING_GENERAL.get()));
+			event.registerBookCategories(ModRecipeBookTypes.TESSELLATING, ModRecipeBookGroups.TESSELATING_CATEGORIES.get());
+			event.registerRecipeCategoryFinder(ModRecipeTypes.TESSELATING.get(), recipe -> ModRecipeBookGroups.TESSELATING_GENERAL.get());
+		});
 
 		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar();
 		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(dimensionalDoorItemRegistrar);
@@ -196,5 +217,26 @@ public class DimensionalDoors {
 
 	public static Mod getDimDoorsMod() {
 		return dimDoorsMod;
+	}
+
+	public static void afterBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+		System.out.println("Blep1 - %s%n".formatted(state));
+		if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
+			System.out.println("Blep2");
+			return;
+		}
+		if (blockEntity instanceof EntranceRiftBlockEntity riftBlockEntity) {
+			System.out.println("Blep3");
+			if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+				System.out.println("Blep4");
+
+				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
+				((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(riftBlockEntity.getData());
+			} else {
+				System.out.println("Blep5");
+				world.setBlockAndUpdate(pos.below(), ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
+				((DetachedRiftBlockEntity) world.getBlockEntity(pos.below())).setData((riftBlockEntity).getData());
+			}
+		}
 	}
 }

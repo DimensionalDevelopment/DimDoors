@@ -21,7 +21,6 @@
     "ServerWorldMixin",
     "ThreadedAnvilChunkStorageMixin",
     "TrapDoorMixin",
-    "WorldMixin",
     "accessor.BlockEntityTypeAccessor",
     "accessor.ChunkGeneratorAccessor",
     "accessor.DefaultParticleTypeAccessor",
