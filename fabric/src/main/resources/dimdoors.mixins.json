@@ -4,13 +4,8 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
-    "client.RecipeBookCategoriesAccessor",
-    "client.RecipeBookCategoriesMixin",
-    "client.RecipeBookManagerMixin",
-    "client.PlaceRecipeMixin"
   ],
   "mixins": [
-    "RecipeBookSettingsAccessor",
   ],
   "injectors": {
     "defaultRequire": 1

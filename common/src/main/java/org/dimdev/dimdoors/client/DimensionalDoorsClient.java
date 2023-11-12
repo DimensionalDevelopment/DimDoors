@@ -3,8 +3,6 @@ package org.dimdev.dimdoors.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
-import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
-import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -12,22 +10,15 @@ import me.shedaniel.autoconfig.util.Utils;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import org.dimdev.dimdoors.ModConfig;
-import org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
@@ -37,7 +28,6 @@ import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
-import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 
 import java.io.IOException;
@@ -48,7 +38,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,7 +68,7 @@ public class DimensionalDoorsClient {
 
 		ClientPacketHandler.init();
 
-
+//		ModRecipeBookGroups.init();
     }
 
 	@Environment(EnvType.CLIENT)

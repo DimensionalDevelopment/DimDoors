@@ -29,6 +29,6 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
                 (particleType, spriteSetFunction) -> ParticleFactoryRegistry.getInstance().register(particleType, (ParticleFactoryRegistry.PendingParticleFactory) spriteSetFunction::apply));
         DimensionalDoorsClient.initEntitiesClient(EntityRendererRegistry::register);
         ModEntityModelLayers.initClient((modelLayerLocation, layerDefinitionSupplier) -> EntityModelLayerRegistry.registerModelLayer(modelLayerLocation, layerDefinitionSupplier::get));
-        RecipeBookManager.init();
+//        RecipeBookManager.init();
     }
 }

@@ -14,7 +14,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.CraftingRecipeBuilder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -30,7 +29,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
-	private final RecipeCategory category;
 	private final Item output;
 	private final int outputCount;
 	private final List<String> pattern = Lists.newArrayList();
@@ -40,11 +38,9 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 	@Nullable
 	private String group;
 
-	private float experience = 1.0f;
 	private int weavingTime = 200;
 
 	public TesselatingRecipeJsonBuilder(ItemLike output, int outputCount) {
-		this.category = RecipeCategory.MISC; //TODO: FIND out if need to be different
 		this.output = output.asItem();
 		this.outputCount = outputCount;
 	}
@@ -95,11 +91,6 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 		return this;
 	}
 
-	public TesselatingRecipeJsonBuilder experience(float experience) {
-		this.experience = experience;
-		return this;
-	}
-
 	public TesselatingRecipeJsonBuilder weavingTime(int weavingTime) {
 		this.weavingTime = weavingTime;
 		return this;
@@ -114,7 +105,7 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 		this.validate(recipeId);
 		this.advancementBuilder.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
 
-		exporter.accept(new TesselatingRecipeJsonProvider(recipeId, this.output, this.outputCount, this.group == null ? "" : this.group, this.pattern, this.inputs, this.advancementBuilder, recipeId.withPrefix("recipes/tesselating/"), experience, weavingTime));
+		exporter.accept(new TesselatingRecipeJsonProvider(recipeId, this.output, this.outputCount, this.group == null ? "" : this.group, this.pattern, this.inputs, this.advancementBuilder, recipeId.withPrefix("recipes/tesselating/"), weavingTime));
 	}
 
 	private void validate(ResourceLocation recipeId) {
@@ -154,10 +145,9 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 		private final Map<Character, Ingredient> inputs;
 		private final Advancement.Builder advancementBuilder;
 		private final ResourceLocation advancementId;
-		private final float experience;
 		private final int weavingTime;
 
-		public TesselatingRecipeJsonProvider(ResourceLocation recipeId, Item output, int resultCount, String group, List<String> pattern, Map<Character, Ingredient> inputs, Advancement.Builder advancementBuilder, ResourceLocation advancementId, float experience, int weavingTime) {
+		public TesselatingRecipeJsonProvider(ResourceLocation recipeId, Item output, int resultCount, String group, List<String> pattern, Map<Character, Ingredient> inputs, Advancement.Builder advancementBuilder, ResourceLocation advancementId, int weavingTime) {
 			this.recipeId = recipeId;
 			this.output = output;
 			this.resultCount = resultCount;
@@ -166,7 +156,6 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 			this.inputs = inputs;
 			this.advancementBuilder = advancementBuilder;
 			this.advancementId = advancementId;
-			this.experience = experience;
 			this.weavingTime = weavingTime;
 		}
 
@@ -197,13 +186,12 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 			}
 
 			json.add("result", jsonObject2);
-			json.addProperty("experience", experience);
 			json.addProperty("weavingtime", weavingTime);
 		}
 
 		@Override
 		public RecipeSerializer<?> getType() {
-			return ModRecipeSerializers.TESSELATING.get();
+			return ModRecipeSerializers.SHAPED_TESSELATING.get();
 		}
 
 		public ResourceLocation getId() {

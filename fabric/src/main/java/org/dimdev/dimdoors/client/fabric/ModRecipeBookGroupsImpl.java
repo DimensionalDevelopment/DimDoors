@@ -10,9 +10,8 @@ import net.minecraft.world.item.Items;
 import java.util.function.Supplier;
 
 public class ModRecipeBookGroupsImpl {
-    public static Supplier<RecipeBookCategories> getRecipBookCategories(String name, Supplier<ItemStack> itemStack) {
-//        ClassTinkerers.enumBuilder(name)
-
-        return () -> ClassTinkerers.getEnum(RecipeBookCategories.class, name);
-    }
+//    public static Supplier<RecipeBookCategories> getRecipBookCategories(String name, Supplier<ItemStack> itemStack) {
+//
+//        return () -> ClassTinkerers.getEnum(RecipeBookCategories.class, name);
+//    }
 }

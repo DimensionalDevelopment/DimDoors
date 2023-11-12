@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors;
 
-import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -18,7 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -26,15 +24,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
-import org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.client.ModRecipeBookGroups;
-import org.dimdev.dimdoors.client.ModRecipeBookTypes;
-import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
@@ -53,8 +47,6 @@ import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseItemCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
-import org.dimdev.dimdoors.network.client.ClientPacketHandler;
-import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -71,17 +63,15 @@ import org.dimdev.dimdoors.util.schematic.SchemFixer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModStructures;
+import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
@@ -143,14 +133,7 @@ public class DimensionalDoors {
 		ModCriteria.init();
 		ModEnchants.init();
 
-		RegisterRecipeBookCategoriesEvent.EVENT.register(event -> {
-			ModRecipeBookTypes.init();
-			ModRecipeBookGroups.init();
-
-			event.registerAggregateCategory(ModRecipeBookGroups.TESSELATING_SEARCH.get(), List.of(ModRecipeBookGroups.TESSELATING_GENERAL.get()));
-			event.registerBookCategories(ModRecipeBookTypes.TESSELLATING, ModRecipeBookGroups.TESSELATING_CATEGORIES.get());
-			event.registerRecipeCategoryFinder(ModRecipeTypes.TESSELATING.get(), recipe -> ModRecipeBookGroups.TESSELATING_GENERAL.get());
-		});
+//		ModRecipeBookTypes.init();
 
 		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar();
 		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(dimensionalDoorItemRegistrar);

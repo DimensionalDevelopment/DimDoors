@@ -37,6 +37,9 @@
     "modmenu": [ "org.dimdev.dimdoors.compat.ModMenuCompat" ],
     "mm:early_risers": [
       "org.dimdev.dimdoors.EarlyRiser"
+    ],
+    "rei_client": [
+      "org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient"
     ]
   },
   "mixins": [

@@ -235,7 +235,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		this.inventory.clear();
 	}
 
-	private Optional<TesselatingRecipe> getCurrentRecipe() {
+	private Optional<? extends TesselatingRecipe> getCurrentRecipe() {
 		// No need to find recipes if the inventory is empty. Cannot craft anything.
 		if (this.level == null || this.isEmpty()) return Optional.empty();
 
@@ -243,12 +243,37 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		RecipeManager manager = this.level.getRecipeManager();
 
 		if (lastRecipe != null) {
-			TesselatingRecipe mapRecipe = manager.byType(ModRecipeTypes.TESSELATING.get()).get(lastRecipe);
+			TesselatingRecipe mapRecipe = getRecipe(lastRecipe.getId());
 			if (mapRecipe != null && mapRecipe.matches(this, level)) {
 				return Optional.of(lastRecipe);
 			}
 		}
-		return manager.getRecipeFor(ModRecipeTypes.TESSELATING.get(), this, level);
+		return getRecipe();
+	}
+
+	public <T extends TesselatingRecipe> TesselatingRecipe getRecipe(ResourceLocation location) {
+		var manager = this.level.getRecipeManager();
+
+		TesselatingRecipe recipe = manager.byType(ModRecipeTypes.SHAPED_TESSELATING.get()).get(location);
+
+		if(recipe == null) {
+			recipe = manager.byType(ModRecipeTypes.SHAPELESS_TESSELATING.get()).get(location);
+		}
+
+		return recipe;
+
+	}
+
+	public Optional<? extends TesselatingRecipe> getRecipe() {
+		var manager = this.level.getRecipeManager();
+
+		var recipe = manager.getRecipeFor(ModRecipeTypes.SHAPED_TESSELATING.get(), this, level);
+
+		if(recipe.isEmpty()) {
+			return manager.getRecipeFor(ModRecipeTypes.SHAPELESS_TESSELATING.get(), this, level);
+		} else {
+			return recipe;
+		}
 	}
 
 
@@ -258,7 +283,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		return Optional.of(maybe_result.orElse(ItemStack.EMPTY));
 	}
 
-	protected boolean canSmelt(ItemStack result, TesselatingRecipe recipe) {
+	protected boolean canWeave(ItemStack result, TesselatingRecipe recipe) {
 		if (recipe.matches(this, null)) {
 			ItemStack outstack = output;
 			if (outstack.isEmpty()) {
@@ -274,13 +299,13 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	private int getWeavingTime() {
-		return getCurrentRecipe().map(a -> a.weavingTime()).orElse(DEFAULT_WEAVE_TIME);
+		return getCurrentRecipe().map(TesselatingRecipe::weavingTime).orElse(DEFAULT_WEAVE_TIME);
 	}
 
-	protected void smelt(ItemStack result, TesselatingRecipe recipe) {
+	protected void weave(ItemStack result, TesselatingRecipe recipe) {
 		if(recipe.isIncomplete()) return;
 
-		if (!result.isEmpty() && this.canSmelt(result, recipe)) {
+		if (!result.isEmpty() && this.canWeave(result, recipe)) {
 			ItemStack outstack = output.copy();
 
 			if (outstack.isEmpty()) {
@@ -321,10 +346,10 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		if (!level.isClientSide()) {
 			ItemStack result = tile.getResult().orElse(ItemStack.EMPTY);
 
-			Optional<TesselatingRecipe> recipe = tile.getCurrentRecipe();
+			Optional<? extends TesselatingRecipe> recipe = tile.getCurrentRecipe();
 
 			if (recipe.isPresent() && (!tile.isInputEmpty())) {
-				if (tile.canSmelt(result, recipe.get())) {
+				if (tile.canWeave(result, recipe.get())) {
 					if (tile.weaveTime <= 0) {
 						tile.weaveTimeTotal = tile.getWeavingTime();
 						tile.weaveTime = 0;
@@ -337,7 +362,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 				}
 
 				if (tile.weaveTime >= tile.weaveTimeTotal) {
-					tile.smelt(result, recipe.get());
+					tile.weave(result, recipe.get());
 					tile.weaveTime = 0;
 
 					tile.weaveTimeTotal = !tile.isInputEmpty() ? tile.getWeavingTime() : 0;

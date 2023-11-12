@@ -14,28 +14,36 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/*
 public record RegisterRecipeBookCategoriesEvent(BiConsumer<RecipeBookCategories, List<RecipeBookCategories>> categoryAggregateCategory, BiConsumer<RecipeBookType, List<RecipeBookCategories>> bookCategories, BiConsumer<RecipeType<?>, Function<Recipe<?>, RecipeBookCategories>> recipeCategoryFinder) {
     public static final Event<Consumer<RegisterRecipeBookCategoriesEvent>> EVENT = EventFactory.createConsumerLoop();
 
-    /**
+    */
+/**
      * Registers the list of categories that compose an aggregate category.
-     */
+     *//*
+
     public void registerAggregateCategory(RecipeBookCategories category, List<RecipeBookCategories> other) {
         categoryAggregateCategory.accept(category, other);
     }
-    /**
+    */
+/**
      * Registers the list of categories that compose a recipe book.
-     */
+     *//*
+
     public void registerBookCategories(RecipeBookType type, List<RecipeBookCategories> categories) {
         bookCategories.accept(type, categories);
     }
 
-    /**
+    */
+/**
      * Registers a category lookup for a certain recipe type.
-     */
+     *//*
+
     public void registerRecipeCategoryFinder(RecipeType<?> type, Function<Recipe<?>, RecipeBookCategories> categoriesFunction) {
         recipeCategoryFinder.accept(type, categoriesFunction);
     }
 
 
 }
+*/

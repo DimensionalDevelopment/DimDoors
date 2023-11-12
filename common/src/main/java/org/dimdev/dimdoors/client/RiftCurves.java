@@ -28,7 +28,7 @@ import net.fabricmc.api.Environment;
 //   - - turn counter-clockwise by angle
 //   [ - save state (push to stack)
 //   ] - restore state (pop from stack)
-@Environment(EnvType.CLIENT)
+//@Environment(EnvType.CLIENT)
 public final class RiftCurves {
     public static final List<PolygonInfo> CURVES = new ArrayList<>();
 

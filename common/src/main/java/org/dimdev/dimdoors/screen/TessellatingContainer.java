@@ -10,9 +10,9 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
-import org.dimdev.dimdoors.client.ModRecipeBookTypes;
+//import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 
-public class TessellatingContainer extends RecipeBookMenu<Container> {
+public class TessellatingContainer extends AbstractContainerMenu /*RecipeBookMenu<Container>*/ {
 	public static final int INPUT1_SLOT = 0;
 	public static final int INPUT2_SLOT = 1;
 	public static final int INPUT3_SLOT = 2;
@@ -56,60 +56,60 @@ public class TessellatingContainer extends RecipeBookMenu<Container> {
 		this.addDataSlots(data);
 	}
 
-	@Override
-	public void fillCraftSlotsStackedContents(StackedContents stackedContents) {
-		if(this.recipeInv instanceof StackedContentsCompatible provider) {
-			provider.fillStackedContents(stackedContents);
-		}
-	}
+//	@Override
+//	public void fillCraftSlotsStackedContents(StackedContents stackedContents) {
+//		if(this.recipeInv instanceof StackedContentsCompatible provider) {
+//			provider.fillStackedContents(stackedContents);
+//		}
+//	}
 
-	@Override
-	public void clearCraftingContent() {
-		this.getSlot(1).set(ItemStack.EMPTY);
-		this.getSlot(2).set(ItemStack.EMPTY);
-		this.getSlot(3).set(ItemStack.EMPTY);
-		this.getSlot(4).set(ItemStack.EMPTY);
-		this.getSlot(5).set(ItemStack.EMPTY);
-		this.getSlot(6).set(ItemStack.EMPTY);
-		this.getSlot(7).set(ItemStack.EMPTY);
-		this.getSlot(8).set(ItemStack.EMPTY);
-		this.getSlot(9).set(ItemStack.EMPTY);
-	}
+//	@Override
+//	public void clearCraftingContent() {
+//		this.getSlot(1).set(ItemStack.EMPTY);
+//		this.getSlot(2).set(ItemStack.EMPTY);
+//		this.getSlot(3).set(ItemStack.EMPTY);
+//		this.getSlot(4).set(ItemStack.EMPTY);
+//		this.getSlot(5).set(ItemStack.EMPTY);
+//		this.getSlot(6).set(ItemStack.EMPTY);
+//		this.getSlot(7).set(ItemStack.EMPTY);
+//		this.getSlot(8).set(ItemStack.EMPTY);
+//		this.getSlot(9).set(ItemStack.EMPTY);
+//	}
 
-	@Override
-	public boolean recipeMatches(Recipe<? super Container> recipe) {
-		return recipe.matches(recipeInv, playerInventory.player.level());
-	}
+//	@Override
+//	public boolean recipeMatches(Recipe<? super Container> recipe) {
+//		return recipe.matches(recipeInv, playerInventory.player.level());
+//	}
+//
+//	@Override
+//	public int getResultSlotIndex() {
+//		return 0;
+//	}
 
-	@Override
-	public int getResultSlotIndex() {
-		return 0;
-	}
+//	@Override
+//	public int getGridWidth() {
+//		return 3;
+//	}
+//
+//	@Override
+//	public int getGridHeight() {
+//		return 3;
+//	}
 
-	@Override
-	public int getGridWidth() {
-		return 3;
-	}
-
-	@Override
-	public int getGridHeight() {
-		return 3;
-	}
-
-	@Override
-	public int getSize() {
-		return 10;
-	}
-
-	@Override
-	public RecipeBookType getRecipeBookType() {
-		return ModRecipeBookTypes.TESSELLATING;
-	}
-
-	@Override
-	public boolean shouldMoveToInventory(int index) {
-		return index != 0;
-	}
+//	@Override
+//	public int getSize() {
+//		return 10;
+//	}
+//
+//	@Override
+//	public RecipeBookType getRecipeBookType() {
+//		return ModRecipeBookTypes.TESSELLATING;
+//	}
+//
+//	@Override
+//	public boolean shouldMoveToInventory(int index) {
+//		return index != 0;
+//	}
 
 	@Override
 	public ItemStack quickMoveStack(Player player, int index) {
