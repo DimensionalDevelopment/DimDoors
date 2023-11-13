@@ -110,6 +110,7 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 	}
 
 	public void offerTo(Consumer<FinishedRecipe> exporter, ResourceLocation recipeId) {
+		recipeId = recipeId.withPrefix("tesselating/");
 		this.validate(recipeId);
 		this.advancementBuilder.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
 

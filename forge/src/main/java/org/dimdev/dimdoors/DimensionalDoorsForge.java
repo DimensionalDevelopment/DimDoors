@@ -39,14 +39,7 @@ public class DimensionalDoorsForge {
 
         ModBiomeModifiers.init();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterRecipeBookCategoriesEvent>) event1 -> {
-            ModRecipeBookTypes.init();
-            ModRecipeBookGroups.init();
-
-            event1.registerAggregateCategory(ModRecipeBookGroups.TESSELATING_SEARCH.get(), List.of(ModRecipeBookGroups.TESSELATING_GENERAL.get()));
-            event1.registerBookCategories(ModRecipeBookTypes.TESSELLATING, List.of(ModRecipeBookGroups.TESSELATING_GENERAL.get()));
-            event1.registerRecipeCategoryFinder(ModRecipeTypes.TESSELATING.get(), recipe -> ModRecipeBookGroups.TESSELATING_GENERAL.get());
-        });
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterRecipeBookCategoriesEvent>) event -> org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent.EVENT.invoker().accept(new org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent(event::registerAggregateCategory, event::registerBookCategories, event::registerRecipeCategoryFinder)));
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterCapabilitiesEvent>) registerCapabilitiesEvent -> {
             registerCapabilitiesEvent.register(CounterComponentImpl.class);

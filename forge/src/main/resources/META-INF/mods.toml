@@ -23,20 +23,20 @@ side = "BOTH"
 [[dependencies.dimdoors]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.4,)"
+versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.dimdoors]]
 modId = "architectury"
 mandatory = true
-versionRange = "[8.1.79,)"
+versionRange = "[${architectury_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.dimdoors]]
 modId = "cloth_config"
 mandatory = true
-versionRange = "[10.1.105,)"
+versionRange = "[${cloth_config_version},)"
 ordering = "AFTER"
 side = "BOTH"

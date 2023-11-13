@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.block.door;
 
-import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -8,10 +7,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -27,14 +24,12 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
-import org.dimdev.dimdoors.api.block.CustomBreakBlock;
 import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock;
 import org.dimdev.dimdoors.api.entity.LastPositionProvider;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
@@ -44,14 +39,11 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftData;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 
-public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, CustomBreakBlock, AfterMoveCollidableBlock {
+public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock {
 	public DimensionalDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
 		super(settings.pushReaction(BLOCK), blockSetType);
 	}
@@ -222,16 +214,15 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 	}
 
+
 	@Override
 	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
 		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
-		BlockPos blockPos = pos;
-		BlockState blockState = world.getBlockState(pos);
-		BlockEntity blockEntity = world.getBlockEntity(pos);
+
 		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
-			blockPos = pos.above();
-			blockState = world.getBlockState(blockPos);
-			blockEntity = world.getBlockEntity(blockPos);
+			BlockPos blockPos = pos.below();
+			BlockState blockState = world.getBlockState(blockPos);
+			BlockEntity blockEntity = world.getBlockEntity(blockPos);
 			if (blockState.is(state.getBlock()) && blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
 				world.setBlock(blockPos, world.getFluidState(blockPos).getType() == Fluids.WATER ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 35);
 				world.levelEvent(player, 2001, blockPos, Block.getId(blockState));
@@ -246,6 +237,11 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			}
 		}
 		super.playerWillDestroy(world, pos, state, player);
+	}
+
+	@Override
+	public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
+		super.destroy(level, pos, state);
 	}
 
 	@Override
@@ -285,16 +281,5 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		createDetachedRift(world, pos, state);
 		return InteractionResult.SUCCESS;
-	}
-
-	@Override
-	public InteractionResultHolder<Pair<BlockState, Consumer<BlockEntity>>> customBreakBlock(Level world, BlockPos pos, BlockState blockState, Entity breakingEntity) {
-		if (blockState.getValue(HALF) != DoubleBlockHalf.LOWER) {
-			return InteractionResultHolder.pass(null);
-		}
-		RiftData data = ((EntranceRiftBlockEntity) world.getBlockEntity(pos)).getData();
-		return InteractionResultHolder.success(new Pair<>(ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)), blockEntity -> {
-			((DetachedRiftBlockEntity) blockEntity).setData(data);
-		}));
 	}
 }

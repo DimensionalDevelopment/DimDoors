@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.listener;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -11,6 +12,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
+import org.dimdev.dimdoors.item.RiftRemoverItem;
+import org.dimdev.dimdoors.item.RiftSignatureItem;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
 public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallback {
@@ -23,6 +27,6 @@ public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallbac
 		if (registrar.isRegistered(item)) {
 			return registrar.place(item, new BlockPlaceContext(player, hand, stack, hitResult));
 		}
-		return InteractionResult.PASS;
+		return item instanceof RiftRemoverItem || (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof DimensionalDoorBlock) ? InteractionResult.PASS : InteractionResult.FAIL;
 	}
 }
