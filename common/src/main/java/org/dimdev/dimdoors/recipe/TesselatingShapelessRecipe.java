@@ -10,12 +10,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
+import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
 
 import static org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe.itemStackFromJson;
 

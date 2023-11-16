@@ -5,11 +5,9 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
+import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
 //import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 
 public class TessellatingContainer extends AbstractContainerMenu /*RecipeBookMenu<Container>*/ {

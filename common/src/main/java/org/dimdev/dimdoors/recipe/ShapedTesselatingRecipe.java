@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
+import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

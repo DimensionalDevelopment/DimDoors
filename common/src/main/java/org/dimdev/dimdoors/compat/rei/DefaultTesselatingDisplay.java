@@ -98,7 +98,7 @@ public abstract class DefaultTesselatingDisplay<C extends Recipe<?>> extends Bas
 
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
-        return BuiltinPlugin.CRAFTING;
+        return TesselatingReiCompatClient.TESSELATING;
     }
 
     public Optional<C> getOptionalRecipe() {
@@ -110,7 +110,7 @@ public abstract class DefaultTesselatingDisplay<C extends Recipe<?>> extends Bas
         return getOptionalRecipe().map(Recipe::getId);
     }
 
-    public <T extends AbstractContainerMenu> List<List<ItemStack>> getOrganisedInputEntries(SimpleGridMenuInfo<T, DefaultCraftingDisplay<?>> menuInfo, T container) {
+    public <T extends AbstractContainerMenu> List<List<ItemStack>> getOrganisedInputEntries(SimpleGridMenuInfo<T, DefaultTesselatingDisplay<?>> menuInfo, T container) {
         return CollectionUtils.map(getOrganisedInputEntries(menuInfo.getCraftingWidth(container), menuInfo.getCraftingHeight(container)), ingredient ->
                 CollectionUtils.<EntryStack<?>, ItemStack>filterAndMap(ingredient, stack -> stack.getType() == VanillaEntryTypes.ITEM,
                         EntryStack::castValue));

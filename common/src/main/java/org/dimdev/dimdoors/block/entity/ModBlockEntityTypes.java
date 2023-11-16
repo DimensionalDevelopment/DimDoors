@@ -1,10 +1,7 @@
 package org.dimdev.dimdoors.block.entity;
 
-import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -14,8 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.client.DetachedRiftBlockEntityRenderer;
-import org.dimdev.dimdoors.client.EntranceRiftBlockEntityRenderer;
+import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;

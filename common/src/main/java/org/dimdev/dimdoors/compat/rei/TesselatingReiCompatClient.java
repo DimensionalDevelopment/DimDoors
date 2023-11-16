@@ -37,7 +37,7 @@ public class TesselatingReiCompatClient implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        registry.registerFiller(ShapedTesselatingRecipe.class, DefaultTesselatingDisplay::of);
+        registry.registerFiller(TesselatingRecipe.class, DefaultTesselatingDisplay::of);
     }
 
     @Override

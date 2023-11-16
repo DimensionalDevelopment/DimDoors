@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
+import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
 import org.jetbrains.annotations.Nullable;
 
