@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
+import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -116,7 +116,7 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
                 if (k >= 0 && l >= 0 && k < this.width && l < this.height) {
                     ingredient = mirrored ? this.recipeItems.get(this.width - k - 1 + l * this.width) : this.recipeItems.get(k + l * this.width);
                 }
-                if (ingredient.test(craftingInventory.getItem(x + y * 3 + 1))) continue;
+                if (ingredient.test(craftingInventory.getItem(x + y * 3))) continue;
                 return false;
             }
         }

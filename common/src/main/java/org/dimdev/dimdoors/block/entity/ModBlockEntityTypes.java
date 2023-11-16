@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;

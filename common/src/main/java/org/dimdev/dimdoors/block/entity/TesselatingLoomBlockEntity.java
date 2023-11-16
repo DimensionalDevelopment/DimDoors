@@ -14,10 +14,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -28,6 +26,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.RecipeHolder;
 import net.minecraft.world.inventory.StackedContentsCompatible;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -39,7 +38,6 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -51,8 +49,10 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	public static final int DATA_WEAVING_TIME_TOTAL = 1;
 	public static final int NUM_DATA_VALUES = 2;
 
-	private static final int[] OUTPUT_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	private static final int[] INPUT_SLOTS = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+	private static final int[] OUTPUT_SLOTS = {9};
+	private static final int[] INPUT_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+
+	private static final int[] SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
 	private static final int DEFAULT_WEAVE_TIME = 200;
 	private static final String INVENTORY_TAG = "Inventory";
@@ -86,7 +86,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 	public NonNullList<ItemStack> inventory;
 	public ItemStack output = ItemStack.EMPTY;
-	private Recipe<?> lastRecipe;
+	private TesselatingRecipe cachedRecipe;
 	private final List<TessellatingContainer> openContainers = new ArrayList<>();
 
 	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
@@ -124,28 +124,32 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 	@Nullable
 	@Override
-	public AbstractContainerMenu createMenu(int syncId, Inventory inv, Player player) {
+	public TessellatingContainer createMenu(int syncId, Inventory inv, Player player) {
+		return createMenu(syncId, inv);
+	}
+
+	public TessellatingContainer createMenu(int syncId, Inventory inv) {
 		return new TessellatingContainer(syncId, this, inv, dataAccess);
 	}
 
 	@Override
 	public int[] getSlotsForFace(Direction dir) {
-		return (dir == Direction.DOWN && (!output.isEmpty() || getCurrentRecipe().isPresent())) ? OUTPUT_SLOTS : INPUT_SLOTS;
+		return SLOTS;
 	}
 
 	@Override
 	public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction dir) {
-		return slot > 0 && getItem(slot).isEmpty();
+		return slot != 9;
 	}
 
 	@Override
 	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction dir) {
-		return slot != 0 || !output.isEmpty() || getCurrentRecipe().isPresent();
+		return slot == 9;
 	}
 
 	@Override
 	public boolean canPlaceItem(int slot, ItemStack stack) {
-		return slot != 0 && slot <= getContainerSize();
+		return slot != 9;
 	}
 
 	@Override
@@ -161,53 +165,47 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		return 10;
 	}
 
-	public boolean isInputEmpty() {
-		for (ItemStack stack : this.inventory) {
-			if (!stack.isEmpty()) return false;
-		}
-		return true;
-	}
-
-
 	@Override
 	public ItemStack getItem(int slot) {
-		if (slot > 0) return this.inventory.get(slot - 1);
+		if (slot < 9) return this.inventory.get(slot);
 		if (!output.isEmpty()) return output;
 		return ItemStack.EMPTY;
 	}
 
 	@Override
 	public ItemStack removeItem(int slot, int amount) {
-		if (slot == 0) {
+		if (slot == 9) {
 			return output.split(amount);
 		}
-		return ContainerHelper.removeItem(this.inventory, slot - 1, amount);
+		return ContainerHelper.removeItem(this.inventory, slot, amount);
 	}
 
 	@Override
 	public ItemStack removeItemNoUpdate(int slot) {
-		if (slot == 0) {
+		if (slot == 9) {
 			ItemStack output = this.output;
 			this.output = ItemStack.EMPTY;
 			return output;
 		}
-		return ContainerHelper.takeItem(this.inventory, slot - 1);
+		return ContainerHelper.takeItem(this.inventory, slot);
 	}
 
 	@Override
 	public void setItem(int slot, ItemStack stack) {
-		if (slot == 0) {
+		if (slot == 9) {
 			output = stack;
 			return;
 		}
-		inventory.set(slot - 1, stack);
+		inventory.set(slot, stack);
 		setChanged();
 	}
 
 	@Override
 	public void setChanged() {
 		super.setChanged();
-		for (TessellatingContainer c : openContainers) c.slotsChanged(this);
+		for (TessellatingContainer c : openContainers) {
+			c.slotsChanged(this);
+		}
 	}
 
 	@Override
@@ -222,12 +220,12 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 	@Override
 	public void setRecipeUsed(Recipe<?> recipe) {
-		lastRecipe = recipe;
+		if(recipe instanceof TesselatingRecipe tesselatingRecipe) cachedRecipe = tesselatingRecipe;
 	}
 
 	@Override
 	public Recipe<?> getRecipeUsed() {
-		return lastRecipe;
+		return cachedRecipe;
 	}
 
 	@Override
@@ -239,13 +237,10 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		// No need to find recipes if the inventory is empty. Cannot craft anything.
 		if (this.level == null || this.isEmpty()) return Optional.empty();
 
-		TesselatingRecipe lastRecipe = (TesselatingRecipe) getRecipeUsed();
-		RecipeManager manager = this.level.getRecipeManager();
-
-		if (lastRecipe != null) {
-			TesselatingRecipe mapRecipe = getRecipe(lastRecipe.getId());
+		if (cachedRecipe != null) {
+			TesselatingRecipe mapRecipe = getRecipe(cachedRecipe.getId());
 			if (mapRecipe != null && mapRecipe.matches(this, level)) {
-				return Optional.of(lastRecipe);
+				return Optional.of((TesselatingRecipe) cachedRecipe);
 			}
 		}
 		return getRecipe();
@@ -269,118 +264,129 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 		var recipe = manager.getRecipeFor(ModRecipeTypes.SHAPED_TESSELATING.get(), this, level);
 
-		if(recipe.isEmpty()) {
-			return manager.getRecipeFor(ModRecipeTypes.SHAPELESS_TESSELATING.get(), this, level);
-		} else {
-			return recipe;
-		}
+		return recipe.isEmpty() ? manager.getRecipeFor(ModRecipeTypes.SHAPELESS_TESSELATING.get(), this, level) : recipe;
 	}
 
-
-	private Optional<ItemStack> getResult() {
-		Optional<ItemStack> maybe_result = getCurrentRecipe().map(recipe -> recipe.assemble(this, null));
-
-		return Optional.of(maybe_result.orElse(ItemStack.EMPTY));
-	}
-
-	protected boolean canWeave(ItemStack result, TesselatingRecipe recipe) {
-		if (recipe.matches(this, null)) {
-			ItemStack outstack = output;
-			if (outstack.isEmpty()) {
-				return true;
-			} else if (!ItemStack.isSameItem(outstack, result)) {
-				return false;
-			} else {
-				return (outstack.getCount() + result.getCount() <= outstack.getMaxStackSize());
-			}
-		} else {
-			return false;
-		}
-	}
-
-	private int getWeavingTime() {
+	private int getWeavingTotalTime() {
 		return getCurrentRecipe().map(TesselatingRecipe::weavingTime).orElse(DEFAULT_WEAVE_TIME);
 	}
 
-	protected void weave(ItemStack result, TesselatingRecipe recipe) {
-		if(recipe.isIncomplete()) return;
+	public void serverTick() {
+		var recipe = getRecipe().orElse(null);
 
-		if (!result.isEmpty() && this.canWeave(result, recipe)) {
-			ItemStack outstack = output.copy();
+		if(cachedRecipe == null || cachedRecipe != recipe) {
+			cachedRecipe = recipe;
+			weaveTimeTotal = getWeavingTotalTime();
+		}
 
-			if (outstack.isEmpty()) {
-				output = result.copy();
-			} else if (outstack.getItem() == result.getItem()) {
-				output.grow(result.getCount());
-			}
-
-			if (!this.level.isClientSide()) {
-				this.setRecipeUsed(recipe);
-			}
-
-			NonNullList<ItemStack> remaining = recipe.getRemainingItems(this);
-			NonNullList<ItemStack> drops = NonNullList.create();
-
-			for (int i = 0; i < 9; i++) {
-				ItemStack current = inventory.get(i);
-				ItemStack remainingStack = remaining.get(i);
-				if (!current.isEmpty()) current.shrink(1);
-				if (!remainingStack.isEmpty()) {
-					if (current.isEmpty()) {
-						inventory.set(i, remainingStack);
-					} else if (ItemStack.matches(current, remainingStack)) {
-						current.grow(remainingStack.getCount());
-					} else {
-						drops.add(remainingStack);
-					}
-				}
-			}
-
-			Containers.dropContents(level, worldPosition, drops);
+		if(cachedRecipe != null) {
+			tryWeave();
+		} else {
+			tryDecrementCookTime();
 		}
 	}
 
-	public static void serverTick(Level level, BlockPos blockpos, BlockState blockstate, TesselatingLoomBlockEntity tile) {
-		boolean flag1 = false;
+	public void tryDecrementCookTime() {
+		if (weaveTime > 0) {
+			weaveTime = Mth.clamp(weaveTime - 2, 0, weaveTimeTotal);
+			setChanged();
+		}
+	}
 
-		if (!level.isClientSide()) {
-			ItemStack result = tile.getResult().orElse(ItemStack.EMPTY);
 
-			Optional<? extends TesselatingRecipe> recipe = tile.getCurrentRecipe();
+	private void tryWeave() {
+		var output = cachedRecipe.assemble(this, level.registryAccess());
 
-			if (recipe.isPresent() && (!tile.isInputEmpty())) {
-				if (tile.canWeave(result, recipe.get())) {
-					if (tile.weaveTime <= 0) {
-						tile.weaveTimeTotal = tile.getWeavingTime();
-						tile.weaveTime = 0;
+		if(canAcceptOutput(output)) {
+			weaveTime++;
+
+			if(weaveTime >= weaveTimeTotal) {
+				weaveTime = 0;
+				cachedRecipe = null;
+
+				takeInputs();
+				insertOutput(output);
+			}
+
+			setChanged();
+		} else {
+			tryDecrementCookTime();
+		}
+	}
+
+	private void insertOutput(ItemStack output) {
+		if(output.isEmpty()) {
+			return;
+		}
+
+		if(output.isStackable()) {
+			for (int slot : OUTPUT_SLOTS) {
+				var existing = getItem(slot);
+
+				if(!existing.isEmpty() && ItemStack.isSameItemSameTags(output, existing)) {
+					var total = existing.getCount() + output.getCount();
+
+					if(total <= existing.getMaxStackSize()) {
+						output.setCount(0);
+						existing.setCount(total);
+					} else if(existing.getCount() < existing.getMaxStackSize()) {
+						output.shrink(existing.getMaxStackSize() - existing.getCount());
+						existing.setCount(existing.getMaxStackSize());
 					}
 				}
-				++tile.weaveTime;
 
-				if(tile.weaveTime % 60 == 0) {
-					level.playSound(null, blockpos, ModSoundEvents.TESSELATING_WEAVE.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
-				}
-
-				if (tile.weaveTime >= tile.weaveTimeTotal) {
-					tile.weave(result, recipe.get());
-					tile.weaveTime = 0;
-
-					tile.weaveTimeTotal = !tile.isInputEmpty() ? tile.getWeavingTime() : 0;
-
-					flag1 = true;
+				if(output.isEmpty()) {
+					return;
 				}
 			}
-			else {
-				tile.weaveTime = 0;
+		}
+
+		for (int slot : OUTPUT_SLOTS) {
+			if(getItem(slot).isEmpty()) {
+				setItem(slot, output.split(output.getCount()));
 			}
-		} else if (tile.weaveTime > 0) {
-			tile.weaveTime = Mth.clamp(tile.weaveTime - 2, 0, tile.weaveTimeTotal);
 		}
 
+	}
 
-		if (flag1) {
-			tile.setChanged();
+	private void takeInputs() {
+		for (var slot : INPUT_SLOTS) {
+			var stack = getItem(slot);
+			var item = stack.getItem();
+
+			stack.shrink(1);
+
+			if(stack.isEmpty()) {
+				var newStack = item.getCraftingRemainingItem() != null ? new ItemStack(item.getCraftingRemainingItem()) : ItemStack.EMPTY;
+				setItem(slot, newStack);
+			}
 		}
+
+		setChanged();
+	}
+
+	private boolean canAcceptOutput(ItemStack output) {
+		var remianingOutput = output.getCount();
+
+		for (int slot : OUTPUT_SLOTS) {
+			var existing = getItem(slot);
+
+			if(existing.isEmpty()) return true;
+
+			if(output.isStackable() && ItemStack.isSameItemSameTags(existing, output)) {
+				if(existing.getCount() + remianingOutput <= existing.getMaxStackSize()) {
+					return true;
+				} else if(existing.getCount() < existing.getMaxStackSize()) {
+					remianingOutput -= existing.getMaxStackSize() - existing.getCount();
+				}
+			}
+
+			if(remianingOutput == 0) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	@Override

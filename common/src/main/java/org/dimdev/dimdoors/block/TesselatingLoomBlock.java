@@ -1,8 +1,11 @@
 package org.dimdev.dimdoors.block;
 
+import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -21,9 +24,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
+import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
@@ -62,10 +67,10 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 		return new TesselatingLoomBlockEntity(bpos, bstate);
 	}
 
-	protected void openContainer(Level level, BlockPos bpos, Player player) {
+	protected void openContainer(Level level, BlockPos bpos, ServerPlayer player) {
 		BlockEntity be = level.getBlockEntity(bpos);
-		if (be instanceof TesselatingLoomBlockEntity) {
-			player.openMenu((MenuProvider) be);
+		if (be instanceof TesselatingLoomBlockEntity provider) {
+			MenuRegistry.openExtendedMenu(player, provider, buf -> buf.writeBlockPos(bpos));
 			player.awardStat(Stats.INTERACT_WITH_FURNACE);
 		} // end-if
 		else {
@@ -76,7 +81,7 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 		if (!level.isClientSide()) {
-			this.openContainer(level, blockPos, player);
+			this.openContainer(level, blockPos, (ServerPlayer) player);
 		}
 
 		return InteractionResult.SUCCESS;
@@ -116,7 +121,7 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 
 	@Nullable
 	protected static BlockEntityTicker<TesselatingLoomBlockEntity> createFurnaceTicker(Level level, BlockEntityType<?> entityType, BlockEntityType<TesselatingLoomBlockEntity> entityTypeE) {
-		return level.isClientSide() ? null : (BlockEntityTicker<TesselatingLoomBlockEntity>) checkType(entityType, entityTypeE, TesselatingLoomBlockEntity::serverTick);
+		return level.isClientSide() ? null : (BlockEntityTicker<TesselatingLoomBlockEntity>) checkType(entityType, entityTypeE, (level1, blockPos, blockState, blockEntity) -> blockEntity.serverTick());
 	}
 
 	@Override

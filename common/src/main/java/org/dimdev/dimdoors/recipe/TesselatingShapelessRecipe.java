@@ -14,7 +14,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.block.entity.tesselating_loom.TesselatingLoomBlockEntity;
+import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 
 import static org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe.itemStackFromJson;
 
@@ -24,15 +24,13 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
     final ItemStack result;
     final String group;
     final boolean showNotification;
-    private final float experience;
     private final int weavingTime;
 
-    public TesselatingShapelessRecipe(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients, float experience, int weavingTime, boolean showNotification) {
+    public TesselatingShapelessRecipe(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients, int weavingTime, boolean showNotification) {
         this.id = id;
         this.group = group;
         this.result = result;
         this.ingredients = ingredients;
-        this.experience = experience;
         this.weavingTime = weavingTime;
         this.showNotification = showNotification;
     }
@@ -112,11 +110,10 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
             }
             ItemStack itemStack = itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
 
-            float experience = GsonHelper.getAsFloat(json, "experience", 0.0F);
             int weavingTime = GsonHelper.getAsInt(json, "weavingtime", 200);
             boolean bl = GsonHelper.getAsBoolean(json, "show_notification", true);
 
-            return new TesselatingShapelessRecipe(recipeId, string, itemStack, nonNullList, experience, weavingTime, bl);
+            return new TesselatingShapelessRecipe(recipeId, string, itemStack, nonNullList, weavingTime, bl);
         }
 
         private static NonNullList<Ingredient> itemsFromJson(JsonArray ingredientArray) {
@@ -135,16 +132,13 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
             String string = buffer.readUtf();
             int i = buffer.readVarInt();
             NonNullList<Ingredient> nonNullList = NonNullList.withSize(i, Ingredient.EMPTY);
-            for (int j = 0; j < nonNullList.size(); ++j) {
-                nonNullList.set(j, Ingredient.fromNetwork(buffer));
-            }
+            nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
             ItemStack itemStack = buffer.readItem();
 
-            float experience = buffer.readFloat();
             int weavingTime = buffer.readInt();
             boolean bl = buffer.readBoolean();
 
-            return new TesselatingShapelessRecipe(recipeId, string, itemStack, nonNullList, experience, weavingTime, bl);
+            return new TesselatingShapelessRecipe(recipeId, string, itemStack, nonNullList, weavingTime, bl);
         }
 
         @Override

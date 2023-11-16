@@ -1,10 +1,7 @@
 package org.dimdev.dimdoors.client.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
-import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -61,7 +58,7 @@ public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingC
 		matrices.blit(TEXTURE, i, j, 0, 0, this.imageWidth, this.imageWidth);
 
 		if (this.menu.isWeaving()) {
-			int k = (this.menu).getBurnProgress(22);
+			int k = (this.menu).getWeavProgress(22);
 			matrices.blit(TEXTURE, i + 89, j + 34, 176, 0, k + 1, 16);
 		}
 	}
