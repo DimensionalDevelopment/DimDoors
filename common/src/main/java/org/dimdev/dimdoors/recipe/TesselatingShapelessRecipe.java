@@ -149,6 +149,8 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
                 ingredient.toNetwork(buffer);
             }
             buffer.writeItem(recipe.result);
+            buffer.writeInt(recipe.weavingTime);
+            buffer.writeBoolean(recipe.showNotification);
         }
     }
 }

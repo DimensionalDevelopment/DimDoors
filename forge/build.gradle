@@ -45,8 +45,8 @@ dependencies {
     modApi "com.sk89q.worldedit:worldedit-forge-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
 
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:$rei_version"
-//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
-//    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:$rei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:$rei_version"
 }
 
 processResources {
