@@ -172,6 +172,7 @@ public final class ModConfig implements ConfigData {
 		@RequiresRestart
 		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList(List.of(), false);
 		@Tooltip public boolean hardcoreLimbo = false;
+		@Tooltip public int limboReturnDistance = 20000;
 		@Tooltip public float limboBlocksCorruptingOverworldAmount = 5;
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {
 			return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level.location().toString());

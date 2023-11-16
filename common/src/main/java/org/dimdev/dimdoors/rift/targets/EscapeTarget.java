@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.UnravelUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 
+import java.util.Random;
 import java.util.UUID;
 
 import static org.dimdev.dimdoors.api.util.EntityUtils.chat;
@@ -84,6 +85,8 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			}
 			 */
 
+			destLoc = randomizeLimboReturn(destLoc, DimensionalDoors.getConfig().getLimboConfig().limboReturnDistance); //todo add minimum radius
+
 
 			if (destLoc != null && this.canEscapeLimbo) {
 				Location location = destLoc; //VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false); //TODO Fix world projection.
@@ -133,6 +136,19 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 		CompoundTag nbt = new CompoundTag();
 		nbt.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);
 		return nbt;
+	}
+
+	public static Location randomizeLimboReturn(Location playerSpawn, int range){
+		return new Location(playerSpawn.getWorld(), randomizeCoord(playerSpawn.getX(), range), playerSpawn.getY(), randomizeCoord(playerSpawn.getZ(),range));
+	}
+
+	public static int randomizeCoord(int coord, int range){
+		Random random = new Random();
+		int offset = random.nextInt(range + 1); // Generate a random offset within the range
+		boolean isPositive = random.nextBoolean(); // Randomly decide whether the offset should be positive or negative
+
+		// Apply the offset with the direction (positive or negative)
+		return isPositive ? coord + offset : coord - offset;
 	}
 
 	public static EscapeTarget fromNbt(CompoundTag nbt) {

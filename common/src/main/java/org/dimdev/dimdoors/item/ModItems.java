@@ -59,7 +59,7 @@ public final class ModItems {
 
 	public static final RegistrySupplier<Item> RIFT_REMOVER = register("rift_remover", properties -> new RiftRemoverItem(properties.stacksTo(1).durability(100)));
 
-	public static final RegistrySupplier<Item> RIFT_SIGNATURE = register("rift_signature", properties -> new RiftSignatureItem(properties.stacksTo(1).durability(1)));
+	public static final RegistrySupplier<Item> RIFT_SIGNATURE = register("rift_signature", properties -> new RiftSignatureItem(properties.stacksTo(1).durability(1),true));
 
 	public static final RegistrySupplier<Item> STABILIZED_RIFT_SIGNATURE = register("stabilized_rift_signature", properties -> new StabilizedRiftSignatureItem(properties.stacksTo(1).durability(20)));
 
