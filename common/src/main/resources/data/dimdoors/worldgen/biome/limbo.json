@@ -15,7 +15,7 @@
     "mood_sound": {
       "sound": "dimdoors:crack",
       "tick_delay": 6000,
-      "block_search_context": 8,
+      "block_search_extent": 8,
       "offset": 2
     },
     "music": {
