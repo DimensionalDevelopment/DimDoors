@@ -203,20 +203,15 @@ public class DimensionalDoors {
 	}
 
 	public static void afterBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
-		System.out.println("Blep1 - %s%n".formatted(state));
 		if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
-			System.out.println("Blep2");
 			return;
 		}
 		if (blockEntity instanceof EntranceRiftBlockEntity riftBlockEntity) {
-			System.out.println("Blep3");
 			if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
-				System.out.println("Blep4");
 
 				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
 				((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(riftBlockEntity.getData());
 			} else {
-				System.out.println("Blep5");
 				world.setBlockAndUpdate(pos.below(), ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
 				((DetachedRiftBlockEntity) world.getBlockEntity(pos.below())).setData((riftBlockEntity).getData());
 			}

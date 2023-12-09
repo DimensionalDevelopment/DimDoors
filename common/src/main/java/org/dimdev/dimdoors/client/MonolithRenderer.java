@@ -41,8 +41,6 @@ public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel>
 
     public MonolithRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, INSTANCE = new MonolithModel(ctx), 0);
-
-        System.out.println("Blep Rare Rare Blep");
     }
 
     public static MonolithModel getInstance() {
