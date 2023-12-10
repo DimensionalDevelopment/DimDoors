@@ -26,6 +26,6 @@ public class DimensionalRegistryImpl implements ComponentV3 {
     }
 
     public static DimensionalRegistryImpl createImpl(Level level) {
-        return new DimensionalRegistryImpl(level.dimension().equals(OVERWORLD));
+        return new DimensionalRegistryImpl(DimensionalRegistry.isValidWorld(level));
     }
 }

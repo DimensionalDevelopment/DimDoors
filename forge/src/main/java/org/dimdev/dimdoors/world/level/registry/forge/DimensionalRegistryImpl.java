@@ -46,7 +46,7 @@ public class DimensionalRegistryImpl {
 
         @SubscribeEvent
         public static void attach(final AttachCapabilitiesEvent<Level> event) {
-            if(event.getObject().dimension().equals(Level.OVERWORLD)) {
+            if(DimensionalRegistry.isValidWorld(event.getObject())) {
                 final DimensionalRegistryImpl.Provider provider = new DimensionalRegistryImpl.Provider();
 
                 event.addCapability(DimensionalRegistryImpl.IDENTIFIER, provider);

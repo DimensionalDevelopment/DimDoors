@@ -89,4 +89,8 @@ public class DimensionalRegistry {
 
 		return pocketRegistry.computeIfAbsent(key, PocketDirectory::new);
 	}
+
+	public static boolean isValidWorld(Level level) {
+		 return level != null && level.dimension() != null && level.dimension().equals(Level.OVERWORLD);
+	}
 }
