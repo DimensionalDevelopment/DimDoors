@@ -1,18 +1,21 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
+import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
+import org.dimdev.dimdoors.world.decay.DecayProcessorType;
 
-public class FluidDecayProcessor implements DecayProcessor {
+public class FluidDecayProcessor implements DecayProcessor<Fluid, FluidStack> {
 	public static final String KEY = "fluid";
 
 	protected Fluid fluid;
@@ -28,7 +31,7 @@ public class FluidDecayProcessor implements DecayProcessor {
 	}
 
 	@Override
-	public DecayProcessor fromNbt(CompoundTag json) {
+	public FluidDecayProcessor fromNbt(CompoundTag json) {
 		fluid = BuiltInRegistries.FLUID.get(ResourceLocation.tryParse(json.getString("fluid")));
 		entropy = json.getInt("entropy");
 		return this;
@@ -43,7 +46,7 @@ public class FluidDecayProcessor implements DecayProcessor {
 	}
 
 	@Override
-	public DecayProcessorType<? extends DecayProcessor> getType() {
+	public DecayProcessorType<FluidDecayProcessor> getType() {
 		return DecayProcessorType.FLUID_PROCESSOR_TYPE.get();
 	}
 
@@ -57,6 +60,11 @@ public class FluidDecayProcessor implements DecayProcessor {
 		BlockState newState = fluid.defaultFluidState().createLegacyBlock();
 		world.setBlockAndUpdate(pos, newState);
 		return entropy;
+	}
+
+	@Override
+	public Object produces(Object prior) {
+		return FluidStack.create(fluid, 1000);
 	}
 
 	private static <T extends Comparable<T>> FluidState transferProperty(FluidState from, FluidState to, Property<T> property) {

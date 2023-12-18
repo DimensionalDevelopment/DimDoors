@@ -65,7 +65,7 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModStructures;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayPredicate;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
+import org.dimdev.dimdoors.world.decay.DecayProcessorType;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -167,7 +167,7 @@ public class DimensionalDoors {
 		PocketAddon.PocketAddonType.register();
 		Condition.ConditionType.register();
 		DecayPredicate.DecayPredicateType.register();
-		DecayProcessor.DecayProcessorType.register();
+		DecayProcessorType.register();
 	}
 
 	private static void registerListeners() {

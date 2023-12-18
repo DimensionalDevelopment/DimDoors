@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -13,11 +14,12 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
+import org.dimdev.dimdoors.world.decay.DecayProcessorType;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class BlockDecayProcessor implements DecayProcessor {
+public class BlockDecayProcessor implements DecayProcessor<Block, ItemStack> {
     public static final String KEY = "block";
 
     protected Block block;
@@ -32,7 +34,7 @@ public class BlockDecayProcessor implements DecayProcessor {
     }
 
     @Override
-    public DecayProcessor fromNbt(CompoundTag json) {
+    public BlockDecayProcessor fromNbt(CompoundTag json) {
         block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
         entropy = json.getInt("entropy");
         return this;
@@ -47,7 +49,7 @@ public class BlockDecayProcessor implements DecayProcessor {
     }
 
     @Override
-    public DecayProcessorType<? extends DecayProcessor> getType() {
+    public DecayProcessorType<BlockDecayProcessor> getType() {
         return DecayProcessorType.SIMPLE_PROCESSOR_TYPE.get();
     }
 
@@ -70,7 +72,12 @@ public class BlockDecayProcessor implements DecayProcessor {
         return entropy;
     }
 
-	private static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
+    @Override
+    public Object produces(Object prior) {
+        return new ItemStack(block);
+    }
+
+    private static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
 		return to.setValue(property, from.getValue(property));
 	}
 

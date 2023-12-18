@@ -74,7 +74,6 @@ public final class Decay {
 			return;
 		}
 
-
 		for(DecayPattern pattern : patterns) {
 			if (!pattern.test(world, pos, origin, targetState, fluidState)) {
 				continue;
@@ -107,7 +106,7 @@ public final class Decay {
 		}
 	}
 
-	public static class DecayLoader implements ResourceManagerReloadListener {
+    public static class DecayLoader implements ResourceManagerReloadListener {
 		private static final Logger LOGGER = LogManager.getLogger();
 		private static final DecayLoader INSTANCE = new DecayLoader();
 		private final Map<Block, List<DecayPattern>> blockPatterns = new HashMap<>();
@@ -141,14 +140,20 @@ public final class Decay {
 			return DecayPattern.deserialize((CompoundTag) nbt);
 		}
 
-		public Collection<DecayPattern> getPatterns(Block block) {
-			return blockPatterns.getOrDefault(block, new ArrayList<>());
+		public Collection<DecayPattern> getPatterns(Object object) {
+			if(object instanceof Block block) return blockPatterns.getOrDefault(block, new ArrayList<>());
+			else if(object instanceof Fluid fluid) return fluidPatterns.getOrDefault(fluid, new ArrayList<>());
+			else return new ArrayList<>();
 		}
 
 		public Collection<DecayPattern> getPatterns(Fluid fluid) {
 			return fluidPatterns.getOrDefault(fluid, new ArrayList<>());
 		}
-	}
+
+        public Map<Block, List<DecayPattern>> getBlockPatterns() {
+			return blockPatterns;
+        }
+    }
 
 	private static class DecayTask {
 		private final BlockPos pos;

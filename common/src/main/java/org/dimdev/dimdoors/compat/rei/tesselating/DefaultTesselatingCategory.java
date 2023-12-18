@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.compat.rei;
+package org.dimdev.dimdoors.compat.rei.tesselating;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.math.Point;
@@ -16,6 +16,7 @@ import me.shedaniel.rei.api.common.entry.InputIngredient;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;

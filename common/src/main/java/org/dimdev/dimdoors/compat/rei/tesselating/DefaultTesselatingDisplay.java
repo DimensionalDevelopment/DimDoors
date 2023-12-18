@@ -1,6 +1,5 @@
-package org.dimdev.dimdoors.compat.rei;
+package org.dimdev.dimdoors.compat.rei.tesselating;
 
-import dev.architectury.platform.Platform;
 import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
@@ -14,22 +13,16 @@ import me.shedaniel.rei.api.common.transfer.info.MenuInfo;
 import me.shedaniel.rei.api.common.transfer.info.MenuSerializationContext;
 import me.shedaniel.rei.api.common.transfer.info.simple.SimpleGridMenuInfo;
 import me.shedaniel.rei.api.common.util.CollectionUtils;
-import me.shedaniel.rei.api.common.util.EntryIngredients;
-import me.shedaniel.rei.plugin.common.BuiltinPlugin;
-import me.shedaniel.rei.plugin.common.displays.crafting.*;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
 import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
 import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @SuppressWarnings("removal")

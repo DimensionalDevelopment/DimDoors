@@ -2,14 +2,17 @@ package org.dimdev.dimdoors.world.decay.processors;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
+import org.dimdev.dimdoors.world.decay.DecayProcessorType;
 
-import static org.dimdev.dimdoors.world.decay.DecayProcessor.DecayProcessorType.SELF;
+import static org.dimdev.dimdoors.world.decay.DecayProcessorType.SELF;
 
-public class SelfDecayProcessor implements DecayProcessor {
+public class SelfDecayProcessor implements DecayProcessor<Block, ItemStack> {
     public static final String KEY = "self";
 
     private static final SelfDecayProcessor instance = new SelfDecayProcessor();
@@ -19,12 +22,12 @@ public class SelfDecayProcessor implements DecayProcessor {
     }
 
     @Override
-    public DecayProcessor fromNbt(CompoundTag nbt) {
+    public SelfDecayProcessor fromNbt(CompoundTag nbt) {
         return this;
     }
 
     @Override
-    public DecayProcessorType<? extends DecayProcessor> getType() {
+    public DecayProcessorType<SelfDecayProcessor> getType() {
         return SELF.get();
     }
 

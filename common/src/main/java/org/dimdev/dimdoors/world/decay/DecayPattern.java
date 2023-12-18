@@ -9,7 +9,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.dimdev.dimdoors.world.decay.processors.NoneDecayProcessor;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class DecayPattern {
@@ -49,13 +51,17 @@ public class DecayPattern {
 		return predicate.constructApplicableFluids();
 	}
 
+    public Object willBecome(Object prior) {
+        return processor.produces(prior);
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
         private DecayPredicate predicate = DecayPredicate.NONE;
-        private DecayProcessor processor = DecayProcessor.NONE;
+        private DecayProcessor<?, ?> processor = NoneDecayProcessor.instance();
 
         public Builder predicate(DecayPredicate predicate) {
             this.predicate = predicate;

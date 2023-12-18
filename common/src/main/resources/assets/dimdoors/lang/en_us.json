@@ -523,5 +523,6 @@
   "dimdoors.mode.enable": "Enable",
   "dimdoors.mode.disable": "Disable",
 
-  "category.dimdoors.tesselating": "Tesselating"
+  "category.dimdoors.tesselating": "Tesselating",
+  "category.dimdoors.decays_into": "Decays Into"
 }

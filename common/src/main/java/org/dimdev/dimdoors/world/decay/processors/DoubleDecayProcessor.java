@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,8 +13,9 @@ import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
+import org.dimdev.dimdoors.world.decay.DecayProcessorType;
 
-public class DoubleDecayProcessor implements DecayProcessor {
+public class DoubleDecayProcessor implements DecayProcessor<Block, ItemStack> {
 	public static final String KEY = "double";
 
 	protected Block block;
@@ -28,7 +30,7 @@ public class DoubleDecayProcessor implements DecayProcessor {
 	}
 
 	@Override
-	public DecayProcessor fromNbt(CompoundTag json) {
+	public DoubleDecayProcessor fromNbt(CompoundTag json) {
 		block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
 		entropy = json.getInt("entropy");
 		return this;
@@ -43,8 +45,8 @@ public class DoubleDecayProcessor implements DecayProcessor {
 	}
 
 	@Override
-	public DecayProcessorType<? extends DecayProcessor> getType() {
-		return DecayProcessorType.DOOR_PROCESSOR_TYPE.get();
+	public DecayProcessorType<DoubleDecayProcessor> getType() {
+		return DecayProcessorType.DOUBLE_PROCESSOR_TYPE.get();
 	}
 
 	@Override
@@ -76,6 +78,11 @@ public class DoubleDecayProcessor implements DecayProcessor {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public Object produces(Object prior) {
+		return new ItemStack(block, 2);
 	}
 
 	public static Builder builder() {

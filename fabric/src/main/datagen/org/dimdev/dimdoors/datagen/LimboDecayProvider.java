@@ -28,10 +28,7 @@ import org.dimdev.dimdoors.world.decay.DecayPredicate;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 import org.dimdev.dimdoors.world.decay.predicates.FluidDecayPredicate;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
-import org.dimdev.dimdoors.world.decay.processors.BlockDecayProcessor;
-import org.dimdev.dimdoors.world.decay.processors.DoubleDecayProcessor;
-import org.dimdev.dimdoors.world.decay.processors.FluidDecayProcessor;
-import org.dimdev.dimdoors.world.decay.processors.SelfDecayProcessor;
+import org.dimdev.dimdoors.world.decay.processors.*;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -252,10 +249,10 @@ public class LimboDecayProvider implements DataProvider {
 		return DecayPredicate.NONE;
 	}
 
-	private DecayProcessor getProcessor(Object object) {
+	private DecayProcessor<?, ?> getProcessor(Object object) {
 		if(object instanceof Block block) return BlockDecayProcessor.builder().block(block).create();
 		else if(object instanceof Fluid fluid) return FluidDecayProcessor.builder().fluid(fluid).create();
-		else return DecayProcessor.NONE;
+		else return NoneDecayProcessor.instance();
 	}
 
 	private void createOxidizationChain(Block regular, Block exposed, Block weathered, Block oxidized, BiConsumer<ResourceLocation, JsonObject> consumer) {

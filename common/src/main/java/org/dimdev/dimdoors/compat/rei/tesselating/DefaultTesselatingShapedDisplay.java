@@ -1,7 +1,8 @@
-package org.dimdev.dimdoors.compat.rei;
+package org.dimdev.dimdoors.compat.rei.tesselating;
 
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
+import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingDisplay;
 import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
 
 import java.util.Collections;
