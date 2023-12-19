@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.blocks;
 
 import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.*;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,7 +39,7 @@ public class TransientDoor extends BaseDimDoor {
                         DDTeleporter.traverseDimDoor(world, link, entity, this);
                         // Turn the door into a rift AFTER teleporting the player.
                         // The door's orientation may be necessary for the teleport.
-                        world.setBlock(x, y, z, mod_pocketDim.blockRift);
+                        world.setBlock(x, y, z, DimDoors.blockRift);
                         world.setBlockToAir(x, y - 1, z);
                     }
                 }

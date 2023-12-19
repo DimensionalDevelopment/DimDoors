@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import org.dimdev.dimdoors.config.DDProperties;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,11 +22,11 @@ import static org.lwjgl.opengl.GL11.*;
 @SideOnly(Side.CLIENT)
 public class RenderDimDoor extends TileEntitySpecialRenderer {
     private final FloatBuffer buffer = GLAllocation.createDirectFloatBuffer(16);
-    private final ResourceLocation warpPath = new ResourceLocation(mod_pocketDim.modid + ":textures/other/WARP.png");
-    private final ResourceLocation keyPath = new ResourceLocation(mod_pocketDim.modid + ":textures/other/keyhole.png");
-    private final ResourceLocation KeyholeLight = new ResourceLocation(mod_pocketDim.modid + ":textures/other/keyholeLight.png");
-    private final ResourceLocation keyOutline = new ResourceLocation(mod_pocketDim.modid + ":textures/other/keyOutline.png");
-    private final ResourceLocation keyOutlineLight = new ResourceLocation(mod_pocketDim.modid + ":textures/other/keyOutlineLight.png");
+    private final ResourceLocation warpPath = new ResourceLocation(DimDoors.modid + ":textures/other/WARP.png");
+    private final ResourceLocation keyPath = new ResourceLocation(DimDoors.modid + ":textures/other/keyhole.png");
+    private final ResourceLocation KeyholeLight = new ResourceLocation(DimDoors.modid + ":textures/other/keyholeLight.png");
+    private final ResourceLocation keyOutline = new ResourceLocation(DimDoors.modid + ":textures/other/keyOutline.png");
+    private final ResourceLocation keyOutlineLight = new ResourceLocation(DimDoors.modid + ":textures/other/keyOutlineLight.png");
 
 
     private static final int NETHER_DIMENSION_ID = -1;
@@ -307,7 +307,7 @@ public class RenderDimDoor extends TileEntitySpecialRenderer {
         if (properties.DoorRenderingEnabled) {
             TileEntityDimDoor tile = (TileEntityDimDoor) par1TileEntity;
             try {
-                mod_pocketDim.dimensionalDoor.updateAttachedTile(tile.getWorldObj(),
+                DimDoors.dimensionalDoor.updateAttachedTile(tile.getWorldObj(),
                         tile.xCoord, tile.yCoord, tile.zCoord);
             } catch (Exception e) {
                 e.printStackTrace();

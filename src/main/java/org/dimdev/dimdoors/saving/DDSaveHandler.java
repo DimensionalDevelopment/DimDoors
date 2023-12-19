@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.Point3D;
 import org.dimdev.dimdoors.core.*;
 import org.dimdev.dimdoors.dungeon.DungeonData;
 import org.dimdev.dimdoors.helpers.DungeonHelper;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.util.DDLogger;
 import org.dimdev.dimdoors.util.FileFilters;
 import org.dimdev.dimdoors.util.Point4D;
@@ -231,7 +231,7 @@ public class DDSaveHandler {
         // the mod should crash to let the user know early on.
 
         // Get the save directory path
-        File saveDirectory = new File(mod_pocketDim.instance.getCurrentSavePath() + "/DimensionalDoors/data/");
+        File saveDirectory = new File(DimDoors.instance.getCurrentSavePath() + "/DimensionalDoors/data/");
         String savePath = saveDirectory.getAbsolutePath();
         String baseSavePath = savePath + "/dim_";
         File backupDirectory = new File(savePath + "/backup");

@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world;
 
 import org.dimdev.dimdoors.CloudRenderBlank;
 import org.dimdev.dimdoors.config.DDProperties;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.ticking.CustomLimboPopulator;
 import org.dimdev.dimdoors.util.Point4D;
 import cpw.mods.fml.relauncher.Side;
@@ -33,8 +33,8 @@ public class LimboProvider extends WorldProvider {
     public LimboProvider() {
         this.hasNoSky = false;
         this.skyRenderer = new LimboSkyProvider();
-        this.spawner = mod_pocketDim.spawner;
-        this.properties = mod_pocketDim.properties;
+        this.spawner = DimDoors.spawner;
+        this.properties = DimDoors.properties;
     }
 
     @Override
@@ -45,12 +45,12 @@ public class LimboProvider extends WorldProvider {
 
     @Override
     protected void registerWorldChunkManager() {
-        super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.limboBiome, 1);
+        super.worldChunkMgr = new WorldChunkManagerHell(DimDoors.limboBiome, 1);
     }
 
     @Override
     public BiomeGenBase getBiomeGenForCoords(int x, int z) {
-        return mod_pocketDim.limboBiome;
+        return DimDoors.limboBiome;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class LimboProvider extends WorldProvider {
     @Override
     public boolean canCoordinateBeSpawn(int par1, int par2) {
         Block block = this.worldObj.getTopBlock(par1, par2);
-        return block == mod_pocketDim.blockLimbo;
+        return block == DimDoors.blockLimbo;
     }
 
     @Override

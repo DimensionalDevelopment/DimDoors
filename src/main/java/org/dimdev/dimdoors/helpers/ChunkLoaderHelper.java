@@ -5,7 +5,7 @@ import org.dimdev.dimdoors.IChunkLoader;
 import org.dimdev.dimdoors.Point3D;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.world.PocketBuilder;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,7 +29,7 @@ public class ChunkLoaderHelper implements LoadingCallback {
             int y = ticket.getModData().getInteger("goldDimDoorY");
             int z = ticket.getModData().getInteger("goldDimDoorZ");
 
-            if (world.getBlock(x, y, z) == mod_pocketDim.goldenDimensionalDoor) {
+            if (world.getBlock(x, y, z) == DimDoors.goldenDimensionalDoor) {
                 IChunkLoader loader = (IChunkLoader) world.getTileEntity(x, y, z);
                 if (!loader.isInitialized()) {
                     loader.initialize(ticket);
@@ -44,7 +44,7 @@ public class ChunkLoaderHelper implements LoadingCallback {
 
     public static Ticket createTicket(int x, int y, int z, World world) {
         NBTTagCompound data;
-        Ticket ticket = ForgeChunkManager.requestTicket(mod_pocketDim.instance, world, Type.NORMAL);
+        Ticket ticket = ForgeChunkManager.requestTicket(DimDoors.instance, world, Type.NORMAL);
         if (ticket != null) {
             data = ticket.getModData();
             data.setInteger("goldDimDoorX", x);

@@ -5,7 +5,7 @@ import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.world.PersonalPocketProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
@@ -34,7 +34,7 @@ public class PersonalDimDoor extends BaseDimDoor {
 
     @Override
     public Item getDoorItem() {
-        return mod_pocketDim.itemPersonalDoor;
+        return DimDoors.itemPersonalDoor;
     }
 
 }

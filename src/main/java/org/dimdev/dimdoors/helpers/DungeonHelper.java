@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.dungeon.pack.DungeonPackConfig;
 import org.dimdev.dimdoors.dungeon.pack.DungeonPackConfigReader;
 import org.dimdev.dimdoors.dungeon.pack.DungeonType;
 import org.dimdev.dimdoors.items.ItemDimensionalDoor;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.util.FileFilters;
 import org.dimdev.dimdoors.util.WeightedContainer;
 import net.minecraft.util.WeightedRandom;
@@ -213,7 +213,7 @@ public class DungeonHelper {
         DimLink link = dimension.createLink(x, y + 1, z, LinkType.POCKET, 3);
 
         //Place a Warp Door linked to that pocket
-        ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, mod_pocketDim.warpDoor);
+        ItemDimensionalDoor.placeDoorBlock(world, x, y, z, 3, DimDoors.warpDoor);
 
         return link;
     }

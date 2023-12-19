@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.items;
 
 import org.dimdev.dimdoors.blocks.BaseDimDoor;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
@@ -23,6 +23,6 @@ public class ItemUnstableDoor extends BaseItemDoor {
 
     @Override
     protected BaseDimDoor getDoorBlock() {
-        return (BaseDimDoor) mod_pocketDim.unstableDoor;
+        return (BaseDimDoor) DimDoors.unstableDoor;
     }
 }

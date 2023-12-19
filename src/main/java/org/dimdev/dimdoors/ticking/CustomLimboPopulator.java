@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
 import org.dimdev.dimdoors.helpers.yCoordHelper;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.util.ChunkLocation;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -60,7 +60,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
                             limboWorld = PocketManager.loadDimension(properties.LimboDimensionID);
                         }
                         placeMonolithsInLimbo(limboWorld, location.ChunkX, location.ChunkZ);
-                        mod_pocketDim.gatewayGenerator.generate(limboWorld.rand, location.ChunkX, location.ChunkZ,
+                        DimDoors.gatewayGenerator.generate(limboWorld.rand, location.ChunkX, location.ChunkZ,
                                 limboWorld, limboWorld.getChunkProvider(), limboWorld.getChunkProvider());
                     } else {
                         //Pocket dimension chunk
@@ -114,7 +114,7 @@ public class CustomLimboPopulator implements IRegularTickReceiver {
                 block = pocket.getBlock(x, y, z);
 
             }
-            while ((block == mod_pocketDim.blockDimWall || block == mod_pocketDim.blockDimWallPerm) && y > 0) {
+            while ((block == DimDoors.blockDimWall || block == DimDoors.blockDimWallPerm) && y > 0) {
                 y--;
                 block = pocket.getBlock(x, y, z);
             }

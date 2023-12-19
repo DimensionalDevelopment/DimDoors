@@ -71,7 +71,7 @@ public class EventHookContainer {
                 NewDimData data = PocketManager.getDimensionData(world);
 
                 if (data.type() == DimensionType.PERSONAL) {
-                    mod_pocketDim.sendChat(event.entityPlayer, ("Something prevents the Warp Door from tunneling out here"));
+                    DimDoors.sendChat(event.entityPlayer, ("Something prevents the Warp Door from tunneling out here"));
                     event.setCanceled(true);
                     return;
                 }
@@ -114,14 +114,14 @@ public class EventHookContainer {
                 entity instanceof EntityPlayer && isValidSourceForLimbo(entity.worldObj.provider)) {
             if (entity.worldObj.provider instanceof PocketProvider) {
                 EntityPlayer player = (EntityPlayer) entity;
-                mod_pocketDim.deathTracker.addUsername(player.getGameProfile().getName());
+                DimDoors.deathTracker.addUsername(player.getGameProfile().getName());
                 revivePlayerInLimbo(player);
                 event.setCanceled(true);
                 return false;
             } else if (entity.worldObj.provider instanceof LimboProvider && event.source == DamageSource.outOfWorld) {
                 EntityPlayer player = (EntityPlayer) entity;
                 revivePlayerInLimbo(player);
-                mod_pocketDim.sendChat(player, "Search for the dark red pools which accumulate in the lower reaches of Limbo");
+                DimDoors.sendChat(player, "Search for the dark red pools which accumulate in the lower reaches of Limbo");
                 event.setCanceled(true);
                 return false;
             }
@@ -141,7 +141,7 @@ public class EventHookContainer {
 
         if (entity instanceof EntityPlayer && isValidSourceForLimbo(entity.worldObj.provider)) {
             EntityPlayer player = (EntityPlayer) entity;
-            mod_pocketDim.deathTracker.addUsername(player.getGameProfile().getName());
+            DimDoors.deathTracker.addUsername(player.getGameProfile().getName());
 
             if (properties.LimboEnabled && !properties.LimboReturnsInventoryEnabled) {
                 player.inventory.clearInventory(null, -1);
@@ -177,8 +177,8 @@ public class EventHookContainer {
         if (event.world.provider.dimensionId == 0) {
             PocketManager.save(true);
 
-            if (mod_pocketDim.deathTracker != null && mod_pocketDim.deathTracker.isModified()) {
-                mod_pocketDim.deathTracker.writeToFile();
+            if (DimDoors.deathTracker != null && DimDoors.deathTracker.isModified()) {
+                DimDoors.deathTracker.writeToFile();
             }
         }
     }

@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.schematic.*;
 import org.dimdev.dimdoors.ticking.CustomLimboPopulator;
 import org.dimdev.dimdoors.ticking.MobMonolith;
@@ -41,11 +41,11 @@ public class DungeonSchematic extends Schematic {
     private DungeonSchematic(Schematic source) {
         super(source);
         modBlockFilterExceptions = new ArrayList<Block>(5);
-        modBlockFilterExceptions.add(mod_pocketDim.blockDimWall);
-        modBlockFilterExceptions.add(mod_pocketDim.blockDimWallPerm);
-        modBlockFilterExceptions.add(mod_pocketDim.warpDoor);
-        modBlockFilterExceptions.add(mod_pocketDim.dimensionalDoor);
-        modBlockFilterExceptions.add(mod_pocketDim.transientDoor);
+        modBlockFilterExceptions.add(DimDoors.blockDimWall);
+        modBlockFilterExceptions.add(DimDoors.blockDimWallPerm);
+        modBlockFilterExceptions.add(DimDoors.warpDoor);
+        modBlockFilterExceptions.add(DimDoors.dimensionalDoor);
+        modBlockFilterExceptions.add(DimDoors.transientDoor);
     }
 
     public int getOrientation() {
@@ -82,7 +82,7 @@ public class DungeonSchematic extends Schematic {
 
     public void applyImportFilters(DDProperties properties) {
         //Search for special blocks (warp doors, dim doors, and end portal frames that mark Monolith spawn points)
-        SpecialBlockFinder finder = new SpecialBlockFinder(mod_pocketDim.warpDoor, mod_pocketDim.dimensionalDoor,
+        SpecialBlockFinder finder = new SpecialBlockFinder(DimDoors.warpDoor, DimDoors.dimensionalDoor,
                 Blocks.end_portal_frame, Blocks.sandstone);
         applyFilter(finder);
 
@@ -97,7 +97,7 @@ public class DungeonSchematic extends Schematic {
         //Filter out mod blocks except some of our own
         CompoundFilter standardizer = new CompoundFilter();
         standardizer.addFilter(new ModBlockFilter(modBlockFilterExceptions,
-                mod_pocketDim.blockDimWall, (byte) 0));
+                DimDoors.blockDimWall, (byte) 0));
 
         //Also convert standard DD block IDs to local versions
         applyFilter(standardizer);
@@ -111,7 +111,7 @@ public class DungeonSchematic extends Schematic {
         //Filter out mod blocks except some of our own
         //This comes after ID standardization because the mod block filter relies on standardized IDs
         standardizer.addFilter(new ModBlockFilter(modBlockFilterExceptions,
-                mod_pocketDim.blockDimWall, (byte) 0));
+                DimDoors.blockDimWall, (byte) 0));
 
         applyFilter(standardizer);
     }

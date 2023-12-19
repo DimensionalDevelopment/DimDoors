@@ -23,7 +23,7 @@ public class ConnectionHandler {
             FMLEmbeddedChannel channel = NetworkRegistry.INSTANCE.getChannel("FORGE", Side.SERVER);
             for (NewDimData data : PocketManager.getDimensions()) {
                 try {
-                    if (data.isPocketDimension() || data.id() == mod_pocketDim.properties.LimboDimensionID) {
+                    if (data.isPocketDimension() || data.id() == DimDoors.properties.LimboDimensionID) {
                         channel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(data.id(), DimensionManager.getProviderType(data.id())));
                     }
 

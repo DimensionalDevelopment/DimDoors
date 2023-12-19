@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import org.dimdev.dimdoors.config.DDProperties;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -21,7 +21,7 @@ public class ClientOnlyHooks {
 
     public ClientOnlyHooks(DDProperties properties) {
         this.properties = properties;
-        this.limboMusic = PositionedSoundRecord.func_147673_a(new ResourceLocation(mod_pocketDim.modid + ":creepy"));
+        this.limboMusic = PositionedSoundRecord.func_147673_a(new ResourceLocation(DimDoors.modid + ":creepy"));
     }
 
 
@@ -30,8 +30,8 @@ public class ClientOnlyHooks {
     public void onSoundEffectResult(PlaySoundEvent17 event) {
         ResourceLocation playingSound = event.sound.getPositionedSoundLocation();
         if (playingSound != null && playingSound.getResourceDomain().equals("minecraft") && (playingSound.getResourcePath().equals("music.game") || playingSound.getResourcePath().equals("music.game.creative"))) {
-            if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID) {
-                ResourceLocation sound = new ResourceLocation(mod_pocketDim.modid + ":creepy");
+            if (FMLClientHandler.instance().getClient().thePlayer.worldObj.provider.dimensionId == DimDoors.properties.LimboDimensionID) {
+                ResourceLocation sound = new ResourceLocation(DimDoors.modid + ":creepy");
 
                 if (!Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
                     event.result = limboMusic;
@@ -44,7 +44,7 @@ public class ClientOnlyHooks {
 
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
-        if (event.world.provider.dimensionId == mod_pocketDim.properties.LimboDimensionID &&
+        if (event.world.provider.dimensionId == DimDoors.properties.LimboDimensionID &&
                 event.world.isRemote && !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(limboMusic)) {
             Minecraft.getMinecraft().getSoundHandler().playSound(limboMusic);
         }

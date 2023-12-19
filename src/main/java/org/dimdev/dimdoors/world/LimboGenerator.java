@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world;
 
 import org.dimdev.dimdoors.config.DDProperties;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.ticking.CustomLimboPopulator;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.block.Block;
@@ -349,9 +349,9 @@ public class LimboGenerator extends ChunkProviderGenerate {
 
                             for (int var51 = 0; var51 < 4; ++var51) {
                                 if ((var47 += var49) > 0.0D) {
-                                    blocks[var43 += var44] = mod_pocketDim.blockLimbo;
+                                    blocks[var43 += var44] = DimDoors.blockLimbo;
                                 } else if (var12 * 8 + var31 < var6) {
-                                    blocks[var43 += var44] = mod_pocketDim.blockDimWallPerm;
+                                    blocks[var43 += var44] = DimDoors.blockDimWallPerm;
                                 } else {
                                     blocks[var43 += var44] = Blocks.air;
                                 }

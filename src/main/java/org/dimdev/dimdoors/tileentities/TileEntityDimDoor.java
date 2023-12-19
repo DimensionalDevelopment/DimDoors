@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.tileentities;
 
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.watcher.ClientLinkData;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -78,7 +78,7 @@ public class TileEntityDimDoor extends DDTileEntityBase {
     @Override
     public float[] getRenderColor(Random rand) {
         float[] rgbaColor = {1, 1, 1, 1};
-        if (this.worldObj.provider.dimensionId == mod_pocketDim.NETHER_DIMENSION_ID) {
+        if (this.worldObj.provider.dimensionId == DimDoors.NETHER_DIMENSION_ID) {
             rgbaColor[0] = rand.nextFloat() * 0.5F + 0.4F;
             rgbaColor[1] = rand.nextFloat() * 0.05F;
             rgbaColor[2] = rand.nextFloat() * 0.05F;

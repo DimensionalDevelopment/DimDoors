@@ -6,7 +6,7 @@ import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
 import org.dimdev.dimdoors.dungeon.DungeonData;
 import org.dimdev.dimdoors.helpers.DungeonHelper;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.world.PocketBuilder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
@@ -50,7 +50,7 @@ public class CommandCreateRandomRift extends DDCommandBase {
             dimension = PocketManager.getDimensionData(sender.worldObj);
             link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
 
-            sender.worldObj.setBlock(x, y + 1, z, mod_pocketDim.blockRift, 0, 3);
+            sender.worldObj.setBlock(x, y + 1, z, DimDoors.blockRift, 0, 3);
             sendChat(sender, "Created a rift to a random dungeon.");
         } else {
             result = getRandomDungeonByPartialName(command[0], dungeonHelper.getRegisteredDungeons());
@@ -63,9 +63,9 @@ public class CommandCreateRandomRift extends DDCommandBase {
                 dimension = PocketManager.getDimensionData(sender.worldObj);
                 link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
 
-                if (PocketBuilder.generateSelectedDungeonPocket(link, mod_pocketDim.properties, result)) {
+                if (PocketBuilder.generateSelectedDungeonPocket(link, DimDoors.properties, result)) {
                     // Create a rift to our selected dungeon and notify the player
-                    sender.worldObj.setBlock(x, y + 1, z, mod_pocketDim.blockRift, 0, 3);
+                    sender.worldObj.setBlock(x, y + 1, z, DimDoors.blockRift, 0, 3);
                     sendChat(sender, "Created a rift to \"" + result.schematicName() + "\" dungeon (Dimension ID = " + link.destination().getDimension() + ").");
                 } else {
                     // Dungeon generation failed somehow. Notify the user and remove the useless link.

@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.items;
 
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,7 +17,7 @@ public class ItemQuartzDoor extends ItemDoor {
 
     @Override
     public void registerIcons(IIconRegister par1IconRegister) {
-        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+        this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
     }
 
     @Override
@@ -26,7 +26,7 @@ public class ItemQuartzDoor extends ItemDoor {
             return false;
         } else {
             ++par5;
-            Block block = mod_pocketDim.quartzDoor;
+            Block block = DimDoors.quartzDoor;
 
             if (par2EntityPlayer.canPlayerEdit(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.canPlayerEdit(par4, par5 + 1, par6, par7, par1ItemStack)) {
                 if (!block.canPlaceBlockAt(par3World, par4, par5, par6)) {

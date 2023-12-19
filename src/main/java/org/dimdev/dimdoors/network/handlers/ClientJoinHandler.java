@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.network.handlers;
 
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.network.packets.ClientJoinPacket;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -16,7 +16,7 @@ public class ClientJoinHandler implements IMessageHandler<ClientJoinPacket, IMes
 
     @Override
     public IMessage onMessage(ClientJoinPacket message, MessageContext ctx) {
-        EntityPlayer player = mod_pocketDim.proxy.getMessagePlayer(ctx);
+        EntityPlayer player = DimDoors.proxy.getMessagePlayer(ctx);
         NewDimData dimensionData = PocketManager.getDimensionData(player.worldObj);
 
         if (dimensionData.isPocketDimension())

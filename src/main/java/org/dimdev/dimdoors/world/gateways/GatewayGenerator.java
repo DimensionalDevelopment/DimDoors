@@ -5,7 +5,7 @@ import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.world.PocketProvider;
 import cpw.mods.fml.common.IWorldGenerator;
 import net.minecraft.block.material.Material;
@@ -77,7 +77,7 @@ public class GatewayGenerator implements IWorldGenerator {
 
         // Check if we're allowed to generate rift clusters in this dimension.
         // If so, randomly decide whether to one.
-        if (mod_pocketDim.worldProperties.RiftClusterDimensions.isAccepted(dimensionID)
+        if (DimDoors.worldProperties.RiftClusterDimensions.isAccepted(dimensionID)
                 && random.nextInt(MAX_CLUSTER_GENERATION_CHANCE) < properties.ClusterGenerationChance) {
             link = null;
             dimension = null;
@@ -108,7 +108,7 @@ public class GatewayGenerator implements IWorldGenerator {
 
         // Check if we can place a Rift Gateway in this dimension, then randomly decide whether to place one.
         // This only happens if a rift cluster was NOT generated.
-        else if (mod_pocketDim.worldProperties.RiftGatewayDimensions.isAccepted(dimensionID) &&
+        else if (DimDoors.worldProperties.RiftGatewayDimensions.isAccepted(dimensionID) &&
                 random.nextInt(MAX_GATEWAY_GENERATION_CHANCE) < properties.GatewayGenerationChance) {
             valid = false;
             x = y = z = 0; //Stop the compiler from freaking out

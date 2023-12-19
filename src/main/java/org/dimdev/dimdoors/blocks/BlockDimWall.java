@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.blocks;
 
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.client.PrivatePocketRender;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -27,7 +27,7 @@ public class BlockDimWall extends Block {
 
     public BlockDimWall(int j, Material par2Material) {
         super(par2Material);
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
     }
 
     @Override
@@ -54,9 +54,9 @@ public class BlockDimWall extends Block {
 
     @Override
     public void registerBlockIcons(IIconRegister par1IconRegister) {
-        this.blockIcon[0] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
-        this.blockIcon[1] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "Perm");
-        this.blockIcon[2] = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "Personal");
+        this.blockIcon[0] = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
+        this.blockIcon[1] = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "Perm");
+        this.blockIcon[2] = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "Personal");
     }
 
     @SideOnly(Side.CLIENT)

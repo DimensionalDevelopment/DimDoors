@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.items;
 
 import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -26,7 +26,7 @@ public class ItemRiftBlade extends ItemSword {
     public ItemRiftBlade(DDProperties properties) {
         super(ToolMaterial.EMERALD);
 
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
         this.properties = properties;
     }
 
@@ -113,7 +113,7 @@ public class ItemRiftBlade extends ItemSword {
                 int x = hit.blockX;
                 int y = hit.blockY;
                 int z = hit.blockZ;
-                if (world.getBlock(x, y, z) == mod_pocketDim.blockRift) {
+                if (world.getBlock(x, y, z) == DimDoors.blockRift) {
                     if (PocketManager.getLink(x, y, z, world) != null) {
                         if (player.canPlayerEdit(x, y, z, hit.sideHit, stack) &&
                                 player.canPlayerEdit(x, y + 1, z, hit.sideHit, stack)) {
@@ -121,8 +121,8 @@ public class ItemRiftBlade extends ItemSword {
 
                             if (BaseItemDoor.canPlace(world, x, y, z) &&
                                     BaseItemDoor.canPlace(world, x, y - 1, z)) {
-                                ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, orientation, mod_pocketDim.transientDoor);
-                                player.worldObj.playSoundAtEntity(player, mod_pocketDim.modid + ":riftDoor", 0.6f, 1);
+                                ItemDimensionalDoor.placeDoorBlock(world, x, y - 1, z, orientation, DimDoors.transientDoor);
+                                player.worldObj.playSoundAtEntity(player, DimDoors.modid + ":riftDoor", 0.6f, 1);
                                 stack.damageItem(3, player);
                                 return stack;
                             }
@@ -138,7 +138,7 @@ public class ItemRiftBlade extends ItemSword {
 
     @Override
     public void registerIcons(IIconRegister par1IconRegister) {
-        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+        this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
     }
 
     /**
@@ -148,7 +148,7 @@ public class ItemRiftBlade extends ItemSword {
     public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack) {
         //Don't include a call to super.getIsRepairable()!
         //That would cause this sword to accept diamonds as a repair material (since we set material = Diamond).
-        return mod_pocketDim.itemStableFabric == par2ItemStack.getItem();
+        return DimDoors.itemStableFabric == par2ItemStack.getItem();
     }
 
     /**
@@ -158,6 +158,6 @@ public class ItemRiftBlade extends ItemSword {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        mod_pocketDim.translateAndAdd("info.riftblade", par3List);
+        DimDoors.translateAndAdd("info.riftblade", par3List);
     }
 }

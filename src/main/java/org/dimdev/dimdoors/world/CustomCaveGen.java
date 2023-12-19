@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world;
 
 import org.dimdev.dimdoors.config.DDProperties;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
@@ -161,7 +161,7 @@ public class CustomCaveGen extends MapGenBase {
                                                 var49 = true;
                                             }
 
-                                            if (var53 == mod_pocketDim.blockLimbo || var53 == Blocks.dirt || var53 == Blocks.grass) {
+                                            if (var53 == DimDoors.blockLimbo || var53 == Blocks.dirt || var53 == Blocks.grass) {
                                                 if (var50 < 10) {
                                                     blocks[var48] = Blocks.flowing_lava;
                                                 } else {

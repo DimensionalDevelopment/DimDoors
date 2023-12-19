@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.helpers;
 
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ public class copyfile {
             //Note: For this to work properly, you must use getClass() on an instance of the class,
             //not on the value obtained from .class. That was what caused this code to fail before.
             //SchematicLoader didn't have this problem because we used instances of it.
-            InputStream in = mod_pocketDim.instance.getClass().getResourceAsStream(ori);
+            InputStream in = DimDoors.instance.getClass().getResourceAsStream(ori);
             OutputStream out = new FileOutputStream(dest);
             byte[] buf = new byte[1024];
             int len;

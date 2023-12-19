@@ -5,7 +5,7 @@ import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.tileentities.TileEntityRift;
 import org.dimdev.dimdoors.util.Point4D;
 import org.dimdev.dimdoors.client.ClosingRiftFX;
@@ -52,30 +52,30 @@ public class BlockRift extends Block implements ITileEntityProvider {
         this.setTickRandomly(true);
         this.properties = properties;
         this.modBlocksImmuneToRift = new ArrayList<Block>();
-        this.modBlocksImmuneToRift.add(mod_pocketDim.blockDimWall);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.blockDimWallPerm);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.dimensionalDoor);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.warpDoor);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.transTrapdoor);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.unstableDoor);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.blockRift);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.transientDoor);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.goldenDimensionalDoor);
-        this.modBlocksImmuneToRift.add(mod_pocketDim.goldenDoor);
+        this.modBlocksImmuneToRift.add(DimDoors.blockDimWall);
+        this.modBlocksImmuneToRift.add(DimDoors.blockDimWallPerm);
+        this.modBlocksImmuneToRift.add(DimDoors.dimensionalDoor);
+        this.modBlocksImmuneToRift.add(DimDoors.warpDoor);
+        this.modBlocksImmuneToRift.add(DimDoors.transTrapdoor);
+        this.modBlocksImmuneToRift.add(DimDoors.unstableDoor);
+        this.modBlocksImmuneToRift.add(DimDoors.blockRift);
+        this.modBlocksImmuneToRift.add(DimDoors.transientDoor);
+        this.modBlocksImmuneToRift.add(DimDoors.goldenDimensionalDoor);
+        this.modBlocksImmuneToRift.add(DimDoors.goldenDoor);
 
         this.blocksImmuneToRift = new ArrayList<Block>();
 
-        this.blocksImmuneToRift.add(mod_pocketDim.blockDimWall);
-        this.blocksImmuneToRift.add(mod_pocketDim.blockDimWallPerm);
-        this.blocksImmuneToRift.add(mod_pocketDim.dimensionalDoor);
-        this.blocksImmuneToRift.add(mod_pocketDim.warpDoor);
-        this.blocksImmuneToRift.add(mod_pocketDim.transTrapdoor);
-        this.blocksImmuneToRift.add(mod_pocketDim.unstableDoor);
-        this.blocksImmuneToRift.add(mod_pocketDim.blockRift);
-        this.blocksImmuneToRift.add(mod_pocketDim.transientDoor);
-        this.blocksImmuneToRift.add(mod_pocketDim.goldenDimensionalDoor);
-        this.blocksImmuneToRift.add(mod_pocketDim.goldenDoor);
-        this.blocksImmuneToRift.add(mod_pocketDim.personalDimDoor);
+        this.blocksImmuneToRift.add(DimDoors.blockDimWall);
+        this.blocksImmuneToRift.add(DimDoors.blockDimWallPerm);
+        this.blocksImmuneToRift.add(DimDoors.dimensionalDoor);
+        this.blocksImmuneToRift.add(DimDoors.warpDoor);
+        this.blocksImmuneToRift.add(DimDoors.transTrapdoor);
+        this.blocksImmuneToRift.add(DimDoors.unstableDoor);
+        this.blocksImmuneToRift.add(DimDoors.blockRift);
+        this.blocksImmuneToRift.add(DimDoors.transientDoor);
+        this.blocksImmuneToRift.add(DimDoors.goldenDimensionalDoor);
+        this.blocksImmuneToRift.add(DimDoors.goldenDoor);
+        this.blocksImmuneToRift.add(DimDoors.personalDimDoor);
         this.blocksImmuneToRift.add(Blocks.lapis_block);
         this.blocksImmuneToRift.add(Blocks.iron_block);
         this.blocksImmuneToRift.add(Blocks.gold_block);
@@ -85,7 +85,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     @Override
     public void registerBlockIcons(IIconRegister par1IconRegister) {
-        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.blockIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
     }
 
     @Override
@@ -205,7 +205,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
         if (!block.isAir(world, x, y, z) && (random.nextInt(MAX_WORLD_THREAD_DROP_CHANCE) < properties.WorldThreadDropChance)
                 && !(block instanceof BlockLiquid ||
                 block instanceof IFluidBlock)) {
-            ItemStack thread = new ItemStack(mod_pocketDim.itemWorldThread, 1);
+            ItemStack thread = new ItemStack(DimDoors.itemWorldThread, 1);
             world.spawnEntityInWorld(new EntityItem(world, x, y, z, thread));
         }
     }
@@ -245,7 +245,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
             // Create a child, replace the block with a rift, and consider dropping World Thread
             block = world.getBlock(x, y, z);
-            if (world.setBlock(x, y, z, mod_pocketDim.blockRift)) {
+            if (world.setBlock(x, y, z, DimDoors.blockRift)) {
                 dimension.createChildLink(x, y, z, parent);
                 dropWorldThread(block, world, x, y, z, random);
                 return true;
@@ -290,7 +290,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
     public boolean tryPlacingRift(World world, int x, int y, int z) {
         if (world != null && !isBlockImmune(world, x, y, z)) {
-            return world.setBlock(x, y, z, mod_pocketDim.blockRift);
+            return world.setBlock(x, y, z, DimDoors.blockRift);
         }
         return false;
     }
@@ -344,7 +344,7 @@ public class BlockRift extends Block implements ITileEntityProvider {
 
         // Schedule rift regeneration for this block if it was changed
         if (world.getBlock(x, y, z) != oldBlock) {
-            mod_pocketDim.riftRegenerator.scheduleSlowRegeneration(x, y, z, world);
+            DimDoors.riftRegenerator.scheduleSlowRegeneration(x, y, z, world);
         }
     }
 }

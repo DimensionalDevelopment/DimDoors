@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.tileentities;
 
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ public class TileEntityTransTrapdoor extends DDTileEntityBase {
     @Override
     public float[] getRenderColor(Random rand) {
         float[] rgbaColor = {1, 1, 1, 1};
-        if (this.worldObj.provider.dimensionId == mod_pocketDim.NETHER_DIMENSION_ID) {
+        if (this.worldObj.provider.dimensionId == DimDoors.NETHER_DIMENSION_ID) {
             rgbaColor[0] = worldObj.rand.nextFloat() * 0.5F + 0.4F;
             rgbaColor[1] = worldObj.rand.nextFloat() * 0.05F;
             rgbaColor[2] = worldObj.rand.nextFloat() * 0.05F;

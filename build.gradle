@@ -18,8 +18,8 @@ buildscript {
 }
 apply plugin: 'forge'
 
-version = "2.2.5-" + System.getenv("BUILD_NUMBER")
-group = "com.stevenrs11.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+version = "2.2.6-1.7.10"
+group = "org.dimdev.dimdoors" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "DimensionalDoors"
 
 minecraft {

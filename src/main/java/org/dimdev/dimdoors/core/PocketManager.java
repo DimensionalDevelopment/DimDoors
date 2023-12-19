@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.core;
 import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.helpers.Compactor;
 import org.dimdev.dimdoors.helpers.DeleteFolder;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.saving.DDSaveHandler;
 import org.dimdev.dimdoors.saving.OldSaveImporter;
 import org.dimdev.dimdoors.saving.PackedDimData;
@@ -482,9 +482,9 @@ public class PocketManager {
             // unfortuantly. I send the dimdata to the client when they
             // teleport.
             // Steven
-            int providerID = mod_pocketDim.properties.PocketProviderID;
+            int providerID = DimDoors.properties.PocketProviderID;
             if (type == DimensionType.PERSONAL)
-                providerID = mod_pocketDim.properties.PersonalPocketProviderID;
+                providerID = DimDoors.properties.PersonalPocketProviderID;
             DimensionManager.registerDimension(dimensionID, providerID);
         }
         return dimension;

@@ -5,7 +5,7 @@ import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.DimensionType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.ticking.CustomLimboPopulator;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,13 +26,13 @@ public class PocketProvider extends WorldProvider {
         this.hasNoSky = true;
         this.skyRenderer = new PocketSkyProvider();
 
-        this.spawner = mod_pocketDim.spawner;
-        this.properties = mod_pocketDim.properties;
+        this.spawner = DimDoors.spawner;
+        this.properties = DimDoors.properties;
     }
 
     @Override
     protected void registerWorldChunkManager() {
-        super.worldChunkMgr = new WorldChunkManagerHell(mod_pocketDim.pocketBiome, 1);
+        super.worldChunkMgr = new WorldChunkManagerHell(DimDoors.pocketBiome, 1);
     }
 
     @Override

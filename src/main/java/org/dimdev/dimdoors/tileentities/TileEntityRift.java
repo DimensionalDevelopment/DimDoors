@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.util.Point4D;
 import org.dimdev.dimdoors.watcher.ClientLinkData;
 import net.minecraft.entity.Entity;
@@ -56,7 +56,7 @@ public class TileEntityRift extends DDTileEntityBase {
     @Override
     public void updateEntity() {
         if (PocketManager.getLink(xCoord, yCoord, zCoord, worldObj.provider.dimensionId) == null) {
-            if (worldObj.getBlock(xCoord, yCoord, zCoord) == mod_pocketDim.blockRift) {
+            if (worldObj.getBlock(xCoord, yCoord, zCoord) == DimDoors.blockRift) {
                 worldObj.setBlockToAir(xCoord, yCoord, zCoord);
             } else {
                 invalidate();
@@ -64,7 +64,7 @@ public class TileEntityRift extends DDTileEntityBase {
             return;
         }
 
-        if (worldObj.getBlock(xCoord, yCoord, zCoord) != mod_pocketDim.blockRift) {
+        if (worldObj.getBlock(xCoord, yCoord, zCoord) != DimDoors.blockRift) {
             invalidate();
             return;
         }
@@ -78,11 +78,11 @@ public class TileEntityRift extends DDTileEntityBase {
         }
 
         if (updateTimer >= UPDATE_PERIOD) {
-            spawnEndermen(mod_pocketDim.properties);
+            spawnEndermen(DimDoors.properties);
             updateTimer = 0;
         } else if (updateTimer == UPDATE_PERIOD / 2) {
             updateNearestRift();
-            spread(mod_pocketDim.properties);
+            spread(DimDoors.properties);
         }
         growth += 1F / (growth + 1);
         updateTimer++;
@@ -205,7 +205,7 @@ public class TileEntityRift extends DDTileEntityBase {
         if (nearRifts == 0 || random.nextInt(nearRifts) == 0) {
             return;
         }
-        mod_pocketDim.blockRift.spreadRift(dimension, link, worldObj, random);
+        DimDoors.blockRift.spreadRift(dimension, link, worldObj, random);
     }
 
     @Override

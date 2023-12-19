@@ -11,7 +11,7 @@ import org.dimdev.dimdoors.dungeon.pack.DungeonPackConfig;
 import org.dimdev.dimdoors.helpers.DungeonHelper;
 import org.dimdev.dimdoors.helpers.yCoordHelper;
 import org.dimdev.dimdoors.items.ItemDimensionalDoor;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.schematic.BlockRotator;
 import org.dimdev.dimdoors.util.Pair;
 import org.dimdev.dimdoors.util.Point4D;
@@ -386,7 +386,7 @@ public class PocketBuilder {
         BlockRotator.transformPoint(center, door, orientation - BlockRotator.EAST_DOOR_METADATA, door);
 
         //Build the outer layer of Eternal Fabric
-        buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), mod_pocketDim.blockDimWallPerm, 0, false, 0);
+        buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2), DimDoors.blockDimWallPerm, 0, false, 0);
 
         //check if we are building a personal pocket
         int metadata = 0;
@@ -396,7 +396,7 @@ public class PocketBuilder {
 
         //Build the (wallThickness - 1) layers of Fabric of Reality
         for (int layer = 1; layer < wallThickness; layer++) {
-            buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, mod_pocketDim.blockDimWall, metadata,
+            buildBox(world, center.getX(), center.getY(), center.getZ(), (size / 2) - layer, DimDoors.blockDimWall, metadata,
                     layer < (wallThickness - 1) && properties.TNFREAKINGT_Enabled, properties.NonTntWeight);
         }
 

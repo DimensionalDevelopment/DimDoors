@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.network;
 
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.network.handlers.*;
 import org.dimdev.dimdoors.network.packets.*;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -13,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 @ChannelHandler.Sharable
 public class DimDoorsNetwork extends SimpleNetworkWrapper {
 
-    private static final DimDoorsNetwork INSTANCE = new DimDoorsNetwork(mod_pocketDim.modid);
+    private static final DimDoorsNetwork INSTANCE = new DimDoorsNetwork(DimDoors.modid);
 
     public DimDoorsNetwork(String channelName) {
         super(channelName);

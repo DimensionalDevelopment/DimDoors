@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.client;
 
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.ticking.MobMonolith;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -111,6 +111,6 @@ public class RenderMobObelisk extends RenderLiving {
     @Override
     protected ResourceLocation getEntityTexture(Entity entity) {
         MobMonolith monolith = (MobMonolith) entity;
-        return new ResourceLocation(mod_pocketDim.modid + ":textures/mobs/oldMonolith/Monolith" + monolith.getTextureState() + ".png");
+        return new ResourceLocation(DimDoors.modid + ":textures/mobs/oldMonolith/Monolith" + monolith.getTextureState() + ".png");
     }
 }

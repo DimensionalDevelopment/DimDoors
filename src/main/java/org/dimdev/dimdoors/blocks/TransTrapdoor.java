@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.blocks;
 
 import org.dimdev.dimdoors.core.*;
 import org.dimdev.dimdoors.items.ItemDDKey;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.tileentities.TileEntityTransTrapdoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -26,12 +26,12 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 
     public TransTrapdoor(Material material) {
         super(material);
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
     }
 
     @Override
     public void registerBlockIcons(IIconRegister par1IconRegister) {
-        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.blockIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
     }
 
     //Teleports the player to the exit link of that dimension, assuming it is a pocket
@@ -124,7 +124,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 
     @Override
     public Item getDoorItem() {
-        return Item.getItemFromBlock(mod_pocketDim.transTrapdoor);
+        return Item.getItemFromBlock(DimDoors.transTrapdoor);
     }
 
     public static boolean isTrapdoorSetLow(int metadata) {
@@ -151,7 +151,7 @@ public class TransTrapdoor extends BlockTrapDoor implements IDimDoor, ITileEntit
 
         // Schedule rift regeneration for this block if it was replaced
         if (world.getBlock(x, y, z) != oldBlock) {
-            mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+            DimDoors.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
         }
     }
 }

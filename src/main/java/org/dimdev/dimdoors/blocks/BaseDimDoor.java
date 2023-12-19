@@ -6,7 +6,7 @@ import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.PocketManager;
 import org.dimdev.dimdoors.items.ItemDDKey;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.tileentities.TileEntityDimDoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -49,8 +49,8 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
     public void registerBlockIcons(IIconRegister iconRegister) {
         upperTextures = new IIcon[2];
         lowerTextures = new IIcon[2];
-        upperTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_upper");
-        lowerTextures[0] = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName() + "_lower");
+        upperTextures[0] = iconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "_upper");
+        lowerTextures[0] = iconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName() + "_lower");
         upperTextures[1] = new IconFlipped(upperTextures[0], true, false);
         lowerTextures[1] = new IconFlipped(lowerTextures[0], true, false);
     }
@@ -151,7 +151,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
     //Called to update the render information on the tile entity. Could probably implement a data watcher,
     //but this works fine and is more versatile I think.
     public BaseDimDoor updateAttachedTile(World world, int x, int y, int z) {
-        mod_pocketDim.proxy.updateDoorTE(this, world, x, y, z);
+        DimDoors.proxy.updateDoorTE(this, world, x, y, z);
         TileEntity tile = world.getTileEntity(x, y, z);
         if (tile instanceof TileEntityDimDoor) {
             int metadata = world.getBlockMetadata(x, y, z);
@@ -395,7 +395,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
                 }
             }
         }
-        player.playSound(mod_pocketDim.modid + ":doorLocked", 1F, 1F);
+        player.playSound(DimDoors.modid + ":doorLocked", 1F, 1F);
         return false;
     }
 
@@ -423,7 +423,7 @@ public abstract class BaseDimDoor extends BlockDoor implements IDimDoor, ITileEn
 
         // Schedule rift regeneration for this block if it was replaced
         if (world.getBlock(x, y, z) != oldBlock) {
-            mod_pocketDim.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
+            DimDoors.riftRegenerator.scheduleFastRegeneration(x, y, z, world);
         }
     }
 }

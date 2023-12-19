@@ -59,7 +59,7 @@ public class DimData implements Serializable {
         while (i < range) {
             while (j < range) {
                 while (k < range) {
-                    if (world.getBlock(x + i, y + j, z + k) == mod_pocketDim.blockRift && MathHelper.abs(i) + MathHelper.abs(j) + MathHelper.abs(k) < distance) {
+                    if (world.getBlock(x + i, y + j, z + k) == DimDoors.blockRift && MathHelper.abs(i) + MathHelper.abs(j) + MathHelper.abs(k) < distance) {
                         if (MathHelper.abs(i) + MathHelper.abs(j) + MathHelper.abs(k) != 0) {
                             nearest = this.findLinkAtCoords(x + i, y + j, z + k);
                             distance = MathHelper.abs(i) + MathHelper.abs(j) + MathHelper.abs(k);
@@ -93,7 +93,7 @@ public class DimData implements Serializable {
         while (i < range) {
             while (j < range) {
                 while (k < range) {
-                    if (world.getBlock(x + i, y + j, z + k) == mod_pocketDim.blockRift) {
+                    if (world.getBlock(x + i, y + j, z + k) == DimDoors.blockRift) {
                         if (MathHelper.abs(i) + MathHelper.abs(j) + MathHelper.abs(k) != 0) {
                             nearest = this.findLinkAtCoords(x + i, y + j, z + k);
                             if (nearest != null) {

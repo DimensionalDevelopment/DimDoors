@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.gateways;
 
 import org.dimdev.dimdoors.Point3D;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.schematic.Schematic;
 import org.dimdev.dimdoors.schematic.SchematicFilter;
 import net.minecraft.block.Block;
@@ -41,25 +41,25 @@ public class GatewayBlockFilter extends SchematicFilter {
     protected boolean applyToBlock(int index, Block[] blocks, byte[] metadata) {
         int indexBelow;
         int indexDoubleBelow;
-        if (blocks[index] == mod_pocketDim.dimensionalDoor) {
+        if (blocks[index] == DimDoors.dimensionalDoor) {
             indexBelow = schematic.calculateIndexBelow(index);
-            if (indexBelow >= 0 && blocks[indexBelow] == mod_pocketDim.dimensionalDoor) {
+            if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.dimensionalDoor) {
                 entranceDoorLocation = schematic.calculatePoint(index);
                 entranceOrientation = (metadata[indexBelow] & 3);
                 return true;
             }
         }
-        if (blocks[index] == mod_pocketDim.transientDoor) {
+        if (blocks[index] == DimDoors.transientDoor) {
             indexBelow = schematic.calculateIndexBelow(index);
-            if (indexBelow >= 0 && blocks[indexBelow] == mod_pocketDim.transientDoor) {
+            if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.transientDoor) {
                 entranceDoorLocation = schematic.calculatePoint(index);
                 entranceOrientation = (metadata[indexBelow] & 3);
                 return true;
             }
         }
-        if (blocks[index] == mod_pocketDim.warpDoor) {
+        if (blocks[index] == DimDoors.warpDoor) {
             indexBelow = schematic.calculateIndexBelow(index);
-            if (indexBelow >= 0 && blocks[indexBelow] == mod_pocketDim.warpDoor) {
+            if (indexBelow >= 0 && blocks[indexBelow] == DimDoors.warpDoor) {
                 entranceDoorLocation = schematic.calculatePoint(index);
                 entranceOrientation = (metadata[indexBelow] & 3);
                 return true;

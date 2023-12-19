@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.items;
 
 import org.dimdev.dimdoors.blocks.BaseDimDoor;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDoor;
@@ -17,11 +17,11 @@ public class ItemDimensionalDoor extends BaseItemDoor {
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
-        mod_pocketDim.translateAndAdd("info.dimDoor", par3List);
+        DimDoors.translateAndAdd("info.dimDoor", par3List);
     }
 
     @Override
     protected BaseDimDoor getDoorBlock() {
-        return mod_pocketDim.dimensionalDoor;
+        return DimDoors.dimensionalDoor;
     }
 }

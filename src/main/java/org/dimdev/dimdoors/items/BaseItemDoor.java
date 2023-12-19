@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.blocks.BaseDimDoor;
 import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.tileentities.TileEntityDimDoor;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -36,7 +36,7 @@ public abstract class BaseItemDoor extends ItemDoor {
     public BaseItemDoor(Material material, ItemDoor vanillaDoor) {
         super(material);
         this.setMaxStackSize(64);
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
         if (properties == null)
             properties = DDProperties.instance();
 
@@ -48,7 +48,7 @@ public abstract class BaseItemDoor extends ItemDoor {
 
     @Override
     public void registerIcons(IIconRegister par1IconRegister) {
-        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+        this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -160,7 +160,7 @@ public abstract class BaseItemDoor extends ItemDoor {
 
         MovingObjectPosition hit = BaseItemDoor.doRayTrace(player.worldObj, player, true);
         if (hit != null) {
-            if (world.getBlock(hit.blockX, hit.blockY, hit.blockZ) == mod_pocketDim.blockRift) {
+            if (world.getBlock(hit.blockX, hit.blockY, hit.blockZ) == DimDoors.blockRift) {
                 DimLink link = PocketManager.getLink(hit.blockX, hit.blockY, hit.blockZ, world.provider.dimensionId);
                 if (link != null) {
                     int x = hit.blockX;
@@ -189,7 +189,7 @@ public abstract class BaseItemDoor extends ItemDoor {
     public static boolean canPlace(World world, int x, int y, int z) {
         Block block = world.getBlock(x, y, z);
 
-        return (block == mod_pocketDim.blockRift || block.isAir(world, x, y, z) || block.getMaterial().isReplaceable());
+        return (block == DimDoors.blockRift || block.isAir(world, x, y, z) || block.getMaterial().isReplaceable());
     }
 
     /**

@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.Point3D;
 import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.dungeon.DungeonData;
 import org.dimdev.dimdoors.dungeon.pack.DungeonPack;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.saving.*;
 import org.dimdev.dimdoors.util.Point4D;
 import org.dimdev.dimdoors.watcher.ClientLinkData;
@@ -212,7 +212,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
             for (j = -range; j <= range; j++) {
                 for (k = -range; k <= range; k++) {
                     distance = getAbsoluteSum(i, j, k);
-                    if (distance > 0 && distance < minDistance && world.getBlock(x + i, y + j, z + k) == mod_pocketDim.blockRift) {
+                    if (distance > 0 && distance < minDistance && world.getBlock(x + i, y + j, z + k) == DimDoors.blockRift) {
                         link = getLink(x + i, y + j, z + k);
                         if (link != null) {
                             nearest = link;
@@ -244,7 +244,7 @@ public abstract class NewDimData implements IPackable<PackedDimData> {
             for (j = -range; j <= range; j++) {
                 for (k = -range; k <= range; k++) {
                     distance = getAbsoluteSum(i, j, k);
-                    if (distance > 0 && world.getBlock(x + i, y + j, z + k) == mod_pocketDim.blockRift) {
+                    if (distance > 0 && world.getBlock(x + i, y + j, z + k) == DimDoors.blockRift) {
                         link = getLink(x + i, y + j, z + k);
                         if (link != null) {
                             links.add(link);

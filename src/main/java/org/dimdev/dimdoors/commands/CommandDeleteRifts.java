@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.commands;
 import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.util.Point4D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -58,12 +58,12 @@ public class CommandDeleteRifts extends DDCommandBase {
             x = location.getX();
             y = location.getY();
             z = location.getZ();
-            if (world.getBlock(x, y, z) == mod_pocketDim.blockRift) {
+            if (world.getBlock(x, y, z) == DimDoors.blockRift) {
                 // Remove the rift and its link
                 world.setBlockToAir(x, y, z);
                 dimension.deleteLink(link);
                 linksRemoved++;
-            } else if (!mod_pocketDim.blockRift.isBlockImmune(world, x, y, z)) {
+            } else if (!DimDoors.blockRift.isBlockImmune(world, x, y, z)) {
                 // If a block is not immune, then it must not be a DD block.
                 // The link would regenerate into a rift eventually.
                 // We only need to remove the link.

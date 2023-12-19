@@ -5,7 +5,7 @@ import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
@@ -28,6 +28,6 @@ public class WarpDoor extends BaseDimDoor {
 
     @Override
     public Item getDoorItem() {
-        return mod_pocketDim.itemWarpDoor;
+        return DimDoors.itemWarpDoor;
     }
 }

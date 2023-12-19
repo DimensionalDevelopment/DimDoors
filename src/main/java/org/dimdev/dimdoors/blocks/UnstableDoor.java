@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -27,7 +27,7 @@ public class UnstableDoor extends BaseDimDoor {
 
     @Override
     public Item getDoorItem() {
-        return mod_pocketDim.itemUnstableDoor;
+        return DimDoors.itemUnstableDoor;
     }
 
     @Override

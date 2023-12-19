@@ -5,7 +5,7 @@ import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.util.Point4D;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -28,7 +28,7 @@ public class ItemRiftSignature extends Item {
         this.setMaxStackSize(1);
         this.setMaxDamage(0);
         this.hasSubtypes = true;
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
     }
 
     @SideOnly(Side.CLIENT)
@@ -40,7 +40,7 @@ public class ItemRiftSignature extends Item {
 
     @Override
     public void registerIcons(IIconRegister par1IconRegister) {
-        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+        this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
     }
 
     @Override
@@ -76,24 +76,24 @@ public class ItemRiftSignature extends Item {
             sourceDimension.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 
             // Try placing a rift at the destination point
-            mod_pocketDim.blockRift.tryPlacingRift(world, x, adjustedY, z);
+            DimDoors.blockRift.tryPlacingRift(world, x, adjustedY, z);
 
             // Try placing a rift at the source point
             // We don't need to check if sourceWorld is null - that's already handled.
             World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
-            mod_pocketDim.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
+            DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
 
             if (!player.capabilities.isCreativeMode) {
                 stack.stackSize--;
             }
             clearSource(stack);
-            mod_pocketDim.sendChat(player, "Rift Created");
-            world.playSoundAtEntity(player, mod_pocketDim.modid + ":riftEnd", 0.6f, 1);
+            DimDoors.sendChat(player, "Rift Created");
+            world.playSoundAtEntity(player, DimDoors.modid + ":riftEnd", 0.6f, 1);
         } else {
             //The link signature has not been used. Store its current target as the first location.
             setSource(stack, x, adjustedY, z, orientation, PocketManager.createDimensionData(world));
-            mod_pocketDim.sendChat(player, ("Location Stored in Rift Signature"));
-            world.playSoundAtEntity(player, mod_pocketDim.modid + ":riftStart", 0.6f, 1);
+            DimDoors.sendChat(player, ("Location Stored in Rift Signature"));
+            world.playSoundAtEntity(player, DimDoors.modid + ":riftStart", 0.6f, 1);
         }
         return true;
     }
@@ -109,7 +109,7 @@ public class ItemRiftSignature extends Item {
         if (source != null) {
             par3List.add(StatCollector.translateToLocalFormatted("info.riftSignature.bound", source.getX(), source.getY(), source.getZ(), source.getDimension()));
         } else {
-            mod_pocketDim.translateAndAdd("info.riftSignature.unbound", par3List);
+            DimDoors.translateAndAdd("info.riftSignature.unbound", par3List);
         }
     }
 

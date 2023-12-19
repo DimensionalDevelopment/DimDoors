@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.blocks;
 
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.world.LimboDecay;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,7 +22,7 @@ public class BlockLimbo extends Block {
         this.limboDimensionID = limboDimensionID;
         this.decay = decay;
         this.setTickRandomly(true);
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
     }
 
     /**
@@ -36,7 +36,7 @@ public class BlockLimbo extends Block {
 
     @Override
     public void registerBlockIcons(IIconRegister iconRegister) {
-        this.blockIcon = iconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.blockIcon = iconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
     }
 
     @Override

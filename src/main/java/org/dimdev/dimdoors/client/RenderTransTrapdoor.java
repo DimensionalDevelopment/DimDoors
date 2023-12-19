@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.client;
 
 import org.dimdev.dimdoors.blocks.TransTrapdoor;
 import org.dimdev.dimdoors.config.DDProperties;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.tileentities.TileEntityTransTrapdoor;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -21,8 +21,8 @@ import java.util.Random;
 public class RenderTransTrapdoor extends TileEntitySpecialRenderer {
     private final FloatBuffer field_76908_a = GLAllocation.createDirectFloatBuffer(16);
     private static DDProperties properties = null;
-    private final ResourceLocation riftPath = new ResourceLocation(mod_pocketDim.modid + ":textures/other/RIFT.png");
-    private final ResourceLocation warpPath = new ResourceLocation(mod_pocketDim.modid + ":textures/other/WARP.png");
+    private final ResourceLocation riftPath = new ResourceLocation(DimDoors.modid + ":textures/other/RIFT.png");
+    private final ResourceLocation warpPath = new ResourceLocation(DimDoors.modid + ":textures/other/WARP.png");
 
 
     public RenderTransTrapdoor() {

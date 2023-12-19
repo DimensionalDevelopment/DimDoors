@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.blocks;
 import org.dimdev.dimdoors.config.DDProperties;
 import org.dimdev.dimdoors.core.DDTeleporter;
 import org.dimdev.dimdoors.helpers.yCoordHelper;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import org.dimdev.dimdoors.util.Point4D;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -23,14 +23,14 @@ public class BlockDimWallPerm extends Block {
 
     public BlockDimWallPerm(int j, Material par2Material) {
         super(Material.ground);
-        this.setCreativeTab(mod_pocketDim.dimDoorsCreativeTab);
+        this.setCreativeTab(DimDoors.dimDoorsCreativeTab);
         if (properties == null)
             properties = DDProperties.instance();
     }
 
     @Override
     public void registerBlockIcons(IIconRegister par1IconRegister) {
-        this.blockIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName());
+        this.blockIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName());
     }
 
     @Override
@@ -48,7 +48,7 @@ public class BlockDimWallPerm extends Block {
     @Override
     public void onEntityWalking(World world, int x, int y, int z, Entity entity) {
         if (!world.isRemote && world.provider.dimensionId == properties.LimboDimensionID
-                && mod_pocketDim.worldProperties.LimboEscapeEnabled) {
+                && DimDoors.worldProperties.LimboEscapeEnabled) {
             World overworld = DimensionManager.getWorld(0);
             if (overworld != null && entity instanceof EntityPlayerMP) {
                 EntityPlayer player = (EntityPlayer) entity;
@@ -78,7 +78,7 @@ public class BlockDimWallPerm extends Block {
                     for (int zc = -3; zc < 4; zc++) {
                         if (Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 2 ||
                                 Math.abs(xc) + Math.abs(zc) < random.nextInt(3) + 3) {
-                            overworld.setBlock(destinationX + xc, destinationY - 1, destinationZ + zc, mod_pocketDim.blockLimbo);
+                            overworld.setBlock(destinationX + xc, destinationY - 1, destinationZ + zc, DimDoors.blockLimbo);
                         }
                     }
                 }

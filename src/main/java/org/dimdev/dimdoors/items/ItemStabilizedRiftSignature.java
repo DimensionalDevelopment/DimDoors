@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -25,7 +25,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
 
     @Override
     public void registerIcons(IIconRegister par1IconRegister) {
-        this.itemIcon = par1IconRegister.registerIcon(mod_pocketDim.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
+        this.itemIcon = par1IconRegister.registerIcon(DimDoors.modid + ":" + this.getUnlocalizedName().replace("item.", ""));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
                 // or if the player can pay with an Ender Pearl to create a rift.
                 if (!player.capabilities.isCreativeMode &&
                         !player.inventory.consumeInventoryItem(Items.ender_pearl)) {
-                    mod_pocketDim.sendChat(player, "You don't have any Ender Pearls!");
+                    DimDoors.sendChat(player, "You don't have any Ender Pearls!");
                     // I won't do this, but this is the chance to localize chat
                     // messages sent to the player; look at ChatMessageComponent
                     // and how MFR does it with items like the safari net launcher
@@ -81,20 +81,20 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
                 sourceDimension.setLinkDestination(reverse, source.getX(), source.getY(), source.getZ());
 
                 // Try placing a rift at the destination point
-                mod_pocketDim.blockRift.tryPlacingRift(world, x, adjustedY, z);
+                DimDoors.blockRift.tryPlacingRift(world, x, adjustedY, z);
             }
 
             // Try placing a rift at the source point
             // We don't need to check if sourceWorld is null - that's already handled.
             World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
 
-            mod_pocketDim.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
-            mod_pocketDim.sendChat(player, "Rift Created");
+            DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
+            DimDoors.sendChat(player, "Rift Created");
             world.playSoundAtEntity(player, "mods.DimDoors.sfx.riftEnd", 0.6f, 1);
         } else {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, x, adjustedY, z, orientation, PocketManager.createDimensionData(world));
-            mod_pocketDim.sendChat(player, "Location Stored in Stabilized Rift Signature");
+            DimDoors.sendChat(player, "Location Stored in Stabilized Rift Signature");
             world.playSoundAtEntity(player, "mods.DimDoors.sfx.riftStart", 0.6f, 1);
         }
         return true;
@@ -131,7 +131,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
                 // Try placing a rift at the source point
                 // We don't need to check if sourceWorld is null - that's already handled.
                 World sourceWorld = DimensionManager.getWorld(sourceDimension.id());
-                mod_pocketDim.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
+                DimDoors.blockRift.tryPlacingRift(sourceWorld, source.getX(), source.getY(), source.getZ());
 
                 // This call doesn't seem to be working...
                 world.playSoundEffect(x + 0.5, adjustedY + 0.5, z + 0.5, "mods.DimDoors.sfx.riftEnd", 0.6f, 1);
@@ -153,7 +153,7 @@ public class ItemStabilizedRiftSignature extends ItemRiftSignature {
             String text = StatCollector.translateToLocalFormatted("info.riftSignature.bound", source.getX(), source.getY(), source.getZ(), source.getDimension());
             par3List.add(text);
         } else {
-            mod_pocketDim.translateAndAdd("info.riftSignature.stable", par3List);
+            DimDoors.translateAndAdd("info.riftSignature.stable", par3List);
         }
     }
 }

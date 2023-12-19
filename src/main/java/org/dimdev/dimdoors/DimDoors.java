@@ -43,9 +43,9 @@ import net.minecraftforge.common.MinecraftForge;
 import java.io.File;
 import java.util.List;
 
-@Mod(modid = mod_pocketDim.modid, name = "Dimensional Doors", version = mod_pocketDim.version)
-public class mod_pocketDim {
-    public static final String version = "2.2.5-test9";
+@Mod(modid = DimDoors.modid, name = "Dimensional Doors", version = DimDoors.version)
+public class DimDoors {
+    public static final String version = "2.2.6";
     public static final String modid = "dimdoors";
 
     //TODO need a place to stick all these constants
@@ -55,8 +55,8 @@ public class mod_pocketDim {
     @SidedProxy(clientSide = "org.dimdev.dimdoors.client.ClientProxy", serverSide = "org.dimdev.dimdoors.CommonProxy")
     public static CommonProxy proxy;
 
-    @Instance(mod_pocketDim.modid)
-    public static mod_pocketDim instance;
+    @Instance(DimDoors.modid)
+    public static DimDoors instance;
 
     public static Block quartzDoor;
     public static Block personalDimDoor;
@@ -108,7 +108,7 @@ public class mod_pocketDim {
     public static CreativeTabs dimDoorsCreativeTab = new CreativeTabs("dimDoorsCreativeTab") {
         @Override
         public Item getTabIconItem() {
-            return mod_pocketDim.itemDimensionalDoor;
+            return DimDoors.itemDimensionalDoor;
         }
     };
 
@@ -175,8 +175,8 @@ public class mod_pocketDim {
         DDBiomeGenBase.checkBiomes(new int[]{properties.LimboBiomeID, properties.PocketBiomeID});
 
         // Initialize our biomes
-        mod_pocketDim.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
-        mod_pocketDim.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
+        DimDoors.limboBiome = (new BiomeGenLimbo(properties.LimboBiomeID));
+        DimDoors.pocketBiome = (new BiomeGenPocket(properties.PocketBiomeID));
 
         GameRegistry.registerBlock(quartzDoor, null, "Quartz Door");
         GameRegistry.registerBlock(personalDimDoor, null, "Personal Dimensional Door");
@@ -233,7 +233,7 @@ public class mod_pocketDim {
 
         DungeonHelper.initialize();
         gatewayGenerator = new GatewayGenerator(properties);
-        GameRegistry.registerWorldGenerator(mod_pocketDim.gatewayGenerator, 0);
+        GameRegistry.registerWorldGenerator(DimDoors.gatewayGenerator, 0);
 
         // Register loot chests
         DDLoot.registerInfo(properties);

@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.core.DimLink;
 import org.dimdev.dimdoors.core.LinkType;
 import org.dimdev.dimdoors.core.NewDimData;
 import org.dimdev.dimdoors.core.PocketManager;
-import org.dimdev.dimdoors.mod_pocketDim;
+import org.dimdev.dimdoors.DimDoors;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.nbt.NBTTagCompound;
@@ -151,7 +151,7 @@ public class ComponentNetherGateway extends StructureComponent {
             if (link == null) {
                 link = dimension.createLink(x, y + 1, z, LinkType.DUNGEON, orientation);
             }
-            ItemDoor.placeDoorBlock(world, x, y, z, orientation, mod_pocketDim.transientDoor);
+            ItemDoor.placeDoorBlock(world, x, y, z, orientation, DimDoors.transientDoor);
         }
 
         for (x = 0; x <= 6; ++x) {
