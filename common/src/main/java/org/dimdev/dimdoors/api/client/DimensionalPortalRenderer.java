@@ -53,7 +53,7 @@ public final class DimensionalPortalRenderer {
 				false,
 				false,
 				RenderType.CompositeState.builder()
-						.setShaderState(DIMENSIONAL_PORTAL_SHADER)
+						.setShaderState(RenderStateShard.RENDERTYPE_END_PORTAL_SHADER)
 						.setTextureState(
 								RenderStateShard.MultiTextureStateShard.builder()
 										.add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)

@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.EntityUtils;
@@ -203,7 +204,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
 		if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
 				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level(), entity.blockPosition()));
-				EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
+				if(DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages) EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
 				return true;
 			}
 		} catch (Exception e) {

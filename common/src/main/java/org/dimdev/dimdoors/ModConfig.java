@@ -98,7 +98,8 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public int depthSpreadFactor = 20;
 		@Tooltip public double endermanSpawnChance = 0.00005;
 		@Tooltip public double endermanAggressiveChance = 0.5;
-	}
+        @Tooltip public boolean enableDebugMessages = false;
+    }
 
 	public static class Doors {
 		@Tooltip public boolean closeDoorBehind = true;

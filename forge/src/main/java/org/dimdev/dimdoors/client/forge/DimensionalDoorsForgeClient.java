@@ -49,5 +49,7 @@ public class DimensionalDoorsForgeClient {
     @SubscribeEvent
     public static void registerDimensionEffect(RegisterDimensionSpecialEffectsEvent event) {
         event.register(DimensionalDoors.id("limbo"), LimboDimensionEffect.INSTANCE);
+        event.register(DimensionalDoors.id("white_void"), LimboDimensionEffect.INSTANCE);
+        event.register(DimensionalDoors.id("black_void"), LimboDimensionEffect.INSTANCE);
     }
 }
