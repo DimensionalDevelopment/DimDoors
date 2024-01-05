@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -29,6 +30,5 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
                 (particleType, spriteSetFunction) -> ParticleFactoryRegistry.getInstance().register(particleType, (ParticleFactoryRegistry.PendingParticleFactory) spriteSetFunction::apply));
         DimensionalDoorsClient.initEntitiesClient(EntityRendererRegistry::register);
         ModEntityModelLayers.initClient((modelLayerLocation, layerDefinitionSupplier) -> EntityModelLayerRegistry.registerModelLayer(modelLayerLocation, layerDefinitionSupplier::get));
-//        RecipeBookManager.init();
     }
 }

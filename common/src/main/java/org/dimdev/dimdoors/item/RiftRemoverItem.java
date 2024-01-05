@@ -74,7 +74,7 @@ public class RiftRemoverItem extends Item {
 				player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".closing"), true);
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 			} else {
-				player.displayClientMessage(Component.translatable(this.getDescription() + ".already_closing"), true);
+				player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".already_closing"), true);
 			}
 		}
 		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);

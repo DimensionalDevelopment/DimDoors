@@ -32,6 +32,7 @@
   ],
   "client": [
     "client.BackgroundRendererMixin",
+    "client.BuiltinModelItemRendererMixin",
     "client.ClientPlayerInteractionManagerMixin",
     "client.ExtendedClientPlayNetworkHandlerMixin",
     "client.InGameHudMixin",

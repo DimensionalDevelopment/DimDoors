@@ -8,15 +8,11 @@ import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.utils.Env;
-import dev.architectury.utils.EnvExecutor;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
@@ -30,10 +26,7 @@ import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 
 public class DimensionalDoorBlockRegistrar {
@@ -126,6 +119,13 @@ public class DimensionalDoorBlockRegistrar {
 		HashSet<Property<?>> properties = new HashSet<>(originalBlock.getStateDefinition().getProperties());
 		properties.addAll(List.of(requiredProperties));
 		builder.add(properties.toArray(new Property[0]));
+	}
+
+    public void forEach() {
+    }
+
+	public Set<ResourceLocation> getGennedIds() {
+		return mappedDoorBlocks.keySet();
 	}
 
 	public static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {

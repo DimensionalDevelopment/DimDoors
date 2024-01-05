@@ -9,10 +9,13 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
 @Environment(EnvType.CLIENT)
-public class UnderlaidChildItemRenderer /*implements BuiltinItemRendererRegistry.DynamicItemRenderer*/ {//TODO: Move to fabric if needed still
+public class UnderlaidChildItemRenderer {
+	public static final UnderlaidChildItemRenderer INSTANCE = new UnderlaidChildItemRenderer(ModBlocks.DIMENSIONAL_PORTAL.get().asItem());
+
 	private final ItemStack underlay;
 
 	public UnderlaidChildItemRenderer(Item underlay) {
@@ -35,7 +38,7 @@ public class UnderlaidChildItemRenderer /*implements BuiltinItemRendererRegistry
 		// TODO: refactor
 		matrices.pushPose();
 		childItem.transform(matrices);
-		matrices.scale(1, 1, 0.5f);
+		matrices.scale(0.9f, 0.9f, 0.9f);
 		itemRenderer.renderStatic(underlay, ItemDisplayContext.NONE, light, overlay, matrices, vertexConsumers, null, 0);
 		matrices.popPose();
 

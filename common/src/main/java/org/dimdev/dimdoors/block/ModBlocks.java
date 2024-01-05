@@ -40,7 +40,7 @@ public final class ModBlocks {
 
 	private static final Map<DyeColor, RegistrySupplier<Block>> ANCIENT_FABRIC_BLOCKS = new HashMap<DyeColor, RegistrySupplier<Block>>();
 
-	public static final RegistrySupplier<Block> STONE_PLAYER = registerWithoutTab("stone_player", () -> new Block(copy(STONE).strength(0.5F).noOcclusion()));
+	public static final RegistrySupplier<Block> STONE_PLAYER = registerWithoutTabOrItem("stone_player", () -> new Block(copy(STONE).strength(0.5F).noOcclusion()));
 
 	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(copy(IRON_BLOCK).mapColor(GOLD).strength(5.0F).requiresCorrectToolForDrops().noCollission(), BlockSetType.IRON));
 
@@ -48,11 +48,11 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(copy(STONE).mapColor(TERRACOTTA_WHITE).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
 
-	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTab("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTabOrItem("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
 
 	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", () -> new DimensionalPortalBlock(copy(AIR).noCollission().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
 
-	public static final RegistrySupplier<Block> DETACHED_RIFT = registerWithoutTab("detached_rift", () -> new DetachedRiftBlock(copy(AIR).mapColor(COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
+	public static final RegistrySupplier<Block> DETACHED_RIFT = registerWithoutTabOrItem("detached_rift", () -> new DetachedRiftBlock(copy(AIR).mapColor(COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
 
 	public static final RegistrySupplier<Block> WHITE_FABRIC = registerFabric(DyeColor.WHITE);
 
@@ -120,21 +120,21 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> BLACK_ANCIENT_FABRIC = registerAncientFabric(DyeColor.BLACK);
 	private static final BlockBehaviour.Properties UNRAVELLED_FABRIC_BLOCK_SETTINGS = copy(STONE).mapColor(COLOR_BLACK).randomTicks().lightLevel(state -> 15).strength(0.3F, 0.3F);
 
-	public static final RegistrySupplier<LiquidBlock> ETERNAL_FLUID = registerWithoutTab("eternal_fluid", () -> new EternalFluidBlock(copy(LAVA).mapColor(COLOR_RED).lightLevel(state -> 15)));
+	public static final RegistrySupplier<LiquidBlock> ETERNAL_FLUID = registerWithoutTabOrItem("eternal_fluid", () -> new EternalFluidBlock(copy(LAVA).mapColor(COLOR_RED).lightLevel(state -> 15)));
 
-	public static final RegistrySupplier<LiquidBlock> LEAK = registerWithoutTab("leak", () -> new ArchitecturyLiquidBlock(ModFluids.LEAK, copy(WATER)));
+	public static final RegistrySupplier<LiquidBlock> LEAK = registerWithoutTabOrItem("leak", () -> new ArchitecturyLiquidBlock(ModFluids.LEAK, copy(WATER)));
 
-	public static final RegistrySupplier<Block> DECAYED_BLOCK = registerWithoutTab("decayed_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> DECAYED_BLOCK = registerWithoutTabOrItem("decayed_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	public static final RegistrySupplier<Block> UNFOLDED_BLOCK = registerWithoutTab("unfolded_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> UNFOLDED_BLOCK = registerWithoutTabOrItem("unfolded_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	public static final RegistrySupplier<Block> UNWARPED_BLOCK = registerWithoutTab("unwarped_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> UNWARPED_BLOCK = registerWithoutTabOrItem("unwarped_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	public static final RegistrySupplier<Block> UNRAVELLED_BLOCK = registerWithoutTab("unravelled_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> UNRAVELLED_BLOCK = registerWithoutTabOrItem("unravelled_block", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	public static final RegistrySupplier<Block> UNRAVELLED_FABRIC = register("unravelled_fabric", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTab("marking_plate", () -> new MarkingPlateBlock(copy(IRON_BLOCK).mapColor(DyeColor.BLACK).noOcclusion()));
+	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTabOrItem("marking_plate", () -> new MarkingPlateBlock(copy(IRON_BLOCK).mapColor(DyeColor.BLACK).noOcclusion()));
 
 	public static final RegistrySupplier<Block> SOLID_STATIC = register("solid_static", () -> new UnravelledFabricBlock(copy(STONE).strength(7, 25).randomTicks().requiresCorrectToolForDrops().sound(SoundType.SAND)));
 
@@ -229,7 +229,7 @@ public final class ModBlocks {
 		BLOCK_ITEMS.register();
 	}
 
-	private static <T extends Block> RegistrySupplier<T> registerWithoutTab(String name, Supplier<T> block) {
+	private static <T extends Block> RegistrySupplier<T> registerWithoutTabOrItem(String name, Supplier<T> block) {
 		return BLOCKS.register(name, block);
 	}
 
@@ -261,6 +261,13 @@ public final class ModBlocks {
 	public static <T extends Block> RegistrySupplier<T> register(String name, Supplier<T> block) {
 		var supplier = BLOCKS.register(name, block);
 		BLOCK_ITEMS.register(name, () -> new BlockItem(supplier.get(), new Item.Properties().arch$tab(DIMENSIONAL_DOORS)));
+
+		return supplier;
+	}
+
+	public static <T extends Block> RegistrySupplier<T> registerWithoutTab(String name, Supplier<T> block) {
+		var supplier = BLOCKS.register(name, block);
+		BLOCK_ITEMS.register(name, () -> new BlockItem(supplier.get(), new Item.Properties()));
 
 		return supplier;
 	}

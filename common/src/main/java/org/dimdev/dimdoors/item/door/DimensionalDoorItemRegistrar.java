@@ -130,7 +130,7 @@ public class DimensionalDoorItemRegistrar {
 //		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, Renderer.RENDERER); TODO: Enable
 	}
 
-	// extract renderer to inner interface so it can be removed in server environment via annotation
+    // extract renderer to inner interface so it can be removed in server environment via annotation
 	@Environment(EnvType.CLIENT)
 	private interface Renderer {
 		UnderlaidChildItemRenderer RENDERER = new UnderlaidChildItemRenderer(Items.ENDER_PEARL);
@@ -164,13 +164,6 @@ public class DimensionalDoorItemRegistrar {
 		@Override
 		public Item getOriginalItem() {
 			return originalItem;
-		}
-
-		@Environment(EnvType.CLIENT)
-		@Override
-		public void transform(PoseStack matrices) {
-			matrices.scale(0.769f, 0.769f, 1);
-			matrices.translate(-0.06, 0.125, 0);
 		}
 	}
 

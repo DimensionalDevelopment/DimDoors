@@ -19,6 +19,8 @@ import org.dimdev.dimdoors.world.decay.DecayProcessorType;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
+
 public class BlockDecayProcessor implements DecayProcessor<Block, ItemStack> {
     public static final String KEY = "block";
 
@@ -60,14 +62,10 @@ public class BlockDecayProcessor implements DecayProcessor<Block, ItemStack> {
 
     @Override
     public int process(Level world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid) {
-    	BlockState newState = block.defaultBlockState();
+    	BlockState newState = copyState(block, target);
 
 		if(target.getBlock() instanceof DoublePlantBlock) pos = target.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER ? pos.above() : pos;
 
-    	Set<Property<?>> commonProperties = target.getProperties().stream().filter(newState.getProperties()::contains).collect(Collectors.toSet());
-    	for(Property<?> property : commonProperties) {
-    		newState = transferProperty(target, newState, property);
-		}
         world.setBlockAndUpdate(pos, newState);
         return entropy;
     }
@@ -77,9 +75,6 @@ public class BlockDecayProcessor implements DecayProcessor<Block, ItemStack> {
         return new ItemStack(block);
     }
 
-    private static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
-		return to.setValue(property, from.getValue(property));
-	}
 
     public static Builder builder() {
         return new Builder();

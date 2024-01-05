@@ -52,7 +52,7 @@ public class CounterComponentImpl implements CounterComponent {
         arg.putInt("counter", counter);
     }
 
-    public static CounterComponentImpl get(ItemStack provider) {
+    public static CounterComponent get(ItemStack provider) {
         return provider.getCapability(INSTANCE).resolve().get();
     }
 

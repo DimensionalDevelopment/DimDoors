@@ -59,7 +59,8 @@ processResources {
             "version": project.version,
             "minecraft_version": minecraft_version,
             "architectury_version": architectury_version,
-            "cloth_config_version": cloth_config
+            "cloth_config_version": cloth_config,
+            "forgified_fabric_api": forgified_fabric_api
     ]
 
     filesMatching("META-INF/mods.toml") {

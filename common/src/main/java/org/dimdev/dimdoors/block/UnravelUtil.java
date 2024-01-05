@@ -5,11 +5,14 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UnravelUtil {
 	public static final Set<Block> whitelistedBlocksForLimboRemoval = new HashSet<>();
@@ -43,5 +46,20 @@ public class UnravelUtil {
 			}
 		}
 		unravelBlocksMap.put(Blocks.WATER, ModBlocks.UNFOLDED_BLOCK.get());
+	}
+
+	public static BlockState copyState(Block block, BlockState sourceState) {
+		var newState = block.defaultBlockState();
+
+		Set<Property<?>> commonProperties = sourceState.getProperties().stream().filter(newState.getProperties()::contains).collect(Collectors.toSet());
+		for(Property<?> property : commonProperties) {
+			newState = transferProperty(sourceState, newState, property);
+		}
+
+		return newState;
+	}
+
+	private static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
+		return to.setValue(property, from.getValue(property));
 	}
 }

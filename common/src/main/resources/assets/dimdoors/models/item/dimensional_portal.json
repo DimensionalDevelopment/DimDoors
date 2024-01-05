@@ -1,3 +1,6 @@
 {
-  "parent": "item/missing"
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "dimdoors:item/dimensional_portal"
+  }
 }
