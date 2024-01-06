@@ -42,8 +42,6 @@ public class TesselatingRecipeProvider {
 				.input('O', Items.FIRE_CHARGE)
 				.criterion("liminal_lint", TriggerInstance.hasItems(ModItems.LIMINAL_LINT.get()))
 				.offerTo(exporter, DimensionalDoors.id("fuzzy_fireball"));
-//		TesselatingRecipeJsonBuilder.create(ModItems.GARMENT_OF_REALITY)
-//		.pattern("XXX").pattern("XOX").pattern("XXX").input('X', ModItems.STABLE_FABRIC).input('O', ModItems.INFRANGIBLE_FIBER).criterion("stable_fabric", hasItems(ModItems.STABLE_FABRIC)).offerTo(exporter);
 		TesselatingRecipeJsonBuilder.create(ModItems.FABRIC_OF_FINALITY.get())
 				.pattern("XOX").input('X', ModItems.ENDURING_FIBERS.get())
 				.input('O', Items.DRAGON_BREATH)
@@ -76,5 +74,37 @@ public class TesselatingRecipeProvider {
 				.input('X', ModItems.WORLD_THREAD.get())
 				.criterion("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
 				.offerTo(exporter, DimensionalDoors.id("world_thread_boots"));
+
+		TesselatingRecipeJsonBuilder.create(ModItems.GARMENT_OF_REALITY_HELMET.get())
+		  		.pattern("XXX")
+				.pattern("XOX")
+				.input('X', ModItems.STABLE_FABRIC.get())
+				.input('O', ModItems.INFRANGIBLE_FIBER.get())
+				.criterion("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+				.offerTo(exporter, DimensionalDoors.id("garment_of_reality_helmet"));
+		TesselatingRecipeJsonBuilder.create(ModItems.GARMENT_OF_REALITY_CHESTPLATE.get())
+				.pattern("XOX")
+				.pattern("XXX")
+				.pattern("XXX")
+				.input('X', ModItems.STABLE_FABRIC.get())
+				.input('O', ModItems.INFRANGIBLE_FIBER.get())
+				.criterion("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+				.offerTo(exporter, DimensionalDoors.id("garment_of_reality_chestplate"));
+		TesselatingRecipeJsonBuilder.create(ModItems.GARMENT_OF_REALITY_LEGGINGS.get())
+				.pattern("XXX")
+				.pattern("XOX")
+				.pattern("X X")
+				.input('X', ModItems.STABLE_FABRIC.get())
+				.input('O', ModItems.INFRANGIBLE_FIBER.get())
+				.criterion("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+				.offerTo(exporter, DimensionalDoors.id("garment_of_reality_leggings"));
+		TesselatingRecipeJsonBuilder.create(ModItems.GARMENT_OF_REALITY_BOOTS.get())
+				.pattern("X X")
+				.pattern("XOX")
+				.input('X', ModItems.STABLE_FABRIC.get())
+				.input('O', ModItems.INFRANGIBLE_FIBER.get())
+				.criterion("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+				.offerTo(exporter, DimensionalDoors.id("garment_of_reality_boots"));
+
 	}
 }

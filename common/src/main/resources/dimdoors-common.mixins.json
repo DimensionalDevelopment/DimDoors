@@ -38,6 +38,7 @@
     "client.InGameHudMixin",
     "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",
+    "client.accessor.DimensionSpecialEffectsMixin",
     "client.accessor.WorldRendererAccessor"
   ],
   "injectors": {

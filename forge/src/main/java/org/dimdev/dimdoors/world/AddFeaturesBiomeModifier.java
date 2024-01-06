@@ -15,10 +15,8 @@ import static org.dimdev.dimdoors.world.ModBiomeModifiers.ADD_FEATURES_BIOME_MOD
 
 public record AddFeaturesBiomeModifier(HolderSet<Biome> whiteList, HolderSet<Biome> blackList, HolderSet<PlacedFeature> features, GenerationStep.Decoration step) implements BiomeModifier {
     public void modify(Holder<Biome> biome, BiomeModifier.Phase phase, ModifiableBiomeInfo.BiomeInfo.Builder builder) {
-        System.out.println("RawrRawr: " + biome);
 
         if (phase == Phase.ADD && this.whiteList.contains(biome) && (blackList == null || !blackList.contains(biome))) {
-            System.out.println("RAWR! ^_=_^");
 
             BiomeGenerationSettingsBuilder generationSettings = builder.getGenerationSettings();
             this.features.forEach((holder) -> {

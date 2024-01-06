@@ -6,6 +6,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -35,7 +36,16 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER.get()).pattern(" # ").pattern("#X#").pattern(" # ").define('#', ModItemTags.DIAMONDS).define('X', Items.ENDER_PEARL).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE.get())).save(exporter, DimensionalDoors.id("rift_stabilizer"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER.get()).pattern("###").pattern("#X#").pattern("###").define('#', ModItemTags.DIAMONDS).define('X', ModItems.STABLE_FABRIC.get()).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.STABLE_FABRIC.get())).save(exporter, DimensionalDoors.id("rift_stabilizer_stable_fabric"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STABILIZED_RIFT_SIGNATURE.get()).pattern("# #").pattern(" X ").pattern("# #").define('#', Items.ENDER_PEARL).define('X', ModItems.RIFT_SIGNATURE.get()).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_SIGNATURE.get())).save(exporter, DimensionalDoors.id("stabilized_rift_signature"));
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TESSELATING_LOOM.get()).pattern("###").pattern("BAB").pattern("#B#").define('#', ModItems.WORLD_THREAD.get()).define('A', Blocks.LOOM).define('B', Items.IRON_INGOT).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.LOOM)).save(exporter, DimensionalDoors.id("tesselating_loom"));
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TESSELATING_LOOM.get())
+				.pattern("XOX")
+				.pattern("ALA")
+				.pattern("XAX")
+				.define('A', ModItems.WORLD_THREAD.get())
+				.define('L', Blocks.LOOM)
+				.define('X', Blocks.SCAFFOLDING)
+				.define('O', ModBlocks.fabricFromDye(DyeColor.BLACK).get())
+				.unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.LOOM))
+				.save(exporter, DimensionalDoors.id("tesselating_loom"));
 
 		ColoredFabricRecipeProvider.generate(exporter);
 		TesselatingRecipeProvider.generate(exporter);

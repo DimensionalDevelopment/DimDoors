@@ -37,7 +37,7 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 		generator.createDoor(ModBlocks.STONE_DOOR.get());
 		generator.createDoor(ModBlocks.QUARTZ_DOOR.get());
 
-		BuiltInRegistries.BLOCK.stream().filter(a -> a instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock).map(a -> (DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock) a).forEach(a -> registerAutoGenDoor(generator, a));
+//		BuiltInRegistries.BLOCK.stream().filter(a -> a instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock).map(a -> (DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock) a).forEach(a -> registerAutoGenDoor(generator, a));
 
 //		registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_iron_door")), Blocks.IRON_DOOR);
 //		registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_gold_door")), ModBlocks.GOLD_DOOR.get());

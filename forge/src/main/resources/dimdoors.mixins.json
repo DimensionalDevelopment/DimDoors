@@ -4,10 +4,11 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
+    "client.ModelBakeryMIxin"
   ],
   "mixins": [
-    "TessellatingRecipeMixin",
-    "ServerPlayerGameModeMixin"
+    "ServerPlayerGameModeMixin",
+    "TessellatingRecipeMixin"
   ],
   "injectors": {
     "defaultRequire": 1

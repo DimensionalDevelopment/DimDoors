@@ -52,7 +52,7 @@ public class TesselatingReiCompatClient implements REIClientPlugin {
 
     @Override
     public void registerScreens(ScreenRegistry registry) {
-        registry.registerContainerClickArea(new Rectangle(137, 29, 10, 13), TesselatingLoomScreen.class, TESSELATING);
+        registry.registerContainerClickArea(new Rectangle(90, 35, 22, 15), TesselatingLoomScreen.class, TESSELATING);
     }
 
     @Override

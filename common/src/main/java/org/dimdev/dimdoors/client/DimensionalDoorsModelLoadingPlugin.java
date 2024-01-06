@@ -8,7 +8,6 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +16,6 @@ import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
 
 public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
-    private static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
     @Override
     public void onInitializeModelLoader(Context pluginContext) {
         var resolver = new BlockStateResolver() {
@@ -46,7 +44,7 @@ public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
             @Override
             public @Nullable UnbakedModel resolveModel(Context context) {
                 if(context.id().getPath().contains(PREFIX)) {
-                    return context.getOrLoadModel(childItem);
+                    return context.getOrLoadModel(DimensionalDoorsClient.childItem);
                 }
 
                 return null;

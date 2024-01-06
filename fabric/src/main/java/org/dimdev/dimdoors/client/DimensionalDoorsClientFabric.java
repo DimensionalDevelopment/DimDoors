@@ -24,6 +24,8 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         DimensionalDoorsClient.init();
+        ModelLoadingPlugin.register(new DimensionalDoorsModelLoadingPlugin());
+
         DimensionRenderering.initClient();
         DimensionalDoorsClient.initParticles(
                 (particleType, particleProvider) -> ParticleFactoryRegistry.getInstance().register((ParticleType) particleType, (ParticleProvider) particleProvider),

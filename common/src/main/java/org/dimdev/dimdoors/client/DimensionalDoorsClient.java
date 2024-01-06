@@ -18,7 +18,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -50,13 +52,10 @@ import static org.dimdev.dimdoors.particle.ModParticleTypes.*;
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClient {
 	private static final ConfigEntryBuilder ENTRY_BUILDER = ConfigEntryBuilder.create();
+	public static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
 
 	public static void init() {
 		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
-
-		System.out.println("Lick?");
-
-		ModelLoadingPlugin.register(new DimensionalDoorsModelLoadingPlugin());
 
 		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
 //		ModFluids.initClient();

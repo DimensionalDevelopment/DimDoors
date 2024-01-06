@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 public class DimensionalDoorBlockRegistrar {
-	private static final String PREFIX = "block_ag_dim_";
+	public static final String PREFIX = "block_ag_dim_";
 
 	private final Registrar<Block> registry;
 	private final DimensionalDoorItemRegistrar itemRegistrar;

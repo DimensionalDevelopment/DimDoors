@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.joml.Matrix4f;
 
 public class LimboDimensionEffect extends DimensionSpecialEffects implements DimensionSpecialEffectsExtensions {
-    public static LimboDimensionEffect INSTANCE = new LimboDimensionEffect();
+    public static final LimboDimensionEffect INSTANCE = new LimboDimensionEffect();
     private static final ResourceLocation MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
     private static final ResourceLocation SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
 

@@ -43,7 +43,7 @@ public class DimensionRenderering {
         DimensionRenderingRegistry.registerSkyRenderer(ModDimensions.PUBLIC, pocketRenderer);
 
         DimensionRenderingRegistry.registerDimensionEffects(DimensionalDoors.id("limbo"), LimboDimensionEffect.INSTANCE);
-        DimensionRenderingRegistry.registerDimensionEffects(DimensionalDoors.id("limbo"), DungeonDimensionEffect.INSTANCE);
+        DimensionRenderingRegistry.registerDimensionEffects(DimensionalDoors.id("dungeon"), DungeonDimensionEffect.INSTANCE);
     }
 
 }
