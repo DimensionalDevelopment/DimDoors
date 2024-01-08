@@ -2,15 +2,19 @@
   "feature": "dimdoors:sandstone_pillars",
   "placement": [
     {
+      "type": "minecraft:count",
+      "count": 1
+    },
+    {
       "type": "minecraft:rarity_filter",
-      "chance": 200
+      "chance": 65
     },
     {
       "type": "minecraft:in_square"
     },
     {
       "type": "minecraft:heightmap",
-      "heightmap": "WORLD_SURFACE_WG"
+      "heightmap": "OCEAN_FLOOR_WG"
     },
     {
       "type": "minecraft:biome"
