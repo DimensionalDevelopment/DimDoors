@@ -13,7 +13,7 @@
         "type": "dimdoors:dungeon",
         "negativeDepthFactor": 160.0,
         "noLink": 0,
-        "dungeonGroup": "dimdoors:dungeon"
+        "dungeonGroup": "dimdoors:nether"
       },
       "properties": {
         "entranceWeight": 0.0,
