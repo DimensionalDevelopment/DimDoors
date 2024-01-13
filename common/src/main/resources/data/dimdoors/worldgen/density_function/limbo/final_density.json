@@ -1,17 +1,22 @@
 {
+  "type": "minecraft:max",
   "argument1": {
+    "type": "minecraft:squeeze",
     "argument": {
+      "type": "minecraft:mul",
       "argument1": 0.64,
       "argument2": {
+        "type": "minecraft:interpolated",
         "argument": {
+          "type": "minecraft:blend_density",
           "argument": {
             "type": "minecraft:add",
             "argument1": {
               "type": "minecraft:mul",
               "argument1": {
                 "type": "minecraft:y_clamped_gradient",
-                "from_y": -64,
-                "to_y": -40,
+                "from_y": -56,
+                "to_y": -32,
                 "from_value": 0,
                 "to_value": 1
               },
@@ -31,7 +36,7 @@
                     "argument2": {
                       "type": "minecraft:add",
                       "argument1": {
-                        "type": "max",
+                        "type": "minecraft:max",
                         "argument1": -1,
                         "argument2": "dimdoors:limbo/terrain"
                       },
@@ -44,15 +49,10 @@
               }
             },
             "argument2": 0.1171875
-          },
-          "type": "minecraft:blend_density"
-        },
-        "type": "minecraft:interpolated"
-      },
-      "type": "minecraft:mul"
-    },
-    "type": "minecraft:squeeze"
+          }
+        }
+      }
+    }
   },
-  "argument2": "dimdoors:limbo/strand",
-  "type": "minecraft:max"
+  "argument2": "dimdoors:limbo/strand"
 }

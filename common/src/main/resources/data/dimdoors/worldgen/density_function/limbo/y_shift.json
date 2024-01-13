@@ -1,10 +1,10 @@
 {
-  "type":"mul",
-  "argument1":125,
-  "argument2":{
-  "type": "minecraft:noise",
-  "noise": "dimdoors:limbo/y_shift",
-  "xz_scale": 2.0,
-  "y_scale": 2.0
-}
+  "type": "minecraft:mul",
+  "argument1": 125,
+  "argument2": {
+    "type": "minecraft:noise",
+    "noise": "dimdoors:limbo/y_shift",
+    "xz_scale": 2,
+    "y_scale": 2
+  }
 }
