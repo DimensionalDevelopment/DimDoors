@@ -244,6 +244,26 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
 
 		add(ModBlockTags.DECAY_TO_DRIFTWOOD_PLANK).addOptionalTag(BlockTags.PLANKS.location());
+
+		add(BlockTags.FENCES).add(
+				ModBlocks.CLAY_FENCE.getKey(),
+				ModBlocks.GRAVEL_FENCE.getKey(),
+				ModBlocks.MUD_FENCE.getKey(),
+				ModBlocks.UNRAVELED_FENCE.getKey(),
+				ModBlocks.NETHERRACK_FENCE.getKey(),
+				ModBlocks.DARK_SAND_FENCE.getKey());
+
+		add(BlockTags.WOODEN_FENCES).add(ModBlocks.DRIFTWOOD_FENCE.getKey());
+		add(BlockTags.WALLS).add(
+				ModBlocks.CLAY_WALL.getKey(),
+				ModBlocks.DARK_SAND_WALL.getKey(),
+				ModBlocks.DEEPSLATE_WALL.getKey(),
+				ModBlocks.GRAVEL_WALL.getKey(),
+				ModBlocks.NETHERRACK_WALL.getKey(),
+				ModBlocks.END_STONE_WALL.getKey(),
+				ModBlocks.RED_SAND_WALL.getKey(),
+				ModBlocks.SAND_WALL.getKey()
+		);
 	}
 
 	private TagAppender<Block> add(TagKey<Block> tag, Block... blocks) {
