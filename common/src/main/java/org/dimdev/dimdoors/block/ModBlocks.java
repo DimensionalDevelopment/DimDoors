@@ -30,6 +30,7 @@ import static net.minecraft.world.level.block.Blocks.WATER;
 import static net.minecraft.world.level.block.Blocks.*;
 import static net.minecraft.world.level.block.state.BlockBehaviour.Properties.copy;
 import static net.minecraft.world.level.material.MapColor.*;
+import static org.dimdev.dimdoors.item.ModItems.DECAY;
 import static org.dimdev.dimdoors.item.ModItems.DIMENSIONAL_DOORS;
 
 public final class ModBlocks {
@@ -143,29 +144,29 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> REALITY_SPONGE = register("reality_sponge", () -> new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
 	//Decay graph filler.
-	public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = register("driftwood_wood", () -> new RotatedPillarBlock(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_LOG = register("driftwood_log", () -> new RotatedPillarBlock(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_PLANKS = register("driftwood_planks", () -> new Block(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_LEAVES = register("driftwood_leaves", () -> new LeavesBlock(of(OAK_LEAVES)));
-	public static final RegistrySupplier<Block> DRIFTWOOD_SAPLING = register("driftwood_sapling", () -> new Block(of(OAK_SAPLING)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = registerDecay("driftwood_wood", () -> new RotatedPillarBlock(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_LOG = registerDecay("driftwood_log", () -> new RotatedPillarBlock(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_PLANKS = registerDecay("driftwood_planks", () -> new Block(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_LEAVES = registerDecay("driftwood_leaves", () -> new LeavesBlock(of(OAK_LEAVES)));
+	public static final RegistrySupplier<Block> DRIFTWOOD_SAPLING = registerDecay("driftwood_sapling", () -> new Block(of(OAK_SAPLING)));
 	public static final RegistrySupplier<Block> DRIFTWOOD_FENCE = registerFence("driftwood_fence", DRIFTWOOD_PLANKS);
 	public static final RegistrySupplier<Block> DRIFTWOOD_GATE = registerFenceGate("driftwood_gate", DRIFTWOOD_PLANKS); // TODO: add driftwood wood type
 	public static final RegistrySupplier<Block> DRIFTWOOD_BUTTON = registerButton("driftwood_button", DRIFTWOOD_PLANKS);
 	public static final RegistrySupplier<Block> DRIFTWOOD_SLAB = registerSlab("driftwood_slab", DRIFTWOOD_PLANKS);
 	public static final RegistrySupplier<Block> DRIFTWOOD_STAIRS = registerStairs("driftwood_stairs", DRIFTWOOD_PLANKS);
-	public static final RegistrySupplier<Block> DRIFTWOOD_DOOR = register("driftwood_door", () -> new DoorBlock(copy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK));
-	public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = register("driftwood_trapdoor", () -> new TrapDoorBlock(copy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> DRIFTWOOD_DOOR = registerDecay("driftwood_door", () -> new DoorBlock(copy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion(), BlockSetType.OAK));
+	public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = registerDecay("driftwood_trapdoor", () -> new TrapDoorBlock(copy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false), BlockSetType.OAK));
 
-	public static final RegistrySupplier<Block> AMALGAM_BLOCK = register("amalgam_block", () -> new Block(copy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
-	public static final RegistrySupplier<Block> AMALGAM_DOOR = register("amalgam_door", () -> new DoorBlock(copy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion(), BlockSetType.IRON));
-	public static final RegistrySupplier<Block> AMALGAM_TRAPDOOR = register("amalgam_trapdoor", () -> new TrapDoorBlock(copy(IRON_BLOCK).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).isValidSpawn((state, world, pos, type) -> false), BlockSetType.IRON));
-	public static final RegistrySupplier<Block> RUST = register("rust", () -> new Block(copy(OAK_WOOD)));
+	public static final RegistrySupplier<Block> AMALGAM_BLOCK = registerDecay("amalgam_block", () -> new Block(copy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
+	public static final RegistrySupplier<Block> AMALGAM_DOOR = registerDecay("amalgam_door", () -> new DoorBlock(copy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> AMALGAM_TRAPDOOR = registerDecay("amalgam_trapdoor", () -> new TrapDoorBlock(copy(IRON_BLOCK).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).isValidSpawn((state, world, pos, type) -> false), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> RUST = registerDecay("rust", () -> new Block(copy(OAK_WOOD)));
 	public static final RegistrySupplier<Block> AMALGAM_SLAB = registerSlab("amalgam_slab", AMALGAM_BLOCK);
 	public static final RegistrySupplier<Block> AMALGAM_STAIRS = registerStairs("amalgam_stairs", AMALGAM_BLOCK);
-	public static final RegistrySupplier<Block> AMALGAM_ORE = register("amalgam_ore", () -> new DropExperienceBlock(copy(STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
+	public static final RegistrySupplier<Block> AMALGAM_ORE = registerDecay("amalgam_ore", () -> new DropExperienceBlock(copy(STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
 
-	public static final RegistrySupplier<Block> CLOD_ORE = register("clod_ore", () -> new Block(copy(Blocks.AMETHYST_BLOCK)));
-	public static final RegistrySupplier<Block> CLOD_BLOCK = register("clod_block", () -> new Block(copy(Blocks.AMETHYST_BLOCK)));
+	public static final RegistrySupplier<Block> CLOD_ORE = registerDecay("clod_ore", () -> new Block(copy(Blocks.AMETHYST_BLOCK)));
+	public static final RegistrySupplier<Block> CLOD_BLOCK = registerDecay("clod_block", () -> new Block(copy(Blocks.AMETHYST_BLOCK)));
 
 	public static final RegistrySupplier<Block> GRAVEL_FENCE = registerFence("gravel_fence", GRAVEL);
 	public static final RegistrySupplier<Block> GRAVEL_BUTTON = registerButton("gravel_button", GRAVEL);
@@ -221,8 +222,8 @@ public final class ModBlocks {
  	public static final RegistrySupplier<Block> NETHERRACK_STAIRS = registerStairs("netherrack_stairs", Blocks.NETHERRACK);
  	public static final RegistrySupplier<Block> NETHERRACK_WALL = registerWall("netherrack_wall", Blocks.NETHERRACK);
 
-	public static final RegistrySupplier<Block> UNRAVELED_SPIKE = register("unraveled_spike", () -> new PointedDripstoneBlock(of(UNRAVELLED_FABRIC.get()).lightLevel(state -> 0))); //TODO: make this proper class later
-	public static final RegistrySupplier<Block> GRITTY_STONE = register("gritty_stone", () -> new Block(of(STONE)));
+	public static final RegistrySupplier<Block> UNRAVELED_SPIKE = registerDecay("unraveled_spike", () -> new PointedDripstoneBlock(of(UNRAVELLED_FABRIC.get()).lightLevel(state -> 0))); //TODO: make this proper class later
+	public static final RegistrySupplier<Block> GRITTY_STONE = registerDecay("gritty_stone", () -> new Block(of(STONE)));
 
 	public static void init() {
 		BLOCKS.register();
@@ -265,6 +266,13 @@ public final class ModBlocks {
 		return supplier;
 	}
 
+	public static <T extends Block> RegistrySupplier<T> registerDecay(String name, Supplier<T> block) {
+		var supplier = BLOCKS.register(name, block);
+		BLOCK_ITEMS.register(name, () -> new BlockItem(supplier.get(), new Item.Properties().arch$tab(DECAY)));
+
+		return supplier;
+	}
+
 	public static <T extends Block> RegistrySupplier<T> registerWithoutTab(String name, Supplier<T> block) {
 		var supplier = BLOCKS.register(name, block);
 		BLOCK_ITEMS.register(name, () -> new BlockItem(supplier.get(), new Item.Properties()));
@@ -273,54 +281,54 @@ public final class ModBlocks {
 	}
 
 	public static RegistrySupplier<Block> registerFence(String name, Block block) {
-		return register(name, () -> new FenceBlock(of(block)));
+		return registerDecay(name, () -> new FenceBlock(of(block)));
 	}
 
 	public static RegistrySupplier<Block> registerFence(String name, RegistrySupplier<Block> block) {
-		return register(name, () -> new FenceBlock(of(block.get())));
+		return registerDecay(name, () -> new FenceBlock(of(block.get())));
 	}
 
 	public static RegistrySupplier<Block> registerFenceGate(String name, Block block) {
-		return register(name, () -> new FenceGateBlock(of(block), WoodType.OAK)); // TODO: parameterize WoodType and BlockSetType
+		return registerDecay(name, () -> new FenceGateBlock(of(block), WoodType.OAK)); // TODO: parameterize WoodType and BlockSetType
 	}
 
 	public static RegistrySupplier<Block> registerFenceGate(String name, RegistrySupplier<Block> block) {
-		return register(name, () -> new FenceGateBlock(of(block.get()), WoodType.OAK)); // TODO: parameterize WoodType and BlockSetType
+		return registerDecay(name, () -> new FenceGateBlock(of(block.get()), WoodType.OAK)); // TODO: parameterize WoodType and BlockSetType
 	}
 
 	public static RegistrySupplier<Block> registerButton(String name, Block block) {
-		return register(name, () -> new ButtonBlock(of(block).noCollission().strength(0.5F), BlockSetType.STONE, 20, false));
+		return registerDecay(name, () -> new ButtonBlock(of(block).noCollission().strength(0.5F), BlockSetType.STONE, 20, false));
 	}
 
 	public static RegistrySupplier<Block> registerButton(String name, RegistrySupplier<Block> block) {
-		return register(name, () -> new ButtonBlock(of(block.get()).noCollission().strength(0.5F), BlockSetType.STONE, 20, false));
+		return registerDecay(name, () -> new ButtonBlock(of(block.get()).noCollission().strength(0.5F), BlockSetType.STONE, 20, false));
 	}
 
 	public static RegistrySupplier<Block> registerSlab(String name, Block block) {
-		return register(name, () -> new SlabBlock(of(block)));
+		return registerDecay(name, () -> new SlabBlock(of(block)));
 	}
 
 	public static RegistrySupplier<Block> registerSlab(String name, RegistrySupplier<Block> block) {
-		return register(name, () -> new SlabBlock(of(block.get())));
+		return registerDecay(name, () -> new SlabBlock(of(block.get())));
 	}
 
 	public static RegistrySupplier<Block> registerStairs(String name, Block block) {
-		return register(name, () -> new StairBlock(block.defaultBlockState(), of(block)));
+		return registerDecay(name, () -> new StairBlock(block.defaultBlockState(), of(block)));
 	}
 
 	public static RegistrySupplier<Block> registerStairs(String name, RegistrySupplier<Block> block) {
-		return register(name, () -> {
+		return registerDecay(name, () -> {
 			var b = block.get();
 			return new StairBlock(b.defaultBlockState(), of(b));
 		});
 	}
 
 	public static RegistrySupplier<Block> registerWall(String name, Block block) {
-		return register(name, () -> new WallBlock(of(block)));
+		return registerDecay(name, () -> new WallBlock(of(block)));
 	}
 
 	public static RegistrySupplier<Block> registerWall(String name, RegistrySupplier<Block> block) {
-		return register(name, () -> new WallBlock(of(block.get())));
+		return registerDecay(name, () -> new WallBlock(of(block.get())));
 	}
 	
 //	private static BlockBehaviour.Properties of(Material material, MaterialColor color) {

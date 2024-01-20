@@ -1,7 +1,8 @@
 {
   "itemGroup.dimdoors.dimensional_doors": "Dimensional Doors",
+  "itemGroup.dimdoors.decay": "Decay",
 
-  "dimdoors.autogen_block_prefix": "Dimensional %s",
+  "dimdoors.autogen_block_prefix": "Dimensional ",
   "block.dimdoors.gold_door": "Gold Door",
   "block.dimdoors.quartz_door": "Quartz Door",
   "block.dimdoors.iron_dimensional_door": "Iron Dimensional Door",
@@ -194,11 +195,11 @@
   "block.dimdoors.oak_dimensional_door.info1": "to create a portal, or place anywhere.",
   "block.dimdoors.oak_dimensional_door.info2": "in a pocket dimension to exit.",
   "item.dimdoors.creepy_record": "Music Disc",
-  "item.dimdoors.creepy_record.desc": "Creepy - The sound of Limbo",
+  "item.dimdoors.creepy_record.desc": "Stevenrs11 - Creepy",
   "item.dimdoors.eternal_fluid_bucket": "Eternal Fluid Bucket",
   "item.dimdoors.leak_bucket": "Leak Bucket",
   "item.dimdoors.white_void_record": "Music Disc",
-  "item.dimdoors.white_void_record.desc": "White Void - The sound of Pocket",
+  "item.dimdoors.white_void_record.desc": "Lachney - White Void",
   "item.dimdoors.dimensional_eraser": "Dimensional Eraser",
   "item.dimdoors.dimensional_eraser.desc": "Erases entities",
   "item.dimdoors.monolith_spawner": "Monolith Spawner",
