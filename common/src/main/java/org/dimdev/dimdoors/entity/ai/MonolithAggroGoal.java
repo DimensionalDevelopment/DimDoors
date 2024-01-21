@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
@@ -17,8 +18,11 @@ import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
+import org.dimdev.dimdoors.tag.ModItemTags;
 
 import java.util.EnumSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
@@ -57,23 +61,36 @@ public class MonolithAggroGoal extends Goal {
     }
 
     public void tick() {
-        if (this.target != null && this.target.distanceTo(this.mob) > 70) {
+        if (this.target != null && this.target.distanceTo(this.mob) > 70 && this.mob.getAggro() == 0) {
             this.stop();
             return;
         }
 
-        if (this.target != null && (this.target.getInventory().armor.get(0).getItem() == ModItems.WORLD_THREAD_HELMET && this.target.getInventory().armor.get(1).getItem() == ModItems.WORLD_THREAD_CHESTPLATE && this.target.getInventory().armor.get(2).getItem() == ModItems.WORLD_THREAD_LEGGINGS && this.target.getInventory().armor.get(3).getItem() == ModItems.WORLD_THREAD_BOOTS)) {
-            RandomSource random = RandomSource.create();
-            int i = random.nextInt(64);
-            if (this.target instanceof ServerPlayer) {
-                if (i < 4) {
-                    this.target.getInventory().armor.get(0).hurt(i, random, (ServerPlayer) this.target);
-                    this.target.getInventory().armor.get(1).hurt(i, random, (ServerPlayer) this.target);
-                    this.target.getInventory().armor.get(2).hurt(i, random, (ServerPlayer) this.target);
-                    this.target.getInventory().armor.get(3).hurt(i, random, (ServerPlayer) this.target);
+        if (this.target != null) {
+            var slots = Stream.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET).filter(a -> target.getItemBySlot(a).is(ModItemTags.LIMBO_GAZE_DEFYING)).toList();
+
+            if (!slots.isEmpty()) {
+                RandomSource random = RandomSource.create();
+
+                int i = random.nextInt((64 + 16  * (slots.size() / 4)));
+                if (this.target instanceof ServerPlayer) {
+                    if (i < 4) {
+                        var slot = random.nextIntBetweenInclusive(0, slots.size() - 1);
+
+                        var equip = slots.get(slot);
+
+                        var item = this.target.getItemBySlot(equip);
+
+                        item.hurtAndBreak(i, target, livingEntity -> livingEntity.broadcastBreakEvent(equip));
+
+                    }
+
+                    this.mob.updateAggroLevel(this.target, false);
                 }
+
+                return;
             }
-            return;
+
         }
 
         boolean visibility = this.target != null;

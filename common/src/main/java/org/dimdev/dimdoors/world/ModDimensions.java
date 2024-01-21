@@ -41,6 +41,11 @@ public final class ModDimensions {
         return Objects.equals(type, PERSONAL) || Objects.equals(type, PUBLIC) || Objects.equals(type, DUNGEON);
     }
 
+
+    public static boolean isDungeonDimension(ResourceKey<Level> type) {
+        return Objects.equals(type, PERSONAL) || Objects.equals(type, PUBLIC) || Objects.equals(type, DUNGEON);
+    }
+
     public static boolean isLimboDimension(Level world) {
         return world != null && world.dimension().equals(LIMBO);
     }
