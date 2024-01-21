@@ -39,6 +39,8 @@ public class MonolithEntity extends Mob {
     private static final EntityDataAccessor<Integer> AGGRO = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> SOLID = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.BOOLEAN);
+
     private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
 
     private int soundTime = 0;
@@ -113,6 +115,7 @@ public class MonolithEntity extends Mob {
         this.entityData.define(AGGRO, 0);
 		this.entityData.define(SCALE, 1f);
 		this.entityData.define(PITCH, 1f);
+        this.entityData.define(SOLID, true);
 		this.refreshDimensions();
     }
 
@@ -261,9 +264,21 @@ public class MonolithEntity extends Mob {
         if (nbt.contains("pitch", Tag.TAG_FLOAT)) {
 			setPitch(nbt.getFloat("pitch"));
 		}
+
+        if (nbt.contains("solid", Tag.TAG_BYTE)) {
+            setSolid(nbt.getBoolean("solid"));
+        }
     }
 
-	public int getAggro() {
+    private void setSolid(boolean solid) {
+        this.entityData.set(SOLID, solid);
+    }
+
+    public boolean getSolid() {
+        return this.entityData.get(SOLID);
+    }
+
+    public int getAggro() {
         return this.entityData.get(AGGRO);
     }
 

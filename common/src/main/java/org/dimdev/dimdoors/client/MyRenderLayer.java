@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import com.flowpowered.math.vector.VectorNi;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -71,11 +72,10 @@ public class MyRenderLayer extends RenderType {
 
 	public static RenderType getMonolith(ResourceLocation texture) {
 		RenderType.CompositeState multiPhaseParameters = RenderType.CompositeState.builder().setTextureState(new TextureStateShard(texture, false, false))
-				.setShaderState(new ShaderStateShard(GameRenderer::getRendertypeEntityTranslucentShader))
-				.setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
-				.setCullState(RenderStateShard.NO_CULL)
+				.setShaderState(new ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader))
+				.setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
+//				.setCullState(RenderStateShard.NO_CULL)
 				.setLightmapState(RenderStateShard.LIGHTMAP)
-				.setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
 				.setOverlayState(RenderStateShard.OVERLAY).createCompositeState(false);
 		return RenderType.create("monolith", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, multiPhaseParameters);
 	}
