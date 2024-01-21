@@ -56,7 +56,7 @@
     "monster": [
       {
         "type": "dimdoors:monolith",
-        "maxCount": 1,
+        "maxCount": 10,
         "minCount": 1,
         "weight": 100
       }
