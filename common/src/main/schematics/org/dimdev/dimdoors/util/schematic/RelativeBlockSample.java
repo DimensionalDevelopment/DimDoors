@@ -84,7 +84,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 		this.entityContainer = HashBiMap.create();
 		for (CompoundTag entityNbt : schematic.getEntities()) {
 			ListTag doubles = entityNbt.getList("Pos", Tag.TAG_DOUBLE);
-			this.entityContainer.put(entityNbt, new Vec3(doubles.getDouble(0), doubles.getDouble(1), doubles.getDouble(2)));
+			this.entityContainer.put(entityNbt, new Vec3(doubles.getDouble(0), doubles.getDouble(1), doubles.getDouble(2)).subtract(Vec3.atLowerCornerOf(schematic.getOffset())));
 		}
 	}
 
@@ -216,6 +216,15 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 				doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
 				doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
 				nbt.put("Pos", doubles);
+
+				if(nbt.contains("Id")) {
+					nbt.put("id", nbt.get("Id")); // boogers
+					nbt.remove("Id");
+				}
+
+				if(nbt.contains("UUID")) {
+					nbt.remove("UUID");
+				}
 
 				Entity entity = EntityType.create(nbt, world.getLevel()).orElseThrow(NoSuchElementException::new);
 				world.getServer().execute(() -> {

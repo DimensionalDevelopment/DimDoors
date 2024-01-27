@@ -7,24 +7,14 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class PublicPocketTarget extends RestoringTarget {
-	private VirtualTarget wrappedDestination = null;
+public class PublicPocketTarget extends WrappedDestinationTarget {
 
 	private PublicPocketTarget(VirtualTarget wrappedDestination) {
-		this.wrappedDestination = wrappedDestination;
+		super(wrappedDestination);
 	}
 
 	public PublicPocketTarget() {
-	}
-
-	@Override
-	protected VirtualTarget getTarget() {
-		return this.wrappedDestination;
-	}
-
-	@Override
-	protected void setTarget(VirtualTarget target) {
-		this.wrappedDestination = target;
+		super();
 	}
 
 	@Override
@@ -49,16 +39,10 @@ public class PublicPocketTarget extends RestoringTarget {
 	}
 
 	public static CompoundTag toNbt(PublicPocketTarget target) {
-		CompoundTag nbt = new CompoundTag();
-		if (target.wrappedDestination != null)
-			nbt.put("wrappedDestination", VirtualTarget.toNbt(target.wrappedDestination));
-		return nbt;
+		return WrappedDestinationTarget.toNbt(target);
 	}
 
 	public static PublicPocketTarget fromNbt(CompoundTag nbt) {
-		PublicPocketTarget target = new PublicPocketTarget();
-		if (nbt.contains("wrappedDestination"))
-			target.wrappedDestination = VirtualTarget.fromNbt(nbt.getCompound("wrappedDestination"));
-		return target;
+		return fromNbt(nbt, new PublicPocketTarget());
 	}
 }

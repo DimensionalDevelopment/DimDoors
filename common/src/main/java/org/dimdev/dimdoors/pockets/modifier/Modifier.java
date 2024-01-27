@@ -98,6 +98,8 @@ public interface Modifier extends ReferenceSerializable {
 		RegistrySupplier<ModifierType<OffsetModifier>> OFFSET_MODIFIER_TYPE = register(DimensionalDoors.id(OffsetModifier.KEY), OffsetModifier::new);
 		RegistrySupplier<ModifierType<Modifier>> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(DimensionalDoors.id(AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
 
+		RegistrySupplier<ModifierType<TemplateModifier>> TEMPLATE_MODIFIER_TYPE = register(DimensionalDoors.id(TemplateModifier.KEY), TemplateModifier::new);
+
 		Modifier fromNbt(CompoundTag nbt, ResourceManager manager);
 
 		default Modifier fromNbt(CompoundTag nbt) {

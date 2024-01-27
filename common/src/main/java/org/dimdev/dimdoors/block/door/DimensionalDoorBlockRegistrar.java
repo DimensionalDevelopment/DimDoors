@@ -14,6 +14,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootParams;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -148,6 +150,11 @@ public class DimensionalDoorBlockRegistrar {
 			// This method has to be defined in an anonymous inner class,
 			// 		since Block#appendProperties is run before originalBlock can be set.
 			throw new RuntimeException("AutoGenDimensionalDoorBlock should be instantiated as anonymous inner class overriding appendProperties!");
+		}
+
+		@Override
+		public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+			return originalBlock.getDrops(state, params);
 		}
 
 		@Override

@@ -2,7 +2,8 @@
   {
     "data": {
       "destination": {
-        "type": "dimdoors:public_pocket"
+        "type": "dimdoors:template",
+        "template": "dimdoors:lab/lab_hallway"
       }
     },
     "condition": {

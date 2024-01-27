@@ -49,6 +49,12 @@ public final class PocketGenerator {
     	return generatePocketV2(PocketLoader.getInstance().getGroup(group).getNextPocketGeneratorReference(context), context);
 	}
 
+	public static Pocket generateFromVirtualPocket(ServerLevel world, ResourceLocation id, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties);
+		LOGGER.info("Generating virtual target: " + id);
+		return generatePocketV2(PocketLoader.getInstance().getVirtual(id).getNextPocketGeneratorReference(context), context);
+	}
+
 	public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationContext context) {
     	return pocketGeneratorReference.prepareAndPlacePocket(context);
 	}

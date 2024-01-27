@@ -45,7 +45,7 @@ public class RiftDataModifier extends AbstractModifier {
 		return IntStream.generate(buffer::get).limit(buffer.remaining());
 	}
 
-	private static byte[] toByteArray(int[] ints) {
+	public static byte[] toByteArray(int[] ints) {
 		byte[] bytes = new byte[ints.length];
 		for (int i = 0; i < ints.length; i++) {
 			bytes[i] = (byte) ints[i];

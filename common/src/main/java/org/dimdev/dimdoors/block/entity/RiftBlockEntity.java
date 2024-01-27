@@ -193,8 +193,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
 			BlockState state = this.getLevel().getBlockState(this.getBlockPos());
 			Block block = state.getBlock();
-			if (block instanceof CoordinateTransformerBlock) {
-				CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
+			if (block instanceof CoordinateTransformerBlock transformer) {
 				TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getBlockPos());
 				TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getBlockPos());
 				relativePos = transformer.transformTo(transformationBuilder, entity.position());

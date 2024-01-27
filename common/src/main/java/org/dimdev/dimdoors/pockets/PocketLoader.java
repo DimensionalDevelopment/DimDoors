@@ -112,6 +112,11 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		return pocketGroups.get(Path.stringPath(group));
 	}
 
+	public VirtualPocket getVirtual(ResourceLocation id) {
+		return virtualPockets.get(Path.stringPath(id));
+	}
+
+
 	public static PocketLoader getInstance() {
 		return INSTANCE;
 	}
