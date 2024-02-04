@@ -51,9 +51,9 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTabOrItem("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
 
-	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", () -> new DimensionalPortalBlock(copy(AIR).noCollission().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
+	public static final RegistrySupplier<Block> DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", () -> new DimensionalPortalBlock(BlockBehaviour.Properties.of().noCollission().noLootTable().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
 
-	public static final RegistrySupplier<Block> DETACHED_RIFT = registerWithoutTabOrItem("detached_rift", () -> new DetachedRiftBlock(copy(AIR).mapColor(COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
+	public static final RegistrySupplier<Block> DETACHED_RIFT = registerWithoutTabOrItem("detached_rift", () -> new DetachedRiftBlock(BlockBehaviour.Properties.of().noCollission().noLootTable().mapColor(COLOR_BLACK).strength(-1.0F, 3600000.0F).noCollission().noOcclusion()));
 
 	public static final RegistrySupplier<Block> WHITE_FABRIC = registerFabric(DyeColor.WHITE);
 
