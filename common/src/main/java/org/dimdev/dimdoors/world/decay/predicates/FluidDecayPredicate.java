@@ -58,7 +58,7 @@ public class FluidDecayPredicate implements DecayPredicate {
 
 	@Override
 	public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
-		return targetFluid.isSource() && (targetFluid.getType() == fluid || targetFluid.is(tag));
+		return targetFluid != null && targetFluid.isSource() && (targetFluid.getType() == fluid || (tag != null && targetFluid.is(tag)));
 	}
 
 	@Override
