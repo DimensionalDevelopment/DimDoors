@@ -159,7 +159,7 @@ public class DimensionalDoorBlockRegistrar {
 
 		@Override
 		public MutableComponent getName() {
-			return Component.translatable("dimdoors.autogen_block_prefix", originalBlock.getName());
+			return Component.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
 		}
 
 		public Block getOriginalBlock() {

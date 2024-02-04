@@ -127,7 +127,7 @@
   "block.dimdoors.gritty_stone": "Gritty Stone",
   "block.dimdoors.leak": "Leak",
 
-  "dimdoors.autogen_item_prefix": "Dimensional %s",
+  "dimdoors.autogen_item_prefix": "Dimensional ",
   "item.dimdoors.gold_door": "Gold Door",
   "item.dimdoors.quartz_door": "Quartz Door",
   "item.dimdoors.iron_dimensional_door": "Iron Dimensional Door",
