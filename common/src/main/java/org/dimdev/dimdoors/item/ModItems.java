@@ -45,7 +45,7 @@ public final class ModItems {
 
 	public static final RegistrySupplier<Item> FRAYED_FILAMENTS = registerRegular("frayed_filament", Item::new);
 
-	public static final RegistrySupplier<Item> RIFT_CONFIGURATION_TOOL = register("rift_configuration_tool", RiftConfigurationToolItem::new);
+	public static final RegistrySupplier<Item> RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", RiftConfigurationToolItem::new);
 
 	public static final RegistrySupplier<Item> RIFT_BLADE = registerRegular("rift_blade", properties -> new RiftBladeItem(properties.durability(100)));
 

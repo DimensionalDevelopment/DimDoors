@@ -36,8 +36,8 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 
 	public static final String ID = "rift_configuration_tool";
 
-	RiftConfigurationToolItem() {
-		super(new Item.Properties().stacksTo(1).durability(16));
+	RiftConfigurationToolItem(Item.Properties properties) {
+		super(properties.stacksTo(1).durability(16));
 	}
 
 	@Override
