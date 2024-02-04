@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -25,6 +26,7 @@ import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
@@ -78,7 +80,12 @@ public class DimensionalDoorsClient {
 	@Environment(EnvType.CLIENT)
 	public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer) {
 		consumer.accept(ModEntityTypes.MONOLITH.get(), MonolithRenderer::new);
-//        EntityRendererRegistry.INSTANCE.register(MASK, MaskRenderer::new);
+        consumer.accept(ModEntityTypes.MASK.get(), context -> new EntityRenderer<MaskEntity>(context) {
+			@Override
+			public ResourceLocation getTextureLocation(MaskEntity entity) {
+				return new ResourceLocation("blep");
+			}
+		});
 	}
 
 	@Environment(EnvType.CLIENT)
