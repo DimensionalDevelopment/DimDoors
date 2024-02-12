@@ -1,15 +1,15 @@
 {
   "type": "dimdoors:schematic",
-  "id": "myth/timoria",
+  "id": "myth/sewer",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
-      "ids": [3],
+      "ids": [1],
       "rift_data": "dimdoors:rift_data/pocket_entrance"
     },
     {
       "type": "dimdoors:rift_data",
-      "ids": [1, 2],
+      "ids": [2],
       "rift_data": "dimdoors:rift_data/default_dungeon"
     }
   ],
