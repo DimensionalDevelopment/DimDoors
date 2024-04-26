@@ -75,9 +75,9 @@ public final class ModItems {
 
 	public static final RegistrySupplier<Item> STABLE_FABRIC = registerRegular("stable_fabric", Item::new);
 
-	public static final RegistrySupplier<Item> CREEPY_RECORD = registerRegular("creepy_record", properties -> new ArchitecturyRecordItem(10, ModSoundEvents.CREEPY, properties, 317));
+	public static final RegistrySupplier<Item> CREEPY_RECORD = registerRegular("creepy_record", properties -> new ArchitecturyRecordItem(10, ModSoundEvents.CREEPY, properties.stacksTo(1), 317));
 
-	public static final RegistrySupplier<Item> WHITE_VOID_RECORD = registerRegular("white_void_record", properties -> new ArchitecturyRecordItem(10, ModSoundEvents.WHITE_VOID, properties, 225));
+	public static final RegistrySupplier<Item> WHITE_VOID_RECORD = registerRegular("white_void_record", properties -> new ArchitecturyRecordItem(10, ModSoundEvents.WHITE_VOID, properties.stacksTo(1), 225));
 
 	public static final RegistrySupplier<Item> ETERNAL_FLUID_BUCKET = registerRegular("eternal_fluid_bucket", properties -> new ArchitecturyBucketItem(ModFluids.ETERNAL_FLUID, properties.craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final RegistrySupplier<Item> LEAK_BUCKET = registerDecay("leak_bucket", properties -> new ArchitecturyBucketItem(ModFluids.LEAK, properties.craftRemainder(Items.BUCKET).stacksTo(1)));
