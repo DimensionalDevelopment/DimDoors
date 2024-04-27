@@ -42,7 +42,7 @@ dependencies {
     modApi "mcp.mobius.waila:wthit-api:forge-${wthitVersion}"
     modApi "mcp.mobius.waila:wthit:forge-${wthitVersion}"
 //    modApi "lol.bai:badpackets:forge-0.4.2"
-    modApi "curse.maven:worldedit-225608:4586218"
+    //modApi "com.sk89q.worldedit:worldedit-forge-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
 
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:$rei_version"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
