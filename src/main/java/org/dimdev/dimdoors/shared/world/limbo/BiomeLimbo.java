@@ -15,7 +15,7 @@ public class BiomeLimbo extends Biome {
     public BiomeLimbo() {
         super(new Biome.BiomeProperties("Limbo")
                 .setRainDisabled()
-                .setRainfall(0)
+                .setRainfall(0.0F)
                 .setWaterColor(0x000000));
 
         // topBlock = Blocks.AIR.getDefaultState();
@@ -61,5 +61,10 @@ public class BiomeLimbo extends Biome {
     @Override
     public float getSpawningChance() {
         return 0.1F;
+    }
+    
+    @Override
+    public boolean canRain() {
+        return false;
     }
 }

@@ -9,12 +9,14 @@ import org.dimdev.ddutils.Location;
 import org.dimdev.ddutils.TeleportUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.*;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -54,7 +56,7 @@ public class ItemRiftBlade extends ItemSword {
             if (RayTraceHelper.isLivingEntity(hit) || RayTraceHelper.isRift(hit, world))
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
             else {
-                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".rift_miss"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".rift_miss"), true);
                 TileEntityFloatingRiftRenderer.showRiftCoreUntil = System.currentTimeMillis() + ModConfig.graphics.highlightRiftCoreFor;
                 return new ActionResult<>(EnumActionResult.FAIL, stack);
             }
@@ -71,11 +73,15 @@ public class ItemRiftBlade extends ItemSword {
             BlockPos tpPos = new BlockPos(entityVec.add(offsetDirection.scale(offsetDistance)));
             while (world.getBlockState(tpPos).getMaterial().blocksMovement()) tpPos = tpPos.up(); // TODO: move to ddutils
             TeleportUtils.teleport(player, new Location(world, tpPos), (player.rotationYaw - (float) offsetRotationYaw) % 360, player.rotationPitch);
+            world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 0.6F, 1.0F);
+            player.getCooldownTracker().setCooldown(this, 20);
             stack.damageItem(1, player);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         } else if (RayTraceHelper.isRift(hit, world)) {
             TileEntityRift rift = (TileEntityRift) world.getTileEntity(hit.getBlockPos());
+            world.playSound(null, player.getPosition(), SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.PLAYERS, 0.6F, 1.0F);
             rift.teleport(player);
+            player.getCooldownTracker().setCooldown(this, 20);
             stack.damageItem(1, player);
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
