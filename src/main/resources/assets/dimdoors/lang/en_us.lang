@@ -2,11 +2,11 @@
 
 itemGroup.dimensional_doors_creative_tab=Dimensional Doors Items
 
-tile.gold_door.name=Gold Door
+tile.gold_door.name=Golden Door
 tile.quartz_door.name=Quartz Door
 
 tile.iron_dimensional_door.name=Iron Dimensional Door
-tile.gold_dimensional_door.name=Gold Dimensional Door
+tile.gold_dimensional_door.name=Golden Dimensional Door
 tile.quartz_dimensional_door.name=Quartz Dimensional Door
 tile.unstable_dimensional_door.name=Unstable Dimensional Door
 tile.oak_dimensional_door.name=Oak Dimensional Door
