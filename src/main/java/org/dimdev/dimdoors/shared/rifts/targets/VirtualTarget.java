@@ -16,13 +16,12 @@ import java.util.Objects;
  * A target that is not an actual object in the game such as a block or a tile
  * entity. Only virtual targets can be saved to NBT.
  */
-@EqualsAndHashCode @ToString
+@Setter @EqualsAndHashCode @ToString
 public abstract class VirtualTarget implements ITarget, INBTStorable {
 
     public static final BiMap<String, Class<? extends VirtualTarget>> registry = HashBiMap.create();
-    @Setter protected Location location;
+    protected Location location;
 
-    @SuppressWarnings("deprecation")
     public static VirtualTarget readVirtualTargetNBT(NBTTagCompound nbt) {
         String type = nbt.getString("type");
         Class<? extends VirtualTarget> destinationClass = registry.get(type);

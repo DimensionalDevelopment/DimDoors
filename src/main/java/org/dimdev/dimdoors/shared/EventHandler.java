@@ -32,7 +32,7 @@ public final class EventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onLivingDeath(LivingDeathEvent event) {
         EntityLivingBase entity = event.getEntityLiving();
         if(entity instanceof EntityPlayer && (ModDimensions.isDimDoorsDimension(entity.dimension) || ModConfig.limbo.universalLimbo)) {

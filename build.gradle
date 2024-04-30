@@ -1,8 +1,9 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '6.0.+'
-    id 'com.github.johnrengelman.shadow' version '8.1.+'
-    id 'io.franzbecker.gradle-lombok' version '5.+'
-    id 'wtf.gofancy.fancygradle' version '1.1.+'
+    id 'com.github.johnrengelman.shadow' version '8.+'
+    id 'idea'
+    id 'java-library'
+    id 'net.minecraftforge.gradle' version '6.+'
+    id 'wtf.gofancy.fancygradle' version '1.+'
 }
 
 fancyGradle {
@@ -15,13 +16,18 @@ fancyGradle {
 }
 
 // Mod version
-version = project.mod_version
-group = project.maven_group
-archivesBaseName = project.base_name
+version = mod_version
+group = maven_group
 
-java.toolchain.getLanguageVersion().set(JavaLanguageVersion.of(8))
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
-// Configuration
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
 minecraft {
     mappings channel: 'stable', version: mappings_version
     runs {
@@ -39,21 +45,28 @@ minecraft {
 }
 
 configurations {
-    shade
-    implementation.extendsFrom shade
-    shadow.extendsFrom shade
+    implementation.extendsFrom(shadow)
 }
 
 repositories {
-    google()
-    mavenCentral()
+    mavenCentral() {
+        content {
+            includeGroup 'org.projectlombok'
+        }
+    }
     maven {
         name = 'JitPack'
         url = uri('https://jitpack.io')
+        content {
+            includeGroup 'com.github.DimensionalDevelopment'
+        }
     }
     maven {
         name = 'SonaType'
         url = uri('https://oss.sonatype.org/content/repositories/public/')
+        content {
+            [ 'com.flowpowered', 'io.github.opencubicchunks', 'org.jgrapht', 'org.jheaps' ].forEach { includeGroup it }
+        }
     }
     maven {
         url = uri('https://www.cursemaven.com')
@@ -66,29 +79,31 @@ repositories {
 
 dependencies {
     //Minecraft
-    minecraft("net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}")
+    //noinspection VulnerableLibrariesLocal
+    minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
 
     //Lombok
-    annotationProcessor("org.projectlombok:lombok:${project.lombok_version}")
-    compileOnly("org.projectlombok:lombok:${project.lombok_version}")
+    annotationProcessor("org.projectlombok:lombok:${lombok_version}")
+    compileOnly("org.projectlombok:lombok:${lombok_version}")
 
     //Shaded Libraries
-    shade("com.flowpowered:flow-math:${project.flowmath_version}")
-    shade("org.jgrapht:jgrapht-core:${project.jgrapht_version}")
-    shade("com.github.DimensionalDevelopment:poly2tri.java:${project.poly2tri_version}")
+    shadow("com.flowpowered:flow-math:${flowmath_version}")
+    shadow("org.jgrapht:jgrapht-core:${jgrapht_version}")
+    shadow("com.github.DimensionalDevelopment:poly2tri.java:${poly2tri_version}")
 
     //Compile Only
-    compileOnly("com.github.DimensionalDevelopment:AnnotatedNBT:${project.annotatednbt_version}")
-    compileOnly("io.github.opencubicchunks:cubicchunks:${project.cubicchunks_version}")
+    compileOnly("com.github.DimensionalDevelopment:AnnotatedNBT:${annotatednbt_version}")
+    compileOnly("io.github.opencubicchunks:cubicchunks:${cubicchunks_version}")
 
     //Runtime Stuff
-    runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${project.hei_version}"))
-    runtimeOnly(fg.deobf("curse.maven:the-one-probe-245211:${project.top_version}"))
+    runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${hei_version}"))
+    runtimeOnly(fg.deobf("curse.maven:the-one-probe-245211:${top_version}"))
 }
 
 shadowJar {
     //necessary relocation
     configurations = [project.configurations.shadow]
+    setArchiveBaseName(base_name)
     setArchiveClassifier('')
     mergeServiceFiles()
 }
@@ -101,36 +116,38 @@ reobf {
 }
 
 processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    inputs.property "version", project.version
-    inputs.property "mcversion", minecraft_version
+    def replacements = [ 'mcversion': minecraft_version, 'version': version]
+    inputs.properties replacements
+    from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': minecraft_version
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+        expand replacements
     }
 }
 
 jar {
+    setArchiveBaseName(base_name)
     manifest {
         attributes([
-                "Implementation-Title": project.name,
-                "Implementation-Version": project.version,
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                'Implementation-Title': name,
+                'Implementation-Version': version,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
 
-tasks.assemble.dependsOn('shadowJar')
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+tasks.assemble.dependsOn(shadowJar)
 tasks.shadowJar.dependsOn('reobfJar')
 tasks.jar.finalizedBy('reobfJar')
 
-tasks.register('generatePocketSchematics', JavaExec) {
+tasks.register('generatePocketSchematics',JavaExec) {
     dependsOn jar
-    classpath = files('build/libs/' + jar.archiveFileName)
+    classpath = files('build/libs/'+jar.archiveFileName)
     classpath += sourceSets.main.runtimeClasspath
-    main = "org.dimdev.dimdoors.shared.tools.SchematicGenerator"
-    args = ["src/main/resources/assets/dimdoors/pockets/schematic"]
+    main = 'org.dimdev.dimdoors.shared.tools.SchematicGenerator'
+    args = ['src/main/resources/assets/dimdoors/pockets/schematic']
 }
