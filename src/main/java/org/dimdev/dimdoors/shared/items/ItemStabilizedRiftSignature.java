@@ -51,7 +51,7 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
         if (Objects.isNull(target)) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
-            player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".stored"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".stored"), true);
             world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
         } else {
             // Place a rift at the target point
@@ -74,8 +74,8 @@ public class ItemStabilizedRiftSignature extends Item { // TODO: common supercla
             rift2.setTeleportTargetRotation(player.rotationYaw, 0);
             rift2.register();
             stack.damageItem(1, player);
-            player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".created"), true);
-            world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".created"), true);
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6F, 1.0F);
         }
         return EnumActionResult.SUCCESS;
     }

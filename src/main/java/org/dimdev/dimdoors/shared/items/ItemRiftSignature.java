@@ -52,8 +52,8 @@ public class ItemRiftSignature extends Item {
         if (target == null) {
             // The link signature has not been used. Store its current target as the first location.
             setSource(stack, new RotatedLocation(new Location(world, pos), player.rotationYaw, 0));
-            player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".stored"), true);
-            world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6f, 1);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".stored"), true);
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_START, SoundCategory.BLOCKS, 0.6F, 1.0F);
         } else {
             // Place a rift at the saved point
             if (target.getLocation().getBlockState().getBlock() != ModBlocks.RIFT) {
@@ -77,9 +77,9 @@ public class ItemRiftSignature extends Item {
             rift2.register();
             stack.damageItem(1, player); // TODO: calculate damage based on position?
             clearSource(stack);
-            player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".created"), true);
+            player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".created"), true);
             // null = send sound to the player too, we have to do this because this code is not run client-side
-            world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6f, 1);
+            world.playSound(null, player.getPosition(), ModSounds.RIFT_END, SoundCategory.BLOCKS, 0.6F, 1.0F);
         }
         return EnumActionResult.SUCCESS;
     }

@@ -80,7 +80,7 @@ item.rift_stabilizer.info=Use on a rift's core to stop its growth.
 item.rift_stabilizer.stabilized=The rift has been stabilized and will stop growing
 item.rift_stabilizer.already_stabilized=This rift is already stable
 item.rift_blade.name=Rift Blade
-item.rift_blade.rift_miss=You can only use this item on a rift's core
+item.rift_blade.rift_miss=You can only use the blade on a rift's core or an entity
 
 item.world_thread.name=World Thread
 item.stable_fabric.name=Stable Fabric

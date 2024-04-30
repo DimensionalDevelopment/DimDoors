@@ -48,11 +48,11 @@ public class ItemRiftStabilizer extends Item {
             TileEntityFloatingRift rift = (TileEntityFloatingRift) world.getTileEntity(hit.getBlockPos());
             if (!rift.stabilized && !rift.closing) {
                 rift.setStabilized(true);
-                world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6f, 1); // TODO: different sound
+                world.playSound(null, player.getPosition(), ModSounds.RIFT_CLOSE, SoundCategory.BLOCKS, 0.6F, 1.0F); // TODO: different sound
                 stack.damageItem(1, player);
-                player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".stabilized"), true);
+                player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".stabilized"), true);
                 return new ActionResult<>(EnumActionResult.SUCCESS, stack);
-            } else player.sendStatusMessage(new TextComponentTranslation(getRegistryName() + ".already_stabilized"), true);
+            } else player.sendStatusMessage(new TextComponentTranslation(getTranslationKey() + ".already_stabilized"), true);
         }
         return new ActionResult<>(EnumActionResult.FAIL, stack);
     }
