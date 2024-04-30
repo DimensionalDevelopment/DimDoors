@@ -21,10 +21,14 @@ import net.minecraft.world.end.DragonFightManager;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.EnumSet;
+import java.util.Objects;
 
 @SuppressWarnings("SameParameterValue")
 public final class TeleportUtils {
@@ -33,22 +37,22 @@ public final class TeleportUtils {
     private static final Field invulnerableDimensionChange;
     private static final Field thrower;
     private static final Field enteredNetherPosition;
-    private static final Method captureCurrentPosition;
-    private static final Method copyDataFromOld;
-    private static final Method searchForOtherItemsNearby;
-    private static final Method updateplayers;
+    private static final MethodHandle captureCurrentPosition;
+    private static final MethodHandle copyDataFromOld;
+    private static final MethodHandle searchForOtherItemsNearby;
+    private static MethodHandle updateplayers;
 
     static {
         try {
-            invulnerableDimensionChange = MCPReflection.getMCPField(EntityPlayerMP.class, "invulnerableDimensionChange", "field_184851_cj");
-            thrower = MCPReflection.getMCPField(EntityThrowable.class, "thrower", "field_70192_c");
-            enteredNetherPosition = MCPReflection.getMCPField(EntityPlayerMP.class, "enteredNetherPosition", "field_193110_cw");
-            captureCurrentPosition = MCPReflection.getMCPMethod(NetHandlerPlayServer.class, "captureCurrentPosition", "func_184342_d");
-            copyDataFromOld = MCPReflection.getMCPMethod(Entity.class, "copyDataFromOld", "func_180432_n", Entity.class);
-            searchForOtherItemsNearby = MCPReflection.getMCPMethod(EntityItem.class, "searchForOtherItemsNearby", "func_85054_d");
-            updateplayers = MCPReflection.getMCPMethod(DragonFightManager.class, "updateplayers", "func_186100_j");
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+            Lookup lookup = MethodHandles.lookup();
+            invulnerableDimensionChange = ObfuscationReflectionHelper.findField(EntityPlayerMP.class,"field_184851_cj");
+            thrower = ObfuscationReflectionHelper.findField(EntityThrowable.class,"field_70192_c");
+            enteredNetherPosition = ObfuscationReflectionHelper.findField(EntityPlayerMP.class,"field_193110_cw");
+            captureCurrentPosition = MCPReflection.getHandle(lookup,NetHandlerPlayServer.class,"captureCurrentPosition","func_184342_d");
+            copyDataFromOld = MCPReflection.getHandle(lookup,Entity.class,"copyDataFromOld","func_180432_n",Entity.class);
+            searchForOtherItemsNearby = MCPReflection.getHandle(lookup,EntityItem.class,"searchForOtherItemsNearby","func_85054_d");
+        } catch(Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -79,15 +83,15 @@ public final class TeleportUtils {
     private static void captureCurrentPosition(NetHandlerPlayServer connection) {
         try {
             captureCurrentPosition.invoke(connection);
-        } catch (ReflectiveOperationException e) {
+        } catch(Throwable e) {
             throw new RuntimeException(e);
         }
     }
 
     private static void copyDataFromOld(Entity newEntity, Entity oldEntity) {
         try {
-            copyDataFromOld.invoke(newEntity, oldEntity);
-        } catch (ReflectiveOperationException e) {
+            copyDataFromOld.invoke(newEntity,oldEntity);
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
@@ -95,15 +99,17 @@ public final class TeleportUtils {
     private static void searchForOtherItemsNearby(EntityItem item) {
         try {
             searchForOtherItemsNearby.invoke(item);
-        } catch (ReflectiveOperationException e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
 
     private static void updateplayers(DragonFightManager dragonFightManager) {
         try {
+            if(Objects.isNull(updateplayers)) //This can't be statically cached??
+                updateplayers = MCPReflection.getHandle(MethodHandles.lookup(),DragonFightManager.class,"updateplayers","func_186100_j");
             updateplayers.invoke(dragonFightManager);
-        } catch (ReflectiveOperationException e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }

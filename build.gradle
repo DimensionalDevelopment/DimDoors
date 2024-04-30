@@ -17,8 +17,10 @@ fancyGradle {
 
 // Mod version
 version = mod_version
-group = maven_group
+group = mod_package
 
+// Java stuff
+compileJava.options.encoding = 'UTF-8'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 idea {
@@ -103,7 +105,10 @@ dependencies {
 shadowJar {
     //necessary relocation
     configurations = [project.configurations.shadow]
-    setArchiveBaseName(base_name)
+    [ 'com.flowpowered.math', 'org.jgrapht', 'org.jheaps', 'org.poly2tri'].forEach {
+        pkg -> { relocate pkg, "${shadow_package}.${pkg}" }
+    }
+    setArchiveBaseName(mod_name)
     setArchiveClassifier('')
     mergeServiceFiles()
 }
@@ -116,9 +121,10 @@ reobf {
 }
 
 processResources {
-    def replacements = [ 'mcversion': minecraft_version, 'version': version]
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    def replacements = [ 'credits': mod_credits, 'desc': mod_desc, 'logo': mod_logo, 'mcversion': minecraft_version,
+                         'modid': mod_id, 'name': mod_name, 'url': mod_url, 'version': version]
     inputs.properties replacements
-    from(sourceSets.main.resources.srcDirs) { exclude 'mcmod.info' }
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
         expand replacements
@@ -126,7 +132,7 @@ processResources {
 }
 
 jar {
-    setArchiveBaseName(base_name)
+    setArchiveBaseName(mod_name)
     manifest {
         attributes([
                 'Implementation-Title': name,
@@ -134,10 +140,6 @@ jar {
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
-}
-
-compileJava {
-    options.encoding = 'UTF-8'
 }
 
 tasks.assemble.dependsOn(shadowJar)
@@ -148,6 +150,6 @@ tasks.register('generatePocketSchematics',JavaExec) {
     dependsOn jar
     classpath = files('build/libs/'+jar.archiveFileName)
     classpath += sourceSets.main.runtimeClasspath
-    main = 'org.dimdev.dimdoors.shared.tools.SchematicGenerator'
+    mainClass = 'org.dimdev.dimdoors.shared.tools.SchematicGenerator'
     args = ['src/main/resources/assets/dimdoors/pockets/schematic']
 }

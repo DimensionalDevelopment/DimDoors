@@ -32,7 +32,7 @@ public class PrivatePocketTarget extends VirtualTarget implements IEntityTarget 
         VirtualLocation virtualLocation = VirtualLocation.fromLocation(location);
         if (Objects.nonNull(uuid) && Objects.nonNull(virtualLocation)) {
             Pocket pocket = PrivatePocketData.instance().getPrivatePocket(uuid);
-            if (pocket == null) { // generate the private pocket and get its entrances
+            if (Objects.isNull(pocket)) { // generate the private pocket and get its entrances
                 // set to where the pocket was first created
                 pocket = PocketGenerator.generatePrivatePocket(virtualLocation.toBuilder().depth(-1).build());
                 PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);

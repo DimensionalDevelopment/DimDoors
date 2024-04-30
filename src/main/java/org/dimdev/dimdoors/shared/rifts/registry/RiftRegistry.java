@@ -407,7 +407,7 @@ public class RiftRegistry extends WorldSavedData {
         // Try to get the last used entrance
         PlayerRiftPointer entrancePointer = lastPrivatePocketEntrances.get(playerUUID);
         Rift entrance = (Rift) GraphUtils.followPointer(graph, entrancePointer);
-        if (entrance != null) return entrance.location;
+        if (Objects.nonNull(entrance)) return entrance.location;
 
         // If there was no last used private entrance, get the first player's private pocket entrance
         return getPocketEntrance(PrivatePocketData.instance().getPrivatePocket(playerUUID));
