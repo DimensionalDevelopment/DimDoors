@@ -16,10 +16,10 @@ public class BiomeBlank extends Biome {
 
     public BiomeBlank(boolean white, boolean monoliths) {
         super(new BiomeProperties((monoliths ? "Dangerous " : "") + (white ? "White" : "Black") + " Void")
-                .setBaseHeight(0F)
-                .setHeightVariation(0F)
+                .setBaseHeight(0.0F)
+                .setHeightVariation(0.0F)
                 .setRainDisabled()
-                .setRainfall(0)
+                .setRainfall(0.0F)
                 .setWaterColor(white ? 0xFFFFFF : 0x000055));
         this.white = white;
 
@@ -65,5 +65,10 @@ public class BiomeBlank extends Biome {
     @SideOnly(Side.CLIENT)
     public int getFoliageColorAtPos(BlockPos pos) {
         return getModdedBiomeFoliageColor(white ? 0xFFFFFF : 0x003300);
+    }
+    
+    @Override
+    public boolean canRain() {
+        return false;
     }
 }

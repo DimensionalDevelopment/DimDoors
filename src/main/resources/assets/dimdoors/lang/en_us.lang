@@ -2,11 +2,11 @@
 
 itemGroup.dimensional_doors_creative_tab=Dimensional Doors Items
 
-tile.gold_door.name=Gold Door
+tile.gold_door.name=Golden Door
 tile.quartz_door.name=Quartz Door
 
 tile.iron_dimensional_door.name=Iron Dimensional Door
-tile.gold_dimensional_door.name=Gold Dimensional Door
+tile.gold_dimensional_door.name=Golden Dimensional Door
 tile.quartz_dimensional_door.name=Quartz Dimensional Door
 tile.unstable_dimensional_door.name=Unstable Dimensional Door
 tile.oak_dimensional_door.name=Oak Dimensional Door
@@ -80,7 +80,7 @@ item.rift_stabilizer.info=Use on a rift's core to stop its growth.
 item.rift_stabilizer.stabilized=The rift has been stabilized and will stop growing
 item.rift_stabilizer.already_stabilized=This rift is already stable
 item.rift_blade.name=Rift Blade
-item.rift_blade.rift_miss=You can only use this item on a rift's core
+item.rift_blade.rift_miss=You can only use the blade on a rift's core or an entity
 
 item.world_thread.name=World Thread
 item.stable_fabric.name=Stable Fabric
