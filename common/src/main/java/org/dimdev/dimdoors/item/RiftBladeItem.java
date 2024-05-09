@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
+import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
+
 public class RiftBladeItem extends SwordItem {
 	public static final String ID = "rift_blade";
 
@@ -52,19 +54,19 @@ public class RiftBladeItem extends SwordItem {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		HitResult hit = RaycastHelper.raycast(player, 16, 0.0F, LivingEntity.class::isInstance);
+		HitResult hit = RaycastHelper.raycast(player, 0.0F, LivingEntity.class::isInstance);
 
 		if (hit == null) {
-			hit = RaycastHelper.raycast(player, 16, 1.0F, LivingEntity.class::isInstance);
+			hit = RaycastHelper.raycast(player, 1.0F, LivingEntity.class::isInstance);
 		}
 
 		if (hit == null) {
-			hit = player.pick(16, 1.0F, false); //TODO: make the range of the Rift Blade configurable
+			hit = RaycastHelper.findDetachRift(player, DETACH);
 		}
-
-		if (hit == null) {
-			hit = player.pick(16, 0, false);
-		}
+//
+//		if (hit == null) {
+//			hit = player.pick(16, 0, false);
+//		}
 
 		if (world.isClientSide) {
 			if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {

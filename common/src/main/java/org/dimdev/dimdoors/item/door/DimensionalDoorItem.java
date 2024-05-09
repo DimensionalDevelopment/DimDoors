@@ -19,10 +19,14 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
+import org.dimdev.dimdoors.item.RaycastHelper;
+import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
+
+import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
 
 public class DimensionalDoorItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;
@@ -48,11 +52,9 @@ public class DimensionalDoorItem extends BlockItem {
 
 	@Override
 	public InteractionResult place(BlockPlaceContext context) {
-		BlockPos pos = context.getClickedPos();
+		context = new UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext(context, RaycastHelper.findDetachRift(context.getPlayer(), DETACH));
 
-		if (!context.getLevel().getBlockState(pos).canBeReplaced(context)) {
-			pos = pos.relative(context.getNearestLookingDirection());
-		}
+		BlockPos pos = context.getClickedPos();
 
 		boolean placedOnRift = context.getLevel().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT.get();
 
@@ -78,6 +80,7 @@ public class DimensionalDoorItem extends BlockItem {
 		if (placedOnRift) {
 			rift = (DetachedRiftBlockEntity) context.getLevel().getBlockEntity(pos);
 			rift.setUnregisterDisabled(true);
+			context.getLevel().removeBlock(pos, false);
 		}
 
 		InteractionResult result = super.place(context);

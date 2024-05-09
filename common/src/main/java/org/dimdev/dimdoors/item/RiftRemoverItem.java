@@ -49,7 +49,7 @@ public class RiftRemoverItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		HitResult hit = player.pick(RaycastHelper.REACH_DISTANCE, 0, false);
+		HitResult hit = RaycastHelper.findDetachRift(player, RaycastHelper.DETACH);
 
 		if (world.isClientSide) {
 			if (!RaycastHelper.hitsDetachedRift(hit, world)) {

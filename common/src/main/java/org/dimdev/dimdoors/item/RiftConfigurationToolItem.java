@@ -43,7 +43,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		HitResult hit = player.pick(RaycastHelper.REACH_DISTANCE, 0, false);
+		HitResult hit = RaycastHelper.findDetachRift(player, RaycastHelper.RIFT);
 
 		if (world.isClientSide) {
 			return InteractionResultHolder.fail(stack);

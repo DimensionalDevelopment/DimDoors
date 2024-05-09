@@ -29,7 +29,7 @@ public class DimensionalEraserItem extends Item {
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 
-		HitResult hit = RaycastHelper.raycast(player, RaycastHelper.REACH_DISTANCE, 1.0F, a -> !(a instanceof Player));
+		HitResult hit = RaycastHelper.raycast(player, 1.0F, a -> !(a instanceof Player));
 
 		if (hit != null && hit.getType() == HitResult.Type.ENTITY) {
 			if(((EntityHitResult) hit).getEntity() instanceof ServerPlayer) {

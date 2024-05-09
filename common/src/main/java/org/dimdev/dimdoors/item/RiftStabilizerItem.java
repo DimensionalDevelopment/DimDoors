@@ -21,6 +21,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
+
 public class RiftStabilizerItem extends Item {
 	public RiftStabilizerItem(Item.Properties settings) {
 		super(settings);
@@ -29,7 +31,7 @@ public class RiftStabilizerItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		HitResult hit = player.pick(RaycastHelper.REACH_DISTANCE, 0, false);
+		HitResult hit = RaycastHelper.findDetachRift(player, DETACH);
 
 		if (world.isClientSide) {
 			if (RaycastHelper.hitsDetachedRift(hit, world)) {
