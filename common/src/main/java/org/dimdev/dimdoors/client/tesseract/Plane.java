@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import net.minecraft.client.renderer.LightTexture;
 import org.dimdev.dimdoors.api.util.RGBA;
 
 import static com.flowpowered.math.TrigMath.cos;
@@ -35,6 +36,9 @@ public class Plane {
         vc.vertex(model, scaled.getX(), scaled.getY(), scaled.getZ())
                 .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
                 .uv(u, v)
+                .overlayCoords(0)
+                .uv2(LightTexture.FULL_BRIGHT)
+                .normal(0,0, 0)
                 .endVertex();
     }
 

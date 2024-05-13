@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import com.flowpowered.math.TrigMath;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.architectury.utils.GameInstance;
@@ -9,7 +10,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -42,16 +45,9 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 			matrices.popPose();
 		}
 
-    	if (DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore) {
-            this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
-        } else {
-            long timeLeft = RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis();
-            if (timeLeft >= 0) {
-                this.renderTesseract(vcs.getBuffer(MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
-            }
-        }
-
-        this.renderCrack(vcs.getBuffer(MyRenderLayer.CRACK), matrices, rift);
+    	if (DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore || RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis() >= 0)
+            this.renderTesseract(vcs.getBuffer(DimensionalDoorsClient.detector.shaderPackOn() ? RenderType.entityCutoutNoCull(TESSERACT_PATH) : MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
+        this.renderCrack(vcs.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), matrices, rift);
     }
 
     private void renderCrack(VertexConsumer vc, PoseStack matrices, DetachedRiftBlockEntity rift) {

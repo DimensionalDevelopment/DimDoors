@@ -9,6 +9,8 @@ import net.fabricmc.api.Environment;
 
 import org.dimdev.dimdoors.DimensionalDoors;
 
+import java.util.ArrayList;
+
 @Environment(EnvType.CLIENT)
 public final class RiftCrackRenderer {
     public static void drawCrack(Matrix4f model, VertexConsumer vc, float riftRotation, RiftCurves.PolygonInfo poly, double size, long riftRandom) {
@@ -46,20 +48,45 @@ public final class RiftCrackRenderer {
         }
 
         // Draw the rift
-        for (RiftCurves.Point p : poly.points) {
-            // Reduces most overlap between triangles inside the rift's center
-            int jIndex = Math.abs((p.x + p.y) * (p.x + p.y + 1) / 2 + p.y);
+        ArrayList<RiftCurves.Point> points = poly.points;
+        for (int i = 0, pointsSize = points.size(); i < pointsSize; i+=3) {
+            RiftCurves.Point p = points.get(i);
 
-            double x = (p.x + jitters[(jIndex + 1) % jCount] - offsetX) * Math.cos(Math.toRadians(riftRotation)) - jitters[(jIndex + 2) % jCount] * Math.sin(Math.toRadians(riftRotation));
-            double y = p.y + jitters[jIndex % jCount] - offsetY;
-            double z = (p.x + jitters[(jIndex + 2) % jCount] - offsetZ) * Math.sin(Math.toRadians(riftRotation)) + jitters[(jIndex + 2) % jCount] * Math.cos(Math.toRadians(riftRotation));
+            renderPoint(vc, model, points.get(i + 0), jCount, offsetX, offsetY, offsetZ, xJitter, yJitter, zJitter, scale, riftRotation, jitters, false);
+            renderPoint(vc, model, points.get(i + 1), jCount, offsetX, offsetY, offsetZ, xJitter, yJitter, zJitter, scale, riftRotation, jitters, false);
+            renderPoint(vc, model, points.get(i + 2), jCount, offsetX, offsetY, offsetZ, xJitter, yJitter, zJitter, scale, riftRotation, jitters, true);
+        }
+    }
 
-            // Scale the rift
-            x *= scale;
-            y *= scale;
-            z *= scale;
+    public static void renderPoint(VertexConsumer vc, Matrix4f model, RiftCurves.Point p, int jCount, double offsetX, double offsetY, double offsetZ, double xJitter, double yJitter, double zJitter, double scale, double riftRotation, double[] jitters, boolean twice) {
+        // Reduces most overlap between triangles inside the rift's center
+        int jIndex = Math.abs((p.x + p.y) * (p.x + p.y + 1) / 2 + p.y);
 
-            vc.vertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter)).color(0.08f, 0.08f, 0.08f, .3f).endVertex();
+        double x = (p.x + jitters[(jIndex + 1) % jCount] - offsetX) * Math.cos(Math.toRadians(riftRotation)) - jitters[(jIndex + 2) % jCount] * Math.sin(Math.toRadians(riftRotation));
+        double y = p.y + jitters[jIndex % jCount] - offsetY;
+        double z = (p.x + jitters[(jIndex + 2) % jCount] - offsetZ) * Math.sin(Math.toRadians(riftRotation)) + jitters[(jIndex + 2) % jCount] * Math.cos(Math.toRadians(riftRotation));
+
+        // Scale the rift
+        x *= scale;
+        y *= scale;
+        z *= scale;
+
+        vc.vertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter))
+                .color(0.08f, 0.08f, 0.08f, .3f)
+                .uv(0, 0)
+                .overlayCoords(0)
+                .uv2(0)
+                .normal(0, 0, 0)
+                .endVertex();
+
+        if(twice) {
+            vc.vertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter))
+                    .color(0.08f, 0.08f, 0.08f, .3f)
+                    .uv(0, 0)
+                    .overlayCoords(0)
+                    .uv2(0)
+                    .normal(0, 0, 0)
+                    .endVertex();
         }
     }
 }

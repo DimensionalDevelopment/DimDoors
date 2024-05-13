@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -26,6 +27,7 @@ import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
@@ -56,8 +58,12 @@ public class DimensionalDoorsClient {
 	private static final ConfigEntryBuilder ENTRY_BUILDER = ConfigEntryBuilder.create();
 	public static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
 
+	public static ShaderPackDetector detector = () -> false;
+
 	public static void init() {
 		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
+
+		if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) detector = new IrisCompat();
 
 		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
 //		ModFluids.initClient();

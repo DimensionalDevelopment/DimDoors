@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.ModShaders;
 
 import java.util.Collections;
@@ -39,7 +40,7 @@ public final class DimensionalPortalRenderer {
 
 	public static void renderModelWithPortalShader(ModelPart model, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
 		transformer.transform(matrixStack);
-		model.render(matrixStack, vertexConsumerProvider.getBuffer(RENDER_LAYER), light, overlay);
+		model.render(matrixStack, vertexConsumerProvider.getBuffer(DimensionalDoorsClient.detector.shaderPackOn() ? RenderType.entitySolid(WARP_PATH) : RENDER_LAYER), light, overlay);
 	}
 
 	static {
