@@ -48,7 +48,7 @@ public abstract class RiftReference extends VirtualTarget implements LocationPro
 
 	@Override
 	public Target receiveOther() {
-		return (Target) this.getReferencedLocation().getBlockEntity();
+		return this.getReferencedLocation().getBlockEntity() instanceof Target target ? target : null;
 	}
 
 	@Override
