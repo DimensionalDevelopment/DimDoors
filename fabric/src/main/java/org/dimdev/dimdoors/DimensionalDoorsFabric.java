@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import org.dimdev.dimdoors.api.util.StreamUtils;
 
 import static org.dimdev.dimdoors.world.feature.ModFeatures.Placed.*;
 
@@ -13,6 +14,7 @@ public class DimensionalDoorsFabric implements ModInitializer {
 
 	@Override
     public void onInitialize() {
+		StreamUtils.setup(this);
         DimensionalDoors.init();
 
 		BiomeModifications.addFeature(ctx -> ctx.hasTag(ConventionalBiomeTags.IN_OVERWORLD) &&

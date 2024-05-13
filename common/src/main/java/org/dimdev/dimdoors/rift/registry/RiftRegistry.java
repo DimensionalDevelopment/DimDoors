@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.GraphUtils;
 import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -42,10 +43,10 @@ public class RiftRegistry {
 
 		ListTag riftsNBT = nbt.getList("rifts", Tag.TAG_COMPOUND);
 		String riftTypeId = RegistryVertex.REGISTRY.getId(RegistryVertex.RegistryVertexType.RIFT.get()).toString();
-		CompletableFuture<List<Rift>> futureRifts = CompletableFuture.supplyAsync(() -> riftsNBT.parallelStream().unordered().map(CompoundTag.class::cast).filter(nbtCompound -> nbtCompound.getString("type").equals(riftTypeId)).map(Rift::fromNbt).collect(Collectors.toList()));
+		CompletableFuture<List<Rift>> futureRifts = StreamUtils.supplyAsync(() -> riftsNBT.parallelStream().unordered().map(CompoundTag.class::cast).filter(nbtCompound -> nbtCompound.getString("type").equals(riftTypeId)).map(Rift::fromNbt).collect(Collectors.toList()));
 
 		ListTag pocketsNBT = nbt.getList("pockets", Tag.TAG_COMPOUND);
-		CompletableFuture<List<PocketEntrancePointer>> futurePockets = CompletableFuture.supplyAsync(() -> pocketsNBT.stream().map(CompoundTag.class::cast).map(PocketEntrancePointer::fromNbt).collect(Collectors.toList()));
+		CompletableFuture<List<PocketEntrancePointer>> futurePockets = StreamUtils.supplyAsync(() -> pocketsNBT.stream().map(CompoundTag.class::cast).map(PocketEntrancePointer::fromNbt).collect(Collectors.toList()));
 
 		futureRifts.join().forEach(rift -> {
 			riftRegistry.graph.addVertex(rift);
@@ -79,12 +80,12 @@ public class RiftRegistry {
 	public CompoundTag toNbt() {
 		CompoundTag nbt = new CompoundTag();
 		// Write rifts in this dimension
-		CompletableFuture<Pair<ListTag, ListTag>> futureRiftsAndPocketsNBT = CompletableFuture.supplyAsync(() -> {
+		CompletableFuture<Pair<ListTag, ListTag>> futureRiftsAndPocketsNBT = StreamUtils.supplyAsync(() -> {
 			Map<Boolean, List<RegistryVertex>> vertices = this.graph.vertexSet().parallelStream().unordered().filter(vertex -> vertex instanceof Rift || vertex instanceof PocketEntrancePointer)
 					.collect(Collectors.partitioningBy(Rift.class::isInstance));
 
-			CompletableFuture<List<CompoundTag>> futureRiftsNBT = CompletableFuture.supplyAsync(() -> vertices.get(true).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
-			CompletableFuture<List<CompoundTag>> futurePocketsNBT = CompletableFuture.supplyAsync(() -> vertices.get(false).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
+			CompletableFuture<List<CompoundTag>> futureRiftsNBT = StreamUtils.supplyAsync(() -> vertices.get(true).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
+			CompletableFuture<List<CompoundTag>> futurePocketsNBT = StreamUtils.supplyAsync(() -> vertices.get(false).parallelStream().map(RegistryVertex::toNbt).collect(Collectors.toList()));
 
 			ListTag riftsNBT = new ListTag();
 			ListTag pocketsNBT = new ListTag();

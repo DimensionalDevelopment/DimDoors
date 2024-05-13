@@ -9,6 +9,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
@@ -63,7 +64,7 @@ public class PrivateRegistry {
 	}
 
 	public CompoundTag toNbt(CompoundTag nbt) {
-		CompletableFuture<CompoundTag> futurePrivatePocketMapNbt = CompletableFuture.supplyAsync(() -> {
+		CompletableFuture<CompoundTag> futurePrivatePocketMapNbt = StreamUtils.supplyAsync(() -> {
 			Map<String, Tag> privatePocketNbtMap = this.privatePocketMap.entrySet().parallelStream().unordered().collect(Collectors.toConcurrentMap(entry -> entry.getKey().toString(), entry -> PocketInfo.toNbt(entry.getValue())));
 			CompoundTag privatePocketMapNbt = new CompoundTag();
 			privatePocketNbtMap.forEach(privatePocketMapNbt::put);

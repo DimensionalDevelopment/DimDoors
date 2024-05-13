@@ -13,12 +13,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
+import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
@@ -39,7 +41,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	@Override
 	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
 		// TODO: rifts from resource
-		serializedRifts = nbt.getList("rifts", Tag.TAG_COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
+		serializedRifts = StreamUtils.execute(() -> nbt.getList("rifts", Tag.TAG_COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
 				.filter(compound -> {
 					if (compound.contains("Pos")) {
 						return true;
@@ -50,7 +52,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 				.collect(Collectors.toConcurrentMap(compound -> {
 					int[] ints = compound.getIntArray("Pos");
 					return new BlockPos(ints[0], ints[1], ints[2]);
-				}, compound -> compound));
+				}, compound -> compound)));
 
 		return this;
 	}
@@ -61,11 +63,11 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 
 		ListTag riftsNbt;
 		if (rifts != null) {
-			riftsNbt = rifts.values().parallelStream().unordered().map(rift -> {
+			riftsNbt = StreamUtils.execute(() -> rifts.values().parallelStream().unordered().map(rift -> {
 				CompoundTag e = new CompoundTag();
 				rift.saveAdditional(e);
 				return e;
-			}).collect(Collectors.toCollection(ListTag::new));
+			}).collect(Collectors.toCollection(ListTag::new)));
 		} else {
 			riftsNbt = new ListTag();
 			riftsNbt.addAll(serializedRifts.values());

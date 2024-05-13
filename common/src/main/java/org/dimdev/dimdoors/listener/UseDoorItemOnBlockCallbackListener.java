@@ -48,5 +48,9 @@ public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallbac
 		public DimDoorBlockPlaceContext(BlockPlaceContext context, BlockHitResult result) {
 			this(context.getPlayer(), context.getHand(), context.getItemInHand(), result);
 		}
+
+		public void setToProperReplaced() {
+			this.replaceClicked = getLevel().getBlockState(getHitResult().getBlockPos()).canBeReplaced(this);
+		}
 	}
 }

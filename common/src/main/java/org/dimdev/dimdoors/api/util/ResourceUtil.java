@@ -82,7 +82,7 @@ public class ResourceUtil {
 
 	public static  <K, T, M extends Map<K, T>> CompletableFuture<M> loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, ResourceLocation, K> keyProvider) {
 		Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
-		return CompletableFuture.supplyAsync(() -> {
+		return StreamUtils.supplyAsync(() -> {
 			map.putAll(ids.entrySet().parallelStream().unordered().collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
 					id -> keyProvider.apply(startingPath, id.getKey()),
 					id -> {
@@ -99,7 +99,7 @@ public class ResourceUtil {
 
 	public static  <T, M extends Collection<T>> CompletableFuture<M> loadResourcePathToCollection(ResourceManager manager, String startingPath, String extension, M collection, BiFunction<InputStream, ResourceLocation, T> reader) {
 		Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
-		return CompletableFuture.supplyAsync(() -> {
+		return StreamUtils.supplyAsync(() -> {
 			collection.addAll(ids.entrySet().parallelStream().unordered().map(id -> {
 				try {
 					return reader.apply(id.getValue().open(), id.getKey());

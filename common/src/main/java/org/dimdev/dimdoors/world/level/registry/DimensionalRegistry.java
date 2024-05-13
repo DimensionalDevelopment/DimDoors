@@ -7,6 +7,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
@@ -56,7 +57,7 @@ public class DimensionalRegistry {
 	}
 
 	public static void writeToNbt(CompoundTag nbt) {
-		CompletableFuture<Tag> futurePocketRegistryNbt = CompletableFuture.supplyAsync(() -> {
+		CompletableFuture<Tag> futurePocketRegistryNbt = StreamUtils.supplyAsync(() -> {
 			List<CompletableFuture<Pair<String, Tag>>> futurePocketRegistryNbts = new ArrayList<>();
 			pocketRegistry.forEach((key, value) -> futurePocketRegistryNbts.add(CompletableFuture.supplyAsync(() -> new Pair<>(key.location().toString(), value.writeToNbt()))));
 			CompoundTag pocketRegistryNbt = new CompoundTag();
@@ -64,7 +65,7 @@ public class DimensionalRegistry {
 			return pocketRegistryNbt;
 		});
 
-		CompletableFuture<Tag> futureRiftRegistryNbt = CompletableFuture.supplyAsync(riftRegistry::toNbt);
+		CompletableFuture<Tag> futureRiftRegistryNbt = StreamUtils.supplyAsync(riftRegistry::toNbt);
 		CompletableFuture<Tag> futurePrivateRegistryNbt = CompletableFuture.supplyAsync(() -> privateRegistry.toNbt(new CompoundTag()));
 
 		nbt.put("pocket_registry", futurePocketRegistryNbt.join());

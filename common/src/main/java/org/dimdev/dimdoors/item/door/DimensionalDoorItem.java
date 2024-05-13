@@ -51,12 +51,17 @@ public class DimensionalDoorItem extends BlockItem {
 	}
 
 	@Override
-	public InteractionResult place(BlockPlaceContext context) {
-		context = new UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext(context, RaycastHelper.findDetachRift(context.getPlayer(), DETACH));
+	public InteractionResult place(BlockPlaceContext ctx) {
+		UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext context = new UseDoorItemOnBlockCallbackListener.DimDoorBlockPlaceContext(ctx, RaycastHelper.findDetachRift(ctx.getPlayer(), DETACH));
 
 		BlockPos pos = context.getClickedPos();
 
 		boolean placedOnRift = context.getLevel().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT.get();
+
+		if(!placedOnRift) {
+			context.setToProperReplaced();
+			pos = context.getClickedPos();
+		}
 
 		if (!placedOnRift && !context.getPlayer().isShiftKeyDown() && isRiftNear(context.getLevel(), pos)) {
 			// Allowing on second right click would require cancelling client-side, which
@@ -82,6 +87,8 @@ public class DimensionalDoorItem extends BlockItem {
 			rift.setUnregisterDisabled(true);
 			context.getLevel().removeBlock(pos, false);
 		}
+
+
 
 		InteractionResult result = super.place(context);
 		if (result == InteractionResult.SUCCESS || result == InteractionResult.CONSUME) {

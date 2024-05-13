@@ -11,6 +11,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.SimpleTree;
+import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 
@@ -40,14 +41,14 @@ public class PocketTemplateArgumentType implements ArgumentType<PocketTemplate> 
 
 	@Override
 	public Collection<String> getExamples() {
-		return getPocketTemplates()
+		return StreamUtils.execute(() -> getPocketTemplates()
 				.keySet()
 				.parallelStream()
 				.map(path -> path.reduce(String::concat))
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.map(id -> "\"" + id + "\"")
-				.collect(Collectors.toCollection(TreeSet::new));
+				.collect(Collectors.toCollection(TreeSet::new)));
 	}
 
 	private SimpleTree<String, PocketTemplate> getPocketTemplates() {
