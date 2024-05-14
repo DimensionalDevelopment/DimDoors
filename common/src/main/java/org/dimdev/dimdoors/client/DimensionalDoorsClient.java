@@ -63,7 +63,7 @@ public class DimensionalDoorsClient {
 	public static void init() {
 		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
 
-		if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) detector = new IrisCompat();
+		registerCompats();
 
 		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
 //		ModFluids.initClient();
@@ -81,6 +81,10 @@ public class DimensionalDoorsClient {
 		ClientPacketHandler.init();
 
 //		ModRecipeBookGroups.init();
+    }
+
+	private static void registerCompats() {
+		if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) detector = new IrisCompat();
     }
 
 	@Environment(EnvType.CLIENT)

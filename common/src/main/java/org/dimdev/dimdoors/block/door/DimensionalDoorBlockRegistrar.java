@@ -24,12 +24,16 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootParams;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public class DimensionalDoorBlockRegistrar {
 	public static final String PREFIX = "block_ag_dim_";
@@ -39,29 +43,53 @@ public class DimensionalDoorBlockRegistrar {
 
 	private final BiMap<ResourceLocation, ResourceLocation> mappedDoorBlocks = HashBiMap.create();
 
+	private final Map<ResourceLocation, AutoGenLogic<? extends RiftBlockEntity>> customDoorFunction = new HashMap<>();
+
+	public record AutoGenLogic<T extends RiftBlockEntity>(Supplier<MutableBlockEntityType<T>> blockEntityType, BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> function) {
+		public void register(Block block) {
+			blockEntityType.get().addBlock(block);
+		}
+	}
+
+	private static AutoGenLogic<EntranceRiftBlockEntity> defaultLogic = new AutoGenLogic<>(ModBlockEntityTypes.ENTRANCE_RIFT, DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock);
+
 	public DimensionalDoorBlockRegistrar(DimensionalDoorItemRegistrar itemRegistrar) {
 		this.registry = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.BLOCK);
 		this.itemRegistrar = itemRegistrar;
 
-		if(Platform.isFabric()) {
-			init();
+//		if(Platform.isFabric()) {
+//			init();
+//		}
+
+		if(Platform.isForge()) {
+			RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
+				new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
+			});
 		}
 
-		RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
-			new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
-		});
+		LifecycleEvent.SETUP.register(() -> {
+			if(Platform.isFabric()) {
+				RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
+					new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
+				});			}
 
-		LifecycleEvent.SETUP.register(() -> mappedDoorBlocks.keySet().stream().map(BuiltInRegistries.BLOCK::get).forEach(a -> ModBlockEntityTypes.ENTRANCE_RIFT.get().addBlock(a)));
+			mappedDoorBlocks.keySet().forEach(location -> {
+				var block = BuiltInRegistries.BLOCK.get(location);
+				var logic = customDoorFunction.getOrDefault(location, defaultLogic);
+				logic.register(block);
+			});
+		});
 	}
 
 	private void init() {
 		new ArrayList<>(registry.entrySet()).forEach(entry -> handleEntry(registry, entry.getKey().location(), entry.getValue()));
 	}
 
-	public void handleEntry(Registrar<Block> registrar, ResourceLocation ResourceLocation, Block original) {
-		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(ResourceLocation)) {
+	public void handleEntry(Registrar<Block> registrar, ResourceLocation location, Block original) {
+		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(location)) {
 			if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock doorBlock) {
-				register(registrar, ResourceLocation, doorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock);
+				System.out.println("Rare -> Registering: "  + location);
+				register(registrar, location, doorBlock, customDoorFunction.getOrDefault(location, defaultLogic).function());
 			} else if (!(original instanceof DimensionalTrapdoorBlock) && original instanceof TrapDoorBlock trapdoorBlock) {
 //				register(registrar, ResourceLocation, trapdoorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalTrapdoorBlock); //TODO: readd once plan for handling trapdoors is figured out.
 			}
@@ -89,6 +117,10 @@ public class DimensionalDoorBlockRegistrar {
 
 	public ResourceLocation get(ResourceLocation ResourceLocation) {
 		return mappedDoorBlocks.get(ResourceLocation);
+	}
+
+	public <T extends DoorBlock, K extends RiftBlockEntity> void registerCustomDoorLogic(ResourceLocation id, AutoGenLogic<K> logic) {
+		customDoorFunction.putIfAbsent(id, logic);
 	}
 
 	public boolean isMapped(ResourceLocation ResourceLocation) {

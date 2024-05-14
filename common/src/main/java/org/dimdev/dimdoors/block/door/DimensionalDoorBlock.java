@@ -130,7 +130,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		if (!world.isClientSide && state.getValue(WATERLOGGED)) {
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
-		this.playSound(player, world, pos, (Boolean)state.getValue(OPEN));
+		this.playSound(player, world, pos, state.getValue(OPEN));
 		world.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
 		return InteractionResult.SUCCESS;
 	}
