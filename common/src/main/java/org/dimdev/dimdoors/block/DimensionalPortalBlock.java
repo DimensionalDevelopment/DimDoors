@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -24,7 +26,7 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.jetbrains.annotations.Nullable;
 
 // TODO: copy over all the necessary bits from DimensionalDoorBlock
-public class DimensionalPortalBlock extends Block implements RiftProvider<EntranceRiftBlockEntity> {
+public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity implements RiftProvider<EntranceRiftBlockEntity> {
 	public static DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	public DimensionalPortalBlock(BlockBehaviour.Properties settings) {
@@ -80,13 +82,14 @@ public class DimensionalPortalBlock extends Block implements RiftProvider<Entran
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		super.createBlockStateDefinition(builder);
 		builder.add(FACING);
 	}
 
-	@Override
-	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
-		return Shapes.block();
-	}
+//	@Override
+//	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
+//		return Shapes.block();
+//	}
 
 	@Environment(EnvType.CLIENT)
 	@Override
