@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors;
 
+import dev.architectury.event.EventResult;
+import dev.architectury.event.events.common.BlockEvent;
 import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -42,10 +44,7 @@ import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
-import org.dimdev.dimdoors.listener.pocket.PocketAttackBlockCallbackListener;
-import org.dimdev.dimdoors.listener.pocket.UseBlockCallbackListener;
-import org.dimdev.dimdoors.listener.pocket.UseItemCallbackListener;
-import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
+import org.dimdev.dimdoors.listener.pocket.*;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -69,6 +68,7 @@ import org.dimdev.dimdoors.world.decay.DecayProcessorType;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -177,12 +177,29 @@ public class DimensionalDoors {
 
 		InteractionEvent.LEFT_CLICK_BLOCK.register(new AttackBlockCallbackListener());
 
+		BlockEvent.BREAK.register((level, pos, state, player, xp) -> {
+			if(player.isCreative()) return EventResult.pass();
 
-		InteractionEvent.LEFT_CLICK_BLOCK.register(new PocketAttackBlockCallbackListener());
+			var applicableAddons = PocketListenerUtil.applicableAddons(PreventBlockModificationAddon.class, level, pos);
+
+			return applicableAddons.isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
+		});
+
+		BlockEvent.PLACE.register((level, pos, state, placer) -> {
+			if(placer instanceof Player p && p.isCreative()) return EventResult.pass();
+
+				var applicableAddons = PocketListenerUtil.applicableAddons(PreventBlockModificationAddon.class, level, pos);
+
+				return applicableAddons.isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
+
+		});
+
+
+//		InteractionEvent.LEFT_CLICK_BLOCK.register(new PocketAttackBlockCallbackListener());
 //		PlayerBlockBreakEvents.BEFORE.register(new PlayerBlockBreakEventBeforeListener()); TODO: Fix
-		InteractionEvent.RIGHT_CLICK_ITEM.register(new UseItemCallbackListener());
+//		InteractionEvent.RIGHT_CLICK_ITEM.register(new UseItemCallbackListener());
 		UseItemOnBlockCallback.EVENT.register(new UseItemOnBlockCallbackListener());
-		InteractionEvent.RIGHT_CLICK_BLOCK.register(new UseBlockCallbackListener());
+//		InteractionEvent.RIGHT_CLICK_BLOCK.register(new UseBlockCallbackListener());
 
 		// placing doors on rifts
 		UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());

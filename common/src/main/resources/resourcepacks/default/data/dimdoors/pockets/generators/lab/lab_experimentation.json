@@ -20,7 +20,7 @@
     {
       "type": "dimdoors:template",
       "ids": [2],
-      "templateId": "dimdoors:lab/lab_a0"
+      "templateId": "dimdoors:lab/labfinal"
     }
   ]
 }

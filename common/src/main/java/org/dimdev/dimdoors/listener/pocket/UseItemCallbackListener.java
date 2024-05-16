@@ -15,7 +15,7 @@ public class UseItemCallbackListener implements InteractionEvent.RightClickItem 
 		List<InteractionEvent.RightClickItem> applicableAddons;
 		var world = player.level();
 		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(InteractionEvent.RightClickItem.class, world, player.blockPosition());
-		else applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.RightClickItem.class, world, player.blockPosition());
+		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(InteractionEvent.RightClickItem.class, world, player.blockPosition());
 
 		for (InteractionEvent.RightClickItem listener : applicableAddons) {
 			CompoundEventResult<ItemStack> result = listener.click(player, hand);

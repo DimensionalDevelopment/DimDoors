@@ -15,7 +15,7 @@ public class UseBlockCallbackListener implements InteractionEvent.RightClickBloc
 		List<InteractionEvent.RightClickBlock> applicableAddons;
 		var world = player.level();
 		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(InteractionEvent.RightClickBlock.class, world, pos);
-		else applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.RightClickBlock.class, world, pos);
+		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(InteractionEvent.RightClickBlock.class, world, pos);
 
 		for (InteractionEvent.RightClickBlock listener : applicableAddons) {
 			EventResult result = listener.click(player, hand, pos, face);

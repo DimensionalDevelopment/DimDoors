@@ -16,6 +16,10 @@ import java.util.stream.Collectors;
 
 public class PocketListenerUtil {
 	public static <T> List<T> applicableAddons(Class<T> clazz, Level world, BlockPos pos) {
+		return world.isClientSide ? applicableAddonsClient(clazz, world, pos) : applicableAddonsCommon(clazz, world, pos);
+	}
+
+	public static <T> List<T> applicableAddonsCommon(Class<T> clazz, Level world, BlockPos pos) {
 		if (world.isClientSide) throw new UnsupportedOperationException("Cannot call this method on the Client.");
 		if (!ModDimensions.isPocketDimension(world)) return Collections.emptyList();
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.dimension()).getPocketAt(pos);

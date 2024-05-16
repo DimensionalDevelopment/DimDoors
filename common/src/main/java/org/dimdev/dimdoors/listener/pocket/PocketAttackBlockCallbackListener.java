@@ -15,7 +15,7 @@ public class PocketAttackBlockCallbackListener implements InteractionEvent.LeftC
 		List<InteractionEvent.LeftClickBlock> applicableAddons;
 		var level = player.level();
 		if (level.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(InteractionEvent.LeftClickBlock.class, level, pos);
-		else applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.LeftClickBlock.class, level, pos);
+		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(InteractionEvent.LeftClickBlock.class, level, pos);
 
 		EventResult result;
 		for (InteractionEvent.LeftClickBlock listener : applicableAddons) {

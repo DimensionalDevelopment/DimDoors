@@ -14,7 +14,7 @@ public class UseItemOnBlockCallbackListener implements UseItemOnBlockCallback {
 	public InteractionResult useItemOnBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
 		List<UseItemOnBlockCallback> applicableAddons;
 		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(UseItemOnBlockCallback.class, world, player.blockPosition());
-		else applicableAddons = PocketListenerUtil.applicableAddons(UseItemOnBlockCallback.class, world, player.blockPosition());
+		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(UseItemOnBlockCallback.class, world, player.blockPosition());
 
 		for (UseItemOnBlockCallback listener : applicableAddons) {
 			InteractionResult result = listener.useItemOnBlock(player, world, hand, hitResult);
