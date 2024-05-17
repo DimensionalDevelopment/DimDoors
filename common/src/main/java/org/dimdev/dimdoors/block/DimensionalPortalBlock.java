@@ -31,7 +31,7 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 
 	public DimensionalPortalBlock(BlockBehaviour.Properties settings) {
 		super(settings);
-		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
 	}
 
 	@Override
