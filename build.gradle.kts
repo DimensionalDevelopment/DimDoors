@@ -27,7 +27,7 @@ subprojects {
             includeGroup("mcp.mobius.waila")
         }
         maven("https://cursemaven.com").content { includeGroup("curse.maven") }
-        maven("https://maven.enginehub.org/repo/")
+//        maven("https://maven.enginehub.org/repo/")
         maven("https://maven.parchmentmc.org")
     }
 

@@ -67,7 +67,10 @@ dependencies {
 
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
 //    modApi "lol.bai:badpackets:fabric-4.2.0"
-    modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
+
+    modApi("me.shedaniel.cloth:cloth-config:${rootProject.properties["cloth_config"]}")
+    modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
+//    modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     modApi "com.terraformersmc:modmenu:7.2.2"
 
