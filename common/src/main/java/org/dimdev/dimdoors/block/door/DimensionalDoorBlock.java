@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
@@ -136,6 +137,13 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
 	@Override
+	public void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack stack, boolean dropExperience) {
+		if(level.getBlockEntity(pos) instanceof EntranceRiftBlockEntity blockEntity) {
+			level.getServer().submit(() -> blockEntity.generateDetached(level));
+		}
+	}
+
+	@Override
 	public boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockPlaceContext) {
 		return super.canBeReplaced(blockState, blockPlaceContext) || blockState.getBlock() == ModBlocks.DETACHED_RIFT.get();
 	}
@@ -174,6 +182,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 		}
 	}
+
 
 	@Override
 	public void wasExploded(Level world, BlockPos pos, Explosion explosion) {

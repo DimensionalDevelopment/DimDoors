@@ -12,9 +12,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +30,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
@@ -35,6 +39,8 @@ import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.Optional;
+
+import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
@@ -180,5 +186,12 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 			this.setDestination(DefaultDungeonDestinations.getGateway());
 			this.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 		}
+	}
+
+	public void generateDetached(Level world) {
+		var blockState = getBlockState();
+		var pos = getBlockPos();
+		world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
+		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(getData());
 	}
 }

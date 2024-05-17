@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
@@ -25,6 +24,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
 import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
+import org.jetbrains.annotations.Nullable;
 
 public class TesselatingShapelessRecipeBuilder extends CraftingRecipeBuilder implements RecipeBuilder {
     private final Item result;
