@@ -248,7 +248,7 @@ public final class ModBlocks {
 
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
-		RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR.get(), ModBlocks.GOLD_DOOR.get(), ModBlocks.DRIFTWOOD_LEAVES.get(), ModBlocks.UNRAVELED_SPIKE.get());
+		RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR.get(), ModBlocks.GOLD_DOOR.get(), ModBlocks.DRIFTWOOD_LEAVES.get(), ModBlocks.UNRAVELED_SPIKE.get(), ModBlocks.DRIFTWOOD_DOOR.get());
 	}
 
 	public static RegistrySupplier<Block> ancientFabricFromDye(DyeColor color) {

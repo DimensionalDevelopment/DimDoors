@@ -5,6 +5,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -56,7 +58,7 @@ public class RiftBladeItem extends SwordItem {
 		ItemStack stack = player.getItemInHand(hand);
 		HitResult hit = RaycastHelper.raycast(player, 0.0F, LivingEntity.class::isInstance);
 
-		if (hit == null) {
+		if (hit == null || hit.getType() == HitResult.Type.MISS) {
 			hit = RaycastHelper.raycast(player, 1.0F, LivingEntity.class::isInstance);
 		}
 
@@ -79,31 +81,59 @@ public class RiftBladeItem extends SwordItem {
 		}
 
 		if (RaycastHelper.hitsLivingEntity(hit)) {
-			double damageMultiplier = (double) stack.getDamageValue() / (double) stack.getMaxDamage();
-			// TODO: gaussian, instead or random
-			double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
-			double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;
+//			double damageMultiplier = (double) stack.getDamageValue() / (double) stack.getMaxDamage(); //TODO: Decide if to remove old code or still use.
+//			// TODO: gaussian, instead or random
+//			double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
+//			double offsetRotationYaw = (Math.random() - 0.5) * damageMultiplier * 360;
+//
+//			var playerVec = player.position();
+//			var entityVec = hit.getLocation();
+//			var offsetDirection = playerVec.subtract(entityVec).normalize();
+//			offsetDirection = offsetDirection.yRot((float) (offsetRotationYaw * Math.PI) / 180);
+//
+//			Vec3 added = entityVec.add(offsetDirection.scale(offsetDistance));
+//			BlockPos teleportPosition = new BlockPos(new Vec3i((int) added.x, (int) added. y, (int) added.z));
+//			while (world.getBlockState(teleportPosition).blocksMotion())
+//				teleportPosition = teleportPosition.above();
+//			player.teleportTo(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
+//			player.setYRot((float) (Math.random() * 2 * Math.PI));
+//
+//			stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
 
-			var playerVec = player.position();
-			var entityVec = hit.getLocation();
-			var offsetDirection = playerVec.subtract(entityVec).normalize();
-			offsetDirection = offsetDirection.yRot((float) (offsetRotationYaw * Math.PI) / 180);
 
-			Vec3 added = entityVec.add(offsetDirection.scale(offsetDistance));
-			BlockPos teleportPosition = new BlockPos(new Vec3i((int) added.x, (int) added. y, (int) added.z));
-			while (world.getBlockState(teleportPosition).blocksMotion())
+
+			// Determine target position directly from the hit location
+			Vec3 targetVec = hit.getLocation();
+
+			BlockPos teleportPosition = new BlockPos((int) targetVec.x(), (int) targetVec.y(), (int) targetVec.z());
+
+			// Ensure the target position is not inside a block
+			while (world.getBlockState(teleportPosition).blocksMotion()) {
 				teleportPosition = teleportPosition.above();
-			player.teleportTo(teleportPosition.getX(), teleportPosition.getY(), teleportPosition.getZ());
-			player.setYRot((float) (Math.random() * 2 * Math.PI));
+			}
 
+			world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
+
+			// Teleport the player to the target position
+			player.teleportTo(teleportPosition.getX() + 0.5, teleportPosition.getY(), teleportPosition.getZ() + 0.5);
+
+			// Calculate and set the yaw rotation to face the target entity
+			Vec3 direction = targetVec.subtract(player.position()).normalize();
+			float yaw = (float) (Math.atan2(direction.z, direction.x) * (180 / Math.PI)) - 90;
+			player.setYRot(yaw);
+
+
+
+			// Apply damage to the item stack
 			stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
+
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		} else if (RaycastHelper.hitsDetachedRift(hit, world)) {
 			BlockHitResult blockHitResult = (BlockHitResult) hit;
 			BlockPos pos = blockHitResult.getBlockPos();
 			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
 
-			world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection()));
+			world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
 			((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
 			stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));

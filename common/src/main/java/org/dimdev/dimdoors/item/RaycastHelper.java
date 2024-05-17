@@ -45,7 +45,7 @@ public final class RaycastHelper {
 	}
 
 	public static HitResult raycast(Player entity, float tickDelta, Predicate<Entity> predicate) {
-		return raycast(entity, reach(entity), tickDelta, predicate);
+		return raycast(entity, /*reach(entity)*/ REACH_DISTANCE, tickDelta, predicate);
 	}
 
 	public static HitResult raycast(Player entity, double maxDistance, float tickDelta, Predicate<Entity> predicate) {
