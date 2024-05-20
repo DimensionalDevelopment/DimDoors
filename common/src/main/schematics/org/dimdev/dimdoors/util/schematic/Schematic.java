@@ -14,7 +14,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -30,7 +29,7 @@ public class Schematic {
 	private static final Consumer<String> PRINT_TO_STDERR = System.err::println;
 	public static final Codec<Schematic> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
 			Codec.INT.fieldOf("Version").forGetter(Schematic::getVersion),
-			Codec.INT.optionalFieldOf("Data Version", SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA)).forGetter(Schematic::getDataVersion),
+			Codec.INT.optionalFieldOf("Data Version", SharedConstants.getCurrentVersion().getPackVersion(com.mojang.bridge.game.PackType.DATA)).forGetter(Schematic::getDataVersion),
 			SchematicMetadata.CODEC.optionalFieldOf("Metadata", SchematicMetadata.EMPTY).forGetter(Schematic::getMetadata),
 			Codec.SHORT.fieldOf("Width").forGetter(Schematic::getWidth),
 			Codec.SHORT.fieldOf("Height").forGetter(Schematic::getHeight),

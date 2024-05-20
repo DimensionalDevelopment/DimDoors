@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.world.pocket;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -46,7 +46,7 @@ public class PocketDirectory {
 	}
 
 	public static PocketDirectory readFromNbt(String id, CompoundTag nbt) {
-		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(id)));
+		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(id)));
 		// no need to parallelize
 		directory.gridSize = nbt.getInt("grid_size");
 		directory.privatePocketSize = nbt.getInt("private_pocket_size");

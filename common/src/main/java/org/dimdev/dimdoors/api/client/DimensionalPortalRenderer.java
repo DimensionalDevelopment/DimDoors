@@ -64,9 +64,9 @@ public final class DimensionalPortalRenderer {
 						.createCompositeState(false)
 		);
 		Set<Direction> directions = new HashSet<>(List.of(Direction.values()));
-		ModelPart.Cube small = new ModelPart.Cube(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 15.8f, 0.01F, 0, 0, 0, false, 1024, 1024, directions);
+		ModelPart.Cube small = new ModelPart.Cube(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 15.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
 		MODEL = new ModelPart(Collections.singletonList(small), Collections.emptyMap());
-		ModelPart.Cube big = new ModelPart.Cube(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024, directions);
+		ModelPart.Cube big = new ModelPart.Cube(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024);
 		TALL_MODEL = new ModelPart(Collections.singletonList(big), Collections.emptyMap());
 	}
 }

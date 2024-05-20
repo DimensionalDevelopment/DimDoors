@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.world.pocket;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -38,7 +38,7 @@ public class PrivateRegistry {
 
 		public static PocketInfo fromNbt(CompoundTag nbt) {
 			return new PocketInfo(
-					ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
+					ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("world"))),
 					nbt.getInt("id")
 			);
 		}

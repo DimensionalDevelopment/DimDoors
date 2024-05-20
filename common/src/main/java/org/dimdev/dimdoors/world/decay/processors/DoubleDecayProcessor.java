@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world.decay.processors;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +31,7 @@ public class DoubleDecayProcessor implements DecayProcessor<Block, ItemStack> {
 
 	@Override
 	public DoubleDecayProcessor fromNbt(CompoundTag json) {
-		block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
+		block = Registry.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
 		entropy = json.getInt("entropy");
 		return this;
 	}
@@ -39,7 +39,7 @@ public class DoubleDecayProcessor implements DecayProcessor<Block, ItemStack> {
 	@Override
 	public CompoundTag toNbt(CompoundTag nbt) {
 		DecayProcessor.super.toNbt(nbt);
-		nbt.putString("block", BuiltInRegistries.BLOCK.getKey(block).toString());
+		nbt.putString("block", Registry.BLOCK.getKey(block).toString());
 		nbt.putInt("entropy", entropy);
 		return nbt;
 	}

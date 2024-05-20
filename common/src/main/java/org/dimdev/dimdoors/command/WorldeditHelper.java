@@ -45,7 +45,7 @@ public class WorldeditHelper {
 			}
 			taskAcceptor.accept(() -> {
 				WorldEdit.getInstance().getSessionManager().get(getSessionOwner(player)).setClipboard(new ClipboardHolder(clipboard));
-				source.sendSuccess(() -> Component.translatable("commands.pocket.loadedSchem", template.getId()), true);
+				source.sendSuccess(Component.translatable("commands.pocket.loadedSchem", template.getId()), true);
 			});
 		};
 		if (async) {

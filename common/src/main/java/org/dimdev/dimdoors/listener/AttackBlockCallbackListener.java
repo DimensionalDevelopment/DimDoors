@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 public class AttackBlockCallbackListener implements InteractionEvent.LeftClickBlock {
 	@Override
 	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction direction) {
-		var world = player.level();
+		var world = player.level;
 
 		if (!world.isClientSide) return EventResult.pass();
 		Item item = player.getItemInHand(hand).getItem();

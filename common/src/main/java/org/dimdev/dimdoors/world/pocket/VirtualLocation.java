@@ -4,8 +4,8 @@ import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -53,7 +53,7 @@ public class VirtualLocation {
 
 	public static VirtualLocation fromNbt(CompoundTag nbt) {
 		return new VirtualLocation(
-				ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
+				ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("world"))),
 				nbt.getInt("x"),
 				nbt.getInt("z"),
 				nbt.getInt("depth")

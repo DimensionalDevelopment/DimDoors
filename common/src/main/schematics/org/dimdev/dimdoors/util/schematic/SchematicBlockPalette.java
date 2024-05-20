@@ -6,7 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -34,9 +34,9 @@ public class SchematicBlockPalette {
 			BlockStateParser.BlockResult parser;
 
 			try {
-				parser = BlockStateParser.parseForBlock(BuiltInRegistries.BLOCK.asLookup(), reader, true);
+				parser = BlockStateParser.parseForBlock(Registry.BLOCK, reader, true);
 			} catch (CommandSyntaxException e) {
-				return DataResult.error(e::getMessage);
+				return DataResult.error(e.getMessage());
 			}
 			return DataResult.success(parser.blockState());
 //			if (!string.contains("[") && !string.contains("]")) {
@@ -63,7 +63,7 @@ public class SchematicBlockPalette {
 
 		static String from(BlockState state) {
 			StringBuilder builder = new StringBuilder();
-			builder.append(Objects.requireNonNull(BuiltInRegistries.BLOCK.getKey(state.getBlock())));
+			builder.append(Objects.requireNonNull(Registry.BLOCK.getKey(state.getBlock())));
 			// Ensures that [ and ] are only added when properties are present
 			boolean flag = true;
 			Iterator<Property<?>> iterator = state.getProperties().iterator();

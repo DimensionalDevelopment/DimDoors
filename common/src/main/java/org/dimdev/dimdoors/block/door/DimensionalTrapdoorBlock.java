@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -22,8 +21,8 @@ import org.jetbrains.annotations.Nullable;
 
 // TODO: Make this placeable on rifts
 public class DimensionalTrapdoorBlock extends TrapDoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
-	public DimensionalTrapdoorBlock(BlockBehaviour.Properties settings, BlockSetType setType) {
-		super(settings, setType);
+	public DimensionalTrapdoorBlock(BlockBehaviour.Properties settings) {
+		super(settings);
 	}
 
 	@Override

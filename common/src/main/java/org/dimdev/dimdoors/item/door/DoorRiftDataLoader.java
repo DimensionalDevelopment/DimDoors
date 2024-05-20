@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.item.door;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -42,11 +42,11 @@ public final class DoorRiftDataLoader implements ResourceManagerReloadListener {
 		resources.forEach((id, resource) -> {
 			String name = id.getPath().substring(id.getPath().lastIndexOf('/') + 1, id.getPath().lastIndexOf('.'));
 			ResourceLocation itemId = new ResourceLocation(id.getNamespace(), name);
-			if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
+			if (!Registry.ITEM.containsKey(itemId)) {
 				LOGGER.error("Could not find item " + itemId + " for door data " + id);
 				return;
 			}
-			Item item = BuiltInRegistries.ITEM.get(itemId);
+			Item item = Registry.ITEM.get(itemId);
 			try {
 				JsonArray json = GSON.fromJson(resource.openAsReader(), JsonArray.class);
 				RiftDataList dataList = RiftDataList.fromJson(json);

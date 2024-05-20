@@ -6,8 +6,8 @@ import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.Registry;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 public final class ModItems {
 	// DO NOT REMOVE!!!
-	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.ITEM);
+	public static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.ITEM_REGISTRY);
 //
 //	public static final RegistrySupplier<Item> OAK_DIMENSIONAL_TRAPDOOR = register("wood_dimensional_trapdoor", properties -> new DimensionalTrapdoorItem(
 //			ModBlocks.OAK_DIMENSIONAL_TRAPDOOR.get(),
@@ -63,13 +63,13 @@ public final class ModItems {
 
 	public static final RegistrySupplier<Item> MONOLITH_SPAWNER = registerRegular("monolith_spawner", properties -> new ArchitecturySpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, properties));
 
-	public static final RegistrySupplier<Item> WORLD_THREAD_HELMET = registerRegular("world_thread_helmet", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.HELMET, properties));
+	public static final RegistrySupplier<Item> WORLD_THREAD_HELMET = registerRegular("world_thread_helmet", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.HEAD, properties));
 
-	public static final RegistrySupplier<Item> WORLD_THREAD_CHESTPLATE = registerRegular("world_thread_chestplate", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.CHESTPLATE, properties));
+	public static final RegistrySupplier<Item> WORLD_THREAD_CHESTPLATE = registerRegular("world_thread_chestplate", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.CHEST, properties));
 
-	public static final RegistrySupplier<Item> WORLD_THREAD_LEGGINGS = registerRegular("world_thread_leggings", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.LEGGINGS, properties));
+	public static final RegistrySupplier<Item> WORLD_THREAD_LEGGINGS = registerRegular("world_thread_leggings", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.LEGS, properties));
 
-	public static final RegistrySupplier<Item> WORLD_THREAD_BOOTS = registerRegular("world_thread_boots", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.BOOTS, properties));
+	public static final RegistrySupplier<Item> WORLD_THREAD_BOOTS = registerRegular("world_thread_boots", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, EquipmentSlot.FEET, properties));
 
 	public static final RegistrySupplier<Item> MASK_WAND = registerRegular("mask_wand", properties -> new MaskWandItem(properties.stacksTo(100)));
 
@@ -98,26 +98,25 @@ public final class ModItems {
 
 	public static final RegistrySupplier<Item> CLOD = registerDecay("clod", Item::new);
 
-	public static final RegistrySupplier<Item> GARMENT_OF_REALITY_HELMET = registerRegular("garment_of_reality_helmet", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.HELMET, properties));
+	public static final RegistrySupplier<Item> GARMENT_OF_REALITY_HELMET = registerRegular("garment_of_reality_helmet", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, EquipmentSlot.HEAD, properties));
 
-	public static final RegistrySupplier<Item> GARMENT_OF_REALITY_CHESTPLATE = registerRegular("garment_of_reality_chestplate", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.CHESTPLATE, properties));
+	public static final RegistrySupplier<Item> GARMENT_OF_REALITY_CHESTPLATE = registerRegular("garment_of_reality_chestplate", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, EquipmentSlot.CHEST, properties));
 
-	public static final RegistrySupplier<Item> GARMENT_OF_REALITY_LEGGINGS = registerRegular("garment_of_reality_leggings", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.LEGGINGS, properties));
+	public static final RegistrySupplier<Item> GARMENT_OF_REALITY_LEGGINGS = registerRegular("garment_of_reality_leggings", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, EquipmentSlot.LEGS, properties));
 
-	public static final RegistrySupplier<Item> GARMENT_OF_REALITY_BOOTS = registerRegular("garment_of_reality_boots", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.BOOTS, properties));
+	public static final RegistrySupplier<Item> GARMENT_OF_REALITY_BOOTS = registerRegular("garment_of_reality_boots", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, EquipmentSlot.FEET, properties));
 	
 	public static final Set<Item> DOOR_ITEMS = new HashSet<>();
 
-	public static DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CREATIVE_MODE_TAB);
-	public static final RegistrySupplier<CreativeModeTab> DIMENSIONAL_DOORS = CREATIVE_TABS.register("dimensional_doors", () -> CreativeTabRegistry.create(builder -> builder.icon(() -> new ItemStack(ModItems.RIFT_BLADE.get())).title(Component.translatable("itemGroup.dimdoors.dimensional_doors"))));
-	public static final RegistrySupplier<CreativeModeTab> DECAY = CREATIVE_TABS.register("decay", () -> CreativeTabRegistry.create(builder -> builder.icon(() -> new ItemStack(ModBlocks.UNRAVELED_FENCE.get())).title(Component.translatable("itemGroup.dimdoors.decay"))));
+	public static final CreativeModeTab DIMENSIONAL_DOORS = CreativeTabRegistry.create(DimensionalDoors.id("dimensional_doors"), () -> new ItemStack(ModItems.RIFT_BLADE.get()));
+	public static final CreativeModeTab DECAY = CreativeTabRegistry.create(DimensionalDoors.id("decay"), () -> new ItemStack(ModBlocks.UNRAVELED_FENCE.get()));
 
 	public static RegistrySupplier<Item> registerRegular(String name, Function<Item.Properties, Item> item) {
-		return register(name, () -> item.apply(new Item.Properties().arch$tab(DIMENSIONAL_DOORS)));
+		return register(name, () -> item.apply(new Item.Properties().tab(DIMENSIONAL_DOORS)));
 	}
 
 	public static RegistrySupplier<Item> registerDecay(String name, Function<Item.Properties, Item> item) {
-		return register(name, () -> item.apply(new Item.Properties().arch$tab(DECAY)));
+		return register(name, () -> item.apply(new Item.Properties().tab(DECAY)));
 	}
 
 	public static RegistrySupplier<Item> register(String name, Supplier<Item> item) {
@@ -125,7 +124,6 @@ public final class ModItems {
 	}
 
 	public static void init() {
-		CREATIVE_TABS.register();
 		REGISTRY.register();
 	}
 }

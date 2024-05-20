@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public interface PocketAddon {
-	Registrar<PocketAddonType<? extends PocketAddon>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketAddonType<? extends PocketAddon>>builder(DimensionalDoors.id("pocket_applicable_addon_type")).build();
+	Registrar<PocketAddonType<? extends PocketAddon>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<PocketAddonType<? extends PocketAddon>>builder(DimensionalDoors.id("pocket_applicable_addon_type")).build();
 
 	static PocketAddon deserialize(CompoundTag nbt) {
 		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type")); // TODO: NONE PocketAddon type;

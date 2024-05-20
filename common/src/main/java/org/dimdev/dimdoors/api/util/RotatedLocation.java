@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.api.util;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +29,7 @@ public class RotatedLocation extends Location {
 	public static RotatedLocation deserialize(CompoundTag nbt) {
 		int[] pos = nbt.getIntArray("pos");
 		return new RotatedLocation(
-				ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
+				ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("world"))),
 				new BlockPos(pos[0], pos[1], pos[2]),
 				nbt.getFloat("yaw"),
 				nbt.getFloat("pitch")

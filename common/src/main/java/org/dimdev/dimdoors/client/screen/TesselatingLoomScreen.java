@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +38,7 @@ public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingC
 	}
 
 
-	public void render(GuiGraphics matrices, int mouseX, int mouseY, float delta) {
+	public void render(PoseStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 //		if (this.recipeBook.isVisible() && this.narrow) {
 //			this.renderBg(matrices, delta, mouseX, mouseY);
@@ -52,14 +53,16 @@ public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingC
 //		this.recipeBook.renderTooltip(matrices, this.leftPos, this.topPos, mouseX, mouseY);
 	}
 
-	protected void renderBg(GuiGraphics matrices, float delta, int mouseX, int mouseY) {
+	protected void renderBg(PoseStack matrices, float delta, int mouseX, int mouseY) {
 		int i = this.leftPos;
 		int j = (this.height - this.imageHeight) / 2;
-		matrices.blit(TEXTURE, i, j, 0, 0, this.imageWidth, this.imageWidth);
+		Minecraft.getInstance().getTextureManager().bindForSetup(TEXTURE);
+		blit(matrices, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
 		if (this.menu.isWeaving()) {
 			int k = (this.menu).getWeavProgress(22);
-			matrices.blit(TEXTURE, i + 89, j + 34, 176, 0, k + 1, 16);
+			Minecraft.getInstance().getTextureManager().bindForSetup(TEXTURE);
+			blit(matrices, i + 89, j + 34, 176, 0, k + 1, 16);
 		}
 	}
 

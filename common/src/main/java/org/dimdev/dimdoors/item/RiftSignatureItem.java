@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.item;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -14,13 +14,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
@@ -33,7 +33,6 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -62,13 +61,14 @@ public class RiftSignatureItem extends Item {
 		BlockState state = world.getBlockState(pos);
 		Direction side = itemUsageContext.getClickedFace();
 
+		var placement = new BlockPlaceContext(itemUsageContext);
 
 		ItemStack stack = player.getItemInHand(hand);
-		var placedRiftLogic = PlacementLogic.getLogic(world, pos);
+		var placedRiftLogic = getLogic(world, pos, itemUsageContext.getItemInHand());
 
 		if (placedRiftLogic == null) {
 			pos = pos.relative(side);
-			placedRiftLogic = PlacementLogic.getLogic(world, pos);
+			placedRiftLogic = getLogic(world, pos, itemUsageContext.getItemInHand());
 		}
 
 //		if(placedRiftLogic == null) {
@@ -117,7 +117,7 @@ public class RiftSignatureItem extends Item {
 				placedRiftLogic.getRift((ServerLevel) world, pos).ifPresent(a -> a.setDestination(RiftReference.tryMakeRelative(source, target)));
 			}
 
-			if((placedRiftLogic = PlacementLogic.getLogic(target.getWorld(), target.pos)) != null) {
+			if((placedRiftLogic = getLogic(target.getWorld(), target.pos, ItemStack.EMPTY)) != null) {
 				placedRiftLogic.getRift(target.getWorld(), target.pos).ifPresent(a -> a.setDestination(RiftReference.tryMakeRelative(target, source)));
 			}
 
@@ -179,6 +179,20 @@ public class RiftSignatureItem extends Item {
 		}
 	}
 
+	public PlacementLogic getLogic(Level level, BlockPos pos, ItemStack stack) {
+		var state = level.getBlockState(pos);
+
+		if(state.getMaterial().isReplaceable() && (stack.isEmpty() || stack.getItem() != this)) {
+			return PlacementLogic.CREATE;
+		} else if(state.getBlock() instanceof RiftProvider<?>) {
+			return PlacementLogic.EXISTING;
+		} else if(state.getBlock() instanceof DoorBlock) {
+			return PlacementLogic.DOOR;
+		} else {
+			return null;
+		}
+	}
+
 	public enum PlacementLogic {
 		CREATE((world, pos) -> {
 			world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
@@ -194,7 +208,7 @@ public class RiftSignatureItem extends Item {
 		DOOR((serverLevel, blockPos) -> {
 			var state = serverLevel.getBlockState(blockPos);
 			if(state.getBlock() instanceof DoorBlock door) {
-				if(BuiltInRegistries.BLOCK.get(DimensionalDoors.getDimensionalDoorBlockRegistrar().get(door.arch$registryName())) instanceof DimensionalDoorBlock dimensionalDoorBlock) {
+				if(Registry.BLOCK.get(DimensionalDoors.getDimensionalDoorBlockRegistrar().get(door.arch$registryName())) instanceof DimensionalDoorBlock dimensionalDoorBlock) {
 					var dimdoorState = dimensionalDoorBlock.defaultBlockState()
 							.setValue(DoorBlock.HINGE, state.getValue(DoorBlock.HINGE))
 							.setValue(DoorBlock.FACING, state.getValue(DoorBlock.FACING))
@@ -220,20 +234,6 @@ public class RiftSignatureItem extends Item {
 
 		public Optional<RiftBlockEntity> getRift(ServerLevel world, BlockPos pos) {
 			return function.apply(world, pos);
-		}
-
-		public static PlacementLogic getLogic(Level world, BlockPos pos) {
-			var state = world.getBlockState(pos);
-
-			if(state.canBeReplaced()) {
-				return CREATE;
-			} else if(state.getBlock() instanceof RiftProvider<?>) {
-				return EXISTING;
-			} else if(state.getBlock() instanceof DoorBlock) {
-				return DOOR;
-			} else {
-				return null;
-			}
 		}
 	}
 }

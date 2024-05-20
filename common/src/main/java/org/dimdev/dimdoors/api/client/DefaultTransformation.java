@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.core.Direction;
-import org.joml.Quaternionf;
-
+import com.mojang.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.Direction;
 
 @Environment(EnvType.CLIENT)
 public enum DefaultTransformation implements Transformer {
@@ -37,7 +36,7 @@ public enum DefaultTransformation implements Transformer {
 		@Override
 		public void transform(PoseStack matrices) {
 			// TODO
-			matrices.mulPose(new Quaternionf().rotateY((float) Math.toRadians(-90f)));
+			matrices.mulPose(Vector3f.YN.rotationDegrees(90f));
 			matrices.translate(0, 0, -0.81F);
 		}
 	},
@@ -45,7 +44,7 @@ public enum DefaultTransformation implements Transformer {
 		@Override
 		public void transform(PoseStack matrices) {
 			// TODO
-			matrices.mulPose(new Quaternionf().rotateY((float) Math.toRadians(-90f)));
+			matrices.mulPose(Vector3f.YN.rotationDegrees(90f));
 			matrices.translate(0, 0, -0.19F);
 		}
 	},

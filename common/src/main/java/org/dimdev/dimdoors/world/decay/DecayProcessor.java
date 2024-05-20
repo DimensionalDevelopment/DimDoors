@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world.decay;
 
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public interface DecayProcessor<S, T> {
-    Registrar<DecayProcessorType<? extends DecayProcessor<?, ?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayProcessorType<? extends DecayProcessor<?, ?>>>builder(DimensionalDoors.id("decay_processor_type")).build();
+    Registrar<DecayProcessorType<? extends DecayProcessor<?, ?>>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<DecayProcessorType<? extends DecayProcessor<?, ?>>>builder(DimensionalDoors.id("decay_processor_type")).build();
 
     static DecayProcessor<?, ?> deserialize(CompoundTag nbt) {
         ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));

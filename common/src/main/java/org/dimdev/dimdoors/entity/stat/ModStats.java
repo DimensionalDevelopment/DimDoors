@@ -2,16 +2,12 @@ package org.dimdev.dimdoors.entity.stat;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import org.dimdev.dimdoors.DimensionalDoors;
 
-import static net.minecraft.stats.Stats.CUSTOM;
-
 public class ModStats {
-	public static final DeferredRegister<ResourceLocation> STATS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CUSTOM_STAT);
+	public static final DeferredRegister<ResourceLocation> STATS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.CUSTOM_STAT_REGISTRY);
 
 	public static final ResourceLocation DEATHS_IN_POCKETS = register("deaths_in_pocket", StatFormatter.DEFAULT);
 	public static final ResourceLocation TIMES_SENT_TO_LIMBO = register("times_sent_to_limbo", StatFormatter.DEFAULT);

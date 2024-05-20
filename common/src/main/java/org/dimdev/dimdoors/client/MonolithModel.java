@@ -43,7 +43,7 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
         float aggroScaling = minScaling + (maxScaling - minScaling) * aggro;
 
         // Calculate jitter - include entity ID to give Monoliths individual jitters
-        float time = ((Minecraft.getInstance().getFrameTimeNs() + 0xF1234568 * id) % 200000) / 50.0F;
+        float time = ((Minecraft.getInstance().getFrameTime() + 0xF1234568 * id) % 200000) / 50.0F;
         // We use random constants here on purpose just to get different wave forms
         var jitterX = (float) (aggroScaling * Math.sin(1.1f * time) * Math.sin(0.8f * time));
         var jitterY = (float) (aggroScaling * Math.sin(1.2f * time) * Math.sin(0.9f * time));

@@ -21,11 +21,11 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -43,13 +43,16 @@ import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 
 public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock {
-	public DimensionalDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
-		super(settings.pushReaction(BLOCK), blockSetType);
+	public DimensionalDoorBlock(BlockBehaviour.Properties settings) {
+		super(settings);
+	}
+
+	@Override
+	public PushReaction getPistonPushReaction(BlockState state) {
+		return BLOCK;
 	}
 
 	@Override
@@ -134,10 +137,23 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		if (!world.isClientSide && state.getValue(WATERLOGGED)) {
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
-		this.playSound(player, world, pos, state.getValue(OPEN));
+		this.playSound(world, pos, state.getValue(OPEN));
 		world.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
 		return InteractionResult.SUCCESS;
 	}
+
+	private void playSound(Level level, BlockPos pos, boolean isOpening) {
+		level.levelEvent(null, isOpening ? openSound() : closedSound(), pos, 0);
+	}
+
+	private int closedSound() {
+		return this.material == Material.METAL ? 1011 : 1012;
+	}
+
+	private int openSound() {
+		return this.material == Material.METAL ? 1005 : 1006;
+	}
+
 
 	@Override
 	public void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack stack, boolean dropExperience) {
@@ -158,11 +174,6 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			return null;
 		}
 		return new EntranceRiftBlockEntity(pos, state);
-	}
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-		return super.getDrops(state, params);
 	}
 
 	public void createDetachedRift(Level world, BlockPos pos) {

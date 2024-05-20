@@ -1,13 +1,14 @@
 package org.dimdev.dimdoors.item.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -30,7 +31,6 @@ import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
-import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,13 +48,13 @@ public class DimensionalDoorItemRegistrar {
 	private final Map<Item, Function<BlockPlaceContext, InteractionResult>> placementFunctions = new HashMap<>();
 
 	public DimensionalDoorItemRegistrar() {
-		this.registry = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.ITEM);
+		this.registry = Registries.get(DimensionalDoors.MOD_ID).get(Registry.ITEM_REGISTRY);
 
 		if(Platform.isFabric()) {
 			init();
 		}
 
-		RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.ITEM, registrar -> {
+		Registries.get(DimensionalDoors.MOD_ID).forRegistry(Registry.ITEM_REGISTRY, registrar -> {
 			new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
 		});
 	}
@@ -92,7 +92,7 @@ public class DimensionalDoorItemRegistrar {
 		if (!(originalBlock instanceof DimensionalDoorBlock)
 				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
 				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapDoorBlock)) {
-			Item.Properties settings = ItemExtensions.getSettings(original).arch$tab(ModItems.DIMENSIONAL_DOORS)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
+			Item.Properties settings = ItemExtensions.getSettings(original).tab(ModItems.DIMENSIONAL_DOORS)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
 
 			Function<Block, BlockItem> dimItemConstructor = (dimBlock) -> constructor.apply(dimBlock, settings, original);
 
@@ -200,7 +200,7 @@ public class DimensionalDoorItemRegistrar {
 		public void transform(PoseStack matrices) {
 			matrices.scale(0.55f, 0.55f, 0.6f);
 			matrices.translate(0.05, -0.05, 0.41);
-			matrices.mulPose(new Quaternionf().rotateXYZ(90, 0, 0));
+			matrices.mulPose(Vector3f.XP.rotationDegrees(90));
 		}
 	}
 

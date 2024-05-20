@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.criteria;
 
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.*;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -16,8 +16,8 @@ public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakC
 	public static final ResourceLocation ID = DimensionalDoors.id("tag_block_break");
 
 	@Override
-	protected Conditions createInstance(JsonObject obj, ContextAwarePredicate playerPredicate, DeserializationContext predicateDeserializer) {
-		return new Conditions(playerPredicate, TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(obj.get("tag").getAsString())));
+	protected Conditions createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer) {
+		return new Conditions(playerPredicate, TagKey.create(Registry.BLOCK_REGISTRY, ResourceLocation.tryParse(obj.get("tag").getAsString())));
 	}
 
 	public void trigger(ServerPlayer player, BlockState block) {
@@ -32,7 +32,7 @@ public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakC
 	public static class Conditions extends AbstractCriterionTriggerInstance {
 		private final TagKey<Block> blockTag;
 
-		public Conditions(ContextAwarePredicate playerPredicate, TagKey<Block> blockTag) {
+		public Conditions(EntityPredicate.Composite playerPredicate, TagKey<Block> blockTag) {
 			super(ID, playerPredicate);
 			this.blockTag = Objects.requireNonNull(blockTag);
 		}

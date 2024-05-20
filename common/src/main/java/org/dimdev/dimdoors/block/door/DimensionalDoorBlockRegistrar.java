@@ -6,12 +6,10 @@ import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.utils.Env;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootContext;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
@@ -55,7 +53,7 @@ public class DimensionalDoorBlockRegistrar {
 	private static AutoGenLogic<EntranceRiftBlockEntity> defaultLogic = new AutoGenLogic<>(ModBlockEntityTypes.ENTRANCE_RIFT, DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock);
 
 	public DimensionalDoorBlockRegistrar(DimensionalDoorItemRegistrar itemRegistrar) {
-		this.registry = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.BLOCK);
+		this.registry = Registries.get(DimensionalDoors.MOD_ID).get(Registry.BLOCK);
 		this.itemRegistrar = itemRegistrar;
 
 //		if(Platform.isFabric()) {
@@ -63,19 +61,19 @@ public class DimensionalDoorBlockRegistrar {
 //		}
 
 		if(Platform.isForge()) {
-			RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
+			Registries.get(DimensionalDoors.MOD_ID).forRegistry(Registry.BLOCK_REGISTRY, registrar -> {
 				new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
 			});
 		}
 
 		LifecycleEvent.SETUP.register(() -> {
 			if(Platform.isFabric()) {
-				RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
+				Registries.get(DimensionalDoors.MOD_ID).forRegistry(Registry.BLOCK_REGISTRY, registrar -> {
 					new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
 				});			}
 
 			mappedDoorBlocks.keySet().forEach(location -> {
-				var block = BuiltInRegistries.BLOCK.get(location);
+				var block = Registry.BLOCK.get(location);
 				var logic = customDoorFunction.getOrDefault(location, defaultLogic);
 				logic.register(block);
 			});
@@ -167,7 +165,7 @@ public class DimensionalDoorBlockRegistrar {
 		private final Block originalBlock;
 
 		public AutoGenDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
-			super(settings, originalBlock.getSetType());
+			super(settings);
 			this.originalBlock = (Block) originalBlock;
 
 			BlockState state = this.getStateDefinition().any();
@@ -186,7 +184,7 @@ public class DimensionalDoorBlockRegistrar {
 		}
 
 		@Override
-		public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+		public List<ItemStack> getDrops(BlockState state, LootContext.Builder params) {
 			var defaultState = originalBlock.defaultBlockState();
 
 			return originalBlock.getDrops(defaultState, params);
@@ -200,13 +198,23 @@ public class DimensionalDoorBlockRegistrar {
 		public Block getOriginalBlock() {
 			return originalBlock;
 		}
+
+//		@Override
+//		public SoundEvent getCloseSound() {
+//			return ((DoorSoundProvider) originalBlock).getCloseSound();
+//		}
+
+//		@Override
+//		public SoundEvent getOpenSound() {
+//			return ((DoorSoundProvider) originalBlock).getOpenSound();
+//		}
 	}
 
 	private static class AutoGenDimensionalTrapdoorBlock extends DimensionalTrapdoorBlock {
 		private final Block originalBlock;
 
 		public AutoGenDimensionalTrapdoorBlock(Properties settings, DoorSoundProvider originalBlock) {
-			super(settings, originalBlock.getSetType());
+			super(settings);
 			this.originalBlock = (Block) originalBlock;
 
 			BlockState state = this.getStateDefinition().any();

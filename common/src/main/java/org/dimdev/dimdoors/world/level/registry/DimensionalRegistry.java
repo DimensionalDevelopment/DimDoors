@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.level.registry;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -37,7 +37,7 @@ public class DimensionalRegistry {
 		CompoundTag pocketRegistryNbt = nbt.getCompound("pocket_registry");
 		CompletableFuture<Map<ResourceKey<Level>, PocketDirectory>> futurePocketRegistry = CompletableFuture.supplyAsync(() -> pocketRegistryNbt.getAllKeys().stream().map(key -> {
 					CompoundTag pocketDirectoryNbt = pocketRegistryNbt.getCompound(key);
-					return CompletableFuture.supplyAsync(() -> new Pair<>(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt)));
+					return CompletableFuture.supplyAsync(() -> new Pair<>(ResourceKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt)));
 				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond)));
 
 		CompoundTag privateRegistryNbt = nbt.getCompound("private_registry");

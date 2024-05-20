@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.tag;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.DimensionalDoors;

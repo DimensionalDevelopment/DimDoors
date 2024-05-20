@@ -6,9 +6,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 
@@ -69,7 +69,7 @@ public record RiftParticleOptions(float color, int averageAge) implements Partic
    }
 
    public String writeToString() {
-      return String.format(Locale.ROOT, "%s %.2f %s", BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()), this.color, this.averageAge);
+      return String.format(Locale.ROOT, "%s %.2f %s", Registry.PARTICLE_TYPE.getKey(this.getType()), this.color, this.averageAge);
    }
 
 

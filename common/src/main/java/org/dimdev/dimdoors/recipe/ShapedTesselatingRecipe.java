@@ -5,15 +5,16 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.*;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +69,7 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+    public ItemStack getResultItem() {
         return this.result;
     }
 
@@ -77,10 +78,6 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
         return this.recipeItems;
     }
 
-    @Override
-    public boolean showNotification() {
-        return this.showNotification;
-    }
 
     @Override
     public boolean canCraftInDimensions(int width, int height) {
@@ -134,8 +131,8 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull TesselatingLoomBlockEntity container, @NotNull RegistryAccess registryAccess) {
-        return this.getResultItem(registryAccess).copy();
+    public @NotNull ItemStack assemble(@NotNull TesselatingLoomBlockEntity container) {
+        return this.getResultItem().copy();
     }
 
     public int getWidth() {
@@ -270,7 +267,7 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
 
     public static Item itemFromJson(JsonObject itemObject) {
         String string = GsonHelper.getAsString(itemObject, "item");
-        Item item = BuiltInRegistries.ITEM.getOptional(new ResourceLocation(string)).orElseThrow(() -> new JsonSyntaxException("Unknown item '" + string + "'"));
+        Item item = Registry.ITEM.getOptional(new ResourceLocation(string)).orElseThrow(() -> new JsonSyntaxException("Unknown item '" + string + "'"));
         if (item == Items.AIR) {
             throw new JsonSyntaxException("Invalid item: " + string);
         }

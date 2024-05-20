@@ -8,7 +8,6 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -63,13 +62,13 @@ public class TemplateUtils {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");
-            table = world.getServer().getLootData().getLootTable(DimensionalDoors.id("dungeon_chest"));
+            table = world.getServer().getLootTables().get(DimensionalDoors.id("dungeon_chest"));
         } else {
             logger.debug("Now populating dispenser.");
-            table = world.getServer().getLootData().getLootTable(DimensionalDoors.id("dispenser_projectiles"));
+            table = world.getServer().getLootTables().get(DimensionalDoors.id("dispenser_projectiles"));
         }
-        LootParams ctx = new LootParams.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
-        table.fill(inventory, ctx, world.getSeed());
+        LootContext ctx = new LootContext.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
+        table.fill(inventory, ctx);
 		if (inventory.isEmpty()) {
 			logger.error(", however Inventory is: empty!");
 		}

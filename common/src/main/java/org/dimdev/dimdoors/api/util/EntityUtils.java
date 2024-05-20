@@ -21,8 +21,8 @@ public final class EntityUtils {
 		if (entity instanceof Projectile projectile) topmostEntity = projectile.getOwner();
 		if (entity instanceof FishingHook hook) topmostEntity = hook.getOwner();
 		if (entity instanceof ItemEntity item) {
-			if (item.getOwner() != null) {
-				topmostEntity = item.getOwner();
+			if (item.getThrower() != null) {
+				topmostEntity = item.getThrowingEntity();
 			}
 		}
 

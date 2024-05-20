@@ -60,7 +60,7 @@ public final class RaycastHelper {
 		Vec3 eye = entity.getEyePosition(0);
 		Vec3 viewVec = entity.getViewVector(0);
 		Vec3 dest = eye.add(viewVec.x * RaycastHelper.REACH_DISTANCE, viewVec.y * RaycastHelper.REACH_DISTANCE, viewVec.z * RaycastHelper.REACH_DISTANCE);
-		return entity.level().clip(new SignClipContext<>(eye, dest, entity, clazz));
+		return entity.level.clip(new SignClipContext<>(eye, dest, entity, clazz));
 	}
 
 	static class SignClipContext<T extends BlockEntity> extends ClipContext {

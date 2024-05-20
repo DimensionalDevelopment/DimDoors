@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.world;
 
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.structures.NetherFortressPieces;
@@ -15,10 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-import static org.dimdev.dimdoors.mixin.NetherFortressPiecesAccessor.getBridgePieceWeights;
-
 public class ModStructures {
-    public static Registrar<StructurePieceType> STRUCTURE_PIECE_TYPES = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.STRUCTURE_PIECE);
+    public static Registrar<StructurePieceType> STRUCTURE_PIECE_TYPES = Registries.get(DimensionalDoors.MOD_ID).get(Registry.STRUCTURE_PIECE);
     public static final RegistrySupplier<StructurePieceType> NETHER_GATEWAY = registerNetherBridge("nether_fortress_gateway", NetherGatewayPiece.class, 5, 1);
 
     private static RegistrySupplier<StructurePieceType> registerNetherBridge(String name, Class<NetherGatewayPiece> netherGatewayPieceClass, int weight, int count) {

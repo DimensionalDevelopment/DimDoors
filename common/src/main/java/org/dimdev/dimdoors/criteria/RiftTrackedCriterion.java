@@ -10,7 +10,7 @@ public class RiftTrackedCriterion extends SimpleCriterionTrigger<RiftTrackedCrit
 	public static final ResourceLocation ID = DimensionalDoors.id("rift_tracked");
 
 	@Override
-	protected Conditions createInstance(JsonObject obj, ContextAwarePredicate playerPredicate, DeserializationContext predicateDeserializer) {
+	protected Conditions createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer) {
 		return new Conditions(playerPredicate);
 	}
 
@@ -24,7 +24,7 @@ public class RiftTrackedCriterion extends SimpleCriterionTrigger<RiftTrackedCrit
 	}
 
 	public static class Conditions extends AbstractCriterionTriggerInstance {
-		public Conditions(ContextAwarePredicate playerPredicate) {
+		public Conditions(EntityPredicate.Composite playerPredicate) {
 			super(ID, playerPredicate);
 		}
 	}

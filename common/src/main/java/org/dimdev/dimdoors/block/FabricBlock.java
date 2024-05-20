@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -12,10 +12,10 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import static net.minecraft.world.level.block.Blocks.STONE;
 
 public class FabricBlock extends Block {
-	public static final TagKey<Block> BLOCK_TAG = TagKey.create(Registries.BLOCK, DimensionalDoors.id("fabric"));
+	public static final TagKey<Block> BLOCK_TAG = TagKey.create(Registry.BLOCK_REGISTRY, DimensionalDoors.id("fabric"));
 
 	FabricBlock(DyeColor color) {
-		super(Properties.copy(STONE).mapColor(color).strength(1.2F).lightLevel(state -> 15));
+		super(Properties.copy(STONE).color(color.getMaterialColor()).strength(1.2F).lightLevel(state -> 15));
 	}
 
 	@Override

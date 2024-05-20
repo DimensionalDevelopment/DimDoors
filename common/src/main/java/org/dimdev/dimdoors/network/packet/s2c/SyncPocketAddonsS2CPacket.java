@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.network.packet.s2c;
 import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +37,7 @@ public class SyncPocketAddonsS2CPacket {
 	}
 
 	public SyncPocketAddonsS2CPacket(FriendlyByteBuf buf) {
-		this(buf.readResourceKey(Registries.DIMENSION),
+		this(buf.readResourceKey(Registry.DIMENSION_REGISTRY),
 		buf.readInt(),
 		buf.readInt(),
 		buf.readInt(),

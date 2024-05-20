@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.particle.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
@@ -16,7 +17,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.MonolithRenderer;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
 
 @Environment(EnvType.CLIENT)
 public class MonolithParticle extends Particle {
@@ -31,7 +31,7 @@ public class MonolithParticle extends Particle {
 		float delta = ((float)this.age + tickDelta) / (float) this.age;
 		PoseStack matrices = new PoseStack();
 		matrices.mulPose(camera.rotation());
-		matrices.mulPose(new Quaternionf().rotateX((float) Math.toRadians(150.0F * delta - 60.0F)));
+		matrices.mulPose(Vector3f.XP.rotationDegrees(150.0F * delta - 60.0F));
 		matrices.scale(-1.0F, -1.0F, 1.0F);
 		matrices.translate(0.0D, -1.1009999513626099D, 1.5D);
 		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();

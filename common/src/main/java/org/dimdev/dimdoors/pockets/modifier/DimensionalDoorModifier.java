@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.pockets.modifier;
 import com.google.common.base.MoreObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -57,7 +57,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 		}
 
 		doorTypeString = nbt.getString("door_type");
-		Block doorBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(doorTypeString));
+		Block doorBlock = Registry.BLOCK.get(ResourceLocation.tryParse(doorTypeString));
 		if (!(doorBlock instanceof DimensionalDoorBlock)) {
 			throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
 		}

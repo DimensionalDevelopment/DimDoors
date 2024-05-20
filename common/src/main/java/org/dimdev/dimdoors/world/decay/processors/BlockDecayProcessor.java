@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.decay.processors;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -11,13 +11,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayProcessor;
 import org.dimdev.dimdoors.world.decay.DecayProcessorType;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 
@@ -37,7 +33,7 @@ public class BlockDecayProcessor implements DecayProcessor<Block, ItemStack> {
 
     @Override
     public BlockDecayProcessor fromNbt(CompoundTag json) {
-        block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
+        block = Registry.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
         entropy = json.getInt("entropy");
         return this;
     }
@@ -45,7 +41,7 @@ public class BlockDecayProcessor implements DecayProcessor<Block, ItemStack> {
     @Override
     public CompoundTag toNbt(CompoundTag nbt) {
         DecayProcessor.super.toNbt(nbt);
-        nbt.putString("block", BuiltInRegistries.BLOCK.getKey(block).toString());
+        nbt.putString("block", Registry.BLOCK.getKey(block).toString());
         nbt.putInt("entropy", entropy);
         return nbt;
     }

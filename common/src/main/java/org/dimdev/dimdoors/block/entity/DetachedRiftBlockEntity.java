@@ -50,10 +50,12 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 		}
 
 		if (!world.isClientSide() && random.nextFloat() < DimensionalDoors.getConfig().getGeneralConfig().endermanSpawnChance) {
-			EnderMan enderman = EntityType.ENDERMAN.spawn(
+			EnderMan enderman = (EnderMan) EntityType.ENDERMAN.spawn(
 					(ServerLevel) world,
+					null, null,
 					pos,
-					MobSpawnType.STRUCTURE
+					MobSpawnType.STRUCTURE,
+					false, false
 			);
 
 			if (random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {

@@ -2,11 +2,10 @@ package org.dimdev.dimdoors.world.decay.processors;
 
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
@@ -32,7 +31,7 @@ public class FluidDecayProcessor implements DecayProcessor<Fluid, FluidStack> {
 
 	@Override
 	public FluidDecayProcessor fromNbt(CompoundTag json) {
-		fluid = BuiltInRegistries.FLUID.get(ResourceLocation.tryParse(json.getString("fluid")));
+		fluid = Registry.FLUID.get(ResourceLocation.tryParse(json.getString("fluid")));
 		entropy = json.getInt("entropy");
 		return this;
 	}
@@ -40,7 +39,7 @@ public class FluidDecayProcessor implements DecayProcessor<Fluid, FluidStack> {
 	@Override
 	public CompoundTag toNbt(CompoundTag nbt) {
 		DecayProcessor.super.toNbt(nbt);
-		nbt.putString("block", BuiltInRegistries.FLUID.getKey(fluid).toString());
+		nbt.putString("block", Registry.FLUID.getKey(fluid).toString());
 		nbt.putInt("entropy", entropy);
 		return nbt;
 	}

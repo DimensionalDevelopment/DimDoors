@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public abstract class AbstractPocket<V extends AbstractPocket<?>> {
-	public static final Registrar<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<AbstractPocketType<? extends AbstractPocket<?>>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
+	public static final Registrar<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<AbstractPocketType<? extends AbstractPocket<?>>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
 
 	protected Integer id;
 	protected ResourceKey<Level> world;
@@ -49,7 +49,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 
 	public V fromNbt(CompoundTag nbt) {
 		this.id = nbt.getInt("id");
-		this.world = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world")));
+		this.world = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("world")));
 
 		return (V) this;
 	}

@@ -4,8 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.architectury.platform.Platform;
-import dev.architectury.utils.GameInstance;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -68,10 +66,10 @@ public class PocketCommand {
 													UUID playerUUID = commandSource.getPlayerOrException().getUUID();
 													if (logSetting.containsKey(playerUUID)) {
 														logSetting.remove(playerUUID);
-														commandSource.sendSuccess(() -> Component.translatable("commands.pocket.log.creation.off"), false);
+														commandSource.sendSuccess(Component.translatable("commands.pocket.log.creation.off"), false);
 													} else {
 														logSetting.put(playerUUID, commandSource);
-														commandSource.sendSuccess(() -> Component.translatable("commands.pocket.log.creation.on"), false);
+														commandSource.sendSuccess(Component.translatable("commands.pocket.log.creation.on"), false);
 													}
 													return Command.SINGLE_SUCCESS;
 												})
@@ -82,7 +80,7 @@ public class PocketCommand {
 								literal("dump")
 										.requires(src -> src.hasPermission(4))
 										.executes(ctx -> {
-											ctx.getSource().sendSuccess(() -> Component.literal("Dumping pocket data"), false);
+											ctx.getSource().sendSuccess(Component.literal("Dumping pocket data"), false);
 											CompletableFuture.runAsync(() -> {
 												try {
 													PocketLoader.getInstance().dump();
@@ -91,7 +89,7 @@ public class PocketCommand {
 												}
 											}).thenRun(() -> {
 												ctx.getSource().getServer().execute(() -> {
-													ctx.getSource().sendSuccess(() -> Component.literal("Dumped pocket data"), false);
+													ctx.getSource().sendSuccess(Component.literal("Dumped pocket data"), false);
 												});
 											});
 											return Command.SINGLE_SUCCESS;
@@ -111,13 +109,13 @@ public class PocketCommand {
 	private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
 		SchematicPlacer.place(
 				template.getSchematic(),
-				source.serverLevel(),
+				source.getLevel(),
 				source.blockPosition(),
 				blockPlacementType
 		);
 
 		String id = template.getId().toString();
-		source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level().dimension().location().toString()), true);
+		source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level.dimension().location().toString()), true);
 		return Command.SINGLE_SUCCESS;
 	}
 }

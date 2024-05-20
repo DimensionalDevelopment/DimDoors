@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.mixin.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
@@ -13,7 +14,6 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
-import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -42,7 +42,7 @@ public abstract class WorldRendererMixin {
 
 	@Inject(method = "renderLevel",
 	at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/LevelRenderer;destructionProgress:Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;", ordinal = 1)) // bytecode order is flipped from java code order, notice the ordinal
-	public void renderCustomBreakBlockAnimation(PoseStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {
+	public void renderCustomBreakBlockAnimation(PoseStack matrices, float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f projectionMatrix, CallbackInfo ci) {
 		Vec3 vec3d = camera.getPosition();
 		double d = vec3d.x();
 		double e = vec3d.y();
@@ -61,7 +61,7 @@ public abstract class WorldRendererMixin {
 				matrices.pushPose();
 				matrices.translate((double) pos.getX() - d, (double) pos.getY() - e, (double) pos.getZ() - f);
 				PoseStack.Pose entry3 = matrices.last();
-				VertexConsumer vertexConsumer2 = new SheetedDecalTextureGenerator(this.renderBuffers.crumblingBufferSource().getBuffer((RenderType) ModelBakery.DESTROY_TYPES.get(stage)), entry3.pose(), entry3.normal(), 1.0F);
+				VertexConsumer vertexConsumer2 = new SheetedDecalTextureGenerator(this.renderBuffers.crumblingBufferSource().getBuffer((RenderType) ModelBakery.DESTROY_TYPES.get(stage)), entry3.pose(), entry3.normal());
 				this.minecraft.getBlockRenderer().renderBreakingTexture(this.level.getBlockState(pos), pos, this.level, matrices, vertexConsumer2);
 				matrices.popPose();
 			}

@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 public abstract class RegistryVertex {
-	public static final Registrar<RegistryVertexType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<RegistryVertexType<? extends RegistryVertex>>builder(DimensionalDoors.id("registry_vertex")).build();
+	public static final Registrar<RegistryVertexType<?>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<RegistryVertexType<? extends RegistryVertex>>builder(DimensionalDoors.id("registry_vertex")).build();
 
 	private ResourceKey<Level> world; // The dimension to store this object in. Links are stored in both registries.
 

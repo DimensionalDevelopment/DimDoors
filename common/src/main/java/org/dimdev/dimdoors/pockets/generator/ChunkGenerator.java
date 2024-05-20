@@ -4,7 +4,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -92,7 +92,7 @@ public class ChunkGenerator extends PocketGenerator {
 
 		LOGGER.info("Generating chunk pocket at location " + pocket.getOrigin());
 
-		ServerLevel genWorld = DimensionalDoors.getWorld(ResourceKey.create(Registries.DIMENSION, dimensionID));
+		ServerLevel genWorld = DimensionalDoors.getWorld(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimensionID));
 		net.minecraft.world.level.chunk.ChunkGenerator genWorldChunkGenerator = genWorld.getChunkSource().getGenerator();
 
 		RandomState config = RandomState.create(NoiseGeneratorSettings.dummy(), world.registryAccess().registryOrThrow(Registries.NOISE).asLookup(), world.getSeed());

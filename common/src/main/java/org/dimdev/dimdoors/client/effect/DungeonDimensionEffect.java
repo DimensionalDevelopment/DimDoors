@@ -3,25 +3,19 @@ package org.dimdev.dimdoors.client.effect;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.vehicle.Minecart;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
-import org.dimdev.dimdoors.mixin.client.accessor.DimensionSpecialEffectsMixin;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
-import org.joml.Matrix4f;
 
 import java.util.List;
 
@@ -90,23 +84,23 @@ public class DungeonDimensionEffect extends DimensionSpecialEffects implements D
         for(int i = 0; i < 6; ++i) {
             poseStack.pushPose();
             if (i == 1) {
-                poseStack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
             }
 
             if (i == 2) {
-                poseStack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(-90.0F));
             }
 
             if (i == 3) {
-                poseStack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(180.0F));
+                poseStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
             }
 
             if (i == 4) {
-                poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(90.0F));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
             }
 
             if (i == 5) {
-                poseStack.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(-90.0F));
+                poseStack.mulPose(Vector3f.ZP.rotationDegrees(-90.0F));
             }
 
             Matrix4f matrix4f = poseStack.last().pose();
@@ -156,10 +150,10 @@ public class DungeonDimensionEffect extends DimensionSpecialEffects implements D
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             poseStack.pushPose();
-            poseStack.mulPose(Axis.XP.rotationDegrees(90.0f));
+            poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0f));
             i = Mth.sin(info.getSunAngle()) < 0.0f ? 180.0f : 0.0f;
-            poseStack.mulPose(Axis.ZP.rotationDegrees(i));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(90.0f));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(i));
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(90.0f));
             float j = fs[0];
             k = fs[1];
             float l = fs[2];
@@ -180,8 +174,8 @@ public class DungeonDimensionEffect extends DimensionSpecialEffects implements D
         poseStack.pushPose();
 //        i = 1.0f - 0; //level.getRainLevel(partialTick); TODO: Find out if we want this
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-90.0f));
-        poseStack.mulPose(Axis.XP.rotationDegrees(info.getTimeOfDay() * 360.0f));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(-90.0f));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(info.getTimeOfDay() * 360.0f));
         Matrix4f matrix4f2 = poseStack.last().pose();
         k = 30.0f;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);

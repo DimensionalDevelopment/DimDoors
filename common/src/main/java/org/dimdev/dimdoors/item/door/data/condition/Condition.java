@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.item.door.data.condition;
 
 import com.google.gson.JsonObject;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public interface Condition {
-	Registrar<ConditionType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ConditionType<?>>builder(DimensionalDoors.id("rift_data_condition")).build();
+	Registrar<ConditionType<?>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<ConditionType<?>>builder(DimensionalDoors.id("rift_data_condition")).build();
 
 	boolean matches(EntranceRiftBlockEntity rift);
 

@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.decay;
 
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 public interface DecayPredicate {
-    Registrar<DecayPredicateType<? extends DecayPredicate>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayPredicateType<? extends DecayPredicate>>builder(DimensionalDoors.id("decay_predicate_type")).build();
+    Registrar<DecayPredicateType<? extends DecayPredicate>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<DecayPredicateType<? extends DecayPredicate>>builder(DimensionalDoors.id("decay_predicate_type")).build();
 
     DecayPredicate NONE = new DecayPredicate() {
         private static final String ID = "none";

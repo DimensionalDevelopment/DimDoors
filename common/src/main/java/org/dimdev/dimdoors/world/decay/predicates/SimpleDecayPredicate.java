@@ -3,8 +3,7 @@ package org.dimdev.dimdoors.world.decay.predicates;
 import com.google.common.collect.Streams;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -34,15 +33,15 @@ public class SimpleDecayPredicate implements DecayPredicate {
     public DecayPredicate fromNbt(CompoundTag nbt) {
 		String name = nbt.getString("entry");
 
-		if(name.startsWith("#")) tag = TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(name.substring(1)));
-		else block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(name));
+		if(name.startsWith("#")) tag = TagKey.create(Registry.BLOCK.key(), ResourceLocation.tryParse(name.substring(1)));
+		else block = Registry.BLOCK.get(ResourceLocation.tryParse(name));
         return this;
     }
 
     @Override
     public CompoundTag toNbt(CompoundTag nbt) {
         DecayPredicate.super.toNbt(nbt);
-        nbt.putString("entry", tag != null ? "#" + tag.location().toString() : BuiltInRegistries.BLOCK.getKey(block).toString());
+        nbt.putString("entry", tag != null ? "#" + tag.location().toString() : Registry.BLOCK.getKey(block).toString());
         return nbt;
     }
 
@@ -63,7 +62,7 @@ public class SimpleDecayPredicate implements DecayPredicate {
 
 	@Override
 	public Set<Block> constructApplicableBlocks() {
-		return block != null ? Set.of(block) : Streams.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(tag)).map(Holder::value).collect(Collectors.toSet());
+		return block != null ? Set.of(block) : Streams.stream(Registry.BLOCK.getTagOrEmpty(tag)).map(Holder::value).collect(Collectors.toSet());
 	}
 
 	public static Builder builder() {

@@ -5,9 +5,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
@@ -27,7 +27,7 @@ public class UnderlaidChildItemRenderer {
 	}
 
 //	@Override
-	public void render(ItemStack stack, ItemDisplayContext mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
+	public void render(ItemStack stack, ItemTransforms.TransformType mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
 		if (!(stack.getItem() instanceof DimensionalDoorItemRegistrar.ChildItem childItem)) throw new UnsupportedOperationException("Can only use UnderlaidChildItemRenderer for ChildItems");
 
 		matrices.pushPose();
@@ -39,7 +39,7 @@ public class UnderlaidChildItemRenderer {
 		matrices.pushPose();
 		childItem.transform(matrices);
 		matrices.scale(0.9f, 0.9f, 0.9f);
-		itemRenderer.renderStatic(underlay, ItemDisplayContext.NONE, light, overlay, matrices, vertexConsumers, null, 0);
+		itemRenderer.renderStatic(underlay, mode, light, overlay, matrices, vertexConsumers, 0);
 		matrices.popPose();
 
 		ItemStack originalItemStack = new ItemStack(
@@ -49,7 +49,7 @@ public class UnderlaidChildItemRenderer {
 
 		matrices.pushPose();
 		childItem.transform(matrices);
-		itemRenderer.renderStatic(originalItemStack, ItemDisplayContext.NONE, light, overlay, matrices, vertexConsumers, null, 0);
+		itemRenderer.renderStatic(originalItemStack, mode, light, overlay, matrices, vertexConsumers, 0);
 		matrices.popPose();
 
 		matrices.popPose();

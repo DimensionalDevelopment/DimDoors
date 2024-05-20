@@ -26,8 +26,8 @@ import org.jetbrains.annotations.Nullable;
 public class WaterLoggableDoorBlock extends DoorBlock implements SimpleWaterloggedBlock {
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-	protected WaterLoggableDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
-		super(settings, blockSetType);
+	protected WaterLoggableDoorBlock(BlockBehaviour.Properties settings) {
+		super(settings);
 		registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(HINGE, DoorHingeSide.LEFT).setValue(POWERED, false).setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
 	}
 

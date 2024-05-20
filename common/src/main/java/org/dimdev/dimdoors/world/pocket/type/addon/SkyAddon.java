@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;

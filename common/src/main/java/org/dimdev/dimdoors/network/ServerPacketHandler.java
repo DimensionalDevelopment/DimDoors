@@ -120,13 +120,13 @@ public class ServerPacketHandler implements ServerPacketListener {
 		getServer().execute(() -> {
 			Item item = getPlayer().getItemInHand(packet.getHand()).getItem();
 			if (item instanceof ExtendedItem) {
-				((ExtendedItem) item).onAttackBlock(getPlayer().level(), getPlayer(), packet.getHand(), packet.getPos(), packet.getDirection());
+				((ExtendedItem) item).onAttackBlock(getPlayer().level, getPlayer(), packet.getHand(), packet.getPos(), packet.getDirection());
 			}
 		});
 	}
 
 	@Override
 	public void onNetworkHandlerInitialized(NetworkHandlerInitializedC2SPacket packet) {
-		syncPocketAddonsIfNeeded(getPlayer().level(), getPlayer().blockPosition());
+		syncPocketAddonsIfNeeded(getPlayer().level, getPlayer().blockPosition());
 	}
 }
