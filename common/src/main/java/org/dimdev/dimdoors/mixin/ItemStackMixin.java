@@ -15,7 +15,7 @@ public class ItemStackMixin {
         return state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autogenDoor ? autogenDoor.getOriginalBlock().defaultBlockState() : state;
     }
 
-    @ModifyArg(method = "isCorrectToolForDrops", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;isCorrectToolForDrops(Lnet/minecraft/world/level/block/state/BlockState;)Z"), index = 0)
+    @ModifyArg(method = "isCorrectToolForDrops", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;isCorrectToolForDrops(Lnet/minecraft/world/level/block/state/BlockState;)Z"))
     public BlockState isCorrect(BlockState state) {
         return state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autogenDoor ? autogenDoor.getOriginalBlock().defaultBlockState() : state;
     }

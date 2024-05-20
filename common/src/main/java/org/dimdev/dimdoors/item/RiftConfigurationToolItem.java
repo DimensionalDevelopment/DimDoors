@@ -53,7 +53,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 			if (RaycastHelper.hitsRift(hit, world)) {
 				RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 
-				if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() >= 0) {
+				if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() < counter.count()) {
 					EntityUtils.chat(player, Component.literal("Id: " + ((IdMarker) rift.getDestination()).getId()));
 				} else {
 					int id = counter.increment();

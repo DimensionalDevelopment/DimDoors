@@ -14,6 +14,11 @@
       "type": "dimdoors:template",
       "ids": [2],
       "templateId": "dimdoors:lab/lab_experimentation"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "dimdoors:rift_data/default_dungeon"
     }
   ]
 }
