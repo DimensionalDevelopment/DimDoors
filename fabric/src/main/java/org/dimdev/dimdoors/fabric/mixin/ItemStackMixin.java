@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.mixin;
+package org.dimdev.dimdoors.fabric.mixin;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
