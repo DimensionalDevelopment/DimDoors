@@ -9,6 +9,7 @@ import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.utils.Env;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -101,7 +102,7 @@ public class DimensionalDoorBlockRegistrar {
 
 		if(mappedDoorBlocks.containsKey(gennedId)) return;
 
-		Block dimBlock = registrar.register(gennedId, () -> constructor.apply(BlockBehaviour.Properties.copy((BlockBehaviour) original), original)).get();
+		Block dimBlock = registrar.register(gennedId, () -> constructor.apply(BlockBehaviour.Properties.copy((BlockBehaviour) original).requiresCorrectToolForDrops(), original)).get();
 //		ModBlockEntityTypes.ENTRANCE_RIFT.get().addBlock(dimBlock); //TODO: Add
 		mappedDoorBlocks.put(gennedId, location);
 		itemRegistrar.notifyBlockMapped((Block) original, dimBlock);
@@ -186,7 +187,9 @@ public class DimensionalDoorBlockRegistrar {
 
 		@Override
 		public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-			return originalBlock.getDrops(state, params);
+			var defaultState = originalBlock.defaultBlockState();
+
+			return originalBlock.getDrops(defaultState, params);
 		}
 
 		@Override

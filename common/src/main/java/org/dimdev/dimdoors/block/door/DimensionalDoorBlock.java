@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -41,6 +42,8 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 
@@ -155,6 +158,11 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			return null;
 		}
 		return new EntranceRiftBlockEntity(pos, state);
+	}
+
+	@Override
+	public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+		return super.getDrops(state, params);
 	}
 
 	public void createDetachedRift(Level world, BlockPos pos) {

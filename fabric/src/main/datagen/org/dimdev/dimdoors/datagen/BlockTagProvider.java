@@ -30,6 +30,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 	}
 
 	protected void configure(HolderGetter.Provider arg) {
+
 		add(ModBlockTags.DECAY_TO_AIR,
 				Blocks.COBWEB,
 				ModBlocks.DRIFTWOOD_LEAVES.get(),

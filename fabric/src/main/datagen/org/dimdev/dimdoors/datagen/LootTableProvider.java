@@ -25,8 +25,8 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 			for (RegistrySupplier<Block> block : ModBlocks.FABRIC_BLOCKS.values()) {
 				this.dropWhenSilkTouch(block.get());
 			}
-			this.dropWhenSilkTouch(ModBlocks.GOLD_DOOR.get());
-			this.dropWhenSilkTouch(ModBlocks.QUARTZ_DOOR.get());
+			this.dropSelf(ModBlocks.GOLD_DOOR.get());
+			this.dropSelf(ModBlocks.QUARTZ_DOOR.get());
 //		this.addDropWithSilkTouch(ModBlocks.OAK_DIMENSIONAL_DOOR);
 //		this.addDropWithSilkTouch(ModBlocks.IRON_DIMENSIONAL_DOOR);
 //		this.addDropWithSilkTouch(ModBlocks.GOLD_DIMENSIONAL_DOOR);

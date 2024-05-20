@@ -6,6 +6,7 @@
   "mixins": [
     "ArgumentTypesMixin",
     "BlockMixin",
+    "ItemStackMixin",
     "DoorBlockMixin",
     "EntityMixin",
     "ExplosionMixin",
