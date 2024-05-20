@@ -1,6 +1,0 @@
-{
-  "destination": {
-    "type": "dimdoors:escape",
-    "canEscapeLimbo": true
-  }
-}

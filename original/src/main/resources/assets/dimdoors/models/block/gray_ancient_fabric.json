@@ -1,4 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": { "all": "dimdoors:block/gray_ancient_fabric" }
-}

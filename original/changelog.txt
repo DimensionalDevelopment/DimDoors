@@ -1,4 +1,0 @@
-5.1.0
-- Update to 1.19.3
-- Add more variants of blocks (only creative mode for now)
-- Fix bug with players being teleported outside the world border in limbo

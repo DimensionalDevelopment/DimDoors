@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:block/orientable_with_bottom",
-  "textures": {
-    "bottom": "dimdoors:block/tesselating_loom_bottom",
-    "front": "dimdoors:block/tesselating_loom_front",
-    "side": "dimdoors:block/tesselating_loom_side",
-    "top": "dimdoors:block/tesselating_loom_top"
-  }
-}
