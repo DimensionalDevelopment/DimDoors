@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -18,23 +21,24 @@ import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.pockets.virtual.reference.TagReference;
 import org.dimdev.dimdoors.pockets.virtual.selection.ConditionalSelector;
 import org.dimdev.dimdoors.pockets.virtual.selection.PathSelector;
-import org.dimdev.dimdoors.util.Serialized;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Supplier;
-
-public interface ImplementedVirtualPocket<T extends ImplementedVirtualPocket<T>> extends VirtualPocket, Serialized<T> {
+public interface ImplementedVirtualPocket extends VirtualPocket {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
 	Registrar<ImplementedVirtualPocket.VirtualPocketType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ImplementedVirtualPocket.VirtualPocketType<?>>builder(DimensionalDoors.id("virtual_pocket_type")).build();
-    Codec<ImplementedVirtualPocket<?>> IMPL_CODEC = CodecUtil.registrarCodec(REGISTRY);
+    Codec<ImplementedVirtualPocket> IMPL_CODEC = CodecUtil.registrarCodec(REGISTRY, ImplementedVirtualPocket::getType, VirtualPocketType::mapCodec, ImplementedVirtualPocket::codec);
 
-	static Codec<ImplementedVirtualPocket<?>> codec() {
+	static Codec<ImplementedVirtualPocket> codec() {
 		return IMPL_CODEC;
 	}
 
 	static ImplementedVirtualPocket deserialize(Tag nbt, @Nullable ResourceManager manager) {
+		var json = new JsonObject();
+
+		JsonOps.INSTANCE.withParser(IMPL_CODEC).andThen(DataResult::getOrThrow).apply(json);
+
 		return switch (nbt.getId()) {
 			case Tag.TAG_COMPOUND -> deserialize((CompoundTag) nbt, manager);
 			case Tag.TAG_STRING -> ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, manager)));
@@ -56,12 +60,8 @@ public interface ImplementedVirtualPocket<T extends ImplementedVirtualPocket<T>>
 		return deserialize(nbt, null);
 	}
 
-	static Tag serialize(ImplementedVirtualPocket implementedVirtualPocket, boolean allowReference) {
-		return implementedVirtualPocket.toNbt(new CompoundTag(), allowReference);
-	}
-
 	static Tag serialize(ImplementedVirtualPocket implementedVirtualPocket) {
-		return serialize(implementedVirtualPocket, false);
+		return implementedVirtualPocket.toNbt(new CompoundTag());
 	}
 
 	ImplementedVirtualPocket fromNbt(CompoundTag nbt, @Nullable ResourceManager manager);
@@ -70,22 +70,18 @@ public interface ImplementedVirtualPocket<T extends ImplementedVirtualPocket<T>>
 		return fromNbt(nbt, null);
 	}
 
-	Tag toNbt(CompoundTag nbt, boolean allowReference);
+	Tag toNbt(CompoundTag nbt);
 
-	default Tag toNbt(CompoundTag nbt) {
-		return this.toNbt(nbt, false);
-	}
-
-	VirtualPocketType<ImplementedVirtualPocket> getType();
+	VirtualPocketType<? extends ImplementedVirtualPocket> getType();
 
 	String getKey();
 
-	interface VirtualPocketType<T extends ImplementedVirtualPocket<T>> extends Serialized.SerializedType<T> {
-		RegistrySupplier<VirtualPocketType<NoneVirtualPocket>> NONE = register(DimensionalDoors.id(NoneVirtualPocket.KEY), () -> NoneVirtualPocket.NONE);
-		RegistrySupplier<VirtualPocketType<IdReference>> ID_REFERENCE = register(DimensionalDoors.id(IdReference.KEY), IdReference::new);
-		RegistrySupplier<VirtualPocketType<TagReference>> TAG_REFERENCE = register(DimensionalDoors.id(TagReference.KEY), TagReference::new);
-		RegistrySupplier<VirtualPocketType<ConditionalSelector>> CONDITIONAL_SELECTOR = register(DimensionalDoors.id(ConditionalSelector.KEY), ConditionalSelector::new);
-		RegistrySupplier<VirtualPocketType<PathSelector>> PATH_SELECTOR = register(DimensionalDoors.id(PathSelector.KEY), PathSelector::new);
+	interface VirtualPocketType<T extends ImplementedVirtualPocket> {
+		RegistrySupplier<VirtualPocketType<NoneVirtualPocket>> NONE = register(DimensionalDoors.id(NoneVirtualPocket.KEY), MapCodec.unit(NoneVirtualPocket.NONE));
+		RegistrySupplier<VirtualPocketType<IdReference>> ID_REFERENCE = register(DimensionalDoors.id(IdReference.KEY), IdReference.CODEC);
+		RegistrySupplier<VirtualPocketType<TagReference>> TAG_REFERENCE = register(DimensionalDoors.id(TagReference.KEY), TagReference.CODEC);
+		RegistrySupplier<VirtualPocketType<ConditionalSelector>> CONDITIONAL_SELECTOR = register(DimensionalDoors.id(ConditionalSelector.KEY), ConditionalSelector.CODEC);
+		RegistrySupplier<VirtualPocketType<PathSelector>> PATH_SELECTOR = register(DimensionalDoors.id(PathSelector.KEY), PathSelector.CODEC);
 
 		T fromNbt(CompoundTag nbt, @Nullable ResourceManager manager);
 
@@ -95,11 +91,11 @@ public interface ImplementedVirtualPocket<T extends ImplementedVirtualPocket<T>>
 
 		CompoundTag toNbt(CompoundTag nbt);
 
-		@Override MapCodec<T> mapCodec();
+		MapCodec<T> mapCodec();
 
 		static void register() {}
 
-		static <T extends ImplementedVirtualPocket<T>> RegistrySupplier<VirtualPocketType<T>> register(ResourceLocation id, MapCodec<T> mapCodec, Supplier<T> factory) {
+		static <T extends ImplementedVirtualPocket> RegistrySupplier<VirtualPocketType<T>> register(ResourceLocation id, MapCodec<T> mapCodec) {
 			return REGISTRY.register(id, () -> new VirtualPocketType<T>() {
 				@Override
 				public MapCodec<T> mapCodec() {
@@ -125,6 +121,7 @@ public interface ImplementedVirtualPocket<T extends ImplementedVirtualPocket<T>>
 		public static final NoneVirtualPocket NONE = new NoneVirtualPocket();
 
 		private NoneVirtualPocket() {
+			super(null);
 		}
 
 		@Override

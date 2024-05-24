@@ -19,7 +19,7 @@ import java.util.Collection;
 
 public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable {
 
-	Codec<VirtualPocket> CODEC = CodecUtil.<VirtualPocket, VirtualPocketList, ImplementedVirtualPocket<?>>xor(VirtualPocketList.CODEC, ImplementedVirtualPocket.IMPL_CODEC);
+	Codec<VirtualPocket> CODEC = CodecUtil.xor(VirtualPocketList.CODEC, ImplementedVirtualPocket.IMPL_CODEC);
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
 	static VirtualPocket deserialize(Tag nbt) {
@@ -50,7 +50,7 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 		if (virtualPocket instanceof VirtualPocketList) {
 			return VirtualPocketList.serialize((VirtualPocketList) virtualPocket, allowReference);
 		}
-		return ImplementedVirtualPocket.serialize((ImplementedVirtualPocket) virtualPocket, allowReference);
+		return ImplementedVirtualPocket.serialize((ImplementedVirtualPocket) virtualPocket);
 	}
 
 	static Tag serialize(VirtualPocket virtualPocket) {

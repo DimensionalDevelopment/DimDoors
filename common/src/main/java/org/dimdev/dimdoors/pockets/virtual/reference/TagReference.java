@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import com.google.common.base.MoreObjects;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -10,19 +13,34 @@ import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TagReference extends PocketGeneratorReference {
+	public static MapCodec<TagReference> CODEC = RecordCodecBuilder.mapCodec(instance -> commonRefereceFields(instance)
+			.and(Codec.STRING.listOf().optionalFieldOf("required", new ArrayList<>()).forGetter(a -> a.required))
+			.and(Codec.STRING.listOf().optionalFieldOf("blackList", new ArrayList<>()).forGetter(a -> a.blackList))
+			.and(Codec.BOOL.optionalFieldOf("required", false).forGetter(a -> a.exact))
+			.apply(instance, TagReference::new));
+
+
 	public static final String KEY = "tag";
 
-	private final List<String> required = new ArrayList<>();
-	private final List<String> blackList = new ArrayList<>();
+	private final List<String> required;
+	private final List<String> blackList;
 	private Boolean exact;
 
 	private WeightedList<PocketGenerator, PocketGenerationContext> pockets;
+
+	public TagReference(String resouceKey, String weight, Boolean setupLoot, List<Modifier> modifierList, List<CompoundTag> addons, List<String> required, List<String> blackList, boolean exact) {
+		super(resouceKey, weight, setupLoot, modifierList, addons);
+		this.required = required;
+		this.blackList = blackList;
+		this.exact = exact;
+	}
 
 	@Override
 	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
@@ -48,8 +66,8 @@ public class TagReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
+	protected CompoundTag toNbtInternal(CompoundTag nbt) {
+		super.toNbtInternal(nbt);
 
 		if (required.size() > 0) {
 			ListTag listNbt = new ListTag();

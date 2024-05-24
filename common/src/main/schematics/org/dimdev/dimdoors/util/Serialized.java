@@ -7,5 +7,5 @@ public interface Serialized<T extends Serialized<T>> {
         MapCodec<T> mapCodec();
     }
 
-    public <V extends Serialized<T>> SerializedType<T> getType();
+    public <V extends Serialized<T>> V getType();
 }

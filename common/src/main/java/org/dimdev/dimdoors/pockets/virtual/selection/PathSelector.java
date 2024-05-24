@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.Path;
@@ -10,7 +13,14 @@ import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 public class PathSelector extends AbstractVirtualPocketList {
 	public static final String KEY = "path";
 
+	public static MapCodec<PathSelector> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance).and(Codec.STRING.optionalFieldOf("path", null).forGetter(a -> a.path)).apply(instance, PathSelector::new));
+
 	private String path;
+
+	public PathSelector(String resourceKey, String path) {
+		super(resourceKey);
+		this.path = path;
+	}
 
 	@Override
 	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
@@ -20,8 +30,8 @@ public class PathSelector extends AbstractVirtualPocketList {
 	}
 
 	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
+	public CompoundTag toNbtInternal(CompoundTag nbt) {
+		super.toNbtInternal(nbt);
 
 		nbt.putString("path", path);
 

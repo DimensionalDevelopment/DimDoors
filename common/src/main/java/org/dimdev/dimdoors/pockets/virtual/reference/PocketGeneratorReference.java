@@ -2,6 +2,9 @@ package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -36,13 +39,31 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
+	public static <T extends PocketGeneratorReference> Products.P5<RecordCodecBuilder.Mu<T>, String, String, Boolean, List<Modifier>, List<CompoundTag>> commonRefereceFields(RecordCodecBuilder.Instance<T> instance) {
+		return commonFields(instance)
+				.and(Codec.STRING.optionalFieldOf("weight", null).forGetter(a -> a.weight))
+				.and(Codec.BOOL.optionalFieldOf("setupLoot", false).forGetter(a -> a.setupLoot))
+				.and(Modifier.CODEC.listOf().optionalFieldOf("modifierList", new ArrayList<>()).forGetter(a -> a.modifierList))
+				.and(CompoundTag.CODEC.listOf().optionalFieldOf("addons", Lists.newArrayList()).forGetter(a -> a.addons));
+	}
+
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	protected String weight;
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
-	protected final List<Modifier> modifierList = Lists.newArrayList();
-	protected final List<CompoundTag> addons = new ArrayList<>();
+	protected final List<Modifier> modifierList;
+	protected final List<CompoundTag> addons;
+
+	public PocketGeneratorReference(String resouceKey, String weight, Boolean setupLoot, List<Modifier> modifierList, List<CompoundTag> addons) {
+		super(resouceKey);
+		this.weight = weight;
+		this.setupLoot = setupLoot;
+		this.modifierList = modifierList;
+		this.addons = addons;
+
+		if(weight != null) parseWeight();
+	}
 
 	private void parseWeight() {
 		try {
@@ -96,7 +117,7 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 	}
 
 	@Override
-	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
+	protected CompoundTag toNbtInternal(CompoundTag nbt) {
 
 		if (weight != null) nbt.putString("weight", weight);
 

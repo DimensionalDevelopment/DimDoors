@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.pockets.modifier.ResourceCodec;
-import org.dimdev.dimdoors.util.Serialized;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -21,26 +20,12 @@ public class CodecUtil {
         return xor(codec, Codec.lazyInitialized(() -> ResourceCodec.inputStream(stream -> ResourceUtil.JSON_READER.andThenReader(ResourceUtil.codec(JsonOps.INSTANCE, supplier.get())).apply(stream, null))));
     }
 
-    public static <T extends Serialized<T>> Codec<T> registrarCodec(Registrar<Serialized.SerializedType<T>> registrar) {
-        return ResourceLocation.CODEC.xmap(new Function<ResourceLocation, Serialized.SerializedType<T>>() {
-            @Override
-            public Serialized.SerializedType<T> apply(ResourceLocation id) {
-                return registrar.get(id);
-            }
-        }, registrar::getId).dispatch(new Function<T, Serialized.SerializedType<T>>() {
-            @Override
-            public Serialized.SerializedType<T> apply(T t) {
-                return t.getType();
-            }
-        }, new Function<Serialized.SerializedType<T>, MapCodec<? extends T>>() {
-            @Override
-            public MapCodec<? extends T> apply(Serialized.SerializedType<T> tSerializedType) {
-                return tSerializedType.mapCodec();
-            }
-        });
+    public static <T, U> Codec<U> registrarCodec(Registrar<T> registrar, Function<U, T> function1, Function<T, MapCodec<? extends U>> function2) {
+
+        return  ResourceLocation.CODEC.xmap(registrar::get, registrar::getId).dispatch(function1, function2);
     }
 
-    public static <T extends Serialized<T>, V extends Serialized.SerializedType<T>> Codec<T> registrarCodec(Registrar<Serialized.SerializedType<T>> registrar, Supplier<Codec<T>> supplier) {
-        return resourceCodec(registrarCodec(registrar), supplier);
+    public static <T, U> Codec<U> registrarCodec(Registrar<T> registrar, Function<U, T> function1, Function<T, MapCodec<? extends U>> function2, Supplier<Codec<U>> supplier) {
+        return resourceCodec(registrarCodec(registrar, function1, function2), supplier);
     }
 }

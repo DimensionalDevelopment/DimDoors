@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import com.google.common.base.MoreObjects;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -8,12 +11,23 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 
+import java.util.List;
+
 public class IdReference extends PocketGeneratorReference {
+	public static MapCodec<IdReference> CODEC = RecordCodecBuilder.mapCodec(instance -> commonRefereceFields(instance)
+			.and(Codec.STRING.optionalFieldOf("id", null).xmap(DimensionalDoors::id, ResourceLocation::getPath).forGetter(a -> a.id))
+			.apply(instance, IdReference::new));
+
 	public static final String KEY = "id";
 
 	private ResourceLocation id;
+
+	public IdReference(String resouceKey, String weight, Boolean setupLoot, List<Modifier> modifierList, List<CompoundTag> addons, ResourceLocation id) {
+		super(resouceKey, weight, setupLoot, modifierList, addons);
+	}
 
 	@Override
 	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
@@ -26,8 +40,8 @@ public class IdReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
+	protected CompoundTag toNbtInternal(CompoundTag nbt) {
+		super.toNbtInternal(nbt);
 
 		nbt.putString("id", id.getPath());
 

@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -9,16 +11,23 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.CodecUtil;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Collection;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface Modifier extends ReferenceSerializable {
 	Registrar<ModifierType<? extends Modifier>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ModifierType<? extends Modifier>>builder(DimensionalDoors.id("modifier_type")).build();
+	Codec<Modifier> CODEC = CodecUtil.registrarCodec(REGISTRY, Modifier::getType, ModifierType::mapCodec, Modifier::codec);
+
+	static Codec<Modifier> codec() {
+		return CODEC;
+	}
 
 	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
 
@@ -107,6 +116,8 @@ public interface Modifier extends ReferenceSerializable {
 		}
 
 		CompoundTag toNbt(CompoundTag nbt);
+
+		MapCodec<Modifier> mapCodec();
 
 		static void register() {}
 

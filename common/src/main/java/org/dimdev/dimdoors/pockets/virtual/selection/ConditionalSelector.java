@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
-import com.google.common.collect.Maps;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.math.Equation;
@@ -15,26 +18,26 @@ import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 public class ConditionalSelector extends AbstractVirtualPocket {
+	public static MapCodec<ConditionalSelector> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
+			.and(Codec.list(Condition.CODEC).optionalFieldOf("conditions", Lists.newArrayList()).forGetter(a -> a.conditions))
+			.apply(instance, ConditionalSelector::new));
+
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "conditional";
 
-	// TODO: redo this weird map part, Equations now have Equation.asString()
-	private LinkedHashMap<String, VirtualPocket> pocketMap = Maps.newLinkedHashMap();
-	private LinkedHashMap<String, Equation> equationMap = Maps.newLinkedHashMap();
+	private List<Condition> conditions;
 
-	public ConditionalSelector() {
+	public ConditionalSelector(String resourceString, List<Condition> conditions) {
+		super(resourceString);
+		this.conditions = conditions;
 	}
 
-	public ConditionalSelector(LinkedHashMap<String, VirtualPocket> pocketMap) {
-		this.pocketMap = pocketMap;
-	}
 
-	public LinkedHashMap<String, VirtualPocket> getPocketMap() {
-		return pocketMap;
+	public List<Condition> getConditions() {
+		return conditions;
 	}
 
 	@Override
@@ -55,14 +58,14 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 	}
 
 	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
+	public CompoundTag toNbtInternal(CompoundTag nbt) {
+		super.toNbtInternal(nbt);
 
 		ListTag conditionalPockets = new ListTag();
 		pocketMap.forEach((condition, pocket) -> {
 			CompoundTag compound = new CompoundTag();
 			compound.putString("condition", condition);
-			compound.put("pocket", VirtualPocket.serialize(pocket, allowReference));
+			compound.put("pocket", VirtualPocket.serialize(pocket));
 			conditionalPockets.add(compound);
 		});
 		nbt.put("pockets", conditionalPockets);
@@ -86,7 +89,7 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 
 	@Override
 	public void init() {
-		pocketMap.values().forEach(VirtualPocket::init);
+		conditions.values().stream().map(Condition::pocket).forEach(VirtualPocket::init);
 	}
 
 	@Override
@@ -105,11 +108,19 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 	}
 
 	private VirtualPocket getNextPocket(PocketGenerationContext parameters) {
-		for (Map.Entry<String, VirtualPocket> entry : pocketMap.entrySet()) {
-			if (equationMap.get(entry.getKey()).asBoolean(parameters.toVariableMap(new HashMap<>()))) {
-				return entry.getValue();
+		for (var entry : conditions) {
+			if (entry.equation.asBoolean(parameters.toVariableMap(new HashMap<>()))) {
+				return entry.pocket();
 			}
 		}
-		return pocketMap.values().stream().findFirst().orElse(NoneVirtualPocket.NONE);
+		return conditions.stream().map(Condition::pocket).findFirst().orElse(NoneVirtualPocket.NONE);
+	}
+
+	public record Condition(Equation equation, VirtualPocket pocket) {
+		public static Codec<Condition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Equation.CODEC.fieldOf("equation").forGetter(Condition::equation),
+				VirtualPocket.CODEC.fieldOf("pocket").forGetter(Condition::pocket))
+				.apply(instance, Condition::new));
+
 	}
 }

@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.api.util.math;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import net.minecraft.util.Mth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,13 @@ import java.util.function.UnaryOperator;
 
 //@FunctionalInterface
 public interface Equation {
+	static final Codec<Equation> CODEC = Codec.STRING.xmap(s -> {
+		try {
+			return Equation.parse(s);
+		} catch (EquationParseException e) {
+			throw new RuntimeException(e);
+		}
+	}, Equation::asString);
 	double FALSE = 0d;
 	double TRUE = 1d;
 
