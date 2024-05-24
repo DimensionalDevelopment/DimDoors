@@ -1,13 +1,13 @@
 package org.dimdev.dimdoors.pockets;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -63,10 +63,10 @@ public class TemplateUtils {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");
-            table = world.getServer().getLootData().getLootTable(DimensionalDoors.id("dungeon_chest"));
+            table = world.getServer().reloadableRegistries().getLootTable(DimensionalDoors.key(Registries.LOOT_TABLE, "dungeon_chest"));
         } else {
             logger.debug("Now populating dispenser.");
-            table = world.getServer().getLootData().getLootTable(DimensionalDoors.id("dispenser_projectiles"));
+            table = world.getServer().reloadableRegistries().getLootTable(DimensionalDoors.key(Registries.LOOT_TABLE, "dispenser_projectiles"));
         }
         LootParams ctx = new LootParams.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
         table.fill(inventory, ctx, world.getSeed());

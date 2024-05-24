@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class PocketExitMarker extends VirtualTarget implements EntityTarget {
-	public static final Codec<PocketExitMarker> CODEC = Codec.unit(PocketExitMarker::new);
+	public static final MapCodec<PocketExitMarker> CODEC = MapCodec.unit(PocketExitMarker::new);
 
 	public PocketExitMarker() {
 	}

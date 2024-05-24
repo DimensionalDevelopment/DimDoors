@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Rotations;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -10,6 +11,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import java.util.Collections;
 
 public class UnstableTarget extends VirtualTarget implements EntityTarget {
+	public static final MapCodec<UnstableTarget> CODEC = MapCodec.unit(UnstableTarget::new);
 	private static final RandomSource RANDOM = RandomSource.create();
 
 	@Override

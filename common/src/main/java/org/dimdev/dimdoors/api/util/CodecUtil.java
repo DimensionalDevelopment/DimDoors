@@ -21,7 +21,6 @@ public class CodecUtil {
     }
 
     public static <T, U> Codec<U> registrarCodec(Registrar<T> registrar, Function<U, T> function1, Function<T, MapCodec<? extends U>> function2) {
-
         return  ResourceLocation.CODEC.xmap(registrar::get, registrar::getId).dispatch(function1, function2);
     }
 

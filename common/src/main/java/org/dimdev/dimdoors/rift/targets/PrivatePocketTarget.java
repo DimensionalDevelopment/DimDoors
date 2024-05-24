@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -22,6 +23,7 @@ import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 import java.util.UUID;
 
 public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
+	public static final MapCodec<PrivatePocketTarget> CODEC = MapCodec.unit(PrivatePocketTarget::new);
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final RGBA COLOR = new RGBA(0, 1, 0, 1);

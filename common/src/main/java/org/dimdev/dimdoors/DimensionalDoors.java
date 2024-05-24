@@ -13,6 +13,7 @@ import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -235,4 +237,8 @@ public class DimensionalDoors {
 			}
 		}
 	}
+
+    public static ResourceKey<LootTable> key(ResourceKey<Registry<LootTable>> key, String name) {
+		return ResourceKey.create(key, DimensionalDoors.id(name));
+    }
 }

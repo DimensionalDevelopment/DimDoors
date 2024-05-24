@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -22,7 +25,18 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
+public class RandomTarget extends VirtualTarget {
+	public static final MapCodec<RandomTarget> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+			Codec.FLOAT.fieldOf("newRiftWeight").forGetter(RandomTarget::getNewRiftWeight),
+			Codec.DOUBLE.fieldOf("weightMaximum").forGetter(RandomTarget::getWeightMaximum),
+			Codec.DOUBLE.fieldOf("coordFactor").forGetter(RandomTarget::getCoordFactor),
+			Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(RandomTarget::getPositiveDepthFactor),
+			Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(RandomTarget::getNegativeDepthFactor),
+			Codec.INT.listOf().xmap(Set::copyOf, List::copyOf).fieldOf("acceptedGroups").forGetter(RandomTarget::getAcceptedGroups),
+			Codec.BOOL.fieldOf("noLink").forGetter(obj -> obj.noLink),
+			Codec.BOOL.fieldOf("noLinkBack").forGetter(obj -> obj.noLinkBack))
+			.apply(inst, RandomTarget::new));
+	// TODO: Split into DungeonTarget subclass
 	private final float newRiftWeight;
 	private final double weightMaximum;
 	private final double coordFactor;

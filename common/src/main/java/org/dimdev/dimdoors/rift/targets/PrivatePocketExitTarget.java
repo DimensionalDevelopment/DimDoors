@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +18,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.UUID;
 
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
+	public static final MapCodec<PrivatePocketExitTarget> CODEC = MapCodec.unit(PrivatePocketExitTarget::new);
 	public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
 
 	public PrivatePocketExitTarget() {

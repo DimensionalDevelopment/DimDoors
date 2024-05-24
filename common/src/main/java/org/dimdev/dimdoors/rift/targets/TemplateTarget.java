@@ -1,21 +1,19 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class TemplateTarget extends WrappedDestinationTarget {
+    public static final MapCodec<TemplateTarget> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(VirtualTarget.CODEC.fieldOf("wrappedDestination").forGetter(obj -> obj.wrappedDestination), ResourceLocation.CODEC.fieldOf("template").forGetter(obj -> obj.template)).apply(inst, TemplateTarget::new));
     private final ResourceLocation template;
 
     public TemplateTarget(VirtualTarget wrappedDestination, ResourceLocation template) {
