@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.pockets.modifier;
+package org.dimdev.dimdoors.util;
 
 import com.mojang.serialization.DynamicOps;
 import net.minecraft.resources.DelegatingOps;

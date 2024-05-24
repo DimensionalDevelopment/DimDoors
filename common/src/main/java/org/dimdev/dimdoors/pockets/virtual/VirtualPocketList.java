@@ -14,7 +14,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
 
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
-	public static final Codec<VirtualPocketList> CODEC = CodecUtil.resourceCodec(VirtualPocket.CODEC.listOf().xmap(virtualPockets -> {
+	public static final Codec<VirtualPocketList> CODEC = CodecUtil.resourceCodec(RESOURCE_STARTING_PATH, VirtualPocket.CODEC.listOf().xmap(virtualPockets -> {
 		var list = new VirtualPocketList();
 		list.addAll(virtualPockets);
 		return list;

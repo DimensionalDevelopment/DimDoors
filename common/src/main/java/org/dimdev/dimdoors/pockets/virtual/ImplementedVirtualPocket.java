@@ -28,7 +28,7 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
 	Registrar<ImplementedVirtualPocket.VirtualPocketType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ImplementedVirtualPocket.VirtualPocketType<?>>builder(DimensionalDoors.id("virtual_pocket_type")).build();
-    Codec<ImplementedVirtualPocket> IMPL_CODEC = CodecUtil.registrarCodec(REGISTRY, ImplementedVirtualPocket::getType, VirtualPocketType::mapCodec, ImplementedVirtualPocket::codec);
+    Codec<ImplementedVirtualPocket> IMPL_CODEC = CodecUtil.registrarCodec(RESOURCE_STARTING_PATH, REGISTRY, ImplementedVirtualPocket::getType, VirtualPocketType::mapCodec, ImplementedVirtualPocket::codec);
 
 	static Codec<ImplementedVirtualPocket> codec() {
 		return IMPL_CODEC;

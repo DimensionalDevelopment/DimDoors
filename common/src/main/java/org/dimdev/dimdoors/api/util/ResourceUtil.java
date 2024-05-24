@@ -57,28 +57,8 @@ public class ResourceUtil {
 		}
 	};
 
-	public static <R extends ReferenceSerializable> R loadReferencedResource(ResourceManager manager, String startingPath, String resourceKey, Function<InputStream, R> reader) {
-		// last two is resource path, rest is flags
-		String[] splitResourceKey = resourceKey.split("\\|");
-
-		Multimap<String, String> flags = HashMultimap.create();
-		flags.put("resource_key", resourceKey);
-
-		for (int i = 0; i < splitResourceKey.length - 1; i++) {
-			String keyValuePair = splitResourceKey[i];
-			int splitIndex = keyValuePair.indexOf(':');
-			if (splitIndex == -1) {
-				// TODO: some logging about malformed flag
-				continue;
-			}
-			flags.put(keyValuePair.substring(0, splitIndex), keyValuePair.substring(splitIndex + 1));
-		}
-
-		String identifier = splitResourceKey[splitResourceKey.length - 1];
-		int identifierSplitIndex = identifier.indexOf(':');
-		R resource = loadResource(manager, new ResourceLocation(identifier.substring(0, identifierSplitIndex), startingPath + identifier.substring(identifierSplitIndex + 1)), reader);
-		resource.processFlags(flags);
-		return resource;
+	public static <R extends ReferenceSerializable> R loadReferencedResource(ResourceManager manager, String startingPath, ResourceLocation resourceKey, Function<InputStream, R> reader) {
+		return loadResource(manager, resourceKey.withPath(startingPath), reader);
 	}
 
 	public static <R> R loadResource(ResourceManager manager, ResourceLocation resourceKey, Function<InputStream, R> reader) {

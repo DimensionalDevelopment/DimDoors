@@ -18,18 +18,17 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Collection;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface Modifier extends ReferenceSerializable {
+	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
 	Registrar<ModifierType<? extends Modifier>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ModifierType<? extends Modifier>>builder(DimensionalDoors.id("modifier_type")).build();
-	Codec<Modifier> CODEC = CodecUtil.registrarCodec(REGISTRY, Modifier::getType, ModifierType::mapCodec, Modifier::codec);
+	Codec<Modifier> CODEC = CodecUtil.registrarCodec(RESOURCE_STARTING_PATH, REGISTRY, Modifier::getType, ModifierType::mapCodec, Modifier::codec);
+
 
 	static Codec<Modifier> codec() {
 		return CODEC;
 	}
-
-	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
 
 	static Modifier deserialize(Tag nbt, ResourceManager manager) {
 		return switch (nbt.getId()) {
@@ -99,15 +98,15 @@ public interface Modifier extends ReferenceSerializable {
 	void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	interface ModifierType<T extends Modifier> {
-		RegistrySupplier<ModifierType<ShellModifier>> SHELL_MODIFIER_TYPE = register(DimensionalDoors.id(ShellModifier.KEY), ShellModifier::new);
-		RegistrySupplier<ModifierType<DimensionalDoorModifier>> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(DimensionalDoors.id(DimensionalDoorModifier.KEY), DimensionalDoorModifier::new);
-		RegistrySupplier<ModifierType<PocketEntranceModifier>> PUBLIC_MODIFIER_TYPE = register(DimensionalDoors.id(PocketEntranceModifier.KEY), PocketEntranceModifier::new);
-		RegistrySupplier<ModifierType<RiftDataModifier>> RIFT_DATA_MODIFIER_TYPE = register(DimensionalDoors.id(RiftDataModifier.KEY), RiftDataModifier::new);
-		RegistrySupplier<ModifierType<RelativeReferenceModifier>> RELATIVE_REFERENCE_MODIFIER_TYPE = register(DimensionalDoors.id(RelativeReferenceModifier.KEY), RelativeReferenceModifier::new);
-		RegistrySupplier<ModifierType<OffsetModifier>> OFFSET_MODIFIER_TYPE = register(DimensionalDoors.id(OffsetModifier.KEY), OffsetModifier::new);
-		RegistrySupplier<ModifierType<AbsoluteRiftBlockEntityModifier>> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(DimensionalDoors.id(AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new);
+		RegistrySupplier<ModifierType<ShellModifier>> SHELL_MODIFIER_TYPE = register(DimensionalDoors.id(ShellModifier.KEY), ShellModifier::new, mapCodec);
+		RegistrySupplier<ModifierType<DimensionalDoorModifier>> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(DimensionalDoors.id(DimensionalDoorModifier.KEY), DimensionalDoorModifier::new, mapCodec);
+		RegistrySupplier<ModifierType<PocketEntranceModifier>> PUBLIC_MODIFIER_TYPE = register(DimensionalDoors.id(PocketEntranceModifier.KEY), PocketEntranceModifier::new, mapCodec);
+		RegistrySupplier<ModifierType<RiftDataModifier>> RIFT_DATA_MODIFIER_TYPE = register(DimensionalDoors.id(RiftDataModifier.KEY), RiftDataModifier::new, mapCodec);
+		RegistrySupplier<ModifierType<RelativeReferenceModifier>> RELATIVE_REFERENCE_MODIFIER_TYPE = register(DimensionalDoors.id(RelativeReferenceModifier.KEY), RelativeReferenceModifier::new, mapCodec);
+		RegistrySupplier<ModifierType<OffsetModifier>> OFFSET_MODIFIER_TYPE = register(DimensionalDoors.id(OffsetModifier.KEY), OffsetModifier::new, mapCodec);
+		RegistrySupplier<ModifierType<AbsoluteRiftBlockEntityModifier>> ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE = register(DimensionalDoors.id(AbsoluteRiftBlockEntityModifier.KEY), AbsoluteRiftBlockEntityModifier::new, mapCodec);
 
-		RegistrySupplier<ModifierType<TemplateModifier>> TEMPLATE_MODIFIER_TYPE = register(DimensionalDoors.id(TemplateModifier.KEY), TemplateModifier::new);
+		RegistrySupplier<ModifierType<TemplateModifier>> TEMPLATE_MODIFIER_TYPE = register(DimensionalDoors.id(TemplateModifier.KEY), TemplateModifier::new, mapCodec);
 
 		Modifier fromNbt(CompoundTag nbt, ResourceManager manager);
 
@@ -121,7 +120,7 @@ public interface Modifier extends ReferenceSerializable {
 
 		static void register() {}
 
-		static <U extends Modifier> RegistrySupplier<ModifierType<U>> register(ResourceLocation id, Supplier<U> factory) {
+		static <U extends Modifier> RegistrySupplier<ModifierType<U>> register(ResourceLocation id, Supplier<U> factory, MapCodec<Modifier> mapCodec) {
 			return REGISTRY.register(id, () -> new ModifierType<U>() {
 				@Override
 				public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
@@ -132,6 +131,11 @@ public interface Modifier extends ReferenceSerializable {
 				public CompoundTag toNbt(CompoundTag nbt) {
 					nbt.putString("type", id.toString());
 					return nbt;
+				}
+
+				@Override
+				public MapCodec<Modifier> mapCodec() {
+					return mapCodec;
 				}
 			});
 		}

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.pockets.modifier;
+package org.dimdev.dimdoors.util;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -12,6 +12,13 @@ import java.io.InputStream;
 import java.util.function.Function;
 
 public class ResourceCodec implements Codec<Resource> {
+    private final String startingPath;
+
+    public ResourceCodec(String startingPath) {
+
+        this.startingPath = startingPath;
+    }
+    private Codec<ResourceLocation> CODEC = ResourceLocation.CODEC.fieldOf("resource_key").codec();
     @Override
     public <T> DataResult<T> encode(Resource input, DynamicOps<T> ops, T prefix) {
         return DataResult.error(() -> "Encoding not supported");
@@ -20,10 +27,10 @@ public class ResourceCodec implements Codec<Resource> {
     @Override
     public <T> DataResult<Pair<Resource, T>> decode(DynamicOps<T> ops, T input) {
         if (ops instanceof ResourceOps<T> resourceOps) {
-            return ResourceLocation.CODEC.parse(ops, input)
+            return CODEC.parse(ops, input)
                 .flatMap(
-                    resourceLocation -> resourceOps.getResource(resourceLocation)
-                        .map(resource -> DataResult.success(Pair.of(resource, input)))
+                    resourceLocation -> resourceOps.getResource(resourceLocation.withPath(startingPath))
+                            .map(resource -> DataResult.success(Pair.of(resource, input)))
                         .orElseGet(
                             () -> DataResult.error(
                                 () -> String.format("Resource %s not found", resourceOps.idToFile(resourceLocation))
@@ -35,15 +42,12 @@ public class ResourceCodec implements Codec<Resource> {
         }
     }
 
-    public static <T> Codec<T> inputStream(Function<InputStream, T> function) {
-        return new ResourceCodec().xmap(new Function<Resource, T>() {
-            @Override
-            public T apply(Resource resource) {
-                try(var stream = resource.open()) {
-                    return function.apply(stream);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+    public static <T> Codec<T> inputStream(String startingPath, Function<InputStream, T> function) {
+        return new ResourceCodec(startingPath).xmap(resource -> {
+            try(var stream = resource.open()) {
+                return function.apply(stream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }, a -> null);
     }

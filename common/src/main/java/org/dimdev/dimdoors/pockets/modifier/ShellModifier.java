@@ -34,6 +34,8 @@ public class ShellModifier extends AbstractLazyModifier {
 	private final List<Layer> layers = new ArrayList<>();
 	private BoundingBox boxToDrawAround;
 
+	public ShellModifier()
+
 	@Override
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);

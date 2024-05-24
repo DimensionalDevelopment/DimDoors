@@ -5,7 +5,12 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 public abstract class AbstractLazyModifier implements LazyModifier {
+
 	private String resourceKey = null;
+
+	public AbstractLazyModifier(String resourceKey) {
+		this.resourceKey = resourceKey;
+	}
 
 	@Override
 	public void setResourceKey(String resourceKey) {
