@@ -1,9 +1,15 @@
 package org.dimdev.dimdoors.network.client;
 
+import dev.architectury.networking.NetworkManager;
+import dev.architectury.networking.simple.BaseC2SMessage;
+import dev.architectury.networking.simple.MessageDecoder;
+import dev.architectury.networking.simple.MessageType;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +22,7 @@ import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,19 +40,28 @@ public class ClientPacketHandler implements ClientPacketListener {
 	private int gridSize = 1;
 	private int pocketId = Integer.MIN_VALUE;
 	private int pocketRange = 1;
-	private List<AutoSyncedAddon> addons = new ArrayList<>();
+	private List<PocketAddon> addons = new ArrayList<>();
+
 
 	public static void init() {
-		DimensionalDoors.NETWORK.register(PlayerInventorySlotUpdateS2CPacket.class, PlayerInventorySlotUpdateS2CPacket::write, PlayerInventorySlotUpdateS2CPacket::new, PlayerInventorySlotUpdateS2CPacket::apply);
-		DimensionalDoors.NETWORK.register(SyncPocketAddonsS2CPacket.class, SyncPocketAddonsS2CPacket::write, SyncPocketAddonsS2CPacket::new, SyncPocketAddonsS2CPacket::apply);
+
+		NetworkManager.registerReceiver(NetworkManager.s2c(), PlayerInventorySlotUpdateS2CPacket.TYPE, PlayerInventorySlotUpdateS2CPacket.STREAM_CODEC, new MessageDecoder<BaseC2SMessage>() {
+			@Override
+			public BaseC2SMessage decode(RegistryFriendlyByteBuf buf) {
+				return PlayerInventorySlotUpdateS2CPacket.;
+			}
+		}).register(PlayerInventorySlotUpdateS2CPacket.class, PlayerInventorySlotUpdateS2CPacket::write, PlayerInventorySlotUpdateS2CPacket::new, PlayerInventorySlotUpdateS2CPacket::apply);
+
+
+		NetworkManager.registerReceiver(NetworkManager.Side.S2C, SyncPocketAddonsS2CPacket.TYPE, SyncPocketAddonsS2CPacket.STREAM_CODEC, SyncPocketAddonsS2CPacket::apply);
 		DimensionalDoors.NETWORK.register(MonolithAggroParticlesPacket.class, MonolithAggroParticlesPacket::write, MonolithAggroParticlesPacket::new, MonolithAggroParticlesPacket::apply);
 		DimensionalDoors.NETWORK.register(MonolithTeleportParticlesPacket.class, MonolithTeleportParticlesPacket::write, MonolithTeleportParticlesPacket::new, MonolithTeleportParticlesPacket::apply);
 		DimensionalDoors.NETWORK.register(RenderBreakBlockS2CPacket.class, RenderBreakBlockS2CPacket::write, RenderBreakBlockS2CPacket::new, RenderBreakBlockS2CPacket::apply);
 	}
 
-	public static <T> boolean sendPacket(T packet) {
+	public static <T extends CustomPacketPayload> boolean sendPacket(T packet) {
 		try {
-			DimensionalDoors.NETWORK.sendToServer(packet);
+			NetworkManager.sendToServer(packet);
 			return true;
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -77,7 +93,7 @@ public class ClientPacketHandler implements ClientPacketListener {
 		return pocketRange;
 	}
 
-	public List<AutoSyncedAddon> getAddons() {
+	public List<PocketAddon> getAddons() {
 		return addons;
 	}
 

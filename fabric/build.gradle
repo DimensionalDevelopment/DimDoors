@@ -51,10 +51,12 @@ dependencies {
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
     modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config}"
 
-    includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}")
-    includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
-    includeCompile("curse.maven:cardinal-components-world-${project.project.cardinal_components}:${project.cardinal_components_world}")
-    includeCompile("curse.maven:cardinal-components-chunk-${project.project.cardinal_components}:${project.cardinal_components_chunk}")
+    includeCompile("curse.maven:cardinal-components-api-${project.project.cardinal_components}:${project.cardinal_components_api}")
+
+//    includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}")
+//    includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
+//    includeCompile("curse.maven:cardinal-components-world-${project.project.cardinal_components}:${project.cardinal_components_world}")
+//    includeCompile("curse.maven:cardinal-components-chunk-${project.project.cardinal_components}:${project.cardinal_components_chunk}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }

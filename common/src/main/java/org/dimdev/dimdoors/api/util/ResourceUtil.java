@@ -5,11 +5,16 @@ import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -39,6 +44,11 @@ public class ResourceUtil {
 
 	public static final ComposableFunction<InputStream, JsonElement> JSON_READER = inputStream -> GSON.fromJson(new InputStreamReader(inputStream), JsonElement.class);
 	public static final ComposableFunction<InputStream, Tag> NBT_READER = JSON_READER.andThenComposable(JSON_TO_NBT);
+
+	public static <T, K, U> BiFunction<T, K, U> codec(DynamicOps<T> ops, Codec<U> codec) {
+		return (t, ignored) -> ops.withDecoder(codec).andThen(DataResult::getOrThrow).andThen(Pair::getFirst).apply(t);
+	}
+
 	public static final ComposableFunction<InputStream, CompoundTag> COMPRESSED_NBT_READER = inputStream -> {
 		try {
 			return NbtIo.readCompressed(inputStream);
@@ -81,7 +91,7 @@ public class ResourceUtil {
 	}
 
 	public static  <K, T, M extends Map<K, T>> CompletableFuture<M> loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, ResourceLocation, K> keyProvider) {
-		Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
+		Map<ResourceLocation, Resource> ids = new FileToIdConverter(extension, extension).listMatchingResources(manager);
 		return StreamUtils.supplyAsync(() -> {
 			map.putAll(ids.entrySet().parallelStream().unordered().collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
 					id -> keyProvider.apply(startingPath, id.getKey()),
@@ -98,7 +108,7 @@ public class ResourceUtil {
 	}
 
 	public static  <T, M extends Collection<T>> CompletableFuture<M> loadResourcePathToCollection(ResourceManager manager, String startingPath, String extension, M collection, BiFunction<InputStream, ResourceLocation, T> reader) {
-		Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
+		Map<ResourceLocation, Resource> ids = new FileToIdConverter(startingPath, extension).listMatchingResources(manager);
 		return StreamUtils.supplyAsync(() -> {
 			collection.addAll(ids.entrySet().parallelStream().unordered().map(id -> {
 				try {

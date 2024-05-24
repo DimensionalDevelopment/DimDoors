@@ -24,7 +24,7 @@ public class PocketListenerUtil {
 		if (!ModDimensions.isPocketDimension(world)) return Collections.emptyList();
 		Pocket pocket = DimensionalRegistry.getPocketDirectory(world.dimension()).getPocketAt(pos);
 		if (pocket == null) return Collections.emptyList();;
-		return pocket.getAddonsInstanceOf(clazz);
+		return pocket.getAddons(clazz);
 	}
 
 	@Environment(EnvType.CLIENT)

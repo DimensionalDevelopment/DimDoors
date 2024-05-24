@@ -163,12 +163,15 @@ public class DyeableAddon implements PocketAddon {
 	public interface DyeablePocket extends AddonProvider {
 		default boolean addDye(Entity entity, DyeColor dyeColor) {
 			ensureIsPocket();
-			if (!this.hasAddon(ID)) {
+
+			var addonOptional = this.<DyeableAddon>getAddon(ID);
+
+			if(addonOptional.isEmpty()) {
 				DyeableAddon addon = new DyeableAddon();
 				this.addAddon(addon);
 				return addon.addDye((Pocket) this, entity, dyeColor);
 			}
-			return this.<DyeableAddon>getAddon(ID).addDye((Pocket) this, entity, dyeColor);
+			return addonOptional.get().addDye((Pocket) this, entity, dyeColor);
 		}
 	}
 }

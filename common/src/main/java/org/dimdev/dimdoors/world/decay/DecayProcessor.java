@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.decay;
 
+import com.mojang.serialization.Codec;
 import dev.architectury.fluid.FluidStack;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -16,6 +17,8 @@ import org.dimdev.dimdoors.DimensionalDoors;
 
 public interface DecayProcessor<S, T> {
     Registrar<DecayProcessorType<? extends DecayProcessor<?, ?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayProcessorType<? extends DecayProcessor<?, ?>>>builder(DimensionalDoors.id("decay_processor_type")).build();
+    Codec<DecayProcessor<?, ?>> CODEC = ResourceLocation.CODEC.<DecayProcessorType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(DecayProcessor::getType, DecayProcessorType::codec);
+
 
     static DecayProcessor<?, ?> deserialize(CompoundTag nbt) {
         ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.decay;
 
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -122,7 +123,7 @@ public final class Decay {
 		@Override
 		public void onResourceManagerReload(ResourceManager manager) {
 			blockPatterns.clear();
-			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.NBT_READER.andThenReader(this::loadPattern));
+			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(ResourceUtil.codec(JsonOps.INSTANCE, DecayPattern.CODEC)));
 			for (DecayPattern pattern : futurePatternList.join()) {
 				for (Block block : pattern.constructApplicableBlocks()) {
 					blockPatterns.computeIfAbsent(block, (b) -> new ArrayList<>());

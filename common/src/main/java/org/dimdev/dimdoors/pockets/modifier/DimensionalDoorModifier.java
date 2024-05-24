@@ -49,7 +49,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	private Equation zEquation;
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager allowReference) {
 		String facingString = nbt.getString("facing");
 		facing = Direction.byName(nbt.getString("facing"));
 		if (facing == null || facing.getAxis().isVertical()) {

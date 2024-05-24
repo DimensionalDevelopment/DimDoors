@@ -1,10 +1,12 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
 import com.google.common.collect.Multimap;
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.dimdev.dimdoors.api.util.CodecUtil;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
@@ -16,6 +18,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 
 public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable {
+
+	Codec<VirtualPocket> CODEC = CodecUtil.<VirtualPocket, VirtualPocketList, ImplementedVirtualPocket<?>>xor(VirtualPocketList.CODEC, ImplementedVirtualPocket.IMPL_CODEC);
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
 	static VirtualPocket deserialize(Tag nbt) {
@@ -24,6 +28,11 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 
 
 	//TODO: split up in ImplementedVirtualPocket and VirtualPocketList
+
+	private static Codec<? extends VirtualPocket> getCodec() {
+		return CODEC;
+	}
+
 	static VirtualPocket deserialize(Tag nbt, @Nullable ResourceManager manager) {
 		return switch (nbt.getId()) {
 			case Tag.TAG_LIST -> // It's a list of VirtualPocket

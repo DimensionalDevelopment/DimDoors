@@ -21,7 +21,7 @@ public class RelativeReferenceModifier extends AbstractModifier {
 	private ConnectionType connection = ConnectionType.BOTH;
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager allowReference) {
 		point_a = nbt.getInt("point_a");
 		point_b = nbt.getInt("point_b");
 		connection = nbt.contains("connection") ? ConnectionType.fromString(nbt.getString("connection")) : ConnectionType.BOTH;

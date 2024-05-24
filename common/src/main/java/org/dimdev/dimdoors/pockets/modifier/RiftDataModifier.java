@@ -28,7 +28,7 @@ public class RiftDataModifier extends AbstractModifier {
 	private List<Integer> ids;
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager allowReference) {
 		// TODO: RiftData via ResourceManager
 		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
 			doorDataReference = nbt.getString("rift_data");

@@ -24,7 +24,7 @@ public class OffsetModifier extends AbstractModifier {
 	private Equation offsetZEquation;
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager allowReference) {
 		try {
 			offsetX = nbt.contains("offset_x") ? nbt.getString("offset_x") : "0";
 			offsetXEquation = Equation.parse(offsetX);

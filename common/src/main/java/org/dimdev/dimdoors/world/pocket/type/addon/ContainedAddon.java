@@ -22,8 +22,11 @@ public interface ContainedAddon extends PocketAddon {
 		@Override
 		default void apply(Pocket pocket) {
 			AddonContainer<T> container;
-			if (pocket.hasAddon(getContainerId())) {
-				container = pocket.getAddon(getContainerId());
+
+			var addon = pocket.getAddon(getContainerId());
+
+			if(addon.isPresent()) {
+				container = (AddonContainer<T>) addon.get();
 			} else {
 				container = supplyContainer();
 				pocket.addAddon(container);

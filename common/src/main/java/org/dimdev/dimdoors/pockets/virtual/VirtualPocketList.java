@@ -1,9 +1,11 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.dimdev.dimdoors.api.util.CodecUtil;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -12,6 +14,15 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
 
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
+	public static final Codec<VirtualPocketList> CODEC = CodecUtil.resourceCodec(VirtualPocket.CODEC.listOf().xmap(virtualPockets -> {
+		var list = new VirtualPocketList();
+		list.addAll(virtualPockets);
+		return list;
+	}, virtualPockets -> null), VirtualPocketList::getCodec);
+
+	private static Codec<VirtualPocketList> getCodec() {
+		return CODEC;
+	}
 	private String resourceKey = null;
 
 	public static VirtualPocketList deserialize(Tag nbt, @Nullable ResourceManager manager) {

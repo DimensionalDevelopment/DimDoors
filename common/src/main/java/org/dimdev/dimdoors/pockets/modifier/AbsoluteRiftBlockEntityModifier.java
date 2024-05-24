@@ -20,7 +20,6 @@ import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
@@ -39,7 +38,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	}
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager allowReference) {
 		// TODO: rifts from resource
 		serializedRifts = StreamUtils.execute(() -> nbt.getList("rifts", Tag.TAG_COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
 				.filter(compound -> {

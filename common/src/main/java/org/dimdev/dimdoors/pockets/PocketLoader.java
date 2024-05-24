@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.pockets;
 
+import com.mojang.serialization.DataResult;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -9,6 +11,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.*;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.pockets.modifier.ResourceOps;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
@@ -45,7 +48,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/json", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.composeIdentity(), ResourceUtil.PATH_KEY_PROVIDER).join();
 
 		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(pocketGeneratorLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(ResourceUtil.codec(Json.)virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER);
 
@@ -89,7 +92,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	}
 
 	private BiFunction<Tag, Path<String>, VirtualPocket> virtualPocketLoader(ResourceManager manager) {
-		return (nbt, ignore) -> VirtualPocket.deserialize(nbt, manager);
+		return (nbt, ignore) -> new ResourceOps<>(NbtOps.INSTANCE, manager, null).withDecoder(VirtualPocket.CODEC).andThen(DataResult::getOrThrow).apply(nbt).getFirst();
 	}
 
 	private BiFunction<Tag, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {

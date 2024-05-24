@@ -22,7 +22,7 @@ public class PocketEntranceModifier extends AbstractModifier {
 	}
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager allowReference) {
 		return new PocketEntranceModifier(nbt.getInt("id"));
 	}
 

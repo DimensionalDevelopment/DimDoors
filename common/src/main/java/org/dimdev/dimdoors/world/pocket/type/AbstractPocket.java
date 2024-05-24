@@ -1,5 +1,10 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
+import com.mojang.datafixers.Products;
+import com.mojang.datafixers.kinds.App;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -13,10 +18,18 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 	public static final Registrar<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<AbstractPocketType<? extends AbstractPocket<?>>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
+	public static final Codec<AbstractPocketType<? extends AbstractPocket<?>>> TYPE_CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
+	public static final Codec<AbstractPocket<?>> CODEC = TYPE_CODEC.dispatch(AbstractPocket::getType, AbstractPocket.AbstractPocketType::codec);
+
+	protected static <T extends AbstractPocket<?>> Products.P2<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>> commonFields(RecordCodecBuilder.Instance<T> instance) {
+		return instance.group(Codec.INT.fieldOf("id").forGetter(AbstractPocket::getId), ResourceKey.codec(Registries.DIMENSION).fieldOf("world").forGetter(AbstractPocket::getWorld));
+	}
+
 
 	protected Integer id;
 	protected ResourceKey<Level> world;
@@ -124,6 +137,8 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 				}
 			});
 		}
+
+		MapCodec<? extends AbstractPocket<?>> codec();
 	}
 
 	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket<?>> {

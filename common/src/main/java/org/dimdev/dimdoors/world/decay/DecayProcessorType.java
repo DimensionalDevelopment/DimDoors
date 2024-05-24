@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.decay;
 
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -36,4 +37,6 @@ public interface DecayProcessorType<T extends DecayProcessor<?, ?>> {
             }
         });
     }
+
+    MapCodec<? extends DecayProcessor<?, ?>> codec();
 }

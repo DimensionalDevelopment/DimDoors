@@ -6,6 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,6 +23,17 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PreventBlockModificationAddon implements AutoSyncedAddon { //InteractionEvent.LeftClickBlock/*, PlayerBlockBreakEvents.Before TODO: Figure out*/, UseItemOnBlockCallback {
 	public static ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");
+	public static StreamCodec<RegistryFriendlyByteBuf, PreventBlockModificationBuilderAddon> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, PreventBlockModificationBuilderAddon>() {
+		@Override
+		public PreventBlockModificationBuilderAddon decode(RegistryFriendlyByteBuf object) {
+			return new PreventBlockModificationBuilderAddon();
+		}
+
+		@Override
+		public void encode(RegistryFriendlyByteBuf object, PreventBlockModificationBuilderAddon object2) {
+
+		}
+	}
 
 	//AttackBlockCallback
 

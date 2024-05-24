@@ -66,7 +66,7 @@ public class VirtualLocation {
 		if (ModDimensions.isPocketDimension(location.world)) {
 			Pocket pocket = DimensionalRegistry.getPocketDirectory(location.world).getPocketAt(location.pos);
 			if (pocket != null) {
-				virtualLocation = pocket.virtualLocation; // TODO: pockets-relative coordinates
+				virtualLocation = pocket.getVirtualLocation(); // TODO: pockets-relative coordinates
 			} else {
 				virtualLocation = null; // TODO: door was placed in a pockets dim but outside of a pockets...
 			}

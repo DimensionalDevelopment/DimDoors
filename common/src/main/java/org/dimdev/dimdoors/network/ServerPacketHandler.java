@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.network;
 
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -22,9 +24,11 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static org.dimdev.dimdoors.DimensionalDoors.NETWORK;
 
@@ -55,9 +59,9 @@ public class ServerPacketHandler implements ServerPacketListener {
 		return ((ExtendedServerPlayNetworkHandler) networkHandler).getDimDoorsPacketHandler();
 	}
 
-	public static <T> boolean sendPacket(ServerPlayer player, T packet) {
+	public static <T extends CustomPacketPayload> boolean sendPacket(ServerPlayer player, T packet) {
 		try {
-			NETWORK.sendToPlayer(player, packet);
+			NetworkManager.sendToPlayer(player, packet);
 			return true;
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -65,7 +69,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 		}
 	}
 
-	public <T> boolean sendPacket(T packet) {
+	public <T extends CustomPacketPayload> boolean sendPacket(T packet) {
 		return sendPacket(getPlayer(), packet);
 	}
 
@@ -99,7 +103,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 			pocketSyncDirty = false;
 			lastSyncedPocketId = pocket.getId();
 			lastSyncedPocketWorld = world.dimension();
-			sendPacket(getPlayer(), new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getAddonsInstanceOf(AutoSyncedAddon.class)));
+			sendPacket(getPlayer(), new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getAddons(PocketAddon::syncs)));
 		}
 	}
 

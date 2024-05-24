@@ -5,7 +5,7 @@ import dev.architectury.event.events.common.BlockEvent;
 import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.networking.NetworkChannel;
+import dev.architectury.networking.simple.SimpleNetworkManager;
 import dev.architectury.platform.Mod;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.ReloadListenerRegistry;
@@ -44,7 +44,8 @@ import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
-import org.dimdev.dimdoors.listener.pocket.*;
+import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
+import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -107,7 +108,7 @@ public class DimensionalDoors {
 		throw new RuntimeException();
 	}
 
-	public static final NetworkChannel NETWORK = NetworkChannel.create(DimensionalDoors.id("server"));
+	public static final SimpleNetworkManager NETWORK = SimpleNetworkManager.create(DimensionalDoors.MOD_ID);
 
 	public static void init() {
 		dimDoorsMod = Platform.getMod(MOD_ID);

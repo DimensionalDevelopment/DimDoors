@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.world.decay;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -14,12 +16,14 @@ import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.decay.predicates.FluidDecayPredicate;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.Set;
 import java.util.function.Supplier;
 
 public interface DecayPredicate {
     Registrar<DecayPredicateType<? extends DecayPredicate>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayPredicateType<? extends DecayPredicate>>builder(DimensionalDoors.id("decay_predicate_type")).build();
+    Codec<DecayPredicate> CODEC = ResourceLocation.CODEC.<DecayPredicateType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(DecayPredicate::getType, DecayPredicateType::codec);
 
     DecayPredicate NONE = new DecayPredicate() {
         private static final String ID = "none";
@@ -87,7 +91,7 @@ public interface DecayPredicate {
         static void register() {
         }
 
-        static <U extends DecayPredicate> RegistrySupplier<DecayPredicateType<U>> register(ResourceLocation id, Supplier<U> factory) {
+        static <U extends DecayPredicate> RegistrySupplier<DecayPredicateType<U>> register(ResourceLocation id, Supplier<U> factory, MapCodec<U> codec) {
             return REGISTRY.register(id, () -> new DecayPredicateType<U>() {
                 @Override
                 public DecayPredicate fromNbt(CompoundTag nbt) {
@@ -99,7 +103,14 @@ public interface DecayPredicate {
 					nbt.putString("type", id.toString());
                     return nbt;
                 }
+
+                @Override
+                public MapCodec<U> codec() {
+                    return codec;
+                }
             });
         }
+
+        MapCodec<? extends DecayPredicate> codec();
     }
 }

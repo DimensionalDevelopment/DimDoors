@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.world.pocket.type;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -10,7 +12,10 @@ import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
+import java.util.List;
 import java.util.Map;
 
 public class LazyGenerationPocket extends Pocket {
@@ -18,6 +23,16 @@ public class LazyGenerationPocket extends Pocket {
 
 	private LazyPocketGenerator generator;
 	private int toBeGennedChunkCount = 0;
+
+	public LazyGenerationPocket(int id, ResourceKey<Level> world, int range, BoundingBox box, VirtualLocation virtualLocation, List<PocketAddon> addons) {
+		super(id, world, range, box, virtualLocation, addons);
+	}
+
+	public LazyGenerationPocket(int id, ResourceKey<Level> world, int range, BoundingBox box, VirtualLocation virtualLocation, List<PocketAddon> addons, LazyPocketGenerator generator, int toBeGennedChunkCount) {
+		super(id, world, range, box, virtualLocation, addons);
+		this.generator = generator;
+		this.toBeGennedChunkCount = toBeGennedChunkCount;
+	}
 
 	public void chunkLoaded(LevelChunk chunk) {
 		if (isDoneGenerating()) return;

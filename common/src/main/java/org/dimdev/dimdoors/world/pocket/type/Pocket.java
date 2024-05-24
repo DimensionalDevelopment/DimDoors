@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -17,52 +20,73 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
+
+	public static <T extends Pocket> Products.P6<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>, Integer, BoundingBox, VirtualLocation, List<PocketAddon>> pocketFields(RecordCodecBuilder.Instance<T> instance) {
+		return AbstractPocket.commonFields(instance)
+				.and(Codec.INT.fieldOf("range").forGetter(Pocket::getRange))
+				.and(BoundingBox.CODEC.fieldOf("box").forGetter(Pocket::getBox))
+				.and(VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(Pocket::getVirtualLocation))
+				.and(PocketAddon.CODEC.listOf().fieldOf("addons").<T>forGetter(Pocket::getAddons));
+	}
+
+	public static Codec<Pocket> CODEC = RecordCodecBuilder.create(instance -> Pocket.pocketFields(instance).apply(instance, Pocket::new));
+
 	public static String KEY = "pocket";
 
-	private final Map<ResourceLocation, PocketAddon> addons = new HashMap<>();
+	private final List<PocketAddon> addons;
 	private int range = -1;
 	private BoundingBox box; // TODO: make protected
-	public VirtualLocation virtualLocation;
+	private VirtualLocation virtualLocation;
+
+	public Pocket(int id, ResourceKey<Level> world, int range, BoundingBox box, VirtualLocation virtualLocation, List<PocketAddon> addons) {
+		this.id = id;
+		this.world = world;
+		this.range = range;
+		this.box = box;
+		this.virtualLocation = virtualLocation;
+		this.addons = addons;
+	}
 
 	public Pocket(int id, ResourceKey<Level> world, int x, int z) {
 		super(id, world);
 		int gridSize = DimensionalRegistry.getPocketDirectory(world).getGridSize() * 16;
 		this.box = BoundingBox.fromCorners(new Vec3i(x * gridSize, 0, z * gridSize), new Vec3i((x + 1) * gridSize, 0, (z + 1) * gridSize));
 		this.virtualLocation = new VirtualLocation(world, x, z, 0);
-	}
-
-	protected Pocket() {
-	}
-
-	public boolean hasAddon(ResourceLocation id) {
-		return addons.containsKey(id);
+		this.addons = new ArrayList<>();
 	}
 
 	public <C extends PocketAddon> boolean addAddon(C addon) {
 		if (addon.applicable(this)) {
-			addon.addAddon(addons);
+			addons.add(addon);
 			return true;
 		}
 		return false;
 	}
 
-	public <C extends PocketAddon> C getAddon(ResourceLocation id) {
-		return (C) addons.get(id);
+	public <C extends PocketAddon> Optional<C> getAddon(ResourceLocation id) {
+		return (Optional<C>) addons.stream().filter(object -> id.equals(object.getId())).findAny();
 	}
 
-	public <T> List<T> getAddonsInstanceOf(Class<T> clazz) {
-		return addons.values().stream()
+	public <T> List<T> getAddons(Class<T> clazz) {
+		return addons.stream()
 				.filter(clazz::isInstance)
 				.map(clazz::cast)
 				.collect(Collectors.toList());
 	}
+
+	public List<PocketAddon> getAddons(Predicate<PocketAddon> clazz) {
+		return addons.stream()
+				.filter(clazz)
+				.collect(Collectors.toList());
+	}
+
+
 
 	public boolean isInBounds(BlockPos pos) {
 		return this.box.isInside(pos);
@@ -102,15 +126,19 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return this.box.getLength();
 	}
 
+	public List<PocketAddon> getAddons() {
+		return addons;
+	}
+
 	public CompoundTag toNbt(CompoundTag nbt) {
 		super.toNbt(nbt);
 
 		nbt.putInt("range", range);
 		nbt.putIntArray("box", IntStream.of(this.box.minX(), this.box.minY(), this.box.minZ(), this.box.maxX(), this.box.maxY(), this.box.maxZ()).toArray());
-		nbt.put("virtualLocation", VirtualLocation.toNbt(this.virtualLocation));
+		nbt.put("virtualLocation", VirtualLocation.toNbt(this.getVirtualLocation()));
 
 		ListTag addonsTag = new ListTag();
-		addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
+		addonsTag.addAll(addons.stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
 		if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
 
 		return nbt;
@@ -132,7 +160,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		if (nbt.contains("addons", Tag.TAG_LIST)) {
 			for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
 				PocketAddon addon = PocketAddon.deserialize((CompoundTag) addonTag);
-				addons.put(addon.getId(), addon);
+				addons.add(addon);
 			}
 		}
 
@@ -160,7 +188,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		variableMap.put("width", (double) this.box.getLength().getX());
 		variableMap.put("height", (double) this.box.getLength().getY());
 		variableMap.put("length", (double) this.box.getLength().getZ());
-		variableMap.put("depth", (double) this.virtualLocation.getDepth());
+		variableMap.put("depth", (double) this.getVirtualLocation().getDepth());
 		return variableMap;
 	}
 
@@ -179,6 +207,10 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 	protected void setBox(BoundingBox box) {
 		this.box = box;
+	}
+
+	public VirtualLocation getVirtualLocation() {
+		return virtualLocation;
 	}
 
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
@@ -248,7 +280,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 			instance.setRange(range);
 			instance.setBox(BoundingBox.fromCorners(new Vec3i(origin.getX(), origin.getY(), origin.getZ()), new Vec3i(origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ())));
-			instance.virtualLocation = virtualLocation;
+			instance.setVirtualLocation(virtualLocation);
 
 			addons.values().forEach(addon -> addon.apply(instance));
 
@@ -280,5 +312,9 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 			this.range = range;
 			return getSelf();
 		}
+	}
+
+	public void setVirtualLocation(VirtualLocation virtualLocation) {
+		this.virtualLocation = virtualLocation;
 	}
 }
