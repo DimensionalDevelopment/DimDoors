@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_wither_rose"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:wither_rose",
+    "entropy": 0
+  }
+}

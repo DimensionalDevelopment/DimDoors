@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cobweb",
+    "dimdoors:driftwood_leaves",
+    "dimdoors:driftwood_sapling",
+    "minecraft:glass_pane",
+    "minecraft:moss_carpet",
+    "dimdoors:driftwood_trapdoor",
+    "minecraft:rail",
+    "dimdoors:rust",
+    "dimdoors:unraveled_spike",
+    "minecraft:wither_rose"
+  ]
+}

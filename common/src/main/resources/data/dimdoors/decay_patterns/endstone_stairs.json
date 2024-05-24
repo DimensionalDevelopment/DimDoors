@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_endstone_stairs"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:end_stone_stairs",
+    "entropy": 0
+  }
+}

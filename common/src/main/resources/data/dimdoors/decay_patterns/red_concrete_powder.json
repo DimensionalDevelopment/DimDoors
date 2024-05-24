@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:red_concrete_powder"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:red_concrete",
+    "entropy": 0
+  }
+}

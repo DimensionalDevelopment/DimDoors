@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:rift_remover_stable_fabric"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dimdoors:stable_fabric"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:rift_remover_stable_fabric"
+    ]
+  },
+  "sends_telemetry_event": false
+}

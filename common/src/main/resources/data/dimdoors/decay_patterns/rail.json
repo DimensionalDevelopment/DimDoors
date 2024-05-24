@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_rail"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:rail",
+    "entropy": 0
+  }
+}

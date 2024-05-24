@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:anvil"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:iron_block",
+    "entropy": 1
+  }
+}

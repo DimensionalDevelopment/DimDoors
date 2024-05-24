@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_unraveled_slab"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:unraveled_slab",
+    "entropy": 0
+  }
+}

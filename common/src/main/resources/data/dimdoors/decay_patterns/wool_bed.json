@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#minecraft:beds"
+  },
+  "processor": {
+    "type": "dimdoors:double",
+    "block": "minecraft:white_wool",
+    "entropy": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_granite"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:granite",
+    "entropy": 0
+  }
+}

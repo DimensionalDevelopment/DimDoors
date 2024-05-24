@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_skeleton_wall_skull"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:skeleton_wall_skull",
+    "entropy": 0
+  }
+}

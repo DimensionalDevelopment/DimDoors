@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:packed_ice"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:ice",
+    "entropy": 1
+  }
+}

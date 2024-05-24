@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:magenta_glazed_terracotta"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:magenta_terracotta",
+    "entropy": 0
+  }
+}

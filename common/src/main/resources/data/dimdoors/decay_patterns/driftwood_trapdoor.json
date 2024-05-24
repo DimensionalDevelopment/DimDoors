@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#minecraft:wooden_trapdoors"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:driftwood_trapdoor",
+    "entropy": 0
+  }
+}

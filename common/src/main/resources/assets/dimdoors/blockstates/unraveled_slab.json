@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "dimdoors:block/unraveled_slab"
+    },
+    "type=double": {
+      "model": "dimdoors:block/unravelled_fabric"
+    },
+    "type=top": {
+      "model": "dimdoors:block/unraveled_slab_top"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:brick_wall"
+  },
+  "processor": {
+    "type": "dimdoors:none"
+  }
+}

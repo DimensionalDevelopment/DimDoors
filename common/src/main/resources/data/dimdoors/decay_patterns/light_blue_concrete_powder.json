@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:light_blue_concrete_powder"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:light_blue_concrete",
+    "entropy": 0
+  }
+}

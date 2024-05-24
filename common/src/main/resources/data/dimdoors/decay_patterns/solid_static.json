@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_solid_static"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:solid_static",
+    "entropy": 0
+  }
+}

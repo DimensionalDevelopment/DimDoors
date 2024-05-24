@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_basalt"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:basalt",
+    "entropy": 0
+  }
+}

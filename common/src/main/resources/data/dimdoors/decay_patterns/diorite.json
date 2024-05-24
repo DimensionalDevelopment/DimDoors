@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_diorite"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:diorite",
+    "entropy": 0
+  }
+}

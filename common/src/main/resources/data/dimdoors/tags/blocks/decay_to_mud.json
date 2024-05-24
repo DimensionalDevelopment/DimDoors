@@ -1,0 +1,33 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:dirt",
+    "minecraft:grass_block",
+    "minecraft:podzol",
+    "minecraft:mycelium",
+    "dimdoors:driftwood_planks",
+    "minecraft:coal_block",
+    "minecraft:composter",
+    "minecraft:chest",
+    "minecraft:bone_block",
+    "minecraft:skeleton_skull",
+    "minecraft:skeleton_wall_skull",
+    "minecraft:wither_skeleton_skull",
+    "minecraft:wither_skeleton_wall_skull",
+    "minecraft:dragon_head",
+    "minecraft:dragon_wall_head",
+    "minecraft:cactus",
+    "minecraft:cocoa",
+    "minecraft:pumpkin",
+    "minecraft:melon",
+    "minecraft:hay_block",
+    "minecraft:moss_block",
+    "minecraft:slime_block",
+    "minecraft:honeycomb_block",
+    "minecraft:lectern",
+    "minecraft:purpur_block",
+    "minecraft:dried_kelp_block",
+    "minecraft:nether_wart_block",
+    "minecraft:packed_mud"
+  ]
+}

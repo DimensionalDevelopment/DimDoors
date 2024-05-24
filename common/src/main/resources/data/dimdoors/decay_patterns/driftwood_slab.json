@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_driftwood_slab"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:driftwood_slab",
+    "entropy": 0
+  }
+}

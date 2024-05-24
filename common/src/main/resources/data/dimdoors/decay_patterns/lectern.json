@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:bookshelf"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:lectern",
+    "entropy": 0
+  }
+}

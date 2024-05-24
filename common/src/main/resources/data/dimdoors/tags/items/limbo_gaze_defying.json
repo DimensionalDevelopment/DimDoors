@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "dimdoors:world_thread_boots",
+    "dimdoors:world_thread_chestplate",
+    "dimdoors:world_thread_helmet",
+    "dimdoors:world_thread_leggings",
+    "dimdoors:garment_of_reality_chestplate",
+    "dimdoors:garment_of_reality_boots",
+    "dimdoors:garment_of_reality_helmet",
+    "dimdoors:garment_of_reality_leggings"
+  ]
+}

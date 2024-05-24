@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#minecraft:wool"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:cobweb",
+    "entropy": 0
+  }
+}

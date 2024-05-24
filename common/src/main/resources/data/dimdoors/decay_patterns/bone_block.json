@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:conduit"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:bone_block",
+    "entropy": 0
+  }
+}

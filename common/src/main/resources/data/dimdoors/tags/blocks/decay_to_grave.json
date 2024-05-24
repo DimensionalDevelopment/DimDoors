@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "dimdoors:amalgam_block",
+    "dimdoors:clod_ore",
+    "minecraft:cobblestone"
+  ]
+}

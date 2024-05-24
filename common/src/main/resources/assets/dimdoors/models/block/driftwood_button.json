@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/button",
+  "textures": {
+    "texture": "dimdoors:block/driftwood_planks"
+  }
+}

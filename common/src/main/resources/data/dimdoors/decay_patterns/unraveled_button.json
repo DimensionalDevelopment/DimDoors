@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_unraveled_button"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:unraveled_button",
+    "entropy": 0
+  }
+}

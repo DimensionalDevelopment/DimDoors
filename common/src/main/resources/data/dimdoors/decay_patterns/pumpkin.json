@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:carved_pumpkin"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:pumpkin",
+    "entropy": 0
+  }
+}

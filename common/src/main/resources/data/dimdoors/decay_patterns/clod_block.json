@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_clod_block"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:clod_block",
+    "entropy": 0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_air"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:air",
+    "entropy": 0
+  }
+}

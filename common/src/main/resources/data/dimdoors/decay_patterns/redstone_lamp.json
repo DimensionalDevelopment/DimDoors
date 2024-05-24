@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:beacon"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:redstone_lamp",
+    "entropy": 0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:fluid",
+    "entry": "minecraft:lava"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:basalt",
+    "entropy": 0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_gritty_stone"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:gritty_stone",
+    "entropy": 0
+  }
+}

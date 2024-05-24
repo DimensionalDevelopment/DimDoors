@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:tesselating/enduring_fibers"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "infrangible_fiber": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dimdoors:infrangible_fiber"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "infrangible_fiber",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:tesselating/enduring_fibers"
+    ]
+  },
+  "sends_telemetry_event": true
+}

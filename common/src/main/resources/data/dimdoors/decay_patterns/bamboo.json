@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:scaffolding"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:bamboo",
+    "entropy": 0
+  }
+}

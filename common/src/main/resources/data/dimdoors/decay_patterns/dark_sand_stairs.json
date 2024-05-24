@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_dark_sand_stairs"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:dark_sand_stairs",
+    "entropy": 0
+  }
+}

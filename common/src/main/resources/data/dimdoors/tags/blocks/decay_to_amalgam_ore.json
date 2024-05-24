@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:raw_copper_block",
+    "minecraft:copper_ore",
+    "minecraft:deepslate_copper_ore",
+    "minecraft:raw_iron_block",
+    "minecraft:deepslate_iron_ore",
+    "minecraft:iron_ore",
+    "minecraft:raw_gold_block",
+    "minecraft:gold_ore",
+    "minecraft:nether_gold_ore",
+    "minecraft:deepslate_gold_ore"
+  ]
+}

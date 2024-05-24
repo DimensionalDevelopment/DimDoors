@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:barrel"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:composter",
+    "entropy": 0
+  }
+}

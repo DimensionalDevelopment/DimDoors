@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:warped_nylium"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:crimson_nylium",
+    "entropy": 0
+  }
+}

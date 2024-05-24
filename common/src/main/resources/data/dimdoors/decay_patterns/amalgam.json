@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_amalgam"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:amalgam_block",
+    "entropy": 0
+  }
+}

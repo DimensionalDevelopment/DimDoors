@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_netherwart_block"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:nether_wart_block",
+    "entropy": 0
+  }
+}

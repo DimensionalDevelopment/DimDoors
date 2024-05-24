@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_furnace"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:furnace",
+    "entropy": 0
+  }
+}

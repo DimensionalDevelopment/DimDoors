@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "dimdoors:diamonds"
+    },
+    "X": {
+      "item": "dimdoors:stable_fabric"
+    }
+  },
+  "pattern": [
+    "###",
+    "#X#",
+    "###"
+  ],
+  "result": {
+    "item": "dimdoors:rift_stabilizer"
+  },
+  "show_notification": true
+}

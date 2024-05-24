@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:cut_copper_slab"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:amalgam_slab",
+    "entropy": 0
+  }
+}

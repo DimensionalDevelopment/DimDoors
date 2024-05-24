@@ -1,0 +1,10 @@
+{
+  "predicate": {
+    "type": "dimdoors:none"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:clay_button",
+    "entropy": 0
+  }
+}

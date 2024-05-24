@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:netherite_block"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:ancient_debris",
+    "entropy": 0
+  }
+}

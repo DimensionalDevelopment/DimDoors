@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:diamond_ore"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:coal_ore",
+    "entropy": 0
+  }
+}

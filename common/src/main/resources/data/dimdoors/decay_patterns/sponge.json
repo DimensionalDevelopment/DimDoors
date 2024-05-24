@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:wet_sponge"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:sponge",
+    "entropy": 0
+  }
+}

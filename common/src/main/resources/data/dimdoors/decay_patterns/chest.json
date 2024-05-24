@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_chest"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:chest",
+    "entropy": 0
+  }
+}

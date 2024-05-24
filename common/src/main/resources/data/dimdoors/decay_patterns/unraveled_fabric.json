@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_unraveled_fabric"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:unravelled_fabric",
+    "entropy": 0
+  }
+}

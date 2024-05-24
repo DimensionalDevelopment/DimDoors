@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:jack_o_lantern"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:carved_pumpkin",
+    "entropy": 0
+  }
+}

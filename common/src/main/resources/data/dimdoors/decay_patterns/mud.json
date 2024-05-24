@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_mud"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:mud",
+    "entropy": 0
+  }
+}

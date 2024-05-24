@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:snow"
+  },
+  "processor": {
+    "type": "dimdoors:fluid",
+    "block": "minecraft:water",
+    "entropy": 0
+  }
+}

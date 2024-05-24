@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_mud_button"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:mud_button",
+    "entropy": 0
+  }
+}

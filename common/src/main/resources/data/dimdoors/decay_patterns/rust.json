@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_rust"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:rust",
+    "entropy": 0
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:soul_soil"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:soul_sand",
+    "entropy": 0
+  }
+}

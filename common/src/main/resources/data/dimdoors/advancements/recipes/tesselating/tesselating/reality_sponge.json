@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:tesselating/reality_sponge"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "liminal_lint": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dimdoors:liminal_lint"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "liminal_lint",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:tesselating/reality_sponge"
+    ]
+  },
+  "sends_telemetry_event": true
+}

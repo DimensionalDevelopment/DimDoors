@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_prismarine_stairs"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:prismarine_stairs",
+    "entropy": 0
+  }
+}

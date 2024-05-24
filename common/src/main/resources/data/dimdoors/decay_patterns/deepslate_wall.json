@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_deepslate_wall"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:deepslate_wall",
+    "entropy": 0
+  }
+}

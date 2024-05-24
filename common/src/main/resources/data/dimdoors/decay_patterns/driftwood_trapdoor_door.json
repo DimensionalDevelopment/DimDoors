@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "dimdoors:driftwood_door"
+  },
+  "processor": {
+    "type": "dimdoors:double",
+    "block": "dimdoors:driftwood_trapdoor",
+    "entropy": 1
+  }
+}

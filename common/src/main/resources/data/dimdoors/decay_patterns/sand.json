@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_sand"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:sand",
+    "entropy": 0
+  }
+}

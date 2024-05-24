@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "dimdoors:clay_fence",
+    "dimdoors:gravel_fence",
+    "dimdoors:mud_fence",
+    "dimdoors:unraveled_fence",
+    "dimdoors:netherrack_fence",
+    "dimdoors:dark_sand_fence"
+  ]
+}

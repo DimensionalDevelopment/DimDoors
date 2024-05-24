@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:respawn_anchor"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:crying_obsidian",
+    "entropy": 0
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:tesselating/garment_of_reality_chestplate"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "infrangible_fiber": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dimdoors:infrangible_fiber"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "infrangible_fiber",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:tesselating/garment_of_reality_chestplate"
+    ]
+  },
+  "sends_telemetry_event": true
+}

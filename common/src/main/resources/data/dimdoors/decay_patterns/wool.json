@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:target"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:white_wool",
+    "entropy": 0
+  }
+}

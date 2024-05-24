@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_cobblestone_slab"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:cobblestone_slab",
+    "entropy": 0
+  }
+}

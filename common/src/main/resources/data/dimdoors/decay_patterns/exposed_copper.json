@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:weathered_copper"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:exposed_copper",
+    "entropy": 0
+  }
+}

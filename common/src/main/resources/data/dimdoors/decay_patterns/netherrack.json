@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:netherrack"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:netherrack",
+    "entropy": 0
+  }
+}

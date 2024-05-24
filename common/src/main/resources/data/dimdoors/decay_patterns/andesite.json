@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:polished_andesite"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "minecraft:andesite",
+    "entropy": 0
+  }
+}

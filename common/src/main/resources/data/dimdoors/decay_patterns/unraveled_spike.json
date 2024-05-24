@@ -1,0 +1,11 @@
+{
+  "predicate": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_unraveled_spike"
+  },
+  "processor": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:unraveled_spike",
+    "entropy": 0
+  }
+}

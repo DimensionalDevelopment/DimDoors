@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:tesselating_loom"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:loom"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:tesselating_loom"
+    ]
+  },
+  "sends_telemetry_event": false
+}
