@@ -1,27 +1,24 @@
 package org.dimdev.dimdoors.datagen;
 
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
-import java.util.function.BiConsumer;
-
 public class LootTableProvider extends FabricBlockLootTableProvider {
 
-	public LootTableProvider(FabricDataOutput dataGenerator) {
+	public LootTableProvider(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
 	}
+
 	@Override
-	public void generate() {
+	protected void generateBlockLootTables() {
 			for (RegistrySupplier<Block> block : ModBlocks.FABRIC_BLOCKS.values()) {
 				this.dropWhenSilkTouch(block.get());
 			}
@@ -36,7 +33,7 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 
 			this.add(ModBlocks.SOLID_STATIC.get(), (blockx) -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER.get()));
 
-			this.add(ModBlocks.UNRAVELLED_FABRIC.get(), (blockx) -> BlockLootSubProvider.createSilkTouchDispatchTable(blockx, applyExplosionCondition(blockx, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get()).when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.BLOCK_FORTUNE, 0.1F, 0.14285715F, 0.25F, 1.0F)).otherwise(LootItem.lootTableItem(blockx)))));
+			this.add(ModBlocks.UNRAVELLED_FABRIC.get(), (blockx) -> BlockLoot.createSilkTouchDispatchTable(blockx, applyExplosionCondition(blockx, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get()).when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.BLOCK_FORTUNE, 0.1F, 0.14285715F, 0.25F, 1.0F)).otherwise(LootItem.lootTableItem(blockx)))));
 
 			this.dropSelf(ModBlocks.TESSELATING_LOOM.get());
 

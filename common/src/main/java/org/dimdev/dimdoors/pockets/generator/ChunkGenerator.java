@@ -95,19 +95,19 @@ public class ChunkGenerator extends PocketGenerator {
 		ServerLevel genWorld = DimensionalDoors.getWorld(ResourceKey.create(Registry.DIMENSION_REGISTRY, dimensionID));
 		net.minecraft.world.level.chunk.ChunkGenerator genWorldChunkGenerator = genWorld.getChunkSource().getGenerator();
 
-		RandomState config = RandomState.create(NoiseGeneratorSettings.dummy(), world.registryAccess().registryOrThrow(Registries.NOISE).asLookup(), world.getSeed());
+		RandomState config = RandomState.create(NoiseGeneratorSettings.dummy(), world.registryAccess().registryOrThrow(Registry.NOISE_REGISTRY), world.getSeed());
 
 		ArrayList<ChunkAccess> protoChunks = new ArrayList<>();
 		for (int z = 0; z < chunkSizeZ; z++) {
 			for (int x = 0; x < chunkSizeX; x++) {
-				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().offset(x * 16, 0, z * 16)), UpgradeData.EMPTY, world, genWorld.registryAccess().registryOrThrow(Registries.BIOME), null);
+				ProtoChunk protoChunk = new ProtoChunk(new ChunkPos(pocket.getOrigin().offset(x * 16, 0, z * 16)), UpgradeData.EMPTY, world, genWorld.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY), null);
 				protoChunk.setLightEngine(genWorld.getLightEngine());
 				protoChunks.add(protoChunk);
 			}
 		}
 		WorldGenRegion protoRegion = new ChunkRegionHack(genWorld, protoChunks);//TODO Redo?
 		for (ChunkAccess protoChunk : protoChunks) { // TODO: check wether structures are even activated
-			genWorldChunkGenerator.createStructures(genWorld.registryAccess(), genWorld.getChunkSource().getGeneratorState(), genWorld.structureManager(), protoChunk, genWorld.getStructureManager());
+			genWorldChunkGenerator.createStructures(genWorld.registryAccess(), genWorld.getChunkSource().randomState(), genWorld.structureManager(), protoChunk, genWorld.getStructureManager(), genWorld.getSeed());
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_STARTS);
 		}
 		for (ChunkAccess protoChunk : protoChunks) {
@@ -115,7 +115,7 @@ public class ChunkGenerator extends PocketGenerator {
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.STRUCTURE_REFERENCES);
 		}
 		for (ChunkAccess protoChunk : protoChunks) {
-			genWorldChunkGenerator.createBiomes(Util.backgroundExecutor(), config, Blender.empty(), genWorld.structureManager(), protoChunk);
+			genWorldChunkGenerator.createBiomes(genWorld.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY), Util.backgroundExecutor(), config, Blender.empty(), genWorld.structureManager(), protoChunk);
 			((ProtoChunk) protoChunk).setStatus(ChunkStatus.BIOMES);
 		}
 		for (ChunkAccess protoChunk : protoChunks) {
@@ -214,7 +214,7 @@ public class ChunkGenerator extends PocketGenerator {
 		@Override
 		public ChunkAccess getChunk(int chunkX, int chunkZ, ChunkStatus leastStatus, boolean create) {
 			ChunkAccess chunk = super.getChunk(chunkX, chunkZ, leastStatus, false);
-			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.EMPTY, this, this.registryAccess().registryOrThrow(Registries.BIOME)) : chunk;
+			return chunk == null ? new ProtoChunkHack(new ChunkPos(chunkX, chunkZ), UpgradeData.EMPTY, this, this.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY)) : chunk;
 		}
 
 		// TODO: Override getSeed()

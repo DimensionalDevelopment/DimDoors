@@ -5,9 +5,6 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -27,8 +24,6 @@ import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
 
-import java.util.function.Consumer;
-
 import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
 
@@ -45,8 +40,8 @@ public class DimensionalDoorsForgeClient {
     @SubscribeEvent
     public static void registerParticles(RegisterParticleProvidersEvent event) {
         DimensionalDoorsClient.initParticles(
-                (particleType, particleProvider) -> event.registerSpecial((ParticleType) particleType, (ParticleProvider) particleProvider),
-                (particleType, spriteSetFunction) -> event.registerSpriteSet(particleType, (ParticleEngine.SpriteParticleRegistration) spriteSetFunction::apply));
+                (particleType, particleProvider) -> event.register((ParticleType) particleType, (ParticleProvider) particleProvider),
+                (particleType, spriteSetFunction) -> event.register(particleType, (ParticleEngine.SpriteParticleRegistration) spriteSetFunction::apply));
 
     }
 
@@ -66,7 +61,7 @@ public class DimensionalDoorsForgeClient {
     }
 
     @SubscribeEvent
-    public static void modifyBake(ModelEvent.ModifyBakingResult event) {
+    public static void modifyBake(ModelEvent.BakingCompleted event) {
         var blockRegistrar = DimensionalDoors.getDimensionalDoorBlockRegistrar();
 
         DimensionalDoors.getDimensionalDoorBlockRegistrar().getGennedIds().stream().filter(DimensionalDoors.getDimensionalDoorBlockRegistrar()::isMapped).forEach(identifier -> {

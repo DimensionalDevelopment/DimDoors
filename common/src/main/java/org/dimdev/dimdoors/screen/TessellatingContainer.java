@@ -63,7 +63,7 @@ public class TessellatingContainer extends AbstractContainerMenu /*RecipeBookMen
 					return ItemStack.EMPTY;
 				}
 				if (itemStack2.isEmpty()) {
-					slot.setByPlayer(ItemStack.EMPTY);
+					slot.set(ItemStack.EMPTY);
 				} else {
 					slot.setChanged();
 				}

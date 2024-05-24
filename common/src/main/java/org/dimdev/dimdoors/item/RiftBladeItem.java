@@ -108,7 +108,7 @@ public class RiftBladeItem extends SwordItem {
 			BlockPos teleportPosition = new BlockPos((int) targetVec.x(), (int) targetVec.y(), (int) targetVec.z());
 
 			// Ensure the target position is not inside a block
-			while (world.getBlockState(teleportPosition).blocksMotion()) {
+			while (!world.getBlockState(teleportPosition).isAir() && !world.getBlockState(teleportPosition).getFluidState().isEmpty()) {
 				teleportPosition = teleportPosition.above();
 			}
 

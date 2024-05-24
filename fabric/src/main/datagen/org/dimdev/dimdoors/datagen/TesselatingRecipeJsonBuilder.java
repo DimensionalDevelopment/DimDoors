@@ -10,8 +10,7 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.CraftingRecipeBuilder;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -28,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
+public class TesselatingRecipeJsonBuilder implements RecipeBuilder {
 	private final Item output;
 	private final int outputCount;
 	private final List<String> pattern = Lists.newArrayList();
@@ -86,9 +85,24 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 		return this;
 	}
 
+	@Override
+	public RecipeBuilder unlockedBy(String criterionName, CriterionTriggerInstance criterionTrigger) {
+		return criterion(criterionName, criterionTrigger);
+	}
+
 	public TesselatingRecipeJsonBuilder group(@Nullable String string) {
 		this.group = string;
 		return this;
+	}
+
+	@Override
+	public Item getResult() {
+		return this.output;
+	}
+
+	@Override
+	public void save(Consumer<FinishedRecipe> finishedRecipeConsumer, ResourceLocation recipeId) {
+		offerTo(finishedRecipeConsumer, recipeId);
 	}
 
 	public TesselatingRecipeJsonBuilder weavingTime(int weavingTime) {
@@ -96,16 +110,11 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 		return this;
 	}
 
-	public Item getOutputItem() {
-		return this.output;
-	}
-
 	public void offerTo(Consumer<FinishedRecipe> exporter, ResourceLocation recipeId) {
-		recipeId = recipeId.withPrefix("tesselating/");
 		this.validate(recipeId);
 		this.advancementBuilder.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
 
-		exporter.accept(new TesselatingRecipeJsonProvider(recipeId, this.output, this.outputCount, this.group == null ? "" : this.group, this.pattern, this.inputs, this.advancementBuilder, recipeId.withPrefix("recipes/tesselating/"), weavingTime));
+		exporter.accept(new TesselatingRecipeJsonProvider(recipeId, this.output, this.outputCount, this.group == null ? "" : this.group, this.pattern, this.inputs, this.advancementBuilder, recipeId, weavingTime));
 	}
 
 	private void validate(ResourceLocation recipeId) {
@@ -180,7 +189,7 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 
 			json.add("key", jsonObject);
 			JsonObject jsonObject2 = new JsonObject();
-			jsonObject2.addProperty("item", BuiltInRegistries.ITEM.getKey(this.output).toString());
+			jsonObject2.addProperty("item", Registry.ITEM.getKey(this.output).toString());
 			if (this.resultCount > 1) {
 				jsonObject2.addProperty("count", this.resultCount);
 			}

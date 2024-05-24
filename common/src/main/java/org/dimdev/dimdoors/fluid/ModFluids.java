@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.item.ModItems;
 import java.util.function.Supplier;
 
 public class ModFluids {
-	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.FLUID);
+	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.FLUID_REGISTRY);
 
 	public static final ArchitecturyFluidAttributes ETERNAL_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> ModFluids.FLOWING_ETERNAL_FLUID, () -> ModFluids.ETERNAL_FLUID).block(ModBlocks.ETERNAL_FLUID).bucketItem(ModItems.ETERNAL_FLUID_BUCKET).explosionResistance(100000)
 			.sourceTexture(DimensionalDoors.id("block/eternal_fluid_still"))

@@ -41,7 +41,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 			matrices.pushPose();
 			matrices.translate(0.5, 0.5, 0.5);
 
-            GameInstance.getClient().font.drawInBatch(Component.literal(String.valueOf(idMarker.getId())), 0f,0f, 0xffffffff, false, matrices.last().pose(), vcs, Font.DisplayMode.NORMAL, 0x000000, LightTexture.FULL_BRIGHT);
+            GameInstance.getClient().font.drawInBatch(Component.literal(String.valueOf(idMarker.getId())), 0f,0f, 0xffffffff, false, matrices.last().pose(), vcs, false, 0x000000, LightTexture.FULL_BRIGHT);
 
 			matrices.popPose();
 		}

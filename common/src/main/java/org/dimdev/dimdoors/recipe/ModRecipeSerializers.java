@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import java.util.function.Supplier;
 
 public class ModRecipeSerializers {
-	public static DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.RECIPE_SERIALIZER);
+	public static DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.RECIPE_SERIALIZER_REGISTRY);
 	public static RegistrySupplier<RecipeSerializer<ShapedTesselatingRecipe>> SHAPED_TESSELATING = register("shaped_tesselating", ShapedTesselatingRecipe.Serializer::new);
 	public static RegistrySupplier<RecipeSerializer<TesselatingShapelessRecipe>> SHAPELESS_TESSELATING = register("shapeless_tesselating", TesselatingShapelessRecipe.Serializer::new);
 

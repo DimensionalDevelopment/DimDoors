@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[45,)"
+loaderVersion = "[43,)"
 #issueTrackerURL = ""
 license = "MIT"
 
@@ -7,7 +7,7 @@ license = "MIT"
 modId = "dimdoors"
 version = "${version}"
 displayName = "DimensionalDoors"
-authors = "StevenRS11, SenseiKiwi, Zixiken, Waterpicker, Robijnvogel, ZombieHDGaming, Runemoro"
+authors = "StevenRS11, SenseiKiwi, Zixiken, Waterpicker, Robijnvogel, ZombieHDGaming, Runemoro, Mysticpasta1"
 description = '''
 Bend and twist reality, creating rifts, pocket dimensions, and much more
 '''
@@ -16,7 +16,7 @@ Bend and twist reality, creating rifts, pocket dimensions, and much more
 [[dependencies.dimdoors]]
 modId = "forge"
 mandatory = true
-versionRange = "[45,)"
+versionRange = "[43,)"
 ordering = "NONE"
 side = "BOTH"
 

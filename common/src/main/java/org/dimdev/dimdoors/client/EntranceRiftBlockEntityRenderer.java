@@ -25,7 +25,7 @@ public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<Entr
 					matrixStack.pushPose();
 					matrixStack.translate(0.5, 0.5, 0.5);
 
-					Minecraft.getInstance().font.drawInBatch(Component.literal(String.valueOf(idMarker.getId())), 0f, 0f, 0xffffffff, false, matrixStack.last().pose(), vertexConsumerProvider, Font.DisplayMode.NORMAL, 0x000000, LightTexture.FULL_BRIGHT);
+					Minecraft.getInstance().font.drawInBatch(Component.literal(String.valueOf(idMarker.getId())), 0f, 0f, 0xffffffff, false, matrixStack.last().pose(), vertexConsumerProvider, false, 0x000000, LightTexture.FULL_BRIGHT);
 
 					matrixStack.popPose();
 				}

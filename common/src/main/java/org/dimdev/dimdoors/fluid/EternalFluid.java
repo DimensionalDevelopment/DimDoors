@@ -95,7 +95,7 @@ public abstract class EternalFluid extends FlowingFluid {
 	}
 
 	@Override
-	protected boolean canConvertToSource(Level level) {
+	protected boolean canConvertToSource() {
 		return false;
 	}
 

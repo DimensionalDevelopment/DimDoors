@@ -124,6 +124,6 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAY_TO_UNRAVELED_FABRIC = of("decay_to_unraveled_fabric");
 
 	private static TagKey<Block> of(String id) {
-		return TagKey.create(Registries.BLOCK, DimensionalDoors.id(id));
+		return TagKey.create(Registry.BLOCK_REGISTRY, DimensionalDoors.id(id));
 	}
 }

@@ -12,7 +12,7 @@ public class DefaultTesselatingShapedDisplay extends DefaultTesselatingDisplay<S
     public DefaultTesselatingShapedDisplay(ShapedTesselatingRecipe recipe) {
         super(
                 EntryIngredients.ofIngredients(recipe.getIngredients()),
-                Collections.singletonList(EntryIngredients.of(recipe.getResultItem(BasicDisplay.registryAccess()))),
+                Collections.singletonList(EntryIngredients.of(recipe.getResultItem())),
                 Optional.of(recipe),
                 recipe.weavingTime()
         );

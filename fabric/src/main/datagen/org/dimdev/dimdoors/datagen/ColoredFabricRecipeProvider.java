@@ -3,8 +3,8 @@ package org.dimdev.dimdoors.datagen;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.block.Block;
@@ -20,7 +20,7 @@ public class ColoredFabricRecipeProvider {
 		for (Map.Entry<DyeColor, RegistrySupplier<Block>> entry : ModBlocks.FABRIC_BLOCKS.entrySet()) {
 			DyeColor dyeColor = entry.getKey();
 			Block block = entry.getValue().get();
-			ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
+			ShapedRecipeBuilder.shaped(block, 1)
 					.group("colored_fabric")
 					.unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
 					.pattern(" X ")

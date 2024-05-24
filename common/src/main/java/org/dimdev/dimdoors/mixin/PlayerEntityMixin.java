@@ -30,7 +30,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Inject(method = "causeFallDamage", at = @At("HEAD"), cancellable = true)
 	public void handleLimboFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
-		if (ModDimensions.isLimboDimension(level())) {
+		if (ModDimensions.isLimboDimension(level)) {
 			cir.setReturnValue(false);
 		}
 	}
@@ -42,7 +42,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 
 	@Unique
 	protected void doOnDeathStuff(DamageSource source, CallbackInfo ci) {
-		if (ModDimensions.isPocketDimension(this.level()) || DimensionalDoors.getConfig().getLimboConfig().shouldUseLimbo(this.level.dimension())) {
+		if (ModDimensions.isPocketDimension(this.level) || DimensionalDoors.getConfig().getLimboConfig().shouldUseLimbo(this.level.dimension())) {
 			((EntityAccessor) this).setRemovalReason(null);
 			this.dead = false;
 			this.setHealth(this.getMaxHealth());

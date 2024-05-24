@@ -1,16 +1,14 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
-import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
@@ -18,16 +16,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DripstoneThickness;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.item.ModItems;
 
 import static net.minecraft.data.models.model.TextureMapping.getBlockTexture;
 import static net.minecraft.data.models.model.TextureMapping.getItemTexture;
 
 public class DimDoorsModelProvider extends FabricModelProvider {
-	public DimDoorsModelProvider(FabricDataOutput dataGenerator) {
+	public DimDoorsModelProvider(FabricDataGenerator dataGenerator) {
 		super(dataGenerator);
 	}
 
@@ -168,21 +164,6 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 		ResourceLocation identifier7 = ModelTemplates.DOOR_TOP_RIGHT.create(doorBlock, textureMap, generator.modelOutput);
 		ResourceLocation identifier8 = ModelTemplates.DOOR_TOP_RIGHT_OPEN.create(doorBlock, textureMap, generator.modelOutput);
 		generator.createSimpleFlatItemModel(doorBlock.asItem());
-		generator.blockStateOutput.accept(BlockModelGenerators.createDoor(doorBlock, identifier, identifier2, identifier3, identifier4, identifier5, identifier6, identifier7, identifier8));
-	}
-
-	public void registerAutoGenDoor(BlockModelGenerators generator, DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock doorBlock) {
-		Block textureSource = doorBlock.getOriginalBlock();
-
-		ResourceLocation identifier = getBlockTexture(textureSource, "_bottom_left");
-		ResourceLocation identifier2 = getBlockTexture(textureSource, "_bottom_left_open");
-		ResourceLocation identifier3 = getBlockTexture(textureSource, "_bottom_right");
-		ResourceLocation identifier4 = getBlockTexture(textureSource, "_bottom_right_open");
-		ResourceLocation identifier5 = getBlockTexture(textureSource, "_top_left");
-		ResourceLocation identifier6 = getBlockTexture(textureSource, "_top_left_open");
-		ResourceLocation identifier7 = getBlockTexture(textureSource, "_top_right");
-		ResourceLocation identifier8 = getBlockTexture(textureSource, "_top_right_open");
-		ModelTemplates.TWO_LAYERED_ITEM.create(ModelLocationUtils.getModelLocation(doorBlock), TextureMapping.layered(DimensionalDoors.id("item/dimdoor_back"), getItemTexture(textureSource.asItem())), generator.modelOutput);
 		generator.blockStateOutput.accept(BlockModelGenerators.createDoor(doorBlock, identifier, identifier2, identifier3, identifier4, identifier5, identifier6, identifier7, identifier8));
 	}
 

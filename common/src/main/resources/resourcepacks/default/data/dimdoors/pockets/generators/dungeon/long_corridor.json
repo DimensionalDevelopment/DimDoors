@@ -12,8 +12,13 @@
     },
     {
       "type": "dimdoors:rift_data",
-      "ids": [1],
+      "ids": [2],
       "rift_data": "dimdoors:rift_data/default_dungeon"
+    },
+    {
+      "type": "dimdoors:relative",
+      "point_a": 1,
+      "point_b": 3
     }
   ]
 }

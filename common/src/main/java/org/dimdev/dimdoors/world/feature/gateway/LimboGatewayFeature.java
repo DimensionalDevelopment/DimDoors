@@ -11,7 +11,7 @@ public class LimboGatewayFeature extends Feature<NoneFeatureConfiguration> {
 
 	@Override
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-		LimboGateway.INSTANCE.generate(context.level, context.origin());
+		LimboGateway.INSTANCE.generate(context.level(), context.origin());
 		return true;
 
 	}

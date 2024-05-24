@@ -2,9 +2,5 @@
   {
     "path": "dimdoors:dungeon/",
     "type": "dimdoors:path"
-  },
-  {
-    "type": "dimdoors:id",
-    "id": "lab/lab_hallway"
   }
 ]

@@ -8,7 +8,7 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModRecipeTypes {
-	public static final DeferredRegister<RecipeType<?>> RECIPES_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.RECIPE_TYPE);
+	public static final DeferredRegister<RecipeType<?>> RECIPES_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.RECIPE_TYPE_REGISTRY);
 	public static RegistrySupplier<RecipeType<ShapedTesselatingRecipe>> SHAPED_TESSELATING = register("shaped_tesselating");
 	public static RegistrySupplier<RecipeType<TesselatingShapelessRecipe>> SHAPELESS_TESSELATING = register("shapeless_tesselating");
 

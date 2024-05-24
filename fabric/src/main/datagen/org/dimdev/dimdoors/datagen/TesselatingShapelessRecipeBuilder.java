@@ -10,27 +10,23 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.CraftingRecipeBuilder;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
-import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 import org.jetbrains.annotations.Nullable;
 
-public class TesselatingShapelessRecipeBuilder extends CraftingRecipeBuilder implements RecipeBuilder {
+public class TesselatingShapelessRecipeBuilder implements RecipeBuilder {
     private final Item result;
     private final int count;
     private final List<Ingredient> ingredients = Lists.newArrayList();
-    private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
+    private final Advancement.Builder advancement = Advancement.Builder.advancement();
     @Nullable
     private String group;
 
@@ -121,10 +117,9 @@ public class TesselatingShapelessRecipeBuilder extends CraftingRecipeBuilder imp
 
     @Override
     public void save(Consumer<FinishedRecipe> finishedRecipeConsumer, ResourceLocation recipeId) {
-        recipeId = recipeId.withPrefix("tesselating/");
         this.ensureValid(recipeId);
         this.advancement.parent(ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);
-        finishedRecipeConsumer.accept(new TesselatingShapelessRecipeBuilder.Result(recipeId, this.result, this.count, this.group == null ? "" : this.group,  this.ingredients, this.advancement, recipeId.withPrefix("recipes/tesselating/"), weavingTime));
+        finishedRecipeConsumer.accept(new TesselatingShapelessRecipeBuilder.Result(recipeId, this.result, this.count, this.group == null ? "" : this.group,  this.ingredients, this.advancement, recipeId, weavingTime));
     }
 
     /**
@@ -169,7 +164,7 @@ public class TesselatingShapelessRecipeBuilder extends CraftingRecipeBuilder imp
             }
             json.add("ingredients", jsonArray);
             JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("item", BuiltInRegistries.ITEM.getKey(this.result).toString());
+            jsonObject.addProperty("item", Registry.ITEM.getKey(this.result).toString());
             if (this.count > 1) {
                 jsonObject.addProperty("count", this.count);
             }

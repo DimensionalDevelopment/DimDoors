@@ -16,6 +16,6 @@ public final class ModBiomes {
     }
 
 	private static ResourceKey<Biome> register(String name) {
-		return ResourceKey.create(Registries.BIOME, id(name));
+		return ResourceKey.create(Registry.BIOME_REGISTRY, id(name));
 	}
 }

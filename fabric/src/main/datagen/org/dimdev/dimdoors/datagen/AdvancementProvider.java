@@ -1,21 +1,23 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class AdvancementProvider extends net.minecraft.data.advancements.AdvancementProvider {
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricAdvancementProvider;
+import net.minecraft.advancements.Advancement;
 
-	public AdvancementProvider(PackOutput arg, CompletableFuture<HolderLookup.Provider> completableFuture) {
-		super(arg, completableFuture, List.of(AdvancementProvider::generateAdvancement));
-
+public class AdvancementProvider extends FabricAdvancementProvider {
+	public AdvancementProvider(FabricDataGenerator dataGenerator) {
+		super(dataGenerator);
 	}
 
-	public static void generateAdvancement(HolderLookup.Provider arg, Consumer<Advancement> consumer) {
+	@Override
+	public void generateAdvancement(Consumer<Advancement> consumer) {
 		new AdvancementTab().accept(consumer);
+	}
+
+	@Override
+	public String getName() {
+		return "Dimdoors Advancements";
 	}
 }

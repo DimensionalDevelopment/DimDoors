@@ -274,9 +274,5 @@
   {
     "id": "dungeon/small_red_sandstone_hallway",
     "type": "dimdoors:id"
-  },
-  {
-    "id": "lab/lab_hallway",
-    "type": "dimdoors:id"
   }
 ]

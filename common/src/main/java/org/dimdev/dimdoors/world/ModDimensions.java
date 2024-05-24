@@ -18,8 +18,8 @@ public final class ModDimensions {
     public static final ResourceKey<Level> PUBLIC = ResourceKey.create(Registry.DIMENSION_REGISTRY, DimensionalDoors.id("public_pockets"));
     public static final ResourceKey<Level> DUNGEON = ResourceKey.create(Registry.DIMENSION_REGISTRY, DimensionalDoors.id("dungeon_pockets"));
 
-    public static final ResourceKey<DimensionType> LIMBO_TYPE_KEY = ResourceKey.create(Registry.DIMENSION_REGISTRY_TYPE, DimensionalDoors.id("limbo"));
-    public static final ResourceKey<DimensionType> POCKET_TYPE_KEY = ResourceKey.create(Registry.DIMENSION_REGISTRY_TYPE, DimensionalDoors.id("personal_pockets"));
+    public static final ResourceKey<DimensionType> LIMBO_TYPE_KEY = ResourceKey.create(Registry.DIMENSION_TYPE_REGISTRY, DimensionalDoors.id("limbo"));
+    public static final ResourceKey<DimensionType> POCKET_TYPE_KEY = ResourceKey.create(Registry.DIMENSION_TYPE_REGISTRY, DimensionalDoors.id("personal_pockets"));
 
     public static DimensionType LIMBO_TYPE;
     public static DimensionType POCKET_TYPE;
@@ -52,14 +52,14 @@ public final class ModDimensions {
 
     public static void init() {
         LifecycleEvent.SERVER_STARTED.register(server -> {
-            ModDimensions.LIMBO_TYPE = server.registryAccess().registryOrThrow(Registry.DIMENSION_REGISTRY_TYPE).get(LIMBO_TYPE_KEY);
-            ModDimensions.POCKET_TYPE = server.registryAccess().registryOrThrow(Registry.DIMENSION_REGISTRY_TYPE).get(POCKET_TYPE_KEY);
+            ModDimensions.LIMBO_TYPE = server.registryAccess().registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).get(LIMBO_TYPE_KEY);
+            ModDimensions.POCKET_TYPE = server.registryAccess().registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).get(POCKET_TYPE_KEY);
             ModDimensions.LIMBO_DIMENSION = server.getLevel(LIMBO);
             ModDimensions.PERSONAL_POCKET_DIMENSION = server.getLevel(PERSONAL);
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getLevel(PUBLIC);
             ModDimensions.DUNGEON_POCKET_DIMENSION = server.getLevel(DUNGEON);
         });
-        var deffered =DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CHUNK_GENERATOR);
+        var deffered =DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.CHUNK_GENERATOR_REGISTRY);
         deffered.register("blank", () -> BlankChunkGenerator.CODEC);
         deffered.register();
     }

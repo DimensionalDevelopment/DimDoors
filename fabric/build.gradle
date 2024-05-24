@@ -39,9 +39,15 @@ def includeCompile(entry) {
 }
 
 repositories {
-   maven {
-       url = "https://maven.terraformersmc.com/releases/"
-   }
+    maven {
+        url = "https://maven.terraformersmc.com/releases/"
+    }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -72,7 +78,7 @@ dependencies {
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
 //    modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
-    modApi "com.terraformersmc:modmenu:7.2.2"
+    modApi "com.terraformersmc:modmenu:4.2.0-beta.2"
 
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
 //    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
@@ -86,8 +92,8 @@ processResources {
 //    inputs.property "cloth_config_version", cloth_config
 
     def props = [
-            "version": project.version,
-            "minecraft_version": minecraft_version,
+            "version"             : project.version,
+            "minecraft_version"   : minecraft_version,
             "architectury_version": architectury_version,
             "cloth_config_version": cloth_config
     ]

@@ -24,7 +24,7 @@ public final class ModFeatures {
 	public static final TwoPillarsGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
 	public static final EndGateway END_GATEWAY = new EndGateway();
 
-	public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.FEATURE);
+	public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.FEATURE_REGISTRY);
 
 	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> SANDSTONE_PILLARS_GATEWAY_FEATURE = FEATURES.register("two_pillars", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
 	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> TWO_PILLARS_GATEWAY_FEATURE = FEATURES.register("sandstone_pillars", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
@@ -56,7 +56,7 @@ public final class ModFeatures {
 		public static void init() {}
 
 		public static ResourceKey<ConfiguredFeature<?, ?>> of(String id) {
-			return ResourceKey.create(Registries.CONFIGURED_FEATURE, id(id));
+			return ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, id(id));
 		}
 	}
 
@@ -94,7 +94,7 @@ public final class ModFeatures {
 		}
 
 		public static ResourceKey<PlacedFeature> of(String id) {
-			return ResourceKey.create(Registries.PLACED_FEATURE, id(id));
+			return ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, id(id));
 		}
 
 		@ExpectPlatform

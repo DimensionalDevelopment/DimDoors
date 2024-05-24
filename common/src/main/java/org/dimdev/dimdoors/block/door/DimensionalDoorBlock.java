@@ -142,7 +142,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return InteractionResult.SUCCESS;
 	}
 
-	private void playSound(Level level, BlockPos pos, boolean isOpening) {
+	protected void playSound(Level level, BlockPos pos, boolean isOpening) {
 		level.levelEvent(null, isOpening ? openSound() : closedSound(), pos, 0);
 	}
 

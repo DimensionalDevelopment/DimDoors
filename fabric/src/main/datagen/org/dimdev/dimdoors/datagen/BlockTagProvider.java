@@ -1,16 +1,14 @@
 package org.dimdev.dimdoors.datagen;
 
-import dev.architectury.platform.Mod;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 
@@ -18,22 +16,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
-	
-	
-	public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(output, lookupProvider);
+	public BlockTagProvider(FabricDataGenerator output) {
+		super(output);
 	}
 
 	@Override
-	protected void addTags(HolderLookup.Provider arg) {
-		configure(arg.asGetterLookup());
-	}
-
-	protected void configure(HolderGetter.Provider arg) {
-
-		add(ModBlockTags.DECAY_TO_AIR,
-				Blocks.COBWEB,
-				ModBlocks.DRIFTWOOD_LEAVES.get(),
+	protected void generateTags() {
+	add(ModBlockTags.DECAY_TO_AIR,
+		Blocks.COBWEB,
+		ModBlocks.DRIFTWOOD_LEAVES.get(),
 				ModBlocks.DRIFTWOOD_SAPLING.get(),
 				Blocks.GLASS_PANE,
 				Blocks.MOSS_CARPET,
@@ -247,23 +238,23 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 		add(ModBlockTags.DECAY_TO_DRIFTWOOD_PLANK).addOptionalTag(BlockTags.PLANKS.location());
 
 		add(BlockTags.FENCES).add(
-				ModBlocks.CLAY_FENCE.getKey(),
-				ModBlocks.GRAVEL_FENCE.getKey(),
-				ModBlocks.MUD_FENCE.getKey(),
-				ModBlocks.UNRAVELED_FENCE.getKey(),
-				ModBlocks.NETHERRACK_FENCE.getKey(),
-				ModBlocks.DARK_SAND_FENCE.getKey());
+				ModBlocks.CLAY_FENCE.get(),
+				ModBlocks.GRAVEL_FENCE.get(),
+				ModBlocks.MUD_FENCE.get(),
+				ModBlocks.UNRAVELED_FENCE.get(),
+				ModBlocks.NETHERRACK_FENCE.get(),
+				ModBlocks.DARK_SAND_FENCE.get());
 
-		add(BlockTags.WOODEN_FENCES).add(ModBlocks.DRIFTWOOD_FENCE.getKey());
+		add(BlockTags.WOODEN_FENCES).add(ModBlocks.DRIFTWOOD_FENCE.get());
 		add(BlockTags.WALLS).add(
-				ModBlocks.CLAY_WALL.getKey(),
-				ModBlocks.DARK_SAND_WALL.getKey(),
-				ModBlocks.DEEPSLATE_WALL.getKey(),
-				ModBlocks.GRAVEL_WALL.getKey(),
-				ModBlocks.NETHERRACK_WALL.getKey(),
-				ModBlocks.END_STONE_WALL.getKey(),
-				ModBlocks.RED_SAND_WALL.getKey(),
-				ModBlocks.SAND_WALL.getKey()
+				ModBlocks.CLAY_WALL.get(),
+				ModBlocks.DARK_SAND_WALL.get(),
+				ModBlocks.DEEPSLATE_WALL.get(),
+				ModBlocks.GRAVEL_WALL.get(),
+				ModBlocks.NETHERRACK_WALL.get(),
+				ModBlocks.END_STONE_WALL.get(),
+				ModBlocks.RED_SAND_WALL.get(),
+				ModBlocks.SAND_WALL.get()
 		);
 	}
 

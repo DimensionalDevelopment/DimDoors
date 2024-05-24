@@ -4,11 +4,11 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -30,6 +30,7 @@ import org.dimdev.dimdoors.world.decay.predicates.FluidDecayPredicate;
 import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
 import org.dimdev.dimdoors.world.decay.processors.*;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,30 +41,31 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class LimboDecayProvider implements DataProvider {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
-	private final PackOutput.PathProvider decayPatternPathResolver;
+	private final DataGenerator.PathProvider decayPatternPathResolver;
 
-	public LimboDecayProvider(PackOutput output) {
-		this.decayPatternPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, "decay_patterns");
-    }
+	public LimboDecayProvider(FabricDataGenerator output) {
+		this.decayPatternPathResolver = output.createPathProvider(DataGenerator.Target.DATA_PACK, "decay_patterns");
+	}
 
-    @Override
-    public CompletableFuture<?> run(CachedOutput cache) {
+	@Override
+	public void run(CachedOutput output) throws IOException {
 		Set<ResourceLocation> generatedDecayPatterns = Sets.newHashSet();
 		List<CompletableFuture<?>> list = new ArrayList<>();
 
-
-        BiConsumer<ResourceLocation, JsonObject> consumer = (resourceLocation, json)  -> {
-            Path outputPath = decayPatternPathResolver.json(resourceLocation);
-			list.add(DataProvider.saveStable(cache, json, outputPath));
+		BiConsumer<ResourceLocation, JsonObject> consumer = (identifier, json)  -> {
+			Path outputPath = decayPatternPathResolver.json(identifier);
+            try {
+                DataProvider.saveStable(output, json, outputPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            };
 		};
 
 		generatePatterns(consumer);
-
-		return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
-    }
+	}
 
 	protected void generatePatterns(BiConsumer<ResourceLocation, JsonObject> consumer) {
 		createPatterData(DimensionalDoors.id("air"), ModBlockTags.DECAY_TO_AIR, Blocks.AIR).run(consumer);
@@ -242,8 +244,8 @@ public class LimboDecayProvider implements DataProvider {
 			if(object instanceof Block block) return SimpleDecayPredicate.builder().block(block).create();
 			else if(object instanceof Fluid fluid) return FluidDecayPredicate.builder().fluid(fluid).create();
 		} else {
-			if (tag.isFor(Registries.BLOCK)) return SimpleDecayPredicate.builder().tag((TagKey<Block>) tag).create();
-			else if (tag.isFor(Registries.FLUID)) return FluidDecayPredicate.builder().tag((TagKey<Fluid>) tag).create();
+			if (tag.isFor(Registry.BLOCK_REGISTRY)) return SimpleDecayPredicate.builder().tag((TagKey<Block>) tag).create();
+			else if (tag.isFor(Registry.FLUID_REGISTRY)) return FluidDecayPredicate.builder().tag((TagKey<Fluid>) tag).create();
 		}
 
 		return DecayPredicate.NONE;
@@ -279,18 +281,18 @@ public class LimboDecayProvider implements DataProvider {
 	}
 
 	private Block getBlock(ResourceLocation id) {
-		return BuiltInRegistries.BLOCK.get(id);
+		return Registry.BLOCK.get(id);
 	}
 
 	private ResourceLocation getId(Block block) {
-		return BuiltInRegistries.BLOCK.getKey(block);
+		return Registry.BLOCK.getKey(block);
 	}
 
 	private DecayPatternData turnIntoSelf(ResourceLocation ResourceLocation, Object before) {
 		return new DecayPatternData(ResourceLocation, getPredicate(before), SelfDecayProcessor.instance());
 	}
 
-    @Override
+	@Override
     public String getName() {
         return "Limbo Decay";
     }

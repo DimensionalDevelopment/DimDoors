@@ -7,7 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public final class ModSoundEvents {
-	private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.SOUND_EVENT);
+	private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.SOUND_EVENT_REGISTRY);
 	public static final RegistrySupplier<SoundEvent> CRACK = register("crack");
 	public static final RegistrySupplier<SoundEvent> CREEPY = register("creepy");
 	public static final RegistrySupplier<SoundEvent> DOOR_LOCKED = register("door_locked");
@@ -26,7 +26,7 @@ public final class ModSoundEvents {
 	public static final RegistrySupplier<SoundEvent> TESSELATING_WEAVE = register("tesselating_weave");
 
 	private static RegistrySupplier<SoundEvent> register(String id) {
-		return SOUND_EVENTS.register(id, () -> SoundEvent.createVariableRangeEvent(DimensionalDoors.id(id)));
+		return SOUND_EVENTS.register(id, () -> new SoundEvent(DimensionalDoors.id(id)));
 	}
 
 	public static void init() {

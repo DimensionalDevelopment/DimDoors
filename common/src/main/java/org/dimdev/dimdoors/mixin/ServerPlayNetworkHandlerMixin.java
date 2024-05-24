@@ -29,8 +29,8 @@ public class ServerPlayNetworkHandlerMixin {
 	protected void checkBlockCollision(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
 		// stolen from Entity#checkBlockCollision
 		AABB box = player.getBoundingBox();
-		BlockPos blockPos = BlockPos.containing(box.minX + 1.0E-7D, box.minY + 1.0E-7D, box.minZ + 1.0E-7D);
-		BlockPos blockPos2 = BlockPos.containing(box.maxX - 1.0E-7D, box.maxY - 1.0E-7D, box.maxZ - 1.0E-7D);
+		BlockPos blockPos = new BlockPos(box.minX + 1.0E-7D, box.minY + 1.0E-7D, box.minZ + 1.0E-7D);
+		BlockPos blockPos2 = new BlockPos(box.maxX - 1.0E-7D, box.maxY - 1.0E-7D, box.maxZ - 1.0E-7D);
 		if (player.level.hasChunksAt(blockPos, blockPos2)) {
 			BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
@@ -41,7 +41,7 @@ public class ServerPlayNetworkHandlerMixin {
 						mutable.set(i, j, k);
 						BlockState blockState = player.level.getBlockState(mutable);
 						Block block = blockState.getBlock();
-						if (block instanceof AfterMoveCollidableBlock && ((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.serverLevel(), mutable, player, player.position().subtract(firstGoodX, firstGoodY, firstGoodZ)).consumesAction()) {
+						if (block instanceof AfterMoveCollidableBlock && ((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.getLevel(), mutable, player, player.position().subtract(firstGoodX, firstGoodY, firstGoodZ)).consumesAction()) {
 							done = true;
 						}
 						if (done) {

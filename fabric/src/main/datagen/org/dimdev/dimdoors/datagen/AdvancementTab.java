@@ -4,8 +4,8 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.advancements.critereon.*;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -59,31 +59,31 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.save(advancementConsumer, "dimdoors:dimdoors/string_theory");
 		Advancement holeInTheSky = Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL.get(), "hole_in_the_sky"))
-				.addCriterion("encounter_rift", new RiftTrackedCriterion.Conditions(ContextAwarePredicate.ANY))
+				.addCriterion("encounter_rift", new RiftTrackedCriterion.Conditions(EntityPredicate.Composite.ANY))
 				.parent(root)
 				.save(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
 		Advancement darkOstiology = Advancement.Builder.advancement()
-				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door")), "dark_ostiology"))
-				.addCriterion("place_door", EnterBlockTrigger.TriggerInstance.entersBlock(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door"))))
+				.display(makeDisplay(Registry.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door")), "dark_ostiology"))
+				.addCriterion("place_door", EnterBlockTrigger.TriggerInstance.entersBlock(Registry.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door"))))
 				.parent(holeInTheSky)
 				.save(advancementConsumer, "dimdoors:dimdoors/dark_ostiology");
 		Advancement.Builder.advancement()
-				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_iron_door")), "public_pocket"))
+				.display(makeDisplay(Registry.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_iron_door")), "public_pocket"))
 				.parent(darkOstiology)
 				.addCriterion("public_pocket", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(ModDimensions.PUBLIC))
 				.save(advancementConsumer, "dimdoors:dimdoors/public_pocket");
 		Advancement.Builder.advancement()
-				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_iron_door")), "home_away_from_home"))
+				.display(makeDisplay(Registry.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_iron_door")), "home_away_from_home"))
 				.parent(darkOstiology)
 				.addCriterion("private_pocket", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(ModDimensions.PERSONAL))
 				.save(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
 		Advancement.Builder.advancement()
 				.display(makeDisplay(Blocks.RESPAWN_ANCHOR, "out_of_time"))
-				.addCriterion("spawn", new PocketSpawnPointSetCondition.Conditions(ContextAwarePredicate.ANY))
+				.addCriterion("spawn", new PocketSpawnPointSetCondition.Conditions(EntityPredicate.Composite.ANY))
 				.parent(darkOstiology)
 				.save(advancementConsumer, "dimdoors:dimdoors/out_of_time");
 		Advancement doorToAdventure = Advancement.Builder.advancement()
-				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_dimdoors_gold_door")), "door_to_adventure"))
+				.display(makeDisplay(Registry.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_dimdoors_gold_door")), "door_to_adventure"))
 				.parent(holeInTheSky)
 				.addCriterion("enter_dungeon", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo((ModDimensions.DUNGEON)))
 				.save(advancementConsumer, "dimdoors:dimdoors/door_to_adventure");
@@ -121,7 +121,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 		Advancement.Builder.advancement()
 				.display(makeDisplay(ModBlocks.BLACK_FABRIC.get(), "darklight"))
 				.parent(doorToAdventure)
-				.addCriterion("get_fabric", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(TagKey.create(Registries.ITEM, DimensionalDoors.id("fabric"))).build()))
+				.addCriterion("get_fabric", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(TagKey.create(Registry.ITEM_REGISTRY, DimensionalDoors.id("fabric"))).build()))
 				.save(advancementConsumer, "dimdoors:dimdoors/darklight");
 		Advancement enterLimbo = Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.MONOLITH_SPAWNER.get(), "enter_limbo"))

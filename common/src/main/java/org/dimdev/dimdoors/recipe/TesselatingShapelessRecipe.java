@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -56,7 +55,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem() {
         return this.result;
     }
 
@@ -86,8 +85,9 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
         return weavingTime;
     }
 
+
     @Override
-    public ItemStack assemble(TesselatingLoomBlockEntity container, RegistryAccess registryAccess) {
+    public ItemStack assemble(TesselatingLoomBlockEntity container) {
         return this.result.copy();
     }
 
@@ -119,7 +119,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
         private static NonNullList<Ingredient> itemsFromJson(JsonArray ingredientArray) {
             NonNullList<Ingredient> nonNullList = NonNullList.create();
             for (int i = 0; i < ingredientArray.size(); ++i) {
-                Ingredient ingredient = Ingredient.fromJson(ingredientArray.get(i), false);
+                Ingredient ingredient = Ingredient.fromJson(ingredientArray.get(i));
                 if (ingredient.isEmpty()) continue;
                 nonNullList.add(ingredient);
             }

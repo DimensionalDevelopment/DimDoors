@@ -15,6 +15,6 @@ public class ModItemTags {
     public static final TagKey<Item> LIMBO_GAZE_DEFYING = of("limbo_gaze_defying");
 
     private static TagKey<Item> of(String id) {
-        return TagKey.create(Registries.ITEM, DimensionalDoors.id(id));
+        return TagKey.create(Registry.ITEM_REGISTRY, DimensionalDoors.id(id));
     }
 }

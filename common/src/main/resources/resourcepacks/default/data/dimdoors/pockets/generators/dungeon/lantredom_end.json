@@ -6,7 +6,7 @@
     "addons": [
       {
         "type": "dimdoors:sky",
-        "effect": "minecraft:the_end"
+        "world": "minecraft:the_end"
       }
     ]
   },

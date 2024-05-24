@@ -29,6 +29,7 @@ subprojects {
         maven("https://cursemaven.com").content { includeGroup("curse.maven") }
 //        maven("https://maven.enginehub.org/repo/")
         maven("https://maven.parchmentmc.org")
+        maven ("https://cursemaven.com")
     }
 
     @Suppress("UnstableApiUsage")
