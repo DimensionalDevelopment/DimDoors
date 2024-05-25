@@ -1,6 +1,10 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
+import com.mojang.datafixers.util.Function6;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.util.CodecUtil;
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
@@ -32,6 +37,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
+	public static MapCodec<DimensionalDoorModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+		instance.group(Direction.CODEC.fieldOf("facing").<DimensionalDoorModifier>forGetter(a -> a.facing),
+				ResourceLocation.CODEC.xmap(BuiltInRegistries.BLOCK::get, BuiltInRegistries.BLOCK::getKey).xmap(DimensionalDoorBlock.class::cast, Block.class::cast).fieldOf("door_type").<DimensionalDoorModifier>forGetter(a -> a.doorType),
+				CodecUtil.xor(Codec.STRING.xmap(a -> PocketLoader.getInstance().getDataNbtCompound(a), a -> null), CompoundTag.CODEC).fieldOf("rift_data").<DimensionalDoorModifier>forGetter(a -> a.doorData),
+				Equation.CODEC.fieldOf("x").<DimensionalDoorModifier>forGetter(a -> a.xEquation),
+				Equation.CODEC.fieldOf("y").<DimensionalDoorModifier>forGetter(a -> a.yEquation),
+				Equation.CODEC.fieldOf("z").<DimensionalDoorModifier>forGetter(a -> a.zEquation)).apply(instance, new Function6<Direction, DimensionalDoorBlock, CompoundTag, Equation, Equation, Equation, Object>() {
+			@Override
+			public Object apply(Direction direction, DimensionalDoorBlock dimensionalDoorBlock, CompoundTag compoundTag, Equation equation, Equation equation2, Equation equation3) {
+				return new DimensionalDoorModifier(direction, dimensionalDoorBlock, compoundTag, equation, equation2, equation3);
+			}
+		})
+	});
+
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "door";
 
@@ -41,12 +60,13 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	private CompoundTag doorData;
 	private String doorDataReference;
 
-	private String x;
-	private String y;
-	private String z;
 	private Equation xEquation;
 	private Equation yEquation;
 	private Equation zEquation;
+
+	public DimensionalDoorModifier(Direction facing, DimensionalDoorBlock doorType, CompoundTag doorData, Equation xEquation, Equation yEquation, Equation zEquation) {
+		super();
+	}
 
 	@Override
 	public Modifier fromNbt(CompoundTag nbt, ResourceManager allowReference) {
@@ -169,6 +189,33 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 
 	@Override
 	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+
+	}
+
+	public static interface DoorData {
+		CompoundTag getData();
+
+		public record Local(CompoundTag data) implements DoorData {
+
+			@Override
+			public CompoundTag getData() {
+				return data;
+			}
+		}
+
+		public class Reference implements DoorData {
+			private String reference;
+			private CompoundTag data;
+
+			public Reference(String reference) {
+				this.reference = reference;
+			}
+
+			@Override
+			public CompoundTag getData() {
+				return null;
+			}
+		}
 
 	}
 }

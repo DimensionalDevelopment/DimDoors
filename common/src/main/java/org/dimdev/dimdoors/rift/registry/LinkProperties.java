@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -7,6 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class LinkProperties {
+	public static final Codec<LinkProperties> CODEC = RecordCodecBuilder.create(inst -> inst.group(Codec.FLOAT.fieldOf("floatingWeight").forGetter(obj -> obj.floatingWeight), Codec.FLOAT.fieldOf("entranceWeight").forGetter(LinkProperties::getEntranceWeight), Codec.INT.listOf().xmap(Set::copyOf, List::copyOf).fieldOf("groups").forGetter(LinkProperties::getGroups), Codec.INT.fieldOf("linksRemaining").forGetter(LinkProperties::getLinksRemaining), Codec.BOOL.fieldOf("oneWay").forGetter(obj -> obj.oneWay)).apply(inst, LinkProperties::new));
 	public static final LinkProperties NONE = LinkProperties.builder().build();
 
 	public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type

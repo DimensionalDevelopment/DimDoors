@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -19,6 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 public class LazyGenerationPocket extends Pocket {
+	public static <T extends LazyGenerationPocket> String lazyCommonFields(RecordCodecBuilder.Instance<T> obj) {
+		return commonFields(obj).and()
+	}
+
 	public static String KEY = "lazy_gen_pocket";
 
 	private LazyPocketGenerator generator;

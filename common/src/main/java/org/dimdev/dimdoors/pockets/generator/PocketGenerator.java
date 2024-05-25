@@ -41,6 +41,8 @@ import java.util.function.Supplier;
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final Registrar<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
+
+
 	public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
@@ -290,7 +292,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
 	public interface PocketGeneratorType<T extends PocketGenerator> {
 		RegistrySupplier<PocketGeneratorType<PocketGenerator>> SCHEMATIC = register(DimensionalDoors.id(SchematicGenerator.KEY), SchematicGenerator::new);
-		RegistrySupplier<PocketGeneratorType<ChunkGenerator>> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
+//		RegistrySupplier<PocketGeneratorType<ChunkGenerator>> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
 		RegistrySupplier<PocketGeneratorType<VoidGenerator>> VOID = register(DimensionalDoors.id(VoidGenerator.KEY), VoidGenerator::new);
 
 		PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager);

@@ -1,12 +1,18 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 public abstract class AbstractLazyModifier implements LazyModifier {
+	public static <T extends AbstractLazyModifier> Products.P1<RecordCodecBuilder.Mu<T>, String> commonFields(RecordCodecBuilder.Instance<T> instance) {
+		return instance.group(Codec.STRING.optionalFieldOf("resourceKey", null).forGetter(a -> a.resourceKey));
+	}
 
-	private String resourceKey = null;
+	public String resourceKey = null;
 
 	public AbstractLazyModifier(String resourceKey) {
 		this.resourceKey = resourceKey;

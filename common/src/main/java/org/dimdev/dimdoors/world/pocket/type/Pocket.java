@@ -61,6 +61,10 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		this.addons = new ArrayList<>();
 	}
 
+	public Pocket() {
+		this.addons = new ArrayList<>();
+	}
+
 	public <C extends PocketAddon> boolean addAddon(C addon) {
 		if (addon.applicable(this)) {
 			addons.add(addon);

@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
 import com.mojang.datafixers.Products;
-import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,16 +14,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.CodecUtil;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 	public static final Registrar<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<AbstractPocketType<? extends AbstractPocket<?>>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
-	public static final Codec<AbstractPocketType<? extends AbstractPocket<?>>> TYPE_CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
-	public static final Codec<AbstractPocket<?>> CODEC = TYPE_CODEC.dispatch(AbstractPocket::getType, AbstractPocket.AbstractPocketType::codec);
+	public static final Codec<AbstractPocket<?>> CODEC = CodecUtil.registrarCodec(REGISTRY, AbstractPocket::getType, AbstractPocket.AbstractPocketType::mapCodec);
 
 	protected static <T extends AbstractPocket<?>> Products.P2<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>> commonFields(RecordCodecBuilder.Instance<T> instance) {
 		return instance.group(Codec.INT.fieldOf("id").forGetter(AbstractPocket::getId), ResourceKey.codec(Registries.DIMENSION).fieldOf("world").forGetter(AbstractPocket::getWorld));
@@ -95,9 +93,9 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 	}
 
 	public interface AbstractPocketType<T extends AbstractPocket<?>> {
-		RegistrySupplier<AbstractPocketType<IdReferencePocket>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder);
+		RegistrySupplier<AbstractPocketType<IdReferencePocket>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder, IdReferencePocket.CODEC);
 
-		RegistrySupplier<AbstractPocketType<Pocket>> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket::new, Pocket::builder);
+		RegistrySupplier<AbstractPocketType<Pocket>> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket::new, Pocket::builder, Pocket.CODEC);
 		RegistrySupplier<AbstractPocketType<PrivatePocket>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
 		RegistrySupplier<AbstractPocketType<LazyGenerationPocket>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
@@ -113,7 +111,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		static void register() {
 		}
 
-		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> RegistrySupplier<AbstractPocketType<U>> register(ResourceLocation id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
+		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> RegistrySupplier<AbstractPocketType<U>> register(ResourceLocation id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier, MapCodec<U> mapCodec) {
 			return REGISTRY.register(id, () -> new AbstractPocketType<U>() {
 				@Override
 				public U fromNbt(CompoundTag nbt) {
@@ -135,10 +133,15 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 				public AbstractPocketBuilder<?, U> builder() {
 					return factorySupplier.get();
 				}
+
+				@Override
+				public MapCodec<? extends AbstractPocket<?>> mapCodec() {
+					return mapCodec;
+				}
 			});
 		}
 
-		MapCodec<? extends AbstractPocket<?>> codec();
+		MapCodec<? extends AbstractPocket<?>> mapCodec();
 	}
 
 	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket<?>> {

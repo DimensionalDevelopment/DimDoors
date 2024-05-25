@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import com.google.common.collect.Multimap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
@@ -12,15 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.CodecUtil;
-import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.Collection;
 import java.util.function.Supplier;
 
-public interface Modifier extends ReferenceSerializable {
+public interface Modifier {
 	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
 	Registrar<ModifierType<? extends Modifier>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ModifierType<? extends Modifier>>builder(DimensionalDoors.id("modifier_type")).build();
 	Codec<Modifier> CODEC = CodecUtil.registrarCodec(RESOURCE_STARTING_PATH, REGISTRY, Modifier::getType, ModifierType::mapCodec, Modifier::codec);
@@ -77,17 +74,7 @@ public interface Modifier extends ReferenceSerializable {
 		return toNbt(nbt, false);
 	}
 
-	void setResourceKey(String resourceKey);
-
 	String getResourceKey();
-
-	default void processFlags(Multimap<String, String> flags) {
-		// TODO: discuss some flag standardization
-		Collection<String> reference = flags.get("reference");
-		if (reference.stream().findFirst().map(string -> string.equals("local") || string.equals("global")).orElse(false)) {
-			setResourceKey(flags.get("resource_key").stream().findFirst().orElse(null));
-		}
-	}
 
 	ModifierType<? extends Modifier> getType();
 
@@ -98,7 +85,7 @@ public interface Modifier extends ReferenceSerializable {
 	void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	interface ModifierType<T extends Modifier> {
-		RegistrySupplier<ModifierType<ShellModifier>> SHELL_MODIFIER_TYPE = register(DimensionalDoors.id(ShellModifier.KEY), ShellModifier::new, mapCodec);
+		RegistrySupplier<ModifierType<ShellModifier>> SHELL_MODIFIER_TYPE = register(DimensionalDoors.id(ShellModifier.KEY), ShellModifier::new, ShellModifier.CODEC);
 		RegistrySupplier<ModifierType<DimensionalDoorModifier>> DIMENSIONAL_DOOR_MODIFIER_TYPE = register(DimensionalDoors.id(DimensionalDoorModifier.KEY), DimensionalDoorModifier::new, mapCodec);
 		RegistrySupplier<ModifierType<PocketEntranceModifier>> PUBLIC_MODIFIER_TYPE = register(DimensionalDoors.id(PocketEntranceModifier.KEY), PocketEntranceModifier::new, mapCodec);
 		RegistrySupplier<ModifierType<RiftDataModifier>> RIFT_DATA_MODIFIER_TYPE = register(DimensionalDoors.id(RiftDataModifier.KEY), RiftDataModifier::new, mapCodec);
@@ -116,11 +103,11 @@ public interface Modifier extends ReferenceSerializable {
 
 		CompoundTag toNbt(CompoundTag nbt);
 
-		MapCodec<Modifier> mapCodec();
+		MapCodec<ShellModifier> mapCodec();
 
 		static void register() {}
 
-		static <U extends Modifier> RegistrySupplier<ModifierType<U>> register(ResourceLocation id, Supplier<U> factory, MapCodec<Modifier> mapCodec) {
+		static <U extends Modifier> RegistrySupplier<ModifierType<U>> register(ResourceLocation id, Supplier<U> factory, MapCodec<ShellModifier> mapCodec) {
 			return REGISTRY.register(id, () -> new ModifierType<U>() {
 				@Override
 				public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
@@ -134,7 +121,7 @@ public interface Modifier extends ReferenceSerializable {
 				}
 
 				@Override
-				public MapCodec<Modifier> mapCodec() {
+				public MapCodec<ShellModifier> mapCodec() {
 					return mapCodec;
 				}
 			});

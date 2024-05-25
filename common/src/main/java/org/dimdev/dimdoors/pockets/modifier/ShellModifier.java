@@ -2,6 +2,9 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -22,19 +25,23 @@ import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ShellModifier extends AbstractLazyModifier {
+	public static final MapCodec<ShellModifier> CODEC = RecordCodecBuilder.mapCodec((RecordCodecBuilder.Instance<ShellModifier> inst) -> commonFields(inst).and(Layer.CODEC.listOf().fieldOf("layers").forGetter(obj -> obj.layers)).and(BoundingBox.CODEC.fieldOf("boxToDrawAround").forGetter(obj -> obj.boxToDrawAround)).apply(inst, ShellModifier::new));
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "shell";
 
-	private final List<Layer> layers = new ArrayList<>();
+	private final List<Layer> layers;
 	private BoundingBox boxToDrawAround;
 
-	public ShellModifier()
+	public ShellModifier(String resouceKey, List<Layer> layers, BoundingBox boxToDrawAround) {
+		super(resouceKey);
+		this.layers = layers;
+		this.boxToDrawAround = boxToDrawAround;
+	}
 
 	@Override
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
@@ -211,6 +218,7 @@ public class ShellModifier extends AbstractLazyModifier {
 	}
 
 	public static class Layer {
+		public static final Codec<Layer> CODEC = RecordCodecBuilder.create(inst -> inst.group(Codec.STRING.fieldOf("blockStateString").forGetter(obj -> obj.blockStateString), Codec.STRING.fieldOf("thickness").forGetter(obj -> obj.thickness)).apply(inst, Layer::new));
 		private final String blockStateString;
 		private final String thickness;
 		private Equation thicknessEquation;

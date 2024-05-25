@@ -1,5 +1,10 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +15,12 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import java.util.UUID;
 
 public class Rift extends RegistryVertex {
+	public static final MapCodec<Rift> CODEC = RecordCodecBuilder.mapCodec(inst -> commonFields(inst).apply(inst, Rift::new));
+
+	public static <T extends Rift> Products.P4<RecordCodecBuilder.Mu<T>, UUID, Location, Boolean, LinkProperties> commonFields(RecordCodecBuilder.Instance<T> inst) {
+		return inst.group(UUIDUtil.CODEC.fieldOf("id").forGetter(a -> a.getId()), Location.CODEC.fieldOf("location").forGetter(Rift::getLocation), Codec.BOOL.fieldOf("isDetached").forGetter(Rift::isDetached), LinkProperties.CODEC.fieldOf("properties").forGetter(Rift::getProperties));
+	}
+
 	private static final Logger LOGGER = LogManager.getLogger();
 	private Location location;
 	private boolean isDetached;

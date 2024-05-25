@@ -1,8 +1,23 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
+import org.dimdev.dimdoors.api.util.Location;
+
+import java.util.UUID;
 
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
+	public static final MapCodec<RiftPlaceholder> CODEC = RecordCodecBuilder.mapCodec(inst -> commonFields(inst).apply(inst, RiftPlaceholder::new));
+
+	public RiftPlaceholder(UUID id, Location location, boolean isDetached, LinkProperties properties) {
+		super(id, location, isDetached, properties);
+	}
+
+	public RiftPlaceholder() {
+
+	}
+
 	@Override
 	public void sourceGone(RegistryVertex source) {
 	}
