@@ -43,11 +43,11 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> STONE_PLAYER = registerWithoutTabOrItem("stone_player", () -> new Block(copy(STONE).strength(0.5F).noOcclusion()));
 
-	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(copy(IRON_BLOCK).mapColor(GOLD).strength(5.0F).requiresCorrectToolForDrops().noCollission(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(copy(GOLD_BLOCK).strength(5.0F).requiresCorrectToolForDrops(), BlockSetType.GOLD));
 
-	public static final RegistrySupplier<Block> STONE_DOOR = register("stone_door", () -> new DoorBlock(copy(STONE).mapColor(WOOD).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> STONE_DOOR = register("stone_door", () -> new DoorBlock(copy(STONE).mapColor(WOOD).strength(5.0F).requiresCorrectToolForDrops(), BlockSetType.IRON));
 
-	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(copy(STONE).mapColor(TERRACOTTA_WHITE).strength(5.0F).requiresCorrectToolForDrops().noOcclusion(), BlockSetType.IRON));
+	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(copy(QUARTZ_BLOCK).strength(5.0F).requiresCorrectToolForDrops(), BlockSetType.IRON));
 
 	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTabOrItem("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
 
