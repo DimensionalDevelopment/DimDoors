@@ -6,8 +6,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.StreamUtils;
-import org.dimdev.dimdoors.item.component.forge.CounterComponentImpl;
-import org.dimdev.dimdoors.world.ModBiomeModifiers;
+import org.dimdev.dimdoors.forge.item.component.forge.CounterComponentImpl;
+import org.dimdev.dimdoors.forge.world.ModBiomeModifiers;
 import org.dimdev.dimdoors.forge.world.level.component.ChunkLazilyGeneratedComponent;
 import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
 

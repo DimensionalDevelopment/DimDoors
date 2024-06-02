@@ -11,7 +11,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.AddFeaturesBiomeModifier;
 
 public class ModBiomeModifiers {
     public static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIERS =  DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, DimensionalDoors.MOD_ID);
