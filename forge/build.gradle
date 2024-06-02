@@ -47,6 +47,8 @@ dependencies {
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:$rei_version"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:$rei_version"
+
+    modApi("curse.maven:jei-${project.properties["jei_project"]}:${project.properties["jei_forge"]}")
 }
 
 processResources {
@@ -83,7 +85,7 @@ shadowJar {
 remapJar {
     inputFile.set(shadowJar.archiveFile)
     dependsOn shadowJar
-    archiveClassifier = "forge"
+    archiveClassifier = "${project.properties["minecraft_version"]}-forge"
 }
 
 jar.archiveClassifier = "dev"
