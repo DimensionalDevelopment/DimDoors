@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.particle.client.RiftParticleOptions;
-import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.forge.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;

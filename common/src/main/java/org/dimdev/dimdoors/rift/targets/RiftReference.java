@@ -4,7 +4,7 @@ import net.minecraft.core.Vec3i;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
 
 import java.util.Set;
 

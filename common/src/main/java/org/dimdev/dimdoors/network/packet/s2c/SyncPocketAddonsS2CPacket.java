@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
-import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
+import org.dimdev.dimdoors.forge.world.pocket.type.addon.AutoSyncedAddon;
 
 import java.util.List;
 import java.util.function.Supplier;

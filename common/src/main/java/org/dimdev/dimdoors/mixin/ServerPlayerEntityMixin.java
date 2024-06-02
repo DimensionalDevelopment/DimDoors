@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.block.UnravelledFabricBlock;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
 import org.dimdev.dimdoors.entity.stat.ModStats;
-import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.forge.world.ModDimensions;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

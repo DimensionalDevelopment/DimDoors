@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

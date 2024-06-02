@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.api.rift.target.*;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.forge.world.ModDimensions;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {

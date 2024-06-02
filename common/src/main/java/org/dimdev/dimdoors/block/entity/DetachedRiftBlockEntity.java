@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.client.RiftCurves;
+import org.dimdev.dimdoors.forge.client.RiftCurves;
 
 public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	private static final RandomSource random = RandomSource.create();

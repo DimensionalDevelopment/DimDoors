@@ -14,13 +14,13 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
-import org.dimdev.dimdoors.item.RaycastHelper;
-import org.dimdev.dimdoors.item.RiftRemoverItem;
-import org.dimdev.dimdoors.item.RiftSignatureItem;
-import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.forge.item.RaycastHelper;
+import org.dimdev.dimdoors.forge.item.RiftRemoverItem;
+import org.dimdev.dimdoors.forge.item.RiftSignatureItem;
+import org.dimdev.dimdoors.forge.item.door.DimensionalDoorItemRegistrar;
 import org.jetbrains.annotations.Nullable;
 
-import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
+import static org.dimdev.dimdoors.forge.item.RaycastHelper.DETACH;
 
 public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallback {
 	@Override

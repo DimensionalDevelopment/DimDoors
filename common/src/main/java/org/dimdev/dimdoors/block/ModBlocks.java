@@ -32,8 +32,8 @@ import static net.minecraft.world.level.block.Blocks.WATER;
 import static net.minecraft.world.level.block.Blocks.*;
 import static net.minecraft.world.level.block.state.BlockBehaviour.Properties.copy;
 import static net.minecraft.world.level.material.MaterialColor.*;
-import static org.dimdev.dimdoors.item.ModItems.DECAY;
-import static org.dimdev.dimdoors.item.ModItems.DIMENSIONAL_DOORS;
+import static org.dimdev.dimdoors.forge.item.ModItems.DECAY;
+import static org.dimdev.dimdoors.forge.item.ModItems.DIMENSIONAL_DOORS;
 
 public final class ModBlocks {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.BLOCK_REGISTRY);

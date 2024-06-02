@@ -8,7 +8,7 @@ import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
 
 public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {

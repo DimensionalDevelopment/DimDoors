@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
+import org.dimdev.dimdoors.forge.client.CustomBreakBlockHandler;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

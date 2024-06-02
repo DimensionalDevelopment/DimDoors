@@ -6,7 +6,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 public class PocketEntranceModifier extends AbstractModifier {
 	public static final String KEY = "pocket_entrance";

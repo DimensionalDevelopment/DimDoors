@@ -24,20 +24,22 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "org.dimdev.dimdoors.DimensionalDoorsFabric"
+      "org.dimdev.dimdoors.fabric.DimensionalDoorsFabric"
     ],
     "client": [
       "org.dimdev.dimdoors.client.DimensionalDoorsClientFabric"
     ],
     "cardinal-components": [
-      "org.dimdev.dimdoors.DimensionalDoorsComponents"
+      "org.dimdev.dimdoors.fabric.DimensionalDoorsComponents"
     ],
     "fabric-datagen": [
       "org.dimdev.dimdoors.datagen.DatagenInitializer"
     ],
-    "modmenu": [ "org.dimdev.dimdoors.compat.ModMenuCompat" ],
+    "modmenu": [
+      "org.dimdev.dimdoors.fabric.forge.compat.ModMenuCompat"
+    ],
     "mm:early_risers": [
-      "org.dimdev.dimdoors.EarlyRiser"
+      "org.dimdev.dimdoors.fabric.EarlyRiser"
     ],
     "rei_client": [
       "org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient"

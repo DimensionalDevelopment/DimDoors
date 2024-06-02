@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.world.item.Item;
-import org.dimdev.dimdoors.item.ItemExtensions;
+import org.dimdev.dimdoors.forge.item.ItemExtensions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

@@ -28,9 +28,9 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
-import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.AbstractPocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.LazyGenerationPocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 import java.util.ArrayList;
 import java.util.Collection;

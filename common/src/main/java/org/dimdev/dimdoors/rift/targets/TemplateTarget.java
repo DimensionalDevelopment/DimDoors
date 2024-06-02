@@ -6,10 +6,10 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.ModDimensions;
+import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.forge.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 import java.util.Arrays;
 import java.util.Set;

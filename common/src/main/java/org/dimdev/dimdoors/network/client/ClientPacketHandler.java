@@ -11,11 +11,11 @@ import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
+import org.dimdev.dimdoors.forge.client.CustomBreakBlockHandler;
 import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
-import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
+import org.dimdev.dimdoors.forge.world.pocket.type.addon.AutoSyncedAddon;
 
 import java.util.ArrayList;
 import java.util.List;

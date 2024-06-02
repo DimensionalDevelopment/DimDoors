@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.forge.item.ModItems;
 
 public class LootTableProvider extends FabricBlockLootTableProvider {
 

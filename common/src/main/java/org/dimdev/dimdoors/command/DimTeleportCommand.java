@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
 
 public class DimTeleportCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {

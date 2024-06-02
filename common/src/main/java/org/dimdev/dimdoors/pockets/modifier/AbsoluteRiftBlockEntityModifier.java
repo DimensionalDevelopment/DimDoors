@@ -16,8 +16,8 @@ import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.LazyGenerationPocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 import java.util.Map;
 import java.util.concurrent.Callable;

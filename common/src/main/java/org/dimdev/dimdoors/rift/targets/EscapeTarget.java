@@ -20,7 +20,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.UnravelUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.forge.world.ModDimensions;
 
 import java.util.Random;
 import java.util.UUID;

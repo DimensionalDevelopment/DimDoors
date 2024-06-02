@@ -5,8 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 import java.util.Arrays;
 import java.util.Set;

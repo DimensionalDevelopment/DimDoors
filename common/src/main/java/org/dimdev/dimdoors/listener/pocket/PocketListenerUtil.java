@@ -6,9 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.ModDimensions;
+import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 import java.util.Collections;
 import java.util.List;

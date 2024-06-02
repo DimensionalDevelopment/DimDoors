@@ -9,8 +9,8 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.forge.world.ModDimensions;
+import org.dimdev.dimdoors.forge.world.pocket.VirtualLocation;
 
 public class LimboTarget extends VirtualTarget implements EntityTarget {
 	public static final LimboTarget INSTANCE = new LimboTarget();

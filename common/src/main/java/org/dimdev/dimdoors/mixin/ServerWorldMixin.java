@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.server.level.ServerLevel;
-import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.forge.world.decay.Decay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

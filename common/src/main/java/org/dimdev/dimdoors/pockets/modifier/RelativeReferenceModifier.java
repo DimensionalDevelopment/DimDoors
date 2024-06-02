@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.LocalReference;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 import java.util.Optional;
 

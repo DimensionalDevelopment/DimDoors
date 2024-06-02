@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.forge.item.ModItems;
 import org.dimdev.dimdoors.tag.ModItemTags;
 
 import java.util.function.Consumer;

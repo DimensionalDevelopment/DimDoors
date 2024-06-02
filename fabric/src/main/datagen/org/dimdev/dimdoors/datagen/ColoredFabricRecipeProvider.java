@@ -10,7 +10,7 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.forge.item.ModItems;
 
 import java.util.Map;
 import java.util.function.Consumer;

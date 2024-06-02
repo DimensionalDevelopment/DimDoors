@@ -16,8 +16,8 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
-import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.forge.item.ModItems;
+import org.dimdev.dimdoors.forge.world.ModDimensions;
 
 import java.util.function.Consumer;
 

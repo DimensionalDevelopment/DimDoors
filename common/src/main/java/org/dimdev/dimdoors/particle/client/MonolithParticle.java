@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.client.MonolithRenderer;
+import org.dimdev.dimdoors.forge.client.MonolithRenderer;
 import org.jetbrains.annotations.Nullable;
 
 @Environment(EnvType.CLIENT)

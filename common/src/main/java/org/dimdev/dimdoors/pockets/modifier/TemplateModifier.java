@@ -6,7 +6,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.TemplateTarget;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
 import java.util.HashSet;
 import java.util.List;

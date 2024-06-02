@@ -10,7 +10,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.forge.item.ModItems;
 
 import java.util.function.Supplier;
 

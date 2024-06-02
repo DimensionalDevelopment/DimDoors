@@ -24,11 +24,11 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.predicates.FluidDecayPredicate;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
-import org.dimdev.dimdoors.world.decay.processors.*;
+import org.dimdev.dimdoors.forge.world.decay.DecayPredicate;
+import org.dimdev.dimdoors.forge.world.decay.DecayProcessor;
+import org.dimdev.dimdoors.forge.world.decay.predicates.FluidDecayPredicate;
+import org.dimdev.dimdoors.forge.world.decay.predicates.SimpleDecayPredicate;
+import org.dimdev.dimdoors.forge.world.decay.processors.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
