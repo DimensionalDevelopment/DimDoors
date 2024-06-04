@@ -12,13 +12,13 @@
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
-      "ids": [0],
+      "ids": [1],
       "rift_data": "dimdoors:rift_data/pocket_entrance"
     },
     {
       "type": "dimdoors:relative",
-      "point_a": 1,
-      "point_b": 2
+      "point_a": 2,
+      "point_b": 3
     }
   ]
 }
