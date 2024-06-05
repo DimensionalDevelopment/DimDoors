@@ -1,2 +1,2 @@
-package org.dimdev.dimdoors.compat.jei;public class TesselatingJeiCompatClient {
-}
+//package org.dimdev.dimdoors.compat.jei;public class TesselatingJeiCompatClient {
+//}
