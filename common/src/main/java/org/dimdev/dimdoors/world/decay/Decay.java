@@ -37,24 +37,22 @@ public final class Decay {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<ResourceKey<Level>, Set<DecayTask>> DECAY_QUEUE = new HashMap<>();
 
-	private static final RandomSource RANDOM = RandomSource.create();
-
 	/**
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
 	 * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
 	 */
-	public static void applySpreadDecay(ServerLevel world, BlockPos pos) {
+	public static void applySpreadDecay(ServerLevel world, BlockPos pos, RandomSource random) {
 		//Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
 		//full spread decay checks, which can also shift its performance impact on the game.
-		if (RANDOM.nextDouble() < DimensionalDoors.getConfig().getDecayConfig().decaySpreadChance) {
+		if (random.nextDouble() < DimensionalDoors.getConfig().getDecayConfig().decaySpreadChance) {
 			BlockState origin = world.getBlockState(pos);
 
 			//Apply decay to the blocks above, below, and on all four sides.
 			// TODO: make max amount configurable
-			int decayAmount = RANDOM.nextInt(5) + 1;
+			int decayAmount = random.nextInt(5) + 1;
 			List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
 			for (int i = 0; i < decayAmount; i++) {
-				 decayBlock(world, pos.relative(directions.remove(RANDOM.nextInt(5 - i))), origin);
+				 decayBlock(world, pos.relative(directions.remove(random.nextInt(5 - i))), origin);
 			}
 		}
 	}

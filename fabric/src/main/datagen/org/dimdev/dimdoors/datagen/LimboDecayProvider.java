@@ -24,11 +24,11 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.predicates.FluidDecayPredicate;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
-import org.dimdev.dimdoors.world.decay.processors.*;
+import org.dimdev.dimdoors.world.decay.DecayCondition;
+import org.dimdev.dimdoors.world.decay.DecayResult;
+import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
+import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
+import org.dimdev.dimdoors.world.decay.results.*;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -237,22 +237,22 @@ public class LimboDecayProvider implements DataProvider {
 		return new DecayPatternData(id, getPredicate(before), getProcessor(after));
 	}
 
-	private DecayPredicate getPredicate(Object object) {
+	private DecayCondition getPredicate(Object object) {
 		if (!(object instanceof TagKey<?> tag)) {
-			if(object instanceof Block block) return SimpleDecayPredicate.builder().block(block).create();
-			else if(object instanceof Fluid fluid) return FluidDecayPredicate.builder().fluid(fluid).create();
+			if(object instanceof Block block) return SimpleDecayCondition.builder().block(block).create();
+			else if(object instanceof Fluid fluid) return FluidDecayCondition.builder().fluid(fluid).create();
 		} else {
-			if (tag.isFor(Registries.BLOCK)) return SimpleDecayPredicate.builder().tag((TagKey<Block>) tag).create();
-			else if (tag.isFor(Registries.FLUID)) return FluidDecayPredicate.builder().tag((TagKey<Fluid>) tag).create();
+			if (tag.isFor(Registries.BLOCK)) return SimpleDecayCondition.builder().tag((TagKey<Block>) tag).create();
+			else if (tag.isFor(Registries.FLUID)) return FluidDecayCondition.builder().tag((TagKey<Fluid>) tag).create();
 		}
 
-		return DecayPredicate.NONE;
+		return DecayCondition.NONE;
 	}
 
-	private DecayProcessor<?, ?> getProcessor(Object object) {
-		if(object instanceof Block block) return BlockDecayProcessor.builder().block(block).create();
-		else if(object instanceof Fluid fluid) return FluidDecayProcessor.builder().fluid(fluid).create();
-		else return NoneDecayProcessor.instance();
+	private DecayResult getProcessor(Object object) {
+		if(object instanceof Block block) return BlockDecayResult.builder().block(block).create();
+		else if(object instanceof Fluid fluid) return FluidDecayResult.builder().fluid(fluid).create();
+		else return NoneDecayResult.instance();
 	}
 
 	private void createOxidizationChain(Block regular, Block exposed, Block weathered, Block oxidized, BiConsumer<ResourceLocation, JsonObject> consumer) {
@@ -287,7 +287,7 @@ public class LimboDecayProvider implements DataProvider {
 	}
 
 	private DecayPatternData turnIntoSelf(ResourceLocation ResourceLocation, Object before) {
-		return new DecayPatternData(ResourceLocation, getPredicate(before), SelfDecayProcessor.instance());
+		return new DecayPatternData(ResourceLocation, getPredicate(before), SelfDecayResult.instance());
 	}
 
     @Override
@@ -300,23 +300,23 @@ public class LimboDecayProvider implements DataProvider {
     }
 
     public DecayPatternData createSimplePattern(ResourceLocation id, Block before, Block after) {
-        return new DecayPatternData(id, SimpleDecayPredicate.builder().block(before).create(), BlockDecayProcessor.builder().block(after).entropy(1).create());
+        return new DecayPatternData(id, SimpleDecayCondition.builder().block(before).create(), BlockDecayResult.builder().block(after).entropy(1).create());
     }
 
 	public DecayPatternData createSimplePattern(ResourceLocation id, TagKey<Block> before, Block after) {
-		return new DecayPatternData(id, SimpleDecayPredicate.builder().tag(before).create(), BlockDecayProcessor.builder().block(after).entropy(1).create());
+		return new DecayPatternData(id, SimpleDecayCondition.builder().tag(before).create(), BlockDecayResult.builder().block(after).entropy(1).create());
 	}
 
 	public DecayPatternData createDoublePattern(ResourceLocation id, Object before, Block after) {
-		return new DecayPatternData(id, getPredicate(before), DoubleDecayProcessor.builder().block(after).entropy(1).create());
+		return new DecayPatternData(id, getPredicate(before), DoubleDecayResult.builder().block(after).entropy(1).create());
 	}
 
     public static class DecayPatternData {
         private ResourceLocation id;
-        private DecayPredicate predicate;
-        private DecayProcessor processor;
+        private DecayCondition predicate;
+        private DecayResult processor;
 
-        public DecayPatternData(ResourceLocation id, DecayPredicate predicate, DecayProcessor processor) {
+        public DecayPatternData(ResourceLocation id, DecayCondition predicate, DecayResult processor) {
             this.id = id;
             this.predicate = predicate;
             this.processor = processor;

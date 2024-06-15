@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay.processors;
+package org.dimdev.dimdoors.world.decay.results;
 
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
@@ -6,32 +6,31 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.DecayProcessorType;
+import org.dimdev.dimdoors.world.decay.DecayResult;
+import org.dimdev.dimdoors.world.decay.DecayResultType;
 
-public class FluidDecayProcessor implements DecayProcessor<Fluid, FluidStack> {
+public class FluidDecayResult implements DecayResult {
 	public static final String KEY = "fluid";
 
 	protected Fluid fluid;
 
 	protected int entropy;
 
-	public FluidDecayProcessor() {
+	public FluidDecayResult() {
 	}
 
-	protected FluidDecayProcessor(Fluid fluid, int entropy) {
+	protected FluidDecayResult(Fluid fluid, int entropy) {
 		this.fluid = fluid;
 		this.entropy = entropy;
 	}
 
 	@Override
-	public FluidDecayProcessor fromNbt(CompoundTag json) {
+	public FluidDecayResult fromNbt(CompoundTag json) {
 		fluid = BuiltInRegistries.FLUID.get(ResourceLocation.tryParse(json.getString("fluid")));
 		entropy = json.getInt("entropy");
 		return this;
@@ -39,15 +38,15 @@ public class FluidDecayProcessor implements DecayProcessor<Fluid, FluidStack> {
 
 	@Override
 	public CompoundTag toNbt(CompoundTag nbt) {
-		DecayProcessor.super.toNbt(nbt);
+		DecayResult.super.toNbt(nbt);
 		nbt.putString("block", BuiltInRegistries.FLUID.getKey(fluid).toString());
 		nbt.putInt("entropy", entropy);
 		return nbt;
 	}
 
 	@Override
-	public DecayProcessorType<FluidDecayProcessor> getType() {
-		return DecayProcessorType.FLUID_PROCESSOR_TYPE.get();
+	public DecayResultType<FluidDecayResult> getType() {
+		return DecayResultType.FLUID_PROCESSOR_TYPE.get();
 	}
 
 	@Override
@@ -71,26 +70,26 @@ public class FluidDecayProcessor implements DecayProcessor<Fluid, FluidStack> {
 		return to.setValue(property, from.getValue(property));
 	}
 
-	public static FluidDecayProcessor.Builder builder() {
-		return new FluidDecayProcessor.Builder();
+	public static FluidDecayResult.Builder builder() {
+		return new FluidDecayResult.Builder();
 	}
 
 	public static class Builder {
 		private Fluid fluid = Fluids.EMPTY;
 		private int entropy;
 
-		public FluidDecayProcessor.Builder fluid(Fluid fluid) {
+		public FluidDecayResult.Builder fluid(Fluid fluid) {
 			this.fluid = fluid;
 			return this;
 		}
 
-		public FluidDecayProcessor.Builder entropy(int entropy) {
+		public FluidDecayResult.Builder entropy(int entropy) {
 			this.entropy = entropy;
 			return this;
 		}
 
-		public FluidDecayProcessor create() {
-			return new FluidDecayProcessor(fluid, entropy);
+		public FluidDecayResult create() {
+			return new FluidDecayResult(fluid, entropy);
 		}
 	}
 }

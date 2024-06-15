@@ -17,9 +17,9 @@ public class UnravelledFabricBlock extends Block {
 	}
 
 	@Override
-	public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
-		if (ModDimensions.isLimboDimension(world)) {
-			Decay.applySpreadDecay(world, pos);
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+		if (ModDimensions.isLimboDimension(level)) {
+			Decay.applySpreadDecay(level, pos, random);
 		}
 	}
 }

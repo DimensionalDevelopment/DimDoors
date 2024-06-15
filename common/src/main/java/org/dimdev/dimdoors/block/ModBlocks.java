@@ -135,13 +135,14 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> UNRAVELLED_FABRIC = register("unravelled_fabric", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
-	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTabOrItem("marking_plate", () -> new MarkingPlateBlock(copy(IRON_BLOCK).mapColor(DyeColor.BLACK).noOcclusion()));
+	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTabOrItem("marking_plate", () -> new Block(copy(IRON_BLOCK).mapColor(DyeColor.BLACK).noOcclusion()));
 
 	public static final RegistrySupplier<Block> SOLID_STATIC = register("solid_static", () -> new UnravelledFabricBlock(copy(STONE).strength(7, 25).randomTicks().requiresCorrectToolForDrops().sound(SoundType.SAND)));
 
 	public static final RegistrySupplier<Block> TESSELATING_LOOM = register("tesselating_loom", () -> new TesselatingLoomBlock(of(LOOM)));
 
 	public static final RegistrySupplier<Block> REALITY_SPONGE = register("reality_sponge", () -> new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> LIMBO_AIR = register("limbo_air", () -> new LimboAirBlock(BlockBehaviour.Properties.of().replaceable().noCollission().noLootTable().air()));
 
 	//Decay graph filler.
 	public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = registerDecay("driftwood_wood", () -> new RotatedPillarBlock(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay.predicates;
+package org.dimdev.dimdoors.world.decay.conditions;
 
 import com.google.common.collect.Streams;
 import net.minecraft.core.BlockPos;
@@ -12,26 +12,26 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
+import org.dimdev.dimdoors.world.decay.DecayCondition;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class FluidDecayPredicate implements DecayPredicate {
+public class FluidDecayCondition implements DecayCondition {
 	public static final String KEY = "fluid";
 
 	private Fluid fluid;
 	private TagKey<Fluid> tag;
 
-	public FluidDecayPredicate() {}
+	public FluidDecayCondition() {}
 
-	public FluidDecayPredicate(TagKey<Fluid> tag, Fluid fluid) {
+	public FluidDecayCondition(TagKey<Fluid> tag, Fluid fluid) {
 		this.tag = tag;
 		this.fluid = fluid;
 	}
 
 	@Override
-	public DecayPredicate fromNbt(CompoundTag nbt) {
+	public DecayCondition fromNbt(CompoundTag nbt) {
 		String name = nbt.getString("entry");
 
 		if(name.startsWith("#")) tag = TagKey.create(Registries.FLUID, ResourceLocation.tryParse(name.substring(1)));
@@ -41,13 +41,13 @@ public class FluidDecayPredicate implements DecayPredicate {
 
 	@Override
 	public CompoundTag toNbt(CompoundTag nbt) {
-		DecayPredicate.super.toNbt(nbt);
+		DecayCondition.super.toNbt(nbt);
 		nbt.putString("entry", tag != null ? "#" + tag.location().toString() : BuiltInRegistries.FLUID.getKey(fluid).toString());
 		return nbt;
 	}
 
 	@Override
-	public DecayPredicateType<? extends DecayPredicate> getType() {
+	public DecayPredicateType<? extends DecayCondition> getType() {
 		return DecayPredicateType.FLUID_PREDICATE_TYPE.get();
 	}
 
@@ -66,26 +66,26 @@ public class FluidDecayPredicate implements DecayPredicate {
 		return fluid != null ? Set.of(fluid) : Streams.stream(BuiltInRegistries.FLUID.getTagOrEmpty(tag)).map(Holder::value).collect(Collectors.toSet());
 	}
 
-	public static FluidDecayPredicate.Builder builder() {
-		return new FluidDecayPredicate.Builder();
+	public static FluidDecayCondition.Builder builder() {
+		return new FluidDecayCondition.Builder();
 	}
 
 	public static class Builder {
 		private Fluid fluid;
 		private TagKey<Fluid> tag;
 
-		public FluidDecayPredicate.Builder fluid(Fluid fluid) {
+		public FluidDecayCondition.Builder fluid(Fluid fluid) {
 			this.fluid = fluid;
 			return this;
 		}
 
-		public FluidDecayPredicate.Builder tag(TagKey<Fluid> tag) {
+		public FluidDecayCondition.Builder tag(TagKey<Fluid> tag) {
 			this.tag = tag;
 			return this;
 		}
 
-		public FluidDecayPredicate create() {
-			return new FluidDecayPredicate(tag, fluid);
+		public FluidDecayCondition create() {
+			return new FluidDecayCondition(tag, fluid);
 		}
 	}
 }

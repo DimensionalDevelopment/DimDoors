@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay.predicates;
+package org.dimdev.dimdoors.world.decay.conditions;
 
 import com.google.common.collect.Streams;
 import net.minecraft.core.BlockPos;
@@ -12,26 +12,26 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayPredicate;
+import org.dimdev.dimdoors.world.decay.DecayCondition;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class SimpleDecayPredicate implements DecayPredicate {
+public class SimpleDecayCondition implements DecayCondition {
     public static final String KEY = "block";
 
     private Block block;
 	private TagKey<Block> tag;
 
-    public SimpleDecayPredicate() {}
+    public SimpleDecayCondition() {}
 
-	public SimpleDecayPredicate(TagKey<Block> tag, Block block) {
+	public SimpleDecayCondition(TagKey<Block> tag, Block block) {
 		this.tag = tag;
 		this.block = block;
 	}
 
 	@Override
-    public DecayPredicate fromNbt(CompoundTag nbt) {
+    public DecayCondition fromNbt(CompoundTag nbt) {
 		String name = nbt.getString("entry");
 
 		if(name.startsWith("#")) tag = TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(name.substring(1)));
@@ -41,13 +41,13 @@ public class SimpleDecayPredicate implements DecayPredicate {
 
     @Override
     public CompoundTag toNbt(CompoundTag nbt) {
-        DecayPredicate.super.toNbt(nbt);
+        DecayCondition.super.toNbt(nbt);
         nbt.putString("entry", tag != null ? "#" + tag.location().toString() : BuiltInRegistries.BLOCK.getKey(block).toString());
         return nbt;
     }
 
     @Override
-    public DecayPredicateType<? extends DecayPredicate> getType() {
+    public DecayPredicateType<? extends DecayCondition> getType() {
         return DecayPredicateType.SIMPLE_PREDICATE_TYPE.get();
     }
 
@@ -84,8 +84,8 @@ public class SimpleDecayPredicate implements DecayPredicate {
 			return this;
 		}
 
-        public SimpleDecayPredicate create() {
-            return new SimpleDecayPredicate(tag, block);
+        public SimpleDecayCondition create() {
+            return new SimpleDecayCondition(tag, block);
         }
     }
 }

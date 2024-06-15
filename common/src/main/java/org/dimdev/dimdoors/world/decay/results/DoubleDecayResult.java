@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay.processors;
+package org.dimdev.dimdoors.world.decay.results;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,25 +12,25 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.DecayProcessorType;
+import org.dimdev.dimdoors.world.decay.DecayResult;
+import org.dimdev.dimdoors.world.decay.DecayResultType;
 
-public class DoubleDecayProcessor implements DecayProcessor<Block, ItemStack> {
+public class DoubleDecayResult implements DecayResult {
 	public static final String KEY = "double";
 
 	protected Block block;
 
 	protected int entropy;
 
-	public DoubleDecayProcessor() {}
+	public DoubleDecayResult() {}
 
-	protected DoubleDecayProcessor(Block block, int entropy) {
+	protected DoubleDecayResult(Block block, int entropy) {
 		this.block = block;
 		this.entropy = entropy;
 	}
 
 	@Override
-	public DoubleDecayProcessor fromNbt(CompoundTag json) {
+	public DoubleDecayResult fromNbt(CompoundTag json) {
 		block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
 		entropy = json.getInt("entropy");
 		return this;
@@ -38,15 +38,15 @@ public class DoubleDecayProcessor implements DecayProcessor<Block, ItemStack> {
 
 	@Override
 	public CompoundTag toNbt(CompoundTag nbt) {
-		DecayProcessor.super.toNbt(nbt);
+		DecayResult.super.toNbt(nbt);
 		nbt.putString("block", BuiltInRegistries.BLOCK.getKey(block).toString());
 		nbt.putInt("entropy", entropy);
 		return nbt;
 	}
 
 	@Override
-	public DecayProcessorType<DoubleDecayProcessor> getType() {
-		return DecayProcessorType.DOUBLE_PROCESSOR_TYPE.get();
+	public DecayResultType<DoubleDecayResult> getType() {
+		return DecayResultType.DOUBLE_PROCESSOR_TYPE.get();
 	}
 
 	@Override
@@ -103,8 +103,8 @@ public class DoubleDecayProcessor implements DecayProcessor<Block, ItemStack> {
 			return this;
 		}
 
-		public DoubleDecayProcessor create() {
-			return new DoubleDecayProcessor(block, entropy);
+		public DoubleDecayResult create() {
+			return new DoubleDecayResult(block, entropy);
 		}
 	}
 }

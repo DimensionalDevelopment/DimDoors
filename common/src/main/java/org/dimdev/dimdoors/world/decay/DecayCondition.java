@@ -12,25 +12,25 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.decay.predicates.FluidDecayPredicate;
-import org.dimdev.dimdoors.world.decay.predicates.SimpleDecayPredicate;
+import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
+import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
 
 import java.util.Set;
 import java.util.function.Supplier;
 
-public interface DecayPredicate {
-    Registrar<DecayPredicateType<? extends DecayPredicate>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayPredicateType<? extends DecayPredicate>>builder(DimensionalDoors.id("decay_predicate_type")).build();
+public interface DecayCondition {
+    Registrar<DecayPredicateType<? extends DecayCondition>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayPredicateType<? extends DecayCondition>>builder(DimensionalDoors.id("decay_predicate_type")).build();
 
-    DecayPredicate NONE = new DecayPredicate() {
+    DecayCondition NONE = new DecayCondition() {
         private static final String ID = "none";
 
         @Override
-        public DecayPredicate fromNbt(CompoundTag nbt) {
+        public DecayCondition fromNbt(CompoundTag nbt) {
             return this;
         }
 
         @Override
-        public DecayPredicateType<? extends DecayPredicate> getType() {
+        public DecayPredicateType<? extends DecayCondition> getType() {
             return DecayPredicateType.NONE_PREDICATE_TYPE.get();
         }
 
@@ -45,23 +45,23 @@ public interface DecayPredicate {
         }
 	};
 
-    static DecayPredicate deserialize(CompoundTag nbt) {
+    static DecayCondition deserialize(CompoundTag nbt) {
         ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
         return REGISTRY.delegate(id).orElseGet(DecayPredicateType.NONE_PREDICATE_TYPE).fromNbt(nbt);
     }
 
-    static CompoundTag serialize(DecayPredicate modifier) {
+    static CompoundTag serialize(DecayCondition modifier) {
         return modifier.toNbt(new CompoundTag());
     }
 
 
-    DecayPredicate fromNbt(CompoundTag nbt);
+    DecayCondition fromNbt(CompoundTag nbt);
 
     default CompoundTag toNbt(CompoundTag nbt) {
         return this.getType().toNbt(nbt);
     }
 
-    DecayPredicateType<? extends DecayPredicate> getType();
+    DecayPredicateType<? extends DecayCondition> getType();
 
     String getKey();
 
@@ -75,22 +75,22 @@ public interface DecayPredicate {
 		return Set.of();
 	}
 
-    interface DecayPredicateType<T extends DecayPredicate> {
-        RegistrySupplier<DecayPredicateType<DecayPredicate>> NONE_PREDICATE_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
-        RegistrySupplier<DecayPredicateType<DecayPredicate>> SIMPLE_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleDecayPredicate.KEY), SimpleDecayPredicate::new);
-		RegistrySupplier<DecayPredicateType<DecayPredicate>> FLUID_PREDICATE_TYPE = register(DimensionalDoors.id(FluidDecayPredicate.KEY), FluidDecayPredicate::new);
+    interface DecayPredicateType<T extends DecayCondition> {
+        RegistrySupplier<DecayPredicateType<DecayCondition>> NONE_PREDICATE_TYPE = register(DimensionalDoors.id("none"), () -> NONE);
+        RegistrySupplier<DecayPredicateType<DecayCondition>> SIMPLE_PREDICATE_TYPE = register(DimensionalDoors.id(SimpleDecayCondition.KEY), SimpleDecayCondition::new);
+		RegistrySupplier<DecayPredicateType<DecayCondition>> FLUID_PREDICATE_TYPE = register(DimensionalDoors.id(FluidDecayCondition.KEY), FluidDecayCondition::new);
 
-		DecayPredicate fromNbt(CompoundTag nbt);
+		DecayCondition fromNbt(CompoundTag nbt);
 
         CompoundTag toNbt(CompoundTag nbt);
 
         static void register() {
         }
 
-        static <U extends DecayPredicate> RegistrySupplier<DecayPredicateType<U>> register(ResourceLocation id, Supplier<U> factory) {
+        static <U extends DecayCondition> RegistrySupplier<DecayPredicateType<U>> register(ResourceLocation id, Supplier<U> factory) {
             return REGISTRY.register(id, () -> new DecayPredicateType<U>() {
                 @Override
-                public DecayPredicate fromNbt(CompoundTag nbt) {
+                public DecayCondition fromNbt(CompoundTag nbt) {
                     return factory.get().fromNbt(nbt);
                 }
 

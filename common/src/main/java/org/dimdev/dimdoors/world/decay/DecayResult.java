@@ -14,26 +14,26 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
 
-public interface DecayProcessor<S, T> {
-    Registrar<DecayProcessorType<? extends DecayProcessor<?, ?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayProcessorType<? extends DecayProcessor<?, ?>>>builder(DimensionalDoors.id("decay_processor_type")).build();
+public interface DecayResult {
+    Registrar<DecayResultType<? extends DecayResult>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayResultType<? extends DecayResult>>builder(DimensionalDoors.id("decay_processor_type")).build();
 
-    static DecayProcessor<?, ?> deserialize(CompoundTag nbt) {
+    static DecayResult deserialize(CompoundTag nbt) {
         ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
-        return REGISTRY.delegate(id).orElseGet(DecayProcessorType.NONE_PROCESSOR_TYPE).fromNbt(nbt);
+        return REGISTRY.delegate(id).orElseGet(DecayResultType.NONE_PROCESSOR_TYPE).fromNbt(nbt);
     }
 
-    static CompoundTag serialize(DecayProcessor<?, ?> modifier) {
+    static CompoundTag serialize(DecayResult modifier) {
         return modifier.toNbt(new CompoundTag());
     }
 
 
-    DecayProcessor<S, T> fromNbt(CompoundTag nbt);
+    DecayResult fromNbt(CompoundTag nbt);
 
     default CompoundTag toNbt(CompoundTag nbt) {
         return this.getType().toNbt(nbt);
     }
 
-    DecayProcessorType<? extends DecayProcessor<S, T>> getType();
+    DecayResultType<? extends DecayResult> getType();
 
     String getKey();
 

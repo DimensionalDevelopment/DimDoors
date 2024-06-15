@@ -1,32 +1,31 @@
-package org.dimdev.dimdoors.world.decay.processors;
+package org.dimdev.dimdoors.world.decay.results;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.world.decay.DecayProcessorType;
+import org.dimdev.dimdoors.world.decay.DecayResult;
+import org.dimdev.dimdoors.world.decay.DecayResultType;
 
-public class NoneDecayProcessor implements DecayProcessor<Block, ItemStack> {
+public class NoneDecayResult implements DecayResult {
     public static final String KEY = "none";
-    private static final NoneDecayProcessor INSTANCE = new NoneDecayProcessor();
+    private static final NoneDecayResult INSTANCE = new NoneDecayResult();
 
-    private NoneDecayProcessor() {}
+    private NoneDecayResult() {}
 
-    public static NoneDecayProcessor instance() {
+    public static NoneDecayResult instance() {
         return INSTANCE;
     }
     @Override
-    public NoneDecayProcessor fromNbt(CompoundTag nbt) {
+    public NoneDecayResult fromNbt(CompoundTag nbt) {
         return this;
     }
 
     @Override
-    public DecayProcessorType<NoneDecayProcessor> getType() {
-        return DecayProcessorType.NONE_PROCESSOR_TYPE.get();
+    public DecayResultType<NoneDecayResult> getType() {
+        return DecayResultType.NONE_PROCESSOR_TYPE.get();
     }
 
     @Override
