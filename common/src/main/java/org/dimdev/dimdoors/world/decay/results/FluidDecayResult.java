@@ -1,52 +1,39 @@
 package org.dimdev.dimdoors.world.decay.results;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
+import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.world.decay.DecayResult;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
 public class FluidDecayResult implements DecayResult {
+	public static final Codec<FluidDecayResult> CODEC = RecordCodecBuilder.create(instance -> DecayResult.entropyCodec(instance).and(BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(blockDecayResult -> blockDecayResult.fluid)).apply(instance, FluidDecayResult::new));
+
 	public static final String KEY = "fluid";
+	private final LocationValue worldThreadChance;
 
 	protected Fluid fluid;
 
 	protected int entropy;
 
-	public FluidDecayResult() {
-	}
-
-	protected FluidDecayResult(Fluid fluid, int entropy) {
-		this.fluid = fluid;
+	public FluidDecayResult(int entropy, LocationValue worldThreadChance, Fluid fluid) {
 		this.entropy = entropy;
-	}
-
-	@Override
-	public FluidDecayResult fromNbt(CompoundTag json) {
-		fluid = BuiltInRegistries.FLUID.get(ResourceLocation.tryParse(json.getString("fluid")));
-		entropy = json.getInt("entropy");
-		return this;
-	}
-
-	@Override
-	public CompoundTag toNbt(CompoundTag nbt) {
-		DecayResult.super.toNbt(nbt);
-		nbt.putString("block", BuiltInRegistries.FLUID.getKey(fluid).toString());
-		nbt.putInt("entropy", entropy);
-		return nbt;
+		this.worldThreadChance = worldThreadChance;
+		this.fluid = fluid;
 	}
 
 	@Override
 	public DecayResultType<FluidDecayResult> getType() {
-		return DecayResultType.FLUID_PROCESSOR_TYPE.get();
+		return DecayResultType.FLUID_RESULT_TYPE.get();
 	}
 
 	@Override
@@ -55,7 +42,17 @@ public class FluidDecayResult implements DecayResult {
 	}
 
 	@Override
-	public int process(Level world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid) {
+	public int entropy() {
+		return entropy;
+	}
+
+	@Override
+	public LocationValue worldThreadChance() {
+		return worldThreadChance;
+	}
+
+	@Override
+	public int process(Level world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid, DecaySource source) {
 		BlockState newState = fluid.defaultFluidState().createLegacyBlock();
 		world.setBlockAndUpdate(pos, newState);
 		return entropy;
@@ -68,28 +65,5 @@ public class FluidDecayResult implements DecayResult {
 
 	private static <T extends Comparable<T>> FluidState transferProperty(FluidState from, FluidState to, Property<T> property) {
 		return to.setValue(property, from.getValue(property));
-	}
-
-	public static FluidDecayResult.Builder builder() {
-		return new FluidDecayResult.Builder();
-	}
-
-	public static class Builder {
-		private Fluid fluid = Fluids.EMPTY;
-		private int entropy;
-
-		public FluidDecayResult.Builder fluid(Fluid fluid) {
-			this.fluid = fluid;
-			return this;
-		}
-
-		public FluidDecayResult.Builder entropy(int entropy) {
-			this.entropy = entropy;
-			return this;
-		}
-
-		public FluidDecayResult create() {
-			return new FluidDecayResult(fluid, entropy);
-		}
 	}
 }

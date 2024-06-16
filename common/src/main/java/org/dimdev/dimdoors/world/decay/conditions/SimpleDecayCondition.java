@@ -1,91 +1,51 @@
 package org.dimdev.dimdoors.world.decay.conditions;
 
-import com.google.common.collect.Streams;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayCondition;
+import org.dimdev.dimdoors.world.decay.DecayConditionType;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class SimpleDecayCondition implements DecayCondition {
+public class SimpleDecayCondition extends GenericDecayCondition<Block> {
+    public static final Codec<SimpleDecayCondition> CODEC = createCodec(SimpleDecayCondition::new, Registries.BLOCK);
+
     public static final String KEY = "block";
 
-    private Block block;
-	private TagKey<Block> tag;
-
-    public SimpleDecayCondition() {}
-
-	public SimpleDecayCondition(TagKey<Block> tag, Block block) {
-		this.tag = tag;
-		this.block = block;
+	public SimpleDecayCondition(TagOrElementLocation<Block> tagOrElementLocation) {
+        super(tagOrElementLocation);
 	}
 
-	@Override
-    public DecayCondition fromNbt(CompoundTag nbt) {
-		String name = nbt.getString("entry");
+    public static SimpleDecayCondition of(TagKey<Block> tag) {
+        return new SimpleDecayCondition(TagOrElementLocation.of(tag, Registries.BLOCK));
+    }
 
-		if(name.startsWith("#")) tag = TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(name.substring(1)));
-		else block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(name));
-        return this;
+    public static SimpleDecayCondition of(ResourceKey<Block> key) {
+        return new SimpleDecayCondition(TagOrElementLocation.of(key, Registries.BLOCK));
     }
 
     @Override
-    public CompoundTag toNbt(CompoundTag nbt) {
-        DecayCondition.super.toNbt(nbt);
-        nbt.putString("entry", tag != null ? "#" + tag.location().toString() : BuiltInRegistries.BLOCK.getKey(block).toString());
-        return nbt;
+    public DecayConditionType<? extends DecayCondition> getType() {
+        return DecayConditionType.SIMPLE_CONDITION_TYPE.get();
     }
 
     @Override
-    public DecayPredicateType<? extends DecayCondition> getType() {
-        return DecayPredicateType.SIMPLE_PREDICATE_TYPE.get();
+    public Holder<Block> getHolder(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
+        return targetBlock.getBlockHolder();
     }
 
     @Override
-    public String getKey() {
-        return KEY;
-    }
-
-    @Override
-    public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
-		return block != null ? targetBlock.is(block) : targetBlock.is(tag);
-    }
-
-	@Override
-	public Set<Block> constructApplicableBlocks() {
-		return block != null ? Set.of(block) : Streams.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(tag)).map(Holder::value).collect(Collectors.toSet());
+	public Set<ResourceKey<Block>> constructApplicableBlocks() {
+        return getTagOrElementLocation().getValues(BuiltInRegistries.BLOCK);
 	}
-
-	public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private Block block;
-		private TagKey<Block> tag;
-
-        public Builder block(Block block) {
-            this.block = block;
-            return this;
-        }
-
-		public Builder tag(TagKey<Block> tag) {
-			this.tag = tag;
-			return this;
-		}
-
-        public SimpleDecayCondition create() {
-            return new SimpleDecayCondition(tag, block);
-        }
-    }
 }

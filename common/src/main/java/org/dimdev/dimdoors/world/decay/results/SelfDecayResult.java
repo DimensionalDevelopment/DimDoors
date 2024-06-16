@@ -1,14 +1,14 @@
 package org.dimdev.dimdoors.world.decay.results;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayResult;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
-import static org.dimdev.dimdoors.world.decay.DecayResultType.SELF;
+import static org.dimdev.dimdoors.world.decay.DecayResultType.SELF_RESULT_TYPE;
 
 public class SelfDecayResult implements DecayResult {
     public static final String KEY = "self";
@@ -20,13 +20,8 @@ public class SelfDecayResult implements DecayResult {
     }
 
     @Override
-    public SelfDecayResult fromNbt(CompoundTag nbt) {
-        return this;
-    }
-
-    @Override
     public DecayResultType<SelfDecayResult> getType() {
-        return SELF.get();
+        return SELF_RESULT_TYPE.get();
     }
 
     @Override
@@ -35,7 +30,7 @@ public class SelfDecayResult implements DecayResult {
     }
 
     @Override
-	public int process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
+	public int process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
         world.setBlockAndUpdate(pos, origin);
         return 0;
     }

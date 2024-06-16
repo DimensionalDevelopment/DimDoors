@@ -48,7 +48,7 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 				equationMap.put(condition, Equation.parse(condition));
 				pocketMap.put(condition, VirtualPocket.deserialize(pocket.get("pocket"), manager));
 			} catch (Equation.EquationParseException e) {
-				LOGGER.error("Could not parse pocket condition equation!", e);
+				LOGGER.error("Could not parse pocket conditions equation!", e);
 			}
 		}
 		return this;

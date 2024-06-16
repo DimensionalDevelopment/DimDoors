@@ -4,28 +4,31 @@ import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
+import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 import org.dimdev.dimdoors.world.decay.DecayCondition;
 import org.dimdev.dimdoors.world.decay.DecayResult;
+import org.dimdev.dimdoors.world.decay.conditions.DimensionDecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
 import org.dimdev.dimdoors.world.decay.results.*;
@@ -238,20 +241,29 @@ public class LimboDecayProvider implements DataProvider {
 	}
 
 	private DecayCondition getPredicate(Object object) {
-		if (!(object instanceof TagKey<?> tag)) {
-			if(object instanceof Block block) return SimpleDecayCondition.builder().block(block).create();
-			else if(object instanceof Fluid fluid) return FluidDecayCondition.builder().fluid(fluid).create();
-		} else {
-			if (tag.isFor(Registries.BLOCK)) return SimpleDecayCondition.builder().tag((TagKey<Block>) tag).create();
-			else if (tag.isFor(Registries.FLUID)) return FluidDecayCondition.builder().tag((TagKey<Fluid>) tag).create();
+		if (object instanceof TagKey<?> tag) {
+			if (tag.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((TagKey<Block>) tag);
+			else if (tag.isFor(Registries.FLUID)) return FluidDecayCondition.of((TagKey<Fluid>) tag);
+			else if (tag.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((TagKey<DimensionType>) tag);
+
+		} else if(object instanceof ResourceKey<?> key) {
+			if (key.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((ResourceKey<Block>) key);
+			else if (key.isFor(Registries.FLUID)) return FluidDecayCondition.of((ResourceKey<Fluid>) key);
+			else if (key.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((ResourceKey<DimensionType>) key);
 		}
 
 		return DecayCondition.NONE;
 	}
 
 	private DecayResult getProcessor(Object object) {
-		if(object instanceof Block block) return BlockDecayResult.builder().block(block).create();
-		else if(object instanceof Fluid fluid) return FluidDecayResult.builder().fluid(fluid).create();
+		return getProcessor(object, 1);
+	}
+
+	private LocationValue.Constant DEFAULT = new LocationValue.Constant(0.005f);
+
+	private DecayResult getProcessor(Object object, int entropy) {
+		if(object instanceof Block block) return new BlockDecayImplResult(entropy, DEFAULT, block);
+		else if(object instanceof Fluid fluid) return new FluidDecayResult(entropy, DEFAULT, fluid);
 		else return NoneDecayResult.instance();
 	}
 
@@ -299,33 +311,20 @@ public class LimboDecayProvider implements DataProvider {
         return rootOutput.resolve("data/" + lootTableId.getNamespace() + "/decay_patterns/" + lootTableId.getPath() + ".json");
     }
 
-    public DecayPatternData createSimplePattern(ResourceLocation id, Block before, Block after) {
-        return new DecayPatternData(id, SimpleDecayCondition.builder().block(before).create(), BlockDecayResult.builder().block(after).entropy(1).create());
+    public DecayPatternData createSimplePattern(ResourceLocation id, Object before, Object after) {
+        return new DecayPatternData(id, getPredicate(before), getProcessor(after, 1));
     }
 
-	public DecayPatternData createSimplePattern(ResourceLocation id, TagKey<Block> before, Block after) {
-		return new DecayPatternData(id, SimpleDecayCondition.builder().tag(before).create(), BlockDecayResult.builder().block(after).entropy(1).create());
-	}
-
 	public DecayPatternData createDoublePattern(ResourceLocation id, Object before, Block after) {
-		return new DecayPatternData(id, getPredicate(before), DoubleDecayResult.builder().block(after).entropy(1).create());
+		return new DecayPatternData(id, getPredicate(before), new DoubleBlockDecayResult(1, DEFAULT, after));
 	}
 
-    public static class DecayPatternData {
-        private ResourceLocation id;
-        private DecayCondition predicate;
-        private DecayResult processor;
-
-        public DecayPatternData(ResourceLocation id, DecayCondition predicate, DecayResult processor) {
-            this.id = id;
-            this.predicate = predicate;
-            this.processor = processor;
-        }
+    public static record DecayPatternData(ResourceLocation id, DecayCondition condition, DecayResult result) {
 
         public void run(BiConsumer<ResourceLocation, JsonObject> consumer) {
             JsonObject object = new JsonObject();
-            object.add("predicate", ResourceUtil.NBT_TO_JSON.apply(predicate.toNbt(new CompoundTag())));
-            object.add("processor", ResourceUtil.NBT_TO_JSON.apply(processor.toNbt(new CompoundTag())));
+            object.add("conditions", JsonOps.INSTANCE.withEncoder(DecayCondition.CODEC).apply(condition).getOrThrow(false, DataProvider.LOGGER::error));
+            object.add("result", JsonOps.INSTANCE.withEncoder(DecayResult.CODEC).apply(result).getOrThrow(false, DataProvider.LOGGER::error));
 
             consumer.accept(id, object);
         }

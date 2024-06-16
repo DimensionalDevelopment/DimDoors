@@ -26,6 +26,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
+import org.dimdev.dimdoors.api.util.LocationCondition.LocationConditionType;
+import org.dimdev.dimdoors.api.util.LocationValue.LocationValueWithType;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -44,7 +46,8 @@ import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
-import org.dimdev.dimdoors.listener.pocket.*;
+import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
+import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -63,7 +66,7 @@ import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModStructures;
 import org.dimdev.dimdoors.world.decay.Decay;
-import org.dimdev.dimdoors.world.decay.DecayCondition;
+import org.dimdev.dimdoors.world.decay.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
@@ -166,8 +169,10 @@ public class DimensionalDoors {
 		AbstractPocket.AbstractPocketType.register();
 		PocketAddon.PocketAddonType.register();
 		Condition.ConditionType.register();
-		DecayCondition.DecayPredicateType.register();
+		DecayConditionType.register();
 		DecayResultType.register();
+		LocationConditionType.register();
+		LocationValueWithType.register();
 	}
 
 	private static void registerListeners() {

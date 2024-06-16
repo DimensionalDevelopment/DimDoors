@@ -1,43 +1,39 @@
 package org.dimdev.dimdoors.world.decay;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.LocationValue;
 
 public interface DecayResult {
-    Registrar<DecayResultType<? extends DecayResult>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayResultType<? extends DecayResult>>builder(DimensionalDoors.id("decay_processor_type")).build();
-
-    static DecayResult deserialize(CompoundTag nbt) {
-        ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
-        return REGISTRY.delegate(id).orElseGet(DecayResultType.NONE_PROCESSOR_TYPE).fromNbt(nbt);
+    public static <T extends DecayResult> Products.P2<RecordCodecBuilder.Mu<T>, Integer, LocationValue> entropyCodec(RecordCodecBuilder.Instance<T> instance) {
+        return instance.group(Codec.INT.optionalFieldOf("entropy", 0).forGetter(DecayResult::entropy), LocationValue.CODEC.optionalFieldOf("world_thread_chance", LocationValue.Constant.ZERO).forGetter(DecayResult::worldThreadChance));
     }
 
-    static CompoundTag serialize(DecayResult modifier) {
-        return modifier.toNbt(new CompoundTag());
+    Codec<DecayResult> CODEC = DecayResultType.CODEC.dispatch("type", DecayResult::getType, DecayResultType::codec);
+
+
+    default int entropy() {
+        return 0;
     }
 
-
-    DecayResult fromNbt(CompoundTag nbt);
-
-    default CompoundTag toNbt(CompoundTag nbt) {
-        return this.getType().toNbt(nbt);
+    default LocationValue worldThreadChance() {
+        return LocationValue.Constant.ZERO;
     }
 
     DecayResultType<? extends DecayResult> getType();
 
     String getKey();
 
-    int process(Level world, BlockPos pos, BlockState origin, BlockState targetState, FluidState targetFluid);
+    int process(Level world, BlockPos pos, BlockState origin, BlockState targetState, FluidState targetFluid, DecaySource source);
 
     default Object produces(Object prior) {
         return defaultProduces(prior);

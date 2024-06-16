@@ -1,10 +1,9 @@
 package org.dimdev.dimdoors.world.decay.results;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -12,41 +11,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayResult;
+import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
-public class DoubleDecayResult implements DecayResult {
-	public static final String KEY = "double";
+public class DoubleBlockDecayResult extends BlockDecayResult<DoubleBlockDecayResult> {
+	public static final Codec<DoubleBlockDecayResult> CODEC = RecordCodecBuilder.create(instance -> blockDecayCodec(instance).apply(instance, DoubleBlockDecayResult::new));
 
-	protected Block block;
+	public static final String KEY = "double_block";
 
-	protected int entropy;
 
-	public DoubleDecayResult() {}
-
-	protected DoubleDecayResult(Block block, int entropy) {
-		this.block = block;
-		this.entropy = entropy;
+	public DoubleBlockDecayResult(int entropy, LocationValue worldThreadChance, Block block) {
+		super(entropy, worldThreadChance, block);
 	}
 
 	@Override
-	public DoubleDecayResult fromNbt(CompoundTag json) {
-		block = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(json.getString("block")));
-		entropy = json.getInt("entropy");
-		return this;
-	}
-
-	@Override
-	public CompoundTag toNbt(CompoundTag nbt) {
-		DecayResult.super.toNbt(nbt);
-		nbt.putString("block", BuiltInRegistries.BLOCK.getKey(block).toString());
-		nbt.putInt("entropy", entropy);
-		return nbt;
-	}
-
-	@Override
-	public DecayResultType<DoubleDecayResult> getType() {
-		return DecayResultType.DOUBLE_PROCESSOR_TYPE.get();
+	public DecayResultType<DoubleBlockDecayResult> getType() {
+		return DecayResultType.DOUBLE_BLOCK_RESULT_TYPE.get();
 	}
 
 	@Override
@@ -55,7 +36,7 @@ public class DoubleDecayResult implements DecayResult {
 	}
 
 	@Override
-	public int process(Level world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid) {
+	public int process(Level world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid, DecaySource source) {
 		if(target.getBlock() instanceof DoorBlock) {
 			BlockPos otherPos = target.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos.above();
 
@@ -83,28 +64,5 @@ public class DoubleDecayResult implements DecayResult {
 	@Override
 	public Object produces(Object prior) {
 		return new ItemStack(block, 2);
-	}
-
-	public static Builder builder() {
-		return new Builder();
-	}
-
-	public static class Builder {
-		private Block block = Blocks.AIR;
-		private int entropy;
-
-		public Builder block(Block block) {
-			this.block = block;
-			return this;
-		}
-
-		public Builder entropy(int entropy) {
-			this.entropy = entropy;
-			return this;
-		}
-
-		public DoubleDecayResult create() {
-			return new DoubleDecayResult(block, entropy);
-		}
 	}
 }

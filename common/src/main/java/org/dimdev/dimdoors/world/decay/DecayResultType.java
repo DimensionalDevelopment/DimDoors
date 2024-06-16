@@ -1,39 +1,29 @@
 package org.dimdev.dimdoors.world.decay;
 
+import com.mojang.serialization.Codec;
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.decay.results.*;
 
-import java.util.function.Supplier;
+public record DecayResultType<T extends DecayResult>(Codec<T> codec) {
+    public static final Registrar<DecayResultType<? extends DecayResult>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayResultType<? extends DecayResult>>builder(DimensionalDoors.id("decay_result_type")).build();
 
-public interface DecayResultType<T extends DecayResult> {
-    RegistrySupplier<DecayResultType<BlockDecayResult>> SIMPLE_PROCESSOR_TYPE = register(DimensionalDoors.id(BlockDecayResult.KEY), BlockDecayResult::new);
-    RegistrySupplier<DecayResultType<NoneDecayResult>> NONE_PROCESSOR_TYPE = register(DimensionalDoors.id(NoneDecayResult.KEY), NoneDecayResult::instance);
-    RegistrySupplier<DecayResultType<SelfDecayResult>> SELF = register(DimensionalDoors.id(SelfDecayResult.KEY), SelfDecayResult::instance);
-    RegistrySupplier<DecayResultType<DoubleDecayResult>> DOUBLE_PROCESSOR_TYPE = register(DimensionalDoors.id(DoubleDecayResult.KEY), DoubleDecayResult::new);
-    RegistrySupplier<DecayResultType<FluidDecayResult>> FLUID_PROCESSOR_TYPE = register(DimensionalDoors.id(FluidDecayResult.KEY), FluidDecayResult::new);
 
-    DecayResult fromNbt(CompoundTag nbt);
+    public static final Codec<DecayResultType<? extends DecayResult>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 
-    CompoundTag toNbt(CompoundTag nbt);
+    public static final RegistrySupplier<DecayResultType<BlockDecayImplResult>> BLOCK_RESULT_TYPE = register(DimensionalDoors.id(BlockDecayImplResult.KEY), BlockDecayImplResult.CODEC);
+    public static final RegistrySupplier<DecayResultType<NoneDecayResult>> NONE_PROCESSOR_TYPE = register(DimensionalDoors.id(NoneDecayResult.KEY), Codec.unit(NoneDecayResult::instance));
+    public static final RegistrySupplier<DecayResultType<SelfDecayResult>> SELF_RESULT_TYPE = register(DimensionalDoors.id(SelfDecayResult.KEY), Codec.unit(SelfDecayResult::instance));
+    public static final RegistrySupplier<DecayResultType<DoubleBlockDecayResult>> DOUBLE_BLOCK_RESULT_TYPE = register(DimensionalDoors.id(DoubleBlockDecayResult.KEY), DoubleBlockDecayResult.CODEC);
+    public static final RegistrySupplier<DecayResultType<FluidDecayResult>> FLUID_RESULT_TYPE = register(DimensionalDoors.id(FluidDecayResult.KEY), FluidDecayResult.CODEC);
 
-    static void register() {
+    public static void register() {
     }
 
-    static <T, V, U extends DecayResult> RegistrySupplier<DecayResultType<U>> register(ResourceLocation id, Supplier<U> factory) {
-        return DecayResult.REGISTRY.register(id, () -> new DecayResultType<>() {
-            @Override
-            public DecayResult fromNbt(CompoundTag nbt) {
-                return factory.get().fromNbt(nbt);
-            }
-
-            @Override
-            public CompoundTag toNbt(CompoundTag nbt) {
-                nbt.putString("type", id.toString());
-                return nbt;
-            }
-        });
+    static <T, V, U extends DecayResult> RegistrySupplier<DecayResultType<U>> register(ResourceLocation id, Codec<U> codec) {
+        return REGISTRY.register(id, () -> new DecayResultType<>(codec));
     }
 }

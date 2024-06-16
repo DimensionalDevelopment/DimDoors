@@ -7,6 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
 public class RealitySpongeBlock extends Block {
 
@@ -20,7 +21,7 @@ public class RealitySpongeBlock extends Block {
 			BlockPos currentPos = pos.relative(direction);
 
 			if(!world.isEmptyBlock(currentPos)) {
-				Decay.decayBlock(world, currentPos, state);
+				Decay.decayBlock(world, currentPos, state, DecaySource.REAlITY_SPONGE);
 			}
 		}
 	}

@@ -142,7 +142,7 @@ public final class ModBlocks {
 	public static final RegistrySupplier<Block> TESSELATING_LOOM = register("tesselating_loom", () -> new TesselatingLoomBlock(of(LOOM)));
 
 	public static final RegistrySupplier<Block> REALITY_SPONGE = register("reality_sponge", () -> new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
-	public static final RegistrySupplier<Block> LIMBO_AIR = register("limbo_air", () -> new LimboAirBlock(BlockBehaviour.Properties.of().replaceable().noCollission().noLootTable().air()));
+	public static final RegistrySupplier<Block> LIMBO_AIR = registerWithoutTabOrItem("limbo_air", () -> new LimboAirBlock(BlockBehaviour.Properties.of().replaceable().noCollission().noLootTable().air()));
 
 	//Decay graph filler.
 	public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = registerDecay("driftwood_wood", () -> new RotatedPillarBlock(copy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
