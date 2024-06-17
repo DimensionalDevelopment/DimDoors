@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block.door;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -19,6 +20,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -41,11 +44,13 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
+import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
 public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock {
 	public DimensionalDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
@@ -298,5 +303,15 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		createDetachedRift(world, pos, state);
 		return InteractionResult.SUCCESS;
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+		return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
+	}
+
+	public Block baseBlock() {
+		return BuiltInRegistries.BLOCK.get(DimensionalDoors.getDimensionalDoorBlockRegistrar().get(BuiltInRegistries.BLOCK.getKey(this)));
 	}
 }

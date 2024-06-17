@@ -15,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -66,8 +65,15 @@ public class RiftRemoverItem extends Item {
 				rift.setClosing(true);
 				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1);
 				stack.hurtAndBreak(10, player, a -> a.broadcastBreakEvent(hand));
-				LootParams ctx = new LootParams.Builder((ServerLevel) world).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(((BlockHitResult) hit).getBlockPos())).withOptionalParameter(LootContextParams.THIS_ENTITY, player).create(LootContextParamSets.ALL_PARAMS);
-				((ServerLevel) world).getServer().getLootData().getLootTable(REMOVED_RIFT_LOOT_TABLE).getRandomItems(ctx).forEach(stack1 -> {
+				var pos = ((BlockHitResult) hit).getBlockPos();
+				LootParams ctx = new LootParams.Builder((ServerLevel) world)
+						.withParameter(LootContextParams.BLOCK_STATE, world.getBlockState(pos))
+						.withParameter(LootContextParams.TOOL, stack)
+						.withParameter(LootContextParams.THIS_ENTITY, player)
+						.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+						.create(LootContextParamSets.BLOCK);
+
+				 ((ServerLevel) world).getServer().getLootData().getLootTable(REMOVED_RIFT_LOOT_TABLE).getRandomItems(ctx).forEach(stack1 -> {
 					Containers.dropItemStack(world, ((BlockHitResult) hit).getBlockPos().getX(), ((BlockHitResult) hit).getBlockPos().getY(), ((BlockHitResult) hit).getBlockPos().getZ(), stack1);
 				});
 

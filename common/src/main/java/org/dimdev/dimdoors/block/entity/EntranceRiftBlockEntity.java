@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.block.entity;
 
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -14,15 +13,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
 import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.Transformer;
 import org.dimdev.dimdoors.api.util.EntityUtils;
@@ -30,8 +28,10 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.Rift;
@@ -40,9 +40,10 @@ import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.Optional;
 
+import static net.minecraft.world.level.block.DoorBlock.*;
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
-public class EntranceRiftBlockEntity extends RiftBlockEntity {
+public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBlock> {
 	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
 	private static final Logger LOGGER = LogManager.getLogger();
 	private boolean locked;
@@ -193,5 +194,40 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 		var pos = getBlockPos();
 		world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
 		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(getData());
+	}
+
+	@Override
+	protected void onClose(Level level, BlockPos pos) {
+		var state = level.getBlockState(pos);
+		var block = state.getBlock();
+
+		if(block instanceof DimensionalDoorBlock dimensionalDoorBlock) {
+			var base = dimensionalDoorBlock.baseBlock();
+
+			if (base instanceof DoorBlock doorBlock) {
+				var newState = doorBlock.defaultBlockState()
+						.setValue(FACING, state.getValue(FACING))
+						.setValue(OPEN, state.getValue(OPEN))
+						.setValue(HINGE, state.getValue(HINGE))
+						.setValue(POWERED, state.getValue(POWERED))
+						.setValue(HALF, DoubleBlockHalf.UPPER);
+
+				level.removeBlock(pos, false);
+				level.setBlockAndUpdate(pos.above(), newState);
+				level.setBlockAndUpdate(pos.above(), newState.setValue(HALF, DoubleBlockHalf.LOWER));
+			}
+		} else if(block instanceof DimensionalPortalBlock) {
+			level.removeBlock(pos, false);
+		}
+	}
+
+	@Override
+	protected Class<DimensionalDoorBlock> blockClass() {
+		return DimensionalDoorBlock.class;
+	}
+
+	@Override
+	public boolean stablized() {
+		return true;
 	}
 }

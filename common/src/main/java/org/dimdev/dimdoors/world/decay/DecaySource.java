@@ -6,16 +6,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum DecaySource implements StringRepresentable {
-    LIMBO("unravelled_fabric"),
-    REAlITY_SPONGE("reality_sponge"),
-    CUSTOM("custom");
+    LIMBO("unravelled_fabric", false),
+    REAlITY_SPONGE("reality_sponge", false),
+    RIFT("rift", true),
+    CUSTOM("custom", false);
 
     private static final Map<String, DecaySource> MAP = new HashMap<>(); //TODO: Remove once converted into codec.
 
     private final String name;
+    private final boolean decayIntoWorldThread;
 
-    DecaySource(String name) {
+    DecaySource(String name, boolean decayIntoWorldThread) {
         this.name = name;
+        this.decayIntoWorldThread = decayIntoWorldThread;
     }
 
     @Override
@@ -25,5 +28,9 @@ public enum DecaySource implements StringRepresentable {
 
     public static DecaySource fromName(String name) {
         return MAP.getOrDefault(name.toLowerCase(), CUSTOM);
+    }
+
+    public boolean decayIntoWorldThread() {
+        return decayIntoWorldThread;
     }
 }

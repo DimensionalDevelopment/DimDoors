@@ -22,16 +22,24 @@ public class SimpleDecayCondition extends GenericDecayCondition<Block> {
 
     public static final String KEY = "block";
 
-	public SimpleDecayCondition(TagOrElementLocation<Block> tagOrElementLocation) {
-        super(tagOrElementLocation);
+	public SimpleDecayCondition(TagOrElementLocation<Block> tagOrElementLocation, boolean invert) {
+        super(tagOrElementLocation, invert);
 	}
 
+    public static SimpleDecayCondition of(TagKey<Block> tag, boolean invert) {
+        return new SimpleDecayCondition(TagOrElementLocation.of(tag, Registries.BLOCK), invert);
+    }
+
     public static SimpleDecayCondition of(TagKey<Block> tag) {
-        return new SimpleDecayCondition(TagOrElementLocation.of(tag, Registries.BLOCK));
+        return new SimpleDecayCondition(TagOrElementLocation.of(tag, Registries.BLOCK), false);
+    }
+
+    public static SimpleDecayCondition of(ResourceKey<Block> key, boolean invert) {
+        return new SimpleDecayCondition(TagOrElementLocation.of(key, Registries.BLOCK), invert);
     }
 
     public static SimpleDecayCondition of(ResourceKey<Block> key) {
-        return new SimpleDecayCondition(TagOrElementLocation.of(key, Registries.BLOCK));
+        return new SimpleDecayCondition(TagOrElementLocation.of(key, Registries.BLOCK), false);
     }
 
     @Override

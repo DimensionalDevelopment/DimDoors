@@ -25,11 +25,6 @@ public class SelfDecayResult implements DecayResult {
     }
 
     @Override
-    public String getKey() {
-        return KEY;
-    }
-
-    @Override
 	public int process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
         world.setBlockAndUpdate(pos, origin);
         return 0;

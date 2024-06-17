@@ -11,22 +11,29 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
-import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.client.RiftCurves;
+import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
-public class DetachedRiftBlockEntity extends RiftBlockEntity {
+import java.util.List;
+
+public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> {
+
+	private static final int UPDATE_PERIOD = 200; //10 seconds
+
 	private static final RandomSource random = RandomSource.create();
 
-	public boolean closing = false;
-	public boolean stabilized = false;
 	public int spawnedEndermanId = 0;
-	public float size = 0;
+	public float riftYaw;
 	public int curveID = 0;
 
 	private boolean unregisterDisabled = false;
@@ -37,40 +44,22 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.DETACHED_RIFT.get(), pos, state);
 		this.curveID = (int) (Math.random()* RiftCurves.CURVES.size());
+		this.riftYaw = random.nextInt(360);
 	}
 
-	public static void tick(Level world, BlockPos pos, BlockState state, DetachedRiftBlockEntity blockEntity) {
-		if (world == null) {
-			return;
-		}
+	@Override
+	protected Class<DetachedRiftBlock> blockClass() {
+		return DetachedRiftBlock.class;
+	}
 
-		if (state.getBlock() != ModBlocks.DETACHED_RIFT.get()) {
-			blockEntity.setRemoved();
-			return;
-		}
-
-		if (!world.isClientSide() && random.nextFloat() < DimensionalDoors.getConfig().getGeneralConfig().endermanSpawnChance) {
-			EnderMan enderman = EntityType.ENDERMAN.spawn(
-					(ServerLevel) world,
-					pos,
-					MobSpawnType.STRUCTURE
-			);
-
-			if (random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {
-				if (enderman != null) {
-					enderman.setTarget(world.getNearestPlayer(enderman, 50));
-				}
-			}
-		}
-
-		if (blockEntity.closing) {
-			if (blockEntity.size > 0) {
-				blockEntity.size -= DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
-			} else {
-				world.removeBlock(pos, false);
-			}
-		} else if (!blockEntity.stabilized) {
-			blockEntity.size += DimensionalDoors.getConfig().getGeneralConfig().riftGrowthSpeed / (blockEntity.size + 1);
+	/**
+	 * Checks the blocks around the location of the floating rift and applies the decay
+	 */
+	public void applySpreadDecay(ServerLevel world, BlockPos pos) {
+		float chance = size/100f;
+		if ((random.nextFloat()) <= chance) {
+			BlockPos selected = BlockPos.randomInCube(world.getRandom(), 1, pos, (int) (chance)).iterator().next();
+			Decay.decayBlock(world, selected, world.getBlockState(selected), DecaySource.RIFT);
 		}
 	}
 
@@ -91,10 +80,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	@Override
 	public CompoundTag serialize(CompoundTag nbt) {
 		super.serialize(nbt);
-		nbt.putBoolean("closing", this.closing);
-		nbt.putBoolean("stablized", this.stabilized);
 		nbt.putInt("spawnedEnderManId", this.spawnedEndermanId);
-		nbt.putFloat("size", this.size);
 		nbt.putInt("curveID", this.curveID);
 		return nbt;
 	}
@@ -102,10 +88,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 	@Override
 	public void deserialize(CompoundTag nbt) {
 		super.deserialize(nbt);
-		this.closing = nbt.getBoolean("closing");
-		this.stabilized = nbt.getBoolean("stablized");
 		this.spawnedEndermanId = nbt.getInt("spawnedEnderManId");
-		this.size = nbt.getFloat("size");
 		this.curveID = nbt.getInt("curveID");
 	}
 
@@ -150,4 +133,52 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
 	}
 
+	@Override
+	protected void onClose(Level level, BlockPos pos) {
+		level.removeBlock(pos, false);
+	}
+
+	@Override
+	protected void onUpdate(Level level, BlockPos pos) {
+		if(level.isClientSide) return;
+
+		if(level.getEntity(spawnedEndermanId) instanceof EnderMan) {
+			return;
+		}
+
+		if (random.nextFloat() < DimensionalDoors.getConfig().getGeneralConfig().endermanSpawnChance) {
+			if (updateNearestRift()) {
+				List<EnderMan> list = level.getEntitiesOfClass(EnderMan.class, new AABB(pos.getX() - 9, pos.getY() - 3, pos.getZ() - 9, pos.getX() + 9, pos.getY() + 3, pos.getZ() + 9));
+
+				if (list.isEmpty()) {
+					EnderMan enderman = EntityType.ENDERMAN.spawn(
+							(ServerLevel) level,
+							pos,
+							MobSpawnType.STRUCTURE);
+					enderman.absMoveTo(pos.getX() + 0.5, pos.getY() - 1, pos.getZ() + 0.5, 5, 6);
+
+					if (random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {
+						Player player = level.getNearestPlayer(enderman, 50);
+						if (player != null) {
+							enderman.setTarget(player);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onGrowth(Level level, BlockPos pos) {
+		// Logarithmic growth
+		for (int n = 0; n < 10; n++) {
+			// TODO: growthSize config options
+			size += DimensionalDoors.getConfig().getGeneralConfig().riftGrowthSpeed / (size + 1);
+		}
+
+
+		if (!level.isClientSide() && DimensionalDoors.getConfig().getGeneralConfig().enableRiftDecay) {
+			applySpreadDecay((ServerLevel) level, pos);
+		}
+	}
 }

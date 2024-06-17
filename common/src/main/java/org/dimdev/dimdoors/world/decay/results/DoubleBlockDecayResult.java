@@ -6,12 +6,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
@@ -21,18 +23,13 @@ public class DoubleBlockDecayResult extends BlockDecayResult<DoubleBlockDecayRes
 	public static final String KEY = "double_block";
 
 
-	public DoubleBlockDecayResult(int entropy, LocationValue worldThreadChance, Block block) {
+	public DoubleBlockDecayResult(int entropy, float worldThreadChance, Block block) {
 		super(entropy, worldThreadChance, block);
 	}
 
 	@Override
 	public DecayResultType<DoubleBlockDecayResult> getType() {
 		return DecayResultType.DOUBLE_BLOCK_RESULT_TYPE.get();
-	}
-
-	@Override
-	public String getKey() {
-		return null;
 	}
 
 	@Override

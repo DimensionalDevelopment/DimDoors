@@ -11,11 +11,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.api.util.LocationValue;
 
 public interface DecayResult {
-    public static <T extends DecayResult> Products.P2<RecordCodecBuilder.Mu<T>, Integer, LocationValue> entropyCodec(RecordCodecBuilder.Instance<T> instance) {
-        return instance.group(Codec.INT.optionalFieldOf("entropy", 0).forGetter(DecayResult::entropy), LocationValue.CODEC.optionalFieldOf("world_thread_chance", LocationValue.Constant.ZERO).forGetter(DecayResult::worldThreadChance));
+    public static <T extends DecayResult> Products.P2<RecordCodecBuilder.Mu<T>, Integer, Float> entropyCodec(RecordCodecBuilder.Instance<T> instance) {
+        return instance.group(
+                Codec.INT.optionalFieldOf("entropy", 0).forGetter(DecayResult::entropy),
+                Codec.FLOAT.optionalFieldOf("world_thread_chance", 0.1f).forGetter(DecayResult::worldThreadChance));
     }
 
     Codec<DecayResult> CODEC = DecayResultType.CODEC.dispatch("type", DecayResult::getType, DecayResultType::codec);
@@ -25,13 +26,11 @@ public interface DecayResult {
         return 0;
     }
 
-    default LocationValue worldThreadChance() {
-        return LocationValue.Constant.ZERO;
+    default float worldThreadChance() {
+        return 0f;
     }
 
     DecayResultType<? extends DecayResult> getType();
-
-    String getKey();
 
     int process(Level world, BlockPos pos, BlockState origin, BlockState targetState, FluidState targetFluid, DecaySource source);
 

@@ -15,6 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -65,16 +66,16 @@ public final class Decay {
 		BlockState targetState = world.getBlockState(pos);
 		FluidState fluidState = world.getFluidState(pos);
 
-		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(targetState.getBlock());
+		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(targetState.getBlockHolder().unwrapKey().get());
 
-		if(patterns.isEmpty()) patterns = DecayLoader.getInstance().getPatterns(fluidState.getType());
+		if(patterns.isEmpty()) patterns = DecayLoader.getInstance().getPatterns(fluidState.getType().builtInRegistryHolder().key());
 
 		if(patterns.isEmpty()) {
 			return;
 		}
 
 		for(DecayPattern pattern : patterns) {
-			if (!pattern.test(world, pos, origin, targetState, fluidState, source)) {
+			if (!world.isNaturalSpawningAllowed(pos) || !pattern.test(world, pos, origin, targetState, fluidState, source)) {
 				continue;
 			}
 			world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
@@ -180,11 +181,18 @@ public final class Decay {
 		public void process(ServerLevel world) {
 			BlockState targetBlock = world.getBlockState(pos);
 			FluidState targetFluid = world.getFluidState(pos);
-			if (world.isNaturalSpawningAllowed(pos) && processor.test(world, pos, origin, targetBlock, targetFluid, source)) {
-				world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
-					ExtendedServerPlayNetworkHandler.get(player.connection).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, -1));
-				});
-				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), targetBlock.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.5f, 1f);
+
+			world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
+				ExtendedServerPlayNetworkHandler.get(player.connection).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, -1));
+			});
+
+			world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), targetBlock.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.5f, 1f);
+
+			if (source.decayIntoWorldThread()) {
+				if (DimensionalDoors.getConfig().getDecayConfig().decaysIntoAir)
+					world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+				else processor.process(world, pos, origin, targetBlock, targetFluid, source);
+			} else {
 				processor.process(world, pos, origin, targetBlock, targetFluid, source);
 			}
 		}

@@ -1,13 +1,12 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -30,11 +29,8 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.QUARTZ_DOOR.get()).pattern("XX").pattern("XX").pattern("XX").define('X', Items.QUARTZ).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.QUARTZ)).save(exporter, DimensionalDoors.id("quartz_door"));
 		TesselatingShapelessRecipeBuilder.shapeless(ModItems.RIFT_BLADE.get()).requires(Items.IRON_SWORD).requires(Items.ENDER_PEARL, 2).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.IRON_SWORD)).save(exporter, DimensionalDoors.id("rift_blade"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_REMOVER.get()).pattern(" # ").pattern("#X#").pattern(" # ").define('#', ModItemTags.GOLD_INGOTS).define('X', Items.ENDER_PEARL).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE.get())).save(exporter, DimensionalDoors.id("rift_remover"));
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_REMOVER.get()).pattern("###").pattern("#X#").pattern("###").define('#', ModItemTags.GOLD_INGOTS).define('X', ModItems.STABLE_FABRIC.get()).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.STABLE_FABRIC.get())).save(exporter, DimensionalDoors.id("rift_remover_stable_fabric"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE.get()).pattern(" # ").pattern("#X#").pattern(" # ").define('#', ModItemTags.IRON_INGOTS).define('X', Items.ENDER_PEARL).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE.get())).save(exporter, DimensionalDoors.id("rift_signature"));
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE.get()).pattern("###").pattern("#X#").pattern("###").define('#', ModItemTags.IRON_INGOTS).define('X', ModItems.STABLE_FABRIC.get()).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.STABLE_FABRIC.get())).save(exporter, DimensionalDoors.id("rift_signature_stable_fabric"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER.get()).pattern(" # ").pattern("#X#").pattern(" # ").define('#', ModItemTags.DIAMONDS).define('X', Items.ENDER_PEARL).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE.get())).save(exporter, DimensionalDoors.id("rift_stabilizer"));
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER.get()).pattern("###").pattern("#X#").pattern("###").define('#', ModItemTags.DIAMONDS).define('X', ModItems.STABLE_FABRIC.get()).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.STABLE_FABRIC.get())).save(exporter, DimensionalDoors.id("rift_stabilizer_stable_fabric"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STABILIZED_RIFT_SIGNATURE.get()).pattern("# #").pattern(" X ").pattern("# #").define('#', Items.ENDER_PEARL).define('X', ModItems.RIFT_SIGNATURE.get()).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_SIGNATURE.get())).save(exporter, DimensionalDoors.id("stabilized_rift_signature"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TESSELATING_LOOM.get())
 				.pattern("XOX")

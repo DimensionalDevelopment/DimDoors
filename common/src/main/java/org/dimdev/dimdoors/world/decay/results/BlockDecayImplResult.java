@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
@@ -20,18 +19,13 @@ public class BlockDecayImplResult extends BlockDecayResult<BlockDecayImplResult>
     public static final Codec<BlockDecayImplResult> CODEC = RecordCodecBuilder.create(instance -> blockDecayCodec(instance).apply(instance, BlockDecayImplResult::new));
     public static final String KEY = "block";
 
-    public BlockDecayImplResult(int entropy, LocationValue worldThreadChance, Block block) {
+    public BlockDecayImplResult(int entropy, float worldThreadChance, Block block) {
         super(entropy, worldThreadChance, block);
     }
 
     @Override
     public DecayResultType<BlockDecayImplResult> getType() {
         return DecayResultType.BLOCK_RESULT_TYPE.get();
-    }
-
-    @Override
-    public String getKey() {
-        return KEY;
     }
 
     @Override

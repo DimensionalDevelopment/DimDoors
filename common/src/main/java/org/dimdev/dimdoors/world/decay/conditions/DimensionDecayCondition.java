@@ -18,16 +18,24 @@ public class DimensionDecayCondition extends GenericDecayCondition<DimensionType
     public static Codec<DimensionDecayCondition> CODEC = createCodec(DimensionDecayCondition::new, Registries.DIMENSION_TYPE);
     public static final String KEY = "dimension";
 
-    private DimensionDecayCondition(TagOrElementLocation<DimensionType> tagOrElementLocation) {
-        super(tagOrElementLocation);
+    private DimensionDecayCondition(TagOrElementLocation<DimensionType> tagOrElementLocation, boolean invert) {
+        super(tagOrElementLocation, invert);
+    }
+
+    public static DimensionDecayCondition of(TagKey<DimensionType> tag, boolean invert) {
+        return new DimensionDecayCondition(TagOrElementLocation.of(tag, Registries.DIMENSION_TYPE), invert);
     }
 
     public static DimensionDecayCondition of(TagKey<DimensionType> tag) {
-        return new DimensionDecayCondition(TagOrElementLocation.of(tag, Registries.DIMENSION_TYPE));
+        return new DimensionDecayCondition(TagOrElementLocation.of(tag, Registries.DIMENSION_TYPE), false);
+    }
+
+    public static DimensionDecayCondition of(ResourceKey<DimensionType> key, boolean invert) {
+        return new DimensionDecayCondition(TagOrElementLocation.of(key, Registries.DIMENSION_TYPE), invert);
     }
 
     public static DimensionDecayCondition of(ResourceKey<DimensionType> key) {
-        return new DimensionDecayCondition(TagOrElementLocation.of(key, Registries.DIMENSION_TYPE));
+        return new DimensionDecayCondition(TagOrElementLocation.of(key, Registries.DIMENSION_TYPE), false);
     }
 
     @Override

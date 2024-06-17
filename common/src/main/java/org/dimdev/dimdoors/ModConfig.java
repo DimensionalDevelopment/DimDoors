@@ -17,7 +17,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.*;
@@ -95,6 +98,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public boolean riftBoundingBoxInCreative;
 		@Tooltip public double riftCloseSpeed = 0.1;
 		@Tooltip public double riftGrowthSpeed = 1;
+		@Tooltip public boolean enableRiftDecay = true;
 		@Tooltip public int depthSpreadFactor = 20;
 		@Tooltip public double endermanSpawnChance = 0.00005;
 		@Tooltip public double endermanAggressiveChance = 0.5;
@@ -194,6 +198,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public double decaySpreadChance = 1.0;
 
 		@Tooltip public int decayDelay = 40;
+		public boolean decaysIntoAir = true;
 	}
 
 	public static class Graphics {

@@ -17,21 +17,24 @@ import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public abstract class GenericDecayCondition<T> implements DecayCondition {
-    public static <T extends GenericDecayCondition<?>, V> Codec<T> createCodec(Function<TagOrElementLocation<V>, T> function, ResourceKey<Registry<V>> key) {
+    public static <T extends GenericDecayCondition<?>, V> Codec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
         Codec<TagOrElementLocation<V>> codec = Codec.STRING.comapFlatMap(string -> string.startsWith("#") ? ResourceLocation.read(string.substring(1)).map(resourceLocation -> new TagOrElementLocation<>(resourceLocation, true, key)) : ResourceLocation.read(string).map(resourceLocation -> new TagOrElementLocation<V>(resourceLocation, false, key)), TagOrElementLocation::decoratedId);
 
-        return RecordCodecBuilder.create(instance -> instance.group(codec.fieldOf("entry").forGetter(t -> (TagOrElementLocation<V>) t.getTagOrElementLocation())).apply(instance, function));
+        return RecordCodecBuilder.create(instance -> instance.group(codec.fieldOf("entry").forGetter(t -> (TagOrElementLocation<V>) t.getTagOrElementLocation()),
+                Codec.BOOL.optionalFieldOf("invert", false).forGetter(GenericDecayCondition::invert)).apply(instance, function));
     }
 
     private final TagOrElementLocation<T> tagOrElementLocation;
+    private final boolean invert;
 
 
-    public GenericDecayCondition(TagOrElementLocation<T> tagOrElementLocation) {
+    public GenericDecayCondition(TagOrElementLocation<T> tagOrElementLocation, boolean invert) {
         this.tagOrElementLocation = tagOrElementLocation;
+        this.invert = invert;
     }
 
     public TagOrElementLocation<T> getTagOrElementLocation() {
@@ -44,6 +47,10 @@ public abstract class GenericDecayCondition<T> implements DecayCondition {
     }
 
     public abstract Holder<T> getHolder(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source);
+
+    public boolean invert() {
+        return invert;
+    }
 
     public static final class TagOrElementLocation<T> {
 

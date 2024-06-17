@@ -22,16 +22,24 @@ public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
 
 	public static final String KEY = "fluid";
 
-	public FluidDecayCondition(TagOrElementLocation<Fluid> tagOrElementLocation) {
-		super(tagOrElementLocation);
+	public FluidDecayCondition(TagOrElementLocation<Fluid> tagOrElementLocation, boolean invert) {
+		super(tagOrElementLocation, invert);
+	}
+
+	public static FluidDecayCondition of(TagKey<Fluid> tag, boolean invert) {
+		return new FluidDecayCondition(TagOrElementLocation.of(tag, Registries.FLUID), invert);
 	}
 
 	public static FluidDecayCondition of(TagKey<Fluid> tag) {
-		return new FluidDecayCondition(TagOrElementLocation.of(tag, Registries.FLUID));
+		return new FluidDecayCondition(TagOrElementLocation.of(tag, Registries.FLUID), false);
+	}
+
+	public static FluidDecayCondition of(ResourceKey<Fluid> key, boolean invert) {
+		return new FluidDecayCondition(TagOrElementLocation.of(key, Registries.FLUID), invert);
 	}
 
 	public static FluidDecayCondition of(ResourceKey<Fluid> key) {
-		return new FluidDecayCondition(TagOrElementLocation.of(key, Registries.FLUID));
+		return new FluidDecayCondition(TagOrElementLocation.of(key, Registries.FLUID), false);
 	}
 
 	@Override
