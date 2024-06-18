@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:ender_pearl"
+    },
+    "X": {
+      "item": "dimdoors:rift_signature"
+    }
+  },
+  "pattern": [
+    "# #",
+    " X ",
+    "# #"
+  ],
+  "result": {
+    "item": "dimdoors:stabilized_rift_signature"
+  },
+  "show_notification": true
+}

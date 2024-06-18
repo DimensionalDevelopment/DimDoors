@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "dimdoors:block/driftwood_wood",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "dimdoors:block/driftwood_wood"
+    },
+    "axis=z": {
+      "model": "dimdoors:block/driftwood_wood",
+      "x": 90
+    }
+  }
+}

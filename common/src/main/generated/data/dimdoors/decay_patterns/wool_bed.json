@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#minecraft:beds"
+  },
+  "result": {
+    "type": "dimdoors:double_block",
+    "block": "minecraft:white_wool",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

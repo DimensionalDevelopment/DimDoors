@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "dimdoors:block/dark_sand_slab"
+    },
+    "type=double": {
+      "model": "dimdoors:block/dark_sand"
+    },
+    "type=top": {
+      "model": "dimdoors:block/dark_sand_slab_top"
+    }
+  }
+}

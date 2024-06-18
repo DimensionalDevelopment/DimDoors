@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_netherwart_block"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:nether_wart_block",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

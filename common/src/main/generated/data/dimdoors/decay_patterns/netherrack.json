@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:netherrack"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:netherrack",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

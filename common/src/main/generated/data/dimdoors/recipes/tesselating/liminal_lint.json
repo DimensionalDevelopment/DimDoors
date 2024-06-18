@@ -1,0 +1,16 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "X": {
+      "item": "dimdoors:frayed_filament"
+    }
+  },
+  "pattern": [
+    "XX",
+    "XX"
+  ],
+  "result": {
+    "item": "dimdoors:liminal_lint"
+  },
+  "weavingtime": 200
+}

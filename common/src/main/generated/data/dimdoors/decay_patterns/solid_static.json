@@ -1,0 +1,18 @@
+{
+  "conditions": [
+    {
+      "type": "dimdoors:dimension",
+      "entry": "dimdoors:limbo"
+    },
+    {
+      "type": "dimdoors:block",
+      "entry": "#dimdoors:decay_to_solid_static"
+    }
+  ],
+  "result": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:solid_static",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

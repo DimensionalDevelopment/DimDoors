@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_left",
+  "textures": {
+    "bottom": "dimdoors:block/driftwood_door_bottom",
+    "top": "dimdoors:block/driftwood_door_top"
+  }
+}

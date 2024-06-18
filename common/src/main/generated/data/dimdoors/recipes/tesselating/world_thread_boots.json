@@ -1,0 +1,16 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "X": {
+      "item": "dimdoors:world_thread"
+    }
+  },
+  "pattern": [
+    "X X",
+    "X X"
+  ],
+  "result": {
+    "item": "dimdoors:world_thread_boots"
+  },
+  "weavingtime": 200
+}

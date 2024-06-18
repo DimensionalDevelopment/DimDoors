@@ -1,0 +1,33 @@
+{
+  "parent": "dimdoors:dimdoors/hole_in_the_sky",
+  "criteria": {
+    "place_door": {
+      "conditions": {
+        "block": "dimdoors:block_ag_dim_minecraft_oak_door"
+      },
+      "trigger": "minecraft:enter_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "dimdoors:textures/block/unravelled_fabric.png",
+    "description": {
+      "translate": "dimdoors.advancement.dark_ostiology.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dimdoors:item_ag_dim_minecraft_oak_door"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dimdoors.advancement.dark_ostiology"
+    }
+  },
+  "requirements": [
+    [
+      "place_door"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

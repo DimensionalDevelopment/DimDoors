@@ -1,5 +1,7 @@
 {
-  "carvers": {},
+  "carvers": {
+    "air": "dimdoors:limbo"
+  },
   "category": "none",
   "downfall": 0.0,
   "temperature": 0.8,

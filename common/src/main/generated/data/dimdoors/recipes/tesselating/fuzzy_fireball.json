@@ -1,0 +1,18 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "O": {
+      "item": "minecraft:fire_charge"
+    },
+    "X": {
+      "item": "dimdoors:liminal_lint"
+    }
+  },
+  "pattern": [
+    "XOX"
+  ],
+  "result": {
+    "item": "dimdoors:fuzzy_fireball"
+  },
+  "weavingtime": 200
+}

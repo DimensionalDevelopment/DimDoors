@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_stone_bricks"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:stone_bricks",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "X": {
+      "item": "dimdoors:infrangible_fiber"
+    }
+  },
+  "pattern": [
+    "XX",
+    "XX"
+  ],
+  "result": {
+    "item": "dimdoors:enduring_fibers"
+  },
+  "weavingtime": 200
+}

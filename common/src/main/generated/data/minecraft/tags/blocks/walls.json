@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "dimdoors:clay_wall",
+    "dimdoors:dark_sand_wall",
+    "dimdoors:deepslate_wall",
+    "dimdoors:gravel_wall",
+    "dimdoors:netherrack_wall",
+    "dimdoors:end_stone_wall",
+    "dimdoors:red_sand_wall",
+    "dimdoors:sand_wall"
+  ]
+}

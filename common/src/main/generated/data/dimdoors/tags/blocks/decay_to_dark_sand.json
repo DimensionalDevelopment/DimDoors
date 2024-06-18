@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:amethyst_block",
+    "minecraft:glass",
+    "minecraft:gravel",
+    "minecraft:red_sand",
+    "minecraft:sand",
+    "minecraft:soul_sand"
+  ]
+}

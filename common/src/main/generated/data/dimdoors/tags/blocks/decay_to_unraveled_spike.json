@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:end_rod",
+    "minecraft:pointed_dripstone",
+    {
+      "id": "#minecraft:flower_pots",
+      "required": false
+    },
+    {
+      "id": "#minecraft:candles",
+      "required": false
+    }
+  ]
+}

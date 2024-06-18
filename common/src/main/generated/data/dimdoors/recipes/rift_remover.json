@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "dimdoors:gold_ingots"
+    },
+    "X": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#X#",
+    " # "
+  ],
+  "result": {
+    "item": "dimdoors:rift_remover"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "dimdoors:block/red_sand_slab"
+    },
+    "type=double": {
+      "model": "minecraft:block/red_sand"
+    },
+    "type=top": {
+      "model": "dimdoors:block/red_sand_slab_top"
+    }
+  }
+}

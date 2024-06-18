@@ -1,0 +1,18 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "O": {
+      "item": "minecraft:ender_pearl"
+    },
+    "X": {
+      "item": "dimdoors:stable_fabric"
+    }
+  },
+  "pattern": [
+    "XO"
+  ],
+  "result": {
+    "item": "dimdoors:rift_pearl"
+  },
+  "weavingtime": 200
+}
