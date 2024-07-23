@@ -55,11 +55,11 @@ tile.rift.name=Rift Scar
 
 tile.marking_plate.name=Marking Plate
 
-item.gold_door.name=Gold Door
+item.gold_door.name=Golden Door
 item.quartz_door.name=Quartz Door
 
 item.iron_dimensional_door.name=Iron Dimensional Door
-item.gold_dimensional_door.name=Gold Dimensional Door
+item.gold_dimensional_door.name=Golden Dimensional Door
 item.quartz_dimensional_door.name=Quartz Dimensional Door
 item.unstable_dimensional_door.name=Unstable Dimensional Door
 item.oak_dimensional_door.name=Wood Dimensional Door
