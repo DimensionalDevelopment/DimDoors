@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
+import static java.lang.Double.POSITIVE_INFINITY;
+
 public final class DefaultDungeonDestinations { // TODO: lower weights?
 
     public static final LinkProperties pocketLinkProperties = LinkProperties.builder()
@@ -41,7 +43,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1)
             .negativeDepthFactor(0.00000000001) // The division result is cast to an int, so Double.MIN_VALUE would cause an overflow
-            .positiveDepthFactor(Double.POSITIVE_INFINITY)
+            .positiveDepthFactor(POSITIVE_INFINITY)
             .weightMaximum(100)
             .newRiftWeight(1).build();
 
@@ -59,7 +61,7 @@ public final class DefaultDungeonDestinations { // TODO: lower weights?
     public static final VirtualTarget gatewayDestination = RandomTarget.builder()
             .acceptedGroups(Collections.singleton(0))
             .coordFactor(1) // TODO: lower value?
-            .negativeDepthFactor(Double.POSITIVE_INFINITY)
+            .negativeDepthFactor(POSITIVE_INFINITY)
             .positiveDepthFactor(160) // TODO: lower value?
             .weightMaximum(300) // Link further away
             .newRiftWeight(1)
