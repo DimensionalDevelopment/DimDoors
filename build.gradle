@@ -1,3 +1,4 @@
+//file:noinspection GroovyAssignabilityCheck
 plugins {
     id 'com.github.johnrengelman.shadow' version '8.+'
     id 'idea'
@@ -53,7 +54,7 @@ configurations {
 repositories {
     mavenCentral() {
         content {
-            includeGroup 'org.projectlombok'
+            [ 'org.projectlombok' ].forEach { includeGroup it }
         }
     }
     maven {
@@ -67,7 +68,7 @@ repositories {
         name = 'SonaType'
         url = uri('https://oss.sonatype.org/content/repositories/public/')
         content {
-            [ 'com.flowpowered', 'io.github.opencubicchunks', 'org.jgrapht', 'org.jheaps' ].forEach { includeGroup it }
+            [ 'com.flowpowered', 'org.jgrapht', 'org.jheaps' ].forEach { includeGroup it }
         }
     }
     maven {
@@ -95,7 +96,7 @@ dependencies {
 
     //Compile Only
     compileOnly("com.github.DimensionalDevelopment:AnnotatedNBT:${annotatednbt_version}")
-    compileOnly("io.github.opencubicchunks:cubicchunks:${cubicchunks_version}")
+    //compileOnly("io.github.opencubicchunks:cubicchunks:${cubicchunks_version}")
 
     //Runtime Stuff
     runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${hei_version}"))
