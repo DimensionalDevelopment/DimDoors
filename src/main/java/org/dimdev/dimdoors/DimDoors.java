@@ -7,8 +7,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -40,7 +40,10 @@ import org.dimdev.dimdoors.shared.world.gateways.GatewayGenerator;
 
 import java.io.File;
 
+import static net.minecraftforge.common.MinecraftForge.EVENT_BUS;
 import static org.dimdev.dimdoors.DimDoors.*;
+import static org.dimdev.dimdoors.shared.ModConfig.general;
+import static org.dimdev.dimdoors.shared.rifts.targets.VirtualTarget.registry;
 
 @Mod(modid = MODID, name = MODNAME, version = VERSION, acceptedMinecraftVersions = MCVERSIONS, dependencies = DEPENDENCIES)
 public class DimDoors {
@@ -48,15 +51,15 @@ public class DimDoors {
     public static final String MODID = "dimdoors";
     public static final String MODNAME = "Dimensional Doors";
     public static final String MCVERSIONS = "[1.12,1.13)";
-    public static final String VERSION = "3.2.0";
+    public static final String VERSION = "3.2.1";
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,)";
 
-    @Mod.Instance(DimDoors.MODID)
+    @Instance(MODID)
     public static DimDoors instance;
     public static Logger log;
 
     @SidedProxy(clientSide = "org.dimdev.dimdoors.proxy.ClientProxy",
-                serverSide = "org.dimdev.dimdoors.proxy.ServerProxy")
+            serverSide = "org.dimdev.dimdoors.proxy.ServerProxy")
     public static IProxy proxy;
 
     @Getter public static File configurationFolder;
@@ -67,40 +70,40 @@ public class DimDoors {
     public void onPreInitialization(FMLPreInitializationEvent event) {
         log = event.getModLog();
         // Register event handlers
-        MinecraftForge.EVENT_BUS.register(EventHandler.class);
-        MinecraftForge.EVENT_BUS.register(ModBlocks.class);
-        MinecraftForge.EVENT_BUS.register(ModItems.class);
-        MinecraftForge.EVENT_BUS.register(ModRecipes.class);
-        MinecraftForge.EVENT_BUS.register(ModSounds.class);
-        MinecraftForge.EVENT_BUS.register(ModBiomes.class);
-        MinecraftForge.EVENT_BUS.register(ModConfig.class);
+        EVENT_BUS.register(EventHandler.class);
+        EVENT_BUS.register(ModBlocks.class);
+        EVENT_BUS.register(ModItems.class);
+        EVENT_BUS.register(ModRecipes.class);
+        EVENT_BUS.register(ModSounds.class);
+        EVENT_BUS.register(ModBiomes.class);
+        EVENT_BUS.register(ModConfig.class);
         // Register rift destinations
-        VirtualTarget.registry.put("available_link", RandomTarget.class);
-        VirtualTarget.registry.put("escape", EscapeTarget.class);
-        VirtualTarget.registry.put("global", GlobalReference.class);
-        VirtualTarget.registry.put("limbo", LimboTarget.class);
-        VirtualTarget.registry.put("local", LocalReference.class);
-        VirtualTarget.registry.put("public_pocket", PublicPocketTarget.class);
-        VirtualTarget.registry.put("pocket_entrance", PocketEntranceMarker.class);
-        VirtualTarget.registry.put("pocket_exit", PocketExitMarker.class);
-        VirtualTarget.registry.put("private", PrivatePocketTarget.class);
-        VirtualTarget.registry.put("private_pocket_exit", PrivatePocketExitTarget.class);
-        VirtualTarget.registry.put("relative", RelativeReference.class);
+        registry.put("available_link",RandomTarget.class);
+        registry.put("escape",EscapeTarget.class);
+        registry.put("global",GlobalReference.class);
+        registry.put("limbo",LimboTarget.class);
+        registry.put("local",LocalReference.class);
+        registry.put("public_pocket",PublicPocketTarget.class);
+        registry.put("pocket_entrance",PocketEntranceMarker.class);
+        registry.put("pocket_exit",PocketExitMarker.class);
+        registry.put("private",PrivatePocketTarget.class);
+        registry.put("private_pocket_exit",PrivatePocketExitTarget.class);
+        registry.put("relative",RelativeReference.class);
         // Register entities
-        EntityRegistry.registerModEntity(new ResourceLocation(DimDoors.MODID, "mob_monolith"), EntityMonolith.class,
-                "monolith", 0, DimDoors.instance, 70, 1, true);
-        EntityRegistry.registerEgg(getResource("mob_monolith"), 0, 0xffffff);
+        EntityRegistry.registerModEntity(new ResourceLocation(MODID,"mob_monolith"),EntityMonolith.class,
+                "monolith",0,instance,70,1,true);
+        EntityRegistry.registerEgg(getResource("mob_monolith"),0,0xffffff);
         // Register tile entities
-        TileEntity.register("dimdoors:entrance_rift", TileEntityEntranceRift.class);
-        TileEntity.register("dimdoors:floating_rift", TileEntityFloatingRift.class);
+        TileEntity.register("dimdoors:entrance_rift",TileEntityEntranceRift.class);
+        TileEntity.register("dimdoors:floating_rift",TileEntityFloatingRift.class);
         // Register dimensions
         ModDimensions.registerDimensions();
         // Register default targets
         Targets.registerDefaultTargets();
         //Register GUIhandler
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new DDGUIHandler());
+        NetworkRegistry.INSTANCE.registerGuiHandler(this,new DDGUIHandler());
         // Make config folder and check if config needs to be regenerated TODO
-        configurationFolder = new File(event.getModConfigurationDirectory(), "/DimDoors");
+        configurationFolder = new File(event.getModConfigurationDirectory(),"/DimDoors");
         configurationFolder.mkdirs();
         proxy.onPreInitialization(event);
     }
@@ -108,10 +111,10 @@ public class DimDoors {
     @Mod.EventHandler
     public void onInitialization(FMLInitializationEvent event) {
         // Register loot tables
-        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dungeon_chest"));
-        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_projectiles"));
-        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_splash_potions"));
-        LootTableList.register(new ResourceLocation(DimDoors.MODID, "dispenser_potion_arrows"));
+        LootTableList.register(new ResourceLocation(MODID,"dungeon_chest"));
+        LootTableList.register(new ResourceLocation(MODID,"dispenser_projectiles"));
+        LootTableList.register(new ResourceLocation(MODID,"dispenser_splash_potions"));
+        LootTableList.register(new ResourceLocation(MODID,"dispenser_potion_arrows"));
         // Load schematics
         SchematicHandler.INSTANCE.loadSchematics();
         // Register world generators
@@ -130,14 +133,14 @@ public class DimDoors {
 
     public static void sendTranslatedMessage(Entity entity, String text, Object... translationArgs) {
         // TODO: check if too long and split into several messages?
-        if (entity instanceof EntityPlayer) {
+        if(entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
-            player.sendStatusMessage(new TextComponentTranslation(text, translationArgs), ModConfig.general.useStatusBar);
+            player.sendStatusMessage(new TextComponentTranslation(text,translationArgs),general.useStatusBar);
         }
     }
 
     public static void chat(Entity entity, String text, Object... translationArgs) {
-        entity.sendMessage(new TextComponentTranslation(text, translationArgs));
+        entity.sendMessage(new TextComponentTranslation(text,translationArgs));
     }
 
     public static ResourceLocation getResource(String path) {

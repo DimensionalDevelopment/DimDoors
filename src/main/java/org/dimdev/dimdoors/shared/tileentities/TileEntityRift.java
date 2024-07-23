@@ -24,6 +24,9 @@ import org.dimdev.pocketlib.VirtualLocation;
 
 import java.util.Objects;
 
+import static org.dimdev.dimdoors.DimDoors.log;
+import static org.dimdev.dimdoors.shared.rifts.targets.Targets.ENTITY;
+
 @NBTSerializable public abstract class TileEntityRift extends TileEntity implements ITarget, IEntityTarget {
 
     /*@Saved*/ @Getter /*protected*/ VirtualTarget destination; // How the rift acts as a source
@@ -36,16 +39,19 @@ import java.util.Objects;
     protected boolean riftStateChanged; // not saved
 
     public TileEntityRift() {
-        relativeRotation = true;
-        alwaysDelete = false;
+        this.relativeRotation = true;
+        this.alwaysDelete = false;
+    }
+    
+    protected Location location() {
+        return new Location(this.world,this.pos);
     }
 
     public void copyFrom(TileEntityRift oldRift) {
-        relativeRotation = oldRift.relativeRotation;
-        properties = oldRift.properties;
-        destination = oldRift.destination;
-        if (oldRift.isFloating() != isFloating()) updateType();
-
+        this.relativeRotation = oldRift.relativeRotation;
+        this.properties = oldRift.properties;
+        this.destination = oldRift.destination;
+        if(oldRift.isFloating()!=isFloating()) updateType();
         markDirty();
     }
 
@@ -53,13 +59,14 @@ import java.util.Objects;
     @Override public void readFromNBT(NBTTagCompound nbt) {
         super.readFromNBT(nbt);
         NBTUtils.readFromNBT(this, nbt);
-        destination = nbt.hasKey("destination") ? VirtualTarget.readVirtualTargetNBT(nbt.getCompoundTag("destination")) : null;
+        this.destination = nbt.hasKey("destination") ?
+                VirtualTarget.readVirtualTargetNBT(nbt.getCompoundTag("destination")) : null;
     }
 
     @Override public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         nbt = super.writeToNBT(nbt);
-        if (destination != null) nbt.setTag("destination", destination.writeToNBT(new NBTTagCompound()));
-        return NBTUtils.writeToNBT(this, nbt);
+        if(Objects.nonNull(this.destination)) nbt.setTag("destination",this.destination.writeToNBT(new NBTTagCompound()));
+        return NBTUtils.writeToNBT(this,nbt);
     }
 
     @Override
@@ -74,7 +81,7 @@ import java.util.Objects;
 
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), 1, serializeNBT());
+        return new SPacketUpdateTileEntity(getPos(),1,serializeNBT());
     }
 
     @Override
@@ -91,23 +98,19 @@ import java.util.Objects;
     }
 
     public void setDestination(VirtualTarget destination) {
-        if (this.destination != null && isRegistered()) {
-            this.destination.unregister();
-        }
+        if(Objects.nonNull(this.destination) && isRegistered()) this.destination.unregister();
         this.destination = destination;
-        if (destination != null) {
-            if (world != null && pos != null) {
-                destination.setLocation(new Location(world, pos));
-            }
-            if (isRegistered()) destination.register();
+        if(Objects.nonNull(destination)) {
+            if(Objects.nonNull(this.world) && Objects.nonNull(this.pos)) destination.setLocation(location());
+            if(isRegistered()) destination.register();
         }
-        riftStateChanged = true;
+        this.riftStateChanged = true;
         markDirty();
         updateColor();
     }
 
     public void setColor(RGBA color) {
-        forcedColor = color != null;
+        this.forcedColor = color != null;
         this.color = color;
         markDirty();
     }
@@ -119,7 +122,7 @@ import java.util.Objects;
     }
 
     public void markStateChanged() {
-        riftStateChanged = true;
+        this.riftStateChanged = true;
         markDirty();
     }
 
@@ -128,34 +131,33 @@ import java.util.Objects;
     public boolean isRegistered() {
         // The DimensionManager.getWorld(0) != null check is to be able to run this without having to start minecraft
         // (for GeneratePocketSchematics, for example)
-        return DimensionManager.getWorld(0) != null && !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance().isRiftAt(new Location(world, pos));
+        return Objects.nonNull(DimensionManager.getWorld(0)) &&
+               !PocketTemplate.isReplacingPlaceholders() && RiftRegistry.instance().isRiftAt(location());
     }
 
     public void register() {
-        if (isRegistered()) return;
-        Location loc = new Location(world, pos);
+        if(isRegistered()) return;
+        Location loc = location();
         RiftRegistry.instance().addRift(loc);
-        if (destination != null) destination.register();
+        if(Objects.nonNull(this.destination)) this.destination.register();
         updateProperties();
         updateColor();
     }
 
     public void updateProperties() {
-        if (isRegistered()) RiftRegistry.instance().setProperties(new Location(world, pos), properties);
+        if(isRegistered()) RiftRegistry.instance().setProperties(location(),this.properties);
         markDirty();
     }
 
     public void unregister() {
-        if (isRegistered()) {
-            RiftRegistry.instance().removeRift(new Location(world, pos));
-        }
+        if(isRegistered()) RiftRegistry.instance().removeRift(location());
     }
 
     public void updateType() {
         if (!isRegistered()) return;
-        Location loc = new Location(world, pos);
+        Location loc = location();
         if(RiftRegistry.instance().isRiftAt(loc)) {
-            DimDoors.log.error("No rift at location "+loc+" to update!");
+            log.error("No rift at location {} to update!",loc);
             return;
         }
         Rift rift = RiftRegistry.instance().getRift(loc);
@@ -164,8 +166,8 @@ import java.util.Objects;
     }
 
     public void targetGone(Location location) {
-        if (destination.shouldInvalidate(location)) {
-            destination = null;
+        if(this.destination.shouldInvalidate(location)) {
+            this.destination = null;
             markDirty();
         }
         updateColor();
@@ -178,45 +180,43 @@ import java.util.Objects;
     // Teleport logic
 
     public ITarget getTarget() {
-        if (destination == null) {
-            return new MessageTarget("rifts.unlinked");
-        } else {
-            destination.setLocation(new Location(world, pos));
-            return destination;
+        if(Objects.isNull(this.destination)) return new MessageTarget("rifts.unlinked");
+        else {
+            this.destination.setLocation(location());
+            return this.destination;
         }
     }
 
     public boolean teleport(Entity entity) {
-        riftStateChanged = false;
-
+        this.riftStateChanged = false;
         // Attempt a teleport
         try {
-            IEntityTarget target = getTarget().as(Targets.ENTITY);
-
-            if (target.receiveEntity(entity, getSourceYaw(entity.rotationYaw), getSourcePitch(entity.rotationPitch))) {
-                VirtualLocation vloc = VirtualLocation.fromLocation(new Location(entity.world, entity.getPosition()));
-                DimDoors.sendTranslatedMessage(entity, "You are at x = " + vloc.getX() + ", y = ?, z = " + vloc.getZ() + ", w = " + vloc.getDepth());
+            IEntityTarget target = getTarget().as(ENTITY);
+            if(target.receiveEntity(entity, getSourceYaw(entity.rotationYaw), getSourcePitch(entity.rotationPitch))) {
+                VirtualLocation vloc = VirtualLocation.fromLocation(new Location(entity.world,entity.getPosition()));
+                DimDoors.sendTranslatedMessage(entity,"You are at x = "+vloc.getX()+", y = ?, z = "+vloc.getZ()+
+                                                      ", w = "+vloc.getDepth());
                 return true;
             }
         } catch (Exception e) {
             DimDoors.chat(entity, "Something went wrong while trying to teleport you, please report this bug.");
-            DimDoors.log.error("Teleporting failed with the following exception: ", e);
+            log.error("Teleporting failed with the following exception: ",e);
         }
         return false;
     }
 
     public void updateColor() {
         //DimDoors.log.info("Updating color of rift at " + new Location(world, pos));
-        if (forcedColor) return;
-        if (!isRegistered()) color = new RGBA(0, 0, 0, 1);
-        else if (destination == null) color = new RGBA(0.7f, 0.7f, 0.7f, 1);
+        if(this.forcedColor) return;
+        if(!isRegistered()) this.color = new RGBA(0, 0, 0, 1);
+        else if(Objects.isNull(this.destination)) this.color = new RGBA(0.7f, 0.7f, 0.7f, 1);
         else {
-            destination.setLocation(new Location(world, pos));
-            RGBA newColor = destination.getColor();
-            if ((Objects.isNull(color) && Objects.nonNull(newColor)) || !color.equals(newColor)) {
-                color = newColor;
+            this.destination.setLocation(location());
+            RGBA newColor = this.destination.getColor();
+            if((Objects.isNull(this.color) && Objects.nonNull(newColor)) || !this.color.equals(newColor)) {
+                this.color = newColor;
                 markDirty();
-                world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 2);
+                this.world.notifyBlockUpdate(this.pos,this.world.getBlockState(this.pos),this.world.getBlockState(this.pos),2);
             }
         }
     }
