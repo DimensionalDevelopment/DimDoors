@@ -1,7 +1,7 @@
 package org.dimdev.ddutils.schem;
 
-import cubicchunks.world.ICubicWorld;
-import cubicchunks.world.cube.Cube;
+import io.github.opencubicchunks.cubicchunks.api.world.ICubicWorld;
+import io.github.opencubicchunks.cubicchunks.core.world.cube.Cube;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
@@ -9,7 +9,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagList;
@@ -24,10 +23,12 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import org.dimdev.dimdoors.DimDoors;
 
 import java.util.*;
 import java.util.Map.Entry;
+
+import static net.minecraft.init.Blocks.AIR;
+import static org.dimdev.dimdoors.DimDoors.log;
 
 /**
  * @author Robijnvogel
@@ -61,7 +62,7 @@ public class Schematic {
         this.height = height;
         this.length = length;
         blockData = new short[width][height][length];
-        palette.add(Blocks.AIR.getDefaultState());
+        palette.add(AIR.getDefaultState());
         paletteMax++;
         creationDate = System.currentTimeMillis();
     }
@@ -120,7 +121,7 @@ public class Schematic {
             }
             Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(blockString));
             IBlockState state = block.getDefaultState();
-            if (!stateString.equals("")) {
+            if (!stateString.isEmpty()) {
                 String[] properties = stateString.split(",");
                 state = getBlockStateWithProperties(block, properties);
             }
@@ -349,14 +350,14 @@ public class Schematic {
         long relightTime = 0;
         // CubicChunks makes cubic worlds implement ICubicWorld
         if (cubicChunks && ((ICubicWorld) world).isCubicWorld()) {
-            DimDoors.log.debug("Setting cube blockstates");
+            log.debug("Setting cube blockstates");
             ICubicWorld cubicWorld = (ICubicWorld) world;
             for (int cubeX = 0; cubeX <= (width >> 4) + 1; cubeX++) {
                 for (int cubeY = 0; cubeY <= (height >> 4) + 1; cubeY++) {
                     for (int cubeZ = 0; cubeZ <= (length >> 4) + 1; cubeZ++) {
                         long setStart = System.nanoTime();
                         // Get the cube only once for efficiency
-                        Cube cube = cubicWorld.getCubeFromCubeCoords((xBase >> 4) + cubeX, (yBase >> 4) + cubeY, (zBase >> 4) + cubeZ);
+                        Cube cube = (Cube)cubicWorld.getCubeFromCubeCoords((xBase>>4)+cubeX, (yBase>>4)+cubeY, (zBase>>4)+cubeZ);
                         ExtendedBlockStorage storage = cube.getStorage();
                         boolean setAir = storage != null;
                         for (int x = 0; x < 16; x++) {
@@ -367,7 +368,7 @@ public class Schematic {
                                     int sz = (cubeZ << 4) + z - (zBase & 0x0F);
                                     if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
-                                        if (!state.getBlock().equals(Blocks.AIR)) {
+                                        if (!state.getBlock().equals(AIR)) {
                                             if (Objects.isNull(storage))
                                                 cube.setStorage(storage = new ExtendedBlockStorage(cube.getY() << 4,
                                                         world.provider.hasSkyLight()));
@@ -386,7 +387,7 @@ public class Schematic {
                 }
             }
         } else {
-            DimDoors.log.debug("Setting chunk blockstates");
+            log.debug("Setting chunk blockstates");
             for (int chunkX = 0; chunkX <= (width >> 4) + 1; chunkX++) {
                 for (int chunkZ = 0; chunkZ <= (length >> 4) + 1; chunkZ++) {
                     long setStart = System.nanoTime();
@@ -405,7 +406,7 @@ public class Schematic {
                                     int sz = (chunkZ << 4) + z - (zBase & 0x0F);
                                     if (sx >= 0 && sy >= 0 && sz >= 0 && sx < width && sy < height && sz < length) {
                                         IBlockState state = palette.get(blockData[sx][sy][sz]);
-                                        if (!state.getBlock().equals(Blocks.AIR)) {
+                                        if (!state.getBlock().equals(AIR)) {
                                             if (Objects.isNull(storage)) {
                                                 storage = new ExtendedBlockStorage((yBase >> 4) + storageY << 4, world.provider.hasSkyLight());
                                                 storageArray[(yBase >> 4) + storageY] = storage;
@@ -429,6 +430,7 @@ public class Schematic {
             }
         }
         world.markBlockRangeForRenderUpdate(xBase, yBase, zBase, xBase + width, yBase + height, zBase + length);
-        DimDoors.log.debug("Set block states in " + setTime / 1000000 + " ms and relit chunks/cubes in " + relightTime / 1000000);
+        log.debug("Set block states in {} ms and relit chunks/cubes in {}", setTime/1000000,
+                           relightTime/1000000);
     }
 }

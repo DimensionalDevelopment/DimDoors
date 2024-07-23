@@ -60,9 +60,9 @@ repositories {
     maven {
         name = 'JitPack'
         url = uri('https://jitpack.io')
-        content {
-            includeGroup 'com.github.DimensionalDevelopment'
-        }
+        //content {
+        //    [ 'com.github.DimensionalDevelopment', 'com.github.OpenCubicChunks' ].forEach { includeGroup it }
+        //}
     }
     maven {
         name = 'SonaType'
@@ -96,7 +96,7 @@ dependencies {
 
     //Compile Only
     compileOnly("com.github.DimensionalDevelopment:AnnotatedNBT:${annotatednbt_version}")
-    //compileOnly("io.github.opencubicchunks:cubicchunks:${cubicchunks_version}")
+    compileOnly(fg.deobf("curse.maven:opencubicchunks-292243:${cubicchunks_version}"))
 
     //Runtime Stuff
     runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${hei_version}"))
