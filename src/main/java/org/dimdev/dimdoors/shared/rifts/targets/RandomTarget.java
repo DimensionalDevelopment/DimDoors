@@ -34,6 +34,7 @@ import static org.dimdev.dimdoors.shared.rifts.targets.Targets.ENTITY;
 
 @Getter @AllArgsConstructor @Builder(toBuilder = true) @ToString @NBTSerializable
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
+    
     @Saved protected float newRiftWeight;
     @Saved protected double weightMaximum;
     @Saved protected double coordFactor;

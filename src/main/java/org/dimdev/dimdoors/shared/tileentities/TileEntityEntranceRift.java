@@ -20,6 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import org.dimdev.dimdoors.shared.blocks.BlockDimensionalDoor;
 
+import java.util.Objects;
 import java.util.Random;
 
 import static net.minecraftforge.fml.relauncher.Side.CLIENT;
@@ -99,15 +100,17 @@ import static org.dimdev.dimdoors.shared.ModConfig.general;
     public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) { // TODO: teleportOffset for all rifts instead?
         Vec3d targetPos = new Vec3d(this.pos).add(0.5,0,0.5)
                 .add(new Vec3d(this.orientation.getDirectionVec()).scale(general.teleportOffset+0.5d));
+        int dimension = WorldUtils.getDim(this.world);
+        Entity teleported;
         if(this.relativeRotation) {
             float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - relativeYaw;
             float pitch = entity instanceof EntityLiving ? entity.rotationPitch :
                     getDestinationPitch(entity.rotationPitch)+entity.rotationPitch-relativePitch;
-            TeleportUtils.teleport(entity,WorldUtils.getDim(this.world),targetPos.x,targetPos.y,targetPos.z,yaw,pitch);
+            teleported = TeleportUtils.teleport(entity,dimension,targetPos.x,targetPos.y,targetPos.z,yaw,pitch);
             // TODO: velocity
-        } else TeleportUtils.teleport(entity,WorldUtils.getDim(this.world),targetPos.x,targetPos.y,targetPos.z,
+        } else teleported = TeleportUtils.teleport(entity,dimension,targetPos.x,targetPos.y,targetPos.z,
                                       this.orientation.getHorizontalAngle(),0);
-        return true;
+        return Objects.isNull(teleported) || entity!=teleported || teleported.dimension==dimension;
     }
 
     // Use vanilla behavior of refreshing only when block changes, not state (otherwise, opening the door would destroy the tile entity)

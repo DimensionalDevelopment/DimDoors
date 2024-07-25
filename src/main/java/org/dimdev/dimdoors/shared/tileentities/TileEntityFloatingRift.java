@@ -26,6 +26,7 @@ import org.dimdev.dimdoors.shared.blocks.ModBlocks;
 import org.dimdev.dimdoors.shared.world.RiftDecay;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @NBTSerializable public class TileEntityFloatingRift extends TileEntityRift implements ITickable {
@@ -184,15 +185,15 @@ import java.util.Random;
 
     @Override
     public boolean receiveEntity(Entity entity, float relativeYaw, float relativePitch) { // TODO
+        Location location = location();
+        Entity teleported;
         if (relativeRotation) {
-            float yaw = getDestinationYaw(entity.rotationYaw) + entity.rotationYaw - relativeYaw;
-            float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch) + entity.rotationPitch - relativePitch;
-            TeleportUtils.teleport(entity, new Location(world, pos), yaw, pitch);
+            float yaw = getDestinationYaw(entity.rotationYaw)+entity.rotationYaw-relativeYaw;
+            float pitch = entity instanceof EntityLiving ? entity.rotationPitch : getDestinationPitch(entity.rotationPitch)+entity.rotationPitch-relativePitch;
+            teleported = TeleportUtils.teleport(entity,location,yaw,pitch);
             // TODO: velocity
-        } else {
-            TeleportUtils.teleport(entity, new Location(world, pos), getDestinationYaw(entity.rotationYaw), getDestinationPitch(entity.rotationPitch));
-        }
-        return true;
+        } else teleported = TeleportUtils.teleport(entity,location,getDestinationYaw(entity.rotationYaw),getDestinationPitch(entity.rotationPitch));
+        return Objects.isNull(teleported) || entity!=teleported || teleported.dimension==location.dim;
     }
 
     @Override

@@ -3,6 +3,8 @@ package org.dimdev.ddutils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.AttributeMap;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityEnderPearl;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityMinecartContainer;
@@ -27,6 +29,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Objects;
 
@@ -150,6 +153,8 @@ public final class TeleportUtils {
         int oldDimension = entity.dimension;
         // int newDimension = dim;
 
+        boolean noClip = entity.noClip;
+        
         if (entity instanceof EntityPlayerMP) {
             // Workaround for https://bugs.mojang.com/browse/MC-123364. Disables player-in-block checking, but doesn't seem
             // to make the player actually noclip.
@@ -179,7 +184,14 @@ public final class TeleportUtils {
             WorldServer newWorld = server.getWorld(newDimension);
 
             // Allow other mods to cancel the event
-            if (!ForgeHooks.onTravelToDimension(entity, newDimension)) return entity;
+            if (!ForgeHooks.onTravelToDimension(entity, newDimension)) {
+                // Fixes invulnerability issues when the teleport is canceled
+                if(entity instanceof EntityPlayerMP) {
+                    setInvulnerableDimensionChange((EntityPlayerMP)entity,false);
+                    entity.noClip = noClip;
+                }
+                return entity;
+            }
 
             if (entity instanceof EntityPlayerMP) {
                 EntityPlayerMP player = (EntityPlayerMP) entity;
@@ -231,6 +243,11 @@ public final class TeleportUtils {
                 for (PotionEffect potioneffect : player.getActivePotionEffects()) {
                     player.connection.sendPacket(new SPacketEntityEffect(player.getEntityId(), potioneffect));
                 }
+                
+                // Resend attributes
+                AttributeMap map = (AttributeMap)player.getAttributeMap();
+                Collection<IAttributeInstance> attributes = map.getWatchedAttributes();
+                if(!attributes.isEmpty()) player.connection.sendPacket(new SPacketEntityProperties(player.getEntityId(),attributes));
 
                 // Force WorldProviderEnd to check if end dragon bars should be removed. Duplicate end dragon bars even
                 // happen when leaving the end using an end portal while the dragon is alive, so this might be a vanilla

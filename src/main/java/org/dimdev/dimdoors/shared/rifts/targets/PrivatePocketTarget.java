@@ -36,7 +36,8 @@ public class PrivatePocketTarget extends VirtualTarget implements IEntityTarget 
                 // set to where the pocket was first created
                 pocket = PocketGenerator.generatePrivatePocket(virtualLocation.toBuilder().depth(-1).build());
                 PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
-                ((IEntityTarget) RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
+                if(!((IEntityTarget)RiftRegistry.instance().getPocketEntrance(pocket).getTileEntity()).receiveEntity(entity,relativeYaw,relativePitch))
+                    return false; //Return false if the teleport fails
             } else {
                 Location destLoc = RiftRegistry.instance().getPrivatePocketEntrance(uuid); // get the last used entrances
                 if (Objects.isNull(destLoc))
@@ -47,7 +48,8 @@ public class PrivatePocketTarget extends VirtualTarget implements IEntityTarget 
                     PrivatePocketData.instance().setPrivatePocketID(uuid, pocket);
                     destLoc = RiftRegistry.instance().getPocketEntrance(pocket);
                 }
-                ((IEntityTarget) destLoc.getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
+                if(!((IEntityTarget) destLoc.getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch))
+                    return false; //Return false if the teleport fails
             }
             RiftRegistry.instance().setLastPrivatePocketExit(uuid, location);
             return true;

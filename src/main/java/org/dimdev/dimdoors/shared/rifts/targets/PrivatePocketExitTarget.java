@@ -54,13 +54,8 @@ public class PrivatePocketExitTarget extends VirtualTarget implements IEntityTar
                 }
                 TeleportUtils.teleport(entity, WorldProviderLimbo.getLimboSkySpawn(entity));
                 return false;
-            } else {
-                ((IEntityTarget) destLoc.getTileEntity()).receiveEntity(entity, relativeYaw, relativePitch);
-                return true;
-            }
-        } else {
-            return false; // Non-player/owned entity tried to escape/leave private pocket
-        }
+            } else return ((IEntityTarget)destLoc.getTileEntity()).receiveEntity(entity,relativeYaw,relativePitch);
+        } else return false; // Non-player/owned entity tried to escape/leave private pocket
     }
 
     @Override
