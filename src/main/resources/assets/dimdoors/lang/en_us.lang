@@ -107,7 +107,7 @@ item.oak_dimensional_door.info=Place on the block under a rift to create a porta
 
 item.record.creepy.desc=Creepy - The sound of Limbo
 
-entity.monolith.name=Monolith
+entity.mob_monolith.name=Monolith
 
 commands.dimteleport.usage=/dimteleport <dimension> <x> <y> <z> [yaw] [pitch]
 commands.fabricconvert.usage=/fabricconvert

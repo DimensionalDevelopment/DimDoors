@@ -51,7 +51,7 @@ public class DimDoors {
     public static final String MODID = "dimdoors";
     public static final String MODNAME = "Dimensional Doors";
     public static final String MCVERSIONS = "[1.12,1.13)";
-    public static final String VERSION = "3.2.1";
+    public static final String VERSION = "3.2.2";
     public static final String DEPENDENCIES = "required-after:forge@[14.23.5.2860,)";
 
     @Instance(MODID)
@@ -90,8 +90,8 @@ public class DimDoors {
         registry.put("private_pocket_exit",PrivatePocketExitTarget.class);
         registry.put("relative",RelativeReference.class);
         // Register entities
-        EntityRegistry.registerModEntity(new ResourceLocation(MODID,"mob_monolith"),EntityMonolith.class,
-                "monolith",0,instance,70,1,true);
+        EntityRegistry.registerModEntity(getResource("mob_monolith"),EntityMonolith.class,
+                "mob_monolith",0,instance,70,1,true);
         EntityRegistry.registerEgg(getResource("mob_monolith"),0,0xffffff);
         // Register tile entities
         TileEntity.register("dimdoors:entrance_rift",TileEntityEntranceRift.class);
@@ -111,10 +111,10 @@ public class DimDoors {
     @Mod.EventHandler
     public void onInitialization(FMLInitializationEvent event) {
         // Register loot tables
-        LootTableList.register(new ResourceLocation(MODID,"dungeon_chest"));
-        LootTableList.register(new ResourceLocation(MODID,"dispenser_projectiles"));
-        LootTableList.register(new ResourceLocation(MODID,"dispenser_splash_potions"));
-        LootTableList.register(new ResourceLocation(MODID,"dispenser_potion_arrows"));
+        LootTableList.register(getResource("dungeon_chest"));
+        LootTableList.register(getResource("dispenser_projectiles"));
+        LootTableList.register(getResource("dispenser_splash_potions"));
+        LootTableList.register(getResource("dispenser_potion_arrows"));
         // Load schematics
         SchematicHandler.INSTANCE.loadSchematics();
         // Register world generators
