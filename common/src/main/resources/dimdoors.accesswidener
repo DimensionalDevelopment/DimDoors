@@ -51,3 +51,17 @@ accessible field net/minecraft/client/renderer/LevelRenderer SUN_LOCATION Lnet/m
 accessible field net/minecraft/client/renderer/LevelRenderer MOON_LOCATION Lnet/minecraft/resources/ResourceLocation;
 accessible field net/minecraft/client/renderer/LevelRenderer starBuffer Lcom/mojang/blaze3d/vertex/VertexBuffer;
 accessible field net/minecraft/client/renderer/LevelRenderer darkBuffer Lcom/mojang/blaze3d/vertex/VertexBuffer;
+accessible class net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$Source
+accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$Source <init> (Ljava/util/function/Function;Ljava/util/function/Supplier;)V
+accessible class net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplateManager$InputStreamOpener
+
+accessible field net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate size Lnet/minecraft/core/Vec3i;
+accessible field net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate palettes Ljava/util/List;
+accessible field net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate entityInfoList Ljava/util/List;
+accessible class net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate$SimplePalette
+
+accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate$SimplePalette <init> ()V
+accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate$Palette <init> (Ljava/util/List;)V
+accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate addToLists (Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate$StructureBlockInfo;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate buildInfoList (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+accessible class net/minecraft/world/gen/densityfunction/DensityFunctionTypes$ShiftedNoise

@@ -73,6 +73,7 @@ import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
+import org.dimdev.dimdoors.world.structure.ModRuleBlockEntityModifiers;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -131,6 +132,7 @@ public class DimensionalDoors {
 		ModBiomes.init();
 		ModDimensions.init();
 		ModStructures.init();
+		ModRuleBlockEntityModifiers.init();
 		ModStats.init();
 		ModBlockEntityTypes.init();
 		ModCommands.init();

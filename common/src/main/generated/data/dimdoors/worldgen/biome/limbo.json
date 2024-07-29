@@ -1,0 +1,63 @@
+{
+  "carvers": {
+    "air": "dimdoors:limbo"
+  },
+  "downfall": 0.0,
+  "effects": {
+    "fog_color": 4210752,
+    "foliage_color": 0,
+    "grass_color": 4210752,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "dimdoors:crack",
+      "tick_delay": 6000
+    },
+    "music": {
+      "max_delay": 120000,
+      "min_delay": 0,
+      "replace_current_music": true,
+      "sound": "dimdoors:creepy"
+    },
+    "particle": {
+      "options": {
+        "type": "dimdoors:limbo_ash"
+      },
+      "probability": 0.118093334
+    },
+    "sky_color": 4210752,
+    "water_color": 1052688,
+    "water_fog_color": 0
+  },
+  "features": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+      "dimdoors:solid_static_ore"
+    ]
+  ],
+  "has_precipitation": false,
+  "spawn_costs": {},
+  "spawners": {
+    "ambient": [],
+    "axolotls": [],
+    "creature": [],
+    "misc": [],
+    "monster": [
+      {
+        "type": "dimdoors:monolith",
+        "maxCount": 10,
+        "minCount": 1,
+        "weight": 100
+      }
+    ],
+    "underground_water_creature": [],
+    "water_ambient": [],
+    "water_creature": []
+  },
+  "temperature": 0.8
+}

@@ -28,7 +28,7 @@ public class BlankChunkGenerator extends ChunkGenerator {
 			).apply(instance, instance.stable(BlankChunkGenerator::of))
 	);
 
-	private static BlankChunkGenerator of(BiomeSource biomeSource) {
+	public static BlankChunkGenerator of(BiomeSource biomeSource) {
 		return new BlankChunkGenerator(biomeSource);
 	}
 

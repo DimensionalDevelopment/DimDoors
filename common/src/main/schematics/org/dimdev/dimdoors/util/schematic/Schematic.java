@@ -110,7 +110,7 @@ public class Schematic {
 		return this.paletteMax;
 	}
 
-	public Map<BlockState, Integer> getBlockPalette() {
+	public BiMap<BlockState, Integer> getBlockPalette() {
 		return this.blockPalette;
 	}
 

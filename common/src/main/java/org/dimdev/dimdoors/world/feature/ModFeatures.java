@@ -1,59 +1,39 @@
 package org.dimdev.dimdoors.world.feature;
 
-import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.registry.level.biome.BiomeModifications;
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.feature.gateway.LimboGatewayFeature;
-import org.dimdev.dimdoors.world.feature.gateway.schematic.*;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
+import org.dimdev.dimdoors.block.ModBlocks;
+
+import java.util.List;
 
 import static org.dimdev.dimdoors.DimensionalDoors.id;
 
 @SuppressWarnings("unused")
 public final class ModFeatures {
-	public static final SandstonePillarsGateway SANDSTONE_PILLARS_GATEWAY = new SandstonePillarsGateway();
-	public static final TwoPillarsGateway TWO_PILLARS_GATEWAY = new TwoPillarsGateway();
-	public static final EndGateway END_GATEWAY = new EndGateway();
-
-	public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.FEATURE);
-
-	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> SANDSTONE_PILLARS_GATEWAY_FEATURE = FEATURES.register("two_pillars", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
-	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> TWO_PILLARS_GATEWAY_FEATURE = FEATURES.register("sandstone_pillars", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
-	public static final RegistrySupplier<Feature<SchematicGatewayFeatureConfig>> END_GATEWAY_FEATURE = FEATURES.register("schematic_gateway", () -> new SchematicGatewayFeature(SchematicGatewayFeatureConfig.CODEC));
-	public static final RegistrySupplier<Feature<NoneFeatureConfiguration>> LIMBO_GATEWAY_FEATURE = FEATURES.register("limbo_gateway", LimboGatewayFeature::new);
-
-	public static void init() {
-		LifecycleEvent.SETUP.register(() -> {
-			SANDSTONE_PILLARS_GATEWAY.init();
-			TWO_PILLARS_GATEWAY.init();
-			END_GATEWAY.init();
-		});
-
-		FEATURES.register();
-
-		Configured.init();
-		Placed.init();
-	}
-
 	public static final class Configured {
-		public static final ResourceKey<ConfiguredFeature<?, ?>> SANDSTONE_PILLARS = of("sandstone_pillars");
-		public static final ResourceKey<ConfiguredFeature<?, ?>> TWO_PILLARS = of("two_pillars");
-		public static final ResourceKey<ConfiguredFeature<?, ?>> END_GATEWAY = of("end_gateway");
-		public static final ResourceKey<ConfiguredFeature<?, ?>> LIMBO_GATEWAY = of("limbo_gateway");
 		public static final ResourceKey<ConfiguredFeature<?, ?>> SOLID_STATIC_ORE = of("solid_static_ore");
 		public static final ResourceKey<ConfiguredFeature<?, ?>> DECAYED_BLOCK_ORE = of("decayed_block_ore");
 		public static final ResourceKey<ConfiguredFeature<?, ?>> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
 
-		public static void init() {}
+		public static void init(BootstapContext<ConfiguredFeature<?, ?>> context) {
+			context.register(DECAYED_BLOCK_ORE, new ConfiguredFeature<>(
+					Feature.ORE,
+					new OreConfiguration(
+							List.of(
+									OreConfiguration.target(
+											new BlockMatchTest(ModBlocks.UNRAVELLED_FABRIC.get()),
+											ModBlocks.DECAYED_BLOCK.get().defaultBlockState())),
+							64, 0.0f)));
+//			context.register(ETERNAL_FLUID_SPRING, )
+		}
 
 		public static ResourceKey<ConfiguredFeature<?, ?>> of(String id) {
 			return ResourceKey.create(Registries.CONFIGURED_FEATURE, id(id));
@@ -61,10 +41,6 @@ public final class ModFeatures {
 	}
 
 	public static class Placed {
-		public static final ResourceKey<PlacedFeature> SANDSTONE_PILLARS = of("sandstone_pillars");
-		public static final ResourceKey<PlacedFeature> TWO_PILLARS = of("two_pillars");
-		public static final ResourceKey<PlacedFeature> END_GATEWAY = of("end_gateway");
-		public static final ResourceKey<PlacedFeature> LIMBO_GATEWAY = of("limbo_gateway");
 		public static final ResourceKey<PlacedFeature> SOLID_STATIC_ORE = of("solid_static_ore");
 		public static final ResourceKey<PlacedFeature> DECAYED_BLOCK_ORE = of("decayed_block_ore");
 		public static final ResourceKey<PlacedFeature> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
