@@ -9,8 +9,8 @@
           "Name": "dimdoors:solid_static"
         },
         "target": {
-          "predicate_type": "minecraft:block_match",
-          "block": "dimdoors:unravelled_fabric"
+          "block": "dimdoors:unravelled_fabric",
+          "predicate_type": "minecraft:block_match"
         }
       }
     ]

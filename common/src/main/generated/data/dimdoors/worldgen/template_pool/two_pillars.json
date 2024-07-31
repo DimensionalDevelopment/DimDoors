@@ -1,0 +1,16 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "dimdoors:gateways/two_pillars",
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 50
+    }
+  ],
+  "fallback": "minecraft:empty"
+}

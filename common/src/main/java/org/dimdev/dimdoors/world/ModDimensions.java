@@ -32,7 +32,7 @@ public final class ModDimensions {
     public static final ResourceKey<LevelStem> DUNGEON_STEM = ResourceKey.create(Registries.LEVEL_STEM, DimensionalDoors.id("dungeon"));
 
     public static final ResourceKey<DimensionType> LIMBO_TYPE_KEY = ResourceKey.create(Registries.DIMENSION_TYPE, DimensionalDoors.id("limbo"));
-    public static final ResourceKey<DimensionType> POCKET_TYPE_KEY = ResourceKey.create(Registries.DIMENSION_TYPE, DimensionalDoors.id("personal_pockets"));
+    public static final ResourceKey<DimensionType> POCKET_TYPE_KEY = ResourceKey.create(Registries.DIMENSION_TYPE, DimensionalDoors.id("pocket"));
 
     public static DimensionType LIMBO_TYPE;
     public static DimensionType POCKET_TYPE;

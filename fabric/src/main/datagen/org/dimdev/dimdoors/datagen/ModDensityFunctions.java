@@ -100,9 +100,40 @@ public class ModDensityFunctions {
         );
         entries.register(STRAND, strand);
 
-//        entries.add(FINAL_DENSITY, max(
-//                "",
-//                DensityFunctions.09oi/lk
+        entries.register(FINAL_DENSITY,
+                DensityFunctions.max(
+                        DensityFunctions.mul(
+                                DensityFunctions.constant(0.64),
+                                DensityFunctions.interpolated(
+                                        DensityFunctions.blendDensity(
+                                                DensityFunctions.add(
+                                                        DensityFunctions.mul(
+                                                                DensityFunctions.yClampedGradient(-56, -32, 0, 1),
+                                                                DensityFunctions.add(
+                                                                        DensityFunctions.add(
+                                                                                DensityFunctions.mul(
+                                                                                        DensityFunctions.yClampedGradient(240, 256, 0, 1),
+                                                                                        DensityFunctions.add(
+                                                                                                DensityFunctions.max(
+                                                                                                        DensityFunctions.constant(-1),
+                                                                                                        terrain
+                                                                                                ),
+                                                                                                DensityFunctions.constant(0.078125)
+                                                                                        )
+                                                                                ),
+                                                                                DensityFunctions.constant(-0.078125)
+                                                                        ),
+                                                                        DensityFunctions.constant(-0.1171875)
+                                                                )
+                                                        ),
+                                                        DensityFunctions.constant(0.1171875)
+                                                )
+                                        )
+                                )
+                        ).squeeze(),
+                        strand
+                ));
+
 //        ))
     }
 

@@ -1,9 +1,9 @@
 {
   "type": "minecraft:spring_feature",
   "config": {
-    "hole_count": 1,
+    "hole_count": 4,
     "requires_block_below": true,
-    "rock_count": 4,
+    "rock_count": 1,
     "state": {
       "Name": "dimdoors:eternal_fluid",
       "Properties": {

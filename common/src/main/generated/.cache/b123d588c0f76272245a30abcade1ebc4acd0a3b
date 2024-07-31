@@ -1,4 +1,4 @@
-// 1.20.1	2024-07-28T15:47:53.1784147	DimensionalDoors/Model Definitions
+// 1.20.1	2024-07-31T01:40:03.8402748	DimensionalDoors/Model Definitions
 1b52ec5835ac4c023b3a854481b03dba68337665 assets\dimdoors\models\block\quartz_door_top_left_open.json
 853707a85d7addfe8f801c8987e1aafc288564e5 assets\dimdoors\models\block\dark_sand_wall_inventory.json
 f5e2b4d16203a73a4486b72d451da8778142e516 assets\dimdoors\blockstates\quartz_door.json
@@ -71,8 +71,8 @@ cc169466066051770a64e777121ce36fe8074f2d assets\dimdoors\models\block\amalgam_bl
 c91eceef0b330cd41cf98b91f75a696e0672b5b4 assets\dimdoors\models\block\driftwood_button_inventory.json
 7bd9842306e1ccc480945dd494252a01ab065a6d assets\dimdoors\blockstates\clay_stairs.json
 84455833902efcc88d2992e0ca4735e342ee4484 assets\dimdoors\models\block\unraveled_gate_open.json
-bcb276d2bbd9e5771aa0cb82d315b87dbf865f6a assets\dimdoors\blockstates\dark_sand_fence.json
 1669a85afd577ccd6992072a190145050af0aa88 assets\dimdoors\blockstates\unraveled_slab.json
+bcb276d2bbd9e5771aa0cb82d315b87dbf865f6a assets\dimdoors\blockstates\dark_sand_fence.json
 c057f336c3e2156000c60304dcd62a34542382f4 assets\dimdoors\models\block\deepslate_wall_side.json
 9c7f287a9e9b5dbd01faf0caa2c899ca1df805da assets\dimdoors\models\item\unraveled_slab.json
 77f5caa209962b8548762ed7fc6827a7943b9dbb assets\dimdoors\models\block\unraveled_button.json
@@ -380,8 +380,8 @@ c7885f37ddd66aa0cee92001a9dac1a78f5dfdb8 assets\dimdoors\models\block\sand_slab_
 8cceedc7099b0cf1e5b67a70df6cb1511bca35bc assets\dimdoors\models\block\clay_slab_top.json
 b6f6ee845f0709ae4de7f952a23c70aea50ebcab assets\dimdoors\models\block\dark_sand_wall_side.json
 28ea05d9fe441c8202a758b7449f150d0458ef9b assets\dimdoors\models\block\netherrack_wall_side.json
-81a60f44eabac68ee8ad7a40f80753dfa2381cb6 assets\dimdoors\blockstates\amalgam_ore.json
 af9c3fceab9458ee6fb34c60a821fe5f10da8e3a assets\dimdoors\blockstates\red_sand_slab.json
+81a60f44eabac68ee8ad7a40f80753dfa2381cb6 assets\dimdoors\blockstates\amalgam_ore.json
 6218ff8147c95a439ecd4482ef5205f8e7151018 assets\dimdoors\blockstates\deepslate_wall.json
 4d59a80b714f81cace4210c77a0ae65fea4172c6 assets\dimdoors\blockstates\rust.json
 5f236153794fe857d06e7d2d95e06d7d11ccec6c assets\dimdoors\blockstates\dark_sand_stairs.json

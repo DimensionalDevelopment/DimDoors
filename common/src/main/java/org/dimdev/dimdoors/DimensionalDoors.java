@@ -69,7 +69,6 @@ import org.dimdev.dimdoors.world.carvers.ModCarvers;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
-import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
@@ -127,7 +126,6 @@ public class DimensionalDoors {
 		ModEntityTypes.init();
 		ModItems.init();
 		ModBlocks.init();
-		ModFeatures.init();
 		ModCarvers.init();
 		ModBiomes.init();
 		ModDimensions.init();

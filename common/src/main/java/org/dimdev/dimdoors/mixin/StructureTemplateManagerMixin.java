@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
@@ -45,6 +44,9 @@ public abstract class StructureTemplateManagerMixin {
 
 	private Optional<StructureTemplate> loadSchemFromResource(ResourceLocation id) {
 		ResourceLocation resourceLocation = SCHEM_LISTER.idToFile(id);
+
+		System.out.println("Blarge: " + id);
+
 		return this.loadSchem(() -> this.resourceManager.open(resourceLocation), (throwable) -> {
 			LOGGER.error("Couldn't load structure {}", (Object) id, throwable);
 		});
@@ -73,8 +75,6 @@ public abstract class StructureTemplateManagerMixin {
 				}
 
 				throw e;
-			} catch (FileNotFoundException ex) {
-				return Optional.empty();
 			} catch (IOException ex) {
 				onError.accept(ex);
 				return Optional.empty();
