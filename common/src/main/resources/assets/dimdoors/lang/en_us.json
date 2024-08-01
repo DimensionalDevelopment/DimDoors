@@ -354,8 +354,8 @@
   "text.autoconfig.dimdoors.option.limbo.universalLimbo.@Tooltip": "When true, players are also teleported to Limbo when they die in any non-Pocket Dimension (except Limbo itself). Otherwise, players only go to Limbo if they die in a Pocket Dimension.",
   "text.autoconfig.dimdoors.option.limbo.hardcoreLimbo": "Hardcore Limbo",
   "text.autoconfig.dimdoors.option.limbo.hardcoreLimbo.@Tooltip": "When true, a player dying in Limbo will respawn in Limbo, making Eternal Fluid or Golden Dimensional Doors the only way to escape Limbo.",
-  "text.autoconfig.dimdoors.option.limbo.limboBlocksCorruptingOverworldAmount": "Overworld Decay Radius",
-  "text.autoconfig.dimdoors.option.limbo.limboBlocksCorruptingOverworldAmount.@Tooltip": "The radius around a player in which blocks can decay upon exiting limbo.",
+  "text.autoconfig.dimdoors.option.limbo.limboBlocksCorruptingExitWorldAmount": "Exit World Decay Radius",
+  "text.autoconfig.dimdoors.option.limbo.limboBlocksCorruptingExitWorldAmount.@Tooltip": "The radius around a player in which blocks can decay upon exiting limbo.",
   "text.autoconfig.dimdoors.option.limbo.worldsLeadingToLimbo": "Worlds Leading to Limbo",
   "text.autoconfig.dimdoors.option.limbo.worldsLeadingToLimbo.@Tooltip": "Defines a blacklist/whitelist of worlds that will send the player to limbo upon death.",
   "text.autoconfig.dimdoors.option.limbo.worldsLeadingToLimbo.list": "List of world ids",
@@ -364,7 +364,13 @@
   "text.autoconfig.dimdoors.option.limbo.worldsLeadingToLimbo.blacklist.@Tooltip": "Boolean that determines if list is a blacklist or white list for worlds.",
   "text.autoconfig.dimdoors.option.limbo.limboReturnDistance.@Tooltip": "Distance from spawn that limbo returns you",
   "text.autoconfig.dimdoors.option.limbo.limboReturnDistance": "Limbo Return Radius",
-
+  "text.autoconfig.dimdoors.option.limbo.escapeTargetWorld": "Escape To World",
+  "text.autoconfig.dimdoors.option.limbo.escapeTargetWorld.@Tooltip": "Defines the id of the world players will spawn in upon exiting Limbo.  Leaving this blank will spawn players in the world their respawn point is in.",
+  "text.autoconfig.dimdoors.option.limbo.escapeTargetWorldYSpawn": "Escape To World Y Level",
+  "text.autoconfig.dimdoors.option.limbo.escapeTargetWorldYSpawn.@Tooltip": "Defines the Y coordinate the player will spawn at when using \"Escape To World\"",
+  "text.autoconfig.dimdoors.option.limbo.escapeToWorldSpawn": "Escape to World Spawn",
+  "text.autoconfig.dimdoors.option.limbo.escapeToWorldSpawn.@Tooltip": "Boolean that determines if players exiting limbo will return relative to the worldspawn instead.  If true, escapeTargetWorld has no effect.",
+  
 
 
   "text.autoconfig.dimdoors.category.graphics": "Graphics Settings",
