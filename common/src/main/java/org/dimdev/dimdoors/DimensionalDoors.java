@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors;
 
+import com.mojang.logging.LogUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
 import dev.architectury.event.events.common.InteractionEvent;
@@ -64,7 +65,7 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.schematic.SchemFixer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.ModStructures;
+import org.dimdev.dimdoors.world.ModStructureProccessors;
 import org.dimdev.dimdoors.world.carvers.ModCarvers;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayConditionType;
@@ -72,8 +73,8 @@ import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
-import org.dimdev.dimdoors.world.structure.ModRuleBlockEntityModifiers;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -82,7 +83,8 @@ import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
 public class DimensionalDoors {
 	public static final String MOD_ID = "dimdoors";
-	private static Mod dimDoorsMod;
+	public static final Logger LOGGER = LogUtils.getLogger();
+    private static Mod dimDoorsMod;
 	private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
 	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
 
@@ -129,14 +131,13 @@ public class DimensionalDoors {
 		ModCarvers.init();
 		ModBiomes.init();
 		ModDimensions.init();
-		ModStructures.init();
-		ModRuleBlockEntityModifiers.init();
 		ModStats.init();
 		ModBlockEntityTypes.init();
 		ModCommands.init();
 		ModParticleTypes.init();
 		ModCriteria.init();
 		ModEnchants.init();
+		ModStructureProccessors.init();
 
 //		ModRecipeBookTypes.init();
 

@@ -1,10 +1,11 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class RelativeReference extends RiftReference {
+	public static final Codec<RelativeReference> CODEC = Vec3i.CODEC.xmap(RelativeReference::new, RelativeReference::getOffset).fieldOf("offset").codec();
 	private final Vec3i offset;
 
 	public RelativeReference(Vec3i offset) {
@@ -28,16 +29,5 @@ public class RelativeReference extends RiftReference {
 	@Override
 	public VirtualTarget copy() {
 		return new RelativeReference(offset);
-	}
-
-	public static CompoundTag toNbt(RelativeReference target) {
-		CompoundTag nbt = new CompoundTag();
-		nbt.putIntArray("offset", new int[]{target.offset.getX(), target.offset.getY(), target.offset.getZ()});
-		return nbt;
-	}
-
-	public static RelativeReference fromNbt(CompoundTag nbt) {
-		int[] offset = nbt.getIntArray("offset");
-		return new RelativeReference(new Vec3i(offset[0], offset[1], offset[2]));
 	}
 }

@@ -1,0 +1,22 @@
+{
+  "processors": [
+    {
+      "destinations": {
+        "0": {
+          "type": "dimdoors:available_link",
+          "acceptedGroups": [
+            0
+          ],
+          "coordFactor": 1.0,
+          "negativeDepthFactor": 160.0,
+          "newRiftWeight": 1.0,
+          "noLink": 0,
+          "noLinkBack": 0,
+          "positiveDepthFactor": 10000.0,
+          "weightMaximum": 100.0
+        }
+      },
+      "processor_type": "dimdoors:destination_data"
+    }
+  ]
+}

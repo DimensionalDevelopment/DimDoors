@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -123,19 +122,13 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 	}
 
 	@Override
-	public VirtualTargetType<? extends VirtualTarget> getType() {
+	public VirtualTargetType getType() {
 		return VirtualTargetType.ESCAPE.get();
 	}
 
 	@Override
 	public VirtualTarget copy() {
 		return new EscapeTarget(canEscapeLimbo);
-	}
-
-	public static CompoundTag toNbt(EscapeTarget virtualTarget) {
-		CompoundTag nbt = new CompoundTag();
-		nbt.putBoolean("canEscapeLimbo", virtualTarget.canEscapeLimbo);
-		return nbt;
 	}
 
 	public static Location randomizeLimboReturn(Location playerSpawn, int range){
@@ -149,9 +142,5 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 
 		// Apply the offset with the direction (positive or negative)
 		return isPositive ? coord + offset : coord - offset;
-	}
-
-	public static EscapeTarget fromNbt(CompoundTag nbt) {
-		return new EscapeTarget(nbt.getBoolean("canEscapeLimbo"));
 	}
 }

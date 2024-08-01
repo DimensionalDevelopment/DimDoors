@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.datagen;
 
-import dev.architectury.platform.Mod;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.Holder;
@@ -10,7 +9,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 
@@ -18,8 +16,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
-	
-	
 	public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
 		super(output, lookupProvider);
 	}

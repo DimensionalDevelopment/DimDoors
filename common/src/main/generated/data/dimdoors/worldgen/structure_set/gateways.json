@@ -9,6 +9,18 @@
     {
       "structure": "dimdoors:two_pillars",
       "weight": 1
+    },
+    {
+      "structure": "dimdoors:i_pillars",
+      "weight": 1
+    },
+    {
+      "structure": "dimdoors:red_sandstone_pillars",
+      "weight": 1
+    },
+    {
+      "structure": "dimdoors:sandstone_pillars",
+      "weight": 1
     }
   ]
 }

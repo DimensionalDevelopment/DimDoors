@@ -1,18 +1,21 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.Arrays;
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static org.dimdev.dimdoors.api.util.Products.and;
 
 public class DungeonTarget extends RandomTarget {
+	public static final Codec<DungeonTarget> CODEC = RecordCodecBuilder.create(instance -> and(common(instance), ResourceLocation.CODEC.fieldOf("dungeonGroup").forGetter(a -> a.dungeonGroup)).apply(instance, DungeonTarget::new));
+
 	private final ResourceLocation dungeonGroup;
 
 	public DungeonTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack, ResourceLocation dungeonGroup) {
@@ -40,20 +43,6 @@ public class DungeonTarget extends RandomTarget {
 
 	public static DungeonTargetBuilder builder() {
 		return new DungeonTargetBuilder();
-	}
-
-	public static DungeonTarget fromNbt(CompoundTag nbt) {
-		return new DungeonTarget(
-				nbt.getFloat("newRiftWeight"),
-				nbt.getDouble("weightMaximum"),
-				nbt.getDouble("coordFactor"),
-				nbt.getDouble("positiveDepthFactor"),
-				nbt.getDouble("negativeDepthFactor"),
-				Arrays.stream(nbt.getIntArray("acceptedGroups")).boxed().collect(Collectors.toSet()),
-				nbt.getBoolean("noLink"),
-				nbt.getBoolean("noLinkBack"),
-				new ResourceLocation(nbt.getString("dungeonGroup"))
-		);
 	}
 
 	@Override

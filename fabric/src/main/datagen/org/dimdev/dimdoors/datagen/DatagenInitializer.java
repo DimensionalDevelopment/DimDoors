@@ -13,6 +13,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModGatewayPools;
+import org.dimdev.dimdoors.world.ModProcessorLists;
 import org.dimdev.dimdoors.world.ModStructures;
 import org.dimdev.dimdoors.world.carvers.ModCarvers;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
@@ -32,12 +33,13 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 
 		pack.addProvider(DimDoorsModelProvider::new);
 		pack.addProvider((DataProvider.Factory<DataProvider>) DimdoorsRecipeProvider::new);
-		pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) AdvancementProvider::new);
+		pack.addProvider(AdvancementProvider::new);
 		pack.addProvider(org.dimdev.dimdoors.datagen.LootTableProvider::new);
 		pack.addProvider((DataProvider.Factory<DataProvider>) org.dimdev.dimdoors.datagen.LimboDecayProvider::new);
-		pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) BlockTagProvider::new);
-		pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) ItemTagProvider::new);
-		pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) (output, registriesFuture) -> new FabricDynamicRegistryProvider(output, registriesFuture) {
+		pack.addProvider(BlockTagProvider::new);
+		pack.addProvider(BiomeTagProvider::new);
+		pack.addProvider(ItemTagProvider::new);
+		pack.addProvider((output, registriesFuture) -> new FabricDynamicRegistryProvider(output, registriesFuture) {
 
 			@Override
 			public String getName() {
@@ -59,6 +61,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 				entries.addAll(registries.lookupOrThrow(Registries.STRUCTURE));
 				entries.addAll(registries.lookupOrThrow(Registries.TEMPLATE_POOL));
 				entries.addAll(registries.lookupOrThrow(Registries.STRUCTURE_SET));
+				entries.addAll(registries.lookupOrThrow(Registries.PROCESSOR_LIST));
 			}
 		});
 	}
@@ -85,9 +88,10 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 				.add(Registries.NOISE, ModNoiseParameters::bootstrap)
 				.add(Registries.NOISE_SETTINGS, ModChunkGeneratorSettings::bootstrap)
 				.add(Registries.CONFIGURED_CARVER, ModCarvers::bootstrap)
-				.add(Registries.STRUCTURE, ModStructures::bootstrap)
+				.add(Registries.STRUCTURE, ModStructures::new)
 				.add(Registries.TEMPLATE_POOL, ModGatewayPools::bootstrap)
-				.add(Registries.STRUCTURE_SET, ModStructureSets::bootstrap);
+				.add(Registries.STRUCTURE_SET, ModStructureSets::bootstrap)
+				.add(Registries.PROCESSOR_LIST, ModProcessorLists::bootstrap);
 
 	}
 

@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Rotations;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -11,6 +12,12 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
+	public static final Codec<PocketEntranceMarker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.FLOAT.fieldOf("weight").forGetter(PocketEntranceMarker::getWeight),
+			VirtualTarget.CODEC.optionalFieldOf("ifDestination", NoneTarget.INSTANCE).forGetter(PocketEntranceMarker::getIfDestination),
+			VirtualTarget.CODEC.optionalFieldOf("otherwiseDestination", NoneTarget.INSTANCE).forGetter(PocketEntranceMarker::getOtherwiseDestination))
+			.apply(instance, PocketEntranceMarker::new));
+
 	private final float weight;
 	private final VirtualTarget ifDestination;
 	private final VirtualTarget otherwiseDestination;
@@ -63,22 +70,6 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 	@Override
 	public VirtualTarget copy() {
 		return new PocketEntranceMarker(weight, ifDestination, otherwiseDestination);
-	}
-
-	public static CompoundTag toNbt(PocketEntranceMarker target) {
-		CompoundTag nbt = new CompoundTag();
-		nbt.putFloat("weight", target.weight);
-		nbt.put("ifDestination", VirtualTarget.toNbt(target.ifDestination));
-		nbt.put("otherwiseDestination", VirtualTarget.toNbt(target.otherwiseDestination));
-		return nbt;
-	}
-
-	public static PocketEntranceMarker fromNbt(CompoundTag nbt) {
-		return PocketEntranceMarker.builder()
-				.weight(nbt.getFloat("weight"))
-				.ifDestination(nbt.contains("ifDestination") ? VirtualTarget.fromNbt(nbt.getCompound("ifDestination")) : NoneTarget.INSTANCE)
-				.otherwiseDestination(nbt.contains("otherwiseDestination") ? VirtualTarget.fromNbt(nbt.getCompound("otherwiseDestination")) : NoneTarget.INSTANCE)
-				.build();
 	}
 
 	public static class PocketEntranceMarkerBuilder {
