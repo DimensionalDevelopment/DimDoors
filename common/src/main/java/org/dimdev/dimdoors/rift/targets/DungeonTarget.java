@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
@@ -26,14 +25,6 @@ public class DungeonTarget extends RandomTarget {
 	@Override
 	protected Pocket generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
 		return PocketGenerator.generateDungeonPocketV2(location, linkTo, props, this.dungeonGroup);
-	}
-
-	public static CompoundTag toNbt(DungeonTarget target) {
-		CompoundTag nbt = RandomTarget.toNbt(target);
-
-		nbt.putString("dungeonGroup", target.dungeonGroup.toString());
-
-		return nbt;
 	}
 
 	@Override
