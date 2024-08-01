@@ -17,6 +17,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -175,10 +176,13 @@ public final class ModConfig implements ConfigData {
 
 		@CollapsibleObject
 		@RequiresRestart
-		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList(List.of(), false);
+		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList();
 		@Tooltip public boolean hardcoreLimbo = false;
 		@Tooltip public int limboReturnDistance = 20000;
-		@Tooltip public float limboBlocksCorruptingOverworldAmount = 5;
+		@Tooltip public float limboBlocksCorruptingExitWorldAmount = 5;
+		@Tooltip public String escapeTargetWorld = "";		
+		@Tooltip public int escapeTargetWorldYSpawn = 64;
+		@Tooltip public boolean escapeToWorldSpawn = false;
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {
 			return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level.location().toString());
 		}
@@ -190,6 +194,10 @@ public final class ModConfig implements ConfigData {
 			public WorldList(List<String> list, boolean blacklist) {
 				this.list = list;
 				this.blacklist = blacklist;
+			}
+			
+			public WorldList() {
+				this(new ArrayList<>(), false);
 			}
 		}
 	}
