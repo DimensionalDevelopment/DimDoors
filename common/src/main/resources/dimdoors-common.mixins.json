@@ -19,7 +19,6 @@
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",
     "ServerWorldMixin",
-    "StructureTemplateManagerMixin",
     "ThreadedAnvilChunkStorageMixin",
     "TrapDoorMixin",
     "accessor.BlockEntityTypeAccessor",

@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @Mixin(StructureTemplateManager.class)
-public abstract class StructureTemplateManagerMixin {
+public abstract class StructureTemplateManagerMixin { //Revisit enabling in the future.
 	private static final FileToIdConverter SCHEM_LISTER = new FileToIdConverter("structures", ".schem");
 
 	@Shadow
@@ -44,8 +44,6 @@ public abstract class StructureTemplateManagerMixin {
 
 	private Optional<StructureTemplate> loadSchemFromResource(ResourceLocation id) {
 		ResourceLocation resourceLocation = SCHEM_LISTER.idToFile(id);
-
-		System.out.println("Blarge: " + id);
 
 		return this.loadSchem(() -> this.resourceManager.open(resourceLocation), (throwable) -> {
 			LOGGER.error("Couldn't load structure {}", (Object) id, throwable);
