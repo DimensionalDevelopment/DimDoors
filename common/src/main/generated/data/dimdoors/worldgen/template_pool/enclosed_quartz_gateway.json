@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "dimdoors:gateways/two_pillars",
+        "location": "dimdoors:gateways/enclosed_quartz",
         "processors": "dimdoors:dungeon",
         "projection": "rigid"
       },

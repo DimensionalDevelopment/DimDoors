@@ -2,24 +2,37 @@
   "placement": {
     "type": "minecraft:random_spread",
     "salt": 23165478,
-    "separation": 8,
-    "spacing": 34
+    "separation": 5,
+    "spacing": 15,
+    "spread_type": "triangular"
   },
   "structures": [
     {
-      "structure": "dimdoors:two_pillars",
+      "structure": "dimdoors:enclosed_gateway",
       "weight": 1
     },
     {
-      "structure": "dimdoors:i_pillars",
+      "structure": "dimdoors:enclosed_endstone_gateway",
       "weight": 1
     },
     {
-      "structure": "dimdoors:red_sandstone_pillars",
+      "structure": "dimdoors:enclosed_mud_gateway",
       "weight": 1
     },
     {
-      "structure": "dimdoors:sandstone_pillars",
+      "structure": "dimdoors:enclosed_prismarine_gateway",
+      "weight": 1
+    },
+    {
+      "structure": "dimdoors:enclosed_quartz_gateway",
+      "weight": 1
+    },
+    {
+      "structure": "dimdoors:enclosed_red_sandstone_gateway",
+      "weight": 1
+    },
+    {
+      "structure": "dimdoors:enclosed_sandstone_gateway",
       "weight": 1
     }
   ]

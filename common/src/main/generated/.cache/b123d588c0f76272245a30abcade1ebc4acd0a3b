@@ -1,4 +1,4 @@
-// 1.20.1	2024-07-31T21:53:19.5820344	DimensionalDoors/Model Definitions
+// 1.20.1	2024-08-04T02:24:23.633363	DimensionalDoors/Model Definitions
 1b52ec5835ac4c023b3a854481b03dba68337665 assets\dimdoors\models\block\quartz_door_top_left_open.json
 853707a85d7addfe8f801c8987e1aafc288564e5 assets\dimdoors\models\block\dark_sand_wall_inventory.json
 f5e2b4d16203a73a4486b72d451da8778142e516 assets\dimdoors\blockstates\quartz_door.json
@@ -192,8 +192,8 @@ ad9bff6384d100ad7b450523da4f1abe3792306e assets\dimdoors\blockstates\amalgam_sta
 f9231c469bda43fa73dc0e7c9abcc8fa6fc87901 assets\dimdoors\models\item\garment_of_reality_chestplate.json
 c7cf40976bb88f3f402934f3ab0177054b2ccd81 assets\dimdoors\models\block\sand_stairs_inner.json
 6a581c137bc9b1d6ffc6e625c6b1c78e26a2fd66 assets\dimdoors\blockstates\driftwood_fence.json
-52492447000175f7f8ae45271f8ca51c0ac67fce assets\dimdoors\blockstates\gold_door.json
 4404407b6dbf8e1a0e9216fb8dc151b1211a776b assets\dimdoors\blockstates\mud_slab.json
+52492447000175f7f8ae45271f8ca51c0ac67fce assets\dimdoors\blockstates\gold_door.json
 c63d8c27a69b970aa2c19443e0b971073e785ef2 assets\dimdoors\models\block\mud_fence_inventory.json
 474bac26230bd58adf1d548674d53ded5e0c1b7c assets\dimdoors\models\item\netherrack_slab.json
 a58e7e8230a8e5f2d8d0dab00bff4b706a565cbb assets\dimdoors\models\block\mud_button_inventory.json
@@ -377,8 +377,8 @@ c029b7f6dea0735ba549c199e9c4110f2d197b34 assets\dimdoors\models\block\driftwood_
 dca98dbcea66404cc98e561602bc6ee72d1ae168 assets\dimdoors\models\item\unraveled_button.json
 c7885f37ddd66aa0cee92001a9dac1a78f5dfdb8 assets\dimdoors\models\block\sand_slab_top.json
 74e9702d691589c65f513ea1220024280f611ba7 assets\dimdoors\models\item\clod_ore.json
-8cceedc7099b0cf1e5b67a70df6cb1511bca35bc assets\dimdoors\models\block\clay_slab_top.json
 b6f6ee845f0709ae4de7f952a23c70aea50ebcab assets\dimdoors\models\block\dark_sand_wall_side.json
+8cceedc7099b0cf1e5b67a70df6cb1511bca35bc assets\dimdoors\models\block\clay_slab_top.json
 28ea05d9fe441c8202a758b7449f150d0458ef9b assets\dimdoors\models\block\netherrack_wall_side.json
 af9c3fceab9458ee6fb34c60a821fe5f10da8e3a assets\dimdoors\blockstates\red_sand_slab.json
 81a60f44eabac68ee8ad7a40f80753dfa2381cb6 assets\dimdoors\blockstates\amalgam_ore.json

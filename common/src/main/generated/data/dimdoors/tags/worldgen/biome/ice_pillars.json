@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    {
-      "id": "#minecraft:has_structure/igloo",
-      "required": false
-    }
-  ]
-}

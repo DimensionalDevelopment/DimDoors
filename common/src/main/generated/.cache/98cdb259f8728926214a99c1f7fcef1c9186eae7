@@ -1,4 +1,4 @@
-// 1.20.1	2024-07-31T21:53:19.5890153	DimensionalDoors/Recipes
+// 1.20.1	2024-08-04T02:24:23.6363552	DimensionalDoors/Recipes
 784c11d96aecfdfa491e5154955e892508b4437f data\dimdoors\recipes\gray_fabric.json
 5839dbee47dd3b0cfd61fcac961f4f508111945e data\dimdoors\advancements\recipes\tesselating\tesselating\rift_blade.json
 0f5e7cf1d8121325e5651107ec3b6dbc3f025780 data\dimdoors\advancements\recipes\misc\quartz_door.json
@@ -24,8 +24,8 @@ ac5925705e80e7e7dec4d8c284ffbf1de450c428 data\dimdoors\recipes\orange_fabric.jso
 4e9717ef2680d90b14c0ed7b7217ba5e4794baa8 data\dimdoors\recipes\tesselating\fabric_of_finality.json
 3dc66c81e4e5d41153fa6db5a227b372c0cdf6ad data\dimdoors\advancements\recipes\tesselating\tesselating\stable_fabric.json
 2662419fb8da9280bc89451fb8ed720e3e504967 data\dimdoors\advancements\recipes\tesselating\tesselating\rift_pearl.json
-1b0671b3b7382315eac7a8727dafa55c44ce2ae1 data\dimdoors\recipes\purple_fabric.json
 d6c8afc29086d97c008e529219e6a8d312d63f37 data\dimdoors\advancements\recipes\misc\brown_fabric.json
+1b0671b3b7382315eac7a8727dafa55c44ce2ae1 data\dimdoors\recipes\purple_fabric.json
 1ba15db177bfbd2e78df2fdbbc1d260d692221a3 data\dimdoors\advancements\recipes\misc\tesselating_loom.json
 10361b48cb117088d24d9de661d55c6dbca49410 data\dimdoors\recipes\stabilized_rift_signature.json
 bf72f6f63c53936379691e49d9c029d805450b29 data\dimdoors\advancements\recipes\tesselating\tesselating\fuzzy_fireball.json

@@ -1,11 +1,11 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_red_sandstone"
+    "entry": "#dimdoors:decay_to_sandstone"
   },
   "result": {
     "type": "dimdoors:block",
-    "block": "minecraft:red_sandstone",
+    "block": "minecraft:sandstone",
     "entropy": 1,
     "world_thread_chance": 0.01
   }

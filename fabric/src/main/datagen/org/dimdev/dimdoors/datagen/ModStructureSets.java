@@ -15,13 +15,19 @@ public class ModStructureSets {
     public static ResourceKey<StructureSet> GATEWAYS = ResourceKey.create(Registries.STRUCTURE_SET, DimensionalDoors.id("gateways"));
     public static void bootstrap(BootstapContext<StructureSet> context) {
         context.register(GATEWAYS, new StructureSet(
-                List.of(new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.TWO_PILLARS), 1),
-                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ICE_PILLARS), 1),
-                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.RED_SANDSTONE_PILLARS), 1),
-                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.SANDSTONE_PILLARS), 1)), new RandomSpreadStructurePlacement(
-                34,
-                8,
-                RandomSpreadType.LINEAR,
+
+                List.of(new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_GATEWAY), 1),
+                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_ENDSTONE_GATEWAY), 1),
+                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_MUD_GATEWAY), 1),
+                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_PRISMARINE_GATEWAY), 1),
+                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_QUARTZ_GATEWAY), 1),
+                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_RED_SANDSTONE_GATEWAY), 1),
+                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_SANDSTONE_GATEWAY), 1)/*,
+                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.LIMBO_GATEWAY), 1)*/),
+                new RandomSpreadStructurePlacement(
+                15,
+                5,
+                RandomSpreadType.TRIANGULAR,
                 23165478)));
     }
 }

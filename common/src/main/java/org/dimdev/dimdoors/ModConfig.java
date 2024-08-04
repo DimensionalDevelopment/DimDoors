@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -178,9 +179,9 @@ public final class ModConfig implements ConfigData {
 		@RequiresRestart
 		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList();
 		@Tooltip public boolean hardcoreLimbo = false;
-		@Tooltip public int limboReturnDistance = 20000;
+		@Tooltip public int limboReturnDistance = 5000;
 		@Tooltip public float limboBlocksCorruptingExitWorldAmount = 5;
-		@Tooltip public String escapeTargetWorld = "";		
+		@Tooltip @Nullable public ResourceKey<Level> escapeTargetWorld = Level.OVERWORLD;
 		@Tooltip public int escapeTargetWorldYSpawn = 64;
 		@Tooltip public boolean escapeToWorldSpawn = false;
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {

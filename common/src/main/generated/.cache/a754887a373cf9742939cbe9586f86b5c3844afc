@@ -1,4 +1,4 @@
-// 1.20.1	2024-07-31T21:53:19.5930051	DimensionalDoors/Limbo Decay
+// 1.20.1	2024-08-04T02:24:23.63835	DimensionalDoors/Limbo Decay
 2800dc4c5ce9daba1c2446cf42e9a0b804a77ab3 data\dimdoors\decay_patterns\wither_rose.json
 d93ad7cdc195f4852ec713a828f99ff82f38f636 data\dimdoors\decay_patterns\composter.json
 9dfc7d6c82586494f949241bee7c9d949b7b87c4 data\dimdoors\decay_patterns\clay_slab.json
@@ -88,7 +88,7 @@ e232a61e38a5780f8d02c8d4534a671a2b3695be data\dimdoors\decay_patterns\rust.json
 29b6542a95200ccb7e9d958a0c159a2a63d5ccec data\dimdoors\decay_patterns\driftwood_log.json
 ae06da4d2bf794cb94ebbf9a22dfa9606b1d71f0 data\dimdoors\decay_patterns\cyan_terracotta.json
 148cdd697c5b9536812acd880cbc73e3aa8bfe8b data\dimdoors\decay_patterns\honeycomb_block.json
-79768523ebbf697a54d511f503170775bfb8ce8b data\dimdoors\decay_patterns\red_sandstone.json
+d85c173ee0569ad6cb3421030fda73da6e29d745 data\dimdoors\decay_patterns\red_sandstone.json
 275872b9a4e5e57da998604232c64e1f0748b940 data\dimdoors\decay_patterns\orange_concrete_powder.json
 9c18ca8d335d384e92f4d3ca02f69d5ca38febbf data\dimdoors\decay_patterns\carved_pumpkin.json
 2578575007d33a20accccc48d63a11c9fa8317f6 data\dimdoors\decay_patterns\stone_brick_slab.json

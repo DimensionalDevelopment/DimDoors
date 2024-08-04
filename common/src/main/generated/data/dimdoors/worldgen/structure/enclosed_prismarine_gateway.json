@@ -1,14 +1,14 @@
 {
   "type": "minecraft:jigsaw",
-  "biomes": "#dimdoors:ice_pillars",
+  "biomes": "#dimdoors:enclosed_prismarine_gateway",
   "max_distance_from_center": 80,
-  "project_start_to_heightmap": "WORLD_SURFACE_WG",
+  "project_start_to_heightmap": "OCEAN_FLOOR_WG",
   "size": 1,
   "spawn_overrides": {},
   "start_height": {
     "absolute": 0
   },
-  "start_pool": "dimdoors:ice_pillars",
+  "start_pool": "dimdoors:enclosed_prismarine_gateway",
   "step": "surface_structures",
   "terrain_adaptation": "beard_thin",
   "use_expansion_hack": true

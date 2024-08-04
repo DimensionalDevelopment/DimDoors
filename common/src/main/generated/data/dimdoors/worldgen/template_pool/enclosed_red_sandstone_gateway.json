@@ -3,7 +3,7 @@
     {
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "dimdoors:gateways/red_sandstone_pillars",
+        "location": "dimdoors:gateways/enclosed_red_sandstone",
         "processors": "dimdoors:dungeon",
         "projection": "rigid"
       },
