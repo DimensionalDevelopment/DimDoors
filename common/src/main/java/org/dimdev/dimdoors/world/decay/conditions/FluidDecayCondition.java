@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.decay.conditions;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.world.decay.DecaySource;
 import java.util.Set;
 
 public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
-	public static final Codec<FluidDecayCondition> CODEC = createCodec(FluidDecayCondition::new, Registries.FLUID);
+	public static final MapCodec<FluidDecayCondition> CODEC = createCodec(FluidDecayCondition::new, Registries.FLUID);
 
 	public static final String KEY = "fluid";
 

@@ -1,17 +1,15 @@
 package org.dimdev.dimdoors.screen;
 
 import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 
 public class TessellatingContainer extends AbstractContainerMenu /*RecipeBookMenu<Container>*/ {
-
-
 	public static final int DATA_WEAVE_TIME = 0;
 	public static final int DATA_WEAVE_TIME_TOAL = 1;
 

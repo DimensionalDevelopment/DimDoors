@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -13,7 +13,7 @@ import java.util.Set;
 import static org.dimdev.dimdoors.api.util.Products.and;
 
 public class DungeonTarget extends RandomTarget {
-	public static final Codec<DungeonTarget> CODEC = RecordCodecBuilder.create(instance -> and(common(instance), ResourceLocation.CODEC.fieldOf("dungeonGroup").forGetter(a -> a.dungeonGroup)).apply(instance, DungeonTarget::new));
+	public static final MapCodec<DungeonTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> and(common(instance), ResourceLocation.CODEC.fieldOf("dungeonGroup").forGetter(a -> a.dungeonGroup)).apply(instance, DungeonTarget::new));
 
 	private final ResourceLocation dungeonGroup;
 

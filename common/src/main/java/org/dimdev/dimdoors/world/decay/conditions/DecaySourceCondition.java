@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.decay.conditions;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.world.decay.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 public record DecaySourceCondition(DecaySource source) implements DecayCondition {
-    public static Codec<DecaySourceCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(StringRepresentable.fromEnum(DecaySource::values).fieldOf("source").forGetter(DecaySourceCondition::source)).apply(instance, DecaySourceCondition::new));
+    public static MapCodec<DecaySourceCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(StringRepresentable.fromEnum(DecaySource::values).fieldOf("source").forGetter(DecaySourceCondition::source)).apply(instance, DecaySourceCondition::new));
     public static String KEY = "decay_source";
 
     @Override

@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.decay.results;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 public class FluidDecayResult implements DecayResult {
-	public static final Codec<FluidDecayResult> CODEC = RecordCodecBuilder.create(instance -> DecayResult.entropyCodec(instance).and(BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(blockDecayResult -> blockDecayResult.fluid)).apply(instance, FluidDecayResult::new));
+	public static final MapCodec<FluidDecayResult> CODEC = RecordCodecBuilder.mapCodec(instance -> DecayResult.entropyCodec(instance).and(BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(blockDecayResult -> blockDecayResult.fluid)).apply(instance, FluidDecayResult::new));
 
 	public static final String KEY = "fluid";
 	private final float worldThreadChance;

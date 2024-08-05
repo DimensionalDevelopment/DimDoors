@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.world.decay.conditions;
 
 import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -21,10 +22,10 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public abstract class GenericDecayCondition<T> implements DecayCondition {
-    public static <T extends GenericDecayCondition<?>, V> Codec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
+    public static <T extends GenericDecayCondition<?>, V> MapCodec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
         Codec<TagOrElementLocation<V>> codec = Codec.STRING.comapFlatMap(string -> string.startsWith("#") ? ResourceLocation.read(string.substring(1)).map(resourceLocation -> new TagOrElementLocation<>(resourceLocation, true, key)) : ResourceLocation.read(string).map(resourceLocation -> new TagOrElementLocation<V>(resourceLocation, false, key)), TagOrElementLocation::decoratedId);
 
-        return RecordCodecBuilder.create(instance -> instance.group(codec.fieldOf("entry").forGetter(t -> (TagOrElementLocation<V>) t.getTagOrElementLocation()),
+        return RecordCodecBuilder.mapCodec(instance -> instance.group(codec.fieldOf("entry").forGetter(t -> (TagOrElementLocation<V>) t.getTagOrElementLocation()),
                 Codec.BOOL.optionalFieldOf("invert", false).forGetter(GenericDecayCondition::invert)).apply(instance, function));
     }
 

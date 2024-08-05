@@ -4,7 +4,7 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -34,7 +34,7 @@ public class ModCarvers {
         CARVERS.register();
     }
 
-    public static void bootstrap(BootstapContext<ConfiguredWorldCarver<?>> bootstapContext) {
+    public static void bootstrap(BootstrapContext<ConfiguredWorldCarver<?>> bootstapContext) {
 
         bootstapContext.register(LIMBO, new ConfiguredWorldCarver<>(LIMBO_CARVER.get(), new CaveCarverConfiguration(
                 0.2f,

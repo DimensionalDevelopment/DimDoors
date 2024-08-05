@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -15,6 +16,7 @@ import org.dimdev.dimdoors.api.util.RGBA;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A target that is not an actual object in the game such as a block or a block
@@ -27,14 +29,14 @@ public abstract class VirtualTarget implements Target {
 	protected Location location;
 
 	public static VirtualTarget fromNbt(CompoundTag nbt) {
-		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow(false, DimensionalDoors.LOGGER::error).getFirst();
+		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
 
 //		ResourceLocation id = new ResourceLocation(nbt.getString("type"));
 //		return Objects.requireNonNull(REGISTRY.get(id), "Unknown virtual target type " + id).fromNbt(nbt);
 	}
 
 	public static <T extends VirtualTarget> CompoundTag toNbt(T virtualTarget) {
-		var data = (CompoundTag) virtualTarget.getType().codec().encode(virtualTarget, NbtOps.INSTANCE, new CompoundTag()).getOrThrow(false, DimensionalDoors.LOGGER::error);
+		var data = (CompoundTag) virtualTarget.getType().codec().codec().encode(virtualTarget, NbtOps.INSTANCE, new CompoundTag()).getOrThrow();
 		data.putString("type", virtualTarget.getType().getId().toString());
 
 		return data;
@@ -114,7 +116,7 @@ public abstract class VirtualTarget implements Target {
 
 		Map<VirtualTargetType<?>, String> TRANSLATION_KEYS = new Object2ObjectArrayMap<>();
 
-		Codec<T> codec();
+		MapCodec<T> codec();
 
 		RGBA getColor();
 
@@ -136,17 +138,17 @@ public abstract class VirtualTarget implements Target {
 		}
 
 		static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, RGBA color, T instance) {
-			return register(id, Codec.unit(instance), color);
+			return register(id, MapCodec.unit(instance), color);
 		}
 
-		static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, Codec<T> codec) {
+		static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, MapCodec<T> codec) {
 			return register(id, codec, COLOR);
 		}
 
-		static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, Codec<T> codec, RGBA color) {
-			return REGISTRY.register(new ResourceLocation(id), () -> new VirtualTargetType<T>() {
+		static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, MapCodec<T> codec, RGBA color) {
+			return REGISTRY.register(ResourceLocation.tryParse(id), () -> new VirtualTargetType<T>() {
 				@Override
-				public Codec<T> codec() {
+				public MapCodec<T> codec() {
 					return codec;
 				}
 

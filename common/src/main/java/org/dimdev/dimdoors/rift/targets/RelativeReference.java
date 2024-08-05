@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Vec3i;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class RelativeReference extends RiftReference {
-	public static final Codec<RelativeReference> CODEC = Vec3i.CODEC.xmap(RelativeReference::new, RelativeReference::getOffset).fieldOf("offset").codec();
+	public static final MapCodec<RelativeReference> CODEC = Vec3i.CODEC.xmap(RelativeReference::new, RelativeReference::getOffset).fieldOf("offset");
 	private final Vec3i offset;
 
 	public RelativeReference(Vec3i offset) {

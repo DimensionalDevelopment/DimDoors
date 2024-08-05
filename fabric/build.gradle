@@ -51,10 +51,10 @@ dependencies {
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
     modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config}"
 
-    includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}")
-    includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
-    includeCompile("curse.maven:cardinal-components-world-${project.project.cardinal_components}:${project.cardinal_components_world}")
-    includeCompile("curse.maven:cardinal-components-chunk-${project.project.cardinal_components}:${project.cardinal_components_chunk}")
+//    includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}") //TODO: Try the data attachment api
+//    includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
+//    includeCompile("curse.maven:cardinal-components-world-${project.project.cardinal_components}:${project.cardinal_components_world}")
+//    includeCompile("curse.maven:cardinal-components-chunk-${project.project.cardinal_components}:${project.cardinal_components_chunk}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -72,7 +72,7 @@ dependencies {
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
 //    modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
-    modApi "com.terraformersmc:modmenu:7.2.2"
+    modApi "com.terraformersmc:modmenu:11.0.1"
 
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
 //    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"
@@ -120,12 +120,12 @@ jar {
     archiveClassifier = "dev"
 }
 
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-    duplicatesStrategy = DuplicatesStrategy.WARN
-}
+//sourcesJar {
+//    def commonSources = project(":common").sourcesJar
+//    dependsOn commonSources
+//    from commonSources.archiveFile.map { zipTree(it) }
+//    duplicatesStrategy = DuplicatesStrategy.WARN
+//}
 
 components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {

@@ -7,7 +7,7 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -36,7 +36,7 @@ public final class ModFeatures {
 			return ResourceKey.create(Registries.CONFIGURED_FEATURE, id(id));
 		}
 
-		public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> bootstapContext) {
+		public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> bootstapContext) {
 			bootstapContext.register(Configured.DECAYED_BLOCK_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(new BlockMatchTest(ModBlocks.UNRAVELLED_FABRIC.get()), ModBlocks.DECAYED_BLOCK.get().defaultBlockState())), 64, 0.0f)));
 			bootstapContext.register(Configured.SOLID_STATIC_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(new BlockMatchTest(ModBlocks.UNRAVELLED_FABRIC.get()), ModBlocks.SOLID_STATIC.get().defaultBlockState())), 4, 0.0f)));
 			bootstapContext.register(Configured.ETERNAL_FLUID_SPRING, new ConfiguredFeature<>(Feature.SPRING, new SpringConfiguration(ModFluids.ETERNAL_FLUID.get().defaultFluidState(), true, 1, 4, Placed.holderSet(ModBlocks.UNRAVELLED_FABRIC, ModBlocks.UNRAVELLED_BLOCK, ModBlocks.UNFOLDED_BLOCK, ModBlocks.UNWARPED_BLOCK))));
@@ -48,7 +48,7 @@ public final class ModFeatures {
 		public static final ResourceKey<PlacedFeature> DECAYED_BLOCK_ORE = of("decayed_block_ore");
 		public static final ResourceKey<PlacedFeature> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
 
-		public static void bootstrap(BootstapContext<PlacedFeature> bootstapContext) {
+		public static void bootstrap(BootstrapContext<PlacedFeature> bootstapContext) {
 			var lookup = bootstapContext.lookup(Registries.CONFIGURED_FEATURE);
 
 			bootstapContext.register(Placed.DECAYED_BLOCK_ORE, new PlacedFeature(lookup.getOrThrow(Configured.DECAYED_BLOCK_ORE), List.of(CountPlacement.of(4), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(79)), InSquarePlacement.spread(), BiomeFilter.biome())));

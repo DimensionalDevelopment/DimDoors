@@ -4,18 +4,18 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    forge()
+    neoForge()
 }
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
-    forge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+    neoForge {
+//        convertAccessWideners = true
+//        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-        mixinConfig "dimdoors-common.mixins.json"
-        mixinConfig "dimdoors.mixins.json"
+//        mixinConfig "dimdoors-common.mixins.json"
+//        mixinConfig "dimdoors.mixins.json"
     }
 }
 
@@ -27,11 +27,18 @@ configurations {
     developmentForge.extendsFrom common
 }
 
+repositories {
+    maven {
+        name = 'NeoForged'
+        url = 'https://maven.neoforged.net/releases'
+    }
+}
+
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
     // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
-    modApi "me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config}"
+    modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
+    modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config}"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
@@ -44,9 +51,9 @@ dependencies {
 //    modApi "lol.bai:badpackets:forge-0.4.2"
 //    modApi "com.sk89q.worldedit:worldedit-forge-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:$rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:$rei_version"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:$rei_version"
 
 //    modApi("curse.maven:jei-${project.properties["jei_project"]}:${project.properties["jei_forge"]}")
 }
@@ -90,11 +97,11 @@ remapJar {
 
 jar.archiveClassifier = "dev"
 
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
+//sourcesJar {
+//    def commonSources = project(":common").sourcesJar
+//    dependsOn commonSources
+//    from commonSources.archiveFile.map { zipTree(it) }
+//}
 
 components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {

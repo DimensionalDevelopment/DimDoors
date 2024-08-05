@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.decay.conditions;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.world.decay.DecaySource;
 import java.util.Set;
 
 public class SimpleDecayCondition extends GenericDecayCondition<Block> {
-    public static final Codec<SimpleDecayCondition> CODEC = createCodec(SimpleDecayCondition::new, Registries.BLOCK);
+    public static final MapCodec<SimpleDecayCondition> CODEC = createCodec(SimpleDecayCondition::new, Registries.BLOCK);
 
     public static final String KEY = "block";
 

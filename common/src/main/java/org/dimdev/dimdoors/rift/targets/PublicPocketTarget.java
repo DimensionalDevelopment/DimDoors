@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
@@ -9,7 +9,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PublicPocketTarget extends WrappedDestinationTarget {
-	public static final Codec<PublicPocketTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", null).forGetter(a -> a.wrappedDestination)).apply(instance, PublicPocketTarget::new));
+	public static final MapCodec<PublicPocketTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", null).forGetter(a -> a.wrappedDestination)).apply(instance, PublicPocketTarget::new));
 
 	private PublicPocketTarget(VirtualTarget wrappedDestination) {
 		super(wrappedDestination);
