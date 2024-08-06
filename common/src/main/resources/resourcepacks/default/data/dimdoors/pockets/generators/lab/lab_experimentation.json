@@ -14,12 +14,12 @@
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
-      "ids": [1],
+      "ids": [0],
       "rift_data": "dimdoors:rift_data/pocket_entrance"
     },
     {
       "type": "dimdoors:template",
-      "ids": [2],
+      "ids": [1],
       "templateId": "dimdoors:lab/labfinal"
     }
   ]
