@@ -33,13 +33,13 @@ public class Plane {
     private static void drawVertex(org.joml.Matrix4f model, VertexConsumer vc, Vector4f vector, int u, int v, RGBA color) {
         double scalar = 1d / (vector.getW() + 1);
         Vector3f scaled = vector.toVector3().mul(scalar);
-        vc.vertex(model, scaled.getX(), scaled.getY(), scaled.getZ())
-                .color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
-                .uv(u, v)
-                .overlayCoords(0)
-                .uv2(LightTexture.FULL_BRIGHT)
-                .normal(0,0, 0)
-                .endVertex();
+        vc.addVertex(model, scaled.getX(), scaled.getY(), scaled.getZ())
+                .setColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha())
+                .setUv(u, v)
+                .setOverlay(0)
+                .setLight(LightTexture.FULL_BRIGHT)
+                .setNormal(0,0, 0)
+                /*.endVertex()*/;
     }
 
     private static Vector4f rotXW(Vector4f v, double angle) {

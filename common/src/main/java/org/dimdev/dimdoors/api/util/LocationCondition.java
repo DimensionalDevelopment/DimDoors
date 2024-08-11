@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.api.util;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -23,7 +24,7 @@ public interface LocationCondition {
     public enum AlwaysTrue implements LocationCondition {
         INSTANCE;
 
-        public static final Codec<LocationCondition> CODEC = Codec.unit(INSTANCE);
+        public static final MapCodec<LocationCondition> CODEC = MapCodec.unit(INSTANCE);
 
         @Override
         public boolean test(Location location) {
@@ -36,7 +37,7 @@ public interface LocationCondition {
         }
     }
 
-    public record LocationConditionType<T extends LocationCondition>(Codec<T> codec) {
+    public record LocationConditionType<T extends LocationCondition>(MapCodec<T> codec) {
         public static final Registrar<LocationConditionType<? extends LocationCondition>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<LocationConditionType<? extends LocationCondition>>builder(DimensionalDoors.id("location_condition_type")).build();
 
 
@@ -47,7 +48,7 @@ public interface LocationCondition {
         public static void register() {
         }
 
-        static <T, V, U extends LocationCondition> RegistrySupplier<LocationConditionType<U>> register(ResourceLocation id, Codec<U> codec) {
+        static <T, V, U extends LocationCondition> RegistrySupplier<LocationConditionType<U>> register(ResourceLocation id, MapCodec<U> codec) {
             return REGISTRY.register(id, () -> new LocationConditionType<>(codec));
         }
     }

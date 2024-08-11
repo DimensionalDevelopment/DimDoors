@@ -24,7 +24,6 @@ import net.minecraft.world.level.material.Fluids;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -275,9 +274,9 @@ public class LimboDecayProvider implements DataProvider {
 		Function<Block, Block> waxed = block -> {
 			ResourceLocation id = getId(block);
 
-			return getBlock(new ResourceLocation(id.getNamespace(), "waxed_" + id.getPath()));
+			return getBlock(ResourceLocation.tryBuild(id.getNamespace(), "waxed_" + id.getPath()));
 		};
-		Function<Block, ResourceLocation> id = block -> new ResourceLocation("dimdoors:" + getId(block).getPath());
+		Function<Block, ResourceLocation> id = block -> ResourceLocation.tryParse("dimdoors:" + getId(block).getPath());
 
 		Block regularWaxed = waxed.apply(regular);
 		Block exposedWaxed = waxed.apply(exposed);
@@ -323,10 +322,9 @@ public class LimboDecayProvider implements DataProvider {
 		return new DecayPatternData(id, new DecayPattern(List.of(getPredicate(before)), new DoubleBlockDecayResult(1, DEFAULT, after)));
 	}
 
-    public static record DecayPatternData(ResourceLocation id, DecayPattern pattern) {
-
-        public void run(BiConsumer<ResourceLocation, JsonObject> consumer) {
-            JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(pattern).getOrThrow(false, DataProvider.LOGGER::error);
+    public record DecayPatternData(ResourceLocation id, DecayPattern pattern) {
+		public void run(BiConsumer<ResourceLocation, JsonObject> consumer) {
+            JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(pattern).getOrThrow();
 
             consumer.accept(id, object.getAsJsonObject());
         }

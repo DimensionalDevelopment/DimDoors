@@ -39,7 +39,7 @@ public abstract class RegistryVertex {
 	}
 
 	public static RegistryVertex fromNbt(CompoundTag nbt) {
-		return Objects.requireNonNull(REGISTRY.get(new ResourceLocation(nbt.getString("type")))).fromNbt(nbt);
+		return Objects.requireNonNull(REGISTRY.get(ResourceLocation.tryParse(nbt.getString("type")))).fromNbt(nbt);
 	}
 
 	public static CompoundTag toNbt(RegistryVertex registryVertex) {

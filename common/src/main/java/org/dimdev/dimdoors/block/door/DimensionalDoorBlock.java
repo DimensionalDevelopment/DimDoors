@@ -238,7 +238,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 
 	@Override
-	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+	public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
 		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
 
 		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
@@ -258,7 +258,8 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 				((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 			}
 		}
-		super.playerWillDestroy(world, pos, state, player);
+
+		return super.playerWillDestroy(world, pos, state, player);
 	}
 
 	@Override

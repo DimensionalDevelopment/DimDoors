@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.item;
 
 import dev.architectury.event.CompoundEventResult;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,14 +21,12 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.item.component.CounterComponent;
+import org.dimdev.dimdoors.item.component.IdCounter;
+import org.dimdev.dimdoors.item.component.ModDataComponents;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-
-import static net.fabricmc.api.EnvType.CLIENT;
 
 public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -48,21 +45,21 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 		if (world.isClientSide) {
 			return InteractionResultHolder.fail(stack);
 		} else {
-			CounterComponent counter = CounterComponent.get(stack);
+			IdCounter counter = stack.get(ModDataComponents.ID_COUNTER.value());
 
 			if (RaycastHelper.hitsRift(hit, world)) {
 				RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 
-				if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() < counter.count()) {
-					EntityUtils.chat(player, Component.literal("Id: " + ((IdMarker) rift.getDestination()).getId()));
+				if (rift.getDestination() instanceof IdMarker idMarker && idMarker.getId() < counter.count()) {
+					EntityUtils.chat(player, Component.literal("Id: " + idMarker.getId()));
 				} else {
-					int id = counter.increment();
+					var id = stack.set(ModDataComponents.ID_COUNTER.value(), counter.increment());
 
 					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
 
-					EntityUtils.chat(player, Component.literal("Rift stripped of data and set to target id: " + id));
+					EntityUtils.chat(player, Component.literal("Rift stripped of data and set to target id: " + id.count()));
 
-					rift.setDestination(new IdMarker(id));
+					rift.setDestination(new IdMarker(id.count()));
 				}
 
 				return InteractionResultHolder.success(stack);
@@ -76,16 +73,18 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 
 	@Override
 	public CompoundEventResult<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
+		var itemstack = player.getItemInHand(hand);
+		var counter = itemstack.get(ModDataComponents.ID_COUNTER.value());
+
 		if (world.isClientSide) {
 			if (player.isShiftKeyDown()) {
-				if (CounterComponent.get(player.getItemInHand(hand)).count() != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
+				if (counter.count() != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
 					return CompoundEventResult.interruptTrue(true);
 				}
 
 				return CompoundEventResult.interruptFalse(false);
 			}
 		} else {
-			ItemStack stack = player.getItemInHand(hand);
 			if (player.isShiftKeyDown()) {
 				BlockEntity blockEntity = world.getBlockEntity(pos);
 				if (blockEntity instanceof RiftBlockEntity) {
@@ -95,10 +94,10 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 						EntityUtils.chat(player, Component.literal("Rift stripped of data and set to invalid id: -1"));
 						return CompoundEventResult.interruptTrue(false);
 					}
-				} else if (CounterComponent.get(stack).count() != 0) {
-					CounterComponent.get(stack).reset();
+				} else if (counter.count() != 0) {
+					itemstack.set(ModDataComponents.ID_COUNTER.value(), counter.reset());
 
-					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
+//					ServerPacketHandler.get((ServerPlayer) player).sync(itemS, hand);
 
 					EntityUtils.chat(player, Component.literal("Counter has been reset."));
 					return CompoundEventResult.interruptTrue(false);
@@ -109,10 +108,9 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	}
 
 	@Override
-	@Environment(CLIENT)
-	public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
 		if (I18n.exists(this.getDescriptionId() + ".info")) {
-			list.add(Component.translatable(this.getDescriptionId() + ".info"));
+			tooltipComponents.add(Component.translatable(this.getDescriptionId() + ".info"));
 		}
 	}
 }

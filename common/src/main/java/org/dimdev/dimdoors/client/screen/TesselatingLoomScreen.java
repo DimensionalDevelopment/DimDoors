@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.screen.TessellatingContainer;
 
 public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingContainer> /*implements RecipeUpdateListener*/ {
 	private static final ResourceLocation TEXTURE = DimensionalDoors.id("textures/screen/container/tesselating_loom.png");
-	private static final ResourceLocation RECIPE_BUTTON_TEXTURE = new ResourceLocation("textures/gui/recipe_button.png");
+	private static final ResourceLocation RECIPE_BUTTON_TEXTURE = ResourceLocation.tryParse("textures/gui/recipe_button.png");
 
 //	private final RecipeBookComponent recipeBook = new RecipeBookComponent();
 //	private boolean narrow;
@@ -38,7 +38,7 @@ public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingC
 
 
 	public void render(GuiGraphics matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
+		this.renderBackground(matrices, mouseX, mouseY, delta);
 //		if (this.recipeBook.isVisible() && this.narrow) {
 //			this.renderBg(matrices, delta, mouseX, mouseY);
 //			this.recipeBook.render(matrices, mouseX, mouseY, delta);

@@ -68,7 +68,7 @@ public class DimensionalDoorBlockRegistrar {
 //			init();
 //		}
 
-		if(Platform.isForge()) {
+		if(Platform.isNeoForge()) {
 			RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
 				new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
 			});
@@ -108,7 +108,7 @@ public class DimensionalDoorBlockRegistrar {
 
 		if(mappedDoorBlocks.containsKey(gennedId)) return;
 
-		Block dimBlock = registrar.register(gennedId, () -> constructor.apply(BlockBehaviour.Properties.copy((BlockBehaviour) original).requiresCorrectToolForDrops(), original)).get();
+		Block dimBlock = registrar.register(gennedId, () -> constructor.apply(BlockBehaviour.Properties.ofFullCopy((BlockBehaviour) original).requiresCorrectToolForDrops(), original)).get();
 //		ModBlockEntityTypes.ENTRANCE_RIFT.get().addBlock(dimBlock); //TODO: Add
 		mappedDoorBlocks.put(gennedId, location);
 		itemRegistrar.notifyBlockMapped((Block) original, dimBlock);

@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.api.util;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -12,6 +13,7 @@ import net.minecraft.util.valueproviders.FloatProvider;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface LocationValue {
     public Codec<LocationValue> CODEC = Codec.either(Constant.CODEC, LocationValueWithType.TYPE_CODEC).xmap(either -> either.map(constant -> constant, locationValueWithType -> locationValueWithType), value -> value instanceof Constant constant ? Either.left(constant) : Either.right((LocationValueWithType) value));
@@ -43,7 +45,7 @@ public interface LocationValue {
     }
 
     public record Simple(FloatProvider value) implements LocationValueWithType {
-        public static final Codec<Simple> CODEC = RecordCodecBuilder.create(instance -> instance.group(FloatProvider.CODEC.fieldOf("value").forGetter(Simple::value)).apply(instance, Simple::new));
+        public static final Codec<Simple> CODEC = FloatProvider.CODEC.xmap(Simple::new, Simple::value);
         @Override
         public float value(Location location, RandomSource source) {
             return value.sample(source);
@@ -65,7 +67,7 @@ public interface LocationValue {
         }
     }
 
-    public record LocationValueType<T extends LocationValueWithType>(Codec<T> codec) {
+    public record LocationValueType<T extends LocationValueWithType>(MapCodec<T> codec) {
         public static final Registrar<LocationValueType<? extends LocationValue>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<LocationValueType<? extends LocationValue>>builder(DimensionalDoors.id("location_value_type")).build();
 
         public static final Codec<LocationValueType<? extends LocationValue>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
@@ -76,7 +78,7 @@ public interface LocationValue {
         public static void register() {
         }
 
-        static <T, V, U extends LocationValueWithType> RegistrySupplier<LocationValueType<U>> register(ResourceLocation id, Codec<U> codec) {
+        static <T, V, U extends LocationValueWithType> RegistrySupplier<LocationValueType<U>> register(ResourceLocation id, MapCodec<U> codec) {
             return REGISTRY.register(id, () -> new LocationValueType<>(codec));
         }
     }

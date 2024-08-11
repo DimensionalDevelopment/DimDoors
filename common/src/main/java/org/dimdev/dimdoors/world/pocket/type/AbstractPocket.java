@@ -49,7 +49,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 
 	public V fromNbt(CompoundTag nbt) {
 		this.id = nbt.getInt("id");
-		this.world = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world")));
+		this.world = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(nbt.getString("world")));
 
 		return (V) this;
 	}

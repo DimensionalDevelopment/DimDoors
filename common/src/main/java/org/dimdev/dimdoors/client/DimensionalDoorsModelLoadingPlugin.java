@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
 import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -32,7 +31,7 @@ public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
 
                     original.getStateDefinition().getPossibleStates().forEach(blockState -> {
                         var state = copyState(context.block(), blockState);
-                        var model = context.getOrLoadModel(BlockModelShaper.stateToModelLocation(blockState));
+                        var model = context.getOrLoadModel(BlockModelShaper.stateToModelLocation(blockState).id());
                         context.setModel(state.setValue(WaterLoggableDoorBlock.WATERLOGGED, true), model);
                         context.setModel(state, model);
                     });
@@ -44,7 +43,7 @@ public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
             @Override
             public @Nullable UnbakedModel resolveModel(Context context) {
                 if(context.id().getPath().contains(PREFIX)) {
-                    return context.getOrLoadModel(DimensionalDoorsClient.childItem);
+                    return context.getOrLoadModel(DimensionalDoorsClient.childItem.id());
                 }
 
                 return null;
@@ -54,7 +53,7 @@ public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
         pluginContext.resolveModel().register(modelResolver);
 
         DimensionalDoors.getDimensionalDoorBlockRegistrar().getGennedIds().stream().filter(BuiltInRegistries.BLOCK::containsKey).map(BuiltInRegistries.BLOCK::get).forEach(block -> pluginContext.registerBlockStateResolver(block, resolver));
-        BuiltInRegistries.ITEM.registryKeySet().stream().map(ResourceKey::location).filter(a -> a.getPath().startsWith(PREFIX)).forEach(location -> pluginContext.addModels(new ModelResourceLocation(location, "inventory")));
+        BuiltInRegistries.ITEM.registryKeySet().stream().map(ResourceKey::location).filter(a -> a.getPath().startsWith(PREFIX)).forEach(pluginContext::addModels);
     }
 
 }

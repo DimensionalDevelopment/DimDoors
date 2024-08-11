@@ -53,7 +53,7 @@ public class VirtualLocation {
 
 	public static VirtualLocation fromNbt(CompoundTag nbt) {
 		return new VirtualLocation(
-				ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
+				ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(nbt.getString("world"))),
 				nbt.getInt("x"),
 				nbt.getInt("z"),
 				nbt.getInt("depth")

@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.pocket;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.WorldGenRegion;
@@ -19,10 +19,9 @@ import net.minecraft.world.level.levelgen.blending.Blender;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public class BlankChunkGenerator extends ChunkGenerator {
-	public static final Codec<BlankChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
+	public static final MapCodec<BlankChunkGenerator> CODEC = RecordCodecBuilder.mapCodec((instance) ->
 					instance.group(BiomeSource.CODEC.fieldOf("biome_source")
 							.forGetter((generator) -> generator.biomeSource)
 			).apply(instance, instance.stable(BlankChunkGenerator::of))
@@ -37,7 +36,7 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public Codec<? extends ChunkGenerator> codec() {
+	public MapCodec<? extends ChunkGenerator> codec() {
 		return CODEC;
 	}
 
@@ -62,8 +61,8 @@ public class BlankChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunkAccess) {
-		return CompletableFuture.supplyAsync(() -> chunkAccess);
+	public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess chunk) {
+		return CompletableFuture.supplyAsync(() -> chunk);
 	}
 
 	@Override

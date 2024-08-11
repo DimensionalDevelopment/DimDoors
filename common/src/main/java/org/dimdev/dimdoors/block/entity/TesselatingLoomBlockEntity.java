@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -13,7 +14,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -22,16 +22,11 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.RecipeHolder;
+import net.minecraft.world.inventory.RecipeCraftingHolder;
 import net.minecraft.world.inventory.StackedContentsCompatible;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -44,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer, RecipeHolder, StackedContentsCompatible {
+public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer, RecipeCraftingHolder, RecipeInput, StackedContentsCompatible {
 	public static final int DATA_WEAVING_TIME = 0;
 	public static final int DATA_WEAVING_TIME_TOTAL = 1;
 	public static final int NUM_DATA_VALUES = 2;
@@ -86,7 +81,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 	public NonNullList<ItemStack> inventory;
 	public ItemStack output = ItemStack.EMPTY;
-	private TesselatingRecipe cachedRecipe;
+	private RecipeHolder<?> cachedRecipe;
 	private final List<TessellatingContainer> openContainers = new ArrayList<>();
 
 	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
@@ -98,21 +93,22 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag nbt) {
-		super.saveAdditional(nbt);
+	protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+		super.saveAdditional(nbt, registries);
 		CompoundTag inventoryTag = new CompoundTag();
-		ContainerHelper.saveAllItems(inventoryTag, inventory);
-		inventoryTag.put("Output", output.save(new CompoundTag()));
+		ContainerHelper.saveAllItems(inventoryTag, inventory, registries);
+		inventoryTag.put("Output", output.save(registries));
 		nbt.put(INVENTORY_TAG, inventoryTag);
 		nbt.putInt(WEAVE_TIME_TAG, this.weaveTime);
 		nbt.putInt(WEAVE_TIME_TOTAL_TAG, this.weaveTimeTotal);
 	}
 
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
+	@Override
+	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
+		super.loadAdditional(nbt, registries);
 		CompoundTag inventoryTag = nbt.getCompound(INVENTORY_TAG);
-		ContainerHelper.saveAllItems(inventoryTag, this.inventory);
-		this.output = ItemStack.of(inventoryTag.getCompound("Output"));
+		ContainerHelper.saveAllItems(inventoryTag, this.inventory, registries);
+		this.output = ItemStack.parseOptional(registries, inventoryTag.getCompound("Output"));
 		this.weaveTime = nbt.getInt(WEAVE_TIME_TAG);
 		this.weaveTimeTotal = nbt.getInt(WEAVE_TIME_TOTAL_TAG);
 	}
@@ -173,6 +169,11 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	@Override
+	public int size() {
+		return 3;
+	}
+
+	@Override
 	public ItemStack removeItem(int slot, int amount) {
 		if (slot == 9) {
 			return output.split(amount);
@@ -219,12 +220,12 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	@Override
-	public void setRecipeUsed(Recipe<?> recipe) {
-		if(recipe instanceof TesselatingRecipe tesselatingRecipe) cachedRecipe = tesselatingRecipe;
+	public void setRecipeUsed(@Nullable RecipeHolder<?> recipe) {
+		if(recipe.value() instanceof TesselatingRecipe) cachedRecipe = recipe;
 	}
 
 	@Override
-	public Recipe<?> getRecipeUsed() {
+	public RecipeHolder<?> getRecipeUsed() {
 		return cachedRecipe;
 	}
 
@@ -238,28 +239,29 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		if (this.level == null || this.isEmpty()) return Optional.empty();
 
 		if (cachedRecipe != null) {
-			TesselatingRecipe mapRecipe = getRecipe(cachedRecipe.getId());
-			if (mapRecipe != null && mapRecipe.matches(this, level)) {
-				return Optional.of((TesselatingRecipe) cachedRecipe);
+			Optional<RecipeHolder<?>> mapRecipe = getRecipe(cachedRecipe.id());
+			if (mapRecipe.isPresent() && mapRecipe.get().value() instanceof TesselatingRecipe recipe && recipe.matches(this, level)) {
+				return Optional.of((TesselatingRecipe) cachedRecipe.value());
 			}
 		}
 		return getRecipe();
 	}
 
-	public <T extends TesselatingRecipe> TesselatingRecipe getRecipe(ResourceLocation location) {
+	public Optional<RecipeHolder<?>> getRecipe(ResourceLocation location) {
 		var manager = this.level.getRecipeManager();
 
-		TesselatingRecipe recipe = manager.byType(ModRecipeTypes.SHAPED_TESSELATING.get()).get(location);
+//		TesselatingRecipe recipe = manager..byType(ModRecipeTypes.SHAPED_TESSELATING.get()).get(location);
+//
+//		if(recipe == null) {
+//			recipe = manager.byType(ModRecipeTypes.SHAPELESS_TESSELATING.get()).get(location);
+//		}
 
-		if(recipe == null) {
-			recipe = manager.byType(ModRecipeTypes.SHAPELESS_TESSELATING.get()).get(location);
-		}
-
-		return recipe;
+//		return recipe;
+		return manager.byKey(location).filter(a -> a.value() instanceof TesselatingRecipe);
 
 	}
 
-	public Optional<? extends TesselatingRecipe> getRecipe() {
+	public Optional<RecipeHolder<?>> getRecipe() {
 		var manager = this.level.getRecipeManager();
 
 		var recipe = manager.getRecipeFor(ModRecipeTypes.SHAPED_TESSELATING.get(), this, level);
@@ -274,7 +276,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	public void serverTick() {
 		var recipe = getRecipe().orElse(null);
 
-		if(cachedRecipe == null || cachedRecipe != recipe) {
+		if(cachedRecipe == null || cachedRecipe.value() != recipe) {
 			cachedRecipe = recipe;
 			weaveTimeTotal = getWeavingTotalTime();
 		}
@@ -295,7 +297,8 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 
 	private void tryWeave() {
-		var output = cachedRecipe.assemble(this, level.registryAccess());
+		var recipe = (TesselatingRecipe) cachedRecipe.value();
+		var output = recipe.assemble(this, level.holderLookup().registryAccess().asGetterLookup());
 
 		if(canAcceptOutput(output)) {
 			weaveTime++;
@@ -323,7 +326,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 			for (int slot : OUTPUT_SLOTS) {
 				var existing = getItem(slot);
 
-				if(!existing.isEmpty() && ItemStack.isSameItemSameTags(output, existing)) {
+				if(!existing.isEmpty() && ItemStack.isSameItemSameComponents(output, existing)) {
 					var total = existing.getCount() + output.getCount();
 
 					if(total <= existing.getMaxStackSize()) {
@@ -373,7 +376,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 			if(existing.isEmpty()) return true;
 
-			if(output.isStackable() && ItemStack.isSameItemSameTags(existing, output)) {
+			if(output.isStackable() && ItemStack.isSameItemSameComponents(existing, output)) {
 				if(existing.getCount() + remianingOutput <= existing.getMaxStackSize()) {
 					return true;
 				} else if(existing.getCount() < existing.getMaxStackSize()) {
@@ -395,22 +398,23 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		return this.saveWithFullMetadata();
+	public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+		return this.saveWithFullMetadata(registries);
 	}
 
-	public void awardUsedRecipesAndPopExperience(ServerPlayer player) {
-		List<Recipe<?>> list = this.getRecipesToAwardAndPopExperience(player.serverLevel(), player.position());
+	@Override
+	public void awardUsedRecipes(Player player, List<ItemStack> items) {
+		List<RecipeHolder<?>> list = this.getRecipesToAwardAndPopExperience((ServerLevel) player.level(), player.position());
 		player.awardRecipes(list);
 		this.recipesUsed.clear();
 	}
 
-	public List<Recipe<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 popVec) {
-		ArrayList<Recipe<?>> list = Lists.newArrayList();
+	public List<RecipeHolder<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 popVec) {
+		ArrayList<RecipeHolder<?>> list = Lists.newArrayList();
 		for (Object2IntMap.Entry entry : this.recipesUsed.object2IntEntrySet()) {
 			level.getRecipeManager().byKey((ResourceLocation)entry.getKey()).ifPresent(recipe -> {
-				list.add((Recipe<?>)recipe);
-				createExperience(level, popVec, entry.getIntValue(), ((AbstractCookingRecipe)recipe).getExperience());
+				list.add(recipe);
+//				createExperience(level, popVec, entry.getIntValue(), ((TesselatingRecipe) recipe.value()).getExperience());
 			});
 		}
 		return list;

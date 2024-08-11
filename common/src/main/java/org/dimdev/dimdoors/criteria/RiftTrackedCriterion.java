@@ -1,31 +1,27 @@
 package org.dimdev.dimdoors.criteria;
 
-import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.*;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import org.dimdev.dimdoors.DimensionalDoors;
 
-public class RiftTrackedCriterion extends SimpleCriterionTrigger<RiftTrackedCriterion.Conditions> {
-	public static final ResourceLocation ID = DimensionalDoors.id("rift_tracked");
+import java.util.Optional;
 
-	@Override
-	protected Conditions createInstance(JsonObject obj, ContextAwarePredicate playerPredicate, DeserializationContext predicateDeserializer) {
-		return new Conditions(playerPredicate);
+public class RiftTrackedCriterion extends SimpleCriterionTrigger<RiftTrackedCriterion.TriggerInstance> {
+	public static final String ID = "rift_tracked";
+
+	public Codec<TriggerInstance> codec() {
+		return TriggerInstance.CODEC;
 	}
 
 	public void trigger(ServerPlayer player) {
 		this.trigger(player, t -> true);
 	}
 
-	@Override
-	public ResourceLocation getId() {
-		return ID;
-	}
 
-	public static class Conditions extends AbstractCriterionTriggerInstance {
-		public Conditions(ContextAwarePredicate playerPredicate) {
-			super(ID, playerPredicate);
-		}
+	public static record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleInstance {
+		public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create((instance) -> instance.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player)).apply(instance, TriggerInstance::new));
 	}
 }

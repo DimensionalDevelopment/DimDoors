@@ -1,17 +1,15 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
-import java.util.function.Consumer;
-
 public class TesselatingRecipeProvider {
-	public static void generate(Consumer<FinishedRecipe> exporter) {
+	public static void generate(RecipeOutput exporter) {
 		TesselatingRecipeJsonBuilder.create(ModItems.STABLE_FABRIC.get())
 				.pattern("XX")
 				.pattern("XX")

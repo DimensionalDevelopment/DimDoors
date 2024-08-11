@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block;
 
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.menu.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,6 +34,8 @@ import java.util.function.Consumer;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
 public class TesselatingLoomBlock extends BaseEntityBlock {
+	public static final MapCodec<TesselatingLoomBlock> CODEC = simpleCodec(TesselatingLoomBlock::new);
+
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 	private static final String DISPLAY_NAME = "";
 
@@ -40,6 +43,11 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 		super(builder);
 
 		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH));
+	}
+
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec() {
+		return CODEC;
 	}
 
 	@Override

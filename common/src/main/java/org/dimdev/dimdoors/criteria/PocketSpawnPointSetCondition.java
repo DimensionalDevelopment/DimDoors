@@ -1,31 +1,27 @@
 package org.dimdev.dimdoors.criteria;
 
-import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.*;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import org.dimdev.dimdoors.DimensionalDoors;
 
-public class PocketSpawnPointSetCondition extends SimpleCriterionTrigger<PocketSpawnPointSetCondition.Conditions> {
-	public static final ResourceLocation ID = DimensionalDoors.id("pocket_spawn_point_set");
+import java.util.Optional;
 
-	@Override
-	protected Conditions createInstance(JsonObject jsonObject, ContextAwarePredicate composite, DeserializationContext deserializationContext) {
-		return new Conditions(composite);
-	}
+public class PocketSpawnPointSetCondition extends SimpleCriterionTrigger<PocketSpawnPointSetCondition.TriggerInstance> {
+	public static final String ID = "pocket_spawn_point_set";
 
 	public void trigger(ServerPlayer player) {
 		this.trigger(player, t -> true);
 	}
 
 	@Override
-	public ResourceLocation getId() {
-		return ID;
+	public Codec<TriggerInstance> codec() {
+		return TriggerInstance.CODEC;
 	}
 
-	public static class Conditions extends AbstractCriterionTriggerInstance {
-		public Conditions(ContextAwarePredicate playerPredicate) {
-			super(ID, playerPredicate);
-		}
+	public static record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleInstance {
+		public static final Codec<PocketSpawnPointSetCondition.TriggerInstance> CODEC = RecordCodecBuilder.create((instance) -> instance.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(PocketSpawnPointSetCondition.TriggerInstance::player)).apply(instance, PocketSpawnPointSetCondition.TriggerInstance::new));
 	}
 }

@@ -14,6 +14,7 @@ import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -89,7 +90,7 @@ public class DimensionalDoors {
 	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
 
 	public static ResourceLocation id(String id) {
-		return new ResourceLocation(MOD_ID, id);
+		return ResourceLocation.tryBuild(MOD_ID, id);
 	}
 
 	public static MinecraftServer getServer() {
@@ -113,7 +114,7 @@ public class DimensionalDoors {
 		throw new RuntimeException();
 	}
 
-	public static final NetworkChannel NETWORK = NetworkChannel.create(DimensionalDoors.id("server"));
+	public static final NetworkChannel NETWORK = NetworkChannel.create(DimensionalDoors.id("server")); //TODO: Replace
 
 	public static void init() {
 		dimDoorsMod = Platform.getMod(MOD_ID);
@@ -242,4 +243,8 @@ public class DimensionalDoors {
 			}
 		}
 	}
+
+    public static <T> ResourceKey<T> key(ResourceKey<Registry<T>> registryResourceKey, String name) {
+		return ResourceKey.create(registryResourceKey, DimensionalDoors.id(name));
+    }
 }

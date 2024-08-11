@@ -4,9 +4,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
@@ -28,12 +27,12 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
+import org.dimdev.dimdoors.item.component.ModDataComponents;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -49,11 +48,12 @@ public class RiftSignatureItem extends Item {
 
 	@Override
 	public boolean isFoil(ItemStack stack) {
-		return stack.getTag() != null && stack.getTag().contains("destination");
+		return stack.has(ModDataComponents.DESTINATION.value());
 	}
 
 	@Override
 	public InteractionResult useOn(UseOnContext itemUsageContext) {
+
 		Player player = itemUsageContext.getPlayer();
 		Level world = itemUsageContext.getLevel();
 		// get block one block above the clicked block
@@ -62,6 +62,9 @@ public class RiftSignatureItem extends Item {
 		BlockState state = world.getBlockState(pos);
 		Direction side = itemUsageContext.getClickedFace();
 
+		if (world.isClientSide) {
+			return InteractionResult.SUCCESS;
+		}
 
 		ItemStack stack = player.getItemInHand(hand);
 		var placedRiftLogic = PlacementLogic.getLogic(world, pos);
@@ -79,10 +82,6 @@ public class RiftSignatureItem extends Item {
 		// Fail if the player can't place a block there
 		if (!player.mayUseItemAt(pos, side.getOpposite(), stack) || placedRiftLogic == null) {
 			return InteractionResult.FAIL;
-		}
-
-		if (world.isClientSide) {
-			return InteractionResult.SUCCESS;
 		}
 
 		if(ModDimensions.isPrivatePocketDimension(world) && !DimensionalDoors.getConfig().getPocketsConfig().canUseRiftSignatureInPrivatePockets) {
@@ -137,7 +136,7 @@ public class RiftSignatureItem extends Item {
 			// Place a rift at the target point
 
 
-			stack.hurtAndBreak(1, player, a -> {}); // TODO: calculate damage based on position?
+			stack.hurtAndBreak(1, (ServerLevel) itemUsageContext.getLevel(), (ServerPlayer) player, a -> {}); // TODO: calculate damage based on position?
 			if(shouldclear){
 				clearSource(stack);
 			}
@@ -150,26 +149,19 @@ public class RiftSignatureItem extends Item {
 	}
 
 	public static void setSource(ItemStack itemStack, RotatedLocation destination) {
-		if (!itemStack.hasTag()) itemStack.setTag(new CompoundTag());
-		itemStack.getTag().put("destination", RotatedLocation.serialize(destination));
+		itemStack.set(ModDataComponents.DESTINATION.value(), destination);
 	}
 
 	public static void clearSource(ItemStack itemStack) {
-		if (itemStack.hasTag()) {
-			itemStack.getTag().remove("destination");
-		}
+		itemStack.remove(ModDataComponents.DESTINATION.value());
 	}
 
 	public static RotatedLocation getSource(ItemStack itemStack) {
-		if (itemStack.hasTag() && itemStack.getTag().contains("destination")) {
-			return RotatedLocation.deserialize(itemStack.getTag().getCompound("destination"));
-		} else {
-			return null;
-		}
+		return itemStack.get(ModDataComponents.DESTINATION.value());
 	}
 
 	@Override
-	public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag tooltipContext) {
+	public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> list, TooltipFlag tooltipFlag) {
 		RotatedLocation transform = getSource(itemStack);
 		if (transform != null) {
 			list.add(Component.translatable(this.getDescriptionId() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().location()));

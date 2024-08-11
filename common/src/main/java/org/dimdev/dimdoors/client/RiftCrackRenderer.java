@@ -71,22 +71,22 @@ public final class RiftCrackRenderer {
         y *= scale;
         z *= scale;
 
-        vc.vertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter))
-                .color(0.08f, 0.08f, 0.08f, .3f)
-                .uv(0, 0)
-                .overlayCoords(0)
-                .uv2(0)
-                .normal(0, 0, 0)
-                .endVertex();
+        vc.addVertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter))
+                .setColor(0.08f, 0.08f, 0.08f, .3f)
+                .setUv(0, 0)
+                .setOverlay(0)
+                .setLight(0)
+                .setNormal(0, 0, 0)
+                /*.endVertex()*/;
 
         if(twice) {
-            vc.vertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter))
-                    .color(0.08f, 0.08f, 0.08f, .3f)
-                    .uv(0, 0)
-                    .overlayCoords(0)
-                    .uv2(0)
-                    .normal(0, 0, 0)
-                    .endVertex();
+            vc.addVertex(model, (float) (x + xJitter), (float) (y + yJitter), (float) (z + zJitter))
+                    .setColor(0.08f, 0.08f, 0.08f, .3f)
+                    .setUv(0, 0)
+                    .setOverlay(0)
+                    .setLight(0)
+                    .setNormal(0, 0, 0)
+                    /*.endVertex()*/;
         }
     }
 }

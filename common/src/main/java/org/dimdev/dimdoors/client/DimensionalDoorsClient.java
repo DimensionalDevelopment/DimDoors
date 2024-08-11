@@ -18,6 +18,7 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
@@ -56,12 +57,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static net.minecraft.client.resources.model.ModelResourceLocation.inventory;
 import static org.dimdev.dimdoors.particle.ModParticleTypes.*;
 
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClient {
 	private static final ConfigEntryBuilder ENTRY_BUILDER = ConfigEntryBuilder.create();
-	public static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
+	public static final ModelResourceLocation childItem = inventory(DimensionalDoors.id("item/child_item"));
 
 	public static ShaderPackDetector detector = () -> false;
 
@@ -111,7 +113,7 @@ public class DimensionalDoorsClient {
         consumer.accept(ModEntityTypes.MASK.get(), context -> new EntityRenderer<MaskEntity>(context) {
 			@Override
 			public ResourceLocation getTextureLocation(MaskEntity entity) {
-				return new ResourceLocation("blep");
+				return ResourceLocation.tryParse("blep");
 			}
 		});
 	}

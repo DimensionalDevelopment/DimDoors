@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.api.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.Vec3i;
@@ -13,7 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.border.WorldBorder;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.stat.ModStats;
@@ -72,7 +71,7 @@ public final class TeleportUtil {
 			if (entity.level().dimension().equals(world.dimension())) {
 				serverPlayer.connection.teleport(pos.x(), pos.y(), pos.z(), yaw, pitch);
 			} else {
-				entity = teleport(entity, (ServerLevel) world, new PortalInfo(pos, velocity, yaw, pitch));
+				entity = teleport(entity, (ServerLevel) world, pos, velocity, yaw, pitch);
 			}
 
 			serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity.getId(), velocity));
@@ -85,7 +84,7 @@ public final class TeleportUtil {
 			if (entity.level().dimension().equals(world.dimension())) {
 				entity.moveTo(pos.x(), pos.y(), pos.z(), yaw, pitch);
 			} else {
-				entity = teleport(entity, (ServerLevel) world, new PortalInfo(pos, velocity, yaw, pitch));
+				entity = teleport(entity, (ServerLevel) world, pos, velocity, yaw, pitch);
 			}
 		}
 		entity.setDeltaMovement(velocity);
@@ -144,8 +143,7 @@ public final class TeleportUtil {
 		);
 	}
 
-	@ExpectPlatform
-	public static <E extends Entity> E teleport(E entity, ServerLevel world, PortalInfo portalInfo) {
-		throw new RuntimeException();
+	public static <E extends Entity> E teleport(E entity, ServerLevel world, Vec3 pos, Vec3 velocity, float yaw, float pitch) {
+		return (E) entity.changeDimension(new DimensionTransition(world, pos, velocity, yaw, pitch, arg -> {}));
 	}
 }

@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.item.door;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -21,7 +19,6 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
 import org.dimdev.dimdoors.item.RaycastHelper;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -42,11 +39,10 @@ public class DimensionalDoorItem extends BlockItem {
 		this.hasToolTip = hasToolTip;
 	}
 
-	@Environment(EnvType.CLIENT)
 	@Override
-	public void appendHoverText(ItemStack itemStack,  @Nullable Level world, List<Component> list, TooltipFlag tooltipContext) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
 		if(hasToolTip) {
-			ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
+			ToolTipHelper.processTranslation(tooltipComponents, this.getDescriptionId() + ".info");
 		}
 	}
 

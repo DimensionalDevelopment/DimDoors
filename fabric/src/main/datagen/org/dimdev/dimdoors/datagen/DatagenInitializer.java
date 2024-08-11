@@ -32,7 +32,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 		var pack = generator.createPack();
 
 		pack.addProvider(DimDoorsModelProvider::new);
-		pack.addProvider((DataProvider.Factory<DataProvider>) DimdoorsRecipeProvider::new);
+		pack.addProvider(DimdoorsRecipeProvider::new);
 		pack.addProvider(AdvancementProvider::new);
 		pack.addProvider(org.dimdev.dimdoors.datagen.LootTableProvider::new);
 		pack.addProvider((DataProvider.Factory<DataProvider>) org.dimdev.dimdoors.datagen.LimboDecayProvider::new);

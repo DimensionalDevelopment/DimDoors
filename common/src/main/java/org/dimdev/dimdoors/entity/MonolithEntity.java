@@ -25,6 +25,7 @@ import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.jetbrains.annotations.NotNull;
 
 public class MonolithEntity extends Mob {
     public static final int MAX_AGGRO = 250;
@@ -110,13 +111,12 @@ public class MonolithEntity extends Mob {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
         // Add a short for the aggro level
-        this.entityData.define(AGGRO, 0);
-		this.entityData.define(SCALE, 1f);
-		this.entityData.define(PITCH, 1f);
-        this.entityData.define(SOLID, true);
+        builder.define(AGGRO, 0)
+                .define(SCALE, 1f).define(PITCH, 1f)
+                .define(SOLID, true);
 		this.refreshDimensions();
     }
 
@@ -223,15 +223,15 @@ public class MonolithEntity extends Mob {
         this.soundTime--;
     }
 
-    @Override
-    public float getEyeHeight(Pose pose) {
-        return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
-    }
-
-	@Override
-	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
-		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
-	}
+//    @Override
+//    public float getEyeHeight(Pose pose) {
+//        return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
+//    }
+//
+//    @Override
+//	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+//		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
+//	}
 
     public float getAggroProgress() {
         return ((float) getAggro()) / MAX_AGGRO;
@@ -306,9 +306,9 @@ public class MonolithEntity extends Mob {
 	}
 
     @Override
-    protected AABB getBoundingBoxForPose(Pose pose) {
+    public @NotNull AABB getLocalBoundsForPose(Pose pose) {
         float scale = getScale();
-		return super.getBoundingBoxForPose(pose).inflate(scale, scale, scale);
+		return super.getLocalBoundsForPose(pose).inflate(scale, scale, scale);
 	}
 
 	@Override

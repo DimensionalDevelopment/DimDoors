@@ -158,27 +158,27 @@ public class Schematic {
 	}
 
 	public static Schematic fromNbt(CompoundTag nbt) {
-		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow(false, PRINT_TO_STDERR).getFirst();
+		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
 	}
 
 	public static CompoundTag toNbt(Schematic schem) {
-		return (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, schem).getOrThrow(false, PRINT_TO_STDERR);
+		return (CompoundTag) CODEC.encodeStart(NbtOps.INSTANCE, schem).getOrThrow();
 	}
 
 	public static Schematic fromJson(JsonObject json) {
-		return CODEC.decode(JsonOps.INSTANCE, json).getOrThrow(false, PRINT_TO_STDERR).getFirst();
+		return CODEC.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
 	}
 
 	public static JsonObject toJson(Schematic schem) {
-		return (JsonObject) CODEC.encodeStart(JsonOps.INSTANCE, schem).getOrThrow(false, PRINT_TO_STDERR);
+		return (JsonObject) CODEC.encodeStart(JsonOps.INSTANCE, schem).getOrThrow();
 	}
 
 	public static <T> Schematic fromDynamic(Dynamic<T> dynamic) {
-		return CODEC.parse(dynamic).getOrThrow(false, PRINT_TO_STDERR);
+		return CODEC.parse(dynamic).getOrThrow();
 	}
 
 	public static <T> Dynamic<T> toDynamic(Schematic schem, DynamicOps<T> ops) {
-		return new Dynamic<>(ops,CODEC.encodeStart(ops, schem).getOrThrow(false, PRINT_TO_STDERR));
+		return new Dynamic<>(ops,CODEC.encodeStart(ops, schem).getOrThrow());
 	}
 
 	@Override

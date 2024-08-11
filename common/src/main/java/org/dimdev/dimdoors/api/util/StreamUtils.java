@@ -1,22 +1,20 @@
 package org.dimdev.dimdoors.api.util;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadInfo;
-import java.lang.management.ThreadMXBean;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
+import net.minecraft.ReportType;
+import net.minecraft.ReportedException;
+import net.minecraft.server.Bootstrap;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.ReportedException;
-import net.minecraft.server.Bootstrap;
-import org.dimdev.dimdoors.DimensionalDoors;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+import java.util.Arrays;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Utility class for processing data in parallel.
@@ -56,7 +54,7 @@ public class StreamUtils {
         }
 
         if (cause instanceof ReportedException) {
-            Bootstrap.realStdoutPrintln(((ReportedException) cause).getReport().getFriendlyReport());
+            Bootstrap.realStdoutPrintln(((ReportedException) cause).getReport().getFriendlyReport(ReportType.CRASH));
             System.exit(-1);
         }
 

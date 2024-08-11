@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.client;
 
 import com.flowpowered.math.vector.VectorNi;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -54,7 +53,7 @@ public class MyRenderLayer extends RenderType {
 	);
 
     public static RenderType TESSERACT = RenderType.create("tesseract",
-			DefaultVertexFormat.POSITION_COLOR_TEX,
+			DefaultVertexFormat.POSITION_TEX_COLOR,
 			VertexFormat.Mode.QUADS,
 			256,
 			false,
@@ -66,7 +65,7 @@ public class MyRenderLayer extends RenderType {
 							false,
 							false)
 					)
-					.setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)
+					.setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
 					.createCompositeState(false)
 	);
 

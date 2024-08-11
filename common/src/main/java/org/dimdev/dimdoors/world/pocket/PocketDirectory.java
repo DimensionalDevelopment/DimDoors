@@ -46,7 +46,7 @@ public class PocketDirectory {
 	}
 
 	public static PocketDirectory readFromNbt(String id, CompoundTag nbt) {
-		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(id)));
+		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(id)));
 		// no need to parallelize
 		directory.gridSize = nbt.getInt("grid_size");
 		directory.privatePocketSize = nbt.getInt("private_pocket_size");

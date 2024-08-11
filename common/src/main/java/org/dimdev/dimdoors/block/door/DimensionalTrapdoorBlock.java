@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 // TODO: Make this placeable on rifts
 public class DimensionalTrapdoorBlock extends TrapDoorBlock implements RiftProvider<EntranceRiftBlockEntity> {
 	public DimensionalTrapdoorBlock(BlockBehaviour.Properties settings, BlockSetType setType) {
-		super(settings, setType);
+		super(setType, settings);
 	}
 
 	@Override

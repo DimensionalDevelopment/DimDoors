@@ -9,19 +9,18 @@ import dev.onyxstudios.cca.api.v3.item.ItemComponentInitializer;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentInitializer;
 import org.dimdev.dimdoors.item.ModItems;
-import org.dimdev.dimdoors.item.component.fabric.CounterComponentImpl;
 import org.dimdev.dimdoors.world.level.component.fabric.ChunkLazilyGeneratedComponentImpl;
 import org.dimdev.dimdoors.world.level.registry.fabric.DimensionalRegistryImpl;
 
 @SuppressWarnings("UnstableApiUsage")
 public class DimensionalDoorsComponents implements WorldComponentInitializer, ItemComponentInitializer, ChunkComponentInitializer {
 	public static final ComponentKey<DimensionalRegistryImpl> DIMENSIONAL_REGISTRY_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("dimensional_registry"), DimensionalRegistryImpl.class);
-	public static final ComponentKey<CounterComponentImpl> COUNTER_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("counter"), CounterComponentImpl.class);
+	public static final ComponentKey<IdCounterImpl> COUNTER_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("counter"), IdCounterImpl.class);
 	public static final ComponentKey<ChunkLazilyGeneratedComponentImpl> CHUNK_LAZILY_GENERATED_COMPONENT_KEY = ComponentRegistryV3.INSTANCE.getOrCreate(DimensionalDoors.id("chunk_lazily_generated"), ChunkLazilyGeneratedComponentImpl.class);
 
 	@Override
 	public void registerItemComponentFactories(ItemComponentFactoryRegistry registry) {
-		registry.register(ModItems.RIFT_CONFIGURATION_TOOL.get(), COUNTER_COMPONENT_KEY, CounterComponentImpl::new);
+		registry.register(ModItems.RIFT_CONFIGURATION_TOOL.get(), COUNTER_COMPONENT_KEY, IdCounterImpl::new);
 	}
 
 	@Override

@@ -35,7 +35,7 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 	}
 
 	public static PocketEntrancePointer fromNbt(CompoundTag nbt) {
-		PocketEntrancePointer pointer = new PocketEntrancePointer(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
+		PocketEntrancePointer pointer = new PocketEntrancePointer(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
 		pointer.id = nbt.getUUID("id");
 		return pointer;
 	}

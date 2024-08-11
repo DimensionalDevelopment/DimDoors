@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.item;
 
 import dev.architectury.core.item.ArchitecturyBucketItem;
-import dev.architectury.core.item.ArchitecturyRecordItem;
 import dev.architectury.core.item.ArchitecturySpawnEggItem;
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
@@ -13,7 +12,6 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,9 +73,9 @@ public final class ModItems {
 
 	public static final RegistrySupplier<Item> STABLE_FABRIC = registerRegular("stable_fabric", Item::new);
 
-	public static final RegistrySupplier<Item> CREEPY_RECORD = registerRegular("creepy_record", properties -> new ArchitecturyRecordItem(10, ModSoundEvents.CREEPY, properties.stacksTo(1), 317));
+	public static final RegistrySupplier<Item> CREEPY_RECORD = registerRegular("creepy_record", properties -> new Item(properties.stacksTo(1).jukeboxPlayable(ModJukeboxSongs.CREEPY)));
 
-	public static final RegistrySupplier<Item> WHITE_VOID_RECORD = registerRegular("white_void_record", properties -> new ArchitecturyRecordItem(10, ModSoundEvents.WHITE_VOID, properties.stacksTo(1), 225));
+	public static final RegistrySupplier<Item> WHITE_VOID_RECORD = registerRegular("white_void_record", properties -> new Item(properties.stacksTo(1).jukeboxPlayable(ModJukeboxSongs.WHITE_VOID)));
 
 	public static final RegistrySupplier<Item> ETERNAL_FLUID_BUCKET = registerRegular("eternal_fluid_bucket", properties -> new ArchitecturyBucketItem(ModFluids.ETERNAL_FLUID, properties.craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final RegistrySupplier<Item> LEAK_BUCKET = registerDecay("leak_bucket", properties -> new ArchitecturyBucketItem(ModFluids.LEAK, properties.craftRemainder(Items.BUCKET).stacksTo(1)));

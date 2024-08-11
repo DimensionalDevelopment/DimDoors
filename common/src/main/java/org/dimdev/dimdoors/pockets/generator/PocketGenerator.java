@@ -290,7 +290,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
 	public interface PocketGeneratorType<T extends PocketGenerator> {
 		RegistrySupplier<PocketGeneratorType<PocketGenerator>> SCHEMATIC = register(DimensionalDoors.id(SchematicGenerator.KEY), SchematicGenerator::new);
-		RegistrySupplier<PocketGeneratorType<ChunkGenerator>> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
+//		RegistrySupplier<PocketGeneratorType<ChunkGenerator>> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
 		RegistrySupplier<PocketGeneratorType<VoidGenerator>> VOID = register(DimensionalDoors.id(VoidGenerator.KEY), VoidGenerator::new);
 
 		PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager);

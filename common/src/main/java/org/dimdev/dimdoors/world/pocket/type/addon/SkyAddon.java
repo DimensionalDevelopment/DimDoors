@@ -1,19 +1,12 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.CubicSampler;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.mixin.client.accessor.DimensionSpecialEffectsMixin;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class SkyAddon implements AutoSyncedAddon {
@@ -24,7 +17,11 @@ public class SkyAddon implements AutoSyncedAddon {
 	private long dayTime = 6000L;
 	private byte moonPhase;
 
-	public boolean setEfffect(ResourceLocation effect) {
+	private Vec3 skyColor = new Vec3(0.5, 0.5, 0.5);
+	private float rainLevel = 0f;
+	private double hHorizonHeight = 63.0;
+
+	public boolean setEffect(ResourceLocation effect) {
 		this.effect = effect;
 		return true;
 	}
@@ -87,6 +84,18 @@ public class SkyAddon implements AutoSyncedAddon {
 		buf.writeLong(dayTime);
 		buf.writeByte(moonPhase);
 		return buf;
+	}
+
+	public Vec3 getSkyColor() {
+		return skyColor;
+	}
+
+	public float getRainLevel() {
+		return rainLevel;
+	}
+
+	public double getHorizonHeight() {
+		return hHorizonHeight;
 	}
 
 
@@ -165,9 +174,9 @@ public class SkyAddon implements AutoSyncedAddon {
 			if (!this.hasAddon(ID)) {
 				SkyAddon addon = new SkyAddon();
 				this.addAddon(addon);
-				return addon.setEfffect(effect);
+				return addon.setEffect(effect);
 			}
-			return this.<SkyAddon>getAddon(ID).setEfffect(effect);
+			return this.<SkyAddon>getAddon(ID).setEffect(effect);
 		}
 	}
 

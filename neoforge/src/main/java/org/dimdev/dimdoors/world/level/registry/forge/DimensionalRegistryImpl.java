@@ -14,6 +14,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.attachment.AttachmentHolder;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 public class DimensionalRegistryImpl {
     public static final ResourceLocation IDENTIFIER = DimensionalDoors.id("dimensional_registry");
 
-    public static final Capability<DimensionalRegistry> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final AttachmentType<DimensionalRegistry> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});
 
     @Mod.EventBusSubscriber(modid = DimensionalDoors.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {

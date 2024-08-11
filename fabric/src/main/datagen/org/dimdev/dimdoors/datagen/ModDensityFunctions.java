@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.DensityFunction;
@@ -21,7 +21,7 @@ public class ModDensityFunctions {
         return ResourceKey.create(Registries.DENSITY_FUNCTION, DimensionalDoors.id(name));
     }
 
-    public static void bootstrap(BootstapContext<DensityFunction> entries) {
+    public static void bootstrap(BootstrapContext<DensityFunction> entries) {
         var parameters = entries.lookup(Registries.NOISE);
         var functions = entries.lookup(Registries.DENSITY_FUNCTION);
 
@@ -38,9 +38,9 @@ public class ModDensityFunctions {
         entries.register(TERRAIN, terrain);
 
 
-        var noodle_function = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft:noodle")));
-        var thick_noodle_noise = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft:noodle_thickness")));
-        var y_function =  new DensityFunctions.HolderHolder(functions.getOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, new ResourceLocation("minecraft:y"))));
+        var noodle_function = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, ResourceLocation.tryParse("minecraft:noodle")));
+        var thick_noodle_noise = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, ResourceLocation.tryParse("minecraft:noodle_thickness")));
+        var y_function =  new DensityFunctions.HolderHolder(functions.getOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, ResourceLocation.tryParse("minecraft:y"))));
 
         var strand = DensityFunctions.add(
                 DensityFunctions.mul(DensityFunctions.interpolated(terrain), DensityFunctions.constant(0.175)),
@@ -138,6 +138,6 @@ public class ModDensityFunctions {
     }
 
     private static ResourceKey<DensityFunction> createKey(String location) {
-        return ResourceKey.create(Registries.DENSITY_FUNCTION, new ResourceLocation(location));
+        return ResourceKey.create(Registries.DENSITY_FUNCTION, ResourceLocation.tryParse(location));
     }
 }

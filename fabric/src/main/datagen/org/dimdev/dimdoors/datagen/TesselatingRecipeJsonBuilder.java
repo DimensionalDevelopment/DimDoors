@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
@@ -14,6 +15,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.CraftingRecipeBuilder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -81,7 +83,7 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 		}
 	}
 
-	public TesselatingRecipeJsonBuilder criterion(String string, CriterionTriggerInstance criterionConditions) {
+	public TesselatingRecipeJsonBuilder criterion(String string, Criterion criterionConditions) {
 		this.advancementBuilder.addCriterion(string, criterionConditions);
 		return this;
 	}
@@ -100,7 +102,7 @@ public class TesselatingRecipeJsonBuilder extends CraftingRecipeBuilder {
 		return this.output;
 	}
 
-	public void offerTo(Consumer<FinishedRecipe> exporter, ResourceLocation recipeId) {
+	public void offerTo(RecipeOutput exporter, ResourceLocation recipeId) {
 		recipeId = recipeId.withPrefix("tesselating/");
 		this.validate(recipeId);
 		this.advancementBuilder.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).requirements(RequirementsStrategy.OR);

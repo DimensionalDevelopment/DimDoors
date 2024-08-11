@@ -1,9 +1,10 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.DyeColor;
@@ -14,15 +15,15 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.tag.ModItemTags;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 
 public class DimdoorsRecipeProvider extends RecipeProvider {
-	public DimdoorsRecipeProvider(PackOutput dataGenerator) {
-		super(dataGenerator);
+	public DimdoorsRecipeProvider(PackOutput dataGenerator, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+		super(dataGenerator, registriesFuture);
 	}
 
 	@Override
-	public void buildRecipes(Consumer<FinishedRecipe> exporter) {
+	public void buildRecipes(RecipeOutput exporter) {
 		//TODO: Find out proper RecipeCategory for these? I just random added this to make it work.
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.STONE_DOOR.get()).pattern("XX").pattern("XX").pattern("XX").define('X', Blocks.STONE).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.STONE)).save(exporter, DimensionalDoors.id("stone_door"));
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.GOLD_DOOR.get(), 3).pattern("XX").pattern("XX").pattern("XX").define('X', ModItemTags.GOLD_INGOTS).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.GOLD_INGOT)).save(exporter, DimensionalDoors.id("gold_door"));

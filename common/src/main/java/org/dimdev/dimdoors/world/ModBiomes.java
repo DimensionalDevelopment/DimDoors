@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.Music;
 import net.minecraft.world.entity.MobCategory;
@@ -29,7 +29,7 @@ public final class ModBiomes {
 		return ResourceKey.create(Registries.BIOME, id(name));
 	}
 
-    public static void bootstrap(BootstapContext<Biome> entries) {
+    public static void bootstrap(BootstrapContext<Biome> entries) {
         entries.register(LIMBO_KEY, new Biome.BiomeBuilder()
                 .downfall(0.0f).hasPrecipitation(false)
                 .temperatureAdjustment(Biome.TemperatureModifier.NONE)

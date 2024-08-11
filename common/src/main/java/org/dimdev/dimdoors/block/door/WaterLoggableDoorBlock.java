@@ -27,7 +27,7 @@ public class WaterLoggableDoorBlock extends DoorBlock implements SimpleWaterlogg
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	protected WaterLoggableDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
-		super(settings, blockSetType);
+		super(blockSetType, settings);
 		registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(HINGE, DoorHingeSide.LEFT).setValue(POWERED, false).setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
 	}
 
@@ -91,7 +91,7 @@ public class WaterLoggableDoorBlock extends DoorBlock implements SimpleWaterlogg
 	}
 
 	@Override
-	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
+	public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
 		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
 		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
 			BlockPos blockPos = pos.below();
@@ -101,6 +101,7 @@ public class WaterLoggableDoorBlock extends DoorBlock implements SimpleWaterlogg
 				world.levelEvent(player, 2001, blockPos, Block.getId(blockState));
 			}
 		}
-		super.playerWillDestroy(world, pos, state, player);
+
+		return super.playerWillDestroy(world, pos, state, player);
 	}
 }
