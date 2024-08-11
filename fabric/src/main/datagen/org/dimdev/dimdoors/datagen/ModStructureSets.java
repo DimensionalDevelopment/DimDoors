@@ -17,7 +17,7 @@ public class ModStructureSets {
         context.register(GATEWAYS, new StructureSet(
 
                 List.of(new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_GATEWAY), 1),
-                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_ENDSTONE_GATEWAY), 1),
+//                        new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_ENDSTONE_GATEWAY), 1),
                         new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_MUD_GATEWAY), 1),
                         new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_PRISMARINE_GATEWAY), 1),
                         new StructureSet.StructureSelectionEntry(context.lookup(Registries.STRUCTURE).getOrThrow(ModStructures.ENCLOSED_QUARTZ_GATEWAY), 1),
