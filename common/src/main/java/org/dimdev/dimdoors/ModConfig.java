@@ -181,7 +181,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public boolean hardcoreLimbo = false;
 		@Tooltip public int limboReturnDistance = 5000;
 		@Tooltip public float limboBlocksCorruptingExitWorldAmount = 5;
-		@Tooltip @Nullable public ResourceKey<Level> escapeTargetWorld = Level.OVERWORLD;
+		@Tooltip public String escapeTargetWorld = "";
 		@Tooltip public int escapeTargetWorldYSpawn = 64;
 		@Tooltip public boolean escapeToWorldSpawn = false;
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {
