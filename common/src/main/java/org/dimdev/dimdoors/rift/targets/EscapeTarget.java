@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -63,11 +65,11 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 			}
 			Location destLoc;
 			
-			if (((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition() != null && DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld == null && !DimensionalDoors.getConfig().getLimboConfig().escapeToWorldSpawn) {
-				LOGGER.log(Level.INFO, "Sending player from limbo to their spawnpoint, good luck!");
-				destLoc = new Location(((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition());
-			} else if (DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld != null && !DimensionalDoors.getConfig().getLimboConfig().escapeToWorldSpawn) {
-				targetWorldResourceKey = DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld;
+			if (((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition() != null && DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld == "" && !DimensionalDoors.getConfig().getLimboConfig().escapeToWorldSpawn) {
+ 				LOGGER.log(Level.INFO, "Sending player from limbo to their spawnpoint, good luck!");
+ 				destLoc = new Location(((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition());
+ 			} else if (DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld != "" && !DimensionalDoors.getConfig().getLimboConfig().escapeToWorldSpawn) {
+ 				targetWorldResourceKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld);
 				if (DimensionalDoors.getWorld(targetWorldResourceKey) != null) {
 					LOGGER.log(Level.INFO, "Sending player from limbo to the exit dimension, good luck!");
 					destLoc = new Location(DimensionalDoors.getWorld(targetWorldResourceKey), new BlockPos(entity.blockPosition().getX(), DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorldYSpawn, entity.blockPosition().getZ()));
