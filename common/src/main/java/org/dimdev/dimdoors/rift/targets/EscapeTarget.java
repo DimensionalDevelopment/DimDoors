@@ -69,7 +69,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
  				LOGGER.log(Level.INFO, "Sending player from limbo to their spawnpoint, good luck!");
  				destLoc = new Location(((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition());
  			} else if (DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld != "" && !DimensionalDoors.getConfig().getLimboConfig().escapeToWorldSpawn) {
- 				targetWorldResourceKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld.split(":")[0], DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld.split(":")[1]));
+ 				targetWorldResourceKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld);
 				if (DimensionalDoors.getWorld(targetWorldResourceKey) != null) {
 					LOGGER.log(Level.INFO, "Sending player from limbo to the exit dimension, good luck!");
 					destLoc = new Location(DimensionalDoors.getWorld(targetWorldResourceKey), new BlockPos(entity.blockPosition().getX(), DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorldYSpawn, entity.blockPosition().getZ()));
