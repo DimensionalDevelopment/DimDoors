@@ -28,7 +28,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 	private final Map<ResourceLocation, PocketAddon> addons = new HashMap<>();
 	private int range = -1;
-	private BoundingBox box; // TODO: make protected
+	protected BoundingBox box;
 	public VirtualLocation virtualLocation;
 
 	public Pocket(int id, ResourceKey<Level> world, int x, int z) {

@@ -17,9 +17,10 @@ import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 import java.util.UUID;
 
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
+	public static final PrivatePocketExitTarget INSTANCE = new PrivatePocketExitTarget();
 	public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
 
-	public PrivatePocketExitTarget() {
+	private PrivatePocketExitTarget() {
 	}
 
 	@Override

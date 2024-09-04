@@ -12,12 +12,17 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.*;
@@ -95,6 +100,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public boolean riftBoundingBoxInCreative;
 		@Tooltip public double riftCloseSpeed = 0.1;
 		@Tooltip public double riftGrowthSpeed = 1;
+		@Tooltip public boolean enableRiftDecay = true;
 		@Tooltip public int depthSpreadFactor = 20;
 		@Tooltip public double endermanSpawnChance = 0.00005;
 		@Tooltip public double endermanAggressiveChance = 0.5;
@@ -171,10 +177,13 @@ public final class ModConfig implements ConfigData {
 
 		@CollapsibleObject
 		@RequiresRestart
-		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList(List.of(), false);
+		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList();
 		@Tooltip public boolean hardcoreLimbo = false;
-		@Tooltip public int limboReturnDistance = 20000;
-		@Tooltip public float limboBlocksCorruptingOverworldAmount = 5;
+		@Tooltip public int limboReturnDistance = 5000;
+		@Tooltip public float limboBlocksCorruptingExitWorldAmount = 5;
+		@Tooltip @Nullable public ResourceKey<Level> escapeTargetWorld = Level.OVERWORLD;
+		@Tooltip public int escapeTargetWorldYSpawn = 64;
+		@Tooltip public boolean escapeToWorldSpawn = false;
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {
 			return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level.location().toString());
 		}
@@ -187,6 +196,10 @@ public final class ModConfig implements ConfigData {
 				this.list = list;
 				this.blacklist = blacklist;
 			}
+			
+			public WorldList() {
+				this(new ArrayList<>(), false);
+			}
 		}
 	}
 
@@ -194,6 +207,7 @@ public final class ModConfig implements ConfigData {
 		@Tooltip public double decaySpreadChance = 1.0;
 
 		@Tooltip public int decayDelay = 40;
+		public boolean decaysIntoAir = true;
 	}
 
 	public static class Graphics {

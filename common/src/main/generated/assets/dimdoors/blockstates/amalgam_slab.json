@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "dimdoors:block/amalgam_slab"
+    },
+    "type=double": {
+      "model": "dimdoors:block/amalgam_block"
+    },
+    "type=top": {
+      "model": "dimdoors:block/amalgam_slab_top"
+    }
+  }
+}

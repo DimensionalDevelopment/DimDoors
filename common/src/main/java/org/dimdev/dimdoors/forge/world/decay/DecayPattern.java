@@ -1,81 +1,58 @@
 package org.dimdev.dimdoors.forge.world.decay;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/world/decay/DecayPattern.java
 import org.dimdev.dimdoors.forge.world.decay.processors.NoneDecayProcessor;
+=======
+>>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/world/decay/DecayPattern.java
 
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class DecayPattern {
+public record DecayPattern(List<DecayCondition> conditions, DecayResult result) {
+    public static Codec<DecayPattern> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            DecayCondition.LIST_CODEC.fieldOf("conditions").forGetter(DecayPattern::conditions),
+            DecayResult.CODEC.fieldOf("result").forGetter(DecayPattern::result)
+    ).apply(instance, DecayPattern::new));
+
     public static final Event<EntropyEvent> ENTROPY_EVENT = EventFactory.of(entropyEvents -> (world, pos, entorpy) -> {
         for (EntropyEvent event : entropyEvents) event.entropy(world, pos, entorpy);
     });
 
-    private DecayPredicate predicate;
-    private DecayProcessor processor;
-
-    public DecayPattern() {}
-
-    public DecayPattern(DecayPredicate predicate, DecayProcessor processor) {
-        this.predicate = predicate;
-        this.processor = processor;
+    public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
+        return conditions.stream().allMatch(condition -> condition.test(world, pos, origin, targetBlock, targetFluid, source));
     }
 
-    public static DecayPattern deserialize(CompoundTag nbt) {
-        DecayPredicate predicate = DecayPredicate.deserialize(nbt.getCompound("predicate"));
-        DecayProcessor processor = DecayProcessor.deserialize(nbt.getCompound("processor"));
-        return DecayPattern.builder().predicate(predicate).processor(processor).create();
+    public void process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
+        ENTROPY_EVENT.invoker().entropy(world, pos, result.process(world, pos, origin, targetBlock, targetFluid, source));
     }
 
-    public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
-        return predicate.test(world, pos, origin, targetBlock, targetFluid);
-    }
-
-    public void process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid) {
-        ENTROPY_EVENT.invoker().entropy(world, pos, processor.process(world, pos, origin, targetBlock, targetFluid));
-    }
-
-	public Set<Block> constructApplicableBlocks() {
-		return predicate.constructApplicableBlocks();
+	public Set<ResourceKey<Block>> constructApplicableBlocks() {
+		return conditions.stream().flatMap(a -> a.constructApplicableBlocks().stream()).collect(Collectors.toSet());
 	}
 
-	public Set<Fluid> constructApplicableFluids() {
-		return predicate.constructApplicableFluids();
+	public Set<ResourceKey<Fluid>> constructApplicableFluids() {
+        return conditions.stream().flatMap(a -> a.constructApplicableFluids().stream()).collect(Collectors.toSet());
 	}
 
     public Object willBecome(Object prior) {
-        return processor.produces(prior);
+        return result.produces(prior);
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-        private DecayPredicate predicate = DecayPredicate.NONE;
-        private DecayProcessor<?, ?> processor = NoneDecayProcessor.instance();
-
-        public Builder predicate(DecayPredicate predicate) {
-            this.predicate = predicate;
-            return this;
-        }
-
-        public Builder processor(DecayProcessor processor) {
-            this.processor = processor;
-            return this;
-        }
-
-        public DecayPattern create() {
-            return new DecayPattern(predicate, processor);
-        }
+    public boolean shouldDropThread(ServerLevel world, BlockPos pos) {
+        return world.getRandom().nextFloat() < result.worldThreadChance();
     }
 
     private interface EntropyEvent {

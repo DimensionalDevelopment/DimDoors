@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:spring_feature",
+  "config": {
+    "hole_count": 4,
+    "requires_block_below": true,
+    "rock_count": 1,
+    "state": {
+      "Name": "dimdoors:eternal_fluid",
+      "Properties": {
+        "falling": "true"
+      }
+    },
+    "valid_blocks": [
+      "dimdoors:unravelled_fabric",
+      "dimdoors:unravelled_block",
+      "dimdoors:unfolded_block",
+      "dimdoors:unwarped_block"
+    ]
+  }
+}

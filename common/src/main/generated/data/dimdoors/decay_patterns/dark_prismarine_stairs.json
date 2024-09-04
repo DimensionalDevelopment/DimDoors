@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_dark_prismarine_stairs"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:dark_prismarine_stairs",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

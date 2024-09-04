@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.google.common.collect.Sets;
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -19,10 +21,27 @@ import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.forge.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
+	public static <T extends RandomTarget> Products.P8<RecordCodecBuilder.Mu<T>, Float, Double, Double, Double, Double, Set<Integer>, Boolean, Boolean> common(RecordCodecBuilder.Instance<T> instance) {
+		return instance.group(
+				Codec.FLOAT.fieldOf("newRiftWeight").forGetter(RandomTarget::getNewRiftWeight),
+				Codec.DOUBLE.fieldOf("weightMaximum").forGetter(RandomTarget::getWeightMaximum),
+				Codec.DOUBLE.fieldOf("coordFactor").forGetter(RandomTarget::getCoordFactor),
+				Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(RandomTarget::getPositiveDepthFactor),
+				Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(RandomTarget::getNegativeDepthFactor),
+				Codec.INT_STREAM.xmap(intStream -> intStream.boxed().collect(Collectors.toSet()), integers -> integers.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(RandomTarget::getAcceptedGroups),
+				Codec.BOOL.fieldOf("noLink").forGetter(RandomTarget::isNoLink),
+				Codec.BOOL.fieldOf("noLinkBack").forGetter(RandomTarget::isNoLinkBack)
+		);
+	}
+
+	public static final Codec<RandomTarget> CODEC = RecordCodecBuilder.create(instance -> common(instance).apply(instance, RandomTarget::new));
 	private final float newRiftWeight;
 	private final double weightMaximum;
 	private final double coordFactor;
@@ -229,33 +248,6 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 	@Override
 	public VirtualTarget copy() {
 		return new RandomTarget(newRiftWeight, weightMaximum, coordFactor, positiveDepthFactor, negativeDepthFactor, acceptedGroups, noLink, noLinkBack);
-	}
-
-	public static CompoundTag toNbt(RandomTarget target) {
-		CompoundTag nbt = new CompoundTag();
-		nbt.putFloat("newRiftWeight", target.newRiftWeight);
-		nbt.putDouble("weightMaximum", target.weightMaximum);
-		nbt.putDouble("coordFactor", target.coordFactor);
-		nbt.putDouble("positiveDepthFactor", target.positiveDepthFactor);
-		nbt.putDouble("negativeDepthFactor", target.negativeDepthFactor);
-		nbt.putIntArray("acceptedGroups", new ArrayList<>(target.acceptedGroups));
-		nbt.putBoolean("noLink", target.noLink);
-		nbt.putBoolean("noLinkBack", target.noLinkBack);
-
-		return nbt;
-	}
-
-	public static RandomTarget fromNbt(CompoundTag nbt) {
-		return new RandomTarget(
-				nbt.getFloat("newRiftWeight"),
-				nbt.getDouble("weightMaximum"),
-				nbt.getDouble("coordFactor"),
-				nbt.getDouble("positiveDepthFactor"),
-				nbt.getDouble("negativeDepthFactor"),
-				Arrays.stream(nbt.getIntArray("acceptedGroups")).boxed().collect(Collectors.toSet()),
-				nbt.getBoolean("noLink"),
-				nbt.getBoolean("noLinkBack")
-		);
 	}
 
 	public static class RandomTargetBuilder {

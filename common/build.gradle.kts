@@ -10,6 +10,7 @@ dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
     // Do NOT use other classes from fabric loader
     modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
+    modImplementation("curse.maven:cyanide-541676:4824162")
     // Remove the next line if you don't want to depend on the API
     modApi("dev.architectury:architectury:${project.properties["architectury_version"]}")
     modApi("me.shedaniel.cloth:cloth-config:${rootProject.properties["cloth_config"]}")
@@ -27,6 +28,8 @@ dependencies {
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${project.properties["rei_version"]}")
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin:${project.properties["rei_version"]}")
+
+//    modApi("curse.maven:jei-${project.properties["jei_project"]}:${project.properties["jei_fabric"]}")
 }
 
 sourceSets.main {

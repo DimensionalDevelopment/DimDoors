@@ -30,6 +30,5 @@ Thumbs.db
 remappedSrc
 logs
 *.hprof
-generated
 .vscode
 /test

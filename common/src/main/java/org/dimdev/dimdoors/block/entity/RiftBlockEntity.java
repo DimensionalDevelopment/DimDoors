@@ -8,6 +8,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -25,6 +26,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.LocationProvider;
@@ -37,17 +39,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public abstract class RiftBlockEntity extends BlockEntity implements Target, EntityTarget {
+public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends BlockEntity implements Target, EntityTarget {
+	private static final int UPDATE_PERIOD = 200; //10 seconds
+	private static final RandomSource random = RandomSource.create();
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static long showRiftCoreUntil = 0;
 
 	@NotNull
 	protected RiftData data = new RiftData();
 
+	public float size = 0f;
+	private int updateTimer;
+	public boolean closing;
+	public boolean stabilized;
+
 	protected boolean riftStateChanged;
 
 	public RiftBlockEntity(BlockEntityType<? extends RiftBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
+		this.updateTimer = random.nextInt(UPDATE_PERIOD);
 	}
 
 	@Override
@@ -58,6 +68,10 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
 	public void deserialize(CompoundTag nbt) {
 		this.data = RiftData.fromNbt(nbt.getCompound("data"));
+		this.closing = nbt.getBoolean("closing");
+		this.stabilized = nbt.getBoolean("stablized");
+		this.size = nbt.getFloat("size");
+		this.updateTimer = nbt.getInt("updateTimer");
 	}
 
 	@Override
@@ -68,6 +82,10 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
 	public CompoundTag serialize(CompoundTag nbt) {
 		nbt.put("data", RiftData.toNbt(this.data));
+		nbt.putBoolean("closing", this.closing);
+		nbt.putBoolean("stablized", this.stabilized);
+		nbt.putFloat("size", this.size);
+		nbt.putInt("updateTimer", this.updateTimer);
 		return nbt;
 	}
 
@@ -277,5 +295,56 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
 	public Rift asRift() {
 		return DimensionalRegistry.getRiftRegistry().getRift(new Location(this.level.dimension(), this.worldPosition));
+	}
+
+	public void tick(Level level, BlockPos pos, BlockState blockState) {
+		if(level.isClientSide) return;
+
+//		if(!blockClass().isInstance(level.getBlockState(pos).getBlock())) {
+//			setRemoved();
+//			return;
+//		}
+
+		if(updateTimer >= UPDATE_PERIOD) {
+			onUpdate(level, pos);
+			updateTimer = 0;
+		}
+
+		updateTimer++;
+
+		if(closing) {
+			if(size > 0) {
+				size -= DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
+			} else {
+				onClose(level, pos);
+			}
+		} else if(!stablized()) {
+			onGrowth(level, pos);
+		}
+
+		this.setChanged();
+	}
+
+	public void onGrowth(Level level, BlockPos pos) {
+
+	}
+
+	public boolean stablized() {
+		return stabilized;
+	}
+
+	protected void onClose(Level level, BlockPos pos) {
+	}
+
+	protected void onUpdateHalfway(Level level, BlockPos pos) {
+	}
+
+	protected void onUpdate(Level level, BlockPos pos) {
+	}
+
+	protected abstract Class<T> blockClass();
+
+	public boolean updateNearestRift() {
+		return false;
 	}
 }

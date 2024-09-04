@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#minecraft:saplings"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:driftwood_sapling",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

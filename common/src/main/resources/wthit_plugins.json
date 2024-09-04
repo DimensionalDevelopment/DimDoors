@@ -1,0 +1,9 @@
+{
+  "dimdoors:plugin": {
+    "initializer": "org.dimdev.dimdoors.client.wthit.WthitPlugin",
+
+    "side": "*",
+
+    "required": ["dimdoors", "anotherone"]
+  }
+}

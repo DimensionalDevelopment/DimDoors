@@ -1,0 +1,19 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "O": {
+      "item": "dimdoors:stable_fabric"
+    },
+    "X": {
+      "item": "dimdoors:world_thread"
+    }
+  },
+  "pattern": [
+    "XX",
+    "XO"
+  ],
+  "result": {
+    "item": "dimdoors:black_fabric"
+  },
+  "weavingtime": 200
+}

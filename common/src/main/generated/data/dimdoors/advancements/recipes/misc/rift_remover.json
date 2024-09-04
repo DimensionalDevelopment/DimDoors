@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:rift_remover"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dimdoors:rift_blade"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:rift_remover"
+    ]
+  },
+  "sends_telemetry_event": false
+}

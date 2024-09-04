@@ -1,19 +1,13 @@
 {
-  "type": "minecraft:generic",
+  "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 2,
-      "bonus_rolls": 2,
+      "rolls": 1,
+      "bonus_rolls": 0,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:acacia_boat",
-          "conditions": [
-            {
-              "condition": "minecraft:random_chance",
-              "chance": 0.5
-            }
-          ]
+          "name": "dimdoors:world_thread"
         }
       ]
     }

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "dimdoors:block/driftwood_sapling"
+  }
+}

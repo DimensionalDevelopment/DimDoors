@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.forge.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
 import dev.architectury.platform.Platform;
@@ -11,6 +12,10 @@ import me.shedaniel.autoconfig.util.Utils;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/client/DimensionalDoorsClient.java
+=======
+import net.minecraft.client.Minecraft;
+>>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/client/DimensionalDoorsClient.java
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -21,14 +26,18 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.forge.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.forge.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.item.RaycastHelper;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
@@ -61,6 +70,19 @@ public class DimensionalDoorsClient {
 
 	public static void init() {
 		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
+
+		ClientGuiEvent.DEBUG_TEXT_LEFT.register(new ClientGuiEvent.DebugText() {
+			@Override
+			public void gatherText(List<String> strings) {
+				assert Minecraft.getInstance().player != null;
+				HitResult hit = RaycastHelper.findDetachRift(Minecraft.getInstance().player, RaycastHelper.DETACH);
+				if(hit.getType() == HitResult.Type.BLOCK) {
+					if(Minecraft.getInstance().level.getBlockEntity(((BlockHitResult) hit).getBlockPos()) instanceof DetachedRiftBlockEntity rift) {
+						strings.add("Size: " + rift.size);
+					}
+				}
+			}
+		});
 
 		registerCompats();
 

@@ -15,7 +15,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/item/RiftRemoverItem.java
 import net.minecraft.world.level.storage.loot.LootContext;
+=======
+import net.minecraft.world.level.storage.loot.LootParams;
+>>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/item/RiftRemoverItem.java
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
@@ -65,8 +69,20 @@ public class RiftRemoverItem extends Item {
 				rift.setClosing(true);
 				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1);
 				stack.hurtAndBreak(10, player, a -> a.broadcastBreakEvent(hand));
+<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/item/RiftRemoverItem.java
 				LootContext ctx = new LootContext.Builder((ServerLevel) world).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(((BlockHitResult) hit).getBlockPos())).withOptionalParameter(LootContextParams.THIS_ENTITY, player).create(LootContextParamSets.ALL_PARAMS);
 				((ServerLevel) world).getServer().getLootTables().get(REMOVED_RIFT_LOOT_TABLE).getRandomItems(ctx).forEach(stack1 -> {
+=======
+				var pos = ((BlockHitResult) hit).getBlockPos();
+				LootParams ctx = new LootParams.Builder((ServerLevel) world)
+						.withParameter(LootContextParams.BLOCK_STATE, world.getBlockState(pos))
+						.withParameter(LootContextParams.TOOL, stack)
+						.withParameter(LootContextParams.THIS_ENTITY, player)
+						.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+						.create(LootContextParamSets.BLOCK);
+
+				 ((ServerLevel) world).getServer().getLootData().getLootTable(REMOVED_RIFT_LOOT_TABLE).getRandomItems(ctx).forEach(stack1 -> {
+>>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/item/RiftRemoverItem.java
 					Containers.dropItemStack(world, ((BlockHitResult) hit).getBlockPos().getX(), ((BlockHitResult) hit).getBlockPos().getY(), ((BlockHitResult) hit).getBlockPos().getZ(), stack1);
 				});
 

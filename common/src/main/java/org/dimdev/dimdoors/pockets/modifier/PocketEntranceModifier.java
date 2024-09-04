@@ -55,7 +55,7 @@ public class PocketEntranceModifier extends AbstractModifier {
 	@Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		manager.consume(id, rift -> {
-			rift.setDestination(PocketEntranceMarker.builder().ifDestination(new PocketExitMarker()).weight(1.0f).build());
+			rift.setDestination(PocketEntranceMarker.builder().ifDestination(PocketExitMarker.INSTANCE).weight(1.0f).build());
 			return true;
 		});
 	}

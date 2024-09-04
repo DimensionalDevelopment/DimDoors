@@ -1,9 +1,10 @@
 package org.dimdev.dimdoors.forge.world.decay;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -14,6 +15,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -37,24 +39,22 @@ public final class Decay {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<ResourceKey<Level>, Set<DecayTask>> DECAY_QUEUE = new HashMap<>();
 
-	private static final RandomSource RANDOM = RandomSource.create();
-
 	/**
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
 	 * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
 	 */
-	public static void applySpreadDecay(ServerLevel world, BlockPos pos) {
+	public static void applySpreadDecay(ServerLevel world, BlockPos pos, RandomSource random, DecaySource source) {
 		//Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
 		//full spread decay checks, which can also shift its performance impact on the game.
-		if (RANDOM.nextDouble() < DimensionalDoors.getConfig().getDecayConfig().decaySpreadChance) {
+		if (random.nextDouble() < DimensionalDoors.getConfig().getDecayConfig().decaySpreadChance) {
 			BlockState origin = world.getBlockState(pos);
 
 			//Apply decay to the blocks above, below, and on all four sides.
 			// TODO: make max amount configurable
-			int decayAmount = RANDOM.nextInt(5) + 1;
+			int decayAmount = random.nextInt(5) + 1;
 			List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
 			for (int i = 0; i < decayAmount; i++) {
-				 decayBlock(world, pos.relative(directions.remove(RANDOM.nextInt(5 - i))), origin);
+				 decayBlock(world, pos.relative(directions.remove(random.nextInt(5 - i))), origin, source);
 			}
 		}
 	}
@@ -62,33 +62,33 @@ public final class Decay {
 	/**
 	 * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
 	 */
-	public static void decayBlock(ServerLevel world, BlockPos pos, BlockState origin) {
+	public static void decayBlock(ServerLevel world, BlockPos pos, BlockState origin, DecaySource source) {
 		BlockState targetState = world.getBlockState(pos);
 		FluidState fluidState = world.getFluidState(pos);
 
-		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(targetState.getBlock());
+		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(targetState.getBlockHolder().unwrapKey().get());
 
-		if(patterns.isEmpty()) patterns = DecayLoader.getInstance().getPatterns(fluidState.getType());
+		if(patterns.isEmpty()) patterns = DecayLoader.getInstance().getPatterns(fluidState.getType().builtInRegistryHolder().key());
 
 		if(patterns.isEmpty()) {
 			return;
 		}
 
 		for(DecayPattern pattern : patterns) {
-			if (!pattern.test(world, pos, origin, targetState, fluidState)) {
+			if (!world.isNaturalSpawningAllowed(pos) || !pattern.test(world, pos, origin, targetState, fluidState, source)) {
 				continue;
 			}
 			world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
 				ExtendedServerPlayNetworkHandler.get(player.connection).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, 5));
 			});
 			world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), ModSoundEvents.TEARING.get(), SoundSource.BLOCKS, 0.5f, 1f);
-			queueDecay(world, pos, origin, pattern, DimensionalDoors.getConfig().getDecayConfig().decayDelay);
+			queueDecay(world, pos, origin, pattern, source, DimensionalDoors.getConfig().getDecayConfig().decayDelay);
 			break;
 		}
 	}
 
-	public static void queueDecay(ServerLevel world, BlockPos pos, BlockState origin, DecayPattern pattern, int delay) {
-		DecayTask task = new DecayTask(pos, origin, pattern, delay);
+	public static void queueDecay(ServerLevel world, BlockPos pos, BlockState origin, DecayPattern pattern, DecaySource source, int delay) {
+		DecayTask task = new DecayTask(pos, origin, pattern, source, delay);
 		if (delay <= 0) {
 			task.process(world);
 		} else {
@@ -109,8 +109,8 @@ public final class Decay {
     public static class DecayLoader implements ResourceManagerReloadListener {
 		private static final Logger LOGGER = LogManager.getLogger();
 		private static final DecayLoader INSTANCE = new DecayLoader();
-		private final Map<Block, List<DecayPattern>> blockPatterns = new HashMap<>();
-		private final Map<Fluid, List<DecayPattern>> fluidPatterns = new HashMap<>();
+		private final Map<ResourceKey<Block>, List<DecayPattern>> blockPatterns = new HashMap<>();
+		private final Map<ResourceKey<Fluid>, List<DecayPattern>> fluidPatterns = new HashMap<>();
 
 		private DecayLoader() {
 		}
@@ -122,35 +122,38 @@ public final class Decay {
 		@Override
 		public void onResourceManagerReload(ResourceManager manager) {
 			blockPatterns.clear();
-			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.NBT_READER.andThenReader(this::loadPattern));
+			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(this::loadPattern));
 			for (DecayPattern pattern : futurePatternList.join()) {
-				for (Block block : pattern.constructApplicableBlocks()) {
+				for (ResourceKey<Block> block : pattern.constructApplicableBlocks()) {
 					blockPatterns.computeIfAbsent(block, (b) -> new ArrayList<>());
 					blockPatterns.get(block).add(pattern);
 				}
 
-				for (Fluid fluid : pattern.constructApplicableFluids()) {
+				for (ResourceKey<Fluid> fluid : pattern.constructApplicableFluids()) {
 					fluidPatterns.computeIfAbsent(fluid, (b) -> new ArrayList<>());
 					fluidPatterns.get(fluid).add(pattern);
 				}
 			}
 		}
 
-		private DecayPattern loadPattern(Tag nbt, ResourceLocation ignored) {
-			return DecayPattern.deserialize((CompoundTag) nbt);
+		private DecayPattern loadPattern(JsonElement json, ResourceLocation ignored) {
+			return JsonOps.INSTANCE.withDecoder(DecayPattern.CODEC).apply(json).getOrThrow(false, Decay.LOGGER::error).getFirst();
 		}
 
 		public Collection<DecayPattern> getPatterns(Object object) {
-			if(object instanceof Block block) return blockPatterns.getOrDefault(block, new ArrayList<>());
-			else if(object instanceof Fluid fluid) return fluidPatterns.getOrDefault(fluid, new ArrayList<>());
-			else return new ArrayList<>();
+			if(object instanceof ResourceKey<?> key) {
+				if (key.isFor(Registries.BLOCK) && blockPatterns.containsKey(key)) return blockPatterns.get(key);
+				else if (key.isFor(Registries.FLUID) && fluidPatterns.containsKey(key)) return fluidPatterns.get(key);
+			}
+
+			return Collections.emptyList();
 		}
 
-		public Collection<DecayPattern> getPatterns(Fluid fluid) {
-			return fluidPatterns.getOrDefault(fluid, new ArrayList<>());
+		public Collection<DecayPattern> getPatterns(ResourceKey<Fluid> fluid) {
+			return fluidPatterns.getOrDefault(fluid, Collections.emptyList());
 		}
 
-        public Map<Block, List<DecayPattern>> getBlockPatterns() {
+        public Map<ResourceKey<Block>, List<DecayPattern>> getBlockPatterns() {
 			return blockPatterns;
         }
     }
@@ -159,13 +162,15 @@ public final class Decay {
 		private final BlockPos pos;
 		private final BlockState origin;
 		private final DecayPattern processor;
+		private final DecaySource source;
 		private int delay;
 
 
-		public DecayTask(BlockPos pos, BlockState origin, DecayPattern processor, int delay) {
+		public DecayTask(BlockPos pos, BlockState origin, DecayPattern processor, DecaySource source, int delay) {
 			this.pos = pos;
 			this.origin = origin;
 			this.processor = processor;
+			this.source = source;
 			this.delay = delay;
 		}
 
@@ -176,12 +181,19 @@ public final class Decay {
 		public void process(ServerLevel world) {
 			BlockState targetBlock = world.getBlockState(pos);
 			FluidState targetFluid = world.getFluidState(pos);
-			if (world.isNaturalSpawningAllowed(pos) && processor.test(world, pos, origin, targetBlock, targetFluid)) {
-				world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
-					ExtendedServerPlayNetworkHandler.get(player.connection).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, -1));
-				});
-				world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), targetBlock.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.5f, 1f);
-				processor.process(world, pos, origin, targetBlock, targetFluid);
+
+			world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
+				ExtendedServerPlayNetworkHandler.get(player.connection).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, -1));
+			});
+
+			world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), targetBlock.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.5f, 1f);
+
+			if (source.decayIntoWorldThread()) {
+				if (DimensionalDoors.getConfig().getDecayConfig().decaysIntoAir)
+					world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+				else processor.process(world, pos, origin, targetBlock, targetFluid, source);
+			} else {
+				processor.process(world, pos, origin, targetBlock, targetFluid, source);
 			}
 		}
 	}

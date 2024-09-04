@@ -1,0 +1,19 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "O": {
+      "item": "dimdoors:infrangible_fiber"
+    },
+    "X": {
+      "item": "dimdoors:stable_fabric"
+    }
+  },
+  "pattern": [
+    "X X",
+    "XOX"
+  ],
+  "result": {
+    "item": "dimdoors:garment_of_reality_boots"
+  },
+  "weavingtime": 200
+}

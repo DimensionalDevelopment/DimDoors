@@ -1,6 +1,10 @@
 package org.dimdev.dimdoors.datagen;
 
+<<<<<<< HEAD
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+=======
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+>>>>>>> merge-branch
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -16,8 +20,13 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
+<<<<<<< HEAD
 	public BlockTagProvider(FabricDataGenerator output) {
 		super(output);
+=======
+	public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+		super(output, lookupProvider);
+>>>>>>> merge-branch
 	}
 
 	@Override

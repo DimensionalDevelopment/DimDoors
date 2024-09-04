@@ -1,21 +1,28 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.nbt.CompoundTag;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
+<<<<<<< HEAD
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.forge.world.ModDimensions;
 import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.forge.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
-
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
+=======
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
+>>>>>>> merge-branch
 
 public class TemplateTarget extends WrappedDestinationTarget {
+    public static final Codec<TemplateTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", null).forGetter(a -> a.wrappedDestination),
+                ResourceLocation.CODEC.fieldOf("template").forGetter(a -> a.template)).apply(instance, TemplateTarget::new));
+
     private final ResourceLocation template;
 
     public TemplateTarget(VirtualTarget wrappedDestination, ResourceLocation template) {
@@ -38,25 +45,12 @@ public class TemplateTarget extends WrappedDestinationTarget {
         return DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
     }
 
-    public static CompoundTag toNbt(TemplateTarget target) {
-        CompoundTag nbt = WrappedDestinationTarget.toNbt(target);
-
-        nbt.putString("template", target.template.toString());
-
-        return nbt;
-    }
-
     @Override
     public VirtualTarget copy() {
         return new TemplateTarget(wrappedDestination, template);
     }
-    public static TemplateTarget fromNbt(CompoundTag nbt) {
-        var id = ResourceLocation.tryParse(nbt.getString("template"));
-        return fromNbt(nbt, new TemplateTarget(id));
-    }
-
     @Override
-    public VirtualTargetType<? extends VirtualTarget> getType() {
+    public VirtualTargetType<TemplateTarget> getType() {
         return VirtualTargetType.TEMPLATE.get();
     }
 }

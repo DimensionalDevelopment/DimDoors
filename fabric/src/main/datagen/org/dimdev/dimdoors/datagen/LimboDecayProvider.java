@@ -3,32 +3,56 @@ package org.dimdev.dimdoors.datagen;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+<<<<<<< HEAD
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.Registry;
+=======
+import com.mojang.serialization.JsonOps;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+>>>>>>> merge-branch
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+<<<<<<< HEAD
 import net.minecraft.nbt.CompoundTag;
+=======
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
+>>>>>>> merge-branch
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
+import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
+<<<<<<< HEAD
 import org.dimdev.dimdoors.forge.world.decay.DecayPredicate;
 import org.dimdev.dimdoors.forge.world.decay.DecayProcessor;
 import org.dimdev.dimdoors.forge.world.decay.predicates.FluidDecayPredicate;
 import org.dimdev.dimdoors.forge.world.decay.predicates.SimpleDecayPredicate;
 import org.dimdev.dimdoors.forge.world.decay.processors.*;
+=======
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.decay.DecayCondition;
+import org.dimdev.dimdoors.world.decay.DecayPattern;
+import org.dimdev.dimdoors.world.decay.DecayResult;
+import org.dimdev.dimdoors.world.decay.conditions.DimensionDecayCondition;
+import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
+import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
+import org.dimdev.dimdoors.world.decay.results.*;
+>>>>>>> merge-branch
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -71,7 +95,8 @@ public class LimboDecayProvider implements DataProvider {
 		createPatterData(DimensionalDoors.id("air"), ModBlockTags.DECAY_TO_AIR, Blocks.AIR).run(consumer);
 		createPatterData(DimensionalDoors.id("gritty_stone"), ModBlockTags.DECAY_TO_GRITTY_STONE, ModBlocks.GRITTY_STONE.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("leak"), Fluids.WATER, ModBlocks.LEAK.get()).run(consumer);
-		createPatterData(DimensionalDoors.id("solid_static"), ModBlockTags.DECAY_TO_SOLID_STATIC, ModBlocks.SOLID_STATIC.get()).run(consumer);
+		new DecayPatternData(DimensionalDoors.id("solid_static"), new DecayPattern(List.of(DimensionDecayCondition.of(ModDimensions.LIMBO_TYPE_KEY), SimpleDecayCondition.of(ModBlockTags.DECAY_TO_SOLID_STATIC)), new BlockDecayImplResult(1, DEFAULT, ModBlocks.SOLID_STATIC.get()))).run(consumer);
+		new DecayPatternData(DimensionalDoors.id("black_ancient_fabric"), new DecayPattern(List.of(DimensionDecayCondition.of(ModDimensions.LIMBO_TYPE_KEY, true), SimpleDecayCondition.of(Blocks.BEDROCK.builtInRegistryHolder().key())), new BlockDecayImplResult(1, DEFAULT, ModBlocks.BLACK_ANCIENT_FABRIC.get()))).run(consumer);
 		createPatterData(DimensionalDoors.id("unraveled_fabric"), ModBlockTags.DECAY_TO_UNRAVELED_FABRIC, ModBlocks.UNRAVELLED_FABRIC.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("unraveled_fence"), ModBlockTags.DECAY_UNRAVELED_FENCE, ModBlocks.UNRAVELED_FENCE.get()).run(consumer);
 		createPatterData(DimensionalDoors.id("unraveled_gate"), ModBlocks.UNRAVELED_GATE, ModBlocks.UNRAVELED_GATE.get()).run(consumer);
@@ -236,9 +261,10 @@ public class LimboDecayProvider implements DataProvider {
 	}
 
 	public DecayPatternData createPatterData(ResourceLocation id, Object before, Object after) {
-		return new DecayPatternData(id, getPredicate(before), getProcessor(after));
+		return new DecayPatternData(id, new DecayPattern(List.of(getPredicate(before)), getProcessor(after)));
 	}
 
+<<<<<<< HEAD
 	private DecayPredicate getPredicate(Object object) {
 		if (!(object instanceof TagKey<?> tag)) {
 			if(object instanceof Block block) return SimpleDecayPredicate.builder().block(block).create();
@@ -246,15 +272,33 @@ public class LimboDecayProvider implements DataProvider {
 		} else {
 			if (tag.isFor(Registry.BLOCK_REGISTRY)) return SimpleDecayPredicate.builder().tag((TagKey<Block>) tag).create();
 			else if (tag.isFor(Registry.FLUID_REGISTRY)) return FluidDecayPredicate.builder().tag((TagKey<Fluid>) tag).create();
+=======
+	private DecayCondition getPredicate(Object object) {
+		if (object instanceof TagKey<?> tag) {
+			if (tag.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((TagKey<Block>) tag);
+			else if (tag.isFor(Registries.FLUID)) return FluidDecayCondition.of((TagKey<Fluid>) tag);
+			else if (tag.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((TagKey<DimensionType>) tag);
+
+		} else if(object instanceof ResourceKey<?> key) {
+			if (key.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((ResourceKey<Block>) key);
+			else if (key.isFor(Registries.FLUID)) return FluidDecayCondition.of((ResourceKey<Fluid>) key);
+			else if (key.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((ResourceKey<DimensionType>) key);
+>>>>>>> merge-branch
 		}
 
-		return DecayPredicate.NONE;
+		return DecayCondition.NONE;
 	}
 
-	private DecayProcessor<?, ?> getProcessor(Object object) {
-		if(object instanceof Block block) return BlockDecayProcessor.builder().block(block).create();
-		else if(object instanceof Fluid fluid) return FluidDecayProcessor.builder().fluid(fluid).create();
-		else return NoneDecayProcessor.instance();
+	private DecayResult getProcessor(Object object) {
+		return getProcessor(object, 1);
+	}
+
+	private float DEFAULT = 0.01f;
+
+	private DecayResult getProcessor(Object object, int entropy) {
+		if(object instanceof Block block) return new BlockDecayImplResult(entropy, DEFAULT, block);
+		else if(object instanceof Fluid fluid) return new FluidDecayResult(entropy, DEFAULT, fluid);
+		else return NoneDecayResult.instance();
 	}
 
 	private void createOxidizationChain(Block regular, Block exposed, Block weathered, Block oxidized, BiConsumer<ResourceLocation, JsonObject> consumer) {
@@ -289,7 +333,7 @@ public class LimboDecayProvider implements DataProvider {
 	}
 
 	private DecayPatternData turnIntoSelf(ResourceLocation ResourceLocation, Object before) {
-		return new DecayPatternData(ResourceLocation, getPredicate(before), SelfDecayProcessor.instance());
+		return new DecayPatternData(ResourceLocation, new DecayPattern(List.of(getPredicate(before)), SelfDecayResult.instance()));
 	}
 
 	@Override
@@ -301,35 +345,20 @@ public class LimboDecayProvider implements DataProvider {
         return rootOutput.resolve("data/" + lootTableId.getNamespace() + "/decay_patterns/" + lootTableId.getPath() + ".json");
     }
 
-    public DecayPatternData createSimplePattern(ResourceLocation id, Block before, Block after) {
-        return new DecayPatternData(id, SimpleDecayPredicate.builder().block(before).create(), BlockDecayProcessor.builder().block(after).entropy(1).create());
+    public DecayPatternData createSimplePattern(ResourceLocation id, Object before, Object after) {
+        return new DecayPatternData(id, new DecayPattern(List.of(getPredicate(before)), getProcessor(after, 1)));
     }
 
-	public DecayPatternData createSimplePattern(ResourceLocation id, TagKey<Block> before, Block after) {
-		return new DecayPatternData(id, SimpleDecayPredicate.builder().tag(before).create(), BlockDecayProcessor.builder().block(after).entropy(1).create());
-	}
-
 	public DecayPatternData createDoublePattern(ResourceLocation id, Object before, Block after) {
-		return new DecayPatternData(id, getPredicate(before), DoubleDecayProcessor.builder().block(after).entropy(1).create());
+		return new DecayPatternData(id, new DecayPattern(List.of(getPredicate(before)), new DoubleBlockDecayResult(1, DEFAULT, after)));
 	}
 
-    public static class DecayPatternData {
-        private ResourceLocation id;
-        private DecayPredicate predicate;
-        private DecayProcessor processor;
-
-        public DecayPatternData(ResourceLocation id, DecayPredicate predicate, DecayProcessor processor) {
-            this.id = id;
-            this.predicate = predicate;
-            this.processor = processor;
-        }
+    public static record DecayPatternData(ResourceLocation id, DecayPattern pattern) {
 
         public void run(BiConsumer<ResourceLocation, JsonObject> consumer) {
-            JsonObject object = new JsonObject();
-            object.add("predicate", ResourceUtil.NBT_TO_JSON.apply(predicate.toNbt(new CompoundTag())));
-            object.add("processor", ResourceUtil.NBT_TO_JSON.apply(processor.toNbt(new CompoundTag())));
+            JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(pattern).getOrThrow(false, DataProvider.LOGGER::error);
 
-            consumer.accept(id, object);
+            consumer.accept(id, object.getAsJsonObject());
         }
     }
 }

@@ -1,0 +1,33 @@
+{
+  "parent": "dimdoors:dimdoors/door_to_adventure",
+  "criteria": {
+    "enter_limbo": {
+      "conditions": {
+        "to": "dimdoors:limbo"
+      },
+      "trigger": "minecraft:changed_dimension"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "background": "dimdoors:textures/block/unravelled_fabric.png",
+    "description": {
+      "translate": "dimdoors.advancement.enter_limbo.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "dimdoors:monolith_spawner"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "dimdoors.advancement.enter_limbo"
+    }
+  },
+  "requirements": [
+    [
+      "enter_limbo"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

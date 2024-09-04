@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors;
 
+import com.mojang.logging.LogUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
 import dev.architectury.event.events.common.InteractionEvent;
@@ -26,6 +27,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
+import org.dimdev.dimdoors.api.util.LocationCondition.LocationConditionType;
+import org.dimdev.dimdoors.api.util.LocationValue.LocationValueWithType;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
@@ -44,7 +47,8 @@ import org.dimdev.dimdoors.forge.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
-import org.dimdev.dimdoors.listener.pocket.*;
+import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
+import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
@@ -59,6 +63,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.schematic.SchemFixer;
+<<<<<<< HEAD
 import org.dimdev.dimdoors.forge.world.ModBiomes;
 import org.dimdev.dimdoors.forge.world.ModDimensions;
 import org.dimdev.dimdoors.forge.world.ModStructures;
@@ -69,7 +74,20 @@ import org.dimdev.dimdoors.forge.world.feature.ModFeatures;
 import org.dimdev.dimdoors.forge.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.forge.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.forge.world.pocket.type.addon.PreventBlockModificationAddon;
+=======
+import org.dimdev.dimdoors.world.ModBiomes;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.ModStructureProccessors;
+import org.dimdev.dimdoors.world.carvers.ModCarvers;
+import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.world.decay.DecayConditionType;
+import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
+>>>>>>> merge-branch
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
@@ -78,7 +96,8 @@ import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
 public class DimensionalDoors {
 	public static final String MOD_ID = "dimdoors";
-	private static Mod dimDoorsMod;
+	public static final Logger LOGGER = LogUtils.getLogger();
+    private static Mod dimDoorsMod;
 	private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
 	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
 
@@ -122,16 +141,16 @@ public class DimensionalDoors {
 		ModEntityTypes.init();
 		ModItems.init();
 		ModBlocks.init();
-		ModFeatures.init();
+		ModCarvers.init();
 		ModBiomes.init();
 		ModDimensions.init();
-		ModStructures.init();
 		ModStats.init();
 		ModBlockEntityTypes.init();
 		ModCommands.init();
 		ModParticleTypes.init();
 		ModCriteria.init();
 		ModEnchants.init();
+		ModStructureProccessors.init();
 
 //		ModRecipeBookTypes.init();
 
@@ -166,8 +185,10 @@ public class DimensionalDoors {
 		AbstractPocket.AbstractPocketType.register();
 		PocketAddon.PocketAddonType.register();
 		Condition.ConditionType.register();
-		DecayPredicate.DecayPredicateType.register();
-		DecayProcessorType.register();
+		DecayConditionType.register();
+		DecayResultType.register();
+		LocationConditionType.register();
+		LocationValueWithType.register();
 	}
 
 	private static void registerListeners() {

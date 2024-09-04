@@ -1,0 +1,18 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "O": {
+      "item": "minecraft:dragon_breath"
+    },
+    "X": {
+      "item": "dimdoors:enduring_fibers"
+    }
+  },
+  "pattern": [
+    "XOX"
+  ],
+  "result": {
+    "item": "dimdoors:fabric_of_finality"
+  },
+  "weavingtime": 200
+}

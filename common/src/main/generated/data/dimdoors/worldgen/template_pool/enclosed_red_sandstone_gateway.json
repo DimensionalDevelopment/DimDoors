@@ -1,0 +1,14 @@
+{
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "dimdoors:gateways/enclosed_red_sandstone",
+        "processors": "dimdoors:dungeon",
+        "projection": "rigid"
+      },
+      "weight": 50
+    }
+  ],
+  "fallback": "minecraft:empty"
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "dimdoors:block/deepslate_slab"
+    },
+    "type=double": {
+      "model": "minecraft:block/deepslate"
+    },
+    "type=top": {
+      "model": "dimdoors:block/deepslate_slab_top"
+    }
+  }
+}

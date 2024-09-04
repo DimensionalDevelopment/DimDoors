@@ -1,0 +1,11 @@
+{
+  "conditions": {
+    "type": "dimdoors:none"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:green_terracotta",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

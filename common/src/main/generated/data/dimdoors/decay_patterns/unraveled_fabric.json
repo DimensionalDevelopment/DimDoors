@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_unraveled_fabric"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:unravelled_fabric",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

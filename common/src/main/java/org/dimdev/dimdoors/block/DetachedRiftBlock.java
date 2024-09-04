@@ -104,6 +104,11 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, ModBlockEntityTypes.DETACHED_RIFT.get(), DetachedRiftBlockEntity::tick);
+		return checkType(type, ModBlockEntityTypes.DETACHED_RIFT.get(), new BlockEntityTicker<DetachedRiftBlockEntity>() {
+			@Override
+			public void tick(Level level, BlockPos blockPos, BlockState blockState, DetachedRiftBlockEntity blockEntity) {
+				blockEntity.tick(world, blockPos, blockState);
+			}
+		});
 	}
 }

@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_granite_slab"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:granite_slab",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

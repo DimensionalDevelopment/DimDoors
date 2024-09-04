@@ -45,11 +45,19 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> STONE_PLAYER = registerWithoutTabOrItem("stone_player", () -> new Block(copy(STONE).strength(0.5F).noOcclusion()));
 
+<<<<<<< HEAD
 	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(copy(IRON_BLOCK).color(GOLD).strength(5.0F).requiresCorrectToolForDrops().noCollission()));
 
 	public static final RegistrySupplier<Block> STONE_DOOR = register("stone_door", () -> new DoorBlock(copy(STONE).color(WOOD).strength(5.0F).requiresCorrectToolForDrops().noOcclusion()));
 
 	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(copy(STONE).color(TERRACOTTA_WHITE).strength(5.0F).requiresCorrectToolForDrops().noOcclusion()));
+=======
+	public static final RegistrySupplier<Block> GOLD_DOOR = register("gold_door", () -> new DoorBlock(copy(GOLD_BLOCK).strength(5.0F).requiresCorrectToolForDrops(), BlockSetType.GOLD));
+
+	public static final RegistrySupplier<Block> STONE_DOOR = register("stone_door", () -> new DoorBlock(copy(STONE).mapColor(WOOD).strength(5.0F).requiresCorrectToolForDrops(), BlockSetType.IRON));
+
+	public static final RegistrySupplier<Block> QUARTZ_DOOR = register("quartz_door", () -> new DoorBlock(copy(QUARTZ_BLOCK).strength(5.0F).requiresCorrectToolForDrops(), BlockSetType.IRON));
+>>>>>>> merge-branch
 
 	public static final RegistrySupplier<Block> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTabOrItem("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10)));
 
@@ -137,13 +145,18 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> UNRAVELLED_FABRIC = register("unravelled_fabric", () -> new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
+<<<<<<< HEAD
 	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTabOrItem("marking_plate", () -> new MarkingPlateBlock(copy(IRON_BLOCK).color(MaterialColor.COLOR_BLACK).noOcclusion()));
+=======
+	public static final RegistrySupplier<Block> MARKING_PLATE = registerWithoutTabOrItem("marking_plate", () -> new Block(copy(IRON_BLOCK).mapColor(DyeColor.BLACK).noOcclusion()));
+>>>>>>> merge-branch
 
 	public static final RegistrySupplier<Block> SOLID_STATIC = register("solid_static", () -> new UnravelledFabricBlock(copy(STONE).strength(7, 25).randomTicks().requiresCorrectToolForDrops().sound(SoundType.SAND)));
 
 	public static final RegistrySupplier<Block> TESSELATING_LOOM = register("tesselating_loom", () -> new TesselatingLoomBlock(of(LOOM)));
 
 	public static final RegistrySupplier<Block> REALITY_SPONGE = register("reality_sponge", () -> new RealitySpongeBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
+	public static final RegistrySupplier<Block> LIMBO_AIR = registerWithoutTabOrItem("limbo_air", () -> new LimboAirBlock(BlockBehaviour.Properties.of().randomTicks().replaceable().noCollission().noLootTable().air()));
 
 	//Decay graph filler.
 	public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = registerDecay("driftwood_wood", () -> new RotatedPillarBlock(copy(OAK_WOOD).color(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));

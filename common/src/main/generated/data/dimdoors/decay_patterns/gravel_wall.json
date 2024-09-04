@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_gravel_wall"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:gravel_wall",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

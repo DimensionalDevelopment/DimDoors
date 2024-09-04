@@ -7,6 +7,7 @@ public final class ModCommands {
         CommandRegistrationEvent.EVENT.register((dispatcher, registryAccess, dedicated) -> {
             DimTeleportCommand.register(dispatcher);
             PocketCommand.register(dispatcher);
+            StandingInAir.register(dispatcher);
         });
     }
 }

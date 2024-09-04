@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_dirt"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:dirt",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

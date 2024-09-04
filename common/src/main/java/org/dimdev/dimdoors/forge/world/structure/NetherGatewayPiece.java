@@ -18,18 +18,22 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
+<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/world/structure/NetherGatewayPiece.java
 import org.dimdev.dimdoors.rift.targets.DungeonTarget;
 import org.dimdev.dimdoors.forge.world.ModStructures;
+=======
+import org.dimdev.dimdoors.world.ModStructuresPieces;
+>>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/world/structure/NetherGatewayPiece.java
 
 public class NetherGatewayPiece extends NetherFortressPieces.NetherBridgePiece {
 
         public NetherGatewayPiece(int genDepth, BoundingBox boundingBox, Direction orientation) {
-            super(ModStructures.NETHER_GATEWAY.get(), genDepth, boundingBox);
+            super(ModStructuresPieces.NETHER_GATEWAY.get(), genDepth, boundingBox);
             setOrientation(orientation);
         }
 
         public NetherGatewayPiece(CompoundTag tag) {
-            super(ModStructures.NETHER_GATEWAY.get(), tag);
+            super(ModStructuresPieces.NETHER_GATEWAY.get(), tag);
         }
 
         public static NetherGatewayPiece createPieces(StructurePieceAccessor pieces, int x, int y, int z, int genDepth, Direction orientation) {

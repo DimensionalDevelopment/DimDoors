@@ -14,9 +14,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -33,6 +37,8 @@ import org.dimdev.dimdoors.forge.item.door.DimensionalDoorItemRegistrar;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+
+import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
 public class DimensionalDoorBlockRegistrar {
 	public static final String PREFIX = "block_ag_dim_";
@@ -198,16 +204,7 @@ public class DimensionalDoorBlockRegistrar {
 		public Block getOriginalBlock() {
 			return originalBlock;
 		}
-
-//		@Override
-//		public SoundEvent getCloseSound() {
-//			return ((DoorSoundProvider) originalBlock).getCloseSound();
-//		}
-
-//		@Override
-//		public SoundEvent getOpenSound() {
-//			return ((DoorSoundProvider) originalBlock).getOpenSound();
-//		}
+		public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
 	}
 
 	private static class AutoGenDimensionalTrapdoorBlock extends DimensionalTrapdoorBlock {
@@ -235,6 +232,12 @@ public class DimensionalDoorBlockRegistrar {
 		@Override
 		public MutableComponent getName() {
 			return Component.translatable("dimdoors.autogen_block_prefix", originalBlock.getName());
+		}
+
+		@Nullable
+		@Override
+		public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+			return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
 		}
 	}
 }

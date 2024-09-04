@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_clod_ore"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:clod_ore",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

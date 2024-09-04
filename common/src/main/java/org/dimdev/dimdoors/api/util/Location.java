@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -55,6 +56,10 @@ public class Location {
 
 	public BlockEntity getBlockEntity() {
 		return this.getWorld().getBlockEntity(this.pos);
+	}
+
+	public Holder<Biome> getBiome() {
+		return this.getWorld().getBiome(pos);
 	}
 
 	public BlockPos getBlockPos() {

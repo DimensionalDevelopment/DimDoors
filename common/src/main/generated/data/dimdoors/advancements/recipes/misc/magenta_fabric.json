@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:magenta_fabric"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dimdoors:world_thread"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "inventory_changed",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:magenta_fabric"
+    ]
+  },
+  "sends_telemetry_event": false
+}

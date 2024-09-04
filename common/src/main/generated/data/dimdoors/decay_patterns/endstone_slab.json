@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decay_to_endstone_slab"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "dimdoors:end_stone_slab",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

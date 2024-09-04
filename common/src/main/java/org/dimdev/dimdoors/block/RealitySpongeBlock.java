@@ -6,7 +6,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+<<<<<<< HEAD
 import org.dimdev.dimdoors.forge.world.decay.Decay;
+=======
+import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.world.decay.DecaySource;
+>>>>>>> merge-branch
 
 public class RealitySpongeBlock extends Block {
 
@@ -20,7 +25,7 @@ public class RealitySpongeBlock extends Block {
 			BlockPos currentPos = pos.relative(direction);
 
 			if(!world.isEmptyBlock(currentPos)) {
-				Decay.decayBlock(world, currentPos, state);
+				Decay.decayBlock(world, currentPos, state, DecaySource.REAlITY_SPONGE);
 			}
 		}
 	}

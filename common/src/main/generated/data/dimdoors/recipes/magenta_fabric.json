@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "colored_fabric",
+  "key": {
+    "D": {
+      "item": "minecraft:magenta_dye"
+    },
+    "X": {
+      "item": "dimdoors:world_thread"
+    }
+  },
+  "pattern": [
+    " X ",
+    "XDX",
+    " X "
+  ],
+  "result": {
+    "item": "dimdoors:magenta_fabric"
+  },
+  "show_notification": true
+}
