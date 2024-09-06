@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.world.carvers;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
@@ -15,19 +16,20 @@ import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.forge.world.carvers.LimboCarver;
 
 import static org.dimdev.dimdoors.DimensionalDoors.id;
 
 public class ModCarvers {
 
-    public static final DeferredRegister<WorldCarver<?>> CARVERS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CARVER);
+    public static final DeferredRegister<WorldCarver<?>> CARVERS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registry.CARVER_REGISTRY);
 
     public static final RegistrySupplier<LimboCarver> LIMBO_CARVER = CARVERS.register("limbo", () -> new LimboCarver(CaveCarverConfiguration.CODEC));
 
     public static final ResourceKey<ConfiguredWorldCarver<?>> LIMBO = register("limbo");
 
     private static ResourceKey<ConfiguredWorldCarver<?>> register(String name) {
-        return ResourceKey.create(Registries.CONFIGURED_CARVER, id(name));
+        return ResourceKey.create(Registry.CONFIGURED_CARVER_REGISTRY, id(name));
     }
 
     public static void init() {

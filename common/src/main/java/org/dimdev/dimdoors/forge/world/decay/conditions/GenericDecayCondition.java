@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay.conditions;
+package org.dimdev.dimdoors.forge.world.decay.conditions;
 
 import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
@@ -10,10 +10,12 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayCondition;
-import org.dimdev.dimdoors.world.decay.DecaySource;
+import org.dimdev.dimdoors.forge.world.decay.DecayCondition;
+import org.dimdev.dimdoors.forge.world.decay.DecaySource;
 
 import java.util.Optional;
 import java.util.Set;
@@ -21,7 +23,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public abstract class GenericDecayCondition<T> implements DecayCondition {
-    public static <T extends GenericDecayCondition<?>, V> Codec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
+    public static <T extends GenericDecayCondition<?>, V> Codec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<? extends Registry<V>> key) {
         Codec<TagOrElementLocation<V>> codec = Codec.STRING.comapFlatMap(string -> string.startsWith("#") ? ResourceLocation.read(string.substring(1)).map(resourceLocation -> new TagOrElementLocation<>(resourceLocation, true, key)) : ResourceLocation.read(string).map(resourceLocation -> new TagOrElementLocation<V>(resourceLocation, false, key)), TagOrElementLocation::decoratedId);
 
         return RecordCodecBuilder.create(instance -> instance.group(codec.fieldOf("entry").forGetter(t -> (TagOrElementLocation<V>) t.getTagOrElementLocation()),
@@ -57,15 +59,15 @@ public abstract class GenericDecayCondition<T> implements DecayCondition {
         private TagKey<T> tag;
         private ResourceKey<T> key;
 
-        public static <T> TagOrElementLocation<T> of(TagKey<T> tag, ResourceKey<Registry<T>> registry) {
+        public static <T> TagOrElementLocation<T> of(TagKey<T> tag, ResourceKey<? extends Registry<T>> registry) {
             return new TagOrElementLocation<>(tag.location(), true, registry);
         }
 
-        public static <T> TagOrElementLocation<T> of(ResourceKey<T> tag, ResourceKey<Registry<T>> registry) {
+        public static <T> TagOrElementLocation<T> of(ResourceKey<T> tag, ResourceKey<? extends Registry<T>> registry) {
             return new TagOrElementLocation<>(tag.location(), false, registry);
         }
 
-        public TagOrElementLocation(ResourceLocation id, boolean tag, ResourceKey<Registry<T>> registryResourceKey) {
+        public TagOrElementLocation(ResourceLocation id, boolean tag, ResourceKey<? extends Registry<T>> registryResourceKey) {
             if(tag) this.tag = TagKey.create(registryResourceKey, id);
             else this.key = ResourceKey.create(registryResourceKey, id);
         }

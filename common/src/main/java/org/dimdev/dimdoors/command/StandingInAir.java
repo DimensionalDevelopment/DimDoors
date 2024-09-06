@@ -14,7 +14,7 @@ public class StandingInAir {
             public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
                 var player = context.getSource().getPlayerOrException();
 
-                System.out.println("You are within: " + player.serverLevel().getBlockState(player.blockPosition()).getBlockHolder().unwrapKey().get().location());
+                System.out.println("You are within: " + player.getLevel().getBlockState(player.blockPosition()).getBlockHolder().unwrapKey().get().location());
 
                 return 0;
             }

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay;
+package org.dimdev.dimdoors.forge.world.decay;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -9,6 +9,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.dimdev.dimdoors.forge.world.decay.DecayConditionType;
+import org.dimdev.dimdoors.forge.world.decay.DecaySource;
 
 import java.util.Collections;
 import java.util.List;

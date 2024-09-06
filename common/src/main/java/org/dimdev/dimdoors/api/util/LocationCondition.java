@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.api.util;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -37,7 +37,7 @@ public interface LocationCondition {
     }
 
     public record LocationConditionType<T extends LocationCondition>(Codec<T> codec) {
-        public static final Registrar<LocationConditionType<? extends LocationCondition>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<LocationConditionType<? extends LocationCondition>>builder(DimensionalDoors.id("location_condition_type")).build();
+        public static final Registrar<LocationConditionType<? extends LocationCondition>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<LocationConditionType<? extends LocationCondition>>builder(DimensionalDoors.id("location_condition_type")).build();
 
 
         public static final Codec<LocationConditionType<? extends LocationCondition>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);

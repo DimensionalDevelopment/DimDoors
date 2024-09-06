@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay.results;
+package org.dimdev.dimdoors.forge.world.decay.results;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.FluidState;
+import org.dimdev.dimdoors.forge.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 

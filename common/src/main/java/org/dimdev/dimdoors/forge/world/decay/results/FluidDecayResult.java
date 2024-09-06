@@ -1,21 +1,21 @@
-package org.dimdev.dimdoors.world.decay.results;
+package org.dimdev.dimdoors.forge.world.decay.results;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayResult;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
-import org.dimdev.dimdoors.world.decay.DecaySource;
+import org.dimdev.dimdoors.forge.world.decay.DecayResult;
+import org.dimdev.dimdoors.forge.world.decay.DecayResultType;
+import org.dimdev.dimdoors.forge.world.decay.DecaySource;
 
 public class FluidDecayResult implements DecayResult {
-	public static final Codec<FluidDecayResult> CODEC = RecordCodecBuilder.create(instance -> DecayResult.entropyCodec(instance).and(BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(blockDecayResult -> blockDecayResult.fluid)).apply(instance, FluidDecayResult::new));
+	public static final Codec<FluidDecayResult> CODEC = RecordCodecBuilder.create(instance -> DecayResult.entropyCodec(instance).and(Registry.FLUID.byNameCodec().fieldOf("fluid").forGetter(blockDecayResult -> blockDecayResult.fluid)).apply(instance, FluidDecayResult::new));
 
 	public static final String KEY = "fluid";
 	private final float worldThreadChance;

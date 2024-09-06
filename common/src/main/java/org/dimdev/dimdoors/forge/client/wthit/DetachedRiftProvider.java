@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.client.wthit;
+package org.dimdev.dimdoors.forge.client.wthit;
 
 import mcp.mobius.waila.api.IBlockAccessor;
 import mcp.mobius.waila.api.IBlockComponentProvider;

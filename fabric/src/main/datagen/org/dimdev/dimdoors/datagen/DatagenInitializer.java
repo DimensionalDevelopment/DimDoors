@@ -2,56 +2,32 @@ package org.dimdev.dimdoors.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-<<<<<<< HEAD
-=======
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.dimension.DimensionType;
->>>>>>> merge-branch
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModGatewayPools;
 import org.dimdev.dimdoors.world.ModProcessorLists;
-import org.dimdev.dimdoors.world.ModStructures;
 import org.dimdev.dimdoors.world.carvers.ModCarvers;
-import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.OptionalLong;
-
-import static org.dimdev.dimdoors.world.ModDimensions.LIMBO_TYPE_KEY;
-import static org.dimdev.dimdoors.world.ModDimensions.POCKET_TYPE_KEY;
 
 public class DatagenInitializer implements DataGeneratorEntrypoint {
 
 	@Override
 	public void onInitializeDataGenerator(FabricDataGenerator generator) {
-<<<<<<< HEAD
 		generator.addProvider(DimDoorsModelProvider::new);
 		generator.addProvider(DimdoorsRecipeProvider::new);
 		generator.addProvider(AdvancementProvider::new);
-		generator.addProvider(org.dimdev.dimdoors.datagen.LootTableProvider::new);
-		generator.addProvider(org.dimdev.dimdoors.datagen.LimboDecayProvider::new);
+		generator.addProvider(LootTableProvider::new);
+		generator.addProvider(LimboDecayProvider::new);
 		generator.addProvider(BlockTagProvider::new);
 		generator.addProvider(ItemTagProvider::new);
-=======
 
-		var pack = generator.createPack();
-
-		pack.addProvider(DimDoorsModelProvider::new);
-		pack.addProvider((DataProvider.Factory<DataProvider>) DimdoorsRecipeProvider::new);
-		pack.addProvider(AdvancementProvider::new);
-		pack.addProvider(org.dimdev.dimdoors.datagen.LootTableProvider::new);
-		pack.addProvider((DataProvider.Factory<DataProvider>) org.dimdev.dimdoors.datagen.LimboDecayProvider::new);
-		pack.addProvider(BlockTagProvider::new);
-		pack.addProvider(BiomeTagProvider::new);
-		pack.addProvider(ItemTagProvider::new);
-		pack.addProvider((output, registriesFuture) -> new FabricDynamicRegistryProvider(output, registriesFuture) {
+		generator.addProvider((output, registriesFuture) -> new FabricDataGenerator(output, registriesFuture) {
 
 			@Override
 			public String getName() {

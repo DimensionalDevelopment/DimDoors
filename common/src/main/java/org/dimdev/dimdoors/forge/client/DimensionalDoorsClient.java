@@ -12,10 +12,7 @@ import me.shedaniel.autoconfig.util.Utils;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/client/DimensionalDoorsClient.java
-=======
 import net.minecraft.client.Minecraft;
->>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/client/DimensionalDoorsClient.java
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -37,7 +34,7 @@ import org.dimdev.dimdoors.forge.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.forge.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
-import org.dimdev.dimdoors.item.RaycastHelper;
+import org.dimdev.dimdoors.forge.item.RaycastHelper;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;

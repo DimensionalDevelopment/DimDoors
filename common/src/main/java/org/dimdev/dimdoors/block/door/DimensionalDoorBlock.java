@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.block.door;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -323,6 +323,6 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
 	public Block baseBlock() {
-		return BuiltInRegistries.BLOCK.get(DimensionalDoors.getDimensionalDoorBlockRegistrar().get(BuiltInRegistries.BLOCK.getKey(this)));
+		return Registry.BLOCK.get(DimensionalDoors.getDimensionalDoorBlockRegistrar().get(Registry.BLOCK.getKey(this)));
 	}
 }

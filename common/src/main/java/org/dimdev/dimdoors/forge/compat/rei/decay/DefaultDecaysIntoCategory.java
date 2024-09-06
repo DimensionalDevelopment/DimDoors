@@ -12,14 +12,8 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
 import org.dimdev.dimdoors.block.ModBlocks;
-<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/compat/rei/decay/DefaultDecaysIntoCategory.java
 import org.dimdev.dimdoors.forge.compat.rei.TesselatingReiCompatClient;
-import org.dimdev.dimdoors.forge.compat.rei.tesselating.DefaultTesselatingDisplay;
-import org.dimdev.dimdoors.forge.world.decay.DecayProcessor;
-=======
-import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
-import org.dimdev.dimdoors.world.decay.DecayResult;
->>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/compat/rei/decay/DefaultDecaysIntoCategory.java
+import org.dimdev.dimdoors.forge.world.decay.DecayResult;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay;
+package org.dimdev.dimdoors.forge.world.decay;
 
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
@@ -19,7 +19,7 @@ public interface DecayResult {
                 Codec.FLOAT.optionalFieldOf("world_thread_chance", 0.1f).forGetter(DecayResult::worldThreadChance));
     }
 
-    Codec<DecayResult> CODEC = DecayResultType.CODEC.dispatch("type", DecayResult::getType, DecayResultType::codec);
+    Codec<DecayResult> CODEC = org.dimdev.dimdoors.world.decay.DecayResultType.CODEC.dispatch("type", DecayResult::getType, DecayResultType::codec);
 
 
     default int entropy() {

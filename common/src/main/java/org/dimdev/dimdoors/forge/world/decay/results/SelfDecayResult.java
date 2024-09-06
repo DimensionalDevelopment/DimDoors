@@ -1,14 +1,14 @@
-package org.dimdev.dimdoors.world.decay.results;
+package org.dimdev.dimdoors.forge.world.decay.results;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayResult;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
-import org.dimdev.dimdoors.world.decay.DecaySource;
+import org.dimdev.dimdoors.forge.world.decay.DecayResult;
+import org.dimdev.dimdoors.forge.world.decay.DecayResultType;
+import org.dimdev.dimdoors.forge.world.decay.DecaySource;
 
-import static org.dimdev.dimdoors.world.decay.DecayResultType.SELF_RESULT_TYPE;
+import static org.dimdev.dimdoors.forge.world.decay.DecayResultType..SELF_RESULT_TYPE;
 
 public class SelfDecayResult implements DecayResult {
     public static final String KEY = "self";

@@ -20,9 +20,8 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.DetachedRiftBlock;
-import org.dimdev.dimdoors.client.RiftCurves;
-import org.dimdev.dimdoors.world.decay.Decay;
-import org.dimdev.dimdoors.world.decay.DecaySource;
+import org.dimdev.dimdoors.forge.world.decay.Decay;
+import org.dimdev.dimdoors.forge.world.decay.DecaySource;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> 
 
 	public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.DETACHED_RIFT.get(), pos, state);
-		this.curveID = (int) (Math.random()* RiftCurves.CURVES.size());
+		this.curveID = (int) (Math.random()* org.dimdev.dimdoors.forge.client.RiftCurves.CURVES.size());
 		this.riftYaw = random.nextInt(360);
 	}
 
@@ -151,10 +150,15 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> 
 				List<EnderMan> list = level.getEntitiesOfClass(EnderMan.class, new AABB(pos.getX() - 9, pos.getY() - 3, pos.getZ() - 9, pos.getX() + 9, pos.getY() + 3, pos.getZ() + 9));
 
 				if (list.isEmpty()) {
-					EnderMan enderman = EntityType.ENDERMAN.spawn(
+					EnderMan enderman = (EnderMan) EntityType.ENDERMAN.spawn(
 							(ServerLevel) level,
+							null,
+							null,
 							pos,
-							MobSpawnType.STRUCTURE);
+							MobSpawnType.STRUCTURE,
+							false,
+							false
+					);
 					enderman.absMoveTo(pos.getX() + 0.5, pos.getY() - 1, pos.getZ() + 0.5, 5, 6);
 
 					if (random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {

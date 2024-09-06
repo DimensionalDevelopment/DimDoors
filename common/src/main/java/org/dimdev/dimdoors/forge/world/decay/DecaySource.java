@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay;
+package org.dimdev.dimdoors.forge.world.decay;
 
 import net.minecraft.util.StringRepresentable;
 

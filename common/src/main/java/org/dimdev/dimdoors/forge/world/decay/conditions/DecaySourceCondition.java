@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay.conditions;
+package org.dimdev.dimdoors.forge.world.decay.conditions;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -7,9 +7,9 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayCondition;
-import org.dimdev.dimdoors.world.decay.DecayConditionType;
-import org.dimdev.dimdoors.world.decay.DecaySource;
+import org.dimdev.dimdoors.forge.world.decay.DecayCondition;
+import org.dimdev.dimdoors.forge.world.decay.DecayConditionType;
+import org.dimdev.dimdoors.forge.world.decay.DecaySource;
 
 public record DecaySourceCondition(DecaySource source) implements DecayCondition {
     public static Codec<DecaySourceCondition> CODEC = RecordCodecBuilder.create(instance -> instance.group(StringRepresentable.fromEnum(DecaySource::values).fieldOf("source").forGetter(DecaySourceCondition::source)).apply(instance, DecaySourceCondition::new));

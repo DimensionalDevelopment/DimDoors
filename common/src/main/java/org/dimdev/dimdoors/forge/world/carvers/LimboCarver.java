@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.carvers;
+package org.dimdev.dimdoors.forge.world.carvers;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;

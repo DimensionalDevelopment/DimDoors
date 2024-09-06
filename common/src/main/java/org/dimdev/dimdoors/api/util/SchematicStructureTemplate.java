@@ -2,13 +2,11 @@ package org.dimdev.dimdoors.api.util;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
@@ -80,11 +78,11 @@ public class SchematicStructureTemplate extends StructureTemplate {
         var simplePalette = new SimplePalette();
     }
 
-    private void loadPalette(HolderGetter<Block> blockGetter, ListTag paletteTag, ListTag blocksTag) {
+    private void loadPalette(ListTag paletteTag, ListTag blocksTag) {
         SimplePalette simplePalette = new SimplePalette();
 
         for(int i = 0; i < paletteTag.size(); ++i) {
-            simplePalette.addMapping(NbtUtils.readBlockState(blockGetter, paletteTag.getCompound(i)), i);
+            simplePalette.addMapping(NbtUtils.readBlockState(paletteTag.getCompound(i)), i);
         }
 
         List<StructureBlockInfo> list = Lists.newArrayList();

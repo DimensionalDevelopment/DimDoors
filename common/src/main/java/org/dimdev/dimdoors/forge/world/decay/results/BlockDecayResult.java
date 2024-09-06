@@ -1,16 +1,16 @@
-package org.dimdev.dimdoors.world.decay.results;
+package org.dimdev.dimdoors.forge.world.decay.results;
 
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import org.dimdev.dimdoors.world.decay.DecayResult;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.forge.world.decay.DecayResult;
+import org.dimdev.dimdoors.forge.world.decay.DecayResultType;
 
 public abstract class BlockDecayResult<T extends BlockDecayResult<T>> implements DecayResult {
     public static <T extends BlockDecayResult<T>> Products.P3<RecordCodecBuilder.Mu<T>, Integer, Float, Block> blockDecayCodec(RecordCodecBuilder.Instance<T> instance) {
-        return DecayResult.entropyCodec(instance).and(BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(blockDecayResult -> blockDecayResult.block));
+        return DecayResult.entropyCodec(instance).and(Registry.BLOCK.byNameCodec().fieldOf("block").forGetter(blockDecayResult -> blockDecayResult.block));
     }
 
     private final float worldThreadChance;

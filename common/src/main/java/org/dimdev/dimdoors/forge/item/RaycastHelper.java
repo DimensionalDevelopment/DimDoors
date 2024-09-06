@@ -18,10 +18,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/item/RaycastHelper.java
-import org.dimdev.dimdoors.forge.client.wthit.EntranceRiftProvider;
-=======
->>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/item/RaycastHelper.java
 
 import java.util.function.Predicate;
 

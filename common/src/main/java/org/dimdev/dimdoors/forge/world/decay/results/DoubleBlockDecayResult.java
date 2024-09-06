@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay.results;
+package org.dimdev.dimdoors.forge.world.decay.results;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -14,8 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
-import org.dimdev.dimdoors.world.decay.DecaySource;
+import org.dimdev.dimdoors.forge.world.decay.DecayResultType;
 
 public class DoubleBlockDecayResult extends BlockDecayResult<DoubleBlockDecayResult> {
 	public static final Codec<DoubleBlockDecayResult> CODEC = RecordCodecBuilder.create(instance -> blockDecayCodec(instance).apply(instance, DoubleBlockDecayResult::new));

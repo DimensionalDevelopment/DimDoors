@@ -6,12 +6,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-<<<<<<< HEAD
 import org.dimdev.dimdoors.forge.world.decay.Decay;
-=======
-import org.dimdev.dimdoors.world.decay.Decay;
-import org.dimdev.dimdoors.world.decay.DecaySource;
->>>>>>> merge-branch
+import org.dimdev.dimdoors.forge.world.decay.DecaySource;
 
 public class RealitySpongeBlock extends Block {
 

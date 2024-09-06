@@ -1,18 +1,18 @@
-package org.dimdev.dimdoors.world.decay;
+package org.dimdev.dimdoors.forge.world.decay;
 
 import com.mojang.serialization.Codec;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.decay.conditions.DecaySourceCondition;
-import org.dimdev.dimdoors.world.decay.conditions.DimensionDecayCondition;
-import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
-import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
+import org.dimdev.dimdoors.forge.world.decay.conditions.DecaySourceCondition;
+import org.dimdev.dimdoors.forge.world.decay.conditions.DimensionDecayCondition;
+import org.dimdev.dimdoors.forge.world.decay.conditions.FluidDecayCondition;
+import org.dimdev.dimdoors.forge.world.decay.conditions.SimpleDecayCondition;
 
 public record DecayConditionType<T extends DecayCondition>(Codec<T> codec) {
-    public static final Registrar<DecayConditionType<? extends DecayCondition>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayConditionType<? extends DecayCondition>>builder(DimensionalDoors.id("decay_condition_type")).build();
+    public static final Registrar<DecayConditionType<? extends DecayCondition>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<DecayConditionType<? extends DecayCondition>>builder(DimensionalDoors.id("decay_condition_type")).build();
 
     public static final Codec<DecayConditionType<?>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 

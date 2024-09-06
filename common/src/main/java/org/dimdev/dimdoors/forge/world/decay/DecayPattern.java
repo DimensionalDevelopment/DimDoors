@@ -12,19 +12,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-<<<<<<< HEAD:common/src/main/java/org/dimdev/dimdoors/forge/world/decay/DecayPattern.java
-import org.dimdev.dimdoors.forge.world.decay.processors.NoneDecayProcessor;
-=======
->>>>>>> merge-branch:common/src/main/java/org/dimdev/dimdoors/world/decay/DecayPattern.java
-
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public record DecayPattern(List<DecayCondition> conditions, DecayResult result) {
+public record DecayPattern(List<org.dimdev.dimdoors.world.decay.DecayCondition> conditions, org.dimdev.dimdoors.world.decay.DecayResult result) {
     public static Codec<DecayPattern> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            DecayCondition.LIST_CODEC.fieldOf("conditions").forGetter(DecayPattern::conditions),
-            DecayResult.CODEC.fieldOf("result").forGetter(DecayPattern::result)
+            org.dimdev.dimdoors.world.decay.DecayCondition.LIST_CODEC.fieldOf("conditions").forGetter(DecayPattern::conditions),
+            org.dimdev.dimdoors.world.decay.DecayResult.CODEC.fieldOf("result").forGetter(DecayPattern::result)
     ).apply(instance, DecayPattern::new));
 
     public static final Event<EntropyEvent> ENTROPY_EVENT = EventFactory.of(entropyEvents -> (world, pos, entorpy) -> {

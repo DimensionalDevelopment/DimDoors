@@ -1,24 +1,24 @@
-package org.dimdev.dimdoors.world.decay.conditions;
+package org.dimdev.dimdoors.forge.world.decay.conditions;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayCondition;
-import org.dimdev.dimdoors.world.decay.DecayConditionType;
-import org.dimdev.dimdoors.world.decay.DecaySource;
+import org.dimdev.dimdoors.forge.world.decay.DecayCondition;
+import org.dimdev.dimdoors.forge.world.decay.DecayConditionType;
+import org.dimdev.dimdoors.forge.world.decay.DecaySource;
+import org.dimdev.dimdoors.forge.world.decay.conditions.GenericDecayCondition;
 
 import java.util.Set;
 
 public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
-	public static final Codec<FluidDecayCondition> CODEC = createCodec(FluidDecayCondition::new, Registries.FLUID);
+	public static final Codec<FluidDecayCondition> CODEC = createCodec(FluidDecayCondition::new, Registry.FLUID.key());
 
 	public static final String KEY = "fluid";
 
@@ -27,19 +27,19 @@ public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
 	}
 
 	public static FluidDecayCondition of(TagKey<Fluid> tag, boolean invert) {
-		return new FluidDecayCondition(TagOrElementLocation.of(tag, Registries.FLUID), invert);
+		return new FluidDecayCondition(TagOrElementLocation.of(tag, Registry.FLUID.key()), invert);
 	}
 
 	public static FluidDecayCondition of(TagKey<Fluid> tag) {
-		return new FluidDecayCondition(TagOrElementLocation.of(tag, Registries.FLUID), false);
+		return new FluidDecayCondition(TagOrElementLocation.of(tag, Registry.FLUID.key()), false);
 	}
 
 	public static FluidDecayCondition of(ResourceKey<Fluid> key, boolean invert) {
-		return new FluidDecayCondition(TagOrElementLocation.of(key, Registries.FLUID), invert);
+		return new FluidDecayCondition(TagOrElementLocation.of(key, Registry.FLUID.key()), invert);
 	}
 
 	public static FluidDecayCondition of(ResourceKey<Fluid> key) {
-		return new FluidDecayCondition(TagOrElementLocation.of(key, Registries.FLUID), false);
+		return new FluidDecayCondition(TagOrElementLocation.of(key, Registry.FLUID.key()), false);
 	}
 
 	@Override
@@ -54,6 +54,6 @@ public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
 
 	@Override
 	public Set<ResourceKey<Fluid>> constructApplicableFluids() {
-		return getTagOrElementLocation().getValues(BuiltInRegistries.FLUID);
+		return getTagOrElementLocation().getValues(Registry.FLUID);
 	}
 }

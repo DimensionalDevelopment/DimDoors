@@ -61,6 +61,4 @@ public class DimensionalTrapdoorBlock extends TrapDoorBlock implements RiftProvi
 	public VoxelShape getInteractionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
 		return Shapes.block();
 	}
-
-
 }

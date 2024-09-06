@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -142,8 +142,8 @@ public final class Decay {
 
 		public Collection<DecayPattern> getPatterns(Object object) {
 			if(object instanceof ResourceKey<?> key) {
-				if (key.isFor(Registries.BLOCK) && blockPatterns.containsKey(key)) return blockPatterns.get(key);
-				else if (key.isFor(Registries.FLUID) && fluidPatterns.containsKey(key)) return fluidPatterns.get(key);
+				if (key.isFor(Registry.BLOCK.key()) && blockPatterns.containsKey(key)) return blockPatterns.get(key);
+				else if (key.isFor(Registry.FLUID.key()) && fluidPatterns.containsKey(key)) return fluidPatterns.get(key);
 			}
 
 			return Collections.emptyList();

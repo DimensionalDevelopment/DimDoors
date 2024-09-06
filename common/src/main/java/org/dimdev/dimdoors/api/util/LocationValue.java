@@ -4,7 +4,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -66,7 +66,7 @@ public interface LocationValue {
     }
 
     public record LocationValueType<T extends LocationValueWithType>(Codec<T> codec) {
-        public static final Registrar<LocationValueType<? extends LocationValue>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<LocationValueType<? extends LocationValue>>builder(DimensionalDoors.id("location_value_type")).build();
+        public static final Registrar<LocationValueType<? extends LocationValue>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<LocationValueType<? extends LocationValue>>builder(DimensionalDoors.id("location_value_type")).build();
 
         public static final Codec<LocationValueType<? extends LocationValue>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 
