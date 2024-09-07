@@ -1,10 +1,11 @@
 {
-  "predicate": {
+  "conditions": {
     "type": "dimdoors:none"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "dimdoors:dark_sand_fence",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

@@ -1,11 +1,12 @@
 {
-  "predicate": {
+  "conditions": {
     "type": "dimdoors:block",
     "entry": "#minecraft:wool"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "minecraft:cobweb",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

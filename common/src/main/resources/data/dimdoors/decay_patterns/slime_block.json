@@ -1,11 +1,11 @@
 {
-  "predicate": {
-    "type": "dimdoors:block",
-    "entry": "minecraft:honey_block"
+  "conditions": {
+    "type": "dimdoors:none"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "minecraft:slime_block",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

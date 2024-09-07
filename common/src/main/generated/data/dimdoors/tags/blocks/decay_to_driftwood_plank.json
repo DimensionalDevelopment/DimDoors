@@ -1,9 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    {
-      "id": "#minecraft:planks",
-      "required": false
-    }
-  ]
-}

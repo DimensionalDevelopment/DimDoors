@@ -1,11 +1,11 @@
 {
-  "predicate": {
-    "type": "dimdoors:fluid",
-    "entry": "minecraft:lava"
+  "conditions": {
+    "type": "dimdoors:none"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "minecraft:basalt",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

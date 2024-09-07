@@ -1,11 +1,12 @@
 {
-  "predicate": {
+  "conditions": {
     "type": "dimdoors:block",
     "entry": "#minecraft:saplings"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "dimdoors:driftwood_sapling",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

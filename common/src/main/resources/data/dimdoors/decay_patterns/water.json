@@ -1,11 +1,11 @@
 {
-  "predicate": {
-    "type": "dimdoors:block",
-    "entry": "minecraft:snow"
+  "conditions": {
+    "type": "dimdoors:none"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:fluid",
-    "block": "minecraft:water",
-    "entropy": 0
+    "entropy": 1,
+    "fluid": "minecraft:water",
+    "world_thread_chance": 0.01
   }
 }

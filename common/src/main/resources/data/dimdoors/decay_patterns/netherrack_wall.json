@@ -1,11 +1,12 @@
 {
-  "predicate": {
+  "conditions": {
     "type": "dimdoors:block",
     "entry": "#dimdoors:netherrack_wall"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "dimdoors:netherrack_wall",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

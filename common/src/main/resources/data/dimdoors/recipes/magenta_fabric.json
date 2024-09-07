@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "group": "colored_fabric",
   "key": {
     "D": {
@@ -17,6 +16,5 @@
   ],
   "result": {
     "item": "dimdoors:magenta_fabric"
-  },
-  "show_notification": true
+  }
 }

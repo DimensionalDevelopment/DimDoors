@@ -1,11 +1,12 @@
 {
-  "predicate": {
+  "conditions": {
     "type": "dimdoors:block",
     "entry": "#dimdoors:decay_to_diorite_slab"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "minecraft:diorite_slab",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

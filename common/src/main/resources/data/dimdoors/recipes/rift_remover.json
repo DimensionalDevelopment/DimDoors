@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": {
       "tag": "dimdoors:gold_ingots"
@@ -16,6 +15,5 @@
   ],
   "result": {
     "item": "dimdoors:rift_remover"
-  },
-  "show_notification": true
+  }
 }

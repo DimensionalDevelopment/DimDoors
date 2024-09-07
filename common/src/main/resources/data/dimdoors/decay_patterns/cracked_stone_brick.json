@@ -1,11 +1,11 @@
 {
-  "predicate": {
-    "type": "dimdoors:block",
-    "entry": "minecraft:cracked_stone_bricks"
+  "conditions": {
+    "type": "dimdoors:none"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "minecraft:stone_bricks",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

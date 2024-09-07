@@ -1,11 +1,12 @@
 {
-  "predicate": {
+  "conditions": {
     "type": "dimdoors:block",
     "entry": "#dimdoors:decay_to_dirt"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "minecraft:dirt",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

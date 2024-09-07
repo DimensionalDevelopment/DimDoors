@@ -27,6 +27,5 @@
     [
       "encounter_rift"
     ]
-  ],
-  "sends_telemetry_event": true
+  ]
 }

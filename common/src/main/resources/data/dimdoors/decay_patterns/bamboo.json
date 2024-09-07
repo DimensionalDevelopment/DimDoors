@@ -1,11 +1,11 @@
 {
-  "predicate": {
-    "type": "dimdoors:block",
-    "entry": "minecraft:scaffolding"
+  "conditions": {
+    "type": "dimdoors:none"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "minecraft:bamboo",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

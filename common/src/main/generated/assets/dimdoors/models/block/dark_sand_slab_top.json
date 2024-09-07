@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "dimdoors:block/dark_sand",
-    "side": "dimdoors:block/dark_sand",
-    "top": "dimdoors:block/dark_sand"
-  }
-}

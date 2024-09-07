@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "dimdoors:block/driftwood_planks",
-    "side": "dimdoors:block/driftwood_planks",
-    "top": "dimdoors:block/driftwood_planks"
-  }
-}

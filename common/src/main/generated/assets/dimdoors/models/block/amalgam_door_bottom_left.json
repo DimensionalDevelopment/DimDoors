@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/door_bottom_left",
-  "textures": {
-    "bottom": "dimdoors:block/amalgam_door_bottom",
-    "top": "dimdoors:block/amalgam_door_top"
-  }
-}

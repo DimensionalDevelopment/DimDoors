@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/template_trapdoor_top",
-  "textures": {
-    "texture": "dimdoors:block/amalgam_trapdoor"
-  }
-}

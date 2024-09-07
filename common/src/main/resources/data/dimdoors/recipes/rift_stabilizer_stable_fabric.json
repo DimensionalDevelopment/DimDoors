@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "#": {
       "tag": "dimdoors:diamonds"
@@ -16,6 +15,5 @@
   ],
   "result": {
     "item": "dimdoors:rift_stabilizer"
-  },
-  "show_notification": true
+  }
 }

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab",
-  "textures": {
-    "bottom": "dimdoors:block/unravelled_fabric",
-    "side": "dimdoors:block/unravelled_fabric",
-    "top": "dimdoors:block/unravelled_fabric"
-  }
-}

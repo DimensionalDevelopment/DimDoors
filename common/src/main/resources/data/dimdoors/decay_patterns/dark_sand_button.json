@@ -1,11 +1,12 @@
 {
-  "predicate": {
+  "conditions": {
     "type": "dimdoors:block",
     "entry": "#dimdoors:decay_dark_sand_button"
   },
-  "processor": {
+  "result": {
     "type": "dimdoors:block",
     "block": "dimdoors:dark_sand_button",
-    "entropy": 0
+    "entropy": 1,
+    "world_thread_chance": 0.01
   }
 }

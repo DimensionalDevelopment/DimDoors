@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cross",
-  "textures": {
-    "cross": "dimdoors:block/unraveled_spike_up_tip_merge"
-  }
-}

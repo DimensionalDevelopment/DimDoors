@@ -28,6 +28,5 @@
     [
       "enter_dungeon"
     ]
-  ],
-  "sends_telemetry_event": true
+  ]
 }

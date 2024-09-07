@@ -1,8 +1,0 @@
-{
-  "replace": false,
-  "values": [
-    "minecraft:brick_stairs",
-    "dimdoors:mud_stairs",
-    "dimdoors:amalgam_stairs"
-  ]
-}
