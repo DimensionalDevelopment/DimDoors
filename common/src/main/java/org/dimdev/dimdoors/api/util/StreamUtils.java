@@ -4,7 +4,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
@@ -16,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.ReportedException;
 import net.minecraft.server.Bootstrap;
-import org.dimdev.dimdoors.DimensionalDoors;
 
 /**
  * Utility class for processing data in parallel.

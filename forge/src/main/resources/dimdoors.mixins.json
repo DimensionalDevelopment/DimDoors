@@ -1,12 +1,13 @@
 {
   "required": true,
-  "package": "org.dimdev.dimdoors.forge.mixin",
+  "package": "org.dimdev.dimdoors.mixin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
     "client.ModelBakeryMixin"
   ],
   "mixins": [
+    "ItemStackMixin",
     "ServerPlayerGameModeMixin",
     "TessellatingRecipeMixin"
   ],
