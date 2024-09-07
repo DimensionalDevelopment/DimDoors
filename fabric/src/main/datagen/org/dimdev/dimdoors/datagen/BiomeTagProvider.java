@@ -1,22 +1,19 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import org.dimdev.dimdoors.tag.ModBiomeTags;
 
-import java.util.concurrent.CompletableFuture;
-
-public class BiomeTagProvider extends FabricTagProvider<Biome> {
-    public BiomeTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-        super(output, Registries.BIOME, registriesFuture);
+public class BiomeTagProvider extends FabricTagProvider.DynamicRegistryTagProvider<Biome> {
+    public BiomeTagProvider(FabricDataGenerator output) {
+        super(output, Registry.BIOME_REGISTRY);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider arg) {
+    protected void generateTags() {
 
         tag(ModBiomeTags.ENCLOSED_RED_SANDSTONE_GATEWAY).add(
                 Biomes.BADLANDS,
@@ -71,15 +68,13 @@ public class BiomeTagProvider extends FabricTagProvider<Biome> {
                 Biomes.WINDSWEPT_FOREST,
                 Biomes.WINDSWEPT_SAVANNA,
                 Biomes.MEADOW,
-                Biomes.CHERRY_GROVE,
                 Biomes.GROVE,
                 Biomes.JAGGED_PEAKS,
                 Biomes.STONY_PEAKS,
                 Biomes.BEACH,
                 Biomes.STONY_SHORE,
                 Biomes.MUSHROOM_FIELDS,
-                Biomes.GROVE,
-                Biomes.CHERRY_GROVE
+                Biomes.GROVE
         );
 //        tag(ModBiomeTags.LIMBO_GATEWAY).add(ModBiomes.LIMBO_KEY);
 

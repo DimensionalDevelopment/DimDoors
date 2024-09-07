@@ -1,14 +1,8 @@
 package org.dimdev.dimdoors.datagen;
 
-<<<<<<< HEAD
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-=======
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
->>>>>>> merge-branch
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.CachedOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -16,24 +10,17 @@ import net.minecraft.world.level.block.Blocks;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
-<<<<<<< HEAD
 	public BlockTagProvider(FabricDataGenerator output) {
 		super(output);
-=======
-	public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(output, lookupProvider);
->>>>>>> merge-branch
 	}
-
 	@Override
 	protected void generateTags() {
-	add(ModBlockTags.DECAY_TO_AIR,
-		Blocks.COBWEB,
-		ModBlocks.DRIFTWOOD_LEAVES.get(),
+		add(ModBlockTags.DECAY_TO_AIR,
+				Blocks.COBWEB,
+				ModBlocks.DRIFTWOOD_LEAVES.get(),
 				ModBlocks.DRIFTWOOD_SAPLING.get(),
 				Blocks.GLASS_PANE,
 				Blocks.MOSS_CARPET,

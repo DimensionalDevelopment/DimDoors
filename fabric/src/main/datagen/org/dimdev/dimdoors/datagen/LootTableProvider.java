@@ -9,7 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.forge.item.ModItems;
+import org.dimdev.dimdoors.item.ModItems;
 
 public class LootTableProvider extends FabricBlockLootTableProvider {
 
@@ -29,7 +29,6 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 //		this.addDropWithSilkTouch(ModBlocks.GOLD_DIMENSIONAL_DOOR);
 //		this.addDropWithSilkTouch(ModBlocks.QUARTZ_DIMENSIONAL_DOOR);
 			this.dropWhenSilkTouch(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR.get());
-			this.dropWhenSilkTouch(ModBlocks.MARKING_PLATE.get());
 
 			this.add(ModBlocks.SOLID_STATIC.get(), (blockx) -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER.get()));
 

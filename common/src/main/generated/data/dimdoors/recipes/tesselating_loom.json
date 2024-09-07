@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "A": {
       "item": "dimdoors:world_thread"
@@ -22,6 +21,5 @@
   ],
   "result": {
     "item": "dimdoors:tesselating_loom"
-  },
-  "show_notification": true
+  }
 }

@@ -1,0 +1,19 @@
+package org.dimdev.dimdoors.world.feature.gateway;
+
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import org.dimdev.dimdoors.world.structure.gateway.LimboGateway;
+
+public class LimboGatewayFeature extends Feature<NoneFeatureConfiguration> {
+    public LimboGatewayFeature() {
+        super(NoneFeatureConfiguration.CODEC);
+    }
+
+	@Override
+	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+		LimboGateway.INSTANCE.generate(context.level(), context.origin());
+		return true;
+
+	}
+}

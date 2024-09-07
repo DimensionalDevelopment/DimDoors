@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.forge.item.ModItems;
+import org.dimdev.dimdoors.item.ModItems;
 
 import static net.minecraft.data.models.model.TextureMapping.getBlockTexture;
 import static net.minecraft.data.models.model.TextureMapping.getItemTexture;

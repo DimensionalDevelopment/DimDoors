@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:fuzzy_fireball"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "liminal_lint": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dimdoors:liminal_lint"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "liminal_lint",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:fuzzy_fireball"
+    ]
+  }
+}

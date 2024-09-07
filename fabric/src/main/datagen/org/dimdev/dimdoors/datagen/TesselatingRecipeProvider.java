@@ -6,7 +6,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.forge.item.ModItems;
+import org.dimdev.dimdoors.item.ModItems;
 
 import java.util.function.Consumer;
 

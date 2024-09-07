@@ -21,9 +21,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.ai.MonolithAggroGoal;
-import org.dimdev.dimdoors.forge.item.ModItems;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.forge.world.ModDimensions;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 public class MonolithEntity extends Mob {
     public static final int MAX_AGGRO = 250;

@@ -33,8 +33,8 @@ import org.dimdev.dimdoors.rift.targets.LocationProvider;
 import org.dimdev.dimdoors.rift.targets.MessageTarget;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.forge.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

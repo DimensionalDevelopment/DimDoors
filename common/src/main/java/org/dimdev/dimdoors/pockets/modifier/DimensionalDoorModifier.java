@@ -25,8 +25,8 @@ import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
-import org.dimdev.dimdoors.forge.world.pocket.type.LazyGenerationPocket;
-import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
 import java.util.Map;

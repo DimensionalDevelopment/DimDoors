@@ -3,19 +3,12 @@ package org.dimdev.dimdoors.pockets.modifier;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.TemplateTarget;
-import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.IntConsumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.dimdev.dimdoors.pockets.modifier.RiftDataModifier.stream;
 import static org.dimdev.dimdoors.pockets.modifier.RiftDataModifier.toByteArray;

@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import org.dimdev.dimdoors.forge.item.ModItems;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.tag.ModItemTags;
 
 public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {

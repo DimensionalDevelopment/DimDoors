@@ -30,13 +30,13 @@
       "org.dimdev.dimdoors.client.DimensionalDoorsClientFabric"
     ],
     "cardinal-components": [
-      "org.dimdev.dimdoors.fabric.DimensionalDoorsComponents"
+      "org.dimdev.dimdoors.DimensionalDoorsComponents"
     ],
     "fabric-datagen": [
       "org.dimdev.dimdoors.datagen.DatagenInitializer"
     ],
     "modmenu": [
-      "org.dimdev.dimdoors.fabric.forge.compat.ModMenuCompat"
+      "org.dimdev.dimdoors.compat.ModMenuCompat"
     ],
     "mm:early_risers": [
       "org.dimdev.dimdoors.fabric.EarlyRiser"

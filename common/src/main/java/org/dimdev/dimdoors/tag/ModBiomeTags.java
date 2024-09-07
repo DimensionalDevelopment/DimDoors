@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.tag;
 
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -21,7 +21,7 @@ public class ModBiomeTags {
 //    public static final TagKey<Biome> LIMBO_GATEWAY = of("limbo_gateway");
 
     private static TagKey<Biome> of(String id) {
-        return TagKey.create(Registries.BIOME, DimensionalDoors.id(id));
+        return TagKey.create(Registry.BIOME_REGISTRY, DimensionalDoors.id(id));
     }
 
 }

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.forge.world.pocket.type;
+package org.dimdev.dimdoors.world.pocket.type;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.world.item.DyeColor;

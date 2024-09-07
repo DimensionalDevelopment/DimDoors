@@ -21,11 +21,9 @@ import java.util.Objects;
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {
-<<<<<<< HEAD
-	public static final Registrar<VirtualTargetType<?>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<VirtualTargetType<?>>builder(DimensionalDoors.id("virtual_type")).build();
-=======
+
 	public static final Codec<VirtualTarget> CODEC = VirtualTargetType.CODEC.dispatch("type", VirtualTarget::getType, VirtualTargetType::codec);
->>>>>>> merge-branch
+
 	public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
 	protected Location location;
@@ -96,7 +94,7 @@ public abstract class VirtualTarget implements Target {
     public abstract VirtualTarget copy();
 
     public interface VirtualTargetType<T extends VirtualTarget> {
-		Registrar<VirtualTargetType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<VirtualTargetType<?>>builder(DimensionalDoors.id("virtual_type")).build();
+		Registrar<VirtualTargetType<?>> REGISTRY = Registries.get(DimensionalDoors.MOD_ID).<VirtualTargetType<?>>builder(DimensionalDoors.id("virtual_type")).build();
 		Codec<VirtualTargetType<?>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 
 		RegistrySupplier<VirtualTargetType<RandomTarget>> AVAILABLE_LINK = register("dimdoors:available_link", RandomTarget.CODEC);

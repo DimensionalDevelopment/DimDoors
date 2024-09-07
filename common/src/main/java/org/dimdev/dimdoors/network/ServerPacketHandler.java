@@ -17,11 +17,11 @@ import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
 import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket;
-import org.dimdev.dimdoors.forge.world.ModDimensions;
-import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.forge.world.pocket.PocketDirectory;
-import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
-import org.dimdev.dimdoors.forge.world.pocket.type.addon.AutoSyncedAddon;
+import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.PocketDirectory;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 import java.util.HashSet;
 import java.util.Set;

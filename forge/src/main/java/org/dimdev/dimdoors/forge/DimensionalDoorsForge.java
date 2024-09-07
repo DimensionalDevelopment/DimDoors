@@ -8,8 +8,8 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.forge.item.component.forge.CounterComponentImpl;
 import org.dimdev.dimdoors.forge.world.ModBiomeModifiers;
-import org.dimdev.dimdoors.forge.world.level.component.ChunkLazilyGeneratedComponent;
-import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 import java.util.function.Consumer;
 

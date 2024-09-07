@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.forge.compat.rei;
+package org.dimdev.dimdoors.compat.rei;
 
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
@@ -10,18 +10,15 @@ import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.simple.SimpleTransferHandler;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.forge.client.screen.TesselatingLoomScreen;
-import org.dimdev.dimdoors.forge.compat.rei.decay.DefaultDecaysIntoCategory;
-import org.dimdev.dimdoors.forge.compat.rei.decay.DefaultDecaysIntoDisplay;
-import org.dimdev.dimdoors.forge.compat.rei.tesselating.DefaultTesselatingCategory;
-import org.dimdev.dimdoors.forge.compat.rei.tesselating.DefaultTesselatingDisplay;
+import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.compat.rei.decay.DefaultDecaysIntoCategory;
+import org.dimdev.dimdoors.compat.rei.decay.DefaultDecaysIntoDisplay;
+import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingCategory;
+import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingDisplay;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
-import org.dimdev.dimdoors.forge.world.decay.Decay;
-import org.dimdev.dimdoors.forge.world.decay.DecayPattern;
+import org.dimdev.dimdoors.world.decay.Decay;
 
 public class TesselatingReiCompatClient implements REIClientPlugin {
     public static final CategoryIdentifier<? extends DefaultTesselatingDisplay<?>> TESSELATING = CategoryIdentifier.of("dimdoors", "tesselating");

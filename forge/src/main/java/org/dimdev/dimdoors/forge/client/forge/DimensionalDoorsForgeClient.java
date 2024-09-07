@@ -18,14 +18,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock;
-import org.dimdev.dimdoors.forge.client.DimensionalDoorsClient;
-import org.dimdev.dimdoors.forge.client.ModEntityModelLayers;
-import org.dimdev.dimdoors.forge.client.config.ModMenu;
-import org.dimdev.dimdoors.forge.client.effect.DungeonDimensionEffect;
-import org.dimdev.dimdoors.forge.client.effect.LimboDimensionEffect;
+import org.dimdev.dimdoors.client.DimensionalDoorsClient;
+import org.dimdev.dimdoors.client.ModEntityModelLayers;
+import org.dimdev.dimdoors.client.config.ModMenu;
+import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
+import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
 
 import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
-import static org.dimdev.dimdoors.forge.item.door.DimensionalDoorItemRegistrar.PREFIX;
+import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
 
 @Mod.EventBusSubscriber(modid = DimensionalDoors.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DimensionalDoorsForgeClient {

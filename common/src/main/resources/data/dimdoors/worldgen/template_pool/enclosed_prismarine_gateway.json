@@ -1,0 +1,15 @@
+{
+  "name": "dimdoors:enclosed_prismarine_gateway",
+  "elements": [
+    {
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "dimdoors:gateways/enclosed_prismarine",
+        "processors": "dimdoors:dungeon",
+        "projection": "rigid"
+      },
+      "weight": 50
+    }
+  ],
+  "fallback": "minecraft:empty"
+}

@@ -14,7 +14,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.forge.world.level.component.ChunkLazilyGeneratedComponent;
+import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

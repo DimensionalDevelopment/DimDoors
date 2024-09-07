@@ -20,8 +20,9 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.DetachedRiftBlock;
-import org.dimdev.dimdoors.forge.world.decay.Decay;
-import org.dimdev.dimdoors.forge.world.decay.DecaySource;
+import org.dimdev.dimdoors.client.RiftCurves;
+import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> 
 
 	public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.DETACHED_RIFT.get(), pos, state);
-		this.curveID = (int) (Math.random()* org.dimdev.dimdoors.forge.client.RiftCurves.CURVES.size());
+		this.curveID = (int) (Math.random()* RiftCurves.CURVES.size());
 		this.riftYaw = random.nextInt(360);
 	}
 

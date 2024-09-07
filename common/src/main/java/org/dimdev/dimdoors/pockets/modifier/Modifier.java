@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Collection;
 import java.util.function.Supplier;

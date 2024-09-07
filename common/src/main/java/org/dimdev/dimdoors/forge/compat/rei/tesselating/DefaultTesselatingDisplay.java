@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.forge.compat.rei.tesselating;
+package org.dimdev.dimdoors.compat.rei.tesselating;
 
 import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
@@ -18,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import org.dimdev.dimdoors.forge.compat.rei.TesselatingReiCompatClient;
+import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
 import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
 import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 import org.jetbrains.annotations.Nullable;

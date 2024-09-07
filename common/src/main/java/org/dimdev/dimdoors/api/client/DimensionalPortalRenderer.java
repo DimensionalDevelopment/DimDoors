@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.forge.client.DimensionalDoorsClient;
-import org.dimdev.dimdoors.forge.client.ModShaders;
+import org.dimdev.dimdoors.client.DimensionalDoorsClient;
+import org.dimdev.dimdoors.client.ModShaders;
 
 import java.util.Collections;
 import java.util.HashSet;

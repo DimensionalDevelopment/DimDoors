@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.forge.compat.rei.decay;
+package org.dimdev.dimdoors.compat.rei.decay;
 
 import com.google.common.collect.Lists;
 import me.shedaniel.math.Point;
@@ -12,8 +12,8 @@ import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.forge.compat.rei.TesselatingReiCompatClient;
-import org.dimdev.dimdoors.forge.world.decay.DecayResult;
+import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
+import org.dimdev.dimdoors.world.decay.DecayResult;
 
 import java.util.List;
 

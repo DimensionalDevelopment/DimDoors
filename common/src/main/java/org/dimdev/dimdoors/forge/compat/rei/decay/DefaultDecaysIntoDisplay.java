@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.forge.compat.rei.decay;
+package org.dimdev.dimdoors.compat.rei.decay;
 
 import dev.architectury.fluid.FluidStack;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
@@ -7,8 +7,8 @@ import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.api.common.entry.type.VanillaEntryTypes;
 import net.minecraft.world.item.ItemStack;
-import org.dimdev.dimdoors.forge.compat.rei.TesselatingReiCompatClient;
-import org.dimdev.dimdoors.forge.world.decay.DecayPattern;
+import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
+import org.dimdev.dimdoors.world.decay.DecayPattern;
 
 import java.util.List;
 import java.util.Objects;

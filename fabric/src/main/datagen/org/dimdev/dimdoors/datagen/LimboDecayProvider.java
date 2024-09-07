@@ -5,23 +5,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-<<<<<<< HEAD
+import com.mojang.serialization.JsonOps;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.core.Registry;
-=======
-import com.mojang.serialization.JsonOps;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
->>>>>>> merge-branch
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-<<<<<<< HEAD
-import net.minecraft.nbt.CompoundTag;
-=======
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
->>>>>>> merge-branch
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -34,17 +24,9 @@ import net.minecraft.world.level.material.Fluids;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.tag.ModBlockTags;
-<<<<<<< HEAD
-import org.dimdev.dimdoors.forge.world.decay.DecayPredicate;
-import org.dimdev.dimdoors.forge.world.decay.DecayProcessor;
-import org.dimdev.dimdoors.forge.world.decay.predicates.FluidDecayPredicate;
-import org.dimdev.dimdoors.forge.world.decay.predicates.SimpleDecayPredicate;
-import org.dimdev.dimdoors.forge.world.decay.processors.*;
-=======
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.tag.ModBlockTags;
 import org.dimdev.dimdoors.world.decay.DecayCondition;
 import org.dimdev.dimdoors.world.decay.DecayPattern;
 import org.dimdev.dimdoors.world.decay.DecayResult;
@@ -52,7 +34,6 @@ import org.dimdev.dimdoors.world.decay.conditions.DimensionDecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
 import org.dimdev.dimdoors.world.decay.results.*;
->>>>>>> merge-branch
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -264,26 +245,17 @@ public class LimboDecayProvider implements DataProvider {
 		return new DecayPatternData(id, new DecayPattern(List.of(getPredicate(before)), getProcessor(after)));
 	}
 
-<<<<<<< HEAD
-	private DecayPredicate getPredicate(Object object) {
-		if (!(object instanceof TagKey<?> tag)) {
-			if(object instanceof Block block) return SimpleDecayPredicate.builder().block(block).create();
-			else if(object instanceof Fluid fluid) return FluidDecayPredicate.builder().fluid(fluid).create();
-		} else {
-			if (tag.isFor(Registry.BLOCK_REGISTRY)) return SimpleDecayPredicate.builder().tag((TagKey<Block>) tag).create();
-			else if (tag.isFor(Registry.FLUID_REGISTRY)) return FluidDecayPredicate.builder().tag((TagKey<Fluid>) tag).create();
-=======
+
 	private DecayCondition getPredicate(Object object) {
 		if (object instanceof TagKey<?> tag) {
-			if (tag.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((TagKey<Block>) tag);
-			else if (tag.isFor(Registries.FLUID)) return FluidDecayCondition.of((TagKey<Fluid>) tag);
-			else if (tag.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((TagKey<DimensionType>) tag);
+			if (tag.isFor(Registry.BLOCK_REGISTRY)) return SimpleDecayCondition.of((TagKey<Block>) tag);
+			else if (tag.isFor(Registry.FLUID_REGISTRY)) return FluidDecayCondition.of((TagKey<Fluid>) tag);
+			else if (tag.isFor(Registry.DIMENSION_TYPE_REGISTRY)) return DimensionDecayCondition.of((TagKey<DimensionType>) tag);
 
 		} else if(object instanceof ResourceKey<?> key) {
-			if (key.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((ResourceKey<Block>) key);
-			else if (key.isFor(Registries.FLUID)) return FluidDecayCondition.of((ResourceKey<Fluid>) key);
-			else if (key.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((ResourceKey<DimensionType>) key);
->>>>>>> merge-branch
+			if (key.isFor(Registry.BLOCK_REGISTRY)) return SimpleDecayCondition.of((ResourceKey<Block>) key);
+			else if (key.isFor(Registry.FLUID_REGISTRY)) return FluidDecayCondition.of((ResourceKey<Fluid>) key);
+			else if (key.isFor(Registry.DIMENSION_TYPE_REGISTRY)) return DimensionDecayCondition.of((ResourceKey<DimensionType>) key);
 		}
 
 		return DecayCondition.NONE;
@@ -356,7 +328,7 @@ public class LimboDecayProvider implements DataProvider {
     public static record DecayPatternData(ResourceLocation id, DecayPattern pattern) {
 
         public void run(BiConsumer<ResourceLocation, JsonObject> consumer) {
-            JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(pattern).getOrThrow(false, DataProvider.LOGGER::error);
+            JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(pattern).getOrThrow(false, System.out::println);
 
             consumer.accept(id, object.getAsJsonObject());
         }

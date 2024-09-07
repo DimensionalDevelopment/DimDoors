@@ -32,7 +32,7 @@ import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.forge.item.door.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;

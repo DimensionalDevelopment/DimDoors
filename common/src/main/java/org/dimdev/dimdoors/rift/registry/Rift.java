@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 import java.util.UUID;
 

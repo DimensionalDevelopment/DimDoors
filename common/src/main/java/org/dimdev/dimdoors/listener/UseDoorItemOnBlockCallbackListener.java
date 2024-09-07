@@ -3,24 +3,18 @@ package org.dimdev.dimdoors.listener;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
-import org.dimdev.dimdoors.forge.item.RaycastHelper;
-import org.dimdev.dimdoors.forge.item.RiftRemoverItem;
-import org.dimdev.dimdoors.forge.item.RiftSignatureItem;
-import org.dimdev.dimdoors.forge.item.door.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.item.RaycastHelper;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.jetbrains.annotations.Nullable;
 
-import static org.dimdev.dimdoors.forge.item.RaycastHelper.DETACH;
+import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
 
 public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallback {
 	@Override

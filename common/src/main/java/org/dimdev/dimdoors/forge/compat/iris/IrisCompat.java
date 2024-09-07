@@ -1,7 +1,7 @@
-package org.dimdev.dimdoors.forge.compat.iris;
+package org.dimdev.dimdoors.compat.iris;
 
 import net.coderbot.iris.Iris;
-import org.dimdev.dimdoors.forge.client.ShaderPackDetector;
+import org.dimdev.dimdoors.client.ShaderPackDetector;
 
 public class IrisCompat implements ShaderPackDetector {
     @Override

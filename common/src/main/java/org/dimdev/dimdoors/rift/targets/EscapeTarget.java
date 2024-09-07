@@ -21,7 +21,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.UnravelUtil;
-import org.dimdev.dimdoors.forge.world.ModDimensions;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.Random;
 import java.util.UUID;
@@ -62,14 +62,10 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				return false;
 			}
 			Location destLoc;
-<<<<<<< HEAD
-			if (((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnPosition() != null) {
-				destLoc = new Location(((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnPosition());
-=======
-			
-			if (((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition() != null && DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld == null && !DimensionalDoors.getConfig().getLimboConfig().escapeToWorldSpawn) {
+
+			if (((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnPosition() != null && DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld == null && !DimensionalDoors.getConfig().getLimboConfig().escapeToWorldSpawn) {
 				LOGGER.log(Level.INFO, "Sending player from limbo to their spawnpoint, good luck!");
-				destLoc = new Location(((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level().getPlayerByUUID(uuid)).getRespawnPosition());
+				destLoc = new Location(((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnDimension(), ((ServerPlayer) entity.level.getPlayerByUUID(uuid)).getRespawnPosition());
 			} else if (DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld != null && !DimensionalDoors.getConfig().getLimboConfig().escapeToWorldSpawn) {
 				targetWorldResourceKey = DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld;
 				if (DimensionalDoors.getWorld(targetWorldResourceKey) != null) {
@@ -80,7 +76,6 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 					LOGGER.log(Level.INFO, "Sending player from limbo to worldspawn, good luck!");
 					destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getSharedSpawnPos());
 				}
->>>>>>> merge-branch
 			} else {
 				LOGGER.log(Level.INFO, "sending player from limbo to worldspawn, good luck!");
 				destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getSharedSpawnPos());

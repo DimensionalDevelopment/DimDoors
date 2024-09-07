@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:fabric_of_reality"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "stable_fabric": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dimdoors:stable_fabric"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "stable_fabric",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:fabric_of_reality"
+    ]
+  }
+}

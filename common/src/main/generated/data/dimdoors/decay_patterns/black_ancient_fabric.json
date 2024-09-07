@@ -2,7 +2,7 @@
   "conditions": [
     {
       "type": "dimdoors:dimension",
-      "entry": "dimdoors:limbo",
+      "entry": "dimdoors:limbo_type",
       "invert": true
     },
     {

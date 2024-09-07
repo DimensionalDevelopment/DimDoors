@@ -6,18 +6,10 @@ import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
-<<<<<<< HEAD
-import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.forge.world.ModDimensions;
-import org.dimdev.dimdoors.forge.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.forge.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.forge.world.pocket.type.Pocket;
-=======
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
->>>>>>> merge-branch
 
 public class TemplateTarget extends WrappedDestinationTarget {
     public static final Codec<TemplateTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", null).forGetter(a -> a.wrappedDestination),

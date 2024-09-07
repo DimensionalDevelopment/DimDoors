@@ -18,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
-import org.dimdev.dimdoors.forge.world.ModDimensions;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.concurrent.ThreadLocalRandom;
 

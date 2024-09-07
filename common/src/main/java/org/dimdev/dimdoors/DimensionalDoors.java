@@ -40,10 +40,10 @@ import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
-import org.dimdev.dimdoors.forge.item.ModItems;
-import org.dimdev.dimdoors.forge.item.door.DimensionalDoorItemRegistrar;
-import org.dimdev.dimdoors.forge.item.door.DoorRiftDataLoader;
-import org.dimdev.dimdoors.forge.item.door.data.condition.Condition;
+import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
+import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
+import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
@@ -63,19 +63,6 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.util.schematic.SchemFixer;
-<<<<<<< HEAD
-import org.dimdev.dimdoors.forge.world.ModBiomes;
-import org.dimdev.dimdoors.forge.world.ModDimensions;
-import org.dimdev.dimdoors.forge.world.ModStructures;
-import org.dimdev.dimdoors.forge.world.decay.Decay;
-import org.dimdev.dimdoors.forge.world.decay.DecayPredicate;
-import org.dimdev.dimdoors.forge.world.decay.DecayProcessorType;
-import org.dimdev.dimdoors.forge.world.feature.ModFeatures;
-import org.dimdev.dimdoors.forge.world.pocket.type.AbstractPocket;
-import org.dimdev.dimdoors.forge.world.pocket.type.addon.PocketAddon;
-import org.dimdev.dimdoors.forge.world.pocket.type.addon.PreventBlockModificationAddon;
-=======
-import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModStructureProccessors;
 import org.dimdev.dimdoors.world.carvers.ModCarvers;
@@ -85,7 +72,6 @@ import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
->>>>>>> merge-branch
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -142,7 +128,6 @@ public class DimensionalDoors {
 		ModItems.init();
 		ModBlocks.init();
 		ModCarvers.init();
-		ModBiomes.init();
 		ModDimensions.init();
 		ModStats.init();
 		ModBlockEntityTypes.init();

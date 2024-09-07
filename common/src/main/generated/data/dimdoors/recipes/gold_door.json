@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "X": {
       "tag": "dimdoors:gold_ingots"
@@ -14,6 +13,5 @@
   "result": {
     "count": 3,
     "item": "dimdoors:gold_door"
-  },
-  "show_notification": true
+  }
 }

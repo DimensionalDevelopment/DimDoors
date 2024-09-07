@@ -14,8 +14,8 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.forge.item.ModItems;
-import org.dimdev.dimdoors.forge.item.component.CounterComponent;
+import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.item.component.CounterComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

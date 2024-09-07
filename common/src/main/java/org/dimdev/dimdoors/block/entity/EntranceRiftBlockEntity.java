@@ -32,11 +32,11 @@ import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
-import org.dimdev.dimdoors.forge.item.RiftKeyItem;
+import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
-import org.dimdev.dimdoors.forge.world.ModDimensions;
+import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.Optional;
 

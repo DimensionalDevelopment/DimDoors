@@ -18,14 +18,12 @@
     "minecraft:windswept_forest",
     "minecraft:windswept_savanna",
     "minecraft:meadow",
-    "minecraft:cherry_grove",
     "minecraft:grove",
     "minecraft:jagged_peaks",
     "minecraft:stony_peaks",
     "minecraft:beach",
     "minecraft:stony_shore",
     "minecraft:mushroom_fields",
-    "minecraft:grove",
-    "minecraft:cherry_grove"
+    "minecraft:grove"
   ]
 }
