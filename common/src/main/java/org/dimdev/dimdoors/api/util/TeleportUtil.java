@@ -16,7 +16,7 @@ import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.stat.ModStats;
-import org.dimdev.dimdoors.network.ExtendedServerPlayNetworkHandler;
+import org.dimdev.dimdoors.network.Networking;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -75,7 +75,7 @@ public final class TeleportUtil {
 			}
 
 			serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity.getId(), velocity));
-			((ExtendedServerPlayNetworkHandler) (serverPlayer.connection)).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos((int) pos.x, (int) pos.y, (int) pos.z));
+			Networking.getNetworkState(serverPlayer).syncPocketAddonsIfNeeded(serverPlayer, world, new BlockPos((int) pos.x, (int) pos.y, (int) pos.z));
 
 			if (world.dimension() == ModDimensions.DUNGEON) {
 				serverPlayer.awardStat(ModStats.TIMES_BEEN_TO_DUNGEON);

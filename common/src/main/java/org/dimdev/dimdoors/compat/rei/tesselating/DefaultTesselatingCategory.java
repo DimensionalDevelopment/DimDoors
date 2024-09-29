@@ -73,6 +73,7 @@ public class DefaultTesselatingCategory implements DisplayCategory<DefaultTessel
                 if (first.isShapeless() != second.isShapeless()) return false;
                 if (first.getWidth() != second.getWidth()) return false;
                 if (first.getHeight() != second.getHeight()) return false;
+                if (first.getWeavingTime() != second.getWeavingTime()) return false;
                 return true;
             }
             

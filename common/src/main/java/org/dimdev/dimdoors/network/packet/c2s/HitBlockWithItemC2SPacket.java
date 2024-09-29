@@ -1,51 +1,39 @@
 package org.dimdev.dimdoors.network.packet.c2s;
 
 import dev.architectury.networking.NetworkManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.Item;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.api.item.ExtendedItem;
 
-import java.util.function.Supplier;
+public record HitBlockWithItemC2SPacket(InteractionHand hand, BlockPos pos, Direction direction) implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<HitBlockWithItemC2SPacket> TYPE = new CustomPacketPayload.Type<>(DimensionalDoors.id("hit_block_with_item"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, HitBlockWithItemC2SPacket> STREAM_CODEC = CustomPacketPayload.codec(HitBlockWithItemC2SPacket::write, HitBlockWithItemC2SPacket::new);
 
-public class HitBlockWithItemC2SPacket {
-	public static final ResourceLocation ID = DimensionalDoors.id("hit_block_with_item");
-
-	private InteractionHand hand;
-	private BlockPos pos;
-	private Direction direction;
-
-	public HitBlockWithItemC2SPacket() {
-	}
-
-	@Environment(EnvType.CLIENT)
-	public HitBlockWithItemC2SPacket(InteractionHand hand, BlockPos pos, Direction direction) {
-		this.hand = hand;
-		this.pos = pos;
-		this.direction = direction;
-	}
-
-	public HitBlockWithItemC2SPacket(FriendlyByteBuf buf) {
+	private HitBlockWithItemC2SPacket(FriendlyByteBuf buf) {
 		this(buf.readEnum(InteractionHand.class), buf.readBlockPos(), buf.readEnum(Direction.class));
 	}
 
-	public FriendlyByteBuf write(FriendlyByteBuf buf) {
+	private void write(FriendlyByteBuf buf) {
 		buf.writeEnum(hand);
 		buf.writeBlockPos(pos);
 		buf.writeEnum(direction);
-		return buf;
 	}
 
-	public void apply(Supplier<NetworkManager.PacketContext> context) {
-		ServerPacketHandler.get((ServerPlayer) context.get().getPlayer()).onAttackBlock(this);
+	public static void handle(HitBlockWithItemC2SPacket packet, NetworkManager.PacketContext context) {
+		context.queue(() -> {
+			Item item = context.getPlayer().getItemInHand(packet.getHand()).getItem();
+			if (item instanceof ExtendedItem) {
+				((ExtendedItem) item).onAttackBlock(context.getPlayer().level(), context.getPlayer(), packet.getHand(), packet.getPos(), packet.getDirection());
+			}
+		});
 	}
-
 
 	public BlockPos getPos() {
 		return pos;
@@ -57,5 +45,10 @@ public class HitBlockWithItemC2SPacket {
 
 	public InteractionHand getHand() {
 		return hand;
+	}
+
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 }

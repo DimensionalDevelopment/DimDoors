@@ -31,13 +31,6 @@ accessible field net/minecraft/world/level/block/Block LOGGER Lorg/slf4j/Logger;
 
 #accessible method net/minecraft/commands/arguments/blocks/BlockStateParser parse (Z)Lnet/minecraft/commands/arguments/blocks/BlockStateParser;
 
-accessible method net/minecraft/world/item/crafting/ShapedRecipe shrink ([Ljava/lang/String;)[Ljava/lang/String;
-accessible method net/minecraft/world/item/crafting/ShapedRecipe keyFromJson (Lcom/google/gson/JsonObject;)Ljava/util/Map;
-accessible method net/minecraft/world/item/crafting/ShapedRecipe patternFromJson (Lcom/google/gson/JsonArray;)[Ljava/lang/String;
-accessible method net/minecraft/world/item/crafting/RecipeManager byType (Lnet/minecraft/world/item/crafting/RecipeType;)Ljava/util/Map;
-accessible method net/minecraft/world/item/crafting/ShapedRecipe dissolvePattern ([Ljava/lang/String;Ljava/util/Map;II)Lnet/minecraft/core/NonNullList;
-accessible method net/minecraft/world/item/crafting/Ingredient valueFromJson (Lcom/google/gson/JsonObject;)Lnet/minecraft/world/item/crafting/Ingredient$Value;
-
 accessible class net/minecraft/core/particles/SimpleParticleType
 
 accessible class net/minecraft/world/level/levelgen/structure/structures/NetherFortressPieces$NetherBridgePiece
@@ -64,3 +57,5 @@ accessible method net/minecraft/world/level/levelgen/structure/templatesystem/St
 accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate$Palette <init> (Ljava/util/List;)V
 accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate addToLists (Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate$StructureBlockInfo;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate buildInfoList (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+
+accessible method net/minecraft/world/level/block/state/BlockBehaviour getDrops (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/storage/loot/LootParams$Builder;)Ljava/util/List;

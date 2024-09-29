@@ -14,7 +14,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.entity.stat.ModStats;
-import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.network.Networking;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
@@ -106,7 +106,7 @@ public class MonolithAggroGoal extends Goal {
                 // of the sounds that would usually play for a moment would
                 // keep playing constantly and would get very annoying.
                 this.mob.playSounds(this.target.position());
-				ServerPacketHandler.get((ServerPlayer) this.target).sendPacket(new MonolithAggroParticlesPacket(this.mob.getAggro()));
+				Networking.sendPacket((ServerPlayer) this.target, new MonolithAggroParticlesPacket(this.mob.getAggro()));
             }
 
             // Teleport the target player if various conditions are met
@@ -115,7 +115,7 @@ public class MonolithAggroGoal extends Goal {
                 TeleportUtil.teleport(this.target, DimensionalDoors.getWorld(ModDimensions.LIMBO), this.target.position().add(0, 256, 0f), this.target.getVisualRotationYInDegrees());
                 this.target.level().playSound(null, new BlockPos(new Vec3i((int) this.target.position().x, (int) this.target.position().y, (int) this.target.position().z)), ModSoundEvents.CRACK.get(), SoundSource.HOSTILE, 13, 1);
                 this.target.awardStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
-                ServerPacketHandler.get((ServerPlayer) this.target).sendPacket(new MonolithTeleportParticlesPacket());
+                Networking.sendPacket((ServerPlayer) this.target, new MonolithTeleportParticlesPacket());
 			}
         }
     }

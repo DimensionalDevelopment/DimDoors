@@ -18,7 +18,12 @@ import org.dimdev.dimdoors.compat.rei.decay.DefaultDecaysIntoCategory;
 import org.dimdev.dimdoors.compat.rei.decay.DefaultDecaysIntoDisplay;
 import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingCategory;
 import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingDisplay;
+import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingShapedDisplay;
+import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingShapelessDisplay;
+import org.dimdev.dimdoors.recipe.ModRecipeTypes;
+import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
+import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayPattern;
@@ -43,7 +48,7 @@ public class TesselatingReiCompatClient implements REIClientPlugin {
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        registry.registerFiller(TesselatingRecipe.class, DefaultTesselatingDisplay::of);
+        registry.registerRecipeFiller(ShapedTesselatingRecipe.class, ModRecipeTypes.TESSELATING.get(), DefaultTesselatingDisplay::of);
 
         Decay.DecayLoader.getInstance().getBlockPatterns().forEach((block, patterns) -> {
             registry.add(DefaultDecaysIntoDisplay.of(block, patterns));

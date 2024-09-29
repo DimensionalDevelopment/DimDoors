@@ -81,11 +81,12 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 	public NonNullList<ItemStack> inventory;
 	public ItemStack output = ItemStack.EMPTY;
-	private RecipeHolder<?> cachedRecipe;
+	private RecipeHolder<TesselatingRecipe> cachedRecipe;
 	private final List<TessellatingContainer> openContainers = new ArrayList<>();
 
 	private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
 
+	private CraftingInput craftingInput;
 
 	public TesselatingLoomBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.TESSELATING_LOOM.get(), pos, state);
@@ -107,7 +108,10 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries) {
 		super.loadAdditional(nbt, registries);
 		CompoundTag inventoryTag = nbt.getCompound(INVENTORY_TAG);
-		ContainerHelper.saveAllItems(inventoryTag, this.inventory, registries);
+
+		inventory.clear();
+		ContainerHelper.loadAllItems(inventoryTag, this.inventory, registries);
+
 		this.output = ItemStack.parseOptional(registries, inventoryTag.getCompound("Output"));
 		this.weaveTime = nbt.getInt(WEAVE_TIME_TAG);
 		this.weaveTimeTotal = nbt.getInt(WEAVE_TIME_TOTAL_TAG);
@@ -168,6 +172,10 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		return ItemStack.EMPTY;
 	}
 
+	public ItemStack getItem(int row, int column) {
+		return this.getItem(row + column * 3);
+	}
+
 	@Override
 	public int size() {
 		return 3;
@@ -221,7 +229,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 	@Override
 	public void setRecipeUsed(@Nullable RecipeHolder<?> recipe) {
-		if(recipe.value() instanceof TesselatingRecipe) cachedRecipe = recipe;
+		if(recipe.value() instanceof TesselatingRecipe) cachedRecipe = (RecipeHolder<TesselatingRecipe>) recipe;
 	}
 
 	@Override
@@ -234,20 +242,20 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		this.inventory.clear();
 	}
 
-	private Optional<? extends TesselatingRecipe> getCurrentRecipe() {
+	private Optional<RecipeHolder<TesselatingRecipe>> getCurrentRecipe() {
 		// No need to find recipes if the inventory is empty. Cannot craft anything.
 		if (this.level == null || this.isEmpty()) return Optional.empty();
 
 		if (cachedRecipe != null) {
-			Optional<RecipeHolder<?>> mapRecipe = getRecipe(cachedRecipe.id());
-			if (mapRecipe.isPresent() && mapRecipe.get().value() instanceof TesselatingRecipe recipe && recipe.matches(this, level)) {
-				return Optional.of((TesselatingRecipe) cachedRecipe.value());
+			Optional<RecipeHolder<TesselatingRecipe>> mapRecipe = getRecipe(cachedRecipe.id());
+			if (mapRecipe.isPresent() && mapRecipe.get().value().matches(craftingInput, level)) {
+				return mapRecipe;
 			}
 		}
 		return getRecipe();
 	}
 
-	public Optional<RecipeHolder<?>> getRecipe(ResourceLocation location) {
+	public Optional<RecipeHolder<TesselatingRecipe>> getRecipe(ResourceLocation location) {
 		var manager = this.level.getRecipeManager();
 
 //		TesselatingRecipe recipe = manager..byType(ModRecipeTypes.SHAPED_TESSELATING.get()).get(location);
@@ -257,26 +265,24 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 //		}
 
 //		return recipe;
-		return manager.byKey(location).filter(a -> a.value() instanceof TesselatingRecipe);
+		return manager.byKey(location).filter(a -> a.value() instanceof TesselatingRecipe).map(a -> (RecipeHolder<TesselatingRecipe>) a);
 
 	}
 
-	public Optional<RecipeHolder<?>> getRecipe() {
+	public Optional<RecipeHolder<TesselatingRecipe>> getRecipe() {
 		var manager = this.level.getRecipeManager();
 
-		var recipe = manager.getRecipeFor(ModRecipeTypes.SHAPED_TESSELATING.get(), this, level);
-
-		return recipe.isEmpty() ? manager.getRecipeFor(ModRecipeTypes.SHAPELESS_TESSELATING.get(), this, level) : recipe;
+		return manager.getRecipeFor(ModRecipeTypes.TESSELATING.get(), craftingInput, level);
 	}
 
 	private int getWeavingTotalTime() {
-		return getCurrentRecipe().map(TesselatingRecipe::weavingTime).orElse(DEFAULT_WEAVE_TIME);
+		return getCurrentRecipe().map(RecipeHolder::value).map(TesselatingRecipe::weavingTime).orElse(DEFAULT_WEAVE_TIME);
 	}
 
 	public void serverTick() {
 		var recipe = getRecipe().orElse(null);
 
-		if(cachedRecipe == null || cachedRecipe.value() != recipe) {
+		if(cachedRecipe == null || cachedRecipe != recipe) {
 			cachedRecipe = recipe;
 			weaveTimeTotal = getWeavingTotalTime();
 		}
@@ -298,7 +304,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 	private void tryWeave() {
 		var recipe = (TesselatingRecipe) cachedRecipe.value();
-		var output = recipe.assemble(this, level.holderLookup().registryAccess().asGetterLookup());
+		var output = recipe.assemble(craftingInput, level.registryAccess());
 
 		if(canAcceptOutput(output)) {
 			weaveTime++;

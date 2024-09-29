@@ -87,9 +87,9 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
 		if (!level.isClientSide()) {
-			this.openContainer(level, blockPos, (ServerPlayer) player);
+			this.openContainer(level, pos, (ServerPlayer) player);
 		}
 
 		return InteractionResult.SUCCESS;

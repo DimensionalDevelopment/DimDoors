@@ -9,6 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
+import org.dimdev.dimdoors.network.Networking;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 
@@ -25,7 +26,7 @@ public class AttackBlockCallbackListener implements InteractionEvent.LeftClickBl
 
 		CompoundEventResult<Boolean> result = ((ExtendedItem) item).onAttackBlock(world, player, hand, pos, direction);
 		if (result.object()) {
-			if (!ClientPacketHandler.sendPacket(new HitBlockWithItemC2SPacket(hand, pos, direction))) {
+			if (!Networking.sendPacket(new HitBlockWithItemC2SPacket(hand, pos, direction))) {
 				return EventResult.interruptFalse();
 			}
 		}

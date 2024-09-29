@@ -66,19 +66,20 @@ public class PocketTemplate {
         pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
         ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
         BlockPos origin = pocket.getOrigin();
-		SchematicPlacer.place(this.schematic, world, origin, placementType);
+		SchematicPlacer.place(this.schematic, world, origin, placementType, world.registryAccess());
     }
 
 	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Pocket pocket) {
 		pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
-		Map<BlockPos, RiftBlockEntity> absoluteRifts = SchematicPlacer.getAbsoluteRifts(this.schematic, pocket.getOrigin());
 		ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
+		Map<BlockPos, RiftBlockEntity> absoluteRifts = SchematicPlacer.getAbsoluteRifts(this.schematic, pocket.getOrigin(), world.registryAccess());
 		absoluteRifts.values().forEach(rift -> rift.setWorld(world));
 		return absoluteRifts;
 	}
 
 	public void place(LazyGenerationPocket pocket, ChunkAccess chunk, BlockPos originalOrigin, BlockPlacementType placementType) {
-		SchematicPlacer.place(this.schematic, DimensionalDoors.getWorld(pocket.getWorld()), chunk, originalOrigin, placementType);
+		var level = DimensionalDoors.getWorld(pocket.getWorld());
+		SchematicPlacer.place(this.schematic, level, chunk, originalOrigin, placementType, level.registryAccess());
 	}
 
     public static boolean isReplacingPlaceholders() {

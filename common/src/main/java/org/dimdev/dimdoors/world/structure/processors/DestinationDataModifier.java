@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.structure.processors;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +36,7 @@ public class DestinationDataModifier extends StructureProcessor {
         return of(0, data);
     }
 
-    public static final Codec<DestinationDataModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<DestinationDataModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.unboundedMap(Codec.STRING.xmap(Integer::parseInt, String::valueOf), CompoundTag.CODEC).fieldOf("destinations").forGetter(DestinationDataModifier::destinations)).apply(instance, DestinationDataModifier::new));
 
     public Map<Integer, CompoundTag> destinations() {

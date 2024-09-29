@@ -35,7 +35,6 @@ public class LimboDimensionEffect extends DimensionSpecialEffects implements Dim
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
         Matrix4f matrix4f = poseStack.last().pose();
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuilder();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
@@ -45,21 +44,20 @@ public class LimboDimensionEffect extends DimensionSpecialEffects implements Dim
         float s = 30.0F;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, SUN_RENDER_PATH);
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix4f, -s, 100.0F, -s).uv(0.0F, 0.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, s, 100.0F, -s).uv(1.0F, 0.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, s, 100.0F, s).uv(1.0F, 1.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, -s, 100.0F, s).uv(0.0F, 1.0F).endVertex();
-        tessellator.end();
-//        BufferRenderer.draw(bufferBuilder);
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.addVertex(matrix4f, -s, 100.0F, -s).setUv(0.0F, 0.0F);
+        bufferBuilder.addVertex(matrix4f, s, 100.0F, -s).setUv(1.0F, 0.0F);
+        bufferBuilder.addVertex(matrix4f, s, 100.0F, s).setUv(1.0F, 1.0F);
+        bufferBuilder.addVertex(matrix4f, -s, 100.0F, s).setUv(0.0F, 1.0F);
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+
         RenderSystem.setShaderTexture(0, MOON_RENDER_PATH);
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix4f, -s, -100.0F, -s).uv(0.0F, 0.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, s, -100.0F, -s).uv(1.0F, 0.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, s, -100.0F, s).uv(1.0F, 1.0F).endVertex();
-        bufferBuilder.vertex(matrix4f, -s, -100.0F, s).uv(0.0F, 1.0F).endVertex();
-        tessellator.end();
-//        BufferRenderer.draw(bufferBuilder);
+        bufferBuilder = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.addVertex(matrix4f, -s, -100.0F, -s).setUv(0.0F, 0.0F);
+        bufferBuilder.addVertex(matrix4f, s, -100.0F, -s).setUv(1.0F, 0.0F);
+        bufferBuilder.addVertex(matrix4f, s, -100.0F, s).setUv(1.0F, 1.0F);
+        bufferBuilder.addVertex(matrix4f, -s, -100.0F, s).setUv(0.0F, 1.0F);
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 
         RenderSystem.depthMask(true);
 //        RenderSystem.enableTexture();

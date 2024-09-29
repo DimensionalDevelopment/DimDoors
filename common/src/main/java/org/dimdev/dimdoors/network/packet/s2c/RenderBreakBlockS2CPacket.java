@@ -1,51 +1,26 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
-import dev.architectury.networking.NetworkManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 
-import java.util.function.Supplier;
+public record RenderBreakBlockS2CPacket(BlockPos pos, int stage) implements CustomPacketPayload {
+	public static final CustomPacketPayload.Type<RenderBreakBlockS2CPacket> TYPE = new CustomPacketPayload.Type<>(DimensionalDoors.id("render_break_block"));
+	public static final StreamCodec<RegistryFriendlyByteBuf, RenderBreakBlockS2CPacket> STREAM_CODEC = CustomPacketPayload.codec(RenderBreakBlockS2CPacket::write, RenderBreakBlockS2CPacket::new);
 
-public class RenderBreakBlockS2CPacket {
-	public static final ResourceLocation ID = DimensionalDoors.id("render_break_block");
-
-	private BlockPos pos;
-	private int stage;
-
-	@Environment(EnvType.CLIENT)
-	public RenderBreakBlockS2CPacket() {
-
-	}
-
-	public RenderBreakBlockS2CPacket(BlockPos pos, int stage) {
-		this.pos = pos;
-		this.stage = stage;
-	}
-
-	public RenderBreakBlockS2CPacket(FriendlyByteBuf buf) {
+	public RenderBreakBlockS2CPacket(RegistryFriendlyByteBuf buf) {
 		this(buf.readBlockPos(), buf.readInt());
 	}
 
-	public FriendlyByteBuf write(FriendlyByteBuf buf) {
+	public void write(RegistryFriendlyByteBuf buf) {
 		buf.writeBlockPos(pos);
 		buf.writeInt(stage);
-		return buf;
 	}
 
-	public void apply(Supplier<NetworkManager.PacketContext> context) {
-		ClientPacketHandler.getHandler().onRenderBreakBlock(this);
-	}
-
-	public BlockPos getPos() {
-		return pos;
-	}
-
-	public int getStage() {
-		return stage;
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 }

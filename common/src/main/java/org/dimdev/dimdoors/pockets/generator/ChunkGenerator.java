@@ -61,7 +61,7 @@
 //	public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
 //		super.fromNbt(nbt, manager);
 //
-//		this.dimensionID = new ResourceLocation(nbt.getString("dimension_id"));
+//		this.dimensionID = ResourceLocation.tryParse(nbt.getString("dimension_id"));
 //
 //		int[] temp = nbt.getIntArray("size");
 //		this.size = new Vec3i(temp[0], temp[1], temp[2]);

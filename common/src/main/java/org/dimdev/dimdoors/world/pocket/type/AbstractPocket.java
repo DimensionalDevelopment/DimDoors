@@ -170,7 +170,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		/*
 		public P fromTag(CompoundTag tag) {
 			id = tag.getInt("id");
-			world = ResourceKey.of(Registry.DIMENSION, new ResourceLocation(tag.getString("world")));
+			world = ResourceKey.of(Registry.DIMENSION, ResourceLocation.tryParse(tag.getString("world")));
 
 			return getSelf();
 		}

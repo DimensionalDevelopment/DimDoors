@@ -1,12 +1,16 @@
 package org.dimdev.dimdoors.world.level.registry;
 
 import com.mojang.datafixers.util.Pair;
+import dev.architectury.utils.GameInstance;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -20,13 +24,16 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class DimensionalRegistry {
+public class DimensionalRegistry extends SavedData {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
-	private static Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
-	private static RiftRegistry riftRegistry = new RiftRegistry();
-	private static PrivateRegistry privateRegistry = new PrivateRegistry();
+	public static final Factory<DimensionalRegistry> FACTORY = new Factory<>(DimensionalRegistry::new, (compoundTag, provider) -> new DimensionalRegistry(compoundTag), DataFixTypes.LEVEL);
+	private Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
+	private RiftRegistry riftRegistry = new RiftRegistry();
+	private PrivateRegistry privateRegistry = new PrivateRegistry();
 
-	public static void readFromNbt(CompoundTag nbt) {
+	public DimensionalRegistry() {}
+
+	public DimensionalRegistry(CompoundTag nbt) {
 		int riftDataVersion = nbt.getInt("RiftDataVersion");
 		if (riftDataVersion < RIFT_DATA_VERSION) {
 			nbt = RiftSchemas.update(riftDataVersion, nbt);
@@ -56,7 +63,7 @@ public class DimensionalRegistry {
 		privateRegistry = futurePrivateRegistry.join();
 	}
 
-	public static void writeToNbt(CompoundTag nbt) {
+	public CompoundTag save(CompoundTag nbt, HolderLookup.Provider registries) {
 		CompletableFuture<Tag> futurePocketRegistryNbt = StreamUtils.supplyAsync(() -> {
 			List<CompletableFuture<Pair<String, Tag>>> futurePocketRegistryNbts = new ArrayList<>();
 			pocketRegistry.forEach((key, value) -> futurePocketRegistryNbts.add(CompletableFuture.supplyAsync(() -> new Pair<>(key.location().toString(), value.writeToNbt()))));
@@ -73,14 +80,19 @@ public class DimensionalRegistry {
 		nbt.put("private_registry", futurePrivateRegistryNbt.join());
 
 		nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
+		return nbt;
+	}
+
+	public static DimensionalRegistry getDimensionalRegistry() {
+		return GameInstance.getServer().overworld().getDataStorage().computeIfAbsent(FACTORY, "dimensional_registry");
 	}
 
 	public static RiftRegistry getRiftRegistry() {
-		return riftRegistry;
+		return getDimensionalRegistry().riftRegistry;
 	}
 
 	public static PrivateRegistry getPrivateRegistry() {
-		return privateRegistry;
+		return getDimensionalRegistry().privateRegistry;
 	}
 
 	public static PocketDirectory getPocketDirectory(ResourceKey<Level> key) {
@@ -88,7 +100,7 @@ public class DimensionalRegistry {
 			throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
 		}
 
-		return pocketRegistry.computeIfAbsent(key, PocketDirectory::new);
+		return getDimensionalRegistry().pocketRegistry.computeIfAbsent(key, PocketDirectory::new);
 	}
 
 	public static boolean isValidWorld(Level level) {

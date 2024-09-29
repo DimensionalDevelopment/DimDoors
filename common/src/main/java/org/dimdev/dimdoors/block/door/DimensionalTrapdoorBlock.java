@@ -41,7 +41,7 @@ public class DimensionalTrapdoorBlock extends TrapDoorBlock implements RiftProvi
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hitResult) {
 		state = state.cycle(OPEN);
 		world.setBlock(pos, state, 2);
 

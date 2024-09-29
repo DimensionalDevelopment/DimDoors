@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.util.schematic;
 import dev.architectury.platform.Platform;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
@@ -30,30 +32,30 @@ public final class SchematicPlacer {
 	private SchematicPlacer() {
 	}
 
-	public static void place(Schematic schematic, WorldGenLevel world, BlockPos origin, BlockPlacementType placementType) {
+	public static void place(Schematic schematic, WorldGenLevel world, BlockPos origin, BlockPlacementType placementType, HolderLookup.Provider provider) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
 		for (String id : schematic.getMetadata().requiredMods()) {
 			if (!Platform.isModLoaded(id)) {
 				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}
-		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
+		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic, provider);
 		blockSample.place(origin, world, placementType, false);
 	}
 
-	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin) {
-		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		return blockSample.getAbsoluteRifts(origin);
+	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin, HolderLookup.Provider provider) {
+		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic, provider);
+		return blockSample.getAbsoluteRifts(origin, provider);
 	}
 
-	public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
+	public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType, HolderLookup.Provider provider) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
 		for (String id : schematic.getMetadata().requiredMods()) {
 			if (!Platform.isModLoaded(id)) {
 				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}
-		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
+		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic, provider);
 		blockSample.place(origin, world, chunk, placementType, false);
 	}
 

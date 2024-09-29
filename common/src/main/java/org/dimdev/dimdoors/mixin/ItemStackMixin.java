@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.fabric.mixin;
+package org.dimdev.dimdoors.mixin;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,8 +15,8 @@ public class ItemStackMixin {
         return state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autogenDoor ? autogenDoor.getOriginalBlock().defaultBlockState() : state;
     }
 
-    @ModifyArg(method = "isCorrectToolForDrops", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;isCorrectToolForDrops(Lnet/minecraft/world/level/block/state/BlockState;)Z"))
-    public BlockState isCorrect(BlockState state) {
+    @ModifyArg(method = "isCorrectToolForDrops", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;isCorrectToolForDrops(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/level/block/state/BlockState;)Z"), index = 1)
+    public BlockState isCorrect(ItemStack stack, BlockState state) {
         return state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autogenDoor ? autogenDoor.getOriginalBlock().defaultBlockState() : state;
     }
 }

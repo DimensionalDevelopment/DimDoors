@@ -7,4 +7,4 @@ pluginManagement.repositories {
 
 include("common", "fabric", "neoforge")
 
-rootProject.name = "dimdoors"
+rootProject.name = "DimDoors"

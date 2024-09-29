@@ -1,27 +1,18 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
-import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.network.client.ClientPacketHandler;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+public class MonolithTeleportParticlesPacket implements CustomPacketPayload {
+	public static final Type<MonolithTeleportParticlesPacket> TYPE = new Type<>(DimensionalDoors.id("monolith_tp_particles"));
+	public static final MonolithTeleportParticlesPacket INSTANCE = new MonolithTeleportParticlesPacket();
+	public static final StreamCodec<RegistryFriendlyByteBuf, MonolithTeleportParticlesPacket> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-public class MonolithTeleportParticlesPacket {
-	public static final ResourceLocation ID = DimensionalDoors.id("monolith_tp_particles");
-
-	public MonolithTeleportParticlesPacket() {
-	}
-
-	public MonolithTeleportParticlesPacket(FriendlyByteBuf buf) {
-	}
-
-	public FriendlyByteBuf write(FriendlyByteBuf buf) {
-		return buf;
-	}
-
-	public void apply(Supplier<NetworkManager.PacketContext> context) {
-		ClientPacketHandler.getHandler().onMonolithTeleportParticles(this);
+	@Override
+	public @NotNull Type<? extends CustomPacketPayload> type() {
+		return TYPE;
 	}
 }

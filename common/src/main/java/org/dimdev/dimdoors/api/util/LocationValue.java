@@ -10,6 +10,7 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
+import net.minecraft.util.valueproviders.SampledFloat;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public interface LocationValue {
     }
 
     public record Complex(List<LocationCondition> conditions, FloatProvider value, FloatProvider fallback) implements LocationValueWithType {
-        public static final Codec<Complex> CODEC = RecordCodecBuilder.create(instance -> instance.group(LocationCondition.LIST_CODEC.fieldOf("conditions").forGetter(Complex::conditions), FloatProvider.CODEC.fieldOf("value").forGetter(Complex::value), FloatProvider.CODEC.fieldOf("fallback").forGetter(Complex::value)).apply(instance, Complex::new));
+        public static final MapCodec<Complex> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(LocationCondition.LIST_CODEC.fieldOf("conditions").forGetter(Complex::conditions), FloatProvider.CODEC.fieldOf("value").forGetter(Complex::value), FloatProvider.CODEC.fieldOf("fallback").forGetter(Complex::value)).apply(instance, Complex::new));
 
         @Override
         public float value(Location location, RandomSource source) {
@@ -45,7 +46,7 @@ public interface LocationValue {
     }
 
     public record Simple(FloatProvider value) implements LocationValueWithType {
-        public static final Codec<Simple> CODEC = FloatProvider.CODEC.xmap(Simple::new, Simple::value);
+        public static final MapCodec<Simple> CODEC = FloatProvider.CODEC.xmap(Simple::new, Simple::value).fieldOf("value");
         @Override
         public float value(Location location, RandomSource source) {
             return value.sample(source);

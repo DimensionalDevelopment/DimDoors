@@ -8,7 +8,7 @@ public interface ExtendedServerPlayNetworkHandler {
 		return (ExtendedServerPlayNetworkHandler) networkHandler;
 	}
 
-	ServerPacketHandler getDimDoorsPacketHandler();
+	Networking getDimDoorsPacketHandler();
 
 	MinecraftServer dimdoorsGetServer();
 }

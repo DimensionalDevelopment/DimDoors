@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 
@@ -15,7 +15,7 @@ public class AdvancementProvider extends net.minecraft.data.advancements.Advance
 
 	}
 
-	public static void generateAdvancement(HolderLookup.Provider arg, Consumer<Advancement> consumer) {
+	public static void generateAdvancement(HolderLookup.Provider arg, Consumer<AdvancementHolder> consumer) {
 		new AdvancementTab().accept(consumer);
 	}
 }

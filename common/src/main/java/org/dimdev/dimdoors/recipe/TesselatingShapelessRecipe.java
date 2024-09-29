@@ -1,84 +1,59 @@
 package org.dimdev.dimdoors.recipe;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 
-import static org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe.itemStackFromJson;
+import java.util.Iterator;
 
 public class TesselatingShapelessRecipe implements TesselatingRecipe {
-    final NonNullList<Ingredient> ingredients;
-    private final ResourceLocation id;
-    final ItemStack result;
     final String group;
-    final boolean showNotification;
-    private final int weavingTime;
+    final ItemStack result;
+    final NonNullList<Ingredient> ingredients;
+    final int weavingTime;
 
-    public TesselatingShapelessRecipe(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> ingredients, int weavingTime, boolean showNotification) {
-        this.id = id;
+    public TesselatingShapelessRecipe(String group, ItemStack result, NonNullList<Ingredient> ingredients, int weavingTime) {
         this.group = group;
         this.result = result;
         this.ingredients = ingredients;
         this.weavingTime = weavingTime;
-        this.showNotification = showNotification;
     }
 
-    @Override
-    public ResourceLocation getId() {
-        return this.id;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer() {
         return ModRecipeSerializers.SHAPELESS_TESSELATING.get();
     }
 
-    @Override
-    public RecipeType<?> getType() {
-        return ModRecipeTypes.SHAPELESS_TESSELATING.get();
-    }
-
-    @Override
     public String getGroup() {
         return this.group;
     }
 
-    @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registries) {
         return this.result;
     }
 
-    @Override
     public NonNullList<Ingredient> getIngredients() {
         return this.ingredients;
     }
 
-    /**
-     * Used to check if a recipe matches current crafting inventory
-     */
-    @Override
-    public boolean matches(TesselatingLoomBlockEntity inv, Level level) {
-        StackedContents stackedContents = new StackedContents();
-        int i = 0;
-        for (int j = 0; j < inv.getContainerSize(); ++j) {
-            ItemStack itemStack = inv.getItem(j);
-            if (itemStack.isEmpty()) continue;
-            ++i;
-            stackedContents.accountStack(itemStack, 1);
-        }
-        return i == this.ingredients.size() && stackedContents.canCraft(this, null);
+    public boolean matches(CraftingInput input, Level level) {
+        if (input.ingredientCount() != this.ingredients.size()) return false;
+        else return input.size() == 1 && this.ingredients.size() == 1 ? this.ingredients.getFirst().test(input.getItem(0)) : input.stackedContents().canCraft(this, null);
+    }
+
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+        return this.result.copy();
+    }
+
+    public boolean canCraftInDimensions(int width, int height) {
+        return width * height >= this.ingredients.size();
     }
 
     @Override
@@ -86,72 +61,54 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
         return weavingTime;
     }
 
-    @Override
-    public ItemStack assemble(TesselatingLoomBlockEntity container, RegistryAccess registryAccess) {
-        return this.result.copy();
-    }
+    public static class Serializer implements RecipeSerializer<TesselatingShapelessRecipe> {
+        private static final MapCodec<TesselatingShapelessRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Codec.STRING.optionalFieldOf("group", "")
+                        .forGetter((arg) -> arg.group),
+                ItemStack.STRICT_CODEC.fieldOf("result")
+                        .forGetter((arg) -> arg.result),
+                Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients")
+                        .flatXmap((list) -> {
+                            Ingredient[] aingredient = list.toArray(Ingredient[]::new);
+                            if (aingredient.length == 0) {
+                                return DataResult.error(() -> "No ingredients for shapeless recipe");
+                            } else
+                                return aingredient.length > 9 ? DataResult.error(() -> "Too many ingredients for shapeless recipe. The maximum is: 9") : DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
+                            }, DataResult::success)
+                        .forGetter(arg -> arg.ingredients),
+                        Codec.INT.optionalFieldOf("weaving_time", 200).forGetter(TesselatingRecipe::weavingTime))
+                .apply(instance, TesselatingShapelessRecipe::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, TesselatingShapelessRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= this.ingredients.size();
-    }
-
-    public static class Serializer
-            implements RecipeSerializer<TesselatingShapelessRecipe> {
-        @Override
-        public TesselatingShapelessRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            String string = GsonHelper.getAsString(json, "group", "");
-            NonNullList<Ingredient> nonNullList = itemsFromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
-            if (nonNullList.isEmpty()) {
-                throw new JsonParseException("No ingredients for shapeless recipe");
-            }
-            if (nonNullList.size() > 9) {
-                throw new JsonParseException("Too many ingredients for shapeless recipe");
-            }
-            ItemStack itemStack = itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-
-            int weavingTime = GsonHelper.getAsInt(json, "weavingtime", 200);
-            boolean bl = GsonHelper.getAsBoolean(json, "show_notification", true);
-
-            return new TesselatingShapelessRecipe(recipeId, string, itemStack, nonNullList, weavingTime, bl);
+        public Serializer() {
         }
 
-        private static NonNullList<Ingredient> itemsFromJson(JsonArray ingredientArray) {
-            NonNullList<Ingredient> nonNullList = NonNullList.create();
-            for (int i = 0; i < ingredientArray.size(); ++i) {
-                Ingredient ingredient = Ingredient.fromJson(ingredientArray.get(i), false);
-                if (ingredient.isEmpty()) continue;
-                nonNullList.add(ingredient);
-            }
-            return nonNullList;
+        public MapCodec<TesselatingShapelessRecipe> codec() {
+            return CODEC;
         }
 
+        public StreamCodec<RegistryFriendlyByteBuf, TesselatingShapelessRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
 
-        @Override
-        public TesselatingShapelessRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-            String string = buffer.readUtf();
+        private static TesselatingShapelessRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+            String s = buffer.readUtf();
             int i = buffer.readVarInt();
-            NonNullList<Ingredient> nonNullList = NonNullList.withSize(i, Ingredient.EMPTY);
-            nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
-            ItemStack itemStack = buffer.readItem();
-
-            int weavingTime = buffer.readInt();
-            boolean bl = buffer.readBoolean();
-
-            return new TesselatingShapelessRecipe(recipeId, string, itemStack, nonNullList, weavingTime, bl);
+            NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
+            nonnulllist.replaceAll((arg2) -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
+            ItemStack itemstack = ItemStack.STREAM_CODEC.decode(buffer);
+            var weavingTime = buffer.readVarInt();
+            return new TesselatingShapelessRecipe(s, itemstack, nonnulllist, weavingTime);
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, TesselatingShapelessRecipe recipe) {
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, TesselatingShapelessRecipe recipe) {
             buffer.writeUtf(recipe.group);
             buffer.writeVarInt(recipe.ingredients.size());
-            for (Ingredient ingredient : recipe.ingredients) {
-                ingredient.toNetwork(buffer);
-            }
-            buffer.writeItem(recipe.result);
-            buffer.writeInt(recipe.weavingTime);
-            buffer.writeBoolean(recipe.showNotification);
+
+            recipe.ingredients.forEach(ingredient -> Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient));
+
+            ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
+            buffer.writeVarInt(recipe.weavingTime());
         }
     }
 }
-

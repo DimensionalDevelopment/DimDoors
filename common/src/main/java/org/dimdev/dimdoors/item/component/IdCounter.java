@@ -7,7 +7,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record IdCounter(int count) {
-	public static final Codec<IdCounter> CODEC = RecordCodecBuilder.create(instance -> instance.group(Codec.INT.fieldOf("count").forGetter(IdCounter::count)).apply(instance, IdCounter::new));
+	public static final Codec<IdCounter> CODEC = Codec.INT.xmap(IdCounter::new, IdCounter::count);
 	public static final StreamCodec<RegistryFriendlyByteBuf, IdCounter> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.VAR_INT, IdCounter::count, IdCounter::new);
 
 	public IdCounter increment() {

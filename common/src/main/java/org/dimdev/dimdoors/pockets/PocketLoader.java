@@ -98,7 +98,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 
 	private PocketTemplate loadPocketTemplate(CompoundTag nbt, Path<String> id) {
 		try {
-			return new PocketTemplate(Schematic.fromNbt(nbt), new ResourceLocation(id.reduce(String::concat).orElseThrow()));
+			return new PocketTemplate(Schematic.fromNbt(nbt), ResourceLocation.tryParse(id.reduce(String::concat).orElseThrow()));
 		} catch (Exception e) {
 			throw new RuntimeException("Error loading " + id.toString(), e);
 		}

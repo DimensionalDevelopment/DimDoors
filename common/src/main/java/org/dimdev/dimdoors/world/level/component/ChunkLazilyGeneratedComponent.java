@@ -1,12 +1,20 @@
 package org.dimdev.dimdoors.world.level.component;
 
+import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.chunk.LevelChunk;
 
+//TODO: Investigate if making only a boolean is worth it.
 public class ChunkLazilyGeneratedComponent {
+	public static final Codec<ChunkLazilyGeneratedComponent> CODEC = Codec.BOOL.xmap(ChunkLazilyGeneratedComponent::new, ChunkLazilyGeneratedComponent::hasBeenLazyGenned);
+
 	private boolean hasBeenLazyGenned = false;
+
+	public ChunkLazilyGeneratedComponent(boolean hasBeenLazyGenned) {
+		this.hasBeenLazyGenned = hasBeenLazyGenned;
+	}
 
 	public boolean hasBeenLazyGenned() {
 		return hasBeenLazyGenned;

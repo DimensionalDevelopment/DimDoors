@@ -20,7 +20,6 @@ import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
@@ -65,7 +64,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 		if (rifts != null) {
 			riftsNbt = StreamUtils.execute(() -> rifts.values().parallelStream().unordered().map(rift -> {
 				CompoundTag e = new CompoundTag();
-				rift.saveAdditional(e);
+				rift.saveAdditional(e, DimensionalDoors.getServer().registryAccess());
 				return e;
 			}).collect(Collectors.toCollection(ListTag::new)));
 		} else {
@@ -114,7 +113,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 			serializedRifts.entrySet().stream().unordered().filter(entry -> chunkBox.isInside(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 					.forEach((pos, riftNbt) -> {
 						rifts.remove(pos);
-						chunk.setBlockEntity(BlockEntity.loadStatic(pos, chunk.getBlockState(pos), riftNbt));
+						chunk.setBlockEntity(BlockEntity.loadStatic(pos, chunk.getBlockState(pos), riftNbt, DimensionalDoors.getServer().registryAccess()));
 					});
 		}
 	}

@@ -11,6 +11,8 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -150,7 +152,7 @@ public class Schematic {
 		this.entities = entities;
 	}
 
-	public static RelativeBlockSample getBlockSample(Schematic schem) {
+	public static RelativeBlockSample getBlockSample(Schematic schem, HolderLookup.Provider provider) {
 		if (schem.cachedBlockSample == null) {
 			return (schem.cachedBlockSample = new RelativeBlockSample(schem));
 		}

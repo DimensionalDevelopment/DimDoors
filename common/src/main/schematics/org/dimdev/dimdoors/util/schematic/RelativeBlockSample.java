@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -16,7 +17,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelWriter;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
@@ -126,7 +126,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 				nbt.remove("Id");
 			}
 
-			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(pos), nbt);
+			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(pos), nbt, world.registryAccess());
 			if (blockEntity != null) {
 				placementType.getBlockEntityPlacer().accept(world.getLevel(), blockEntity);
 			}
@@ -145,7 +145,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 	}
 
 	public void place(BlockPos origin, ServerLevel world, ChunkAccess chunk, BlockPlacementType placementType, boolean biomes) {
-		ChunkPos pos = chunk.getPos();
+
 		BoundingBox chunkBox = BlockBoxUtil.getBox(chunk);
 		Vec3i schemDimensions = new Vec3i(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
 		BoundingBox schemBox = BoundingBox.fromCorners(origin, origin.offset(schemDimensions).offset(-1, -1, -1));
@@ -192,6 +192,9 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 		serverChunkManager.getLightEngine().initializeLight(chunk, true);
 
 		// TODO: depending on size of blockEntityContainer it might be faster to iterate over BlockPos.stream(intersection) instead
+
+		var registries = world.registryAccess();
+
 		this.blockEntityContainer.forEach((blockPos, nbt) -> {
 			BlockPos actualPos = blockPos.offset(origin);
 			if (intersection.isInside(actualPos)) {
@@ -200,7 +203,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 					nbt.remove("Id");
 				}
 
-				BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(blockPos), nbt);
+				BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(blockPos), nbt, registries);
 				if (blockEntity != null && !(blockEntity instanceof RiftBlockEntity)) {
 					chunk.setBlockEntity(blockEntity);
 				}
@@ -234,7 +237,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 		}));
 	}
 
-	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(BlockPos origin) {
+	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(BlockPos origin, HolderLookup.Provider provider) {
 		Map<BlockPos, RiftBlockEntity> rifts = new HashMap<>();
 		this.blockEntityContainer.forEach( (blockPos, nbt) ->  {
 			BlockPos actualPos = origin.offset(blockPos);
@@ -244,7 +247,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 				nbt.remove("Id");
 			}
 			BlockState state = getBlockState(blockPos);
-			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, state, nbt);
+			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, state, nbt, provider);
 			if (blockEntity instanceof RiftBlockEntity) {
 				rifts.put(actualPos, (RiftBlockEntity) blockEntity);
 			}

@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.compat.rei.tesselating;
 
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingDisplay;
 import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 
@@ -10,12 +11,12 @@ import java.util.Optional;
 
 @SuppressWarnings("ALL")
 public class DefaultTesselatingShapelessDisplay extends DefaultTesselatingDisplay<TesselatingShapelessRecipe> {
-    public DefaultTesselatingShapelessDisplay(TesselatingShapelessRecipe recipe) {
+    public DefaultTesselatingShapelessDisplay(RecipeHolder<TesselatingShapelessRecipe> recipe) {
         super(
-                EntryIngredients.ofIngredients(recipe.getIngredients()),
-                Collections.singletonList(EntryIngredients.of(recipe.getResultItem(BasicDisplay.registryAccess()))),
+                EntryIngredients.ofIngredients(recipe.value().getIngredients()),
+                Collections.singletonList(EntryIngredients.of(recipe.value().getResultItem(BasicDisplay.registryAccess()))),
                 Optional.of(recipe),
-                recipe.weavingTime()
+                recipe.value().weavingTime()
         );
     }
 

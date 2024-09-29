@@ -29,14 +29,13 @@ public class PocketListenerUtil {
 
 	@Environment(EnvType.CLIENT)
 	public static <T> List<T> applicableAddonsClient(Class<T> clazz, Level world, BlockPos pos) {
-		ClientPacketHandler packetHandler = ClientPacketHandler.getHandler();
 
-		if (!world.dimension().equals(packetHandler.getPocketWorld())) return Collections.emptyList();
+		if (!world.dimension().equals(ClientPacketHandler.getPocketWorld())) return Collections.emptyList();
 
-		int pocketId = GridUtil.gridPosToID(new GridUtil.GridPos(pos, packetHandler.getGridSize()));
-		if (pocketId < packetHandler.getPocketId() || pocketId >= packetHandler.getPocketId() + packetHandler.getPocketRange()) {
+		int pocketId = GridUtil.gridPosToID(new GridUtil.GridPos(pos, ClientPacketHandler.getGridSize()));
+		if (pocketId < ClientPacketHandler.getPocketId() || pocketId >= ClientPacketHandler.getPocketId() + ClientPacketHandler.getPocketRange()) {
 			return Collections.emptyList();
 		}
-		return packetHandler.getAddons().stream().filter(clazz::isInstance).map(clazz::cast).collect(Collectors.toList());
+		return ClientPacketHandler.getAddons().stream().filter(clazz::isInstance).map(clazz::cast).collect(Collectors.toList());
 	}
 }

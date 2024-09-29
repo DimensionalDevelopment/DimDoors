@@ -31,7 +31,7 @@ public abstract class VirtualTarget implements Target {
 	public static VirtualTarget fromNbt(CompoundTag nbt) {
 		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
 
-//		ResourceLocation id = new ResourceLocation(nbt.getString("type"));
+//		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
 //		return Objects.requireNonNull(REGISTRY.get(id), "Unknown virtual target type " + id).fromNbt(nbt);
 	}
 

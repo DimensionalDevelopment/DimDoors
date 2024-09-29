@@ -28,9 +28,6 @@
     "client": [
       "org.dimdev.dimdoors.client.DimensionalDoorsClientFabric"
     ],
-    "cardinal-components": [
-      "org.dimdev.dimdoors.DimensionalDoorsComponents"
-    ],
     "fabric-datagen": [
       "org.dimdev.dimdoors.datagen.DatagenInitializer"
     ],

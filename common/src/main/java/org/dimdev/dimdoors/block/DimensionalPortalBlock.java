@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block;
 
+import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -22,11 +23,18 @@ import org.jetbrains.annotations.Nullable;
 
 // TODO: copy over all the necessary bits from DimensionalDoorBlock
 public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity implements RiftProvider<EntranceRiftBlockEntity> {
+	private static final MapCodec<DimensionalPortalBlock> CODEC = simpleCodec(DimensionalPortalBlock::new);
+
 	public static DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	public DimensionalPortalBlock(BlockBehaviour.Properties settings) {
 		super(settings);
 		this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
+	}
+
+	@Override
+	protected MapCodec<DimensionalPortalBlock> codec() {
+		return CODEC;
 	}
 
 	@Override
@@ -113,8 +121,15 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 	}
 
 	public static final class Dummy extends BaseEntityBlock {
+		private static MapCodec<Dummy> CODEC = simpleCodec(Dummy::new);
+
 		protected Dummy(Properties settings) {
 			super(settings);
+		}
+
+		@Override
+		protected MapCodec<? extends BaseEntityBlock> codec() {
+			return CODEC;
 		}
 
 		@Nullable

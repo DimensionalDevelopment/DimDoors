@@ -47,7 +47,7 @@ import static net.fabricmc.api.EnvType.CLIENT;
 
 	@Environment(CLIENT)
 	@Override
-	public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag tooltipFlag) {
 		if (I18n.exists(this.getDescriptionId() + ".info")) {
 			list.add(Component.translatable(this.getDescriptionId() + ".info"));
 		}

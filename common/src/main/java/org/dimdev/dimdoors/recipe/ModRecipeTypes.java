@@ -9,8 +9,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModRecipeTypes {
 	public static final DeferredRegister<RecipeType<?>> RECIPES_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.RECIPE_TYPE);
-	public static RegistrySupplier<RecipeType<ShapedTesselatingRecipe>> SHAPED_TESSELATING = register("shaped_tesselating");
-	public static RegistrySupplier<RecipeType<TesselatingShapelessRecipe>> SHAPELESS_TESSELATING = register("shapeless_tesselating");
+	public static RegistrySupplier<RecipeType<TesselatingRecipe>> TESSELATING = register("tesselating");
 
 
 	private static <T extends TesselatingRecipe> RegistrySupplier<RecipeType<T>> register(String name) {

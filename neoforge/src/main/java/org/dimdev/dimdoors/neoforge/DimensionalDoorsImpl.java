@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.forge;
+package org.dimdev.dimdoors.neoforge;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
@@ -6,10 +6,11 @@ import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraftforge.event.AddPackFindersEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.attachment.AttachmentHolder;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.nio.file.Path;
@@ -20,7 +21,7 @@ public class DimensionalDoorsImpl {
     }
 
     public static void initBuiltinPacks() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(DimensionalDoorsImpl::addPackFinders);
+        ModLoadingContext.get().getActiveContainer().getEventBus().addListener(DimensionalDoorsImpl::addPackFinders);
     }
 
     public static void addPackFinders(AddPackFindersEvent event) {
@@ -37,10 +38,10 @@ public class DimensionalDoorsImpl {
     public static Pack createPack(String id, String name) {
         var resourcePath = ModList.get().getModFileById(DimensionalDoors.MOD_ID).getFile().findResource("resourcepacks", id);
         return Pack.readMetaAndCreate("builtin/" + id, Component.literal(name), false,
-                (path) -> new PathPackResources(path, resourcePath, false), PackType.SERVER_DATA, Pack.Position.BOTTOM, PackSource.BUILT_IN);
+                (path) -> new PathPackResources(path, resourcePath), PackType.SERVER_DATA, Pack.Position.BOTTOM, PackSource.BUILT_IN);
     }
 
-    public static RecipeBookType createTeselattingRecipeBookType() {
-        return RecipeBookType.create("TESSELLATING");
-    }
+//    public static RecipeBookType createTeselattingRecipeBookType() {
+//        return RecipeBookType.getExtensionInfo().create("TESSELLATING");
+//    }
 }

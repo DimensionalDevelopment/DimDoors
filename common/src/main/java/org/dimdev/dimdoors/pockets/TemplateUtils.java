@@ -1,7 +1,10 @@
 package org.dimdev.dimdoors.pockets;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.WorldGenLevel;
@@ -63,10 +66,10 @@ public class TemplateUtils {
         LootTable table;
         if (tile instanceof ChestBlockEntity) {
             logger.debug("Now populating chest.");
-            table = world.getServer().getLootData().getLootTable(DimensionalDoors.id("dungeon_chest"));
+            table = world.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, DimensionalDoors.id("dungeon_chest")));
         } else {
             logger.debug("Now populating dispenser.");
-            table = world.getServer().getLootData().getLootTable(DimensionalDoors.id("dispenser_projectiles"));
+            table = world.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, DimensionalDoors.id("dispenser_projectiles")));
         }
         LootParams ctx = new LootParams.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
         table.fill(inventory, ctx, world.getSeed());
@@ -122,6 +125,9 @@ public class TemplateUtils {
     public static void replacePlaceholders(Schematic schematic, WorldGenLevel world) {
         // Replace placeholders (some schematics will contain them)
         List<CompoundTag> blockEntities = new ArrayList<>();
+
+        RegistryAccess registryAccess = world.getLevel().registryAccess();
+
         for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
             if (blockEntityTag.contains("placeholder")) {
                 int x = blockEntityTag.getInt("x");
@@ -130,32 +136,32 @@ public class TemplateUtils {
                 BlockPos pos = new BlockPos(x, y, z);
 
                 CompoundTag newTag = new CompoundTag();
-                EntranceRiftBlockEntity rift = new EntranceRiftBlockEntity(pos, Schematic.getBlockSample(schematic).getBlockState(pos));
+                EntranceRiftBlockEntity rift = new EntranceRiftBlockEntity(pos, Schematic.getBlockSample(schematic, registryAccess).getBlockState(pos));
 				switch (blockEntityTag.getString("placeholder")) {
 					case "deeper_depth_door" -> {
 						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
-						rift.saveAdditional(newTag);
+						rift.saveAdditional(newTag, registryAccess);
 					}
 					case "less_deep_depth_door" -> {
 						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
-						rift.saveAdditional(newTag);
+						rift.saveAdditional(newTag, registryAccess);
 					}
 					case "overworld_door" -> {
 						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
-						rift.saveAdditional(newTag);
+						rift.saveAdditional(newTag, registryAccess);
 					}
 					case "entrance_door" -> {
 						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
-						rift.saveAdditional(newTag);
+						rift.saveAdditional(newTag, registryAccess);
 					}
 					case "gateway_portal" -> {
 						rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
 						rift.setDestination(DefaultDungeonDestinations.getGateway());
-						rift.saveAdditional(newTag);
+						rift.saveAdditional(newTag, registryAccess);
 					}
 					default -> throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
 				}

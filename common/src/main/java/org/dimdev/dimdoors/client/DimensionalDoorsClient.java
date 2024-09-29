@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.architectury.event.events.client.ClientGuiEvent;
-import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientReloadShadersEvent;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
@@ -36,8 +35,6 @@ import org.dimdev.dimdoors.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.RaycastHelper;
-import org.dimdev.dimdoors.network.client.ClientPacketHandler;
-import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
@@ -68,7 +65,7 @@ public class DimensionalDoorsClient {
 	public static ShaderPackDetector detector = () -> false;
 
 	public static void init() {
-		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
+//		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> Networking.sendPacket(new NetworkHandlerInitializedC2SPacket()));
 
 		ClientGuiEvent.DEBUG_TEXT_LEFT.register(new ClientGuiEvent.DebugText() {
 			@Override
@@ -97,8 +94,6 @@ public class DimensionalDoorsClient {
 //		DimensionRenderering.initClient();
 
 		registerListeners();
-
-		ClientPacketHandler.init();
 
 //		ModRecipeBookGroups.init();
     }

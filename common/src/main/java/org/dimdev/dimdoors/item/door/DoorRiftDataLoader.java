@@ -41,7 +41,7 @@ public final class DoorRiftDataLoader implements ResourceManagerReloadListener {
 		Map<ResourceLocation, Resource> resources = manager.listResources("door/data", id -> id.getPath().endsWith(".json"));
 		resources.forEach((id, resource) -> {
 			String name = id.getPath().substring(id.getPath().lastIndexOf('/') + 1, id.getPath().lastIndexOf('.'));
-			ResourceLocation itemId = new ResourceLocation(id.getNamespace(), name);
+			ResourceLocation itemId = ResourceLocation.tryBuild(id.getNamespace(), name);
 			if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
 				LOGGER.error("Could not find item " + itemId + " for door data " + id);
 				return;

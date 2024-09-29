@@ -38,7 +38,7 @@ public class PrivateRegistry {
 
 		public static PocketInfo fromNbt(CompoundTag nbt) {
 			return new PocketInfo(
-					ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
+					ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(nbt.getString("world"))),
 					nbt.getInt("id")
 			);
 		}

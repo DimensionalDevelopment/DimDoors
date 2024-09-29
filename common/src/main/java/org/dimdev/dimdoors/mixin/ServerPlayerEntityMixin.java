@@ -3,11 +3,14 @@ package org.dimdev.dimdoors.mixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.stats.Stat;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -38,6 +41,9 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 
 	@Shadow public abstract void awardStat(Stat<?> arg, int i);
 
+	@Shadow public abstract ServerLevel serverLevel();
+
+	@Shadow @Final public MinecraftServer server;
 	private static final float RANDOM_ACTION_CHANCE = 0.1F;
 	private static final float CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS = 0.1F;
 	private static final int CHUNK_SIZES = 25;
@@ -134,20 +140,20 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 	public void checkDeathServer(DamageSource source, CallbackInfo ci) {
 		this.doOnDeathStuff(source, ci);
 		if (ci.isCancelled()) {
-			if (ModDimensions.isPocketDimension(this.level())) {
+			if (ModDimensions.isPocketDimension(this.serverLevel())) {
 				this.awardStat(ModStats.DEATHS_IN_POCKETS);
 			}
 			this.awardStat(ModStats.TIMES_SENT_TO_LIMBO);
-			TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 512);
+			TeleportUtil.teleportRandom((Entity) (Object) this, ModDimensions.LIMBO_DIMENSION, 512);
 			//noinspection ConstantConditions
-			LimboEntranceSource.ofDamageSource(source).broadcast((Player) (Object) this, this.getServer());
+			LimboEntranceSource.ofDamageSource(source).broadcast((Player) (Object) this, this.server);
 		}
 	}
 
 	@Inject(method = "setRespawnPosition", at = @At("TAIL"))
 	public void onSpawnPointSet(ResourceKey<Level> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean bl, CallbackInfo ci) {
 		if (ModDimensions.isPocketDimension(dimension)) {
-			ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayer) (Object) this);
+			ModCriteria.POCKET_SPAWN_POINT_SET.value().trigger((ServerPlayer) (Object) this);
 		}
 	}
 

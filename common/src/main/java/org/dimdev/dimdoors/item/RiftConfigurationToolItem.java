@@ -23,7 +23,7 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.item.component.IdCounter;
 import org.dimdev.dimdoors.item.component.ModDataComponents;
-import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.network.Networking;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 				} else {
 					var id = stack.set(ModDataComponents.ID_COUNTER.value(), counter.increment());
 
-					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
+					Networking.sync((ServerPlayer) player, stack, hand);
 
 					EntityUtils.chat(player, Component.literal("Rift stripped of data and set to target id: " + id.count()));
 

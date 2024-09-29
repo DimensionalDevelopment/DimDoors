@@ -7,6 +7,7 @@ import dev.architectury.platform.Platform;
 import dev.architectury.utils.GameInstance;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
@@ -42,10 +43,10 @@ public class PocketCommand {
 												literal("place")
 														.then(
 																argument("pocket_template", new PocketTemplateArgumentType())
-																		.executes(ctx -> place(ctx.getSource().getPlayerOrException(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementType.SECTION_NO_UPDATE))
+																		.executes(ctx -> place(ctx.getSource().registryAccess(), ctx.getSource().getPlayerOrException(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementType.SECTION_NO_UPDATE))
 																		.then(
 																				argument("placement_type", new BlockPlacementTypeArgumentType())
-																						.executes(ctx -> place(ctx.getSource().getPlayerOrException(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementTypeArgumentType.getBlockPlacementType(ctx, "placement_type")))
+																						.executes(ctx -> place(ctx.getSource().registryAccess(), ctx.getSource().getPlayerOrException(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementTypeArgumentType.getBlockPlacementType(ctx, "placement_type")))
 																		)
 														)
 										)
@@ -108,13 +109,14 @@ public class PocketCommand {
 		}
 	}
 
-	private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
+	private static int place(RegistryAccess registryAccess, ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
 		SchematicPlacer.place(
 				template.getSchematic(),
 				source.serverLevel(),
 				source.blockPosition(),
-				blockPlacementType
-		);
+				blockPlacementType,
+				registryAccess
+				);
 
 		String id = template.getId().toString();
 		source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level().dimension().location().toString()), true);
