@@ -25,11 +25,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootParams;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.block.entity.MutableBlockEntityType;
-import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -52,7 +52,7 @@ public class DimensionalDoorBlockRegistrar {
 
 	private final Map<ResourceLocation, AutoGenLogic<? extends RiftBlockEntity>> customDoorFunction = new HashMap<>();
 
-	public record AutoGenLogic<T extends RiftBlockEntity>(Supplier<MutableBlockEntityType<T>> blockEntityType, BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> function) {
+	public record AutoGenLogic<T extends RiftBlockEntity>(Supplier<MutableBlockEntityType<T>> blockEntityType, BiFunction<BlockBehaviour.Properties, DoorBlock, Block> function) {
 		public void register(Block block) {
 			blockEntityType.get().addBlock(block);
 		}
@@ -103,7 +103,7 @@ public class DimensionalDoorBlockRegistrar {
 		}
 	}
 
-	private void register(Registrar<Block> registrar, ResourceLocation location, DoorSoundProvider original, BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> constructor) {
+	private void register(Registrar<Block> registrar, ResourceLocation location, DoorBlock original, BiFunction<BlockBehaviour.Properties, DoorBlock, Block> constructor) {
 		ResourceLocation gennedId = DimensionalDoors.id(PREFIX + location.getNamespace() + "_" + location.getPath());
 
 		if(mappedDoorBlocks.containsKey(gennedId)) return;
@@ -138,7 +138,7 @@ public class DimensionalDoorBlockRegistrar {
 		return to.setValue(property, from.getValue(property));
 	}
 
-	private static AutoGenDimensionalDoorBlock createAutoGenDimensionalDoorBlock(BlockBehaviour.Properties settings, DoorSoundProvider originalBlock) {
+	private static AutoGenDimensionalDoorBlock createAutoGenDimensionalDoorBlock(BlockBehaviour.Properties settings, DoorBlock originalBlock) {
 		return new AutoGenDimensionalDoorBlock(settings, originalBlock) {
 			@Override
 			protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -147,7 +147,7 @@ public class DimensionalDoorBlockRegistrar {
 		};
 	}
 
-	private static AutoGenDimensionalTrapdoorBlock createAutoGenDimensionalTrapdoorBlock(BlockBehaviour.Properties settings, DoorSoundProvider originalBlock) {
+	private static AutoGenDimensionalTrapdoorBlock createAutoGenDimensionalTrapdoorBlock(BlockBehaviour.Properties settings, TrapDoorBlock originalBlock) {
 		return new AutoGenDimensionalTrapdoorBlock(settings, originalBlock) {
 			@Override
 			protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -172,8 +172,8 @@ public class DimensionalDoorBlockRegistrar {
 	public static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {
 		private final Block originalBlock;
 
-		public AutoGenDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
-			super(settings, originalBlock.getSetType());
+		public AutoGenDimensionalDoorBlock(Properties settings, DoorBlock originalBlock) {
+			super(settings, originalBlock.type());
 			this.originalBlock = (Block) originalBlock;
 
 			BlockState state = this.getStateDefinition().any();
@@ -217,9 +217,9 @@ public class DimensionalDoorBlockRegistrar {
 	private static class AutoGenDimensionalTrapdoorBlock extends DimensionalTrapdoorBlock {
 		private final Block originalBlock;
 
-		public AutoGenDimensionalTrapdoorBlock(Properties settings, DoorSoundProvider originalBlock) {
-			super(settings, originalBlock.getSetType());
-			this.originalBlock = (Block) originalBlock;
+		public AutoGenDimensionalTrapdoorBlock(Properties settings, TrapDoorBlock originalBlock) {
+			super(settings, BlockSetType.OAK/*originalBlock.type() TODO: Add*/);
+			this.originalBlock = originalBlock;
 
 			BlockState state = this.getStateDefinition().any();
 			BlockState originalState = this.originalBlock.defaultBlockState();

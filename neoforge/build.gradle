@@ -46,8 +46,8 @@ dependencies {
     include "org.jgrapht:jgrapht-core:1.1.0"
     include "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 
-    modApi "mcp.mobius.waila:wthit-api:forge-${wthitVersion}"
-    modApi "mcp.mobius.waila:wthit:forge-${wthitVersion}"
+    modApi "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
+//    modApi "mcp.mobius.waila:wthit:neo-${wthitVersion}"
 //    modApi "lol.bai:badpackets:forge-0.4.2"
 //    modApi "com.sk89q.worldedit:worldedit-forge-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
@@ -71,9 +71,11 @@ processResources {
             "cloth_config_version": cloth_config
     ]
 
-    filesMatching("META-INF/mods.toml") {
+    filesMatching("META-INF/neoforge.mods.toml") {
         expand props
     }
+
+
 
     from(rootProject.file("common/src/main/resources")) {
         include("**/**")

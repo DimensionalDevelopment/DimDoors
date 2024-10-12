@@ -14,9 +14,9 @@ Bend and twist reality, creating rifts, pocket dimensions, and much more
 #logoFile = ""
 
 [[dependencies.dimdoors]]
-modId = "forge"
+modId = "neoforge"
 mandatory = true
-versionRange = "[45,)"
+versionRange = "[21.+,)"
 ordering = "NONE"
 side = "BOTH"
 

@@ -49,17 +49,5 @@
     "minecraft": ">=${minecraft_version}",
     "architectury": ">=${architectury_version}",
     "cloth-config": ">=${cloth_config_version}"
-  },
-  "custom": {
-    "cardinal-components": [
-      "dimdoors:dimensional_registry",
-      "dimdoors:counter",
-      "dimdoors:chunk_lazily_generated",
-      "dimdoors:player_modifiers"
-    ],
-    "loom:injected_interfaces": {
-      "net/minecraft/class_2323": ["org/dimdev/dimdoors/block/DoorSoundProvider"],
-      "net/minecraft/class_2533": ["org/dimdev/dimdoors/block/DoorSoundProvider"]
-    }
   }
 }
