@@ -35,7 +35,6 @@ public class MonolithEntity extends Mob {
     private static final int MAX_SOUND_COOLDOWN = 200;
     public static final int MAX_AGGRO_RANGE = 35;
     private static final EntityDataAccessor<Integer> AGGRO = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> SOLID = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.BOOLEAN);
 
@@ -115,9 +114,14 @@ public class MonolithEntity extends Mob {
         super.defineSynchedData(builder);
         // Add a short for the aggro level
         builder.define(AGGRO, 0)
-                .define(SCALE, 1f).define(PITCH, 1f)
+                .define(PITCH, 1f)
                 .define(SOLID, true);
 		this.refreshDimensions();
+    }
+
+    @Override
+    public Pose getPose() {
+        return Pose.STANDING;
     }
 
     @Override
@@ -133,11 +137,11 @@ public class MonolithEntity extends Mob {
     @Override
     protected void customServerAiStep() {
         // Remove this Monolith if it's not in Limbo or in a pocket dungeon
-        if (!(ModDimensions.isLimboDimension(this.level()) || ModDimensions.isPocketDimension(this.level()))) {
-            this.remove(RemovalReason.DISCARDED);
-            super.customServerAiStep();
-            return;
-        }
+//        if (!(ModDimensions.isLimboDimension(this.level()) || ModDimensions.isPocketDimension(this.level()))) {
+//            this.remove(RemovalReason.DISCARDED);
+//            super.customServerAiStep();
+//            return;
+//        }
 
         super.customServerAiStep();
 
@@ -259,9 +263,9 @@ public class MonolithEntity extends Mob {
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         setAggro(nbt.getInt("Aggro"));
-        if (nbt.contains("scale", Tag.TAG_FLOAT)) {
-        	setScale(nbt.getFloat("scale"));
-		}
+//        if (nbt.contains("scale", Tag.TAG_FLOAT)) {
+//        	setScale(nbt.getFloat("scale"));
+//		}
         if (nbt.contains("pitch", Tag.TAG_FLOAT)) {
 			setPitch(nbt.getFloat("pitch"));
 		}
@@ -287,16 +291,6 @@ public class MonolithEntity extends Mob {
         this.entityData.set(AGGRO, aggro);
     }
 
-    @Override
-	public float getScale() {
-    	return this.entityData.get(SCALE);
-	}
-
-    public void setScale(float scale) {
-    	this.entityData.set(SCALE, scale);
-        refreshDimensions();
-	}
-
 	public float getPitch() {
     	return this.entityData.get(PITCH);
 	}
@@ -311,14 +305,14 @@ public class MonolithEntity extends Mob {
 		return super.getLocalBoundsForPose(pose).inflate(scale, scale, scale);
 	}
 
-	@Override
-	public void onSyncedDataUpdated(EntityDataAccessor<?> data) {
-		if (SCALE.equals(data)) {
-			this.refreshDimensions();
-		}
-
-		super.onSyncedDataUpdated(data);
-	}
+//	@Override
+//	public void onSyncedDataUpdated(EntityDataAccessor<?> data) {
+//		if (SCALE.equals(data)) {
+//			this.refreshDimensions();
+//		}
+//
+//		super.onSyncedDataUpdated(data);
+//	}
 
     @Override
     public boolean checkSpawnRules(LevelAccessor world, MobSpawnType spawnReason) {

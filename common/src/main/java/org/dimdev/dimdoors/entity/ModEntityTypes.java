@@ -29,7 +29,7 @@ public class ModEntityTypes {
     public static void init() {
         ENTITY_TYPES.register();
         EntityAttributeRegistry.register(MONOLITH, MonolithEntity::createMobAttributes);
-        EntityAttributeRegistry.register(MASK, MonolithEntity::createMobAttributes);
+        EntityAttributeRegistry.register(MASK, MaskEntity::createMobAttributes);
     }
 
     private static <E extends Entity> RegistrySupplier<EntityType<E>> register(String id, EntityType.EntityFactory<E> factory, float width, float height, boolean fixed) {
