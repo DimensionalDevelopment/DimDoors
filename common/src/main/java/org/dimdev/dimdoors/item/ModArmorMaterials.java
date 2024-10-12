@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.item;
 
 import dev.architectury.registry.registries.DeferredRegister;
-import kroppeb.stareval.Util;
+import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;

@@ -33,6 +33,8 @@ public class LimboDimensionEffect extends DimensionSpecialEffects implements Dim
 
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+        if(poseStack == null) return true;
+
         Matrix4f matrix4f = poseStack.last().pose();
         Tesselator tessellator = Tesselator.getInstance();
         RenderSystem.enableBlend();

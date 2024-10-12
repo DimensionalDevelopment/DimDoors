@@ -8,6 +8,6 @@ import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 public class ChunkLazilyGeneratedComponentImpl {
     public static ChunkLazilyGeneratedComponent get(LevelChunk chunk) {
         var key = ((DataKeysImpl.FabricDataKey<ChunkLazilyGeneratedComponent>) DataKeys.CHUNK_LAZILY_GENERATED).type();
-        return chunk.getAttached(key);
+        return chunk.getAttachedOrCreate(key);
     }
 }

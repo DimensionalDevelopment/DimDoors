@@ -39,7 +39,9 @@ import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.ModArmorMaterials;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.item.component.ModDataComponents;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
 import org.dimdev.dimdoors.item.door.data.condition.Condition;
@@ -70,7 +72,6 @@ import org.dimdev.dimdoors.world.carvers.ModCarvers;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
@@ -119,6 +120,8 @@ public class DimensionalDoors {
 
 		registerRegistries();
 
+		ModDataComponents.init();
+
 		ModRecipeTypes.init();
 		ModRecipeSerializers.init();
 		ModScreenHandlerTypes.init();
@@ -126,6 +129,7 @@ public class DimensionalDoors {
 		ModFluids.init();
 		ModEntityTypes.init();
 		ModItems.init();
+		ModArmorMaterials.init();
 		ModBlocks.init();
 		ModCarvers.init();
 		ModBiomes.init();

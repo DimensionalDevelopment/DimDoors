@@ -13,4 +13,8 @@ public class ModDataComponents {
     public static final Holder<DataComponentType<IdCounter>> ID_COUNTER = DATA_COMPONENTS.register("id_counter", () -> DataComponentType.<IdCounter>builder().persistent(IdCounter.CODEC).networkSynchronized(IdCounter.STREAM_CODEC).build());
     public static final Holder<DataComponentType<RotatedLocation>> DESTINATION = DATA_COMPONENTS.register("destination", () -> DataComponentType.<RotatedLocation>builder().persistent(RotatedLocation.CODEC).networkSynchronized(RotatedLocation.STREAM_CODEC).build());
     public static final Holder<DataComponentType<RiftKeyIds>> RIFT_KEY_IDS = DATA_COMPONENTS.register("rift_key_ids", () -> DataComponentType.<RiftKeyIds>builder().persistent(RiftKeyIds.CODEC).networkSynchronized(RiftKeyIds.STREAM_CODEC).build());
+
+    public static void init() {
+        DATA_COMPONENTS.register();
+    }
 }

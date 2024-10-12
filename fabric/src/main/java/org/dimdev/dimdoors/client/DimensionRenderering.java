@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.effect.DimensionSpecialEffectsExtensions;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
@@ -19,7 +20,12 @@ public class DimensionRenderering {
         DimensionRenderingRegistry.registerCloudRenderer(ModDimensions.PERSONAL, noCloudRenderer);
         DimensionRenderingRegistry.registerCloudRenderer(ModDimensions.PUBLIC, noCloudRenderer);
 
-        Function<DimensionSpecialEffectsExtensions, DimensionRenderingRegistry.SkyRenderer> rendererFactory = dimensionSpecialEffectsExtensions -> context -> dimensionSpecialEffectsExtensions.renderSky(context.world(), 0, context.tickCounter().getGameTimeDeltaTicks(), context.matrixStack(), context.camera(), context.projectionMatrix(), false, () -> {});
+        Function<DimensionSpecialEffectsExtensions, DimensionRenderingRegistry.SkyRenderer> rendererFactory = dimensionSpecialEffectsExtensions -> new DimensionRenderingRegistry.SkyRenderer() {
+            @Override
+            public void render(WorldRenderContext context) {
+                dimensionSpecialEffectsExtensions.renderSky(context.world(), 0, context.tickCounter().getGameTimeDeltaTicks(), context.matrixStack(), context.camera(), context.projectionMatrix(), false, () -> {});
+            }
+        };
 
         DimensionRenderingRegistry.registerSkyRenderer(ModDimensions.LIMBO, rendererFactory.apply(LimboDimensionEffect.INSTANCE));
 

@@ -38,7 +38,7 @@ public class Networking {
 		PlayerEvent.PLAYER_JOIN.register(a -> STATES.put(a.getUUID(), new PlayerNetworkState()));
 		PlayerEvent.PLAYER_QUIT.register(a -> STATES.put(a.getUUID(), new PlayerNetworkState()));
 
-		registerS2CPacket(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, HitBlockWithItemC2SPacket::handle);
+		registerC2SPacket(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, HitBlockWithItemC2SPacket::handle);
 
 //		NetworkManager.registerS2CPayloadType();DimensionalDoors.NETWORK.registerC2S( NetworkHandlerInitializedC2SPacket::write, NetworkHandlerInitializedC2SPacket::new, NetworkHandlerInitializedC2SPacket::apply);
 //		NETWORK.register(HitBlockWithItemC2SPacket.class, HitBlockWithItemC2SPacket::write, HitBlockWithItemC2SPacket::new, HitBlockWithItemC2SPacket::apply);
@@ -51,7 +51,7 @@ public class Networking {
 	}
 
 	private static <T extends CustomPacketPayload> void registerS2CPacket(CustomPacketPayload.Type<T> type, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec, NetworkManager.NetworkReceiver<T> consumer) {
-		NetworkManager.registerS2CPayloadType(type, streamCodec);
+//		NetworkManager.registerS2CPayloadType(type, streamCodec);
 		NetworkManager.registerReceiver(NetworkManager.Side.S2C, type, streamCodec, consumer);
 	}
 
@@ -65,7 +65,7 @@ public class Networking {
 
 	public static <T extends CustomPacketPayload> boolean sendPacket(ServerPlayer player, T packet) {
 		try {
-			Networking.sendPacket(player, packet);
+			player.connection.send(NetworkManager.toPacket(NetworkManager.Side.S2C, packet, player.level().registryAccess()));
 			return true;
 		} catch (Exception e) {
 			LOGGER.error(e);

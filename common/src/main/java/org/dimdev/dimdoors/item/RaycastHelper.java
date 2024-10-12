@@ -73,9 +73,4 @@ public final class RaycastHelper {
 			return super.getBlockShape(pBlockState, pLevel, pPos);
 		}
 	}
-
-	@ExpectPlatform
-	public static double reach(Player player) {
-		throw new RuntimeException();
-	}
 }

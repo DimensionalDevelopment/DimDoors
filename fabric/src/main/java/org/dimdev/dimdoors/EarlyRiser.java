@@ -1,13 +1,5 @@
 package org.dimdev.dimdoors;
 
-import com.chocohead.mm.api.ClassTinkerers;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.MappingResolver;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import org.dimdev.dimdoors.item.ModItems;
-
 public class EarlyRiser implements Runnable {
     @Override
     public void run() {

@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.util.StreamUtils;
 
 public class DimensionalDoorsFabric implements ModInitializer {
@@ -10,6 +12,8 @@ public class DimensionalDoorsFabric implements ModInitializer {
     public void onInitialize() {
 		StreamUtils.setup(this);
         DimensionalDoors.init();
+
+        ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> ChunkServedCallback.EVENT.invoker().onChunkServed(world, chunk));
 
 		PlayerBlockBreakEvents.AFTER.register(DimensionalDoors::afterBlockBreak);
     }
