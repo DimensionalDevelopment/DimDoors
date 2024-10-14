@@ -10,13 +10,7 @@ architectury {
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
-    neoForge {
-//        convertAccessWideners = true
-//        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-
-//        mixinConfig "dimdoors-common.mixins.json"
-//        mixinConfig "dimdoors.mixins.json"
-    }
+    loom.mods.removeIf {it.name == "main"}
 }
 
 configurations {
@@ -24,7 +18,7 @@ configurations {
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+    developmentNeoForge.extendsFrom common
 }
 
 repositories {
@@ -40,13 +34,13 @@ dependencies {
     modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
     modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config}"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
     include "com.flowpowered:flow-math:1.0.3"
     include "org.jgrapht:jgrapht-core:1.1.0"
     include "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 
-    modApi "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
+    modCompileOnly "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
 //    modApi "mcp.mobius.waila:wthit:neo-${wthitVersion}"
 //    modApi "lol.bai:badpackets:forge-0.4.2"
 //    modApi "com.sk89q.worldedit:worldedit-forge-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
@@ -65,10 +59,10 @@ processResources {
 //    inputs.property "cloth_config_version", cloth_config
 
     def props = [
-            "version": project.version,
-            "minecraft_version": minecraft_version,
-            "architectury_version": architectury_version,
-            "cloth_config_version": cloth_config
+            version: project.version,
+            minecraft_version: minecraft_version,
+            architectury_version: architectury_version,
+            cloth_config_version: cloth_config
     ]
 
     filesMatching("META-INF/neoforge.mods.toml") {
