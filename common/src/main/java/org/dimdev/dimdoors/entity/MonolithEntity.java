@@ -306,9 +306,9 @@ public class MonolithEntity extends Mob {
 	}
 
     @Override
-    protected AABB getBoundingBoxForPose(Pose pose) {
+    public AABB getLocalBoundsForPose(Pose pose) {
         float scale = getScale();
-		return super.getBoundingBoxForPose(pose).inflate(scale, scale, scale);
+		return super.getLocalBoundsForPose(pose).inflate(scale, scale, scale);
 	}
 
 	@Override

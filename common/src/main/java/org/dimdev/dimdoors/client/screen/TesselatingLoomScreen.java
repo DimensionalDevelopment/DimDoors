@@ -38,7 +38,7 @@ public class TesselatingLoomScreen extends AbstractContainerScreen<TessellatingC
 
 
 	public void render(GuiGraphics matrices, int mouseX, int mouseY, float delta) {
-		this.renderBackground(matrices);
+		this.renderBackground(matrices, mouseX, mouseY, delta);
 //		if (this.recipeBook.isVisible() && this.narrow) {
 //			this.renderBg(matrices, delta, mouseX, mouseY);
 //			this.recipeBook.render(matrices, mouseX, mouseY, delta);

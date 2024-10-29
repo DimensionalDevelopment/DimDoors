@@ -13,31 +13,31 @@ import me.shedaniel.rei.api.common.transfer.info.MenuInfo;
 import me.shedaniel.rei.api.common.transfer.info.MenuSerializationContext;
 import me.shedaniel.rei.api.common.transfer.info.simple.SimpleGridMenuInfo;
 import me.shedaniel.rei.api.common.util.CollectionUtils;
+import me.shedaniel.rei.api.common.util.EntryIngredients;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
 import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
+import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 @SuppressWarnings("removal")
-public abstract class DefaultTesselatingDisplay<C extends Recipe<?>> extends BasicDisplay implements SimpleGridMenuDisplay {
-    protected Optional<C> recipe;
+public abstract class DefaultTesselatingDisplay<C extends TesselatingRecipe> extends BasicDisplay implements SimpleGridMenuDisplay {
+    protected RecipeHolder<C> recipe;
     private final int weavingTime;
 
-    public DefaultTesselatingDisplay(List<EntryIngredient> inputs, List<EntryIngredient> outputs, Optional<C> recipe, int weavingTime) {
-        this(inputs, outputs, recipe.map(Recipe::getId), recipe, weavingTime);
-    }
+    public DefaultTesselatingDisplay(RecipeHolder<C> recipe) {
+        super(EntryIngredients.ofIngredients(recipe.value().getIngredients()), Collections.singletonList(EntryIngredients.of(recipe.value().getResultItem(BasicDisplay.registryAccess()))), Optional.of(recipe.id()));
 
-    public DefaultTesselatingDisplay(List<EntryIngredient> inputs, List<EntryIngredient> outputs, Optional<ResourceLocation> location, Optional<C> recipe, int weavingTime) {
-        super(inputs, outputs, location);
         this.recipe = recipe;
-        this.weavingTime = weavingTime;
+        this.weavingTime = recipe.value().weavingTime();
     }
 
 //    private static final List<CraftingRecipeSizeProvider<?>> SIZE_PROVIDER = new ArrayList<>();
@@ -65,11 +65,13 @@ public abstract class DefaultTesselatingDisplay<C extends Recipe<?>> extends Bas
 //    }
 
     @Nullable
-    public static DefaultTesselatingDisplay<?> of(Recipe<?> recipe) {
-        if (recipe instanceof TesselatingShapelessRecipe) {
-            return new DefaultTesselatingShapelessDisplay((TesselatingShapelessRecipe) recipe);
-        } else if (recipe instanceof ShapedTesselatingRecipe) {
-            return new DefaultTesselatingShapedDisplay((ShapedTesselatingRecipe) recipe);
+    public static DefaultTesselatingDisplay<?> of(RecipeHolder<Recipe<?>> recipe) {
+        if (recipe.value() instanceof TesselatingShapelessRecipe) {
+            RecipeHolder<TesselatingShapelessRecipe> tesselating = (RecipeHolder<TesselatingShapelessRecipe>) (Object) recipe;
+            return new DefaultTesselatingShapelessDisplay(tesselating);
+        } else if (recipe.value() instanceof ShapedTesselatingRecipe) {
+            RecipeHolder<ShapedTesselatingRecipe> tesselating = (RecipeHolder<ShapedTesselatingRecipe>) (Object) recipe;
+            return new DefaultTesselatingShapedDisplay(tesselating);
         } /*else if (!recipe.isSpecial()) {
             NonNullList<Ingredient> ingredients = recipe.getIngredients();
             for (CraftingRecipeSizeProvider<?> pair : SIZE_PROVIDER) {
@@ -94,13 +96,13 @@ public abstract class DefaultTesselatingDisplay<C extends Recipe<?>> extends Bas
         return TesselatingReiCompatClient.TESSELATING;
     }
 
-    public Optional<C> getOptionalRecipe() {
+    public RecipeHolder<C> getOptionalRecipe() {
         return recipe;
     }
 
     @Override
     public Optional<ResourceLocation> getDisplayLocation() {
-        return getOptionalRecipe().map(Recipe::getId);
+        return Optional.of(getOptionalRecipe().id());
     }
 
     public <T extends AbstractContainerMenu> List<List<ItemStack>> getOrganisedInputEntries(SimpleGridMenuInfo<T, DefaultTesselatingDisplay<?>> menuInfo, T container) {

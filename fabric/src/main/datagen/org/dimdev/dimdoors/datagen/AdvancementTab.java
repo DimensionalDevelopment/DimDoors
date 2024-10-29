@@ -1,9 +1,10 @@
 package org.dimdev.dimdoors.datagen;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.advancements.FrameType;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.*;
+import net.minecraft.advancements.critereon.ChangeDimensionTrigger;
+import net.minecraft.advancements.critereon.EnterBlockTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -14,14 +15,16 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.criteria.PocketSpawnPointSetCondition;
 import org.dimdev.dimdoors.criteria.RiftTrackedCriterion;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.world.ModDimensions;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
-public class AdvancementTab implements Consumer<Consumer<Advancement>> {
+public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
 	static DisplayInfo makeDisplay(ItemLike item, String titleKey) {
 		return new DisplayInfo(item.asItem().getDefaultInstance(),
 				Component.translatable("dimdoors.advancement." + titleKey),
@@ -47,8 +50,8 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 	}
 
 	@Override
-	public void accept(Consumer<Advancement> advancementConsumer) {
-		Advancement root = Advancement.Builder.advancement()
+	public void accept(Consumer<AdvancementHolder> advancementConsumer) {
+		AdvancementHolder root = Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.RIFT_BLADE.get(), "root"))
 				.addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.ENDER_PEARL))
 				.save(advancementConsumer, "dimdoors:dimdoors/root");
@@ -57,12 +60,12 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
 				.parent(root)
 				.save(advancementConsumer, "dimdoors:dimdoors/string_theory");
-		Advancement holeInTheSky = Advancement.Builder.advancement()
+		AdvancementHolder holeInTheSky = Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL.get(), "hole_in_the_sky"))
-				.addCriterion("encounter_rift", new RiftTrackedCriterion.Conditions(ContextAwarePredicate.ANY))
+				.addCriterion("encounter_rift", new Criterion(ModCriteria.RIFT_TRACKED, new RiftTrackedCriterion.Conditions(Optional.empty())))
 				.parent(root)
 				.save(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
-		Advancement darkOstiology = Advancement.Builder.advancement()
+		AdvancementHolder darkOstiology = Advancement.Builder.advancement()
 				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door")), "dark_ostiology"))
 				.addCriterion("place_door", EnterBlockTrigger.TriggerInstance.entersBlock(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door"))))
 				.parent(holeInTheSky)
@@ -79,10 +82,10 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.save(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
 		Advancement.Builder.advancement()
 				.display(makeDisplay(Blocks.RESPAWN_ANCHOR, "out_of_time"))
-				.addCriterion("spawn", new PocketSpawnPointSetCondition.Conditions(ContextAwarePredicate.ANY))
+				.addCriterion("spawn", new Criterion(ModCriteria.POCKET_SPAWN_POINT_SET, new PocketSpawnPointSetCondition.Conditions(Optional.empty())))
 				.parent(darkOstiology)
 				.save(advancementConsumer, "dimdoors:dimdoors/out_of_time");
-		Advancement doorToAdventure = Advancement.Builder.advancement()
+		AdvancementHolder doorToAdventure = Advancement.Builder.advancement()
 				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_dimdoors_gold_door")), "door_to_adventure"))
 				.parent(holeInTheSky)
 				.addCriterion("enter_dungeon", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo((ModDimensions.DUNGEON)))
@@ -123,7 +126,7 @@ public class AdvancementTab implements Consumer<Consumer<Advancement>> {
 				.parent(doorToAdventure)
 				.addCriterion("get_fabric", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(TagKey.create(Registries.ITEM, DimensionalDoors.id("fabric"))).build()))
 				.save(advancementConsumer, "dimdoors:dimdoors/darklight");
-		Advancement enterLimbo = Advancement.Builder.advancement()
+		AdvancementHolder enterLimbo = Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.MONOLITH_SPAWNER.get(), "enter_limbo"))
 				.parent(doorToAdventure)
 				.addCriterion("enter_limbo", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(ModDimensions.LIMBO))
