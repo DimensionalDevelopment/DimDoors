@@ -2,7 +2,6 @@
   "parent": "dimdoors:dimdoors/root",
   "criteria": {
     "encounter_rift": {
-      "conditions": {},
       "trigger": "dimdoors:rift_tracked"
     }
   },

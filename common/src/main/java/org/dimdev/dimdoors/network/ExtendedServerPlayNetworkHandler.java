@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.network;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 public interface ExtendedServerPlayNetworkHandler {
@@ -10,5 +9,4 @@ public interface ExtendedServerPlayNetworkHandler {
 
 	ServerPacketHandler getDimDoorsPacketHandler();
 
-	MinecraftServer dimdoorsGetServer();
 }

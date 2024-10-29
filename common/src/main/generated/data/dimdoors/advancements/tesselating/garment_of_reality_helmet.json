@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "infrangible_fiber",
-      "has_the_recipe"
+      "has_the_recipe",
+      "infrangible_fiber"
     ]
   ],
   "rewards": {
@@ -31,5 +31,5 @@
       "dimdoors:tesselating/garment_of_reality_helmet"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

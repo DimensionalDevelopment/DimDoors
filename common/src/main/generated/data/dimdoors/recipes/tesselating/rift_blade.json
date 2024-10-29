@@ -1,5 +1,5 @@
 {
-  "type": "dimdoors:shapeless_tesselating",
+  "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
       "item": "minecraft:iron_sword"
@@ -14,5 +14,5 @@
   "result": {
     "item": "dimdoors:rift_blade"
   },
-  "weavingtime": 200
+  "weaving_time": 200
 }

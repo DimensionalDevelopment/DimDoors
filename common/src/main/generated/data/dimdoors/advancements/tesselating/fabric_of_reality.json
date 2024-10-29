@@ -3,16 +3,16 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:tesselating/fuzzy_fireball"
+        "recipe": "dimdoors:tesselating/fabric_of_reality"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "liminal_lint": {
+    "stable_fabric": {
       "conditions": {
         "items": [
           {
             "items": [
-              "dimdoors:liminal_lint"
+              "dimdoors:stable_fabric"
             ]
           }
         ]
@@ -22,14 +22,14 @@
   },
   "requirements": [
     [
-      "liminal_lint",
-      "has_the_recipe"
+      "has_the_recipe",
+      "stable_fabric"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:tesselating/fuzzy_fireball"
+      "dimdoors:tesselating/fabric_of_reality"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

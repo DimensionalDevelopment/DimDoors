@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "inventory_changed",
-      "has_the_recipe"
+      "has_the_recipe",
+      "inventory_changed"
     ]
   ],
   "rewards": {

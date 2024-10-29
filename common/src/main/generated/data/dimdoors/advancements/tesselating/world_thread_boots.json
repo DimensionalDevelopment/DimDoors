@@ -3,16 +3,16 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:tesselating/enduring_fibers"
+        "recipe": "dimdoors:tesselating/world_thread_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "infrangible_fiber": {
+    "world_thread": {
       "conditions": {
         "items": [
           {
             "items": [
-              "dimdoors:infrangible_fiber"
+              "dimdoors:world_thread"
             ]
           }
         ]
@@ -22,14 +22,14 @@
   },
   "requirements": [
     [
-      "infrangible_fiber",
-      "has_the_recipe"
+      "has_the_recipe",
+      "world_thread"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:tesselating/enduring_fibers"
+      "dimdoors:tesselating/world_thread_boots"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

@@ -3,16 +3,16 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:tesselating/world_thread_leggings"
+        "recipe": "dimdoors:tesselating/fuzzy_fireball"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "world_thread": {
+    "liminal_lint": {
       "conditions": {
         "items": [
           {
             "items": [
-              "dimdoors:world_thread"
+              "dimdoors:liminal_lint"
             ]
           }
         ]
@@ -22,14 +22,14 @@
   },
   "requirements": [
     [
-      "world_thread",
-      "has_the_recipe"
+      "has_the_recipe",
+      "liminal_lint"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:tesselating/world_thread_leggings"
+      "dimdoors:tesselating/fuzzy_fireball"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

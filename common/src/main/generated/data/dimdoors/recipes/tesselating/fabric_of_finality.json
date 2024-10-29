@@ -14,5 +14,6 @@
   "result": {
     "item": "dimdoors:fabric_of_finality"
   },
-  "weavingtime": 200
+  "show_notification": true,
+  "weaving_time": 200
 }

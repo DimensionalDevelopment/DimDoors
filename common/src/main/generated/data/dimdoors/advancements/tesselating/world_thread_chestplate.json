@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:tesselating/stable_fabric"
+        "recipe": "dimdoors:tesselating/world_thread_chestplate"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -22,14 +22,14 @@
   },
   "requirements": [
     [
-      "world_thread",
-      "has_the_recipe"
+      "has_the_recipe",
+      "world_thread"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:tesselating/stable_fabric"
+      "dimdoors:tesselating/world_thread_chestplate"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

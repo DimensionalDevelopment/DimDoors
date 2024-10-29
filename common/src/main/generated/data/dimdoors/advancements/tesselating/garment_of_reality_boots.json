@@ -3,16 +3,16 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:tesselating/fabric_of_reality"
+        "recipe": "dimdoors:tesselating/garment_of_reality_boots"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "stable_fabric": {
+    "infrangible_fiber": {
       "conditions": {
         "items": [
           {
             "items": [
-              "dimdoors:stable_fabric"
+              "dimdoors:infrangible_fiber"
             ]
           }
         ]
@@ -22,14 +22,14 @@
   },
   "requirements": [
     [
-      "stable_fabric",
-      "has_the_recipe"
+      "has_the_recipe",
+      "infrangible_fiber"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:tesselating/fabric_of_reality"
+      "dimdoors:tesselating/garment_of_reality_boots"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

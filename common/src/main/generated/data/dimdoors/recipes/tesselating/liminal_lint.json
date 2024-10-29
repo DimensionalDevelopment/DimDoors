@@ -12,5 +12,6 @@
   "result": {
     "item": "dimdoors:liminal_lint"
   },
-  "weavingtime": 200
+  "show_notification": true,
+  "weaving_time": 200
 }

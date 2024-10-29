@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "enduring_fabric",
-      "has_the_recipe"
+      "has_the_recipe",
+      "enduring_fabric"
     ]
   ],
   "rewards": {
@@ -31,5 +31,5 @@
       "dimdoors:tesselating/fabric_of_finality"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

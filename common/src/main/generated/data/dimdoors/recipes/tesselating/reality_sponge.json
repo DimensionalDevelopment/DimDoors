@@ -16,5 +16,6 @@
   "result": {
     "item": "dimdoors:reality_sponge"
   },
-  "weavingtime": 200
+  "show_notification": true,
+  "weaving_time": 200
 }

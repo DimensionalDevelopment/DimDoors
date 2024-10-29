@@ -3,16 +3,16 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:tesselating/reality_sponge"
+        "recipe": "dimdoors:tesselating/stable_fabric"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "liminal_lint": {
+    "world_thread": {
       "conditions": {
         "items": [
           {
             "items": [
-              "dimdoors:liminal_lint"
+              "dimdoors:world_thread"
             ]
           }
         ]
@@ -22,14 +22,14 @@
   },
   "requirements": [
     [
-      "liminal_lint",
-      "has_the_recipe"
+      "has_the_recipe",
+      "world_thread"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:tesselating/reality_sponge"
+      "dimdoors:tesselating/stable_fabric"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

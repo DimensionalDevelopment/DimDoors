@@ -14,5 +14,6 @@
   "result": {
     "item": "dimdoors:rift_pearl"
   },
-  "weavingtime": 200
+  "show_notification": true,
+  "weaving_time": 200
 }

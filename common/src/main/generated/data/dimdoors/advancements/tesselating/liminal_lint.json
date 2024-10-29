@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "frayed_filaments",
-      "has_the_recipe"
+      "has_the_recipe",
+      "frayed_filaments"
     ]
   ],
   "rewards": {
@@ -31,5 +31,5 @@
       "dimdoors:tesselating/liminal_lint"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

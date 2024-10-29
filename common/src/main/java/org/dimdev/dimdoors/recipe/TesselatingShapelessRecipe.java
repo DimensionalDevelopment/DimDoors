@@ -87,7 +87,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
                     Ingredient[] ingredients = list.stream().filter((ingredient) -> !ingredient.isEmpty()).toArray(Ingredient[]::new);
                     return ingredients.length == 0 ? DataResult.error(() -> "No ingredients for shapeless recipe") : ingredients.length > 9 ? DataResult.error(() -> "Too many ingredients for shapeless recipe") : DataResult.success(NonNullList.of(Ingredient.EMPTY, ingredients));
                     }, DataResult::success).forGetter(shapelessRecipe -> shapelessRecipe.ingredients),
-                ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weavingTime").forGetter(TesselatingShapelessRecipe::weavingTime))
+                ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weaving_time").forGetter(TesselatingShapelessRecipe::weavingTime))
                 .apply(instance, TesselatingShapelessRecipe::new));
 
 

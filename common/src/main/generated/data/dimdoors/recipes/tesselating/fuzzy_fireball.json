@@ -14,5 +14,6 @@
   "result": {
     "item": "dimdoors:fuzzy_fireball"
   },
-  "weavingtime": 200
+  "show_notification": true,
+  "weaving_time": 200
 }

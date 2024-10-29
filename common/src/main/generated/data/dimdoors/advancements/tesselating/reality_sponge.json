@@ -3,16 +3,16 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dimdoors:tesselating/garment_of_reality_leggings"
+        "recipe": "dimdoors:tesselating/reality_sponge"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
-    "infrangible_fiber": {
+    "liminal_lint": {
       "conditions": {
         "items": [
           {
             "items": [
-              "dimdoors:infrangible_fiber"
+              "dimdoors:liminal_lint"
             ]
           }
         ]
@@ -22,14 +22,14 @@
   },
   "requirements": [
     [
-      "infrangible_fiber",
-      "has_the_recipe"
+      "has_the_recipe",
+      "liminal_lint"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dimdoors:tesselating/garment_of_reality_leggings"
+      "dimdoors:tesselating/reality_sponge"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

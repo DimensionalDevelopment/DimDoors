@@ -16,5 +16,6 @@
   "result": {
     "item": "dimdoors:garment_of_reality_leggings"
   },
-  "weavingtime": 200
+  "show_notification": true,
+  "weaving_time": 200
 }

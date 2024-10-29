@@ -12,5 +12,6 @@
   "result": {
     "item": "dimdoors:world_thread_boots"
   },
-  "weavingtime": 200
+  "show_notification": true,
+  "weaving_time": 200
 }

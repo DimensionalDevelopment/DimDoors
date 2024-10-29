@@ -15,5 +15,6 @@
   "result": {
     "item": "dimdoors:garment_of_reality_helmet"
   },
-  "weavingtime": 200
+  "show_notification": true,
+  "weaving_time": 200
 }

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
@@ -82,7 +83,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 	}
 
 	public MinecraftServer getServer() {
-		return ((ExtendedServerPlayNetworkHandler) networkHandler).dimdoorsGetServer();
+		return DimensionalDoors.getServer();
 	}
 
 	public ServerPlayer getPlayer() {

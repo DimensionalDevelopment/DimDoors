@@ -2,7 +2,6 @@
   "parent": "dimdoors:dimdoors/dark_ostiology",
   "criteria": {
     "spawn": {
-      "conditions": {},
       "trigger": "dimdoors:pocket_spawn_point_set"
     }
   },
