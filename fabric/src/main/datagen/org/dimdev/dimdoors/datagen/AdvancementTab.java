@@ -29,19 +29,19 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
 		return new DisplayInfo(item.asItem().getDefaultInstance(),
 				Component.translatable("dimdoors.advancement." + titleKey),
 				Component.translatable("dimdoors.advancement." + titleKey + ".desc"),
-				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
-				FrameType.TASK,
+				Optional.of(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
+				AdvancementType.TASK,
 				true,
 				true,
 				false
 		);
 	}
 
-	static DisplayInfo makeDisplay(ItemLike item, String titleKey, FrameType advancementFrame) {
+	static DisplayInfo makeDisplay(ItemLike item, String titleKey, AdvancementType advancementFrame) {
 		return new DisplayInfo(item.asItem().getDefaultInstance(),
 				Component.translatable("dimdoors.advancement." + titleKey),
 				Component.translatable("dimdoors.advancement." + titleKey + ".desc"),
-				DimensionalDoors.id("textures/block/unravelled_fabric.png"),
+				Optional.of(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
 				advancementFrame,
 				true,
 				true,
@@ -62,7 +62,7 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
 				.save(advancementConsumer, "dimdoors:dimdoors/string_theory");
 		AdvancementHolder holeInTheSky = Advancement.Builder.advancement()
 				.display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL.get(), "hole_in_the_sky"))
-				.addCriterion("encounter_rift", new Criterion(ModCriteria.RIFT_TRACKED, new RiftTrackedCriterion.Conditions(Optional.empty())))
+				.addCriterion("encounter_rift", ModCriteria.RIFT_TRACKED.createCriterion(new RiftTrackedCriterion.TriggerInstance(Optional.empty())))
 				.parent(root)
 				.save(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
 		AdvancementHolder darkOstiology = Advancement.Builder.advancement()
@@ -82,7 +82,7 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
 				.save(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
 		Advancement.Builder.advancement()
 				.display(makeDisplay(Blocks.RESPAWN_ANCHOR, "out_of_time"))
-				.addCriterion("spawn", new Criterion(ModCriteria.POCKET_SPAWN_POINT_SET, new PocketSpawnPointSetCondition.Conditions(Optional.empty())))
+				.addCriterion("spawn", ModCriteria.POCKET_SPAWN_POINT_SET.createCriterion(new PocketSpawnPointSetCondition.TriggerInstance(Optional.empty())))
 				.parent(darkOstiology)
 				.save(advancementConsumer, "dimdoors:dimdoors/out_of_time");
 		AdvancementHolder doorToAdventure = Advancement.Builder.advancement()

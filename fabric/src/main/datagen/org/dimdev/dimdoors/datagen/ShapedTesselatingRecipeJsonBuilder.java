@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
+import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
 
 import java.util.List;
 import java.util.Map;
@@ -65,8 +66,9 @@ public class ShapedTesselatingRecipeJsonBuilder extends SimpleTesselatingRecipeB
 	}
 
 	@Override
-	protected Result createResult(ResourceLocation id, Advancement.Builder builder, ItemLike result, int count) {
-		return new ShapedTesselatingRecipeJsonBuilder.Result(id, result, count, this.group == null ? "" : this.group, this.rows, this.key, builder.build(id), this.showNotification, weavingTime);
+	protected ShapedTesselatingRecipe createResult(ItemLike result, int count) {
+
+		return new ShapedTesselatingRecipe(id, result, count, this.group == null ? "" : this.group, this.rows, this.key, builder.build(id), this.showNotification, weavingTime);
 	}
 
 	protected void ensureValid(ResourceLocation id) {

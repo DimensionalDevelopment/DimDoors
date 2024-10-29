@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.DataFixer;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
@@ -84,7 +85,7 @@ public abstract class StructureTemplateManagerMixin { //Revisit enabling in the 
 	}
 
 	private SchematicStructureTemplate readSchematic(InputStream is) throws IOException {
-		CompoundTag compoundTag = NbtIo.readCompressed(is);
+		CompoundTag compoundTag = NbtIo.readCompressed(is, NbtAccounter.unlimitedHeap());
 		return new SchematicStructureTemplate(compoundTag);
 	}
 }

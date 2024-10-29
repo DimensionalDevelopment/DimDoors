@@ -15,7 +15,7 @@ public class FabricBlock extends Block {
 	public static final TagKey<Block> BLOCK_TAG = TagKey.create(Registries.BLOCK, DimensionalDoors.id("fabric"));
 
 	FabricBlock(DyeColor color) {
-		super(Properties.copy(STONE).mapColor(color).strength(1.2F).lightLevel(state -> 15));
+		super(Properties.ofFullCopy(STONE).mapColor(color).strength(1.2F).lightLevel(state -> 15));
 	}
 
 	@Override

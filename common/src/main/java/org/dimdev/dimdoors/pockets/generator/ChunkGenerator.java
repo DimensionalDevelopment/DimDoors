@@ -165,7 +165,7 @@ public class ChunkGenerator extends PocketGenerator {
 				world.setBlockAndUpdate(blockPos, protoRegion.getBlockState(blockPos.offset(pocketOriginChunkOffset).offset(0, virtualYOffset, 0)));
 			}
 		}
-		AABB realBox = new AABB(firstCorner, secondCorner);
+		AABB realBox = AABB.encapsulatingFullBlocks(firstCorner, secondCorner);
 		for (ChunkAccess protoChunk : protoChunks) {
 			for(BlockPos virtualBlockPos : protoChunk.getBlockEntitiesPos()) {
 				BlockPos realBlockPos = virtualBlockPos.subtract(pocketOriginChunkOffset).offset(0, -virtualYOffset, 0);

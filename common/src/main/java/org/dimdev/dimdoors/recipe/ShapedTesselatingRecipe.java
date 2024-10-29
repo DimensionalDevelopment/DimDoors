@@ -312,7 +312,7 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
                 ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(RawShapedRecipe::group),
                 ExtraCodecs.strictUnboundedMap(SINGLE_CHARACTER_STRING_CODEC, Ingredient.CODEC_NONEMPTY).fieldOf("key").forGetter(RawShapedRecipe::key),
                 Serializer.PATTERN_CODEC.fieldOf("pattern").forGetter(RawShapedRecipe::pattern),
-                CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter(RawShapedRecipe::result),
+                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(RawShapedRecipe::result),
                 ExtraCodecs.strictOptionalField(Codec.BOOL, "show_notification", true).forGetter(RawShapedRecipe::showNotification),
                 ExtraCodecs.strictOptionalField(ExtraCodecs.NON_NEGATIVE_INT, "weavingTime", 0).forGetter(RawShapedRecipe::weavingTime))
                 .apply(instance, RawShapedRecipe::new));
