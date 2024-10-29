@@ -4,7 +4,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    forge()
+    neoForge()
 }
 
 loom {
@@ -20,33 +20,42 @@ loom {
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+
     compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentForge.extendsFrom common
+    developmentNeoForge.extendsFrom common
+
+    // Files in this configuration will be bundled into your mod using the Shadow plugin.
+    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    forge "net.minecraftforge:neoforge:${rootProject.neoforge_version}"
     // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
-    modApi "me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config}"
+    modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
+    modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config}"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    shadowBundle(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
     include "com.flowpowered:flow-math:1.0.3"
     include "org.jgrapht:jgrapht-core:1.1.0"
     include "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 
-    modApi "mcp.mobius.waila:wthit-api:forge-${wthitVersion}"
-    modApi "mcp.mobius.waila:wthit:forge-${wthitVersion}"
+    modApi "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
+    modApi "mcp.mobius.waila:wthit:neo-${wthitVersion}"
 //    modApi "lol.bai:badpackets:forge-0.4.2"
 //    modApi "com.sk89q.worldedit:worldedit-forge-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:$rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:$rei_version"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:$rei_version"
 
 //    modApi("curse.maven:jei-${project.properties["jei_project"]}:${project.properties["jei_forge"]}")
 }
@@ -78,14 +87,13 @@ shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury.common.json"
 
-    configurations = [project.configurations.shadowCommon]
+    configurations = [project.configurations.shadowBundle]
     archiveClassifier = "dev-shadow"
 }
 
 remapJar {
-    inputFile.set(shadowJar.archiveFile)
-    dependsOn shadowJar
-    archiveClassifier = "${project.properties["minecraft_version"]}-forge"
+    input.set shadowJar.archiveFile
+    archiveClassifier = "${project.properties["minecraft_version"]}-neoforge"
 }
 
 jar.archiveClassifier = "dev"

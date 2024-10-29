@@ -5,6 +5,6 @@ pluginManagement.repositories {
     gradlePluginPortal()
 }
 
-include("common", "fabric", "forge")
+include("common", "fabric", "neoforge")
 
 rootProject.name = "dimdoors"

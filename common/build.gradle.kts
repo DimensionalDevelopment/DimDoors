@@ -1,6 +1,5 @@
 architectury {
-    common("forge", "fabric")
-    platformSetupLoomIde()
+    common("neoforge", "fabric")
 }
 
 loom.accessWidenerPath.set(file("src/main/resources/dimdoors.accesswidener"))

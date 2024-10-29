@@ -24,11 +24,20 @@ loom {
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
+
+    // Files in this configuration will be bundled into your mod using the Shadow plugin.
+    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 def includeCompile(entry) {
@@ -67,7 +76,7 @@ dependencies {
 //    includeCompile("curse.maven:cardinal-components-chunk-${project.project.cardinal_components}:${project.cardinal_components_chunk}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    shadowBundle(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
     includeCompile "com.flowpowered:flow-math:1.0.3"
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
@@ -115,14 +124,13 @@ processResources {
 shadowJar {
     exclude "architectury.common.json"
 
-    configurations = [project.configurations.shadowCommon]
+    configurations = [project.configurations.shadowBundle]
     archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     injectAccessWidener = true
-    inputFile.set(shadowJar.archiveFile)
-    dependsOn shadowJar
+    input.set shadowJar.archiveFile
     archiveClassifier = "fabric"
 }
 
