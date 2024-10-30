@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.mixin.forge;
+package org.dimdev.dimdoors.mixin.neoforge;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;

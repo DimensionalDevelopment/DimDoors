@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.item.component.forge;
+package org.dimdev.dimdoors.item.component.neoforge;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +13,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.component.CounterComponent;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 public class CounterComponentImpl implements CounterComponent {
     private static final ResourceLocation IDENTIFIER = DimensionalDoors.id("counter");
 
-    public static final Capability<CounterComponentImpl> INSTANCE = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final ItemCapability<CounterComponent, Void> INSTANCE = ItemCapability.createVoid(IDENTIFIER, CounterComponent.class);
 
     private int counter = 0;
 
@@ -53,7 +54,7 @@ public class CounterComponentImpl implements CounterComponent {
     }
 
     public static CounterComponent get(ItemStack provider) {
-        return provider.getCapability(INSTANCE).resolve().get();
+        return provider.getDagetCapability(INSTANCE);
     }
 
     @Mod.EventBusSubscriber(modid = DimensionalDoors.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)

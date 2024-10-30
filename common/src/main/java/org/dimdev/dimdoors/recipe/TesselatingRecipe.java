@@ -6,7 +6,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 
-public interface TesselatingRecipe extends Recipe<TesselatingLoomBlockEntity> {
+public interface TesselatingRecipe extends Recipe<TesselatingContainer> {
 
     int weavingTime();
 

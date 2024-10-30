@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.client.effect.forge;
+package org.dimdev.dimdoors.client.effect.neoforge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;

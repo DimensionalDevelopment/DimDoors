@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.client.forge;
+package org.dimdev.dimdoors.client.neoforge;
 
 import net.minecraft.world.inventory.RecipeBookType;
 

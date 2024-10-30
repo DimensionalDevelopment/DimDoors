@@ -1,38 +1,36 @@
 package org.dimdev.dimdoors.datagen;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.NonNullList;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 
 import java.util.List;
 
-public class ShapelessTesselatingRecipeBuilder extends SimpleTesselatingRecipeBuilder {
+public class ShapelessTesselatingRecipeBuilder extends SimpleTesselatingRecipeBuilder<TesselatingShapelessRecipe, NonNullList<Ingredient>> {
     private final List<Ingredient> ingredients = Lists.newArrayList();
 
-    public ShapelessTesselatingRecipeBuilder(ItemLike result, int count) {
-        super(result, count);
+    public ShapelessTesselatingRecipeBuilder(ItemStack result) {
+        super(result);
     }
 
     /**
      * Creates a new builder for a shapeless recipe.
      */
     public static ShapelessTesselatingRecipeBuilder shapeless(ItemLike result) {
-        return new ShapelessTesselatingRecipeBuilder(result, 1);
+        return shapeless(result, 1);
     }
 
     /**
      * Creates a new builder for a shapeless recipe.
      */
     public static ShapelessTesselatingRecipeBuilder shapeless(ItemLike result, int count) {
-        return new ShapelessTesselatingRecipeBuilder(result, count);
+        var stack = new ItemStack(result, count);
+        return new ShapelessTesselatingRecipeBuilder(stack);
     }
 
     /**
@@ -77,33 +75,8 @@ public class ShapelessTesselatingRecipeBuilder extends SimpleTesselatingRecipeBu
     }
 
     @Override
-    protected Result createResult(ResourceLocation id, Advancement.Builder builder, ItemLike result, int count) {
-        return new Result(id, result, count, this.group == null ? "" : this.group, this.ingredients, builder.build(id), weavingTime);
-    }
-
-    public static class Result extends SimpleResult {
-        private final List<Ingredient> ingredients;
-
-        public Result(ResourceLocation id, ItemLike result, int count, String group, List<Ingredient> ingredients, AdvancementHolder advancement, int weavingTime) {
-            super(id, result, count, group, advancement, weavingTime);
-            this.ingredients = ingredients;
-        }
-
-        public void serializeRecipeData(JsonObject json) {
-            super.serializeRecipeData(json);
-
-            JsonArray jsonArray = new JsonArray();
-
-            for (Ingredient ingredient : this.ingredients) {
-                jsonArray.add(ingredient.toJson(false));
-            }
-
-            json.add("ingredients", jsonArray);
-        }
-
-        public RecipeSerializer<?> type() {
-            return RecipeSerializer.SHAPELESS_RECIPE;
-        }
+    protected TesselatingShapelessRecipe createResult(ItemStack result, NonNullList<Ingredient> ingredients) {
+        return new TesselatingShapelessRecipe(this.group == null ? "" : this.group, result, ingredients, weavingTime);
     }
 }
 

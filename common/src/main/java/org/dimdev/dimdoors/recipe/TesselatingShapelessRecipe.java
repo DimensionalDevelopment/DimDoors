@@ -12,7 +12,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 
 public class TesselatingShapelessRecipe implements TesselatingRecipe {
     final String group;
@@ -51,7 +50,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(TesselatingLoomBlockEntity inv, Level level) {
+    public boolean matches(TesselatingContainer inv, Level level) {
         StackedContents stackedContents = new StackedContents();
         int i = 0;
         for (int j = 0; j < inv.getContainerSize(); ++j) {
@@ -69,7 +68,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
     }
 
     @Override
-    public ItemStack assemble(TesselatingLoomBlockEntity container, RegistryAccess registryAccess) {
+    public ItemStack assemble(TesselatingContainer container, RegistryAccess registryAccess) {
         return this.result.copy();
     }
 

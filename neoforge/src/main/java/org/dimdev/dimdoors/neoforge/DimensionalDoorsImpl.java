@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.forge;
+package org.dimdev.dimdoors.neoforge;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;

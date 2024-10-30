@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.mixin.forge;
+package org.dimdev.dimdoors.mixin.neoforge;
 
 import net.minecraft.world.Container;
 import net.minecraftforge.common.crafting.IShapedRecipe;

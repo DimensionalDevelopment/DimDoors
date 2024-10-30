@@ -1,10 +1,9 @@
-package org.dimdev.dimdoors.mixin.forge.client;
+package org.dimdev.dimdoors.mixin.neoforge.client;
 
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
-import org.dimdev.dimdoors.item.door.DimensionalDoorItem;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

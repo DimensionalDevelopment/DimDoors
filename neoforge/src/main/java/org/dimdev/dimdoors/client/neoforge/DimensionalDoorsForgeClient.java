@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.client.forge;
+package org.dimdev.dimdoors.client.neoforge;
 
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
@@ -6,19 +6,16 @@ import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.ConfigScreenHandler;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
@@ -27,15 +24,13 @@ import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
 
-import java.util.function.Consumer;
-
 import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
 
 @Mod.EventBusSubscriber(modid = DimensionalDoors.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class DimensionalDoorsForgeClient {
 
-    @SubscribeEvent
+    @net.neoforged.bus.api.SubscribeEvent
     public static void setupClient(FMLClientSetupEvent event) {
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> ModMenu.getConfigScreen(screen)));
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterRecipeBookCategoriesEvent>) event1 -> org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent.EVENT.invoker().accept(new org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent(event1::registerAggregateCategory, event1::registerBookCategories, event1::registerRecipeCategoryFinder)));
@@ -76,7 +71,7 @@ public class DimensionalDoorsForgeClient {
 
             var mapped = blockRegistrar.get(identifier);
 
-            var original = ForgeRegistries.BLOCKS.getValue(mapped);
+            var original = BuiltInRegistries.BLOCK.get(mapped);
 
             if(original == null) return;
             original.getStateDefinition().getPossibleStates().forEach(blockState -> {
@@ -90,7 +85,7 @@ public class DimensionalDoorsForgeClient {
 
         var childItem = event.getModelBakery().getBakedTopLevelModels().get(DimensionalDoorsClient.childItem);
 
-        ForgeRegistries.ITEMS.getKeys().stream().filter(a -> a.getPath().startsWith(PREFIX)).forEach(location -> event.getModels().put(new ModelResourceLocation(location, "inventory"), childItem));
+        BuiltInRegistries.ITEM.keySet().stream().filter(a -> a.getPath().startsWith(PREFIX)).forEach(location -> event.getModels().put(new ModelResourceLocation(location, "inventory"), childItem));
     }
 
     @SubscribeEvent

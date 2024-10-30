@@ -1,26 +1,26 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 
-public abstract class SimpleTesselatingRecipeBuilder extends TesselatingRecipeBuilder {
-    private final ItemLike result;
-    private final int count;
+public abstract class SimpleTesselatingRecipeBuilder<T extends TesselatingRecipe, V> extends TesselatingRecipeBuilder<T, V> {
+    private final ItemStack result;
 
-    public SimpleTesselatingRecipeBuilder(ItemLike output, int outputCount) {
-        this.result = output.asItem();
-        this.count = outputCount;
+    public SimpleTesselatingRecipeBuilder(ItemStack output) {
+        this.result = output;
     }
 
     public Item getResult() {
-        return this.result.asItem();
+        return this.result.getItem();
     }
+
+
 
     @Override
-    protected <T extends TesselatingRecipe> T createResult() {
-        return createResult(result, count);
+    protected T createResult(V extraValue) {
+        return createResult(result, extraValue);
     }
 
-    abstract protected <T extends TesselatingRecipe> T createResult(ItemLike itemLike, int count);
+    abstract protected T createResult(ItemStack stack, V extraValue);
 }

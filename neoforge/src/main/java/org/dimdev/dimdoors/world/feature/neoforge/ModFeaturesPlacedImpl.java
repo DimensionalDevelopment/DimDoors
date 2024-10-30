@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.feature.forge;
+package org.dimdev.dimdoors.world.feature.neoforge;
 
 import dev.architectury.registry.level.biome.BiomeModifications;
 import net.minecraftforge.common.Tags;

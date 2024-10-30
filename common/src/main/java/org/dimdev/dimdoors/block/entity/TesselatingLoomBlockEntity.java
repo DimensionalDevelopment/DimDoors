@@ -24,6 +24,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
+import org.dimdev.dimdoors.recipe.TesselatingContainer;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer, StackedContentsCompatible {
+public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer, TesselatingContainer {
 	public static final int DATA_WEAVING_TIME = 0;
 	public static final int DATA_WEAVING_TIME_TOTAL = 1;
 	public static final int NUM_DATA_VALUES = 2;
@@ -364,7 +365,22 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		return this.saveWithFullMetadata();
 	}
 
-//	public void awardUsedRecipesAndPopExperience(ServerPlayer player) {
+	@Override
+	public int getWidth() {
+		return 3;
+	}
+
+	@Override
+	public int getHeight() {
+		return 3;
+	}
+
+	@Override
+	public List<ItemStack> getItems() {
+		return inventory;
+	}
+
+	//	public void awardUsedRecipesAndPopExperience(ServerPlayer player) {
 //		List<Recipe<?>> list = this.getRecipesToAwardAndPopExperience(player.serverLevel(), player.position());
 //		player.awardRecipes(list);
 //		this.recipesUsed.clear();

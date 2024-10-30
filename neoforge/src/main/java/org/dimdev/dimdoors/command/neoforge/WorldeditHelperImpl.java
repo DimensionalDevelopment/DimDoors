@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.command.forge;
+package org.dimdev.dimdoors.command.neoforge;
 
 import com.sk89q.worldedit.forge.ForgeAdapter;
 import com.sk89q.worldedit.session.SessionOwner;

@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.item.forge;
+package org.dimdev.dimdoors.item.neoforge;
 
 import net.minecraft.world.entity.player.Player;
 

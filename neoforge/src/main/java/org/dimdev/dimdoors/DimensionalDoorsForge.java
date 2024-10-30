@@ -1,11 +1,10 @@
 package org.dimdev.dimdoors;
 
-import dev.architectury.platform.forge.EventBuses;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.dimdev.dimdoors.api.util.StreamUtils;
-import org.dimdev.dimdoors.item.component.forge.CounterComponentImpl;
+import org.dimdev.dimdoors.item.component.neoforge.CounterComponentImpl;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -16,11 +15,12 @@ import java.util.function.Consumer;
 public class DimensionalDoorsForge {
     public DimensionalDoorsForge() {
         // Submit our event bus to let architectury register our content on the right time
-        EventBuses.registerModEventBus(DimensionalDoors.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+//        EventBusesHooks.registerModEventBus(DimensionalDoors.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         StreamUtils.setup(this);
         DimensionalDoors.init();
 
         ModBiomeModifiers.init();
+        CapabilityHooks
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterCapabilitiesEvent>) registerCapabilitiesEvent -> {
             registerCapabilitiesEvent.register(CounterComponentImpl.class);

@@ -1,6 +1,5 @@
-package org.dimdev.dimdoors.client.forge;
+package org.dimdev.dimdoors.client.neoforge;
 
-import com.google.common.base.Suppliers;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.item.ItemStack;
 
