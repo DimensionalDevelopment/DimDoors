@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.item.component.CounterComponent;
+import org.dimdev.dimdoors.item.component.IdCounter;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +48,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 		if (world.isClientSide) {
 			return InteractionResultHolder.fail(stack);
 		} else {
-			CounterComponent counter = CounterComponent.get(stack);
+			IdCounter counter = IdCounter.get(stack);
 
 			if (RaycastHelper.hitsRift(hit, world)) {
 				RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
@@ -78,7 +78,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 	public CompoundEventResult<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
 		if (world.isClientSide) {
 			if (player.isShiftKeyDown()) {
-				if (CounterComponent.get(player.getItemInHand(hand)).count() != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
+				if (IdCounter.get(player.getItemInHand(hand)).count() != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
 					return CompoundEventResult.interruptTrue(true);
 				}
 
@@ -95,8 +95,8 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 						EntityUtils.chat(player, Component.literal("Rift stripped of data and set to invalid id: -1"));
 						return CompoundEventResult.interruptTrue(false);
 					}
-				} else if (CounterComponent.get(stack).count() != 0) {
-					CounterComponent.get(stack).reset();
+				} else if (IdCounter.get(stack).count() != 0) {
+					IdCounter.get(stack).reset();
 
 					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
 

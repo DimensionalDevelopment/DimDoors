@@ -4,7 +4,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.dimdev.dimdoors.api.util.StreamUtils;
-import org.dimdev.dimdoors.item.component.neoforge.CounterComponentImpl;
+import org.dimdev.dimdoors.item.component.neoforge.CounterComponentImplDeprecated;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -23,7 +23,7 @@ public class DimensionalDoorsForge {
         CapabilityHooks
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterCapabilitiesEvent>) registerCapabilitiesEvent -> {
-            registerCapabilitiesEvent.register(CounterComponentImpl.class);
+            registerCapabilitiesEvent.register(CounterComponentImplDeprecated.class);
             registerCapabilitiesEvent.register(ChunkLazilyGeneratedComponent.class);
             registerCapabilitiesEvent.register(DimensionalRegistry.class);
         });

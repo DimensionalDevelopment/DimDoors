@@ -3,9 +3,9 @@ package org.dimdev.dimdoors.item.component.fabric;
 import dev.onyxstudios.cca.api.v3.item.ItemComponent;
 import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.DimensionalDoorsComponents;
-import org.dimdev.dimdoors.item.component.CounterComponent;
+import org.dimdev.dimdoors.item.component.IdCounter;
 
-public class CounterComponentImpl extends ItemComponent implements CounterComponent {
+public class CounterComponentImpl extends ItemComponent implements IdCounter {
     public CounterComponentImpl(ItemStack stack) {
         super(stack);
         if (!this.hasTag("counter"))
@@ -26,7 +26,7 @@ public class CounterComponentImpl extends ItemComponent implements CounterCompon
         putInt("counter", 0);
     }
 
-    public static CounterComponent get(ItemStack provider) {
+    public static IdCounter get(ItemStack provider) {
         return DimensionalDoorsComponents.COUNTER_COMPONENT_KEY.get(provider);
     }
 }
