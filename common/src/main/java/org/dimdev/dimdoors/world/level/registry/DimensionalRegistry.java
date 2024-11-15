@@ -6,7 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -20,11 +23,20 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class DimensionalRegistry {
+public class DimensionalRegistry extends SavedData {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
 	private static Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
 	private static RiftRegistry riftRegistry = new RiftRegistry();
 	private static PrivateRegistry privateRegistry = new PrivateRegistry();
+
+	private static final ProxyData instance = new ProxyData();
+
+	public static void init(MinecraftServer server) {
+		server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<ProxyData>(() -> instance, compoundTag -> {
+            readFromNbt(compoundTag);
+            return instance;
+        }, DataFixTypes.LEVEL /*TODO: FIgure out if correct for a singlemon data*/), "dimensional_registry");
+	}
 
 	public static void readFromNbt(CompoundTag nbt) {
 		int riftDataVersion = nbt.getInt("RiftDataVersion");
@@ -54,6 +66,13 @@ public class DimensionalRegistry {
 		riftRegistry = futureRiftRegistry.join();
 
 		privateRegistry = futurePrivateRegistry.join();
+	}
+
+	@Override
+	public CompoundTag save(CompoundTag compoundTag) {
+		writeToNbt(compoundTag);
+
+		return compoundTag;
 	}
 
 	public static void writeToNbt(CompoundTag nbt) {
@@ -93,5 +112,19 @@ public class DimensionalRegistry {
 
 	public static boolean isValidWorld(Level level) {
 		 return level != null && level.dimension() != null && level.dimension().equals(Level.OVERWORLD);
+	}
+
+	private static class ProxyData extends SavedData {
+
+		@Override
+		public CompoundTag save(CompoundTag compoundTag) {
+			DimensionalRegistry.writeToNbt(compoundTag);
+			return compoundTag;
+		}
+
+		@Override
+		public boolean isDirty() {
+			return true;
+		}
 	}
 }

@@ -8,10 +8,8 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
@@ -20,7 +18,6 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.ModEntityModelLayers;
-import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
 
@@ -32,7 +29,6 @@ public class DimensionalDoorsForgeClient {
 
     @net.neoforged.bus.api.SubscribeEvent
     public static void setupClient(FMLClientSetupEvent event) {
-        ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> ModMenu.getConfigScreen(screen)));
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterRecipeBookCategoriesEvent>) event1 -> org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent.EVENT.invoker().accept(new org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent(event1::registerAggregateCategory, event1::registerBookCategories, event1::registerRecipeCategoryFinder)));
         DimensionalDoorsClient.init();
     }
@@ -65,7 +61,7 @@ public class DimensionalDoorsForgeClient {
         var blockRegistrar = DimensionalDoors.getDimensionalDoorBlockRegistrar();
 
         DimensionalDoors.getDimensionalDoorBlockRegistrar().getGennedIds().stream().filter(DimensionalDoors.getDimensionalDoorBlockRegistrar()::isMapped).forEach(identifier -> {
-            var block = ForgeRegistries.BLOCKS.getValue(identifier);
+            var block = BuiltInRegistries.BLOCK.get(identifier);
 
             if(block == null) return;
 

@@ -1,12 +1,14 @@
 package org.dimdev.dimdoors.world.level.component.fabric;
 
-import dev.onyxstudios.cca.api.v3.component.Component;
 import net.minecraft.world.level.chunk.LevelChunk;
-import org.dimdev.dimdoors.DimensionalDoorsComponents;
-import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
+import org.dimdev.dimdoors.ModAttachmentTypes;
 
-public class ChunkLazilyGeneratedComponentImpl extends ChunkLazilyGeneratedComponent implements Component {
-    public static ChunkLazilyGeneratedComponent get(LevelChunk chunk) {
-        return DimensionalDoorsComponents.CHUNK_LAZILY_GENERATED_COMPONENT_KEY.get(chunk);
+public class ChunkLazilyGeneratedComponentImpl {
+    public static void setGenerated(LevelChunk chunk, boolean value) {
+        chunk.setAttached(ModAttachmentTypes.HAS_BEEN_LAZY_GENNED, value);
+    }
+
+    public static boolean isGenerated(LevelChunk chunk) {
+        return chunk.hasAttached(ModAttachmentTypes.HAS_BEEN_LAZY_GENNED) ? chunk.getAttached(ModAttachmentTypes.HAS_BEEN_LAZY_GENNED) : false;
     }
 }

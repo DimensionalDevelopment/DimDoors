@@ -30,6 +30,7 @@ import org.dimdev.dimdoors.ModConfig;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
@@ -66,6 +67,7 @@ public class DimensionalDoorsClient {
 	public static ShaderPackDetector detector = () -> false;
 
 	public static void init() {
+		Platform.getMod(DimensionalDoors.MOD_ID).registerConfigurationScreen(ModMenu::getConfigScreen);
 		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
 
 		ClientGuiEvent.DEBUG_TEXT_LEFT.register(new ClientGuiEvent.DebugText() {

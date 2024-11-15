@@ -48,10 +48,6 @@ def includeCompile(entry) {
 }
 
 repositories {
-   maven {
-       url = "https://maven.terraformersmc.com/releases/"
-   }
-
     maven {
         name "ladysnakeReleases"
         url "https://maven.ladysnake.org/releases"
@@ -65,16 +61,6 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
     modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config}"
-
-    includeCompile("dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.project.cardinal_components}")
-    includeCompile("dev.onyxstudios.cardinal-components-api:cardinal-components-item:${project.project.cardinal_components}")
-    includeCompile("dev.onyxstudios.cardinal-components-api:cardinal-components-world:${project.project.cardinal_components}")
-    includeCompile("dev.onyxstudios.cardinal-components-api:cardinal-components-chunk:${project.project.cardinal_components}")
-//    includeCompile("curse.maven:cardinal-components-base-${project.project.cardinal_components}:${project.cardinal_components_base}")
-//    includeCompile("curse.maven:cardinal-components-item-${project.project.cardinal_components}:${project.cardinal_components_item}")
-//    includeCompile("curse.maven:cardinal-components-world-${project.project.cardinal_components}:${project.cardinal_components_world}")
-//    includeCompile("curse.maven:cardinal-components-chunk-${project.project.cardinal_components}:${project.cardinal_components_chunk}")
-
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
@@ -91,7 +77,6 @@ dependencies {
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
 //    modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
-    modApi "com.terraformersmc:modmenu:7.2.2"
 
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:$rei_version"
 //    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:$rei_version"

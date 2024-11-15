@@ -48,15 +48,13 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 		if (world.isClientSide) {
 			return InteractionResultHolder.fail(stack);
 		} else {
-			IdCounter counter = IdCounter.get(stack);
-
 			if (RaycastHelper.hitsRift(hit, world)) {
 				RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 
-				if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() < counter.count()) {
+				if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() < IdCounter.get(stack)) {
 					EntityUtils.chat(player, Component.literal("Id: " + ((IdMarker) rift.getDestination()).getId()));
 				} else {
-					int id = counter.increment();
+					int id = IdCounter.increment(stack);
 
 					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
 
@@ -67,7 +65,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 
 				return InteractionResultHolder.success(stack);
 			} else {
-				EntityUtils.chat(player, Component.literal("Current Count: " + counter.count()));
+				EntityUtils.chat(player, Component.literal("Current Count: " + IdCounter.count(stack)));
 			}
 		}
 
@@ -76,16 +74,17 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 
 	@Override
 	public CompoundEventResult<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
+		var stack = player.getItemInHand(hand);
+
 		if (world.isClientSide) {
 			if (player.isShiftKeyDown()) {
-				if (IdCounter.get(player.getItemInHand(hand)).count() != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
+				if (IdCounter.get(stack) != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
 					return CompoundEventResult.interruptTrue(true);
 				}
 
 				return CompoundEventResult.interruptFalse(false);
 			}
 		} else {
-			ItemStack stack = player.getItemInHand(hand);
 			if (player.isShiftKeyDown()) {
 				BlockEntity blockEntity = world.getBlockEntity(pos);
 				if (blockEntity instanceof RiftBlockEntity) {
@@ -95,8 +94,8 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 						EntityUtils.chat(player, Component.literal("Rift stripped of data and set to invalid id: -1"));
 						return CompoundEventResult.interruptTrue(false);
 					}
-				} else if (IdCounter.get(stack).count() != 0) {
-					IdCounter.get(stack).reset();
+				} else if (IdCounter.get(stack) != 0) {
+					IdCounter.set(stack, 0);
 
 					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
 

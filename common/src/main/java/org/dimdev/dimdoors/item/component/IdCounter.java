@@ -1,37 +1,27 @@
 package org.dimdev.dimdoors.item.component;
 
-import com.mojang.serialization.Codec;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.function.Function;
 // TODO: Fix the Fabric Implementation of idCounter
 public class IdCounter {
-	public static final Codec<IdCounter> CODEC = Codec.INT.xmap(IdCounter::new, IdCounter::count);
-	private int counter;
-	public IdCounter(int value) {
-		this.counter = value;
+	public static int get(ItemStack provider) {
+		return provider.hasTag() ? provider.getTag().getInt("count") : 0;
 	}
 
-	public int increment() {
-		counter++;
-		return counter;
+	public static void set(ItemStack provider, Integer value) {
+		provider.getOrCreateTag().putInt("count", value);
 	}
 
-	public int count() {
-		return counter;
+
+	public static int increment(ItemStack provider) {
+		var value = get(provider) + 1;
+
+		set(provider, value);
+
+		return value;
 	}
 
-	public void reset() {
-		counter = 0;
-	}
-
-	@ExpectPlatform
-	public static IdCounter get(ItemStack provider) {
-		throw new RuntimeException();
-	}
-	@ExpectPlatform
-	public static void register () {
-		throw new RuntimeException("This should not happen: Register() in IdCounter for Architectury");
+	public static int count(ItemStack stack) {
+		return get(stack);
 	}
 }

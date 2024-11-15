@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.mixin.neoforge;
 
 import net.minecraft.world.Container;
-import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.neoforged.neoforge.common.crafting.IShapedRecipe;
 import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

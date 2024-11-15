@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.world.feature;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.registry.level.biome.BiomeModifications;
 import dev.architectury.registry.registries.DeferredSupplier;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.HolderSet;
@@ -63,26 +61,6 @@ public final class ModFeatures {
 		@SafeVarargs
 		public static HolderSet<Block> holderSet(RegistrySupplier<Block>... blocks) {
 			return HolderSet.direct(Stream.of(blocks).map(DeferredSupplier::getKey).map(BuiltInRegistries.BLOCK::getHolderOrThrow).toList());
-		}
-
-		@ExpectPlatform
-		public static boolean isDesert(BiomeModifications.BiomeContext context) {
-			throw new RuntimeException();
-		}
-
-		@ExpectPlatform
-		public static boolean isOcean(BiomeModifications.BiomeContext context) {
-			throw new RuntimeException();
-		}
-
-		@ExpectPlatform
-		public static boolean isEnd(BiomeModifications.BiomeContext context) {
-			throw new RuntimeException();
-		}
-
-		@ExpectPlatform
-		public static boolean isOverworld(BiomeModifications.BiomeContext context) {
-			throw new RuntimeException();
 		}
 	}
 }

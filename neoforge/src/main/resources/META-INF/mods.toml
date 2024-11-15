@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[45,)"
+loaderVersion = "[2,)"
 #issueTrackerURL = ""
 license = "MIT"
 
@@ -13,30 +13,36 @@ Bend and twist reality, creating rifts, pocket dimensions, and much more
 '''
 #logoFile = ""
 
+[[mixins]]
+config="dimdoors.mixins.json"
+
+[[mixins]]
+config="dimdoors-common.mixins.json"
+
 [[dependencies.dimdoors]]
-modId = "forge"
-mandatory = true
-versionRange = "[45,)"
+modId = "neoforge"
+type="required"
+versionRange = "[20.+,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.dimdoors]]
 modId = "minecraft"
-mandatory = true
+type="required"
 versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.dimdoors]]
 modId = "architectury"
-mandatory = true
+type="required"
 versionRange = "[${architectury_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.dimdoors]]
 modId = "cloth_config"
-mandatory = true
+type="required"
 versionRange = "[${cloth_config_version},)"
 ordering = "AFTER"
 side = "BOTH"

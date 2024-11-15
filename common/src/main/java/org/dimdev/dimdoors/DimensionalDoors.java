@@ -13,6 +13,7 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -70,6 +71,7 @@ import org.dimdev.dimdoors.world.carvers.ModCarvers;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
@@ -180,6 +182,8 @@ public class DimensionalDoors {
 
 	private static void registerListeners() {
 //		PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
+
+		ServerLifecycleEvents.SERVER_STARTED.register(DimensionalRegistry::init);
 
 		ChunkServedCallback.EVENT.register(new ChunkLoadListener()); // lazy pocket gen
 
