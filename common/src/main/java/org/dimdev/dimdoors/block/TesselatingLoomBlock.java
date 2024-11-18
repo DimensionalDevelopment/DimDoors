@@ -8,7 +8,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -83,7 +82,7 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
 		if (!level.isClientSide()) {
 			this.openContainer(level, blockPos, (ServerPlayer) player);
 		}

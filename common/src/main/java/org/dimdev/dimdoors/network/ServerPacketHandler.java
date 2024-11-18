@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.network;
 
+import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,6 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,11 +41,9 @@ public class ServerPacketHandler implements ServerPacketListener {
 	private int lastSyncedPocketId = Integer.MIN_VALUE;
 	private boolean pocketSyncDirty = true;
 
-
-
 	public static void init() {
-		NETWORK.register(NetworkHandlerInitializedC2SPacket.class, NetworkHandlerInitializedC2SPacket::write, NetworkHandlerInitializedC2SPacket::new, NetworkHandlerInitializedC2SPacket::apply);
-		NETWORK.register(HitBlockWithItemC2SPacket.class, HitBlockWithItemC2SPacket::write, HitBlockWithItemC2SPacket::new, HitBlockWithItemC2SPacket::apply);
+		NetworkManager.registerReceiver(NetworkManager.Side.C2S, NetworkHandlerInitializedC2SPacket.TYPE, NetworkHandlerInitializedC2SPacket.STREAM_CODEC, NetworkHandlerInitializedC2SPacket::apply);
+		NetworkManager.registerReceiver(NetworkManager.Side.C2S, HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, HitBlockWithItemC2SPacket::apply);
 	}
 
 	public static ServerPacketHandler get(ServerPlayer player) {
@@ -100,7 +98,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 			pocketSyncDirty = false;
 			lastSyncedPocketId = pocket.getId();
 			lastSyncedPocketWorld = world.dimension();
-			sendPacket(getPlayer(), new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getAddonsInstanceOf(AutoSyncedAddon.class)));
+			sendPacket(getPlayer(), new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getSyncedAddon()));
 		}
 	}
 

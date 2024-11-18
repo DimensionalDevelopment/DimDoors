@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block.entity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -124,9 +125,10 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> 
 	public void setLocked(boolean locked) {
 		// NO-OP
 	}
+
 	@Override
-	public CompoundTag getUpdateTag() {
-		CompoundTag tag = super.getUpdateTag();
+	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+		CompoundTag tag = super.getUpdateTag(provider);
 		tag.putFloat("size", this.size);
 		tag.putInt("curveID", this.curveID);
 		return tag;

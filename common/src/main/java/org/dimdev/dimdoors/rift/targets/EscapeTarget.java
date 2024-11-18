@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
@@ -32,7 +33,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static ResourceKey<net.minecraft.world.level.Level> targetWorldResourceKey;
 
-	public static final Codec<EscapeTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	public static final MapCodec<EscapeTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
 	).apply(instance, EscapeTarget::new));
 

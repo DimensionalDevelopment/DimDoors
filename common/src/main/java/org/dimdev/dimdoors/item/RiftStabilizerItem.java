@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.item;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -49,7 +50,7 @@ public class RiftStabilizerItem extends Item {
 			if (!rift.stabilized && !rift.closing) {
 				rift.setStabilized(true);
 				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1); // TODO: different sound
-				stack.hurtAndBreak(1, player, a -> {});
+				stack.hurtAndBreak(1, player.getRandom(), !player.isLocalPlayer() ? (ServerPlayer) player : null, () -> {});
 				player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stabilized"), true);
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 			} else {
@@ -60,7 +61,7 @@ public class RiftStabilizerItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
 		list.add(Component.translatable(this.getDescriptionId() + ".info"));
 	}
 }

@@ -7,13 +7,11 @@ import net.minecraft.nbt.Tag;
 
 public class NbtUtil {
 	public static <T> T deserialize(Tag data, Codec<T> codec) {
-		return NbtOps.INSTANCE.withParser(codec).apply(data).getOrThrow(true, a -> {
-		});
+		return NbtOps.INSTANCE.withParser(codec).apply(data).getOrThrow();
 	}
 
 	public static <T> Tag serialize(T data, Codec<T> codec) {
-		return NbtOps.INSTANCE.withEncoder(codec).apply(data).getOrThrow(true, a -> {
-		});
+		return NbtOps.INSTANCE.withEncoder(codec).apply(data).getOrThrow();
 	}
 
 	public static CompoundTag asNbtCompound(Tag nbt, String error) {

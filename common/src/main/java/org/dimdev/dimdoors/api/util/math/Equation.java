@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.api.util.math;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import net.minecraft.util.Mth;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,8 +13,13 @@ import java.util.function.UnaryOperator;
 
 //@FunctionalInterface
 public interface Equation {
+	Codec<Equation> CODEC = Codec.STRING.xmap(Equation::parseOrCrash, Object::toString);
+
+	Equation ZERO = Equation.parseOrCrash("0");
+
 	double FALSE = 0d;
 	double TRUE = 1d;
+
 
 	double apply(Map<String, Double> variableMap);
 
@@ -30,6 +36,14 @@ public interface Equation {
 	static Equation parse(String equationString) throws EquationParseException {
 		return StringEquationParser.INSTANCE.parse(equationString);
 	}
+
+	static Equation parseOrCrash(String equationString) {
+        try {
+            return parse(equationString);
+        } catch (EquationParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 	static double toDouble(boolean value) {
 		return value ? TRUE : FALSE;

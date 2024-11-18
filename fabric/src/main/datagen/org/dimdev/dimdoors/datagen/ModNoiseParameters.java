@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.synth.NormalNoise.NoiseParameters;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -18,7 +18,7 @@ public class ModNoiseParameters {
         return ResourceKey.create(Registries.NOISE, DimensionalDoors.id("limbo/" + name));
     }
 
-    public static void bootstrap(BootstapContext<NoiseParameters> entries) {
+    public static void bootstrap(BootstrapContext<NoiseParameters> entries) {
         entries.register(STRAND_A, new NoiseParameters(-7, 1, 0.5, 0.25));
         entries.register(STRAND_B, new NoiseParameters(-7, 1, 0.5, 0.25));
         entries.register(TERRAIN, new NoiseParameters(-7, 1, 1, 0.5, 0.375, 0.25));

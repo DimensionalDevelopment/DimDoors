@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class GlobalReference extends RiftReference {
-	public static Codec<GlobalReference> CODEC = Location.CODEC.fieldOf("target").xmap(GlobalReference::new, GlobalReference::getReferencedLocation).codec();
+	public static MapCodec<GlobalReference> CODEC = Location.CODEC.fieldOf("target").xmap(GlobalReference::new, GlobalReference::getReferencedLocation);
 
 	private final Location target;
 

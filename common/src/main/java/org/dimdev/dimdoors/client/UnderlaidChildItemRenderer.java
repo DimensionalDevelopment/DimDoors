@@ -45,7 +45,7 @@ public class UnderlaidChildItemRenderer {
 		ItemStack originalItemStack = new ItemStack(
 				childItem.getOriginalItem(),
 				stack.getCount());
-		originalItemStack.setTag(stack.getTag());
+		originalItemStack.applyComponents(stack.getComponents());
 
 		matrices.pushPose();
 		childItem.transform(matrices);

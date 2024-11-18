@@ -6,6 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -18,6 +20,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 
 public class Location {
 	public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> instance.group(Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(location -> location.world), BlockPos.CODEC.fieldOf("pos").forGetter(location -> location.pos)).apply(instance, Location::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, Location> STREAM_CODEC = StreamCodec.composite(ResourceKey.streamCodec(Registries.DIMENSION), Location::getWorldId, BlockPos.STREAM_CODEC, Location::getBlockPos, Location::new);
 
 	public final ResourceKey<Level> world;
 	public final BlockPos pos;

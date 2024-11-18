@@ -1,9 +1,13 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.dimdev.dimdoors.api.util.GeneralUtil;
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
@@ -21,11 +25,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class RiftDataModifier extends AbstractModifier {
+	public static final MapCodec<RiftDataModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			GeneralUtil.RIFT_DATA_CODEC.fieldOf("rift_data").forGetter(a -> a.doorData),
+			Codec.INT_STREAM.fieldOf("ids").xmap(intStream -> intStream.boxed().toList(), integers -> integers.stream().mapToInt(a -> a)).fieldOf("rift_data").forGetter(a -> a.ids)
+	).apply(instance, RiftDataModifier::new));
+
 	public static final String KEY = "rift_data";
 
 	private CompoundTag doorData;
 	private String doorDataReference;
 	private List<Integer> ids;
+
+	public RiftDataModifier(CompoundTag doorData, List<Integer> ids) {
+		this.doorData = doorData;
+		this.ids = ids;
+	}
 
 	@Override
 	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
@@ -68,12 +82,7 @@ public class RiftDataModifier extends AbstractModifier {
 		return ModifierType.RIFT_DATA_MODIFIER_TYPE.get();
 	}
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
-
-	@Override
+    @Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("doorData", doorData)

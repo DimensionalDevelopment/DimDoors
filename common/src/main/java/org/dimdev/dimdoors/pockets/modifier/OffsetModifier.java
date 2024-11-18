@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -13,15 +16,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OffsetModifier extends AbstractModifier {
+	public static final MapCodec<OffsetModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			Equation.CODEC.optionalFieldOf("offset_x", Equation.ZERO).forGetter(a -> a.offsetX),
+			Equation.CODEC.optionalFieldOf("offset_y", Equation.ZERO).forGetter(a -> a.offsetY),
+			Equation.CODEC.optionalFieldOf("offset_z", Equation.ZERO).forGetter(a -> a.offsetZ)
+	).apply(instance, OffsetModifier::new));
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "offset";
 
-	private String offsetX;
-	private Equation offsetXEquation;
-	private String offsetY;
-	private Equation offsetYEquation;
-	private String offsetZ;
-	private Equation offsetZEquation;
+	private Equation offsetX;
+	private Equation offsetY;
+	private Equation offsetZ;
+
+	public OffsetModifier(Equation offsetX, Equation offsetY, Equation offsetZ) {
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+        this.offsetZ = offsetZ;
+    }
 
 	@Override
 	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
@@ -55,12 +66,7 @@ public class OffsetModifier extends AbstractModifier {
 		return ModifierType.OFFSET_MODIFIER_TYPE.get();
 	}
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
-
-	@Override
+    @Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 
 	}

@@ -68,7 +68,7 @@ public class DimensionalDoorBlockRegistrar {
 //			init();
 //		}
 
-		if(Platform.isForge()) {
+		if(Platform.isNeoForge()) {
 			RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
 				new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
 			});
@@ -195,7 +195,7 @@ public class DimensionalDoorBlockRegistrar {
 		public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
 			var defaultState = originalBlock.defaultBlockState();
 
-			return originalBlock.getDrops(defaultState, params);
+			return defaultState.getDrops(params);
 		}
 
 		@Override

@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -126,7 +127,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 				nbt.remove("Id");
 			}
 
-			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(pos), nbt);
+			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(pos), nbt, world.registryAccess());
 			if (blockEntity != null) {
 				placementType.getBlockEntityPlacer().accept(world.getLevel(), blockEntity);
 			}
@@ -200,7 +201,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 					nbt.remove("Id");
 				}
 
-				BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(blockPos), nbt);
+				BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(blockPos), nbt, world.registryAccess());
 				if (blockEntity != null && !(blockEntity instanceof RiftBlockEntity)) {
 					chunk.setBlockEntity(blockEntity);
 				}
@@ -234,7 +235,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 		}));
 	}
 
-	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(BlockPos origin) {
+	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(BlockPos origin, HolderLookup.Provider provider) {
 		Map<BlockPos, RiftBlockEntity> rifts = new HashMap<>();
 		this.blockEntityContainer.forEach( (blockPos, nbt) ->  {
 			BlockPos actualPos = origin.offset(blockPos);
@@ -244,7 +245,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
 				nbt.remove("Id");
 			}
 			BlockState state = getBlockState(blockPos);
-			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, state, nbt);
+			BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, state, nbt, provider);
 			if (blockEntity instanceof RiftBlockEntity) {
 				rifts.put(actualPos, (RiftBlockEntity) blockEntity);
 			}

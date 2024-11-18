@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.api.util;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -14,12 +15,12 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import java.util.List;
 
 public interface LocationValue {
-    public Codec<LocationValue> CODEC = Codec.either(Constant.CODEC, LocationValueWithType.TYPE_CODEC).xmap(either -> either.map(constant -> constant, locationValueWithType -> locationValueWithType), value -> value instanceof Constant constant ? Either.left(constant) : Either.right((LocationValueWithType) value));
+    MapCodec<LocationValue> CODEC = Codec.mapEither(Constant.CODEC, LocationValueWithType.TYPE_CODEC).xmap(either -> either.map(constant -> constant, locationValueWithType -> locationValueWithType), value -> value instanceof Constant constant ? Either.left(constant) : Either.right((LocationValueWithType) value));
 
-    public float value(Location location, RandomSource source);
+    float value(Location location, RandomSource source);
 
-    public interface LocationValueWithType extends LocationValue {
-        Codec<LocationValueWithType> TYPE_CODEC = LocationValueType.CODEC.dispatch("type", LocationValueWithType::type, LocationValueType::codec);
+    interface LocationValueWithType extends LocationValue {
+        MapCodec<LocationValueWithType> TYPE_CODEC = LocationValueType.CODEC.dispatchMap("type", LocationValueWithType::type, LocationValueType::codec);
 
         static void register() {
 
@@ -28,8 +29,8 @@ public interface LocationValue {
         LocationValueType<? extends LocationValueWithType> type();
     }
 
-    public record Complex(List<LocationCondition> conditions, FloatProvider value, FloatProvider fallback) implements LocationValueWithType {
-        public static final Codec<Complex> CODEC = RecordCodecBuilder.create(instance -> instance.group(LocationCondition.LIST_CODEC.fieldOf("conditions").forGetter(Complex::conditions), FloatProvider.CODEC.fieldOf("value").forGetter(Complex::value), FloatProvider.CODEC.fieldOf("fallback").forGetter(Complex::value)).apply(instance, Complex::new));
+    record Complex(List<LocationCondition> conditions, FloatProvider value, FloatProvider fallback) implements LocationValueWithType {
+        public static final MapCodec<Complex> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(LocationCondition.LIST_CODEC.fieldOf("conditions").forGetter(Complex::conditions), FloatProvider.CODEC.fieldOf("value").forGetter(Complex::value), FloatProvider.CODEC.fieldOf("fallback").forGetter(Complex::value)).apply(instance, Complex::new));
 
         @Override
         public float value(Location location, RandomSource source) {
@@ -42,8 +43,8 @@ public interface LocationValue {
         }
     }
 
-    public record Simple(FloatProvider value) implements LocationValueWithType {
-        public static final Codec<Simple> CODEC = RecordCodecBuilder.create(instance -> instance.group(FloatProvider.CODEC.fieldOf("value").forGetter(Simple::value)).apply(instance, Simple::new));
+    record Simple(FloatProvider value) implements LocationValueWithType {
+        public static final MapCodec<Simple> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(FloatProvider.CODEC.fieldOf("value").forGetter(Simple::value)).apply(instance, Simple::new));
         @Override
         public float value(Location location, RandomSource source) {
             return value.sample(source);
@@ -55,8 +56,8 @@ public interface LocationValue {
         }
     }
 
-    public record Constant(float value) implements LocationValue {
-        public static final Codec<Constant> CODEC = Codec.FLOAT.xmap(Constant::new, Constant::value);
+    record Constant(float value) implements LocationValue {
+        public static final MapCodec<Constant> CODEC = MapCodec.assumeMapUnsafe(Codec.FLOAT.xmap(Constant::new, Constant::value));
         public static final Constant ZERO = new Constant(0);
 
         @Override
@@ -65,7 +66,7 @@ public interface LocationValue {
         }
     }
 
-    public record LocationValueType<T extends LocationValueWithType>(Codec<T> codec) {
+    record LocationValueType<T extends LocationValueWithType>(MapCodec<T> codec) {
         public static final Registrar<LocationValueType<? extends LocationValue>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<LocationValueType<? extends LocationValue>>builder(DimensionalDoors.id("location_value_type")).build();
 
         public static final Codec<LocationValueType<? extends LocationValue>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
@@ -76,7 +77,7 @@ public interface LocationValue {
         public static void register() {
         }
 
-        static <T, V, U extends LocationValueWithType> RegistrySupplier<LocationValueType<U>> register(ResourceLocation id, Codec<U> codec) {
+        static <T, V, U extends LocationValueWithType> RegistrySupplier<LocationValueType<U>> register(ResourceLocation id, MapCodec<U> codec) {
             return REGISTRY.register(id, () -> new LocationValueType<>(codec));
         }
     }

@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -38,8 +37,8 @@ public class WaterLoggableDoorBlock extends DoorBlock implements SimpleWaterlogg
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		InteractionResult result = super.use(state, world, pos, player, hand, hit);
+	public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+		InteractionResult result = super.useWithoutItem(state, world, pos, player, hit);
 		if (result.consumesAction()) {
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}

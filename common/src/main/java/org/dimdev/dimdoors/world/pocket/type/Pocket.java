@@ -20,10 +20,11 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
+public class Pocket extends AbstractPocket<Pocket, Pocket.PocketBuilder> implements AddonProvider {
 	public static String KEY = "pocket";
 
 	private final Map<ResourceLocation, PocketAddon> addons = new HashMap<>();
@@ -61,6 +62,12 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return addons.values().stream()
 				.filter(clazz::isInstance)
 				.map(clazz::cast)
+				.collect(Collectors.toList());
+	}
+
+	public List<PocketAddon> getSyncedAddon() {
+		return addons.values().stream()
+				.filter(a -> a.getType().isSyncable())
 				.collect(Collectors.toList());
 	}
 
@@ -117,7 +124,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	@Override
-	public AbstractPocketType<?> getType() {
+	public AbstractPocketType<Pocket> getType() {
 		return AbstractPocketType.POCKET.get();
 	}
 

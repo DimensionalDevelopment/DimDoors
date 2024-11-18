@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.decay.results;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -16,7 +16,7 @@ import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 
 public class BlockDecayImplResult extends BlockDecayResult<BlockDecayImplResult> {
 
-    public static final Codec<BlockDecayImplResult> CODEC = RecordCodecBuilder.create(instance -> blockDecayCodec(instance).apply(instance, BlockDecayImplResult::new));
+    public static final MapCodec<BlockDecayImplResult> CODEC = RecordCodecBuilder.mapCodec(instance -> blockDecayCodec(instance).apply(instance, BlockDecayImplResult::new));
     public static final String KEY = "block";
 
     public BlockDecayImplResult(int entropy, float worldThreadChance, Block block) {

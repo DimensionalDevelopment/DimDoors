@@ -1,15 +1,15 @@
 package org.dimdev.dimdoors.item.component;
 
 import net.minecraft.world.item.ItemStack;
+import org.dimdev.dimdoors.item.ModDataComponentTypes;
 
-// TODO: Fix the Fabric Implementation of idCounter
 public class IdCounter {
 	public static int get(ItemStack provider) {
-		return provider.hasTag() ? provider.getTag().getInt("count") : 0;
+		return provider.getOrDefault(ModDataComponentTypes.COUNT.get(), 0);
 	}
 
 	public static void set(ItemStack provider, Integer value) {
-		provider.getOrCreateTag().putInt("count", value);
+		provider.set(ModDataComponentTypes.COUNT.get(), value);
 	}
 
 

@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.rift.targets;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -41,7 +42,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		);
 	}
 
-	public static final Codec<RandomTarget> CODEC = RecordCodecBuilder.create(instance -> common(instance).apply(instance, RandomTarget::new));
+	public static final MapCodec<RandomTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> common(instance).apply(instance, RandomTarget::new));
 	private final float newRiftWeight;
 	private final double weightMaximum;
 	private final double coordFactor;

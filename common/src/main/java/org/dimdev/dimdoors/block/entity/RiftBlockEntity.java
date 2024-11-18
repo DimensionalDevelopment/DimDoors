@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.block.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -61,8 +62,8 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 	}
 
 	@Override
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+		super.loadAdditional(nbt, provider);
 		this.deserialize(nbt);
 	}
 
@@ -75,8 +76,8 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt) {
-		super.saveAdditional(nbt);
+	public void saveAdditional(CompoundTag nbt,  HolderLookup.Provider provider) {
+		super.saveAdditional(nbt, provider);
 		this.serialize(nbt);
 	}
 
@@ -126,11 +127,11 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
+	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
 //		for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) { TODO: Multiplat this.
 //			ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
 //		}
-		return super.getUpdateTag();
+		return super.getUpdateTag(provider);
 	}
 
 	public void markStateChanged() {

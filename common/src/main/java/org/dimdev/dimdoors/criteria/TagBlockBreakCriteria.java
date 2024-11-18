@@ -8,7 +8,6 @@ import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -29,7 +28,7 @@ public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakC
 	public static record TriggerInstance(Optional<ContextAwarePredicate> player, TagKey<Block> blockTagKey) implements SimpleCriterionTrigger.SimpleInstance {
 		public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance ->
 				instance.group(
-						ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(TriggerInstance::player),
+						EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
 						TagKey.codec(Registries.BLOCK).fieldOf("tag").forGetter(TriggerInstance::blockTagKey)
 				).apply(instance, TriggerInstance::new));
 	}

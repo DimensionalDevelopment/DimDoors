@@ -2,19 +2,22 @@ package org.dimdev.dimdoors.network.packet.c2s;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 
-import java.util.function.Supplier;
+public record NetworkHandlerInitializedC2SPacket() implements CustomPacketPayload {
+	public static final StreamCodec<FriendlyByteBuf, NetworkHandlerInitializedC2SPacket> STREAM_CODEC = StreamCodec.unit(new NetworkHandlerInitializedC2SPacket());
+	public static final Type<NetworkHandlerInitializedC2SPacket> TYPE = new Type<NetworkHandlerInitializedC2SPacket>(DimensionalDoors.id("network_handler_initialized"));
 
-public record NetworkHandlerInitializedC2SPacket() {
-	public NetworkHandlerInitializedC2SPacket(FriendlyByteBuf buf) {
-		this();
-	}
-	public void write(FriendlyByteBuf buf) {
+	public static void apply(NetworkHandlerInitializedC2SPacket packet, NetworkManager.PacketContext context) {
+		ServerPacketHandler.get((ServerPlayer) context.getPlayer()).onNetworkHandlerInitialized(packet);
 	}
 
-	public void apply(Supplier<NetworkManager.PacketContext> context) {
-		ServerPacketHandler.get((ServerPlayer) context.get().getPlayer()).onNetworkHandlerInitialized(this);
+	@Override
+	public Type<NetworkHandlerInitializedC2SPacket> type() {
+		return TYPE;
 	}
 }

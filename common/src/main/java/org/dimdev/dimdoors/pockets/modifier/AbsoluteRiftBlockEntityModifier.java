@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -20,7 +21,6 @@ import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
@@ -64,9 +64,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 		ListTag riftsNbt;
 		if (rifts != null) {
 			riftsNbt = StreamUtils.execute(() -> rifts.values().parallelStream().unordered().map(rift -> {
-				CompoundTag e = new CompoundTag();
-				rift.saveAdditional(e);
-				return e;
+				return rift.saveWithId(DimensionalDoors.getServer().registryAccess());
 			}).collect(Collectors.toCollection(ListTag::new)));
 		} else {
 			riftsNbt = new ListTag();
@@ -83,11 +81,6 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	}
 
 	@Override
-	public String getKey() {
-		return KEY;
-	}
-
-	@Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		if (!manager.isPocketLazy()) { // rifts is guaranteed to exist at this stage since this modifier is not supposed to be loaded from json
 			ServerLevel world = DimensionalDoors.getWorld(manager.getPocket().getWorld());
@@ -101,7 +94,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 	}
 
 	@Override
-	public void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk) {
+	public void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk, HolderLookup.Provider provider) {
 		BoundingBox chunkBox = BlockBoxUtil.getBox(chunk);
 
 		if (rifts != null) {
@@ -114,7 +107,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 			serializedRifts.entrySet().stream().unordered().filter(entry -> chunkBox.isInside(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
 					.forEach((pos, riftNbt) -> {
 						rifts.remove(pos);
-						chunk.setBlockEntity(BlockEntity.loadStatic(pos, chunk.getBlockState(pos), riftNbt));
+						chunk.setBlockEntity(BlockEntity.loadStatic(pos, chunk.getBlockState(pos), riftNbt, provider));
 					});
 		}
 	}

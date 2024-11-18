@@ -10,6 +10,7 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
@@ -41,7 +43,7 @@ public class RiftRemoverItem extends Item {
 
 	@Environment(EnvType.CLIENT)
 	@Override
-	public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
 		ToolTipHelper.processTranslation(list, this.getDescription() + ".info");
 	}
 
@@ -58,13 +60,15 @@ public class RiftRemoverItem extends Item {
 			return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 		}
 
+		var slot = hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+
 		if (RaycastHelper.hitsDetachedRift(hit, world)) {
 			// casting to BlockHitResult is mostly safe since RaycastHelper#hitsDetachedRift already checks hit type
 			DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 			if (!Objects.requireNonNull(rift).closing) {
 				rift.setClosing(true);
 				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1);
-				stack.hurtAndBreak(10, player, a -> a.broadcastBreakEvent(hand));
+				stack.hurtAndBreak(10, player.getRandom(), player, () -> player.broadcastBreakEvent(slot));
 				var pos = ((BlockHitResult) hit).getBlockPos();
 				LootParams ctx = new LootParams.Builder((ServerLevel) world)
 						.withParameter(LootContextParams.BLOCK_STATE, world.getBlockState(pos))

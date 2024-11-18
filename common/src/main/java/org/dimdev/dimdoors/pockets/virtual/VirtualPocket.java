@@ -1,11 +1,9 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
-import com.google.common.collect.Multimap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -13,9 +11,7 @@ import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-
-public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable {
+public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
 	static VirtualPocket deserialize(Tag nbt) {
@@ -51,14 +47,6 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 	void setResourceKey(String resourceKey);
 
 	String getResourceKey();
-
-	default void processFlags(Multimap<String, String> flags) {
-		// TODO: discuss some flag standardization
-		Collection<String> reference = flags.get("reference");
-		if (reference.stream().findFirst().map(string -> string.equals("local") || string.equals("global")).orElse(false)) {
-			setResourceKey(flags.get("resource_key").stream().findFirst().orElse(null));
-		}
-	}
 
 	Pocket prepareAndPlacePocket(PocketGenerationContext parameters);
 

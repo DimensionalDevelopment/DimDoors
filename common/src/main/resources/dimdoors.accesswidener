@@ -64,3 +64,4 @@ accessible method net/minecraft/world/level/levelgen/structure/templatesystem/St
 accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate$Palette <init> (Ljava/util/List;)V
 accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate addToLists (Lnet/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate$StructureBlockInfo;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 accessible method net/minecraft/world/level/levelgen/structure/templatesystem/StructureTemplate buildInfoList (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+accessible method net/minecraft/world/level/block/Block getDrops (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;)Ljava/util/List;

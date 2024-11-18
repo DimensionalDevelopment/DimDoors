@@ -44,7 +44,7 @@ public class DimensionalDoorItem extends BlockItem {
 
 	@Environment(EnvType.CLIENT)
 	@Override
-	public void appendHoverText(ItemStack itemStack,  @Nullable Level world, List<Component> list, TooltipFlag tooltipContext) {
+	public void appendHoverText(ItemStack itemStack,  @Nullable TooltipContext world, List<Component> list, TooltipFlag tooltipContext) {
 		if(hasToolTip) {
 			ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
 		}

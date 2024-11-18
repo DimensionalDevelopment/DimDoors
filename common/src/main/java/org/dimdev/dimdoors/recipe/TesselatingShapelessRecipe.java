@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -37,7 +38,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
         return this.result;
     }
 
@@ -67,8 +68,9 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
         return weavingTime;
     }
 
+
     @Override
-    public ItemStack assemble(TesselatingContainer container, RegistryAccess registryAccess) {
+    public ItemStack assemble(TesselatingContainer container, HolderLookup.Provider registryAccess) {
         return this.result.copy();
     }
 

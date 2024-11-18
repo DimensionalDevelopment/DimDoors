@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -34,12 +35,12 @@ public class RiftBladeItem extends SwordItem {
 	public static final String ID = "rift_blade";
 
 	public RiftBladeItem(Item.Properties settings) {
-		super(Tiers.IRON, 3, -2.4F, settings);
+		super(Tiers.IRON, settings);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@Override
-	public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
 		ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
 	}
 
@@ -79,6 +80,8 @@ public class RiftBladeItem extends SwordItem {
 				return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 			}
 		}
+
+		var equipmentSlot = hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
 
 		if (RaycastHelper.hitsLivingEntity(hit)) {
 //			double damageMultiplier = (double) stack.getDamageValue() / (double) stack.getMaxDamage(); //TODO: Decide if to remove old code or still use.
@@ -125,7 +128,7 @@ public class RiftBladeItem extends SwordItem {
 
 
 			// Apply damage to the item stack
-			stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
+			stack.hurtAndBreak(1, player.getRandom(), player, () -> player.broadcastBreakEvent(equipmentSlot));
 
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		} else if (RaycastHelper.hitsDetachedRift(hit, world)) {
@@ -136,7 +139,7 @@ public class RiftBladeItem extends SwordItem {
 			world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
 			((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
-			stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
+			stack.hurtAndBreak(1, player.getRandom(), player, () -> player.broadcastBreakEvent(equipmentSlot));
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);

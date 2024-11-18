@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -63,6 +65,14 @@ public class LinkProperties {
 	public LinkPropertiesBuilder toBuilder() {
 		return new LinkPropertiesBuilder().floatingWeight(this.floatingWeight).entranceWeight(this.entranceWeight).groups(this.groups).linksRemaining(this.linksRemaining).oneWay(this.oneWay);
 	}
+
+	public static final Codec<LinkProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.fieldOf("floatingWeight").forGetter(properties -> properties.floatingWeight),
+            Codec.FLOAT.fieldOf("entranceWeight").forGetter(properties -> properties.entranceWeight),
+            Codec.INT_STREAM.fieldOf("groups").xmap(a -> a.boxed().collect(Collectors.toSet()), a -> a.stream().mapToInt(Integer::intValue)).forGetter(properties -> properties.groups),
+            Codec.INT.fieldOf("linksRemaining").forGetter(properties -> properties.linksRemaining),
+            Codec.BOOL.fieldOf("oneWay").forGetter(properties -> properties.oneWay)
+    ).apply(instance, LinkProperties::new));
 
 	public static CompoundTag toNbt(LinkProperties properties) {
 		CompoundTag nbt = new CompoundTag();

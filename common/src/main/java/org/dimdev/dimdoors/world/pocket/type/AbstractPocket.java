@@ -1,5 +1,9 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -13,10 +17,14 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class AbstractPocket<V extends AbstractPocket<?>> {
-	public static final Registrar<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<AbstractPocketType<? extends AbstractPocket<?>>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
+public abstract class AbstractPocket<T extends AbstractPocket<T, V>, V extends AbstractPocket.AbstractPocketBuilder<V, T>> {
+	public static final Registrar<AbstractPocketType<?, ?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<AbstractPocketType<?, ?>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
+	public static final Codec<AbstractPocketType<?, ?>> POCKET_TYPE_CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
+	public static final Codec<AbstractPocket<?, ?>> CODEC = POCKET_TYPE_CODEC.dispatch(AbstractPocket::getType, AbstractPocketType::mapCodec);
+	public static final Codec<AbstractPocketBuilder<?, ?>> BUILDER_CODEC = POCKET_TYPE_CODEC.dispatch(AbstractPocketBuilder::getType, AbstractPocketType::builderMapCodec);
 
 	protected Integer id;
 	protected ResourceKey<Level> world;
@@ -27,6 +35,10 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 	}
 
 	protected AbstractPocket() {
+	}
+
+	protected static <T extends AbstractPocket<?, ?>> Products.P2<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>> commonCodecFields(RecordCodecBuilder.Instance<T> instance) {
+		return instance.group(Codec.INT.fieldOf("id").forGetter(AbstractPocket::getId), ResourceKey.codec(Registries.DIMENSION).fieldOf("world").forGetter(AbstractPocket::getWorld));
 	}
 
 	public int getId() {
@@ -63,7 +75,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		return nbt;
 	}
 
-	public abstract AbstractPocketType<?> getType();
+	public abstract AbstractPocketType<?, ?> getType();
 
 	public Map<String, Double> toVariableMap(Map<String, Double> variableMap) {
 		variableMap.put("id", (double) this.id);
@@ -81,67 +93,37 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		return world;
 	}
 
-	public interface AbstractPocketType<T extends AbstractPocket<?>> {
-		RegistrySupplier<AbstractPocketType<IdReferencePocket>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder);
+	public record AbstractPocketType<U extends AbstractPocket<U, T>, T extends AbstractPocketBuilder<T,U>>(MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {
+		public static final RegistrySupplier<AbstractPocketType<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket.CODEC, IdReferencePocket.IdReferencePocketBuilder.CODEC, IdReferencePocket::new);
 
 		RegistrySupplier<AbstractPocketType<Pocket>> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket::new, Pocket::builder);
 		RegistrySupplier<AbstractPocketType<PrivatePocket>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
 		RegistrySupplier<AbstractPocketType<LazyGenerationPocket>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
-
-		T fromNbt(CompoundTag nbt);
-
-		CompoundTag toNbt(CompoundTag nbt);
-
-		T instance();
-
-		AbstractPocketBuilder<?, T> builder();
-
 		static void register() {
 		}
 
-		static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> RegistrySupplier<AbstractPocketType<U>> register(ResourceLocation id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
-			return REGISTRY.register(id, () -> new AbstractPocketType<U>() {
-				@Override
-				public U fromNbt(CompoundTag nbt) {
-					return (U) supplier.get().fromNbt(nbt);
-				}
-
-				@Override
-				public CompoundTag toNbt(CompoundTag nbt) {
-					nbt.putString("type", id.toString());
-					return nbt;
-				}
-
-				@Override
-				public U instance() {
-					return supplier.get();
-				}
-
-				@Override
-				public AbstractPocketBuilder<?, U> builder() {
-					return factorySupplier.get();
-				}
-			});
+		static <U extends AbstractPocket<U, T>, T extends AbstractPocketBuilder<T,U>> RegistrySupplier<AbstractPocketType<U, T>> register(ResourceLocation id, MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {
+			return REGISTRY.register(id, () -> new AbstractPocketType<>(mapCodec, builderMapCodec, builder));
 		}
 	}
 
-	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket<?>> {
-		protected final AbstractPocketType<T> type;
-
-		private int id;
-		private ResourceKey<Level> world;
-
-		protected AbstractPocketBuilder(AbstractPocketType<T> type) {
-			this.type = type;
+	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket<T, P>> {
+		protected static <T extends AbstractPocketBuilder<?, ?>> Products.P2<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>> commonCodecFields(RecordCodecBuilder.Instance<T> instance) {
+			return instance.group(Codec.INT.fieldOf("id").forGetter(t -> t.id), ResourceKey.codec(Registries.DIMENSION).fieldOf("world").forGetter(a -> a.world));
 		}
+
+		protected int id;
+		protected ResourceKey<Level> world;
+
+		protected AbstractPocketBuilder() {}
 
 		public Vec3i getExpectedSize() {
 			return new Vec3i(1, 1, 1);
 		}
 
 		public T build() {
-			T instance = type.instance();
+			T instance = getType().builder.get();
 
 			instance.id = id;
 			instance.world = world;
@@ -166,6 +148,8 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		abstract public P fromNbt(CompoundTag nbt);
 
 		abstract public CompoundTag toNbt(CompoundTag nbt);
+
+		public abstract AbstractPocketType<T, P> getType();
 
 		/*
 		public P fromTag(CompoundTag tag) {

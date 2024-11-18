@@ -1,28 +1,39 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.core.registries.Registries;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.CubicSampler;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.mixin.client.accessor.DimensionSpecialEffectsMixin;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class SkyAddon implements AutoSyncedAddon {
+	public static final MapCodec<SkyAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			ResourceLocation.CODEC.fieldOf("effect").forGetter(SkyAddon::getEffect),
+			Codec.LONG.fieldOf("dayTime").forGetter(SkyAddon::getDayTime),
+			Codec.BYTE.fieldOf("moonPhase").forGetter(SkyAddon::getMoonPhase)
+	).apply(instance, SkyAddon::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, SkyAddon> STREAM_CODEC = StreamCodec.composite(ResourceLocation.STREAM_CODEC, SkyAddon::getEffect, ByteBufCodecs.VAR_LONG, SkyAddon::getDayTime,  ByteBufCodecs.BYTE, SkyAddon::getMoonPhase, SkyAddon::new);
+
 	public static ResourceLocation ID = DimensionalDoors.id("sky");
 
 	private ResourceLocation effect;
 
 	private long dayTime = 6000L;
 	private byte moonPhase;
+
+	protected SkyAddon(ResourceLocation effect, long dayTime, byte moonPhase) {
+		this.effect = effect;
+		this.dayTime = dayTime;
+		this.moonPhase = moonPhase;
+	}
 
 	public boolean setEfffect(ResourceLocation effect) {
 		this.effect = effect;
@@ -121,10 +132,7 @@ public class SkyAddon implements AutoSyncedAddon {
 
 		@Override
 		public void apply(Pocket pocket) {
-			SkyAddon addon = new SkyAddon();
-			addon.effect = effect;
-			addon.dayTime = dayTime;
-			addon.moonPhase = moonPhase;
+			SkyAddon addon = new SkyAddon(effect, dayTime, moonPhase);
 			pocket.addAddon(addon);
 		}
 
@@ -163,7 +171,7 @@ public class SkyAddon implements AutoSyncedAddon {
 		default boolean sky(ResourceLocation effect) {
 			ensureIsPocket();
 			if (!this.hasAddon(ID)) {
-				SkyAddon addon = new SkyAddon();
+				SkyAddon addon = new SkyAddon(effect, 12000, (byte) 0);
 				this.addAddon(addon);
 				return addon.setEfffect(effect);
 			}
@@ -190,8 +198,8 @@ public class SkyAddon implements AutoSyncedAddon {
 		return dayTime;
 	}
 
-	public int getMoonPhase() {
-		return moonPhase % 8;
+	public byte getMoonPhase() {
+		return (byte) (moonPhase % 8);
 	}
 
 	public float getStarBrightness() {

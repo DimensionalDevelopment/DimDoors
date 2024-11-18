@@ -20,6 +20,8 @@ public interface AutoSyncedAddon extends PocketAddon {
 	}
 
 	static FriendlyByteBuf writeAutoSyncedAddonList(FriendlyByteBuf buf, List<? extends AutoSyncedAddon> addons) {
+
+
 		buf.writeInt(addons.size());
 		for (AutoSyncedAddon addon : addons) {
 			buf.writeResourceLocation(addon.getType().identifier());

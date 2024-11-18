@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.DensityFunction;
@@ -21,7 +21,7 @@ public class ModDensityFunctions {
         return ResourceKey.create(Registries.DENSITY_FUNCTION, DimensionalDoors.id(name));
     }
 
-    public static void bootstrap(BootstapContext<DensityFunction> entries) {
+    public static void bootstrap(BootstrapContext<DensityFunction> entries) {
         var parameters = entries.lookup(Registries.NOISE);
         var functions = entries.lookup(Registries.DENSITY_FUNCTION);
 

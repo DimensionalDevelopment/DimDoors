@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world;
 
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -36,9 +36,9 @@ public class ModStructures {
 
     private final HolderGetter<Biome> biomes;
     private final HolderGetter<StructureTemplatePool> pools;
-    private final BootstapContext<Structure> context;
+    private final BootstrapContext<Structure> context;
 
-    public ModStructures(BootstapContext<Structure> context) {
+    public ModStructures(BootstrapContext<Structure> context) {
         biomes = context.lookup(Registries.BIOME);
         pools = context.lookup(Registries.TEMPLATE_POOL);
         this.context = context;

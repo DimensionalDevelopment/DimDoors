@@ -91,11 +91,11 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
     public static class Serializer implements RecipeSerializer<ShapedTesselatingRecipe> {
         public static final Codec<ShapedTesselatingRecipe> CODEC = RecordCodecBuilder.create(instance -> {
             return instance.group(
-                    ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(a -> a.group),
+                    Codec.STRING.optionalFieldOf("group", "").forGetter(a -> a.group),
                     ShapedTesselatingRecipePattern.MAP_CODEC.forGetter(a -> a.pattern),
-                    ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(a -> a.result),
-                    ExtraCodecs.strictOptionalField(Codec.INT, "weaving_time", 200).forGetter(a -> a.weavingTime),
-                    ExtraCodecs.strictOptionalField(Codec.BOOL, "show_notification", true).forGetter(a -> a.showNotification)
+                    ItemStack.CODEC.fieldOf("result").forGetter(a -> a.result),
+                    Codec.INT.optionalFieldOf("weaving_time", 200).forGetter(a -> a.weavingTime),
+                    Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(a -> a.showNotification)
             ).apply(instance, ShapedTesselatingRecipe::new);
         });
 

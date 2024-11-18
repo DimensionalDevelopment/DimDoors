@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.decay.conditions;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.world.decay.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 public class DimensionDecayCondition extends GenericDecayCondition<DimensionType> {
-    public static Codec<DimensionDecayCondition> CODEC = createCodec(DimensionDecayCondition::new, Registries.DIMENSION_TYPE);
+    public static MapCodec<DimensionDecayCondition> CODEC = createCodec(DimensionDecayCondition::new, Registries.DIMENSION_TYPE);
     public static final String KEY = "dimension";
 
     private DimensionDecayCondition(TagOrElementLocation<DimensionType> tagOrElementLocation, boolean invert) {

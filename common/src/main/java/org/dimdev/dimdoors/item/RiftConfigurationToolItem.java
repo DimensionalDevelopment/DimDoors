@@ -109,7 +109,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 
 	@Override
 	@Environment(CLIENT)
-	public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
 		if (I18n.exists(this.getDescriptionId() + ".info")) {
 			list.add(Component.translatable(this.getDescriptionId() + ".info"));
 		}

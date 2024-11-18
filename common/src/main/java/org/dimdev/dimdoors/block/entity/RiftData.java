@@ -1,19 +1,31 @@
 package org.dimdev.dimdoors.block.entity;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 public class RiftData {
-	private VirtualTarget destination = VirtualTarget.NoneTarget.INSTANCE; // How the rift acts as a source
+
+	private VirtualTarget destination; // How the rift acts as a source
 	private LinkProperties properties = null;
 	private boolean alwaysDelete;
 	private boolean forcedColor;
-	private RGBA color = RGBA.NONE;
+	private RGBA color;
 
 	public RiftData() {
+		this(VirtualTarget.NoneTarget.INSTANCE, null, RGBA.NONE, false, false);
 	}
+
+	public RiftData(VirtualTarget destination, LinkProperties properties, RGBA color, boolean alwaysDelete, boolean forcedColor) {
+        this.destination = destination;
+        this.properties = properties;
+        this.color = color;
+        this.alwaysDelete = alwaysDelete;
+        this.forcedColor = forcedColor;
+    }
 
 	public VirtualTarget getDestination() {
 		return this.destination;
@@ -55,6 +67,15 @@ public class RiftData {
 		this.forcedColor = color != null;
 		this.color = color;
 	}
+
+	public static Codec<RiftData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
+            LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(RiftData::getProperties),
+            RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
+            Codec.BOOL.fieldOf("alwaysDelete").forGetter(RiftData::isAlwaysDelete),
+            Codec.BOOL.fieldOf("forcedColor").forGetter(RiftData::isForcedColor)
+    ).apply(instance, RiftData::new));
+
 
 	public static CompoundTag toNbt(RiftData data) {
 		CompoundTag nbt = new CompoundTag();

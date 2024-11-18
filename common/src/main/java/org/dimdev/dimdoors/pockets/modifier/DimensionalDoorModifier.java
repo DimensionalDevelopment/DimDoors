@@ -1,6 +1,9 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.util.GeneralUtil;
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
@@ -30,23 +34,44 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
+	public static final MapCodec<DimensionalDoorModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			GeneralUtil.HORIZONTAL_DIRECTION_CODEC.fieldOf("facing").forGetter(a -> a.facing),
+			GeneralUtil.DIMENSIONAL_DOOR_BLOCK_CODEC.fieldOf("door_type").forGetter(a -> a.doorType),
+			GeneralUtil.RIFT_DATA_CODEC.fieldOf("rift_data").forGetter(a -> a.doorData),
+			Equation.CODEC.fieldOf("x").forGetter(a -> a.x),
+			Equation.CODEC.fieldOf("x").forGetter(a -> a.y),
+			Equation.CODEC.fieldOf("x").forGetter(a -> a.z)
+			).apply(instance, DimensionalDoorModifier::new)
+	);
+
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "door";
 
 	private Direction facing;
-	private String doorTypeString;
+    private final DimensionalDoorBlock block;
+    private String doorTypeString;
 	private DimensionalDoorBlock doorType;
 	private CompoundTag doorData;
 	private String doorDataReference;
 
-	private String x;
-	private String y;
-	private String z;
+	private Equation x;
+	private Equation y;
+	private Equation z;
 	private Equation xEquation;
 	private Equation yEquation;
 	private Equation zEquation;
+
+	public DimensionalDoorModifier(Direction facing, DimensionalDoorBlock block, CompoundTag doorData, Equation x, Equation y, Equation z) {
+        this.facing = facing;
+        this.block = block;
+        this.doorData = doorData;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
 
 	@Override
 	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
@@ -67,9 +92,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
 			doorDataReference = nbt.getString("rift_data");
 			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
-		}
-
-		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
+		} else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
 
 		try {
 			x = nbt.getString("x");
@@ -120,11 +143,6 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	@Override
 	public ModifierType<? extends Modifier> getType() {
 		return ModifierType.DIMENSIONAL_DOOR_MODIFIER_TYPE.get();
-	}
-
-	@Override
-	public String getKey() {
-		return KEY;
 	}
 
 	@Override

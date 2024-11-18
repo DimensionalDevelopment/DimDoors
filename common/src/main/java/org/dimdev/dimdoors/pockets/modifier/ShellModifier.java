@@ -2,7 +2,11 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -28,11 +32,26 @@ import java.util.List;
 import java.util.Map;
 
 public class ShellModifier extends AbstractLazyModifier {
+	public static final MapCodec<ShellModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			Layer.CODEC.listOf().fieldOf("layers").forGetter(a -> a.layers),
+			BoundingBox.CODEC.optionalFieldOf("box_to_draw_around", null).forGetter(a -> a.boxToDrawAround)
+			).apply(instance, ShellModifier::new)
+	);
+
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "shell";
 
-	private final List<Layer> layers = new ArrayList<>();
+	private final List<Layer> layers;
 	private BoundingBox boxToDrawAround;
+
+	public ShellModifier() {
+		this(new ArrayList<>(), null);
+	}
+
+	public ShellModifier(List<Layer> layers, BoundingBox boxToDrawAround) {
+		this.layers = layers;
+		this.boxToDrawAround = boxToDrawAround;
+	}
 
 	@Override
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
@@ -51,7 +70,7 @@ public class ShellModifier extends AbstractLazyModifier {
 	}
 
 	@Override
-	public void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk) {
+	public void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk, HolderLookup.Provider provider) {
 
 		int boxExpansion = 0;
 		for (Layer layer : layers) {
@@ -148,11 +167,6 @@ public class ShellModifier extends AbstractLazyModifier {
 	}
 
 	@Override
-	public String getKey() {
-		return KEY;
-	}
-
-	@Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Pocket pocket = manager.getPocket();
 		if (pocket instanceof LazyGenerationPocket) {
@@ -209,6 +223,11 @@ public class ShellModifier extends AbstractLazyModifier {
 	}
 
 	public static class Layer {
+		public static Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf("block_state").forGetter(a -> a.blockStateString),
+				Codec.STRING.fieldOf("thickness").forGetter(a -> a.thickness)
+		).apply(instance, Layer::new));
+
 		private final String blockStateString;
 		private final String thickness;
 		private Equation thicknessEquation;
@@ -225,7 +244,7 @@ public class ShellModifier extends AbstractLazyModifier {
 				this.thicknessEquation = Equation.newEquation(variableMap -> 1d, stringBuilder -> stringBuilder.append(thickness));
 			}
 
-			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow(false, LOGGER::error);
+			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow();
 		}
 
 		public BlockState getBlockState() {
@@ -236,7 +255,7 @@ public class ShellModifier extends AbstractLazyModifier {
 			return (int) thicknessEquation.apply(variableMap);
 		}
 
-		public CompoundTag toNbt() {
+		public CompoundTag  toNbt() {
 			CompoundTag nbt = new CompoundTag();
 			nbt.putString("block_state", blockStateString);
 			nbt.putString("thickness", thickness);

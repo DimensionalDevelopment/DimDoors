@@ -1,14 +1,13 @@
 package org.dimdev.dimdoors.util.schematic;
 
 import dev.architectury.platform.Platform;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -41,9 +40,9 @@ public final class SchematicPlacer {
 		blockSample.place(origin, world, placementType, false);
 	}
 
-	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin) {
+	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin, HolderLookup.Provider provider) {
 		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		return blockSample.getAbsoluteRifts(origin);
+		return blockSample.getAbsoluteRifts(origin, provider);
 	}
 
 	public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {

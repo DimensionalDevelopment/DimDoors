@@ -110,13 +110,13 @@ public class MonolithEntity extends Mob {
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
         // Add a short for the aggro level
-        this.entityData.define(AGGRO, 0);
-		this.entityData.define(SCALE, 1f);
-		this.entityData.define(PITCH, 1f);
-        this.entityData.define(SOLID, true);
+        builder.define(AGGRO, 0);
+		builder.define(SCALE, 1f);
+		builder.define(PITCH, 1f);
+        builder.define(SOLID, true);
 		this.refreshDimensions();
     }
 
@@ -223,15 +223,16 @@ public class MonolithEntity extends Mob {
         this.soundTime--;
     }
 
-    @Override
-    public float getEyeHeight(Pose pose) {
-        return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
-    }
-
-	@Override
-	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
-		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
-	}
+//    TODO: Figure out if these are needed.
+//    @Override
+//    public float getEyeHeight(Pose pose) {
+//        return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
+//    }
+//
+//	@Override
+//	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+//		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
+//	}
 
     public float getAggroProgress() {
         return ((float) getAggro()) / MAX_AGGRO;

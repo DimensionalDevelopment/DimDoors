@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.item;
 
-import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -18,23 +15,23 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.mixin.accessor.ListTagAccessor;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class RiftKeyItem extends Item {
 	public RiftKeyItem(Item.Properties settings) {
-		super(settings);
+		super(settings.component(ModDataComponentTypes.KEY_IDS.get(), new LinkedHashSet<>()));
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag context) {
+	public void appendHoverText(ItemStack stack, @Nullable TooltipContext world, List<Component> tooltip, TooltipFlag context) {
 		if (isEmpty(stack)) {
 			tooltip.add(Component.translatable("item.dimdoors.rift_key.no_links"));
 		} else if (context.isAdvanced()) {
@@ -57,15 +54,15 @@ public class RiftKeyItem extends Item {
 
 	@Override
 	public void onCraftedBy(ItemStack stack, Level world, Player player) {
-		stack.setTag(this.getDefaultInstance().getTag());
+		stack.applyComponents(this.getDefaultInstance().getComponents());
 	}
 
-	@Override
-	public ItemStack getDefaultInstance() {
-		ItemStack stack = super.getDefaultInstance();
-		stack.addTagElement("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) Tag.TAG_INT_ARRAY));
-		return stack;
-	}
+//	@Override
+//	public ItemStack getDefaultInstance() {
+//		ItemStack stack = super.getDefaultInstance();
+//		stack.addTagElement("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) Tag.TAG_INT_ARRAY));
+//		return stack;
+//	}
 
 	@Override
 	public InteractionResult useOn(UseOnContext  context) {
@@ -104,31 +101,21 @@ public class RiftKeyItem extends Item {
 	}
 
 	public static boolean tryRemove(ItemStack stack, UUID id) {
-		IntArrayTag arrayTag = new IntArrayTag(UUIDUtil.uuidToIntArray(id));
-		return stack.getTag().getList("Ids", Tag.TAG_INT_ARRAY).remove(arrayTag);
+		return getIds(stack).remove(id);
 	}
 
 	public static void add(ItemStack stack, UUID id) {
-		if (!has(stack, id)) {
-			stack.getOrCreateTag().getList("Ids", Tag.TAG_INT_ARRAY).add(new IntArrayTag(UUIDUtil.uuidToIntArray(id)));
-		}
-	}
+		getIds(stack).add(id);}
 
 	public static boolean has(ItemStack stack, UUID id) {
-		return stack.getOrCreateTag().getList("Ids", Tag.TAG_INT_ARRAY).contains(new IntArrayTag(UUIDUtil.uuidToIntArray(id)));
+		return getIds(stack).contains(id);
 	}
 
 	public static boolean isEmpty(ItemStack stack) {
-		return stack.getOrCreateTag().getList("Ids", Tag.TAG_INT_ARRAY).isEmpty();
+		return getIds(stack).isEmpty();
 	}
 
-	public static List<UUID> getIds(ItemStack stack) {
-		return stack.getOrCreateTag()
-				.getList("Ids", Tag.TAG_INT_ARRAY)
-				.stream()
-				.map(IntArrayTag.class::cast)
-				.map(IntArrayTag::getAsIntArray)
-				.map(UUIDUtil::uuidFromIntArray)
-				.toList();
+	public static Set<UUID> getIds(ItemStack stack) {
+		return stack.get(ModDataComponentTypes.KEY_IDS.get());
 	}
 }

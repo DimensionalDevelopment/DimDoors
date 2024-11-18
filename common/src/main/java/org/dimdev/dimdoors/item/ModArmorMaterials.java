@@ -1,75 +1,54 @@
 package org.dimdev.dimdoors.item;
 
+import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.Util;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.dimdev.dimdoors.DimensionalDoors;
 
-public enum ModArmorMaterials implements ArmorMaterial {
-	WORLD_THREAD(5, 15, SoundEvents.ARMOR_EQUIP_LEATHER, new LazyLoadedValue<>(() -> Ingredient.of(ModItems.WORLD_THREAD.get())), "world_thread", new int[]{1, 2, 3, 1}, 0.0F, 0.0F),
-	GARMENT_OF_REALITY(5, 15, SoundEvents.ARMOR_EQUIP_LEATHER, new LazyLoadedValue<>(() -> Ingredient.of(ModItems.INFRANGIBLE_FIBER.get())), "garment_of_reality", new int[]{1, 2, 3, 1}, 0.0F, 0.0F); //TODO: DEFINE TRAITS
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
-	private static final int[] BASE_DURABILITY = new int[]{13, 15, 16, 11};
-	private final int durabilityMultiplier;
-	private final int enchantability;
-	private final SoundEvent equipSound;
-	private final LazyLoadedValue<Ingredient> repairIngredient;
-	private final String name;
-	private final int[] protectionAmounts;
-	private final float toughness;
-	private final float knockbackResistance;
+public class ModArmorMaterials {
+	public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.ARMOR_MATERIAL);
 
-	ModArmorMaterials(int durabilityMultiplier, int enchantability, SoundEvent equipSound, LazyLoadedValue<Ingredient> repairIngredient, String name, int[] protectionAmounts, float toughness, float knockbackResistance) {
-		this.durabilityMultiplier = durabilityMultiplier;
-		this.enchantability = enchantability;
-		this.equipSound = equipSound;
-		this.repairIngredient = repairIngredient;
-		this.name = name;
-		this.protectionAmounts = protectionAmounts;
-		this.toughness = toughness;
-		this.knockbackResistance = knockbackResistance;
-	}
+	public static final RegistrySupplier<ArmorMaterial> WORLD_THREAD = register(
+			"world_thread",
+			15,
+			SoundEvents.ARMOR_EQUIP_LEATHER,
+			() -> () -> Ingredient.of(ModItems.WORLD_THREAD.get()),
+			new int[]{1, 2, 3, 1},
+			0.0F,
+			0.0F);
+	public static final RegistrySupplier<ArmorMaterial> GARMENT_OF_REALITY = register(
+			"garment_of_reality",
+			15,
+			SoundEvents.ARMOR_EQUIP_LEATHER,
+			() -> () -> Ingredient.of(ModItems.INFRANGIBLE_FIBER.get()),
+			new int[]{1, 2, 3, 1},
+			0.0F,
+			0.0F); //TODO: DEFINE TRAITS
 
-	@Override
-	public int getDurabilityForType(ArmorItem.Type type) {
-		return BASE_DURABILITY[type.getSlot().getIndex()] * this.durabilityMultiplier;
-	}
-
-
-	@Override
-	public int getDefenseForType(ArmorItem.Type type) {
-		return this.protectionAmounts[type.getSlot().getIndex()];
-	}
-
-	@Override
-	public int getEnchantmentValue() {
-		return this.enchantability;
-	}
-
-	@Override
-	public SoundEvent getEquipSound() {
-		return this.equipSound;
-	}
-
-	@Override
-	public Ingredient getRepairIngredient() {
-		return this.repairIngredient.get();
-	}
-
-	@Override
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public float getToughness() {
-		return this.toughness;
-	}
-
-	@Override
-	public float getKnockbackResistance() {
-		return this.knockbackResistance;
+	public static RegistrySupplier<ArmorMaterial> register(String name, int enchantability, Holder<SoundEvent> equipSound, Supplier<Supplier<Ingredient>> repairIngredient, int[] protectionAmounts, float toughness, float knockbackResistance) {
+		return ARMOR_MATERIALS.register(name, new Supplier<ArmorMaterial>() {
+			@Override
+			public ArmorMaterial get() {
+				Map<ArmorItem.Type, Integer> map = Util.make(new HashMap<>(), typeMap -> {
+                    for (int i = 0; i < protectionAmounts.length; i++) {
+                        var type = ArmorItem.Type.values()[i];
+                        typeMap.put(type, protectionAmounts[i]);
+                    }
+                });
+				return new ArmorMaterial(map, enchantability, equipSound, repairIngredient.get(), List.of(), toughness, knockbackResistance);
+			}
+		});
 	}
 }

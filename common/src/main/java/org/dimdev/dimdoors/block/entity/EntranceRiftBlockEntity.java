@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -53,15 +54,15 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBloc
 	}
 
 	@Override
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+		super.loadAdditional(nbt, provider);
 		locked = nbt.getBoolean("locked");
 	}
 
 	@Override
-	public void saveAdditional(CompoundTag nbt) {
+	public void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
 		nbt.putBoolean("locked", locked);
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, provider);
 	}
 
 	@Override

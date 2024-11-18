@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.api.util;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -44,7 +42,7 @@ public class ResourceUtil {
 		}
 	};
 
-	public static <R extends ReferenceSerializable> R loadReferencedResource(ResourceManager manager, String startingPath, String resourceKey, Function<InputStream, R> reader) {
+	/*public static <R extends ReferenceSerializable> R loadReferencedResource(ResourceManager manager, String startingPath, String resourceKey, Function<InputStream, R> reader) {
 		// last two is resource path, rest is flags
 		String[] splitResourceKey = resourceKey.split("\\|");
 
@@ -66,7 +64,7 @@ public class ResourceUtil {
 		R resource = loadResource(manager, new ResourceLocation(identifier.substring(0, identifierSplitIndex), startingPath + identifier.substring(identifierSplitIndex + 1)), reader);
 		resource.processFlags(flags);
 		return resource;
-	}
+	}*/
 
 	public static <R> R loadResource(ResourceManager manager, ResourceLocation resourceKey, Function<InputStream, R> reader) {
 		try {

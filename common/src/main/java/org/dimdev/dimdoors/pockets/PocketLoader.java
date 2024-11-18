@@ -1,5 +1,9 @@
 package org.dimdev.dimdoors.pockets;
 
+import com.google.gson.JsonElement;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -7,8 +11,10 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.*;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
@@ -25,6 +31,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
 	private SimpleTree<String, Tag> dataTree = new SimpleTree<>(String.class);
+	private SimpleTree<String, Modifier> modifiers = new SimpleTree<>(String.class);
 
 	private PocketLoader() {
 	}
@@ -43,9 +50,9 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		dataTree.clear();
 
 		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/json", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.composeIdentity(), ResourceUtil.PATH_KEY_PROVIDER).join();
-
-		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(pocketGeneratorLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, Modifier>> futureModifiers = ResourceUtil.loadResourcePathToMap(manager, "pockets/modifier", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(pocketGeneratorLoader(manager, DimensionalDoors.getServer().registryAccess())), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER);
 
@@ -92,8 +99,12 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		return (nbt, ignore) -> VirtualPocket.deserialize(nbt, manager);
 	}
 
-	private BiFunction<Tag, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {
-		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an CompoundTag!"), manager);
+	public <T> BiFunction<JsonElement, Path<String>, T> jsonCodecLoader(Codec<T> codec) {
+		return (json, ignore) -> codec.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
+	}
+
+	private BiFunction<Tag, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager, HolderLookup.Provider provider) {
+		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an CompoundTag!"), manager, HolderLookup.Provider provider);
 	}
 
 	private PocketTemplate loadPocketTemplate(CompoundTag nbt, Path<String> id) {
@@ -135,5 +146,13 @@ public class PocketLoader implements ResourceManagerReloadListener {
 
 	public PocketGenerator getGenerator(ResourceLocation id) {
 		return pocketGenerators.get(Path.stringPath(id));
+	}
+
+	public SimpleTree<String, Modifier> getModifiers() {
+		return modifiers;
+	}
+
+	public void setModifiers(SimpleTree<String, Modifier> modifiers) {
+		this.modifiers = modifiers;
 	}
 }

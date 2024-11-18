@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import com.google.common.collect.Multimap;
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -19,7 +19,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.api.util.math.Equation;
@@ -33,12 +32,11 @@ import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable {
+public abstract class PocketGenerator implements Weighted<PocketGenerationContext> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final Registrar<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
 	public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
@@ -195,14 +193,6 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		return toNbt(nbt, false);
 	}
 
-	public void processFlags(Multimap<String, String> flags) {
-		// TODO: discuss some flag standardization
-		Collection<String> reference = flags.get("reference");
-		if (reference.stream().findFirst().map(string -> string.equals("local") || string.equals("global")).orElse(false)) {
-			resourceKey = flags.get("resource_key").stream().findFirst().orElse(null);
-		}
-	}
-
 	public abstract Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
 	public abstract PocketGeneratorType<? extends PocketGenerator> getType();
@@ -289,18 +279,20 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	public abstract Vec3i getSize(PocketGenerationContext parameters);
 
 	public interface PocketGeneratorType<T extends PocketGenerator> {
-		RegistrySupplier<PocketGeneratorType<PocketGenerator>> SCHEMATIC = register(DimensionalDoors.id(SchematicGenerator.KEY), SchematicGenerator::new);
-		RegistrySupplier<PocketGeneratorType<ChunkGenerator>> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
-		RegistrySupplier<PocketGeneratorType<VoidGenerator>> VOID = register(DimensionalDoors.id(VoidGenerator.KEY), VoidGenerator::new);
+		RegistrySupplier<PocketGeneratorType<PocketGenerator>> SCHEMATIC = register(SchematicGenerator.KEY, SchematicGenerator.CODEC, SchematicGenerator::new);
+//		RegistrySupplier<PocketGeneratorType<ChunkGenerator>> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
+		RegistrySupplier<PocketGeneratorType<VoidGenerator>> VOID = register(VoidGenerator.KEY, VoidGenerator.CODEC, VoidGenerator::new);
 
 		PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager);
 
 		CompoundTag toNbt(CompoundTag nbt);
 
+		MapCodec<T> mapCodec();
+
 		static void register() {}
 
-		static <U extends PocketGenerator> RegistrySupplier<PocketGeneratorType<U>> register(ResourceLocation id, Supplier<U> constructor) {
-			return REGISTRY.register(id, () -> new PocketGeneratorType<U>() {
+		static <U extends PocketGenerator> RegistrySupplier<PocketGeneratorType<U>> register(String id, MapCodec<U> mapCodec, Supplier<U> constructor) {
+			return REGISTRY.register(DimensionalDoors.id(id), () -> new PocketGeneratorType<U>() {
 				@Override
 				public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
 					return constructor.get().fromNbt(nbt, manager);
@@ -310,6 +302,11 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 				public CompoundTag toNbt(CompoundTag nbt) {
 					nbt.putString("type", id.toString());
 					return nbt;
+				}
+
+				@Override
+				public MapCodec<U> mapCodec() {
+					return mapCodec;
 				}
 			});
 

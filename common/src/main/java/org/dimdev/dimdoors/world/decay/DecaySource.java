@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.decay;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.HashMap;
@@ -10,6 +11,8 @@ public enum DecaySource implements StringRepresentable {
     REAlITY_SPONGE("reality_sponge", false),
     RIFT("rift", true),
     CUSTOM("custom", false);
+
+    public static final Codec<DecaySource> CODEC = StringRepresentable.fromValues(DecaySource::values);
 
     private static final Map<String, DecaySource> MAP = new HashMap<>(); //TODO: Remove once converted into codec.
 

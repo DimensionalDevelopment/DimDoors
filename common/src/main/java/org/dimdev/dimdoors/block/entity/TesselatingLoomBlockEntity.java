@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block.entity;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -18,7 +19,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -87,21 +87,23 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag nbt) {
-		super.saveAdditional(nbt);
+	protected void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+		super.saveAdditional(nbt, provider);
 		CompoundTag inventoryTag = new CompoundTag();
-		ContainerHelper.saveAllItems(inventoryTag, inventory);
-		inventoryTag.put("Output", output.save(new CompoundTag()));
+		ContainerHelper.saveAllItems(inventoryTag, inventory, provider);
+		inventoryTag.put("Output", output.save(provider, new CompoundTag()));
 		nbt.put(INVENTORY_TAG, inventoryTag);
 		nbt.putInt(WEAVE_TIME_TAG, this.weaveTime);
 		nbt.putInt(WEAVE_TIME_TOTAL_TAG, this.weaveTimeTotal);
 	}
 
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
+	@Override
+	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+		super.loadAdditional(nbt, provider);
+
 		CompoundTag inventoryTag = nbt.getCompound(INVENTORY_TAG);
-		ContainerHelper.saveAllItems(inventoryTag, this.inventory);
-		this.output = ItemStack.of(inventoryTag.getCompound("Output"));
+		ContainerHelper.saveAllItems(inventoryTag, this.inventory, provider);
+		this.output = ItemStack.parse(provider, inventoryTag.getCompound("Output")).orElse(ItemStack.EMPTY);
 		this.weaveTime = nbt.getInt(WEAVE_TIME_TAG);
 		this.weaveTimeTotal = nbt.getInt(WEAVE_TIME_TOTAL_TAG);
 	}
@@ -217,16 +219,16 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		if (this.level == null || this.isEmpty()) return Optional.empty();
 
 		if (cachedRecipe != null) {
-			RecipeHolder<? extends TesselatingRecipe> mapRecipe = getRecipe(cachedRecipe.id());
-			if (mapRecipe != null && mapRecipe.value().matches(this, level)) {
+			Optional<RecipeHolder<TesselatingRecipe>> mapRecipe = getRecipe(cachedRecipe.id());
+			if (mapRecipe.isPresent() && mapRecipe.get().value().matches(this, level)) {
 				return Optional.of(cachedRecipe);
 			}
 		}
 		return getRecipe();
 	}
 
-	public RecipeHolder<TesselatingRecipe> getRecipe(ResourceLocation location) {
-		return this.level.getRecipeManager().byType(ModRecipeTypes.TESSELATING.get()).get(location);
+	public Optional<RecipeHolder<TesselatingRecipe>> getRecipe(ResourceLocation location) {
+		return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING.get(), this, level, location);
 	}
 
 	public Optional<RecipeHolder<TesselatingRecipe>> getRecipe() {
@@ -289,7 +291,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 			for (int slot : OUTPUT_SLOTS) {
 				var existing = getItem(slot);
 
-				if(!existing.isEmpty() && ItemStack.isSameItemSameTags(output, existing)) {
+				if(!existing.isEmpty() && ItemStack.isSameItemSameComponents(output, existing)) {
 					var total = existing.getCount() + output.getCount();
 
 					if(total <= existing.getMaxStackSize()) {
@@ -339,7 +341,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 			if(existing.isEmpty()) return true;
 
-			if(output.isStackable() && ItemStack.isSameItemSameTags(existing, output)) {
+			if(output.isStackable() && ItemStack.isSameItemSameComponents(existing, output)) {
 				if(existing.getCount() + remianingOutput <= existing.getMaxStackSize()) {
 					return true;
 				} else if(existing.getCount() < existing.getMaxStackSize()) {
@@ -361,8 +363,8 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	@Override
-	public CompoundTag getUpdateTag() {
-		return this.saveWithFullMetadata();
+	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+		return this.saveWithFullMetadata(provider);
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Climate;
@@ -17,7 +17,7 @@ import static net.minecraft.world.level.biome.Climate.Parameter.span;
 public class ModChunkGeneratorSettings {
     public static final ResourceKey<NoiseGeneratorSettings> LIMBO = ResourceKey.create(Registries.NOISE_SETTINGS, DimensionalDoors.id("limbo"));
 
-    public static void bootstrap(BootstapContext<NoiseGeneratorSettings> context) {
+    public static void bootstrap(BootstrapContext<NoiseGeneratorSettings> context) {
         context.register(LIMBO, new NoiseGeneratorSettings(
                 new NoiseSettings(0, 256, 1, 1),
                 ModBlocks.UNRAVELLED_FABRIC.get().defaultBlockState(),

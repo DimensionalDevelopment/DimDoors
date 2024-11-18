@@ -14,7 +14,6 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.entity.stat.ModStats;
-import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithAggroParticlesPacket;
 import org.dimdev.dimdoors.network.packet.s2c.MonolithTeleportParticlesPacket;
@@ -23,7 +22,6 @@ import org.dimdev.dimdoors.tag.ModItemTags;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.EnumSet;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
@@ -83,7 +81,7 @@ public class MonolithAggroGoal extends Goal {
 
                         var item = this.target.getItemBySlot(equip);
 
-                        item.hurtAndBreak(i, target, livingEntity -> livingEntity.broadcastBreakEvent(equip));
+                        item.hurtAndBreak(i, random, (ServerPlayer) target, () -> target.broadcastBreakEvent(equip));
 
                     }
 

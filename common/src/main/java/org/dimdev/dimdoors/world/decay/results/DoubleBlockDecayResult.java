@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world.decay.results;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +18,7 @@ import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 public class DoubleBlockDecayResult extends BlockDecayResult<DoubleBlockDecayResult> {
-	public static final Codec<DoubleBlockDecayResult> CODEC = RecordCodecBuilder.create(instance -> blockDecayCodec(instance).apply(instance, DoubleBlockDecayResult::new));
+	public static final MapCodec<DoubleBlockDecayResult> CODEC = RecordCodecBuilder.mapCodec(instance -> blockDecayCodec(instance).apply(instance, DoubleBlockDecayResult::new));
 
 	public static final String KEY = "double_block";
 

@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
@@ -12,7 +13,7 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class PocketEntranceMarker extends VirtualTarget implements EntityTarget {
-	public static final Codec<PocketEntranceMarker> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	public static final MapCodec<PocketEntranceMarker> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.FLOAT.fieldOf("weight").forGetter(PocketEntranceMarker::getWeight),
 			VirtualTarget.CODEC.optionalFieldOf("ifDestination", NoneTarget.INSTANCE).forGetter(PocketEntranceMarker::getIfDestination),
 			VirtualTarget.CODEC.optionalFieldOf("otherwiseDestination", NoneTarget.INSTANCE).forGetter(PocketEntranceMarker::getOtherwiseDestination))

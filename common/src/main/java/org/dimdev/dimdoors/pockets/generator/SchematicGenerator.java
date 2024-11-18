@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SchematicGenerator extends LazyPocketGenerator{
+public class SchematicGenerator extends LazyPocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "schematic";
 
