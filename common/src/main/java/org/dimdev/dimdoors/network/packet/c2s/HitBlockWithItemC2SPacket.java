@@ -46,7 +46,6 @@ public class HitBlockWithItemC2SPacket {
 		ServerPacketHandler.get((ServerPlayer) context.get().getPlayer()).onAttackBlock(this);
 	}
 
-
 	public BlockPos getPos() {
 		return pos;
 	}
