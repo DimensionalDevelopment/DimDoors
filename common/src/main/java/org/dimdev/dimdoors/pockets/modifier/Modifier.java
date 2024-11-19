@@ -32,7 +32,7 @@ public interface Modifier {
 		public String apply(Modifier modifier) {
 			throw new RuntimeException("Serialization of modifier reference not supported.");
 		}
-	})
+	});
 
 	Codec<Modifier> CODEC = ResourceLocation.CODEC.dispatch(modifier -> REGISTRY.getId(modifier.getType()), resourceLocation -> REGISTRY.get(resourceLocation).mapCodec());
 
@@ -107,7 +107,7 @@ public interface Modifier {
 
 //		public static final RegistrySupplier<ModifierType<TemplateModifier>> TEMPLATE_MODIFIER_TYPE = register(DimensionalDoors.id(TemplateModifier.KEY), TemplateModifier.CODEC); //TODO: Renable
 
-		static void register() {}
+		public static void register() {}
 
 		static <U extends Modifier> RegistrySupplier<ModifierType<U>> register(ResourceLocation id, MapCodec<U> mapCodec) {
 			return REGISTRY.register(id, () -> new ModifierType<>(mapCodec));

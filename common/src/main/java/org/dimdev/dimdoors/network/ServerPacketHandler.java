@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.network;
 
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -26,8 +27,6 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.dimdev.dimdoors.DimensionalDoors.NETWORK;
 
 // each client has their own corresponding ServerPacketHandler, so feel free to add client specific data in here
 public class ServerPacketHandler implements ServerPacketListener {
@@ -54,9 +53,9 @@ public class ServerPacketHandler implements ServerPacketListener {
 		return ((ExtendedServerPlayNetworkHandler) networkHandler).getDimDoorsPacketHandler();
 	}
 
-	public static <T> boolean sendPacket(ServerPlayer player, T packet) {
+	public static <T extends CustomPacketPayload> boolean sendPacket(ServerPlayer player, T packet) {
 		try {
-			NETWORK.sendToPlayer(player, packet);
+			NetworkManager.sendToPlayer(player, packet);
 			return true;
 		} catch (Exception e) {
 			LOGGER.error(e);

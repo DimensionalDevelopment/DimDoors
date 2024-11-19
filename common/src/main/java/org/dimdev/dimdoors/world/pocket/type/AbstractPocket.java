@@ -97,10 +97,10 @@ public abstract class AbstractPocket<T extends AbstractPocket<T, V>, V extends A
 		public static final RegistrySupplier<AbstractPocketType<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket.CODEC, IdReferencePocket.IdReferencePocketBuilder.CODEC, IdReferencePocket::new);
 
 		RegistrySupplier<AbstractPocketType<Pocket>> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket::new, Pocket::builder);
-		RegistrySupplier<AbstractPocketType<PrivatePocket>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
+		RegistrySupplier<AbstractPocketType<PrivatePocket>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
 		RegistrySupplier<AbstractPocketType<LazyGenerationPocket>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
-		static void register() {
+		public static void register() {
 		}
 
 		static <U extends AbstractPocket<U, T>, T extends AbstractPocketBuilder<T,U>> RegistrySupplier<AbstractPocketType<U, T>> register(ResourceLocation id, MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {

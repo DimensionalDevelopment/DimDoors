@@ -104,7 +104,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	}
 
 	private BiFunction<Tag, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager, HolderLookup.Provider provider) {
-		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an CompoundTag!"), manager, HolderLookup.Provider provider);
+		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an CompoundTag!"), manager, provider);
 	}
 
 	private PocketTemplate loadPocketTemplate(CompoundTag nbt, Path<String> id) {

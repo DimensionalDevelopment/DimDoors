@@ -20,6 +20,11 @@ public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.
 			addAddon(new DyeableAddon.DyeableBuilderAddon());
 			this.dyeColor(PocketColor.WHITE);
 		}
+
+		@Override
+		public AbstractPocketType<T, P> getType() {
+			return AbstractPocketType.
+		}
 	}
 
 	@Override

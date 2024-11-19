@@ -6,7 +6,6 @@ import dev.architectury.event.events.common.BlockEvent;
 import dev.architectury.event.events.common.InteractionEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.networking.NetworkChannel;
 import dev.architectury.platform.Mod;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.ReloadListenerRegistry;
@@ -114,8 +113,6 @@ public class DimensionalDoors {
 	public static Path getConfigRoot() {
 		throw new RuntimeException();
 	}
-
-	public static final NetworkChannel NETWORK = NetworkChannel.create(DimensionalDoors.id("server"));
 
 	public static void init() {
 		dimDoorsMod = Platform.getMod(MOD_ID);

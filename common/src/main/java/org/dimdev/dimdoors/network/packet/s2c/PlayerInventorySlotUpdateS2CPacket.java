@@ -1,45 +1,34 @@
 package org.dimdev.dimdoors.network.packet.s2c;
 
 import dev.architectury.networking.NetworkManager;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.client.ClientPacketHandler;
 
-import java.util.function.Supplier;
-
-public class PlayerInventorySlotUpdateS2CPacket {
+public class PlayerInventorySlotUpdateS2CPacket implements CustomPacketPayload {
 	public static final ResourceLocation ID = DimensionalDoors.id("player_inventory_slot_update");
+	public static final Type<PlayerInventorySlotUpdateS2CPacket> TYPE = new Type<>(ID);
+	public static final StreamCodec<RegistryFriendlyByteBuf, PlayerInventorySlotUpdateS2CPacket> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, PlayerInventorySlotUpdateS2CPacket::getSlot,
+			ItemStack.STREAM_CODEC, PlayerInventorySlotUpdateS2CPacket::getStack,
+			PlayerInventorySlotUpdateS2CPacket::new
+	);
 
-	private int slot;
-	private ItemStack stack;
-
-	@Environment(EnvType.CLIENT)
-	public PlayerInventorySlotUpdateS2CPacket() {
-		this.stack = ItemStack.EMPTY;
-	}
+	private final int slot;
+	private final ItemStack stack;
 
 	public PlayerInventorySlotUpdateS2CPacket(int slot, ItemStack stack) {
 		this.slot = slot;
 		this.stack = stack;
 	}
 
-	public PlayerInventorySlotUpdateS2CPacket(FriendlyByteBuf buf) {
-		this(buf.readInt(),
-		buf.readItem());
-	}
-
-	public FriendlyByteBuf write(FriendlyByteBuf buf) {
-		buf.writeInt(slot);
-		buf.writeItem(stack);
-		return buf;
-	}
-
-	public void apply(Supplier<NetworkManager.PacketContext> context) {
-		ClientPacketHandler.getHandler().onPlayerInventorySlotUpdate(this);
+	public static void apply(PlayerInventorySlotUpdateS2CPacket packet, NetworkManager.PacketContext context) {
+		ClientPacketHandler.getHandler().onPlayerInventorySlotUpdate(packet);
 	}
 
 	public int getSlot() {
@@ -48,5 +37,10 @@ public class PlayerInventorySlotUpdateS2CPacket {
 
 	public ItemStack getStack() {
 		return stack;
+	}
+
+	@Override
+	public Type<PlayerInventorySlotUpdateS2CPacket> type() {
+		return TYPE;
 	}
 }

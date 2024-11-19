@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -20,12 +22,16 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Pocket extends AbstractPocket<Pocket, Pocket.PocketBuilder> implements AddonProvider {
 	public static String KEY = "pocket";
+
+	public static final Codec<Pocket> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+			Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.CODEC)
+		}
+	)
 
 	private final Map<ResourceLocation, PocketAddon> addons = new HashMap<>();
 	private int range = -1;
