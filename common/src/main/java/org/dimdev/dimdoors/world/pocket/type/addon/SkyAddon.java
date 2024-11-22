@@ -13,6 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.PocketBase;
 
 public class SkyAddon implements AutoSyncedAddon {
 	public static final MapCodec<SkyAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -101,7 +102,7 @@ public class SkyAddon implements AutoSyncedAddon {
 	}
 
 
-	public interface SkyPocketBuilder<T extends Pocket.PocketBuilder<T, ?>> extends PocketBuilderExtension<T> {
+	public interface SkyPocketBuilder<T extends PocketBase.PocketBaseBuilder<T, ?>> extends PocketBuilderExtension<T> {
 		default T dimenionType(ResourceLocation effect) {
 
 			this.<SkyBuilderAddon>getAddon(ID).effect = effect;

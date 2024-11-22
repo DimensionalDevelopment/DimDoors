@@ -149,7 +149,7 @@ public class DimensionalDoorsClient {
     private static void registerListeners() {
 		ClientReloadShadersEvent.EVENT.register((provider, sink) -> {
 			try {
-				sink.registerShader(new ShaderInstance(provider, "dimensional_portal", DefaultVertexFormat.POSITION), ModShaders::setDimensionalPortal);
+				sink.registerShader(new ShaderInstance(provider, "dimensional_portal", DefaultVertexFormat.POSITION).un, ModShaders::setDimensionalPortal);
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}

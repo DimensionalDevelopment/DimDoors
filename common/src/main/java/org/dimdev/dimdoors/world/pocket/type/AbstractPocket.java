@@ -20,10 +20,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class AbstractPocket<T extends AbstractPocket<T, V>, V extends AbstractPocket.AbstractPocketBuilder<V, T>> {
+public abstract class AbstractPocket {
 	public static final Registrar<AbstractPocketType<?, ?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<AbstractPocketType<?, ?>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
 	public static final Codec<AbstractPocketType<?, ?>> POCKET_TYPE_CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
-	public static final Codec<AbstractPocket<?, ?>> CODEC = POCKET_TYPE_CODEC.dispatch(AbstractPocket::getType, AbstractPocketType::mapCodec);
+	public static final Codec<AbstractPocket> CODEC = POCKET_TYPE_CODEC.dispatch(AbstractPocket::getType, AbstractPocketType::mapCodec);
 	public static final Codec<AbstractPocketBuilder<?, ?>> BUILDER_CODEC = POCKET_TYPE_CODEC.dispatch(AbstractPocketBuilder::getType, AbstractPocketType::builderMapCodec);
 
 	protected Integer id;
@@ -37,7 +37,7 @@ public abstract class AbstractPocket<T extends AbstractPocket<T, V>, V extends A
 	protected AbstractPocket() {
 	}
 
-	protected static <T extends AbstractPocket<?, ?>> Products.P2<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>> commonCodecFields(RecordCodecBuilder.Instance<T> instance) {
+	protected static <T extends AbstractPocket> Products.P2<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>> commonCodecFields(RecordCodecBuilder.Instance<T> instance) {
 		return instance.group(Codec.INT.fieldOf("id").forGetter(AbstractPocket::getId), ResourceKey.codec(Registries.DIMENSION).fieldOf("world").forGetter(AbstractPocket::getWorld));
 	}
 
@@ -93,22 +93,22 @@ public abstract class AbstractPocket<T extends AbstractPocket<T, V>, V extends A
 		return world;
 	}
 
-	public record AbstractPocketType<U extends AbstractPocket<U, T>, T extends AbstractPocketBuilder<T,U>>(MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {
+	public record AbstractPocketType<U extends AbstractPocket, T extends AbstractPocketBuilder<T, U>(MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {
 		public static final RegistrySupplier<AbstractPocketType<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket.CODEC, IdReferencePocket.IdReferencePocketBuilder.CODEC, IdReferencePocket::new);
 
-		RegistrySupplier<AbstractPocketType<Pocket>> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket::new, Pocket::builder);
+		RegistrySupplier<AbstractPocketType<Pocket>> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket.CODEC, Pocket.AbstractPocketBuilder.CODEC, Pocket::new);
 		RegistrySupplier<AbstractPocketType<PrivatePocket>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
 		RegistrySupplier<AbstractPocketType<LazyGenerationPocket>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
 		public static void register() {
 		}
 
-		static <U extends AbstractPocket<U, T>, T extends AbstractPocketBuilder<T,U>> RegistrySupplier<AbstractPocketType<U, T>> register(ResourceLocation id, MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {
+		static <U extends AbstractPocket, T extends AbstractPocketBuilder<T,U>> RegistrySupplier<AbstractPocketType<U, T>> register(ResourceLocation id, MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {
 			return REGISTRY.register(id, () -> new AbstractPocketType<>(mapCodec, builderMapCodec, builder));
 		}
 	}
 
-	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket<T, P>> {
+	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket> {
 		protected static <T extends AbstractPocketBuilder<?, ?>> Products.P2<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>> commonCodecFields(RecordCodecBuilder.Instance<T> instance) {
 			return instance.group(Codec.INT.fieldOf("id").forGetter(t -> t.id), ResourceKey.codec(Registries.DIMENSION).fieldOf("world").forGetter(a -> a.world));
 		}

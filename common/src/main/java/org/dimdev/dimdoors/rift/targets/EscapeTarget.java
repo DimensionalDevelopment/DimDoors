@@ -12,6 +12,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -71,15 +72,23 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				targetWorldResourceKey = DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld;
 				if (DimensionalDoors.getWorld(targetWorldResourceKey) != null) {
 					LOGGER.log(Level.INFO, "Sending player from limbo to the exit dimension, good luck!");
-					destLoc = new Location(DimensionalDoors.getWorld(targetWorldResourceKey), new BlockPos(entity.blockPosition().getX(), DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorldYSpawn, entity.blockPosition().getZ()));
+
+					var level = DimensionalDoors.getWorld(targetWorldResourceKey);
+					destLoc = new Location(level, level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, entity.blockPosition()));
 				} else {
 					LOGGER.log(Level.INFO, "Target dimension defined in config does not exist.  Use /forge dimensions for a list!");
 					LOGGER.log(Level.INFO, "Sending player from limbo to worldspawn, good luck!");
-					destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getSharedSpawnPos());
+
+					var overworld = DimensionalDoors.getServer().overworld();
+
+					destLoc = new Location(overworld, overworld.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, overworld.getSharedSpawnPos()));
 				}
 			} else {
 				LOGGER.log(Level.INFO, "sending player from limbo to worldspawn, good luck!");
-				destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getSharedSpawnPos());
+
+				var overworld = DimensionalDoors.getServer().overworld();
+
+				destLoc = new Location(overworld, overworld.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, overworld.getSharedSpawnPos()));
 			}
 
 

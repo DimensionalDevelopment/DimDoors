@@ -10,7 +10,7 @@ public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.
 	}
 
 	public static class PrivatePocketBuilder<P extends PrivatePocketBuilder<P, T>, T extends PrivatePocket> extends PocketBuilder<P, T> implements DyeableAddon.DyeablePocketBuilder<P> {
-		protected PrivatePocketBuilder(AbstractPocketType<T> type) {
+		protected PrivatePocketBuilder() {
 			super(type);
 		}
 
@@ -23,7 +23,7 @@ public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.
 
 		@Override
 		public AbstractPocketType<T, P> getType() {
-			return AbstractPocketType.
+			return AbstractPocketType
 		}
 	}
 

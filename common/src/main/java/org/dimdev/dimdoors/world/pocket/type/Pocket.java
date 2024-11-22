@@ -25,13 +25,33 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Pocket extends AbstractPocket<Pocket, Pocket.PocketBuilder> implements AddonProvider {
+public abstract class Pocket extends AbstractPocket implements AddonProvider {
 	public static String KEY = "pocket";
 
 	public static final Codec<Pocket> CODEC = RecordCodecBuilder.mapCodec(instance -> {
-			Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.CODEC)
+		return commonCodecFields(instance).and(
+				Codec.INT.fieldOf("range").<Pocket>forGetter(a -> )
+		)
+			}
+	);
+
+	public Pocket fromNbt(CompoundTag nbt) {
+		super.fromNbt(nbt);
+
+		this.range = nbt.getInt("range");
+		int[] box = nbt.getIntArray("box");
+		this.box = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
+		this.virtualLocation = VirtualLocation.fromNbt(nbt.getCompound("virtualLocation"));
+
+		if (nbt.contains("addons", Tag.TAG_LIST)) {
+			for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
+				PocketAddon addon = PocketAddon.deserialize((CompoundTag) addonTag);
+				addons.put(addon.getId(), addon);
+			}
 		}
-	)
+
+		return this;
+	}
 
 	private final Map<ResourceLocation, PocketAddon> addons = new HashMap<>();
 	private int range = -1;
@@ -129,11 +149,6 @@ public class Pocket extends AbstractPocket<Pocket, Pocket.PocketBuilder> impleme
 		return nbt;
 	}
 
-	@Override
-	public AbstractPocketType<Pocket> getType() {
-		return AbstractPocketType.POCKET.get();
-	}
-
 	public Pocket fromNbt(CompoundTag nbt) {
 		super.fromNbt(nbt);
 
@@ -204,8 +219,8 @@ public class Pocket extends AbstractPocket<Pocket, Pocket.PocketBuilder> impleme
 		private VirtualLocation virtualLocation;
 		private int range = -1;
 
-		protected PocketBuilder(AbstractPocketType<T> type) {
-			super(type);
+		protected PocketBuilder() {
+			super();
 			initAddons();
 		}
 
@@ -231,6 +246,11 @@ public class Pocket extends AbstractPocket<Pocket, Pocket.PocketBuilder> impleme
 			if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
 
 			return nbt;
+		}
+
+		@Override
+		public AbstractPocketType<T, P> getType() {
+			return ;
 		}
 
 		public boolean hasAddon(ResourceLocation id) {

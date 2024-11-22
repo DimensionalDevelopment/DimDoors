@@ -14,6 +14,7 @@ import org.dimdev.dimdoors.block.AncientFabricBlock;
 import org.dimdev.dimdoors.block.FabricBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.PocketBase;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
@@ -26,14 +27,14 @@ public class DyeableAddon implements PocketAddon {
 	private PocketColor nextDyeColor = PocketColor.NONE;
 	private int count = 0;
 
-	private static int amountOfDyeRequiredToColor(Pocket pocket) {
+	private static int amountOfDyeRequiredToColor(PocketBase<?, ?> pocket) {
 		int outerVolume = pocket.getBox().getYSpan() * pocket.getBox().getZSpan() * pocket.getBox().getXSpan();
 		int innerVolume = (pocket.getBox().getYSpan() - 5) * (pocket.getBox().getZSpan() - 5) * (pocket.getBox().getXSpan() - 5);
 
 		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}
 
-	private void repaint(Pocket pocket, DyeColor dyeColor) {
+	private void repaint(PocketBase<?, ?> pocket, DyeColor dyeColor) {
 		Level serverWorld = DimensionalDoors.getWorld(pocket.getWorld());
 		BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).getOrNull().defaultBlockState();;
 		BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).getOrNull().defaultBlockState();;
@@ -47,7 +48,7 @@ public class DyeableAddon implements PocketAddon {
 		});
 	}
 
-	public boolean addDye(Pocket pocket, Entity entity, DyeColor dyeColor) {
+	public boolean addDye(PocketBase<?, ?> pocket, Entity entity, DyeColor dyeColor) {
 		PocketColor color = PocketColor.from(dyeColor);
 
 		int maxDye = amountOfDyeRequiredToColor(pocket);
@@ -77,7 +78,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public boolean applicable(Pocket pocket) {
+	public boolean applicable(PocketBase<?, ?> pocket) {
 		return pocket instanceof PrivatePocket;
 	}
 
@@ -112,7 +113,7 @@ public class DyeableAddon implements PocketAddon {
 		return ID;
 	}
 
-	public interface DyeablePocketBuilder<T extends Pocket.PocketBuilder<T, ?>> extends PocketBuilderExtension<T> {
+	public interface DyeablePocketBuilder<T extends PocketBase.PocketBaseBuilder<T, ?>> extends PocketBuilderExtension<T> {
 		default T dyeColor(PocketColor dyeColor) {
 
 			this.<DyeableBuilderAddon>getAddon(ID).dyeColor = dyeColor;
@@ -127,7 +128,7 @@ public class DyeableAddon implements PocketAddon {
 		// TODO: add some Pocket#init so that we can have boolean shouldRepaintOnInit
 
 		@Override
-		public void apply(Pocket pocket) {
+		public void apply(PocketBase<?, ?> pocket) {
 			DyeableAddon addon = new DyeableAddon();
 			addon.dyeColor = dyeColor;
 			pocket.addAddon(addon);
@@ -166,9 +167,9 @@ public class DyeableAddon implements PocketAddon {
 			if (!this.hasAddon(ID)) {
 				DyeableAddon addon = new DyeableAddon();
 				this.addAddon(addon);
-				return addon.addDye((Pocket) this, entity, dyeColor);
+				return addon.addDye((PocketBase<?, ?>) this, entity, dyeColor);
 			}
-			return this.<DyeableAddon>getAddon(ID).addDye((Pocket) this, entity, dyeColor);
+			return this.<DyeableAddon>getAddon(ID).addDye((PocketBase<?, ?>) this, entity, dyeColor);
 		}
 	}
 }

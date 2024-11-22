@@ -13,6 +13,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.PocketBase;
 import org.dimdev.dimdoors.world.pocket.type.addon.blockbreak.BlockBreakContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +47,7 @@ public interface PocketAddon {
 	}
 
 
-	default boolean applicable(Pocket pocket) {
+	default boolean applicable(PocketBase pocket) {
 		return true;
 	}
 
@@ -64,7 +65,7 @@ public interface PocketAddon {
 		addons.put(getId(), this);
 	}
 
-	interface PocketBuilderExtension<T extends Pocket.PocketBuilder<T, ?>> {
+	interface PocketBuilderExtension<T extends PocketBase.PocketBaseBuilder<T, ?>> {
 		public <C extends PocketBuilderAddon<?>> C getAddon(ResourceLocation id);
 
 		T getSelf();
@@ -72,7 +73,7 @@ public interface PocketAddon {
 
 	interface PocketBuilderAddon<T extends PocketAddon> {
 		
-		default boolean applicable(Pocket.PocketBuilder<?, ?> builder) {
+		default boolean applicable(PocketBase.PocketBaseBuilder<?, ?> builder) {
 			return true;
 		}
 
@@ -81,7 +82,7 @@ public interface PocketAddon {
 			addons.put(getId(), this);
 		}
 
-		void apply(Pocket pocket);
+		void apply(PocketBase<?, ?> pocket);
 
 		ResourceLocation getId();
 
@@ -94,7 +95,7 @@ public interface PocketAddon {
 		PocketAddonType<T> getType();
 	}
 
-	public record PocketAddonType<T extends PocketAddon>(ResourceLocation id, @NotNull MapCodec<T>> codec, @Nullable StreamCodec<RegistryFriendlyByteBuf, T> streamCodec, Codec<PocketBuilderAddon<T>> builderSupplier) {
+	public record PocketAddonType<T extends PocketAddon>(ResourceLocation id, @NotNull MapCodec<T> codec, @Nullable StreamCodec<RegistryFriendlyByteBuf, T> streamCodec, Codec<PocketBuilderAddon<T>> builderSupplier) {
 		RegistrySupplier<PocketAddonType<DyeableAddon>> DYEABLE_ADDON = register(DyeableAddon.ID, DyeableAddon::new, DyeableAddon.DyeableBuilderAddon::new);
 		RegistrySupplier<PocketAddonType<PreventBlockModificationAddon>> PREVENT_BLOCK_MODIFICATION_ADDON = register(PreventBlockModificationAddon.ID, PreventBlockModificationAddon::new, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon::new);
 		RegistrySupplier<PocketAddonType<BlockBreakContainer>> BLOCK_BREAK_CONTAINER = register(BlockBreakContainer.ID, BlockBreakContainer::new, null);
@@ -106,7 +107,7 @@ public interface PocketAddon {
 
 		public static void register() {}
 
-		static <T extends PocketAddon> RegistrySupplier<PocketAddonType<T>> register(ResourceLocation id, MapCodec<T> codec, StreamCodec<RegistryFriendlyByteBuf, PocketAddon> streamCodec, Codec<PocketBuilderAddon<T>> builderSupplier) {
+		static <T extends PocketAddon> RegistrySupplier<PocketAddonType<T>> register(ResourceLocation id, MapCodec<T> codec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec, Codec<PocketBuilderAddon<T>> builderSupplier) {
 			return REGISTRY.register(id, () -> new PocketAddonType<>(id, codec, streamCodec, builderSupplier));
 		}
 	}
