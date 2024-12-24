@@ -1,0 +1,5304 @@
+{
+  "replace": false,
+  "values": [
+    "dimdoors:block_ag_dim_minecraft_acacia_door",
+    "dimdoors:block_ag_dim_minecraft_bamboo_door",
+    "dimdoors:block_ag_dim_minecraft_birch_door",
+    "dimdoors:block_ag_dim_minecraft_cherry_door",
+    "dimdoors:block_ag_dim_minecraft_crimson_door",
+    "dimdoors:block_ag_dim_minecraft_dark_oak_door",
+    "dimdoors:block_ag_dim_minecraft_iron_door",
+    "dimdoors:block_ag_dim_minecraft_jungle_door",
+    "dimdoors:block_ag_dim_minecraft_mangrove_door",
+    "dimdoors:block_ag_dim_minecraft_oak_door",
+    "dimdoors:block_ag_dim_minecraft_spruce_door",
+    "dimdoors:block_ag_dim_minecraft_warped_door",
+    "dimdoors:block_ag_dim_dimdoors_gold_door",
+    "dimdoors:block_ag_dim_dimdoors_stone_door",
+    "dimdoors:block_ag_dim_dimdoors_quartz_door",
+    {
+      "id": "dimdoors:block_ag_dim_ad_astra_aeronos_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ad_astra_glacian_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ad_astra_steel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ad_astra_strophar_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_aether_skyroot_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_allthemodium_ancient_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_allthemodium_demonic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_allthemodium_soul_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_architects_palette_twisted_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ars_additions_polished_sourcestone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ars_additions_sourcestone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ars_nouveau_archwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_arts_and_crafts_cork_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_ancient_acacia_wood_moss_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_ancient_birch_wood_moss_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_ancient_dark_oak_wood_moss_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_ancient_jungle_wood_moss_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_ancient_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_ancient_oak_wood_moss_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_ancient_spruce_wood_moss_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_atlantean_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_exposed_ancient_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_oxidized_ancient_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_palm_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_waxed_ancient_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_waxed_exposed_ancient_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_waxed_oxidized_ancient_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_waxed_weathered_ancient_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_atlantis_weathered_ancient_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_autumnity_maple_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_bedrockcrafter_bedrock_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_betterarcheology_rotten_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomancy_flesh_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomancy_full_flesh_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_dead_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_empyreal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_fir_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_hellbark_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_jacaranda_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_magic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_mahogany_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_maple_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_palm_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_pine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_redwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_umbran_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomesoplenty_willow_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_aspen_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_baobab_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_blue_enchanted_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_cika_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_cypress_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_ebony_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_fir_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_florus_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_green_enchanted_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_holly_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_ironwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_jacaranda_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_mahogany_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_maple_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_palm_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_pine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_rainbow_eucalyptus_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_redwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_sakura_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_skyris_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_white_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_willow_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_witch_hazel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_biomeswevegone_zelkova_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blazingbamboo_blazing_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blue_skies_bluebright_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blue_skies_comet_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blue_skies_crystallized_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blue_skies_dusk_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blue_skies_frostbright_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blue_skies_lunar_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blue_skies_maple_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_blue_skies_starlit_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_buzzier_bees_honeycomb_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_barred_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_beach_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_boarded_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_dual_paneled_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_fortified_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_gated_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_glass_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_heavy_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_overgrown_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paneled_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_paper_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_pressed_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_screen_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_secret_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_shack_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_sliding_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_supported_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tile_windowed_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_tiled_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_acacia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_birch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_crimson_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_dark_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_jungle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_chipped_windowed_warped_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_copycats_copycat_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_copycats_copycat_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_andesite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_brass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_train_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_andesite_alloy_block_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_andesite_casing_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_brass_casing_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_copper_casing_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_experience_block_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_industrial_iron_block_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_refined_radiance_casing_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_shadow_steel_casing_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_create_deco_casing_train_casing_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_andesite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_brass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_industrial_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_locked_andesite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_locked_brass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_locked_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_locked_industrial_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_locked_zinc_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createdeco_zinc_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_black_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_blue_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_brown_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_cyan_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_gray_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_green_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_light_blue_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_light_gray_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_lime_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_magenta_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_orange_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_pink_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_purple_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_red_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_tinted_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_white_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_createframed_yellow_stained_framed_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dawnoftimebuilder_charred_spruce_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dawnoftimebuilder_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dawnoftimebuilder_waxed_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_ashberry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_burnt_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_cast_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_cedar_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_grid_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_malachite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_obsidian_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_palm_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_school_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_ship_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_decodesign_functions_and_blocks_sugar_cane_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_deep_aether_conberry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_deep_aether_cruderoot_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_deep_aether_roseroot_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_deep_aether_sunroot_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_deep_aether_yagroot_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_deeperdarker_bloom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_deeperdarker_echo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_ancient_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_apalachia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_auroraoak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_barred_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_cozybark_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_degraded_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_divine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_eden_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_eucalyptus_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_mortum_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_shiverspine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_skythern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_soul_sludge_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_soul_stone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_steel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_streamleaf_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_divinerpg_wildwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_domum_ornamentum_fancy_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_domum_ornamentum_vanilla_doors_compat",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dustrial_decor_cardboard_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dustrial_decor_chain_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dustrial_decor_industrial_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dustrial_decor_iron_bar_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dustrial_decor_padded_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dustrial_decor_rusty_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dustrial_decor_rusty_sheet_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_dustrial_decor_sheet_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ecologics_azalea_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ecologics_coconut_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ecologics_flowering_azalea_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ecologics_walnut_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_enderio_dark_steel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_extendedmushrooms_glowshroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_extendedmushrooms_honey_fungus_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_extendedmushrooms_mushroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_extendedmushrooms_poisonous_mushroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_bone/skeleton/door_double",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_bone/skeleton/door_single",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_bone/wither/door_double",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_bone/wither/door_single",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_dunmer/door_double",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_dunmer/door_single",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_necrolord/door_double",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_necrolord/door_single",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_nordic/door_double",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_nordic/door_single",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_royal/door_double",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_royal/door_single",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_venthyr/door_double",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_fantasyfurniture_venthyr/door_single",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forbidden_arcanus_arcane_edelwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forbidden_arcanus_aurum_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forbidden_arcanus_deorum_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forbidden_arcanus_edelwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forbidden_arcanus_fungyss_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_acacia_desert_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_balsa_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_baobab_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_chestnut_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_citrus_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_cocobolo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_ebony_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_giganteum_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_greenheart_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_hill_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_ipe_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_kapok_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_larch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_lime_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_mahoe_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_mahogany_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_maple_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_padauk_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_palm_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_papaya_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_pine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_plum_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_poplar_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_sequoia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_teak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_walnut_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_wenge_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_willow_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_forestry_zebrawood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_framedblocks_framed_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_framedblocks_framed_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_garnished_nut_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_garnished_sepia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_geosmelt_deep_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_geosmelt_eaglesteel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_geosmelt_starcinium_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_geosmelt_tazurite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_gildedingot_gilded_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_black_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_blue_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_brown_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_cyan_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_dark_ethereal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_dark_ethereal_reverse_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_ethereal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_ethereal_reverse_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_ghostly_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_gray_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_green_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_light_blue_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_light_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_light_gray_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_lime_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_magenta_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_orange_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_pink_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_purple_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_red_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_redstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_tinted_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_white_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_glassential_yellow_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_goety_haunted_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_goety_pine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_goety_rotten_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_goety_windswept_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_graveyard_dark_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_hexalia_cottonwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_hexalia_willow_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_hexerei_mahogany_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_hexerei_polished_mahogany_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_hexerei_polished_willow_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_hexerei_polished_witch_hazel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_hexerei_willow_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_hexerei_witch_hazel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_integrateddynamics_menril_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_jitl_burned_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_jitl_cloudia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_jitl_corba_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_jitl_depths_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_jitl_euca_brown_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_jitl_euca_gold_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_jitl_frozen_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_jitl_terranian_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_landsoficaria_cypress_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_landsoficaria_droughtroot_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_landsoficaria_fir_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_landsoficaria_laurel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_landsoficaria_olive_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_landsoficaria_plane_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_landsoficaria_populus_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_malum_runewood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_malum_soulwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_blank",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_cassette",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_french",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_frosted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_heart",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_origin",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_rustic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_acacia_shoji",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_blank",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_cassette",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_french",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_frosted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_heart",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_origin",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_rustic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_birch_shoji",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_bar",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_barrel",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_brick",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_corrugated",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_factory",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_modern",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_ship",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_smooth_sandstone",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_copper_steampunk",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_blank",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_cassette",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_french",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_frosted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_heart",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_origin",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_rustic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_crimson_shoji",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_blank",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_cassette",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_french",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_frosted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_heart",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_origin",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_rustic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_dark_oak_shoji",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_dwarf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_fantasy",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_laboratory",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_rusted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_safe",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_ship",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_space",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_iron_stone_brick",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_blank",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_cassette",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_french",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_frosted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_heart",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_origin",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_rustic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_jungle_shoji",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_blank",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_cassette",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_french",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_frosted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_heart",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_origin",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_rustic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_oak_shoji",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_special_end",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_special_police_box",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_special_portcullis",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_blank",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_cassette",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_french",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_frosted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_heart",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_origin",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_rustic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_spruce_shoji",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_blank",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_bookshelf",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_cassette",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_french",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_frosted",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_heart",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_origin",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_rustic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_manyideas_doors_door_warped_shoji",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_maple_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_maple_cherry_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_maple_ginkgo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_maple_maple_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_acacia_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_bamboo_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_birch_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_cherry_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_stem_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_crimson_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_dark_oak_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jail_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_jungle_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_mangrove_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_metal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_metal_hospital_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_metal_reinforced_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_metal_warning_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_metal_windowed_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_oak_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_sliding_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_bark_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_mystic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_spruce_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_store_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_barn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_barn_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_beach_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_classic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_cottage_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_four_panel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_japanese2_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_japanese_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_modern_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_nether_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_stable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_stable_head_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_stem_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_swamp_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_tropical_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_waffle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_mcwdoors_warped_western_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_naturaldecormod_monkey_puzzle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_naturaldecormod_outdoor_iron_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_naturaldecormod_saguaro_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_netherdungeons_ginger_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_netherexp_claret_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_netherexp_smokestalk_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_black",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_blue",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_brown",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_cyan",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_green",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_grey",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_lblue",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_lgrey",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_lime",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_magenta",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_orange",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_pink",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_purple",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_red",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_white",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_glass_door_yellow",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_maple_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_nifty_redoak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_amethyst_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_blue_ice_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_bone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_calcite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_clay_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_coal_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_diamond_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_dirt_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_dirt_path_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_emerald_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_exposed_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_gold_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_grass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_hay_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_ice_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_lapis_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_magma_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_missingno_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_nether_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_netherite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_obsidian_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_oxidized_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_packed_ice_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_quartz_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_red_nether_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_redstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_snow_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_ornamental_weathered_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_outer_end_azure_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_palegardenbackport_pale_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_amethyst_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_azalea_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_black_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_blue_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_brown_mushroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_brown_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_cyan_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_diamond_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_dragon_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_emerald_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_exposed_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_glow_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_gold_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_gray_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_green_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_honey_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_lapis_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_light_blue_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_light_gray_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_lime_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_magenta_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_netherite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_nostalgia_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_orange_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_oxidized_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_pink_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_poisonous_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_purple_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_quartz_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_red_mushroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_red_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_redstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_rose_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_star_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_weathered_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_white_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_pyrite_yellow_stained_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_quark_ancient_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_quark_azalea_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_quark_blossom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_redeco_paper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_baobab_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_blackwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_blue_bioshroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_brimwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_cobalt_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_cypress_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_dead_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_eucalyptus_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_green_bioshroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_joshua_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_kapok_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_larch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_magnolia_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_maple_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_mauve_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_palm_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_pine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_pink_bioshroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_redwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_socotra_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_willow_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_regions_unexplored_yellow_bioshroom_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_securitycraft_keypad_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_securitycraft_scanner_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_acacia_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_bamboo_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_birch_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_cherry_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_crimson_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_dark_oak_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_iron_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_iron_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_iron_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_iron_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_iron_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_jungle_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_mangrove_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_oak_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_spruce_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_01",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_02",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_03",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_04",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_05",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_06",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_07",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_08",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_09",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_10",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_11",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_12",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_13",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_14",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_15",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_16",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_17",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_18",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_19",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_slidingdoors_warped_door_20",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_spawn_rotten_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_supplementaries_gold_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_supplementaries_netherite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tflostblocks_thorn_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tflostblocks_towerwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tfmg_heavy_casing_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tfmg_steel_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thermal_rubberwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_alarmed_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_bubble_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_festive_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_lockable_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_metallic_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_rubber_wood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_screen_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_snowman_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_stone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_thingamajigs_white_wood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_totemic_cedar_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_andesite_alloy",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_andesite_alloy_window",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_caf_urbos_3",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_cis_amendorf_1",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_cis_amendorf_2",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_elev_glass",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_elev_metal",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_flirt",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_flirt_vias",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_goahead_desiro",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_ic",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_ic2",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_ice",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_ice_modern",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_ice_modern_top",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_ice_top",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_industrial_iron",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_industrial_iron_window",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_iron_clean",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_iron_rusty",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_london_1973_stock",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_london_el",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_london_overground",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_london_s7_stock",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_pkp_ic_blue",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_pkp_ic_white",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_railjet",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_rrx",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_sbahn_cologne",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_sbahn_vrr",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_stripped_spruce",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_sw_nyc",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_talent1",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_talent2",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_talent3",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_ungarian_flirt",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trainutilities_door_warsaw_tram",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trials_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trials_copper_door_exposed",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trials_copper_door_oxidized",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trials_copper_door_weathered",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trials_waxed_copper_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trials_waxed_copper_door_exposed",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trials_waxed_copper_door_oxidized",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_trials_waxed_copper_door_weathered",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tropicraft_bamboo_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tropicraft_mahogany_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tropicraft_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tropicraft_palm_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_tropicraft_thatch_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_twilightforest_canopy_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_twilightforest_dark_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_twilightforest_mangrove_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_twilightforest_mining_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_twilightforest_sorting_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_twilightforest_time_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_twilightforest_transformation_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_twilightforest_twilight_oak_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_acacia_log_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_andesite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_bamboo_block_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_birch_log_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_blackstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_cherry_log_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_cobblestone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_cracked_stone_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_crimson_stem_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_dark_oak_log_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_dark_prismarine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_diorite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_granite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_jungle_log_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_mangrove_log_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_mossy_cobblestone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_mossy_stone_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_oak_log_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_polished_andesite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_polished_blackstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_polished_diorite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_polished_granite_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_prismarine_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_prismarine_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_purpur_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_red_sandstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_sandstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_smooth_red_sandstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_smooth_sandstone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_smooth_stone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_spruce_log_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_stone_brick_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_stone_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_tuff_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undeco_warped_stem_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_underdasea_aquacrystaldoor",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undergarden_grongle_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undergarden_smogstem_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_undergarden_wigglewood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_upgrade_aquatic_driftwood_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_upgrade_aquatic_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_upgrade_aquatic_river_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_upgrade_aquatic_tooth_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_witherstormmod_tainted_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_wood_enjoyer_chestnut_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_wood_enjoyer_lunar_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_wood_enjoyer_walnut_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_xkdeco_ebony_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_xkdeco_ebony_screen",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_xkdeco_glass_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_xkdeco_mahogany_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_xkdeco_mahogany_screen",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_xkdeco_varnished_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_xkdeco_varnished_screen",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_yuushya_acacia_tall_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_yuushya_birch_tall_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_yuushya_dark_oak_tall_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_yuushya_iron_tall_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_yuushya_jungle_tall_door",
+      "required": false
+    },
+    {
+      "id": "dimdoors:block_ag_dim_yuushya_oak_tall_door",
+      "required": false
+    }
+  ]
+}
