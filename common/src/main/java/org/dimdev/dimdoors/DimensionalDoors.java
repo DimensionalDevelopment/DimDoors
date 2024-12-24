@@ -66,6 +66,7 @@ import org.dimdev.dimdoors.util.schematic.SchemFixer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModStructureProccessors;
+import org.dimdev.dimdoors.world.ModStructuresPieces;
 import org.dimdev.dimdoors.world.carvers.ModCarvers;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayConditionType;
@@ -138,6 +139,7 @@ public class DimensionalDoors {
 		ModCriteria.init();
 		ModEnchants.init();
 		ModStructureProccessors.init();
+		ModStructuresPieces.init();
 
 //		ModRecipeBookTypes.init();
 

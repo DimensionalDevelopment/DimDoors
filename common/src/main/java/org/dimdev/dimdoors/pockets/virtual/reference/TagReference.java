@@ -51,7 +51,7 @@ public class TagReference extends PocketGeneratorReference {
 	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
-		if (required.size() > 0) {
+		if (!required.isEmpty()) {
 			ListTag listNbt = new ListTag();
 			for (String nbtStr : required) {
 				listNbt.add(StringTag.valueOf(nbtStr));
@@ -59,7 +59,7 @@ public class TagReference extends PocketGeneratorReference {
 			nbt.put("required", listNbt);
 		}
 
-		if (blackList.size() > 0) {
+		if (!blackList.isEmpty()) {
 			ListTag list = new ListTag();
 			for (String nbtStr : blackList) {
 				list.add(StringTag.valueOf(nbtStr));
@@ -87,17 +87,17 @@ public class TagReference extends PocketGeneratorReference {
 	// TODO: this will break if pockets change in between (which they could if we add a tool for creating pocket json config stuff ingame)
 	@Override
 	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters) {
-		return selectPocket(parameters);
+		return selectPocket(parameters, true);
 	}
 
 	@Override
 	public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
-		return selectPocket(parameters);
+		return selectPocket(parameters, false);
 	}
 
-	private PocketGenerator selectPocket(PocketGenerationContext parameters) {
+	private PocketGenerator selectPocket(PocketGenerationContext parameters, boolean peek) {
 		if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact != null && exact);
-		return pockets.peekNextRandomWeighted(parameters);
+		return peek ? pockets.peekNextRandomWeighted(parameters) : pockets.getNextRandomWeighted(parameters);
 	}
 
 	@Override
