@@ -1,13 +1,15 @@
 package org.dimdev.dimdoors;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.*;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
 import me.shedaniel.autoconfig.util.Utils;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -16,13 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Category;
 import static me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.*;
@@ -242,7 +241,7 @@ public final class ModConfig implements ConfigData {
 //	}
 
 	public static class SubRootJanksonConfigSerializer<T extends ConfigData> implements ConfigSerializer<T> {
-		private static final Jankson JANKSON = Jankson.builder().build();
+		private static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().registerTypeAdapter(new TypeToken<ResourceKey<Level>>() {}.getType(), new ResourceKeyLevelAdapter()).create();
 		private final Config definition;
 		private final Class<T> configClass;
 
@@ -261,7 +260,7 @@ public final class ModConfig implements ConfigData {
 			try {
 				Files.createDirectories(configPath.getParent());
 				BufferedWriter writer = Files.newBufferedWriter(configPath);
-				writer.write(JANKSON.toJson(config).toJson(true, true));
+				writer.write(GSON.toJson(config));
 				writer.close();
 			} catch (IOException e) {
 				throw new SerializationException(e);
@@ -273,7 +272,7 @@ public final class ModConfig implements ConfigData {
 			Path configPath = getConfigPath();
 			if (Files.exists(configPath)) {
 				try {
-					return JANKSON.fromJson(JANKSON.load(getConfigPath().toFile()), configClass);
+					return GSON.fromJson(Files.readString(getConfigPath()), configClass);
 				} catch (Throwable e) {
 					throw new SerializationException(e);
 				}
@@ -285,6 +284,23 @@ public final class ModConfig implements ConfigData {
 		@Override
 		public T createDefault() {
 			return Utils.constructUnsafely(configClass);
+		}
+	}
+
+	public static class ResourceKeyLevelAdapter implements JsonDeserializer<ResourceKey<Level>>, JsonSerializer<ResourceKey<Level>> {
+
+		@Override
+		public JsonElement serialize(ResourceKey<Level> src, Type typeOfSrc, JsonSerializationContext context) {
+			return new JsonPrimitive(src.location().toString());
+		}
+
+		@Override
+		public ResourceKey<Level> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			if (!json.isJsonPrimitive() || !json.getAsJsonPrimitive().isString()) {
+				throw new JsonParseException("Expected a string for ResourceKey<Level>");
+			}
+			String location = json.getAsString();
+			return ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(location));
 		}
 	}
 }
