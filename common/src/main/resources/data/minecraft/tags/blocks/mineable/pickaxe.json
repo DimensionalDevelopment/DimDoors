@@ -4,6 +4,23 @@
     "dimdoors:stone_player",
     "dimdoors:gold_door",
     "dimdoors:quartz_door",
-    "dimdoors:solid_static"
+    "dimdoors:solid_static",
+    "dimdoors:solid_static",
+    "dimdoors:black_fabric",
+    "dimdoors:yellow_fabric",
+    "dimdoors:orange_fabric",
+    "dimdoors:white_fabric",
+    "dimdoors:red_fabric",
+    "dimdoors:green_fabric",
+    "dimdoors:brown_fabric",
+    "dimdoors:blue_fabric",
+    "dimdoors:light_blue_fabric",
+    "dimdoors:lime_fabric",
+    "dimdoors:pink_fabric",
+    "dimdoors:gray_fabric",
+    "dimdoors:purple_fabric",
+    "dimdoors:cyan_fabric",
+    "dimdoors:magenta_fabric",
+    "dimdoors:light_gray_fabric"
   ]
 }
