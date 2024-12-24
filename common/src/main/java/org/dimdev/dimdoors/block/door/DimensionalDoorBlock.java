@@ -47,6 +47,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
@@ -167,7 +168,8 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	@Override
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-		return super.getDrops(state, params);
+		if(state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) return Collections.emptyList();
+		else return super.getDrops(state, params);
 	}
 
 	public void createDetachedRift(Level world, BlockPos pos) {
