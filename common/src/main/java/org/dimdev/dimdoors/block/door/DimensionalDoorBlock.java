@@ -17,7 +17,6 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -60,14 +59,17 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (world.isClientSide || entity instanceof ServerPlayer /* DO NOT REMOVE, THIS MAKES SURE onCollision IS CALLED IN onAfterMovePlayerCollision (fixes bug with anti-cheat)*/) {
+		if (world.isClientSide || entity instanceof ServerPlayer /*
+		 * DO NOT REMOVE, THIS MAKES SURE onCollision IS
+		 * CALLED IN onAfterMovePlayerCollision (fixes bug
+		 * with anti-cheat)
+		 */) {
 			return;
 		}
 		onCollision(state, world, pos, entity, entity.position().subtract(((LastPositionProvider) entity).getLastPos()));
 	}
 
-
-//	@Override
+	@Override
 	public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, Vec3 positionChange) {
 		return onCollision(state, world, pos, player, positionChange);
 	}
@@ -124,7 +126,6 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		entity.setPortalCooldown();
 
-
 		this.getRift(world, pos, state).teleport(entity);
 		if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
 			world.setBlockAndUpdate(top, world.getBlockState(top).setValue(DoorBlock.OPEN, false));
@@ -147,7 +148,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	@Override
 	public void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack stack, boolean dropExperience) {
-		if(level.getBlockEntity(pos) instanceof EntranceRiftBlockEntity blockEntity) {
+		if (level.getBlockEntity(pos) instanceof EntranceRiftBlockEntity blockEntity) {
 			level.getServer().submit(() -> blockEntity.generateDetached(level));
 		}
 	}
@@ -168,18 +169,16 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	@Override
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-		if(state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) return Collections.emptyList();
-		else return super.getDrops(state, params);
-	}
-
-	public void createDetachedRift(Level world, BlockPos pos) {
-		createDetachedRift(world, pos, world.getBlockState(pos));
+		if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
+			return Collections.emptyList();
+		}
+		return super.getDrops(state, params);
 	}
 
 	/*
-	 TODO: rewrite so it can only be used from the lower door block.
-	  I fear this method may be called twice otherwise.
-	  ~CreepyCre
+	 * TODO: rewrite so it can only be used from the lower door block.
+	 * I fear this method may be called twice otherwise.
+	 * ~CreepyCre
 	 */
 	public void createDetachedRift(Level world, BlockPos pos, BlockState state) {
 		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
@@ -191,27 +190,26 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			blockState = world.getBlockState(blockPos);
 			blockEntity = world.getBlockEntity(blockPos);
 		}
-		if (blockEntity instanceof EntranceRiftBlockEntity
-				&& blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
+		if (blockEntity instanceof EntranceRiftBlockEntity && blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
 			world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
 			((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 		}
 	}
 
-
 	@Override
 	public void wasExploded(Level world, BlockPos pos, Explosion explosion) {
-		if(world.getBlockState(pos).isAir()) {
-			//LOGGER.log(Level.ERROR, "IS AIR");
+		if (world.getBlockState(pos).isAir()) {
+			// LOGGER.log(Level.ERROR, "IS AIR");
 			return;
 		}
-		if(world.isClientSide()) {
+		if (world.isClientSide()) {
 			return;
 		}
-		//LOGGER.log(Level.ERROR, "WAS DESTROYED BY EXPLOSION");
+		// LOGGER.log(Level.ERROR, "WAS DESTROYED BY EXPLOSION");
 		BlockState state = world.getBlockState(pos);
 		super.wasExploded(world, pos, explosion);
 	}
+
 	@Override
 	public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
 		BlockEntity bottomEntity;
@@ -238,29 +236,12 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 	}
 
-
 	@Override
 	public void playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
-
-		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
-			BlockPos blockPos = pos.below();
-			BlockState blockState = world.getBlockState(blockPos);
-			BlockEntity blockEntity = world.getBlockEntity(blockPos);
-			if (blockState.is(state.getBlock()) && blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
-				world.setBlock(blockPos, world.getFluidState(blockPos).getType() == Fluids.WATER ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 35);
-				world.levelEvent(player, 2001, blockPos, Block.getId(blockState));
-			}
-			if (blockEntity instanceof EntranceRiftBlockEntity
-					&& blockState.getValue(HALF) == DoubleBlockHalf.LOWER
-					&& !(player.isCreative()
-					&& !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode)
-			) {
-				world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
-				((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
-			}
-		}
 		super.playerWillDestroy(world, pos, state, player);
+		DoubleBlockHalf half = state.getValue(HALF);
+
+		if(half == DoubleBlockHalf.LOWER) createDetachedRift(world, pos, state);
 	}
 
 	@Override
@@ -275,17 +256,13 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	@Override
 	public TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder(BlockState state, BlockPos pos) {
-		return TransformationMatrix3d.builder()
-				.inverseTranslate(Vec3.atCenterOf(pos).add(Vec3.atLowerCornerOf(state.getValue(DoorBlock.FACING).getNormal()).scale(-0.31)))
-				.inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
+		return TransformationMatrix3d.builder().inverseTranslate(Vec3.atCenterOf(pos).add(Vec3.atLowerCornerOf(state.getValue(DoorBlock.FACING).getNormal()).scale(-0.31))).inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
 	}
 
 	@Override
 	public TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder(BlockState state, BlockPos pos) {
-		return TransformationMatrix3d.builder()
-				.inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
+		return TransformationMatrix3d.builder().inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
 	}
-
 
 	@Override
 	public boolean isExitFlipped() {

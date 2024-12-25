@@ -1,4 +1,4 @@
-// 1.20.1	2024-11-18T07:27:57.1214673	DimensionalDoors/Block Loot Tables
+// 1.20.1	2024-12-24T23:43:56.1747977	DimensionalDoors/Block Loot Tables
 954e56c5775f8951c54bafa7b2c016e25bc445d6 data\dimdoors\loot_tables\blocks\unraveled_button.json
 956a949e2416c45fc803d3a4db75a2bb4f1c6fd4 data\dimdoors\loot_tables\blocks\green_fabric.json
 621693a07b6434a1cf259e6d59cd771efc7ef590 data\dimdoors\loot_tables\blocks\clay_stairs.json
@@ -6,7 +6,7 @@
 bf91d61be28e441692894fd6f37ea29d5bbcca62 data\dimdoors\loot_tables\blocks\driftwood_button.json
 511d12eb5f84a23604c3d288389edecc9d6a9868 data\dimdoors\loot_tables\blocks\sand_slab.json
 8b7b56fafd6a06ae2ad0ab816cde5685e78b4b16 data\dimdoors\loot_tables\blocks\yellow_fabric.json
-a96024f87c81fc609ee91a9468fd35bcb29456b7 data\dimdoors\loot_tables\blocks\gold_door.json
+0395382af01cd52ef3fbc41bde9daa21dfff4e3b data\dimdoors\loot_tables\blocks\gold_door.json
 da9c002e843ba50ba0a91f7ee2d42cd5b65f0fef data\dimdoors\loot_tables\blocks\netherrack_slab.json
 54ece2309bb22503fdf93765a50d5d8ee8245c84 data\dimdoors\loot_tables\blocks\unraveled_stairs.json
 ba77cead18c4ee748ffe19cfdc3c72625bc53696 data\dimdoors\loot_tables\blocks\lime_fabric.json
@@ -48,7 +48,7 @@ d64931f8696b65c153d2c6ba3d522eadb6cd0896 data\dimdoors\loot_tables\blocks\blue_f
 24574f87561949104c31af5165d7b650b314862d data\dimdoors\loot_tables\blocks\red_fabric.json
 4d5a7f67ee08cf4d8609e73ff45e0d4d31de34af data\dimdoors\loot_tables\blocks\purple_fabric.json
 f99ddcb29320038c95f9e3340c4a077488281842 data\dimdoors\loot_tables\blocks\driftwood_leaves.json
-6eab2fd15440bb890dbac5fa398cff648c835a52 data\dimdoors\loot_tables\blocks\quartz_door.json
+be3e863dbd6d58a62c04ac695ac10477e436e64c data\dimdoors\loot_tables\blocks\quartz_door.json
 ce78190bc648d8e3dbae8a2fd74754523ba3d4d4 data\dimdoors\loot_tables\blocks\dark_sand_stairs.json
 ed563779a8c22c0dc1b3fc0a1610b3c20518976d data\dimdoors\loot_tables\blocks\deepslate_slab.json
 e591602d2e4e19fc4ebfbdc67a9cd71e00894c46 data\dimdoors\loot_tables\blocks\light_gray_fabric.json

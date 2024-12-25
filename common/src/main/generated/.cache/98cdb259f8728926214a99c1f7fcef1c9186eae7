@@ -1,4 +1,4 @@
-// 1.20.1	2024-11-18T07:27:57.1204701	DimensionalDoors/Recipes
+// 1.20.1	2024-12-24T23:43:56.1738001	DimensionalDoors/Recipes
 27372c4faf67cb917ac65686640afba2d40b6f72 data\dimdoors\advancements\recipes\tesselating\tesselating\world_thread_helmet.json
 53704322e37c34d5736922d597d9301bab22cd22 data\dimdoors\advancements\recipes\tesselating\tesselating\world_thread_leggings.json
 d7c021757a276fccf0d7c104aab94c7a41f1f259 data\dimdoors\advancements\recipes\tesselating\tesselating\enduring_fibers.json
@@ -44,8 +44,8 @@ b5a5c8bec25ae8c4a002f34901ebc9f1052ae9dc data\dimdoors\recipes\light_gray_fabric
 db00b571be31c185a3ca919a4919152c5d24630a data\dimdoors\advancements\recipes\misc\light_gray_fabric.json
 4cbb8a21d761357d1e7c1b08856244909854bedc data\dimdoors\recipes\green_fabric.json
 abba6217603204079735e346b96aa7aeefbb31bb data\dimdoors\advancements\recipes\misc\white_fabric.json
-784c11d96aecfdfa491e5154955e892508b4437f data\dimdoors\recipes\gray_fabric.json
 d6c8afc29086d97c008e529219e6a8d312d63f37 data\dimdoors\advancements\recipes\misc\brown_fabric.json
+784c11d96aecfdfa491e5154955e892508b4437f data\dimdoors\recipes\gray_fabric.json
 bdd60314269347dd147bbdd5c1309789c66ac6ff data\dimdoors\advancements\recipes\misc\black_fabric.json
 098cd3e1fd421abc75c8dcb8acc58aa1222076e0 data\dimdoors\advancements\recipes\tesselating\tesselating\garment_of_reality_chestplate.json
 dc8cba335d0536857320afe8dce64833341efa29 data\dimdoors\recipes\stone_door.json
@@ -74,8 +74,8 @@ a2a6cab3cccfb05747a9680e61bd47ad36e39208 data\dimdoors\recipes\tesselating\stabl
 9dad1d9334ffb1632db93625cc6d6ea5f6ab7911 data\dimdoors\advancements\recipes\misc\gray_fabric.json
 8f8e6748827f64f841b8a56067d416e6b94b900c data\dimdoors\recipes\tesselating\fuzzy_fireball.json
 1e9492e7e5791293ee3f14814464df9d1c09d95d data\dimdoors\advancements\recipes\tesselating\tesselating\world_thread_chestplate.json
-cb761c50b71b86dba31d50e574f919fa0fe14713 data\dimdoors\advancements\recipes\misc\magenta_fabric.json
 4ac920d8f75d81b00b2075c98a35891cc64958a3 data\dimdoors\recipes\brown_fabric.json
+cb761c50b71b86dba31d50e574f919fa0fe14713 data\dimdoors\advancements\recipes\misc\magenta_fabric.json
 85f89c84d93936bfdf8a007f29dc28448f6ac0cd data\dimdoors\recipes\tesselating\fabric_of_reality.json
 039f9b7c45c2cebac9d6c0f62e6034babd6cdb5f data\dimdoors\recipes\black_fabric.json
 6e8b43e140d4a299474c21f0d0ae6fef17fe4614 data\dimdoors\advancements\recipes\tesselating\tesselating\fabric_of_reality.json

@@ -4,16 +4,12 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
-
-import java.util.function.BiConsumer;
 
 public class LootTableProvider extends FabricBlockLootTableProvider {
 
@@ -25,8 +21,8 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 			for (RegistrySupplier<Block> block : ModBlocks.FABRIC_BLOCKS.values()) {
 				this.dropWhenSilkTouch(block.get());
 			}
-			this.dropSelf(ModBlocks.GOLD_DOOR.get());
-			this.dropSelf(ModBlocks.QUARTZ_DOOR.get());
+			this.door(ModBlocks.GOLD_DOOR.get());
+			this.door(ModBlocks.QUARTZ_DOOR.get());
 //		this.addDropWithSilkTouch(ModBlocks.OAK_DIMENSIONAL_DOOR);
 //		this.addDropWithSilkTouch(ModBlocks.IRON_DIMENSIONAL_DOOR);
 //		this.addDropWithSilkTouch(ModBlocks.GOLD_DIMENSIONAL_DOOR);
@@ -107,4 +103,8 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 			this.dropSelf(ModBlocks.UNRAVELED_SPIKE.get());
 			this.dropSelf(ModBlocks.GRITTY_STONE.get());
 		}
+
+	private void door(Block block) {
+		this.add(block, this::createDoorTable);
+	}
 }

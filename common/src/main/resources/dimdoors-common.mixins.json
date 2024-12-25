@@ -7,6 +7,7 @@
     "ArgumentTypesMixin",
     "BlockMixin",
     "DoorBlockMixin",
+    "DoublePlantBlockMixin",
     "EntityMixin",
     "ExplosionMixin",
     "ExtendedServerPlayNetworkhandlerMixin",
