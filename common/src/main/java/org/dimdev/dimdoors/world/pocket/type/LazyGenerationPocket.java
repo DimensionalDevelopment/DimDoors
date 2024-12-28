@@ -1,8 +1,15 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
+import com.mojang.datafixers.kinds.App;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -10,14 +17,37 @@ import org.dimdev.dimdoors.api.util.BlockBoxUtil;
 import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.Map;
+import java.util.function.Function;
 
 public class LazyGenerationPocket extends Pocket {
 	public static String KEY = "lazy_gen_pocket";
 
+	public static final MapCodec<LazyGenerationPocket> CODEC = RecordCodecBuilder.<LazyGenerationPocket>mapCodec(new Function<RecordCodecBuilder.Instance<LazyGenerationPocket>, App<RecordCodecBuilder.Mu<LazyGenerationPocket>, LazyGenerationPocket>>() {
+		@Override
+		public App<RecordCodecBuilder.Mu<LazyGenerationPocket>, LazyGenerationPocket> apply(RecordCodecBuilder.Instance<LazyGenerationPocket> lazyGenerationPocketInstance) {
+			return lazyGenerationPocketInstance.group(
+
+			);
+		}
+	})
+
 	private LazyPocketGenerator generator;
 	private int toBeGennedChunkCount = 0;
+
+	public LazyGenerationPocket() {
+		super();
+	}
+
+	public LazyGenerationPocket(int id, ResourceKey<Level> world, int range, BoundingBox box, VirtualLocation virtualLocation, Map<ResourceLocation, PocketAddon> addons, LazyPocketGenerator generator, int toBeGennedChunkCount) {
+		super(id, world, range, box, virtualLocation, addons);
+        this.generator = generator;
+        this.toBeGennedChunkCount = toBeGennedChunkCount;
+    }
+
 
 	public void chunkLoaded(LevelChunk chunk) {
 		if (isDoneGenerating()) return;
@@ -70,7 +100,7 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	@Override
-	public Pocket fromNbt(CompoundTag nbt) {
+	public V fromNbt(CompoundTag nbt) {
 		super.fromNbt(nbt);
 
 		if (nbt.contains("generator", Tag.TAG_COMPOUND)) generator = (LazyPocketGenerator) PocketGenerator.deserialize(nbt.getCompound("generator"));

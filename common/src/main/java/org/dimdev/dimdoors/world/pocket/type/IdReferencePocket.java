@@ -10,9 +10,7 @@ import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
-import java.util.function.Function;
-
-public class IdReferencePocket extends AbstractPocket<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder> {
+public class IdReferencePocket extends AbstractPocket {
 	public static final MapCodec<IdReferencePocket> CODEC = RecordCodecBuilder.mapCodec(instance ->
 			AbstractPocket.commonCodecFields(instance)
 					.and(Codec.INT.fieldOf("referenced_id").forGetter(IdReferencePocket::getReferencedId)
@@ -34,7 +32,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket, IdRefer
 	}
 
 	@Override
-	public IdReferencePocket fromNbt(CompoundTag nbt) {
+	public V fromNbt(CompoundTag nbt) {
 		super.fromNbt(nbt);
 
 		this.referencedId = nbt.getInt("referenced_id");

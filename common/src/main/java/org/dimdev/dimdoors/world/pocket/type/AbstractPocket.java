@@ -10,6 +10,7 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -45,17 +46,16 @@ public abstract class AbstractPocket {
 		return id;
 	}
 
-	public static AbstractPocket<? extends AbstractPocket<?>> deserialize(CompoundTag nbt) {
+	public static AbstractPocket deserialize(CompoundTag nbt) {
 		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
-		return REGISTRY.get(id).fromNbt(nbt);
+		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
 	}
 
 	public static AbstractPocketBuilder<?, ?> deserializeBuilder(CompoundTag nbt) {
-		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
-		return REGISTRY.get(id).builder().fromNbt(nbt);
+		return BUILDER_CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
 	}
 
-	public static CompoundTag serialize(AbstractPocket<?> pocket) {
+	public static CompoundTag serialize(AbstractPocket pocket) {
 		return pocket.toNbt(new CompoundTag());
 	}
 
@@ -93,12 +93,12 @@ public abstract class AbstractPocket {
 		return world;
 	}
 
-	public record AbstractPocketType<U extends AbstractPocket, T extends AbstractPocketBuilder<T, U>(MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {
+	public record AbstractPocketType<U extends AbstractPocket, T extends AbstractPocketBuilder<T, U>>(MapCodec<U> mapCodec, MapCodec<T> builderMapCodec, Supplier<U> builder) {
 		public static final RegistrySupplier<AbstractPocketType<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket.CODEC, IdReferencePocket.IdReferencePocketBuilder.CODEC, IdReferencePocket::new);
 
-		RegistrySupplier<AbstractPocketType<Pocket>> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket.CODEC, Pocket.AbstractPocketBuilder.CODEC, Pocket::new);
-		RegistrySupplier<AbstractPocketType<PrivatePocket>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
-		RegistrySupplier<AbstractPocketType<LazyGenerationPocket>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
+		public static final RegistrySupplier<AbstractPocketType<PocketImpl, PocketImpl.PocketImplBuilder>> POCKET = register(DimensionalDoors.id(PocketImpl.KEY), PocketImpl.CODEC, PocketImpl.PocketImplBuilder.CODEC, PocketImpl::new);
+		public static final RegistrySupplier<AbstractPocketType<PrivatePocket>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
+		public static final RegistrySupplier<AbstractPocketType<LazyGenerationPocket>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
 
 		public static void register() {
 		}

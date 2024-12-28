@@ -22,12 +22,7 @@ public interface Modifier {
 
 	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
 
-	Codec<Modifier> STRING_CODEC = Codec.STRING.xmap(new Function<String, Modifier>() {
-		@Override
-		public Modifier apply(String s) {
-			return PocketLoader.getInstance().getModifiers().getOrDefault(s, NoneModifer.INSTANCE);
-		}
-	}, new Function<Modifier, String>() {
+	Codec<Modifier> STRING_CODEC = Codec.STRING.xmap(s -> PocketLoader.getInstance().getModifiers().getOrDefault(s, NoneModifer.INSTANCE), new Function<Modifier, String>() {
 		@Override
 		public String apply(Modifier modifier) {
 			throw new RuntimeException("Serialization of modifier reference not supported.");

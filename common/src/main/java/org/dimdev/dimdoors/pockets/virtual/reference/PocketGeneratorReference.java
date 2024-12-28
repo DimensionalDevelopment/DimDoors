@@ -163,29 +163,31 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 
 		this.applyModifiers(parameters, manager);
 
-		if (pocket instanceof LazyGenerationPocket) {
-			if (!(generator instanceof LazyPocketGenerator)) throw new RuntimeException("pocket was instance of LazyGenerationPocket but generator was not instance of LazyPocketGenerator");
-			LazyGenerationPocket lazyPocket = (LazyGenerationPocket) pocket;
-			LazyPocketGenerator clonedGenerator = ((LazyPocketGenerator) generator).cloneWithLazyModifiers(originalOrigin);
-			if (setupLoot != null) clonedGenerator.setSetupLoot(setupLoot);
+		if (pocket instanceof LazyGenerationPocket lazyPocket) {
+            if (generator instanceof LazyPocketGenerator lazyPocketGenerator) {
+                LazyPocketGenerator clonedGenerator = lazyPocketGenerator.cloneWithLazyModifiers(originalOrigin);
+                if (setupLoot != null) clonedGenerator.setSetupLoot(setupLoot);
 
-			attachLazyModifiers(clonedGenerator);
-			clonedGenerator.attachToPocket(lazyPocket);
-			lazyPocket.init();
+                attachLazyModifiers(clonedGenerator);
+                clonedGenerator.attachToPocket(lazyPocket);
+                lazyPocket.init();
 
-			alreadyLoadedChunks.forEach(lazyPocket::chunkLoaded);
+                alreadyLoadedChunks.forEach(lazyPocket::chunkLoaded);
 
-			LazyPocketGenerator.currentlyGenerating = false;
+                LazyPocketGenerator.currentlyGenerating = false;
 
-			while (!LazyPocketGenerator.generationQueue.isEmpty()) {
-				LevelChunk chunk = LazyPocketGenerator.generationQueue.remove();
+                while (!LazyPocketGenerator.generationQueue.isEmpty()) {
+                    LevelChunk chunk = LazyPocketGenerator.generationQueue.remove();
 
-				LazyCompatibleModifier.runQueuedModifications(chunk);
-				MinecraftServer server = DimensionalDoors.getServer();
-				DimensionalDoors.getServer().tell(new TickTask(server.getTickCount(), () -> (lazyPocket).chunkLoaded(chunk)));
-			}
-			LazyCompatibleModifier.runLeftoverModifications(DimensionalDoors.getWorld(lazyPocket.getWorld()));
-		} else {
+                    LazyCompatibleModifier.runQueuedModifications(chunk);
+                    MinecraftServer server = DimensionalDoors.getServer();
+                    DimensionalDoors.getServer().tell(new TickTask(server.getTickCount(), () -> (lazyPocket).chunkLoaded(chunk)));
+                }
+                LazyCompatibleModifier.runLeftoverModifications(DimensionalDoors.getWorld(lazyPocket.getWorld()));
+            } else {
+                throw new RuntimeException("pocket was instance of LazyGenerationPocket but generator was not instance of LazyPocketGenerator");
+            }
+        } else {
 			LazyPocketGenerator.currentlyGenerating = false;
 			LazyPocketGenerator.generationQueue.clear();
 		}

@@ -15,7 +15,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PocketBase;
 
-public class SkyAddon implements AutoSyncedAddon {
+public class SkyAddon implements PocketAddon {
 	public static final MapCodec<SkyAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			ResourceLocation.CODEC.fieldOf("effect").forGetter(SkyAddon::getEffect),
 			Codec.LONG.fieldOf("dayTime").forGetter(SkyAddon::getDayTime),

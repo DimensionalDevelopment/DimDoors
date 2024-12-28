@@ -78,7 +78,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public boolean applicable(PocketBase<?, ?> pocket) {
+	public boolean applicable(Pocket pocket) {
 		return pocket instanceof PrivatePocket;
 	}
 
@@ -128,7 +128,7 @@ public class DyeableAddon implements PocketAddon {
 		// TODO: add some Pocket#init so that we can have boolean shouldRepaintOnInit
 
 		@Override
-		public void apply(PocketBase<?, ?> pocket) {
+		public void apply(Pocket pocket) {
 			DyeableAddon addon = new DyeableAddon();
 			addon.dyeColor = dyeColor;
 			pocket.addAddon(addon);

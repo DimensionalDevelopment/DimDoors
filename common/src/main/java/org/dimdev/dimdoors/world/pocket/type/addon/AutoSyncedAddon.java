@@ -24,7 +24,7 @@ public interface AutoSyncedAddon extends PocketAddon {
 
 		buf.writeInt(addons.size());
 		for (AutoSyncedAddon addon : addons) {
-			buf.writeResourceLocation(addon.getType().identifier());
+			buf.writeResourceLocation(addon.getType().id());
 			addon.write(buf);
 		}
 		return buf;
