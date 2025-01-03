@@ -72,15 +72,15 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				if (DimensionalDoors.getWorld(targetWorldResourceKey) != null) {
 					LOGGER.log(Level.INFO, "Sending player from limbo to the exit dimension, good luck!");
 					var level = DimensionalDoors.getWorld(targetWorldResourceKey);
-					destLoc = new Location(level, level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, entity.blockPosition()));
+					destLoc = new Location(level, Location.getHeightmapPosSafe(level, Heightmap.Types.WORLD_SURFACE, entity.blockPosition()));
 				} else {
 					LOGGER.log(Level.INFO, "Target dimension defined in config does not exist.  Use /forge dimensions for a list!");
 					LOGGER.log(Level.INFO, "Sending player from limbo to worldspawn, good luck!");
-					destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getHeightmapPos(Heightmap.Types.WORLD_SURFACE, DimensionalDoors.getServer().overworld().getSharedSpawnPos()));
+					destLoc = new Location(DimensionalDoors.getServer().overworld(), Location.getHeightmapPosSafe(DimensionalDoors.getServer().overworld(), Heightmap.Types.WORLD_SURFACE, DimensionalDoors.getServer().overworld().getSharedSpawnPos()));
 				}
 			} else {
 				LOGGER.log(Level.INFO, "sending player from limbo to worldspawn, good luck!");
-				destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getHeightmapPos(Heightmap.Types.WORLD_SURFACE, DimensionalDoors.getServer().overworld().getSharedSpawnPos()));
+				destLoc = new Location(DimensionalDoors.getServer().overworld(), Location.getHeightmapPosSafe(DimensionalDoors.getServer().overworld(), Heightmap.Types.WORLD_SURFACE, DimensionalDoors.getServer().overworld().getSharedSpawnPos()));
 			}
 
 

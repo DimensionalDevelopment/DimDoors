@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
 
@@ -100,5 +101,12 @@ public class Location {
 				ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
 				new BlockPos(pos[0], pos[1], pos[2])
 		);
+	}
+
+	public static BlockPos getHeightmapPosSafe(ServerLevel level, Heightmap.Types heightmapType, BlockPos pos) {
+		if (!level.isLoaded(pos)){
+			level.getChunkAt(pos);
+		}
+		return level.getHeightmapPos(heightmapType, pos);
 	}
 }
