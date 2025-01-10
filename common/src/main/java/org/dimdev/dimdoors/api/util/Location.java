@@ -103,10 +103,11 @@ public class Location {
 		);
 	}
 
+	//Does not check for "hasChunk" like getHeightmapPos. Is that safe? I don't know. But it fixes teleporting at bedrock.
 	public static BlockPos getHeightmapPosSafe(ServerLevel level, Heightmap.Types heightmapType, BlockPos pos) {
-		if (!level.isLoaded(pos)){
-			level.getChunkAt(pos);
-		}
-		return level.getHeightmapPos(heightmapType, pos);
+		//net.minecraft.world.level.Level, taken directly from getHeight
+		var y = level.getChunkAt(pos).getHeight(heightmapType, pos.getX() & 15, pos.getZ() & 15) + 1;
+
+		return new BlockPos(pos.getX(), y, pos.getZ());
 	}
 }
