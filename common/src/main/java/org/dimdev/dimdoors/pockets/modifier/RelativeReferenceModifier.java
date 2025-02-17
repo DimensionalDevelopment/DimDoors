@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.StringRepresentable;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -36,15 +35,7 @@ public class RelativeReferenceModifier extends AbstractModifier {
         this.connection = connection;
     }
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-		point_a = nbt.getInt("point_a");
-		point_b = nbt.getInt("point_b");
-		connection = nbt.contains("connection") ? ConnectionType.fromString(nbt.getString("connection")) : ConnectionType.BOTH;
-		return this;
-	}
-
-	@Override
+    @Override
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 		nbt.putInt("point_a", point_a);

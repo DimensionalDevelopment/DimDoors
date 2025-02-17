@@ -3,8 +3,6 @@ package org.dimdev.dimdoors.world.pocket.type;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -29,24 +27,6 @@ public class IdReferencePocket extends AbstractPocket {
 
 	public int getReferencedId() {
 		return referencedId;
-	}
-
-	@Override
-	public V fromNbt(CompoundTag nbt) {
-		super.fromNbt(nbt);
-
-		this.referencedId = nbt.getInt("referenced_id");
-
-		return this;
-	}
-
-	@Override
-	public CompoundTag toNbt(CompoundTag nbt) {
-		nbt = super.toNbt(nbt);
-
-		nbt.putInt("referenced_id", referencedId);
-
-		return nbt;
 	}
 
 	@Override
@@ -81,18 +61,6 @@ public class IdReferencePocket extends AbstractPocket {
 			IdReferencePocket pocket = super.build();
 			pocket.referencedId = referencedId;
 			return pocket;
-		}
-
-		@Override
-		public IdReferencePocketBuilder fromNbt(CompoundTag nbt) {
-			if (nbt.contains("referenced_id", Tag.TAG_INT)) referencedId = nbt.getInt("referenced_id");
-			return this;
-		}
-
-		@Override
-		public CompoundTag toNbt(CompoundTag nbt) {
-			if (referencedId != Integer.MIN_VALUE) nbt.putInt("referenced_id", referencedId);
-			return nbt;
 		}
 
 		@Override

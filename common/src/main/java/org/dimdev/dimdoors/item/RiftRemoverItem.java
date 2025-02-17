@@ -2,9 +2,11 @@ package org.dimdev.dimdoors.item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -17,13 +19,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
@@ -35,7 +37,7 @@ import java.util.Objects;
 
 public class RiftRemoverItem extends Item {
 	public static final String ID = "rift_remover";
-	public static final ResourceLocation REMOVED_RIFT_LOOT_TABLE = DimensionalDoors.id("removed_rift");
+	public static final ResourceKey<LootTable> REMOVED_RIFT_LOOT_TABLE = ResourceKey.create(Registries.LOOT_TABLE, DimensionalDoors.id("removed_rift"));
 
 	public RiftRemoverItem(Item.Properties settings) {
 		super(settings);
@@ -68,7 +70,7 @@ public class RiftRemoverItem extends Item {
 			if (!Objects.requireNonNull(rift).closing) {
 				rift.setClosing(true);
 				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1);
-				stack.hurtAndBreak(10, player.getRandom(), player, () -> player.broadcastBreakEvent(slot));
+				stack.hurtAndBreak(10, player.getRandom(), (ServerPlayer) player, () -> player.broadcastBreakEvent(slot));
 				var pos = ((BlockHitResult) hit).getBlockPos();
 				LootParams ctx = new LootParams.Builder((ServerLevel) world)
 						.withParameter(LootContextParams.BLOCK_STATE, world.getBlockState(pos))
@@ -77,7 +79,7 @@ public class RiftRemoverItem extends Item {
 						.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
 						.create(LootContextParamSets.BLOCK);
 
-				 ((ServerLevel) world).getServer().getLootData().getLootTable(REMOVED_RIFT_LOOT_TABLE).getRandomItems(ctx).forEach(stack1 -> {
+				 ((ServerLevel) world).getServer().reloadableRegistries().getLootTable(REMOVED_RIFT_LOOT_TABLE).getRandomItems(ctx).forEach(stack1 -> {
 					Containers.dropItemStack(world, ((BlockHitResult) hit).getBlockPos().getX(), ((BlockHitResult) hit).getBlockPos().getY(), ((BlockHitResult) hit).getBlockPos().getZ(), stack1);
 				});
 

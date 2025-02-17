@@ -1,25 +1,20 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.InteractionEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class PreventBlockModificationAddon implements AutoSyncedAddon { //InteractionEvent.LeftClickBlock/*, PlayerBlockBreakEvents.Before TODO: Figure out*/, UseItemOnBlockCallback {
+public enum PreventBlockModificationAddon implements PocketAddon { //InteractionEvent.LeftClickBlock/*, PlayerBlockBreakEvents.Before TODO: Figure out*/, UseItemOnBlockCallback {
+	INSTANCE;
+
 	public static ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");
+
+	public static MapCodec<PreventBlockModificationAddon> CODEC = MapCodec.unit(INSTANCE);
+	public static StreamCodec<RegistryFriendlyByteBuf, PreventBlockModificationAddon> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
 	//AttackBlockCallback
 
@@ -51,22 +46,7 @@ public class PreventBlockModificationAddon implements AutoSyncedAddon { //Intera
 //	}
 
 	@Override
-	public AutoSyncedAddon read(FriendlyByteBuf buf) {
-		return this;
-	}
-
-	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) {
-		return buf;
-	}
-
-	@Override
-	public PocketAddon fromNbt(CompoundTag nbt) {
-		return this;
-	}
-
-	@Override
-	public PocketAddonType<? extends PocketAddon> getType() {
+	public PocketAddonType<PreventBlockModificationAddon, PreventBlockModificationBuilderAddon> getType() {
 		return PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get();
 	}
 
@@ -75,11 +55,12 @@ public class PreventBlockModificationAddon implements AutoSyncedAddon { //Intera
 		return ID;
 	}
 
-	public static class PreventBlockModificationBuilderAddon implements PocketBuilderAddon<PreventBlockModificationAddon> {
+	public static class PreventBlockModificationBuilderAddon implements PocketBuilderAddon<PreventBlockModificationAddon, PreventBlockModificationBuilderAddon> {
+		public static MapCodec<PreventBlockModificationBuilderAddon> CODEC = MapCodec.unit(new PreventBlockModificationBuilderAddon());
 
 		@Override
 		public void apply(Pocket pocket) {
-			pocket.addAddon(new PreventBlockModificationAddon());
+			pocket.addAddon(INSTANCE);
 		}
 
 		@Override
@@ -88,12 +69,7 @@ public class PreventBlockModificationAddon implements AutoSyncedAddon { //Intera
 		}
 
 		@Override
-		public PocketBuilderAddon<PreventBlockModificationAddon> fromNbt(CompoundTag nbt) {
-			return this;
-		}
-
-		@Override
-		public PocketAddonType<PreventBlockModificationAddon> getType() {
+		public PocketAddonType<PreventBlockModificationAddon, PreventBlockModificationBuilderAddon> getType() {
 			return PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get();
 		}
 	}

@@ -30,15 +30,12 @@ public class PocketImpl extends Pocket {
         return AbstractPocketType.POCKET.get();
     }
 
-    @Override
-    public void ensureIsPocket() {
-        super.ensureIsPocket();
+    public static PocketImplBuilder builder() {
+        return new PocketImpl.PocketImplBuilder();
     }
 
     public static class PocketImplBuilder extends PocketBuilder<PocketImplBuilder, PocketImpl> {
         public static final MapCodec<PocketImplBuilder> CODEC = RecordCodecBuilder.<PocketImplBuilder>mapCodec(instance -> commonPocketBuilderFields(instance).apply(instance, PocketImplBuilder::configure));
-
-
 
         @Override
         public AbstractPocketType<PocketImpl, PocketImplBuilder> getType() {

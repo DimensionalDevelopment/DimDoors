@@ -4,9 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -38,26 +36,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractLazyModifier {
 
 	}
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-		// TODO: rifts from resource
-		serializedRifts = StreamUtils.execute(() -> nbt.getList("rifts", Tag.TAG_COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
-				.filter(compound -> {
-					if (compound.contains("Pos")) {
-						return true;
-					}
-					LOGGER.error("Discarding rift on deserialization since \"Pos\" tag was not set.");
-					return false;
-				})
-				.collect(Collectors.toConcurrentMap(compound -> {
-					int[] ints = compound.getIntArray("Pos");
-					return new BlockPos(ints[0], ints[1], ints[2]);
-				}, compound -> compound)));
-
-		return this;
-	}
-
-	@Override
+    @Override
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowResource) {
 		super.toNbtInternal(nbt, allowResource);
 

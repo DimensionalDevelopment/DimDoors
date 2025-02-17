@@ -3,8 +3,8 @@ package org.dimdev.dimdoors.item;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -128,7 +128,7 @@ public class RiftBladeItem extends SwordItem {
 
 
 			// Apply damage to the item stack
-			stack.hurtAndBreak(1, player.getRandom(), player, () -> player.broadcastBreakEvent(equipmentSlot));
+			stack.hurtAndBreak(1, player.getRandom(), (ServerPlayer) player, () -> player.broadcastBreakEvent(equipmentSlot));
 
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		} else if (RaycastHelper.hitsDetachedRift(hit, world)) {
@@ -139,7 +139,7 @@ public class RiftBladeItem extends SwordItem {
 			world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
 			((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
-			stack.hurtAndBreak(1, player.getRandom(), player, () -> player.broadcastBreakEvent(equipmentSlot));
+			stack.hurtAndBreak(1, player.getRandom(), (ServerPlayer) player, () -> player.broadcastBreakEvent(equipmentSlot));
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);

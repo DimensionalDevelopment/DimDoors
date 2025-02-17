@@ -5,13 +5,13 @@ import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
 public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.DyeablePocket {
 	public static String KEY = "private_pocket";
 
-	public static PrivatePocketBuilder<?, PrivatePocket> builderPrivatePocket() {
-		return new PrivatePocketBuilder<>(AbstractPocketType.PRIVATE_POCKET.get());
+	public static PrivatePocketBuilder builderPrivatePocket() {
+		return new PrivatePocketBuilder();
 	}
 
-	public static class PrivatePocketBuilder<P extends PrivatePocketBuilder<P, T>, T extends PrivatePocket> extends PocketBuilder<P, T> implements DyeableAddon.DyeablePocketBuilder<P> {
+	public static class PrivatePocketBuilder extends PocketBuilder<PrivatePocketBuilder, PrivatePocket> implements DyeableAddon.DyeablePocketBuilder<PrivatePocketBuilder> {
 		protected PrivatePocketBuilder() {
-			super(type);
+			super();
 		}
 
 		@Override
@@ -22,13 +22,13 @@ public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.
 		}
 
 		@Override
-		public AbstractPocketType<T, P> getType() {
-			return AbstractPocketType
+		public AbstractPocketType<PrivatePocket, PrivatePocketBuilder> getType() {
+			return AbstractPocketType.PRIVATE_POCKET.get();
 		}
 	}
 
 	@Override
-	public AbstractPocketType<?> getType() {
+	public AbstractPocketType<?, ?> getType() {
 		return AbstractPocketType.PRIVATE_POCKET.get();
 	}
 

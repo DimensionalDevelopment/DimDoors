@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.dimdoors.world.pocket.type.PocketBase;
 
 public class SkyAddon implements PocketAddon {
 	public static final MapCodec<SkyAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -21,6 +21,7 @@ public class SkyAddon implements PocketAddon {
 			Codec.LONG.fieldOf("dayTime").forGetter(SkyAddon::getDayTime),
 			Codec.BYTE.fieldOf("moonPhase").forGetter(SkyAddon::getMoonPhase)
 	).apply(instance, SkyAddon::new));
+
 	public static final StreamCodec<RegistryFriendlyByteBuf, SkyAddon> STREAM_CODEC = StreamCodec.composite(ResourceLocation.STREAM_CODEC, SkyAddon::getEffect, ByteBufCodecs.VAR_LONG, SkyAddon::getDayTime,  ByteBufCodecs.BYTE, SkyAddon::getMoonPhase, SkyAddon::new);
 
 	public static ResourceLocation ID = DimensionalDoors.id("sky");
@@ -72,7 +73,7 @@ public class SkyAddon implements PocketAddon {
 	}
 
 	@Override
-	public PocketAddonType<? extends PocketAddon> getType() {
+	public PocketAddonType<?, ?> getType() {
 		return PocketAddonType.SKY_ADDON.get();
 	}
 
@@ -85,24 +86,7 @@ public class SkyAddon implements PocketAddon {
 		return effect;
 	}
 
-	@Override
-	public AutoSyncedAddon read(FriendlyByteBuf buf) {
-		this.effect = buf.readResourceLocation();
-		this.dayTime = buf.readLong();
-		this.moonPhase = buf.readByte();
-		return this;
-	}
-
-	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) {
-		buf.writeResourceLocation(effect);
-		buf.writeLong(dayTime);
-		buf.writeByte(moonPhase);
-		return buf;
-	}
-
-
-	public interface SkyPocketBuilder<T extends PocketBase.PocketBaseBuilder<T, ?>> extends PocketBuilderExtension<T> {
+	public interface SkyPocketBuilder<T extends AbstractPocket.AbstractPocketBuilder<T, ?>> extends PocketBuilderExtension<T> {
 		default T dimenionType(ResourceLocation effect) {
 
 			this.<SkyBuilderAddon>getAddon(ID).effect = effect;
@@ -125,11 +109,22 @@ public class SkyAddon implements PocketAddon {
 		}
 	}
 
-	public static class SkyBuilderAddon implements PocketBuilderAddon<SkyAddon> {
+	public static class SkyBuilderAddon implements PocketBuilderAddon<SkyAddon, SkyBuilderAddon> {
+		public static MapCodec<SkyBuilderAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                ResourceLocation.CODEC.optionalFieldOf("effect", BuiltinDimensionTypes.OVERWORLD_EFFECTS).forGetter(a -> a.effect),
+                Codec.LONG.optionalFieldOf("dayTime", 12000L).forGetter(a -> a.dayTime),
+                Codec.BYTE.optionalFieldOf("moonPhase", (byte) 0).forGetter(a -> a.moonPhase)
+        ).apply(instance, SkyBuilderAddon::new));
 
 		private ResourceLocation effect = BuiltinDimensionTypes.OVERWORLD_EFFECTS;
 		private long dayTime = 12000L;
 		private byte moonPhase = 0;
+
+		private SkyBuilderAddon(ResourceLocation effect, long dayTime, byte moonPhase) {
+			this.effect = effect;
+			this.dayTime = dayTime;
+			this.moonPhase = moonPhase;
+		}
 
 		@Override
 		public void apply(Pocket pocket) {
@@ -143,27 +138,7 @@ public class SkyAddon implements PocketAddon {
 		}
 
 		@Override
-		public PocketBuilderAddon<SkyAddon> fromNbt(CompoundTag nbt) {
-			this.effect = ResourceLocation.tryParse(nbt.getString("effect"));
-			this.dayTime = nbt.getLong("dayTime");
-			this.moonPhase = nbt.getByte("moonPhase");
-
-			return this;
-		}
-
-		@Override
-		public CompoundTag toNbt(CompoundTag nbt) {
-			PocketBuilderAddon.super.toNbt(nbt);
-
-			nbt.putString("effect", effect.toString());
-			nbt.putLong("dayTime", dayTime);
-			nbt.putByte("moonPhase", moonPhase);
-
-			return nbt;
-		}
-
-		@Override
-		public PocketAddonType<SkyAddon> getType() {
+		public PocketAddonType<SkyAddon, SkyBuilderAddon> getType() {
 			return PocketAddonType.SKY_ADDON.get();
 		}
 	}

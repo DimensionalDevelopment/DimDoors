@@ -51,7 +51,7 @@ public record DecayPattern(List<DecayCondition> conditions, DecayResult result) 
         return world.getRandom().nextFloat() < result.worldThreadChance();
     }
 
-    private interface EntropyEvent {
+    public interface EntropyEvent {
         void entropy(Level world, BlockPos pos, int entorpy);
     }
 }

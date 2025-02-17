@@ -137,7 +137,7 @@ public final class Decay {
 		}
 
 		private DecayPattern loadPattern(JsonElement json, ResourceLocation ignored) {
-			return JsonOps.INSTANCE.withDecoder(DecayPattern.CODEC).apply(json).getOrThrow(false, Decay.LOGGER::error).getFirst();
+			return JsonOps.INSTANCE.withDecoder(DecayPattern.CODEC).apply(json).getOrThrow().getFirst();
 		}
 
 		public Collection<DecayPattern> getPatterns(Object object) {

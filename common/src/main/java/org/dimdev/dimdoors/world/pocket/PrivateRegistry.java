@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.world.pocket;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -21,6 +23,11 @@ import java.util.stream.Collectors;
 
 public class PrivateRegistry {
 	protected static class PocketInfo {
+		public final Codec<PocketInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				ResourceKey.codec(Registries.DIMENSION).fieldOf("world").forGetter(a -> a.world),
+				Codec.INT.fieldOf("id").forGetter(a -> a.id)
+		).apply(instance, PocketInfo::new));
+
 		public final ResourceKey<Level> world;
 		public final int id;
 
@@ -46,10 +53,15 @@ public class PrivateRegistry {
 
 	private static final String DATA_NAME = "dimdoors_private_pockets";
 
-	protected BiMap<UUID, PocketInfo> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
+	protected BiMap<UUID, PocketInfo> privatePocketMap; // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
 
 	public PrivateRegistry() {
+		this(HashBiMap.create());
 	}
+
+	private PrivateRegistry(BiMap<UUID, PocketInfo> privatePocketMap) {
+        this.privatePocketMap = privatePocketMap;
+    }
 
 	public void fromNbt(CompoundTag nbt) {
 		privatePocketMap.clear();

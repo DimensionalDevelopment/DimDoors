@@ -1,11 +1,9 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.math.Equation;
@@ -33,22 +31,6 @@ public class OffsetModifier extends AbstractModifier {
         this.offsetY = offsetY;
         this.offsetZ = offsetZ;
     }
-
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-		try {
-			offsetX = nbt.contains("offset_x") ? nbt.getString("offset_x") : "0";
-			offsetXEquation = Equation.parse(offsetX);
-			offsetY = nbt.contains("offset_y") ? nbt.getString("offset_y") : "0";
-			offsetYEquation = Equation.parse(offsetY);
-			offsetZ = nbt.contains("offset_z") ? nbt.getString("offset_z") : "0";
-			offsetZEquation = Equation.parse(offsetZ);
-		} catch (Equation.EquationParseException e) {
-			LOGGER.error(e);
-		}
-
-		return this;
-	}
 
 	@Override
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {

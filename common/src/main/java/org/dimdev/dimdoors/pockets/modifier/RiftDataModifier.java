@@ -5,14 +5,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.GeneralUtil;
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -21,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class RiftDataModifier extends AbstractModifier {
@@ -41,20 +37,7 @@ public class RiftDataModifier extends AbstractModifier {
 		this.ids = ids;
 	}
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-		// TODO: RiftData via ResourceManager
-		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
-			doorDataReference = nbt.getString("rift_data");
-			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
-		}
-		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
-
-		ids = stream(nbt.getByteArray("ids")).boxed().collect(Collectors.toList());
-		return this;
-	}
-
-	public static IntStream stream(byte[] bytes) {
+    public static IntStream stream(byte[] bytes) {
 		ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		return IntStream.generate(buffer::get).limit(buffer.remaining());
 	}

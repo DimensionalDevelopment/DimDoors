@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.pockets.generator;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -30,15 +31,20 @@ import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.PocketImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext> {
 	private static final Logger LOGGER = LogManager.getLogger();
-	public static final Registrar<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
+	public static final Registrar<PocketGeneratorType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
+	public static final Codec<PocketGeneratorType<?>> POCKET_TYPE_CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
+	public static final Codec<PocketGenerator> CODEC = POCKET_TYPE_CODEC.dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec);
+
 	public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
@@ -175,10 +181,10 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 				default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", modNbt.getType()));
 			}
 		}
-		if (modifiersNbt.size() > 0) nbt.put("modifiers", modifiersNbt);
-		if (modifierReferences.size() > 0) nbt.put("modifier_references", modifierReferences);
+		if (!modifiersNbt.isEmpty()) nbt.put("modifiers", modifiersNbt);
+		if (!modifierReferences.isEmpty()) nbt.put("modifier_references", modifierReferences);
 
-		if (tags.size() > 0) {
+		if (!tags.isEmpty()) {
 			ListTag nbtList = new ListTag();
 			for (String nbtStr : tags) {
 				nbtList.add(StringTag.valueOf(nbtStr));
@@ -264,12 +270,12 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
 	public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationContext parameters) { // TODO: PocketBuilder from json
 		if (builderNbt == null){
-			return Pocket.builder()
+			return PocketImpl.builder()
 					.expand(getSize(parameters));
 		}
 		AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.deserializeBuilder(builderNbt);
 		if (! (abstractBuilder instanceof Pocket.PocketBuilder)) {
-			return Pocket.builder()
+			return PocketImpl.builder()
 					.expand(getSize(parameters));
 		}
 		Pocket.PocketBuilder<?, ?> builder = (Pocket.PocketBuilder<?, ?>) abstractBuilder;

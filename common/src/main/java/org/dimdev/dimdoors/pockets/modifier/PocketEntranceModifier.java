@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
@@ -30,12 +29,7 @@ public class PocketEntranceModifier extends AbstractModifier {
 		return id;
 	}
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-		return new PocketEntranceModifier(nbt.getInt("id"));
-	}
-
-	@Override
+    @Override
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 

@@ -1,16 +1,18 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
-import com.mojang.datafixers.kinds.App;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
@@ -26,14 +28,10 @@ import java.util.function.Function;
 public class LazyGenerationPocket extends Pocket {
 	public static String KEY = "lazy_gen_pocket";
 
-	public static final MapCodec<LazyGenerationPocket> CODEC = RecordCodecBuilder.<LazyGenerationPocket>mapCodec(new Function<RecordCodecBuilder.Instance<LazyGenerationPocket>, App<RecordCodecBuilder.Mu<LazyGenerationPocket>, LazyGenerationPocket>>() {
-		@Override
-		public App<RecordCodecBuilder.Mu<LazyGenerationPocket>, LazyGenerationPocket> apply(RecordCodecBuilder.Instance<LazyGenerationPocket> lazyGenerationPocketInstance) {
-			return lazyGenerationPocketInstance.group(
-
-			);
-		}
-	})
+	public static final MapCodec<LazyGenerationPocket> CODEC = RecordCodecBuilder.<LazyGenerationPocket>mapCodec(instance -> commonPocketFields(instance).and(
+            PocketGenerator.CODEC.flatXmap(pocketGenerator -> pocketGenerator instanceof LazyPocketGenerator lazy ? DataResult.success(lazy) : DataResult.error(() -> "Pocket Generator doesn't extend LazyPocketGenerator"), DataResult::success).optionalFieldOf("generator", null).forGetter(a -> a.generator)).and(
+            Codec.INT.optionalFieldOf("toBeGennedChunkCount", 0).forGetter(a -> a.toBeGennedChunkCount)
+    ).apply(instance, LazyGenerationPocket::new));
 
 	private LazyPocketGenerator generator;
 	private int toBeGennedChunkCount = 0;
@@ -81,17 +79,7 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	@Override
-	public CompoundTag toNbt(CompoundTag nbt) {
-		super.toNbt(nbt);
-
-		if (generator != null) nbt.put("generator", generator.toNbt(new CompoundTag()));
-		if (toBeGennedChunkCount > 0) nbt.putInt("to_be_genned_chunks", toBeGennedChunkCount);
-
-		return nbt;
-	}
-
-	@Override
-	public AbstractPocketType<?> getType() {
+	public AbstractPocketType<?, ?> getType() {
 		return AbstractPocketType.LAZY_GENERATION_POCKET.get();
 	}
 
@@ -116,12 +104,21 @@ public class LazyGenerationPocket extends Pocket {
 	}
 
 	public static LazyGenerationPocketBuilder<?, LazyGenerationPocket> builderLazyGenerationPocket() {
-		return new LazyGenerationPocketBuilder<>(AbstractPocketType.LAZY_GENERATION_POCKET.get());
+		return new LazyGenerationPocketBuilder<>();
 	}
 
 	public static class LazyGenerationPocketBuilder<P extends LazyGenerationPocketBuilder<P, T>, T extends LazyGenerationPocket> extends PocketBuilder<P, T> {
-		protected LazyGenerationPocketBuilder(AbstractPocketType<T> type) {
-			super(type);
+		protected LazyGenerationPocketBuilder(Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range) {
+			super(origin, size, virtualLocation, range);
+		}
+
+		protected LazyGenerationPocketBuilder() {
+			super();
+		}
+
+		@Override
+		public AbstractPocketType<T, P> getType() {
+			return AbstractPocketType.LAZY_GENERATION_POCKET.get();
 		}
 	}
 }

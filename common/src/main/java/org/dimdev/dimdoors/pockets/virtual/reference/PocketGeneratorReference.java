@@ -1,15 +1,13 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ChunkHolder;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,26 +21,34 @@ import org.dimdev.dimdoors.pockets.modifier.LazyCompatibleModifier;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
-import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
+public abstract class PocketGeneratorReference implements ImplementedVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	protected String weight;
 	protected Equation weightEquation;
 	protected Boolean setupLoot;
-	protected final List<Modifier> modifierList = Lists.newArrayList();
-	protected final List<CompoundTag> addons = new ArrayList<>();
+	protected List<Modifier> modifierList;
+	protected List<PocketAddon.PocketBuilderAddon<?, ?>> addons;
+
+	public PocketGeneratorReference(String weight, Boolean setupLoot, List<Modifier> modifierList, List<PocketAddon.PocketBuilderAddon<?, ?>> addons) {
+        this.weight = weight;
+        this.setupLoot = setupLoot;
+        this.modifierList = modifierList;
+        this.addons = addons;
+
+		parseWeight();
+    }
 
 	private void parseWeight() {
 		try {
@@ -62,59 +68,14 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		}
 	}
 
-	@Override
-	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, ResourceManager manager) {
-		if (nbt.contains("weight")) { // override referenced pockets weight
-			this.weight = nbt.getString("weight");
-			parseWeight();
-		}
+	public static  <T extends PocketGeneratorReference> Products.P4<RecordCodecBuilder.Mu<T>, String, Boolean, List<Modifier>, List<PocketAddon.PocketBuilderAddon<?, ?>>> commonFields(RecordCodecBuilder.Instance<T> instance) {
+		return instance.group(
+				Codec.STRING.optionalFieldOf("weight", null).forGetter(a -> a.weight),
+				Codec.BOOL.optionalFieldOf("setup_loot", false).forGetter(a -> a.setupLoot),
+				Modifier.CODEC.listOf().optionalFieldOf("modifiers", null).forGetter(a -> a.modifierList),
+				PocketAddon.BUILDER_CODEC.listOf().optionalFieldOf("addons", null).forGetter(a -> a.addons)
+		);
 
-		if (nbt.contains("setup_loot")) setupLoot = nbt.getBoolean("setup_loot");
-
-		if (nbt.contains("modifiers")) {
-			ListTag modifiersNbt = nbt.getList("modifiers", 10);
-			for (int i = 0; i < modifiersNbt.size(); i++) {
-				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i), manager));
-			}
-		}
-		if (nbt.contains("modifier_references")) {
-			ListTag modifiersNbt = nbt.getList("modifier_references", Tag.TAG_STRING);
-			for (Tag nbtElement : modifiersNbt) {
-				modifierList.add(Modifier.deserialize(nbtElement, manager));
-			}
-		}
-
-		if (nbt.contains("addons", Tag.TAG_LIST)) {
-			ListTag addonsNbt = nbt.getList("addons", 10);
-			for (int i = 0; i < addonsNbt.size(); i++) {
-				// TODO: something with the ResourceManager??? Probably need AddonBuilder now.
-				addons.add(addonsNbt.getCompound(i));
-			}
-		}
-
-		return this;
-	}
-
-	@Override
-	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-
-		if (weight != null) nbt.putString("weight", weight);
-
-		if (setupLoot != null) nbt.putBoolean("setup_loot", setupLoot);
-
-		ListTag modifiersNbt = new ListTag();
-		// TODO: deserialize with ResourceManager
-		for (Modifier modifier : modifierList) {
-			modifiersNbt.add(modifier.toNbt(new CompoundTag()));
-		}
-		if (modifiersNbt.size() > 0) nbt.put("modifiers", modifiersNbt);
-
-		ListTag addonsNbt = new ListTag();
-		// TODO: something with the ResourceManager??? Probably need AddonBuilder now.
-		addonsNbt.addAll(addons);
-		if (addonsNbt.size() > 0) nbt.put("addons", addonsNbt);
-
-		return nbt;
 	}
 
 	@Override

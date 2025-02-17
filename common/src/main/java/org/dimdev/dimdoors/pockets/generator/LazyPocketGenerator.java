@@ -42,7 +42,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	// LazyPocketGenerator handles attaching itself so that it can drop itself if it has already generated everything necessary.
 	public void attachToPocket(LazyGenerationPocket pocket) {
 		// We assume that this LazyPocketGenerator has not been cloned yet if the modifier list has any entries since it should be empty at this stage
-		if (this.modifierList.size() > 0) throw new UnsupportedOperationException("Cannot attach LazyPocketGenerator that has not been cloned yet to pocket");
+		if (!this.modifierList.isEmpty()) throw new UnsupportedOperationException("Cannot attach LazyPocketGenerator that has not been cloned yet to pocket");
 		pocket.attachGenerator(this);
 	}
 
@@ -75,7 +75,7 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
 		super.toNbtInternal(nbt, allowReference);
 
-		if (lazyModifierList.size() > 0) {
+		if (!lazyModifierList.isEmpty()) {
 			List<Tag> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new CompoundTag(), allowReference)).toList();
 
 			ListTag lazyModifiersNbt = new ListTag();

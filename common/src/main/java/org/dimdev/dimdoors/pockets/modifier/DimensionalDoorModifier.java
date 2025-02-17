@@ -1,19 +1,13 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.apache.logging.log4j.LogManager;
@@ -21,20 +15,17 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.GeneralUtil;
 import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.api.util.math.Equation;
-import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	public static final MapCodec<DimensionalDoorModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
@@ -42,8 +33,8 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 			GeneralUtil.DIMENSIONAL_DOOR_BLOCK_CODEC.fieldOf("door_type").forGetter(a -> a.doorType),
 			GeneralUtil.RIFT_DATA_CODEC.fieldOf("rift_data").forGetter(a -> a.doorData),
 			Equation.CODEC.fieldOf("x").forGetter(a -> a.x),
-			Equation.CODEC.fieldOf("x").forGetter(a -> a.y),
-			Equation.CODEC.fieldOf("x").forGetter(a -> a.z)
+			Equation.CODEC.fieldOf("y").forGetter(a -> a.y),
+			Equation.CODEC.fieldOf("z").forGetter(a -> a.z)
 			).apply(instance, DimensionalDoorModifier::new)
 	);
 
@@ -72,41 +63,6 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
         this.y = y;
         this.z = z;
     }
-
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-		String facingString = nbt.getString("facing");
-		facing = Direction.byName(nbt.getString("facing"));
-		if (facing == null || facing.getAxis().isVertical()) {
-			throw new RuntimeException("Could not interpret facing direction \"" + facingString + "\"");
-		}
-
-		doorTypeString = nbt.getString("door_type");
-		Block doorBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(doorTypeString));
-		if (!(doorBlock instanceof DimensionalDoorBlock)) {
-			throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
-		}
-		doorType = (DimensionalDoorBlock) doorBlock;
-
-		// TODO: rift data via ResourceManager
-		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
-			doorDataReference = nbt.getString("rift_data");
-			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
-		} else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
-
-		try {
-			x = nbt.getString("x");
-			y = nbt.getString("y");
-			z = nbt.getString("z");
-
-			xEquation = Equation.parse(x);
-			yEquation = Equation.parse(y);
-			zEquation = Equation.parse(z);
-		} catch (EquationParseException e) {
-			LOGGER.error(e);
-		}
-		return this;
-	}
 
 	@Override
 	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {

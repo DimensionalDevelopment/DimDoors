@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.world.pocket;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
@@ -10,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -23,27 +26,41 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class PocketDirectory {
+	public static final Codec<PocketDirectory> CODEC = RecordCodecBuilder.<PocketDirectory>create(instance -> instance.group(
+					ResourceKey.codec(Registries.DIMENSION).fieldOf("world_key").forGetter(directory -> directory.worldKey),
+					Codec.INT.fieldOf("grid_size").forGetter(directory -> directory.gridSize),
+					Codec.INT.fieldOf("private_pocket_size").forGetter(directory -> directory.privatePocketSize),
+					Codec.INT.fieldOf("public_pocket_size").forGetter(directory -> directory.publicPocketSize),
+					CodecUtils.<Integer, Integer, SortedMap<Integer, Integer>>listMap(Codec.INT, Codec.INT, TreeMap::new).fieldOf("next_id_map").forGetter(directory -> directory.nextIDMap),
+					CodecUtils.<Integer, AbstractPocket, Map<Integer, AbstractPocket>>listMap(Codec.INT, AbstractPocket.CODEC, HashMap::new).fieldOf("pockets").forGetter(a -> a.pockets))
+			.apply(instance, PocketDirectory::new));
+
 	int gridSize; // Determines how much pockets in their dimension are spaced
 	int privatePocketSize;
 	int publicPocketSize;
-	Map<Integer, AbstractPocket<?>> pockets;
+	Map<Integer, AbstractPocket> pockets;
 	private SortedMap<Integer, Integer> nextIDMap;
 	ResourceKey<Level> worldKey;
 
+
 	public PocketDirectory(ResourceKey<Level> worldKey) {
-		this.gridSize = DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize;
-		this.worldKey = worldKey;
-		this.nextIDMap = new TreeMap<>();
-		this.pockets = new HashMap<>();
+		this(worldKey, DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize, 0, 0, new TreeMap<>(), new HashMap<>());
 	}
 
 	@TestOnly
 	public PocketDirectory(ResourceKey<Level> worldKey, int gridSize) {
-		this.gridSize = gridSize;
-		this.worldKey = worldKey;
-		this.nextIDMap = new TreeMap<>();
-		this.pockets = new HashMap<>();
+		this(worldKey, gridSize, 0, 0, new TreeMap<>(), new HashMap<>());
 	}
+
+	public PocketDirectory(ResourceKey<Level> worldKey, Integer gridSize, Integer privatePocketSize, Integer publicPocketSize, SortedMap<Integer, Integer> nextIDMap, Map<Integer, AbstractPocket> pockets) {
+        this.worldKey = worldKey;
+        this.gridSize = gridSize;
+        this.privatePocketSize = privatePocketSize;
+        this.publicPocketSize = publicPocketSize;
+        this.nextIDMap = nextIDMap;
+        this.pockets = pockets;
+    }
+
 
 	public static PocketDirectory readFromNbt(String id, CompoundTag nbt) {
 		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(id)));
@@ -141,7 +158,7 @@ public class PocketDirectory {
 		return pocket;
 	}
 
-	private void addPocket(AbstractPocket<?> pocket) {
+	private void addPocket(AbstractPocket pocket) {
 		pockets.put(pocket.getId(), pocket);
 	}
 
@@ -156,7 +173,7 @@ public class PocketDirectory {
 	 * @return The pocket which occupies the GridPos represented by that ID, or null if there was no pocket occupying that GridPos.
 	 */
 	public Pocket getPocket(int id) {
-		AbstractPocket<?> pocket = this.pockets.get(id);
+		AbstractPocket pocket = this.pockets.get(id);
 		return pocket == null ? null : pocket.getReferencedPocket(this);
 	}
 
@@ -223,7 +240,7 @@ public class PocketDirectory {
 		return this.publicPocketSize;
 	}
 
-	public Map<Integer, AbstractPocket<?>> getPockets() {
+	public Map<Integer, AbstractPocket> getPockets() {
 		return this.pockets;
 	}
 }

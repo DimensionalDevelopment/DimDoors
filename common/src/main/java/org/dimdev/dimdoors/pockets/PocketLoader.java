@@ -51,9 +51,9 @@ public class PocketLoader implements ResourceManagerReloadListener {
 
 		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/json", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.composeIdentity(), ResourceUtil.PATH_KEY_PROVIDER).join();
 		CompletableFuture<SimpleTree<String, Modifier>> futureModifiers = ResourceUtil.loadResourcePathToMap(manager, "pockets/modifier", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC)), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(pocketGeneratorLoader(manager, DimensionalDoors.getServer().registryAccess())), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER);
 
 
@@ -93,10 +93,6 @@ public class PocketLoader implements ResourceManagerReloadListener {
 
 	public CompoundTag getDataNbtCompound(String id) {
 		return NbtUtil.asNbtCompound(getDataNbt(id), "Could not convert Tag \"" + id + "\" to CompoundTag!");
-	}
-
-	private BiFunction<Tag, Path<String>, VirtualPocket> virtualPocketLoader(ResourceManager manager) {
-		return (nbt, ignore) -> VirtualPocket.deserialize(nbt, manager);
 	}
 
 	public <T> BiFunction<JsonElement, Path<String>, T> jsonCodecLoader(Codec<T> codec) {

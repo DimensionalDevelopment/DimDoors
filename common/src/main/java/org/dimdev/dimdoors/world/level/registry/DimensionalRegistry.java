@@ -1,8 +1,15 @@
 package org.dimdev.dimdoors.world.level.registry;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DimensionalRegistry extends SavedData {
@@ -32,13 +40,38 @@ public class DimensionalRegistry extends SavedData {
 	private static final ProxyData instance = new ProxyData();
 
 	public static void init(MinecraftServer server) {
-		server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<ProxyData>(() -> instance, compoundTag -> {
+		server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<ProxyData>(() -> instance, (compoundTag, provider) -> {
             readFromNbt(compoundTag);
             return instance;
         }, DataFixTypes.LEVEL /*TODO: FIgure out if correct for a singlemon data*/), "dimensional_registry");
 	}
 
+	public static Codec<DimensionalRegistry> CODEC_BASE = RecordCodecBuilder.create(instance -> instance.group(
+
+	));
+
+	public static Codec<DimensionalRegistry> CODEC = Codec.PASSTHROUGH.comapFlatMap((Function<Dynamic<?>, DataResult<DimensionalRegistry>>) dynamic -> {
+        int riftDataVersion = dynamic.get("RiftDataVersion").asInt(-1);
+
+		if(riftDataVersion == -1) riftDataVersion = dynamic.get("version").asInt(-1);
+
+        if (riftDataVersion < 0) {
+            throw new IllegalStateException("RiftDataVersion can not be invalid");
+        } else if (riftDataVersion < RIFT_DATA_VERSION) {
+            dynamic = RiftSchemas.update(riftDataVersion, dynamic);
+        } else if (RIFT_DATA_VERSION < riftDataVersion) {
+            throw new UnsupportedOperationException("Downgrading is not supported!");
+        }
+
+        return dynamic.read(CODEC_BASE);
+    }, dimensionalRegistry -> {
+        var tag = CODEC_BASE.encodeStart(NbtOps.INSTANCE, dimensionalRegistry).getPartialOrThrow();
+        var dynamic = new Dynamic<>(NbtOps.INSTANCE, tag);
+        return dynamic.set("version", dynamic.createInt(RIFT_DATA_VERSION));
+    });
+
 	public static void readFromNbt(CompoundTag nbt) {
+
 		int riftDataVersion = nbt.getInt("RiftDataVersion");
 		if (riftDataVersion < RIFT_DATA_VERSION) {
 			nbt = RiftSchemas.update(riftDataVersion, nbt);
@@ -69,7 +102,7 @@ public class DimensionalRegistry extends SavedData {
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compoundTag) {
+	public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
 		writeToNbt(compoundTag);
 
 		return compoundTag;
@@ -117,7 +150,7 @@ public class DimensionalRegistry extends SavedData {
 	private static class ProxyData extends SavedData {
 
 		@Override
-		public CompoundTag save(CompoundTag compoundTag) {
+		public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
 			DimensionalRegistry.writeToNbt(compoundTag);
 			return compoundTag;
 		}

@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -14,27 +17,41 @@ import org.dimdev.dimdoors.block.AncientFabricBlock;
 import org.dimdev.dimdoors.block.FabricBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.dimdoors.world.pocket.type.PocketBase;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class DyeableAddon implements PocketAddon {
-	public static ResourceLocation ID = DimensionalDoors.id("dyeable");
+	public static final MapCodec<DyeableAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+			PocketColor.CODEC.optionalFieldOf("dyeColor", PocketColor.WHITE).forGetter(a -> a.dyeColor),
+			PocketColor.CODEC.optionalFieldOf("nextDyeColor", PocketColor.NONE).forGetter(a -> a.nextDyeColor),
+			Codec.INT.optionalFieldOf("count", 0).forGetter(a -> a.count)
+	).apply(instance, DyeableAddon::new));
+	public static final ResourceLocation ID = DimensionalDoors.id("dyeable");
 
 	private static final int BLOCKS_PAINTED_PER_DYE = 1000000;
 
-	protected PocketColor dyeColor = PocketColor.WHITE;
-	private PocketColor nextDyeColor = PocketColor.NONE;
-	private int count = 0;
+	protected PocketColor dyeColor;
+	private PocketColor nextDyeColor;
+	private int count;
 
-	private static int amountOfDyeRequiredToColor(PocketBase<?, ?> pocket) {
+	public DyeableAddon() {
+		this(PocketColor.WHITE, PocketColor.NONE, 0);
+	}
+
+	public DyeableAddon(PocketColor dyeColor, PocketColor nextDyeColor, int count) {
+        this.dyeColor = dyeColor;
+        this.nextDyeColor = nextDyeColor;
+        this.count = count;
+    }
+
+	private static int amountOfDyeRequiredToColor(Pocket pocket) {
 		int outerVolume = pocket.getBox().getYSpan() * pocket.getBox().getZSpan() * pocket.getBox().getXSpan();
 		int innerVolume = (pocket.getBox().getYSpan() - 5) * (pocket.getBox().getZSpan() - 5) * (pocket.getBox().getXSpan() - 5);
 
 		return Math.max((outerVolume - innerVolume) / BLOCKS_PAINTED_PER_DYE, 1);
 	}
 
-	private void repaint(PocketBase<?, ?> pocket, DyeColor dyeColor) {
+	private void repaint(Pocket pocket, DyeColor dyeColor) {
 		Level serverWorld = DimensionalDoors.getWorld(pocket.getWorld());
 		BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).getOrNull().defaultBlockState();;
 		BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).getOrNull().defaultBlockState();;
@@ -48,7 +65,7 @@ public class DyeableAddon implements PocketAddon {
 		});
 	}
 
-	public boolean addDye(PocketBase<?, ?> pocket, Entity entity, DyeColor dyeColor) {
+	public boolean addDye(Pocket pocket, Entity entity, DyeColor dyeColor) {
 		PocketColor color = PocketColor.from(dyeColor);
 
 		int maxDye = amountOfDyeRequiredToColor(pocket);
@@ -104,7 +121,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public PocketAddonType<? extends PocketAddon> getType() {
+	public PocketAddonType<DyeableAddon, DyeableBuilderAddon> getType() {
 		return PocketAddonType.DYEABLE_ADDON.get();
 	}
 
@@ -113,7 +130,7 @@ public class DyeableAddon implements PocketAddon {
 		return ID;
 	}
 
-	public interface DyeablePocketBuilder<T extends PocketBase.PocketBaseBuilder<T, ?>> extends PocketBuilderExtension<T> {
+	public interface DyeablePocketBuilder<T extends Pocket.PocketBuilder<T, ?>> extends PocketBuilderExtension<T> {
 		default T dyeColor(PocketColor dyeColor) {
 
 			this.<DyeableBuilderAddon>getAddon(ID).dyeColor = dyeColor;
@@ -122,10 +139,21 @@ public class DyeableAddon implements PocketAddon {
 		}
 	}
 
-	public static class DyeableBuilderAddon implements PocketBuilderAddon<DyeableAddon> {
+	public static class DyeableBuilderAddon implements PocketBuilderAddon<DyeableAddon, DyeableBuilderAddon> {
+		public static final MapCodec<DyeableBuilderAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+				PocketColor.CODEC.optionalFieldOf("dyeColor", PocketColor.NONE).forGetter(a -> a.dyeColor)
+		).apply(instance, DyeableBuilderAddon::new));
 
 		private PocketColor dyeColor = PocketColor.NONE;
 		// TODO: add some Pocket#init so that we can have boolean shouldRepaintOnInit
+
+		public DyeableBuilderAddon() {
+			this(PocketColor.NONE);
+		}
+
+		public DyeableBuilderAddon(PocketColor dyeColor) {
+			this.dyeColor = dyeColor;
+		}
 
 		@Override
 		public void apply(Pocket pocket) {
@@ -140,23 +168,7 @@ public class DyeableAddon implements PocketAddon {
 		}
 
 		@Override
-		public PocketBuilderAddon<DyeableAddon> fromNbt(CompoundTag nbt) {
-			this.dyeColor = PocketColor.from(nbt.getInt("dye_color"));
-
-			return this;
-		}
-
-		@Override
-		public CompoundTag toNbt(CompoundTag nbt) {
-			PocketBuilderAddon.super.toNbt(nbt);
-
-			nbt.putInt("dye_color", dyeColor.getId());
-
-			return nbt;
-		}
-
-		@Override
-		public PocketAddonType<DyeableAddon> getType() {
+		public PocketAddonType<DyeableAddon, DyeableBuilderAddon> getType() {
 			return PocketAddonType.DYEABLE_ADDON.get();
 		}
 	}
@@ -167,9 +179,9 @@ public class DyeableAddon implements PocketAddon {
 			if (!this.hasAddon(ID)) {
 				DyeableAddon addon = new DyeableAddon();
 				this.addAddon(addon);
-				return addon.addDye((PocketBase<?, ?>) this, entity, dyeColor);
+				return addon.addDye((Pocket) this, entity, dyeColor);
 			}
-			return this.<DyeableAddon>getAddon(ID).addDye((PocketBase<?, ?>) this, entity, dyeColor);
+			return this.<DyeableAddon>getAddon(ID).addDye((Pocket) this, entity, dyeColor);
 		}
 	}
 }

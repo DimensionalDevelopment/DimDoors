@@ -18,6 +18,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.function.Function;
 
 public interface Modifier {
+	Codec<Modifier> CODEC = Codec.unit(Modifier::new);
 	Registrar<ModifierType<? extends Modifier>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ModifierType<? extends Modifier>>builder(DimensionalDoors.id("modifier_type")).build();
 
 	String RESOURCE_STARTING_PATH = "pockets/modifier"; //TODO: might want to restructure data packs
@@ -30,8 +31,6 @@ public interface Modifier {
 	});
 
 	Codec<Modifier> CODEC = ResourceLocation.CODEC.dispatch(modifier -> REGISTRY.getId(modifier.getType()), resourceLocation -> REGISTRY.get(resourceLocation).mapCodec());
-
-	Codec<Modifier> CODEC_COMPOSITE = Codec.withAlternative(CODEC, STRING_CODEC);
 
 	static Modifier deserialize(Tag nbt, ResourceManager manager) {
 		return switch (nbt.getId()) {
@@ -66,21 +65,9 @@ public interface Modifier {
 	}
 
 
-	Modifier fromNbt(CompoundTag nbt, ResourceManager manager);
-
-	default Modifier fromNbt(CompoundTag nbt) {
-		return fromNbt(nbt, null);
-	}
-
 	default Tag toNbt(CompoundTag nbt, boolean allowReference) {
 		return this.getType().toNbt(nbt);
 	}
-
-	default Tag toNbt(CompoundTag nbt) {
-		return toNbt(nbt, false);
-	}
-
-	void setResourceKey(String resourceKey);
 
 	String getResourceKey();
 

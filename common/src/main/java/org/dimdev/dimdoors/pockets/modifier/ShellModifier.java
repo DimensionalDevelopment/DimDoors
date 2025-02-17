@@ -10,9 +10,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -141,27 +139,7 @@ public class ShellModifier extends AbstractLazyModifier {
 		}
 	}
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-		for (Tag layerNbt : nbt.getList("layers", Tag.TAG_COMPOUND)) {
-			CompoundTag nbtCompound = (CompoundTag) layerNbt;
-			try {
-				Layer layer = Layer.fromNbt(nbtCompound);
-				layers.add(layer);
-			} catch (CommandSyntaxException e) {
-				LOGGER.error("could not parse Layer: " + nbtCompound, e);
-			}
-		}
-
-		if (nbt.contains("box_to_draw_around", Tag.TAG_INT_ARRAY)) {
-			int[] box = nbt.getIntArray("box_to_draw_around");
-			boxToDrawAround = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
-		}
-
-		return this;
-	}
-
-	@Override
+    @Override
 	public ModifierType<? extends Modifier> getType() {
 		return ModifierType.SHELL_MODIFIER_TYPE.get();
 	}

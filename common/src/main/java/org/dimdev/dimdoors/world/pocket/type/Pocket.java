@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public abstract class Pocket extends AbstractPocket implements AddonProvider {
 
@@ -128,20 +126,6 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 		return this.box.getLength();
 	}
 
-	public CompoundTag toNbt(CompoundTag nbt) {
-		super.toNbt(nbt);
-
-		nbt.putInt("range", range);
-		nbt.putIntArray("box", IntStream.of(this.box.minX(), this.box.minY(), this.box.minZ(), this.box.maxX(), this.box.maxY(), this.box.maxZ()).toArray());
-		nbt.put("virtualLocation", VirtualLocation.toNbt(this.virtualLocation));
-
-		ListTag addonsTag = new ListTag();
-		addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
-		if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
-
-		return nbt;
-	}
-
 	public V fromNbt(CompoundTag nbt) {
 		super.fromNbt(nbt);
 
@@ -194,17 +178,13 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 		this.box.inflatedBy(amount);
 	}
 
-	public static PocketBuilder<?, Pocket> builder() {
-		return new PocketBuilder();
-	}
-
 	protected void setBox(BoundingBox box) {
 		this.box = box;
 	}
 
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
 	public static abstract class PocketBuilder<P extends PocketBuilder<P, T>, T extends Pocket> extends AbstractPocketBuilder<P, T> {
-		protected final Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?>> addons = new HashMap<>();
+		protected final Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons = new HashMap<>();
 
 		protected Vec3i origin = new Vec3i(0, 0, 0);
 		protected Vec3i size = new Vec3i(0, 0, 0);
@@ -213,10 +193,10 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 		protected int range = -1;
 
 		protected PocketBuilder() {
-			this(new HashMap<>());
+			this(new Vec3i(0,0,0), new Vec3i(0,0,0), null, -1);
 		}
 
-		protected PocketBuilder() {
+		protected PocketBuilder(Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range) {
             this.origin = origin;
             this.size = size;
             this.virtualLocation = virtualLocation;
@@ -231,38 +211,19 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 					.and(Vec3i.CODEC.optionalFieldOf("origin", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin))
 					.and(Vec3i.CODEC.optionalFieldOf("size", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin))
 					.and(VirtualLocation.CODEC.optionalFieldOf("virtualLocation", null).<P>forGetter(a -> a.virtualLocation))
-					.and(Codec.INT.optionalFieldOf("range", -1).<P>forGetter(a -> a.range));
+					.and(Codec.INT.optionalFieldOf("range", -1).<P>forGetter(a -> a.range))
+					.and(Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.BUILDER_CODEC).optionalFieldOf("addons", new HashMap<>()).forGetter(a -> a.addons));
 		}
 
 		public void initAddons() {
 
 		}
 
-		// TODO: actually utilize fromTag/ toTag methods + implement them
-		public P fromNbt(CompoundTag nbt) {
-			if (nbt.contains("addons", Tag.TAG_LIST)) {
-				for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
-					PocketAddon.PocketBuilderAddon<?> addon = PocketAddon.deserializeBuilder((CompoundTag) addonTag);
-					addons.put(addon.getId(), addon);
-				}
-			}
-
-			return getSelf();
-		}
-
-		public CompoundTag toNbt(CompoundTag nbt) {
-			ListTag addonsTag = new ListTag();
-			addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
-			if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
-
-			return nbt;
-		}
-
 		public boolean hasAddon(ResourceLocation id) {
 			return addons.containsKey(id);
 		}
 
-		protected <C extends PocketAddon.PocketBuilderAddon<?>> boolean addAddon(C addon) {
+		protected <C extends PocketAddon.PocketBuilderAddon<?, ?>> boolean addAddon(C addon) {
 			if (addon.applicable(this)) {
 				addon.addAddon(addons);
 				return true;
@@ -270,7 +231,7 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 			return false;
 		}
 
-		public <C extends PocketAddon.PocketBuilderAddon<?>> C getAddon(ResourceLocation id) {
+		public <C extends PocketAddon.PocketBuilderAddon<?, ?>> C getAddon(ResourceLocation id) {
 			return (C) addons.get(id);
 		}
 
