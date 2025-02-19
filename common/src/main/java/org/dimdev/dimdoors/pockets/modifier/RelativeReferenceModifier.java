@@ -4,7 +4,6 @@ import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import org.dimdev.dimdoors.api.util.Location;
@@ -16,7 +15,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Optional;
 
-public class RelativeReferenceModifier extends AbstractModifier {
+public class RelativeReferenceModifier implements Modifier {
 	public static final MapCodec<RelativeReferenceModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.INT.fieldOf("point_a").forGetter(a -> a.point_a),
 			Codec.INT.fieldOf("point_b").forGetter(a -> a.point_b),
@@ -34,15 +33,6 @@ public class RelativeReferenceModifier extends AbstractModifier {
         this.point_b = point_b;
         this.connection = connection;
     }
-
-    @Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
-		nbt.putInt("point_a", point_a);
-		nbt.putInt("point_b", point_b);
-		nbt.putString("connection", connection.getSerializedName());
-		return nbt;
-	}
 
 	@Override
 	public ModifierType<? extends Modifier> getType() {

@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.pockets.modifier;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.math.Equation;
@@ -13,7 +12,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OffsetModifier extends AbstractModifier {
+public class OffsetModifier implements Modifier {
 	public static final MapCodec<OffsetModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Equation.CODEC.optionalFieldOf("offset_x", Equation.ZERO).forGetter(a -> a.offsetX),
 			Equation.CODEC.optionalFieldOf("offset_y", Equation.ZERO).forGetter(a -> a.offsetY),
@@ -33,17 +32,6 @@ public class OffsetModifier extends AbstractModifier {
     }
 
 	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
-
-		if (!offsetX.equals("0")) nbt.putString("offset_x", offsetX);
-		if (!offsetY.equals("0")) nbt.putString("offset_y", offsetY);
-		if (!offsetZ.equals("0")) nbt.putString("offset_z", offsetZ);
-
-		return nbt;
-	}
-
-	@Override
 	public ModifierType<? extends Modifier> getType() {
 		return ModifierType.OFFSET_MODIFIER_TYPE.get();
 	}
@@ -56,6 +44,6 @@ public class OffsetModifier extends AbstractModifier {
 	@Override
 	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
-		builder.offsetOrigin(new Vec3i((int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap)));
+		builder.offsetOrigin(new Vec3i((int) offsetX.apply(variableMap), (int) offsetY.apply(variableMap), (int) offsetZ.apply(variableMap)));
 	}
 }

@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShellModifier extends AbstractLazyModifier {
+public class ShellModifier implements LazyModifier {
 	public static final MapCodec<ShellModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Layer.CODEC.listOf().fieldOf("layers").forGetter(a -> a.layers),
 			BoundingBox.CODEC.optionalFieldOf("box_to_draw_around", null).forGetter(a -> a.boxToDrawAround)
@@ -49,22 +48,6 @@ public class ShellModifier extends AbstractLazyModifier {
 	public ShellModifier(List<Layer> layers, BoundingBox boxToDrawAround) {
 		this.layers = layers;
 		this.boxToDrawAround = boxToDrawAround;
-	}
-
-	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
-
-		ListTag layersNbt = new ListTag();
-		for (Layer layer : layers) {
-			layersNbt.add(layer.toNbt());
-		}
-		nbt.put("layers", layersNbt);
-		if (boxToDrawAround != null) {
-			nbt.put("box_to_draw_around", BlockBoxUtil.toNbt(boxToDrawAround));
-		}
-
-		return nbt;
 	}
 
 	@Override

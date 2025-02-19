@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -97,27 +96,6 @@ public class DyeableAddon implements PocketAddon {
 	@Override
 	public boolean applicable(Pocket pocket) {
 		return pocket instanceof PrivatePocket;
-	}
-
-	@Override
-	public PocketAddon fromNbt(CompoundTag nbt) {
-
-		this.dyeColor = PocketColor.from(nbt.getInt("dyeColor"));
-		this.nextDyeColor = PocketColor.from(nbt.getInt("nextDyeColor"));
-		this.count = nbt.getInt("count");
-
-		return this;
-	}
-
-	@Override
-	public CompoundTag toNbt(CompoundTag nbt) {
-		PocketAddon.super.toNbt(nbt);
-
-		nbt.putInt("dyeColor", this.dyeColor.getId());
-		nbt.putInt("nextDyeColor", this.nextDyeColor.getId());
-		nbt.putInt("count", this.count);
-
-		return nbt;
 	}
 
 	@Override

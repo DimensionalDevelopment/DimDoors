@@ -1,14 +1,11 @@
 package org.dimdev.dimdoors.world.pocket;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
@@ -22,11 +19,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java.util.function.UnaryOperator;
 
 public class PocketDirectory {
-	public static final Codec<PocketDirectory> CODEC = RecordCodecBuilder.<PocketDirectory>create(instance -> instance.group(
+	public static final Codec<PocketDirectory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 					ResourceKey.codec(Registries.DIMENSION).fieldOf("world_key").forGetter(directory -> directory.worldKey),
 					Codec.INT.fieldOf("grid_size").forGetter(directory -> directory.gridSize),
 					Codec.INT.fieldOf("private_pocket_size").forGetter(directory -> directory.privatePocketSize),
@@ -41,7 +37,6 @@ public class PocketDirectory {
 	Map<Integer, AbstractPocket> pockets;
 	private SortedMap<Integer, Integer> nextIDMap;
 	ResourceKey<Level> worldKey;
-
 
 	public PocketDirectory(ResourceKey<Level> worldKey) {
 		this(worldKey, DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize, 0, 0, new TreeMap<>(), new HashMap<>());
@@ -61,43 +56,43 @@ public class PocketDirectory {
         this.pockets = pockets;
     }
 
-
-	public static PocketDirectory readFromNbt(String id, CompoundTag nbt) {
-		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(id)));
-		// no need to parallelize
-		directory.gridSize = nbt.getInt("grid_size");
-		directory.privatePocketSize = nbt.getInt("private_pocket_size");
-		directory.publicPocketSize = nbt.getInt("public_pocket_size");
-		// same thing, too short anyways
-		CompoundTag nextIdMapNbt = nbt.getCompound("next_id_map");
-		directory.nextIDMap.putAll(nextIdMapNbt.getAllKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapNbt::getInt)));
-
-		CompoundTag pocketsNbt = nbt.getCompound("pockets");
-		directory.pockets = pocketsNbt.getAllKeys().stream().unordered().map(key -> {
-			CompoundTag pocketNbt = pocketsNbt.getCompound(key);
-			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketNbt)));
-		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond));
-
-		return directory;
-	}
-
-	public CompoundTag writeToNbt() {
-		CompoundTag nbt = new CompoundTag();
-		nbt.putInt("grid_size", this.gridSize);
-		nbt.putInt("private_pocket_size", this.privatePocketSize);
-		nbt.putInt("public_pocket_size", this.publicPocketSize);
-
-		CompoundTag nextIdMapNbt = new CompoundTag();
-		this.nextIDMap.forEach((key, value) -> nextIdMapNbt.putInt(key.toString(), value));
-		nbt.put("next_id_map", nextIdMapNbt);
-
-		CompoundTag pocketsNbt = new CompoundTag();
-		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toNbt(new CompoundTag()))))
-				.map(CompletableFuture::join).sequential().forEach(pair -> pocketsNbt.put(pair.getFirst(), pair.getSecond()));
-		nbt.put("pockets", pocketsNbt);
-
-		return nbt;
-	}
+//
+//	public static PocketDirectory readFromNbt(Dynamic<?> id, Dynamic<?> nbt) {
+//		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(id)));
+//		// no need to parallelize
+//		directory.gridSize = nbt.get("grid_size").asInt(0);
+//		directory.privatePocketSize = nbt.getInt("private_pocket_size");
+//		directory.publicPocketSize = nbt.getInt("public_pocket_size");
+//		// same thing, too short anyways
+//		OptionalDynamic<?> nextIdMapNbt = nbt.get("next_id_map");
+//		directory.nextIDMap.putAll(nextIdMapNbt.getAllKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapNbt::getInt)));
+//
+//		CompoundTag pocketsNbt = nbt.getCompound("pockets");
+//		directory.pockets = pocketsNbt.getAllKeys().stream().unordered().map(key -> {
+//			CompoundTag pocketNbt = pocketsNbt.getCompound(key);
+//			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketNbt)));
+//		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond));
+//
+//		return directory;
+//	}
+//
+//	public CompoundTag writeToNbt() {
+//		CompoundTag nbt = new CompoundTag();
+//		nbt.putInt("grid_size", this.gridSize);
+//		nbt.putInt("private_pocket_size", this.privatePocketSize);
+//		nbt.putInt("public_pocket_size", this.publicPocketSize);
+//
+//		CompoundTag nextIdMapNbt = new CompoundTag();
+//		this.nextIDMap.forEach((key, value) -> nextIdMapNbt.putInt(key.toString(), value));
+//		nbt.put("next_id_map", nextIdMapNbt);
+//
+//		CompoundTag pocketsNbt = new CompoundTag();
+//		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toNbt())))
+//				.map(CompletableFuture::join).sequential().forEach(pair -> pocketsNbt.put(pair.getFirst(), pair.getSecond()));
+//		nbt.put("pockets", pocketsNbt);
+//
+//		return nbt;
+//	}
 
 	/**
 	 * Create a new blank pocket.
@@ -242,6 +237,52 @@ public class PocketDirectory {
 
 	public Map<Integer, AbstractPocket> getPockets() {
 		return this.pockets;
+	}
+
+	public static enum PocketRegistryProxyCodec implements RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> {
+		INSTANCE;
+
+		public static Map<ResourceKey<Level>, PocketDirectory> currentMap;
+
+		@Override
+		public DynamicOps<Map<ResourceKey<Level>, PocketDirectory>> ops() {
+			return null;
+		}
+
+		@Override
+		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> add(Map<ResourceKey<Level>, PocketDirectory> pocketDirectoryMap, Map<ResourceKey<Level>, PocketDirectory> t1) {
+			return null;
+		}
+
+		@Override
+		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> add(Map<ResourceKey<Level>, PocketDirectory> pocketDirectoryMap, DataResult<Map<ResourceKey<Level>, PocketDirectory>> dataResult) {
+			return null;
+		}
+
+		@Override
+		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> add(DataResult<Map<ResourceKey<Level>, PocketDirectory>> dataResult, DataResult<Map<ResourceKey<Level>, PocketDirectory>> dataResult1) {
+			return null;
+		}
+
+		@Override
+		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> withErrorsFrom(DataResult<?> dataResult) {
+			return null;
+		}
+
+		@Override
+		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> setLifecycle(Lifecycle lifecycle) {
+			return null;
+		}
+
+		@Override
+		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> mapError(UnaryOperator<String> unaryOperator) {
+			return null;
+		}
+
+		@Override
+		public DataResult<Map<ResourceKey<Level>, PocketDirectory>> build(Map<ResourceKey<Level>, PocketDirectory> pocketDirectoryMap) {
+			return null;
+		}
 	}
 }
 

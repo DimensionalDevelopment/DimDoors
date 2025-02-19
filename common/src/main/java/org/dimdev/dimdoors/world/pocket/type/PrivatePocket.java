@@ -1,6 +1,16 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+
+import java.util.Map;
 
 public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.DyeablePocket {
 	public static String KEY = "private_pocket";
@@ -10,6 +20,8 @@ public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.
 	}
 
 	public static class PrivatePocketBuilder extends PocketBuilder<PrivatePocketBuilder, PrivatePocket> implements DyeableAddon.DyeablePocketBuilder<PrivatePocketBuilder> {
+		public static final MapCodec<PrivatePocketBuilder> CODEC = RecordCodecBuilder.mapCodec(instance -> commonPocketBuilderFields(instance).apply(instance, PrivatePocketBuilder::configure));
+
 		protected PrivatePocketBuilder() {
 			super();
 		}
@@ -22,8 +34,12 @@ public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.
 		}
 
 		@Override
-		public AbstractPocketType<PrivatePocket, PrivatePocketBuilder> getType() {
+		public AbstractPocketType<PrivatePocket, PrivatePocket.PrivatePocketBuilder> getType() {
 			return AbstractPocketType.PRIVATE_POCKET.get();
+		}
+
+		private static PrivatePocket.PrivatePocketBuilder configure(int id, ResourceKey<Level> world, Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons) {
+			return builderPrivatePocket().id(id).world(world).offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation).addons(addons);
 		}
 	}
 

@@ -5,8 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
@@ -32,7 +30,7 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 				.and(Codec.INT.fieldOf("range").forGetter(a -> a.range))
 				.and(BoundingBox.CODEC.fieldOf("box").forGetter(a -> a.box))
 				.and(VirtualLocation.CODEC.fieldOf("virtualLocation").forGetter(a -> a.virtualLocation))
-				.and(Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.CODEC).xmap(m -> (Map<ResourceLocation, PocketAddon>) new HashMap<ResourceLocation, PocketAddon>(m), Function.identity()).optionalFieldOf("addons", new HashMap<>()).forGetter(a -> a.addons));
+				.and(Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.CODEC).xmap(m -> (Map<ResourceLocation, PocketAddon>) new HashMap<>(m), Function.identity()).optionalFieldOf("addons", new HashMap<>()).forGetter(a -> a.addons));
 	}
 
 	protected Map<ResourceLocation, PocketAddon> addons;
@@ -126,24 +124,6 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 		return this.box.getLength();
 	}
 
-	public V fromNbt(CompoundTag nbt) {
-		super.fromNbt(nbt);
-
-		this.range = nbt.getInt("range");
-		int[] box = nbt.getIntArray("box");
-		this.box = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
-		this.virtualLocation = VirtualLocation.fromNbt(nbt.getCompound("virtualLocation"));
-
-		if (nbt.contains("addons", Tag.TAG_LIST)) {
-			for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
-				PocketAddon addon = PocketAddon.deserialize((CompoundTag) addonTag);
-				addons.put(addon.getId(), addon);
-			}
-		}
-
-		return this;
-	}
-
 	public Map<BlockPos, BlockEntity> getBlockEntities() {
 		Level serverWorld = DimensionalDoors.getWorld(this.getWorld());
 		Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
@@ -206,7 +186,7 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
         }
 
 
-		protected static <P extends PocketBuilder<?, ?>> Products.P6<RecordCodecBuilder.Mu<P>, Integer, ResourceKey<Level>, Vec3i, Vec3i, VirtualLocation, Integer> commonPocketBuilderFields(RecordCodecBuilder.Instance<P> instance) {
+		protected static <P extends PocketBuilder<?, ?>> Products.P7<RecordCodecBuilder.Mu<P>, Integer, ResourceKey<Level>, Vec3i, Vec3i, VirtualLocation, Integer, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>>> commonPocketBuilderFields(RecordCodecBuilder.Instance<P> instance) {
 			return commonCodecFields(instance)
 					.and(Vec3i.CODEC.optionalFieldOf("origin", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin))
 					.and(Vec3i.CODEC.optionalFieldOf("size", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin))
@@ -229,6 +209,11 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 				return true;
 			}
 			return false;
+		}
+
+		public P addons(Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?,?>> addons) {
+			this.addons.putAll(addons);
+			return (P) this;
 		}
 
 		public <C extends PocketAddon.PocketBuilderAddon<?, ?>> C getAddon(ResourceLocation id) {

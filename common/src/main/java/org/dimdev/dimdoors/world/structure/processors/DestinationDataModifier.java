@@ -1,9 +1,13 @@
 package org.dimdev.dimdoors.world.structure.processors;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
@@ -17,14 +21,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DestinationDataModifier extends StructureProcessor {
-    private final Map<Integer, CompoundTag> destinations;
+    private final Map<Integer, Tag> destinations;
 
-    private DestinationDataModifier(Map<Integer, CompoundTag> destinations) {
+    private DestinationDataModifier(Map<Integer, Tag> destinations) {
         this.destinations = destinations;
     }
 
     public static DestinationDataModifier of(Map<Integer, VirtualTarget> destinations) {
-        return new DestinationDataModifier(destinations.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> VirtualTarget.toNbt(entry.getValue()))));
+        return new DestinationDataModifier(destinations.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, input -> VirtualTarget.toNbt(input.getValue()))));
     }
 
     public static DestinationDataModifier of(int id, VirtualTarget data) {
@@ -35,10 +39,10 @@ public class DestinationDataModifier extends StructureProcessor {
         return of(0, data);
     }
 
-    public static final Codec<DestinationDataModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.unboundedMap(Codec.STRING.xmap(Integer::parseInt, String::valueOf), CompoundTag.CODEC).fieldOf("destinations").forGetter(DestinationDataModifier::destinations)).apply(instance, DestinationDataModifier::new));
+    public static final MapCodec<DestinationDataModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.unboundedMap(Codec.STRING.xmap(Integer::parseInt, String::valueOf), Codec.PASSTHROUGH.xmap(a -> a.convert(NbtOps.INSTANCE).getValue(), a -> new Dynamic<>(NbtOps.INSTANCE, a))).fieldOf("destinations").forGetter(DestinationDataModifier::destinations)).apply(instance, DestinationDataModifier::new));
 
-    public Map<Integer, CompoundTag> destinations() {
+    public Map<Integer, Tag> destinations() {
         return destinations;
     }
 

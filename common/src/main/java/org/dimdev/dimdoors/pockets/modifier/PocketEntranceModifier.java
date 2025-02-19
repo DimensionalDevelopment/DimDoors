@@ -4,13 +4,12 @@ import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class PocketEntranceModifier extends AbstractModifier {
+public class PocketEntranceModifier implements Modifier {
 	public static final MapCodec<PocketEntranceModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(Codec.INT.fieldOf("id").forGetter(PocketEntranceModifier::getId)).apply(instance, PocketEntranceModifier::new));
 
 	public static final String KEY = "pocket_entrance";
@@ -27,15 +26,6 @@ public class PocketEntranceModifier extends AbstractModifier {
 
 	public Integer getId() {
 		return id;
-	}
-
-    @Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
-
-		nbt.putInt("id", id);
-
-		return nbt;
 	}
 
 	@Override

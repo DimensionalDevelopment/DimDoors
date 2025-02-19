@@ -37,23 +37,9 @@ public enum PocketColor implements StringRepresentable {
 		return this.color;
 	}
 
-	public Integer getId() {
-		return this.id;
-	}
-
 	public static PocketColor from(DyeColor color) {
 		for (PocketColor a : PocketColor.values()) {
 			if (color == a.color) {
-				return a;
-			}
-		}
-
-		return NONE;
-	}
-
-	public static PocketColor from(int id) {
-		for (PocketColor a : PocketColor.values()) {
-			if (id == a.id) {
 				return a;
 			}
 		}

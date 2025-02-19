@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
-import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
@@ -9,14 +8,6 @@ import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public abstract class AbstractVirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements ImplementedVirtualPocket {
-	private String resourceKey = null;
-
-	// utility so the first part of toNbt can be extracted into default method
-	// at this point we know for a fact, that we need to serialize into the CompoundTag
-	// overwrite in subclass
-	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		return this.getType().toNbt(nbt);
-	}
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext context) {

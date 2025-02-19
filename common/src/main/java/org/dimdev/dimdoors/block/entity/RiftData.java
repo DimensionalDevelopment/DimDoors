@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import org.dimdev.dimdoors.api.util.RGBA;
+import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.CodecUtils;
 
 public class RiftData {
 
@@ -31,8 +33,9 @@ public class RiftData {
 		return this.destination;
 	}
 
-	public void setDestination(VirtualTarget destination) {
+	public RiftData setDestination(VirtualTarget destination) {
 		this.destination = destination;
+		return this;
 	}
 
 	public LinkProperties getProperties() {
@@ -68,13 +71,13 @@ public class RiftData {
 		this.color = color;
 	}
 
-	public static Codec<RiftData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
-            LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(RiftData::getProperties),
-            RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
-            Codec.BOOL.fieldOf("alwaysDelete").forGetter(RiftData::isAlwaysDelete),
-            Codec.BOOL.fieldOf("forcedColor").forGetter(RiftData::isForcedColor)
-    ).apply(instance, RiftData::new));
+	public static Codec<RiftData> CODEC = CodecUtils.codecWithReference(RecordCodecBuilder.create(instance -> instance.group(
+			VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
+			LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(RiftData::getProperties),
+			RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
+			Codec.BOOL.fieldOf("alwaysDelete").forGetter(RiftData::isAlwaysDelete),
+			Codec.BOOL.fieldOf("forcedColor").forGetter(RiftData::isForcedColor)
+	).apply(instance, RiftData::new)), s -> PocketLoader.getInstance().getRiftData(s));
 
 
 	public static CompoundTag toNbt(RiftData data) {

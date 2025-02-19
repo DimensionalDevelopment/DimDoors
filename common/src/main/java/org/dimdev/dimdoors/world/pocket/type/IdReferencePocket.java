@@ -64,7 +64,7 @@ public class IdReferencePocket extends AbstractPocket {
 		}
 
 		@Override
-		public AbstractPocketType<IdReferencePocket, IdReferencePocketBuilder> getType() {
+		public AbstractPocketType<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder> getType() {
 			return AbstractPocketType.ID_REFERENCE.get();
 		}
 

@@ -11,11 +11,6 @@ public class NoneModifer implements Modifier {
     public static final String KEY = "none";
 
     @Override
-    public String getResourceKey() {
-        return "";
-    }
-
-    @Override
     public ModifierType<? extends Modifier> getType() {
         return ModifierType.NONE_MODIFIER_TYPE.get();
     }

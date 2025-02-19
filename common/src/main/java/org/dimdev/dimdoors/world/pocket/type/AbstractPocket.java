@@ -48,7 +48,6 @@ public abstract class AbstractPocket {
 	}
 
 	public static AbstractPocket deserialize(CompoundTag nbt) {
-		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type"));
 		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
 	}
 
@@ -56,24 +55,8 @@ public abstract class AbstractPocket {
 		return BUILDER_CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
 	}
 
-	public static CompoundTag serialize(AbstractPocket pocket) {
-		return pocket.toNbt(new CompoundTag());
-	}
-
-	public V fromNbt(CompoundTag nbt) {
-		this.id = nbt.getInt("id");
-		this.world = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world")));
-
-		return (V) this;
-	}
-
-	public CompoundTag toNbt(CompoundTag nbt) {
-		nbt.putInt("id", id);
-		nbt.putString("world", world.location().toString());
-
-		getType().toNbt(nbt);
-
-		return nbt;
+	public CompoundTag toNbt() {
+		return NbtOps.INSTANCE.withEncoder(CODEC).andThen(a -> a.getOrThrow()).andThen(CompoundTag.class::cast).apply(this);
 	}
 
 	public abstract AbstractPocketType<?, ?> getType();
@@ -99,7 +82,7 @@ public abstract class AbstractPocket {
 
 		public static final RegistrySupplier<AbstractPocketType<PocketImpl, PocketImpl.PocketImplBuilder>> POCKET = register(DimensionalDoors.id(PocketImpl.KEY), PocketImpl.CODEC, PocketImpl.PocketImplBuilder.CODEC, PocketImpl::new);
 		public static final RegistrySupplier<AbstractPocketType<PrivatePocket, PrivatePocket.PrivatePocketBuilder>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
-		public static final RegistrySupplier<AbstractPocketType<LazyGenerationPocket, LazyGenerationPocket.LazyGenerationPocketBuilder>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket::new, LazyGenerationPocket::builderLazyGenerationPocket);
+		public static final RegistrySupplier<AbstractPocketType<LazyGenerationPocket, LazyGenerationPocket.LazyGenerationPocketBuilderImpl>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket.LazyGenerationPocketBuilderImpl.CODEC, LazyGenerationPocket::builderLazyGenerationPocket);
 
 		public static void register() {
 		}
@@ -124,7 +107,7 @@ public abstract class AbstractPocket {
 		}
 
 		public T build() {
-			T instance = getType().builder.get();
+			T instance = (T) getType().builder.get();
 
 			instance.id = id;
 			instance.world = world;
@@ -146,6 +129,16 @@ public abstract class AbstractPocket {
 			return (P) this;
 		}
 
-		public abstract AbstractPocketType<T, P> getType();
+		public abstract AbstractPocketType<?, ?> getType();
+
+		public P copy() {
+			return null;
+		}
+
+		public P reset() {
+			this.id = 0;
+
+			return getSelf();
+		}
 	}
 }

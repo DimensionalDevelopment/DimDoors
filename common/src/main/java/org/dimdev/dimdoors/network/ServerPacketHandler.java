@@ -63,7 +63,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 		}
 	}
 
-	public <T> boolean sendPacket(T packet) {
+	public <T extends CustomPacketPayload> boolean sendPacket(T packet) {
 		return sendPacket(getPlayer(), packet);
 	}
 

@@ -35,15 +35,15 @@ public class PocketImpl extends Pocket {
     }
 
     public static class PocketImplBuilder extends PocketBuilder<PocketImplBuilder, PocketImpl> {
-        public static final MapCodec<PocketImplBuilder> CODEC = RecordCodecBuilder.<PocketImplBuilder>mapCodec(instance -> commonPocketBuilderFields(instance).apply(instance, PocketImplBuilder::configure));
+        public static final MapCodec<PocketImplBuilder> CODEC = RecordCodecBuilder.mapCodec(instance -> commonPocketBuilderFields(instance).apply(instance, PocketImplBuilder::configure));
 
         @Override
-        public AbstractPocketType<PocketImpl, PocketImplBuilder> getType() {
+        public AbstractPocketType<PocketImpl, PocketImpl.PocketImplBuilder> getType() {
             return AbstractPocketType.POCKET.get();
         }
 
-        private static PocketImplBuilder configure(int id, ResourceKey<Level> world, Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range) {
-            return new PocketImplBuilder().id(id).world(world).offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation);
+        private static PocketImplBuilder configure(int id, ResourceKey<Level> world, Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons) {
+            return new PocketImplBuilder().id(id).world(world).offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation).addons(addons);
         }
     }
 }

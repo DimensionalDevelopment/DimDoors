@@ -50,28 +50,6 @@ public class SkyAddon implements PocketAddon {
 		this.moonPhase = moonPhase;
 	}
 
-
-	@Override
-	public PocketAddon fromNbt(CompoundTag nbt) {
-		ResourceLocation tag = null;
-
-		this.effect = !nbt.contains("effect") && nbt.contains("world") ? ResourceLocation.tryParse(nbt.getString("world")) : nbt.contains("effect") ? ResourceLocation.tryParse(nbt.getString("effect")) : null;
-		this.dayTime = nbt.contains("dayTime") ? nbt.getLong("dayTime") : 12000L;
-		this.moonPhase = nbt.contains("moonPhase") ? nbt.getByte("moonPhase") : 0;
-		return this;
-	}
-
-	@Override
-	public CompoundTag toNbt(CompoundTag nbt) {
-		AutoSyncedAddon.super.toNbt(nbt);
-
-		nbt.putString("effect", this.effect.toString());
-		nbt.putLong("dayTime", this.dayTime);
-		nbt.putByte("moonPhase", this.moonPhase);
-
-		return nbt;
-	}
-
 	@Override
 	public PocketAddonType<?, ?> getType() {
 		return PocketAddonType.SKY_ADDON.get();

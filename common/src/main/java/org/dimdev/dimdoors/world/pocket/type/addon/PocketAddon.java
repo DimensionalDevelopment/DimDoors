@@ -40,8 +40,6 @@ public interface PocketAddon {
 		return true;
 	}
 
-	PocketAddon fromNbt(CompoundTag nbt);
-
 	default CompoundTag toNbt(CompoundTag nbt) {
 		return this.getType().toNbt(nbt);
 	}

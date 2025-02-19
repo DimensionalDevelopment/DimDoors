@@ -41,23 +41,17 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "door";
 
-	private Direction facing;
-    private final DimensionalDoorBlock block;
-    private String doorTypeString;
-	private DimensionalDoorBlock doorType;
-	private CompoundTag doorData;
-	private String doorDataReference;
+	private final Direction facing;
+    private final DimensionalDoorBlock doorType;
+	private final RiftData doorData;
 
-	private Equation x;
-	private Equation y;
-	private Equation z;
-	private Equation xEquation;
-	private Equation yEquation;
-	private Equation zEquation;
+	private final Equation x;
+	private final Equation y;
+	private final Equation z;
 
-	public DimensionalDoorModifier(Direction facing, DimensionalDoorBlock block, CompoundTag doorData, Equation x, Equation y, Equation z) {
+	public DimensionalDoorModifier(Direction facing, DimensionalDoorBlock block, RiftData doorData, Equation x, Equation y, Equation z) {
         this.facing = facing;
-        this.block = block;
+        this.doorType = block;
         this.doorData = doorData;
         this.x = x;
         this.y = y;
@@ -65,34 +59,14 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
     }
 
 	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
-
-		nbt.putString("facing", facing.getSerializedName());
-		nbt.putString("door_type", doorTypeString);
-		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
-		else if (doorData != null) nbt.put("rift_data", doorData);
-		nbt.putString("x", x);
-		nbt.putString("y", y);
-		nbt.putString("z", z);
-
-		return nbt;
-	}
-
-	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("facing", facing)
-				.add("doorTypeString", doorTypeString)
 				.add("doorType", doorType)
 				.add("doorData", doorData)
-				.add("doorDataReference", doorDataReference)
 				.add("x", x)
 				.add("y", y)
 				.add("z", z)
-				.add("xEquation", xEquation)
-				.add("yEquation", yEquation)
-				.add("zEquation", zEquation)
 				.toString();
 	}
 
@@ -105,7 +79,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
 		BlockPos pocketOrigin = manager.getPocket().getOrigin();
-		BlockPos pos = new BlockPos((int) (xEquation.apply(variableMap) + pocketOrigin.getX()), (int) (yEquation.apply(variableMap) + pocketOrigin.getY()), (int) (zEquation.apply(variableMap) + pocketOrigin.getZ()));
+		BlockPos pos = new BlockPos((int) (x.apply(variableMap) + pocketOrigin.getX()), (int) (y.apply(variableMap) + pocketOrigin.getY()), (int) (z.apply(variableMap) + pocketOrigin.getZ()));
 
 		BlockState lower = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).setValue(DimensionalDoorBlock.FACING, facing);
 		BlockState upper = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
@@ -115,7 +89,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 		if (doorData == null) {
 			rift.setDestination(new IdMarker(manager.nextId()));
 		} else {
-			CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
+			RiftData solvedDoorData = doorData; //NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
 			rift.setData(RiftData.fromNbt(solvedDoorData));
 		}
 

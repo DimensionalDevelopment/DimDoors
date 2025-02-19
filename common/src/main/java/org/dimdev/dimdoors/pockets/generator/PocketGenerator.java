@@ -1,18 +1,16 @@
 package org.dimdev.dimdoors.pockets.generator;
 
+import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
@@ -20,14 +18,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.api.util.math.Equation;
-import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
+import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -36,168 +34,63 @@ import org.dimdev.dimdoors.world.pocket.type.PocketImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final Registrar<PocketGeneratorType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
-	public static final Codec<PocketGeneratorType<?>> POCKET_TYPE_CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
-	public static final Codec<PocketGenerator> CODEC = POCKET_TYPE_CODEC.dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec);
 
-	public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
+	public static final Codec<PocketGenerator> CODEC = CodecUtils.codecWithReference(ResourceLocation.CODEC.<PocketGeneratorType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec), id -> PocketLoader.getInstance().getGenerator(id));
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
 	private static final int fallbackWeight = 5; // TODO: make config
-	protected final List<Modifier> modifierList = new ArrayList<>();
 
-	private String resourceKey = null;
-
-	private CompoundTag builderNbt;
-	protected String weight = defaultWeightEquation;
-	protected Equation weightEquation;
+	protected CompoundTag builder;
+	protected Equation weight;
 	protected Boolean setupLoot;
+	protected final List<Modifier> modifierList;
+	protected final List<String> tags;
 
-	private final List<String> tags = new ArrayList<>();
+//	public PocketGenerator() { }
 
-	public PocketGenerator() { }
+//	public PocketGenerator(String weight) {
+//		this.weight = weight;
+//		parseWeight();
+//	}
 
-	public PocketGenerator(String weight) {
-		this.weight = weight;
-		parseWeight();
+	public static  <T extends PocketGenerator> Products.P5<RecordCodecBuilder.Mu<T>, CompoundTag, Equation, Boolean, List<Modifier>, List<String>> commonFields(RecordCodecBuilder.Instance<T> instance) {
+		return instance.group(
+				CompoundTag.CODEC.optionalFieldOf("builder", null).forGetter(a -> a.builder),
+				Equation.CODEC.fieldOf("weight").orElseGet(() -> Equation.parseOrCrash(defaultWeightEquation)).forGetter(a -> a.weight),
+				Codec.BOOL.optionalFieldOf("setup_loot", false).forGetter(a -> a.setupLoot),
+				Modifier.CODEC.listOf().optionalFieldOf("modifiers", new ArrayList<>()).forGetter(a -> a.modifierList),
+				Codec.STRING.listOf().optionalFieldOf("tags", new ArrayList<>()).forGetter(a -> a.tags)
+		);
+
 	}
 
-	public static PocketGenerator deserialize(Tag nbt, ResourceManager manager) {
-		return switch (nbt.getId()) {
-			case Tag.TAG_COMPOUND -> // It's a serialized Modifier
-					PocketGenerator.deserialize((CompoundTag) nbt, manager);
-			case Tag.TAG_STRING -> // It's a reference to a resource location
-				// TODO: throw if manager is null
-					ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(Tag -> deserialize(Tag, manager)));
-			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
-		};
-	}
+	public PocketGenerator(CompoundTag builder, Equation weight, boolean setupLoot, List<Modifier> modifierList, List<String> tags) {
+        this.builder = builder;
+        this.weight = weight;
+        this.setupLoot = setupLoot;
+        this.modifierList = modifierList;
+        this.tags = tags;
+    }
 
-	public static PocketGenerator deserialize(Tag nbt) {
-		return deserialize(nbt, null);
-	}
-
-	public static PocketGenerator deserialize(CompoundTag nbt, ResourceManager manager) {
-		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type")); // TODO: return some NONE PocketGenerator if type cannot be found or deserialization fails.
-		PocketGeneratorType<? extends PocketGenerator> type = REGISTRY.get(id);
-		if (type == null) {
-			LOGGER.error("Could not deserialize PocketGenerator: " + nbt.toString());
-			return null;
-		}
-		return type.fromNbt(nbt, manager);
-	}
-
-	public static PocketGenerator deserialize(CompoundTag nbt) {
-		return deserialize(nbt, null);
-	}
-
-	public static Tag serialize(PocketGenerator pocketGenerator, boolean allowReference) {
-		return pocketGenerator.toNbt(new CompoundTag(), allowReference);
-	}
-
-	public static Tag serialize(PocketGenerator pocketGenerator) {
-		return serialize(pocketGenerator, false);
-	}
-
-	private void parseWeight() {
-		try {
-			this.weightEquation = Equation.parse(weight);
-		} catch (EquationParseException e) {
-			LOGGER.error("Could not parse weight equation \"" + weight + "\", defaulting to default weight equation \"" + defaultWeightEquation + "\"", e);
-			try {
-				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.weightEquation = Equation.newEquation(Equation.parse(defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
-			} catch (EquationParseException equationParseException) {
-				LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
-				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) fallbackWeight, stringBuilder -> stringBuilder.append(weight));
-			}
-		}
-	}
-
-	public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
-		if (nbt.contains("builder", Tag.TAG_COMPOUND)) builderNbt = nbt.getCompound("builder");
-
-		this.weight = nbt.contains("weight") ? nbt.getString("weight") : defaultWeightEquation;
-		parseWeight();
-
-		if (nbt.contains("setup_loot")) setupLoot = nbt.getBoolean("setup_loot");
-
-		if (nbt.contains("modifiers")) {
-			ListTag modifiersNbt = nbt.getList("modifiers", 10);
-			for (int i = 0; i < modifiersNbt.size(); i++) {
-				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i), manager));
-			}
-		}
-
-		if (nbt.contains("modifier_references")) {
-			ListTag modifiersNbt = nbt.getList("modifier_references", Tag.TAG_STRING);
-			for (Tag Tag : modifiersNbt) {
-				modifierList.add(Modifier.deserialize(Tag, manager));
-			}
-		}
-
-		if (nbt.contains("tags")) {
-			ListTag nbtList = nbt.getList("tags", Tag.TAG_STRING);
-			for (int i = 0; i < nbtList.size(); i++) {
-				tags.add(nbtList.getString(i));
-			}
-		}
-		return this;
-	}
-
-	public PocketGenerator fromNbt(CompoundTag nbt) {
-		return fromNbt(nbt, null);
-	}
-
-	public Tag toNbt(CompoundTag nbt, boolean allowReference) {
-		if (allowReference && this.resourceKey != null) {
-			return StringTag.valueOf(this.resourceKey);
-		}
-		return toNbtInternal(nbt, allowReference);
-	}
-
-	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		this.getType().toNbt(nbt);
-
-		if (builderNbt != null) nbt.put("builder", builderNbt);
-
-		if (!weight.equals(defaultWeightEquation)) nbt.putString("weight", weight);
-
-		if (setupLoot != null) nbt.putBoolean("setup_loot", setupLoot);
-
-		ListTag modifiersNbt = new ListTag();
-		ListTag modifierReferences = new ListTag();
-		for (Modifier modifier : modifierList) {
-			Tag modNbt = modifier.toNbt(new CompoundTag(), allowReference);
-			switch (modNbt.getId()) {
-				case Tag.TAG_COMPOUND -> modifiersNbt.add(modNbt);
-				case Tag.TAG_STRING -> modifierReferences.add(modNbt);
-				default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", modNbt.getType()));
-			}
-		}
-		if (!modifiersNbt.isEmpty()) nbt.put("modifiers", modifiersNbt);
-		if (!modifierReferences.isEmpty()) nbt.put("modifier_references", modifierReferences);
-
-		if (!tags.isEmpty()) {
-			ListTag nbtList = new ListTag();
-			for (String nbtStr : tags) {
-				nbtList.add(StringTag.valueOf(nbtStr));
-			}
-			nbt.put("tags", nbtList);
-		}
-
-		return nbt;
-	}
-
-	public Tag toNbt(CompoundTag nbt) {
-		return toNbt(nbt, false);
-	}
+	//	private void parseWeight() { TODO: Extract logic for later use.
+//		try {
+//			this.weightEquation = Equation.parse(weight);
+//		} catch (EquationParseException e) {
+//			LOGGER.error("Could not parse weight equation \"" + weight + "\", defaulting to default weight equation \"" + defaultWeightEquation + "\"", e);
+//			try {
+//				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+//				this.weightEquation = Equation.newEquation(Equation.parse(defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
+//			} catch (EquationParseException equationParseException) {
+//				LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
+//				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+//				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) fallbackWeight, stringBuilder -> stringBuilder.append(weight));
+//			}
+//		}
+//	}
 
 	public abstract Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
@@ -207,7 +100,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
 	@Override
 	public double getWeight(PocketGenerationContext parameters) {
-		return this.weightEquation.apply(parameters.toVariableMap(new HashMap<>()));
+		return this.weight.apply(parameters.toVariableMap(new HashMap<>()));
 	}
 
 	public boolean isSetupLoot() {
@@ -269,53 +162,29 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	}
 
 	public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationContext parameters) { // TODO: PocketBuilder from json
-		if (builderNbt == null){
+		if (builder == null){
 			return PocketImpl.builder()
 					.expand(getSize(parameters));
 		}
-		AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.deserializeBuilder(builderNbt);
-		if (! (abstractBuilder instanceof Pocket.PocketBuilder)) {
+		AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.deserializeBuilder(builder);
+		if (! (abstractBuilder instanceof Pocket.PocketBuilder<?, ?> builder)) {
 			return PocketImpl.builder()
 					.expand(getSize(parameters));
 		}
-		Pocket.PocketBuilder<?, ?> builder = (Pocket.PocketBuilder<?, ?>) abstractBuilder;
-		return builder.expand(getSize(parameters));
+        return builder.expand(getSize(parameters));
 	}
 
 	public abstract Vec3i getSize(PocketGenerationContext parameters);
 
-	public interface PocketGeneratorType<T extends PocketGenerator> {
-		RegistrySupplier<PocketGeneratorType<PocketGenerator>> SCHEMATIC = register(SchematicGenerator.KEY, SchematicGenerator.CODEC, SchematicGenerator::new);
+	public record PocketGeneratorType<T extends PocketGenerator>(MapCodec<T> mapCodec) {
+		public static final RegistrySupplier<PocketGeneratorType<SchematicGenerator>> SCHEMATIC = register(SchematicGenerator.KEY, SchematicGenerator.CODEC);
 //		RegistrySupplier<PocketGeneratorType<ChunkGenerator>> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
-		RegistrySupplier<PocketGeneratorType<VoidGenerator>> VOID = register(VoidGenerator.KEY, VoidGenerator.CODEC, VoidGenerator::new);
+		public static final RegistrySupplier<PocketGeneratorType<VoidGenerator>> VOID = register(VoidGenerator.KEY, VoidGenerator.CODEC);
 
-		PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager);
+		public static void register() {}
 
-		CompoundTag toNbt(CompoundTag nbt);
-
-		MapCodec<T> mapCodec();
-
-		static void register() {}
-
-		static <U extends PocketGenerator> RegistrySupplier<PocketGeneratorType<U>> register(String id, MapCodec<U> mapCodec, Supplier<U> constructor) {
-			return REGISTRY.register(DimensionalDoors.id(id), () -> new PocketGeneratorType<U>() {
-				@Override
-				public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
-					return constructor.get().fromNbt(nbt, manager);
-				}
-
-				@Override
-				public CompoundTag toNbt(CompoundTag nbt) {
-					nbt.putString("type", id.toString());
-					return nbt;
-				}
-
-				@Override
-				public MapCodec<U> mapCodec() {
-					return mapCodec;
-				}
-			});
-
+		static <U extends PocketGenerator> RegistrySupplier<PocketGeneratorType<U>> register(String id, MapCodec<U> mapCodec) {
+			return REGISTRY.register(DimensionalDoors.id(id), () -> new PocketGeneratorType<U>(mapCodec));
 		}
 	}
 }
