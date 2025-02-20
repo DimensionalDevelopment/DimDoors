@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 public class RiftData {
 
 	private VirtualTarget destination; // How the rift acts as a source
-	private LinkProperties properties = null;
+	private LinkProperties properties;
 	private boolean alwaysDelete;
 	private boolean forcedColor;
 	private RGBA color;
@@ -74,26 +74,13 @@ public class RiftData {
 		this.color = color;
 	}
 
-	public static final Codec<RiftData> CODEC_LOADER = /*CodecUtils.codecWithReference(RecordCodecBuilder.create(instance -> instance.group(
+	public static final Codec<RiftData> CODEC = CodecUtils.codecWithReference(RecordCodecBuilder.create(instance -> instance.group(
 			VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
-			LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(RiftData::getProperties),
+			LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(RiftData::getProperties),
 			RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
 			Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
 			Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor)
-	).apply(instance, RiftData::new)), s -> PocketLoader.getInstance().getRiftData(s))*/ RecordCodecBuilder.create(instance -> instance.group(
-			VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
-			LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(RiftData::getProperties),
-			RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
-			Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
-			Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor)
-	).apply(instance, RiftData::new));
-
-	public static final Codec<RiftData> CODEC = CODEC_LOADER.xmap(new Function<Supplier<RiftData>, RiftData>() {
-		@Override
-		public RiftData apply(Supplier<RiftData> riftDataSupplier) {
-			return riftDataSupplier.get();
-		}
-	}, a -> () -> a);
+	).apply(instance, RiftData::new)), s -> PocketLoader.getInstance().getRiftData(s));
 
 	public static CompoundTag toNbt(RiftData data) {
 		CompoundTag nbt = new CompoundTag();

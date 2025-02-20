@@ -31,7 +31,7 @@ import java.util.Map;
 public class ShellModifier implements LazyModifier {
 	public static final MapCodec<ShellModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Layer.CODEC.listOf().fieldOf("layers").forGetter(a -> a.layers),
-			BoundingBox.CODEC.optionalFieldOf("box_to_draw_around", null).forGetter(a -> a.boxToDrawAround)
+			BoundingBox.CODEC.optionalFieldOf("box_to_draw_around", BoundingBox.infinite() /* TODO: Verify I didn't mess up with making this infinite*/).forGetter(a -> a.boxToDrawAround)
 			).apply(instance, ShellModifier::new)
 	);
 

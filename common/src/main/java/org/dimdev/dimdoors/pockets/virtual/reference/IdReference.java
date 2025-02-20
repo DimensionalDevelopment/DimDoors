@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -24,7 +25,7 @@ public class IdReference extends PocketGeneratorReference {
 
 	private ResourceLocation id;
 
-	public IdReference(String weight, Boolean setupLoot, List<Modifier> modifierList, List<PocketAddon.PocketBuilderAddon<?, ?>> addons, ResourceLocation id) {
+	public IdReference(Equation weight, Boolean setupLoot, List<Modifier> modifierList, List<PocketAddon.PocketBuilderAddon<?, ?>> addons, ResourceLocation id) {
 		super(weight, setupLoot, modifierList, addons);
 		this.id = id;
 	}
@@ -54,7 +55,6 @@ public class IdReference extends PocketGeneratorReference {
 		return MoreObjects.toStringHelper(this)
 				.add("id", id)
 				.add("weight", weight)
-				.add("weightEquation", weightEquation)
 				.add("setupLoot", setupLoot)
 				.add("modifierList", modifierList)
 				.toString();

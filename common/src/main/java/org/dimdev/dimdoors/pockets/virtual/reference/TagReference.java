@@ -11,6 +11,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.WeightedList;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -36,7 +37,7 @@ public class TagReference extends PocketGeneratorReference {
 			Codec.BOOL.optionalFieldOf("exact", false).forGetter(a -> a.exact)).apply(instance, TagReference::new)
 	);
 
-	public TagReference(String weight, Boolean setupLoot, List<Modifier> modifierList, List<PocketAddon.PocketBuilderAddon<?,?>> addons, List<String> required, List<String> blackList, Boolean exact) {
+	public TagReference(Equation weight, Boolean setupLoot, List<Modifier> modifierList, List<PocketAddon.PocketBuilderAddon<?,?>> addons, List<String> required, List<String> blackList, Boolean exact) {
 		super(weight, setupLoot, modifierList, addons);
         this.required = required;
         this.blackList = blackList;
@@ -73,7 +74,6 @@ public class TagReference extends PocketGeneratorReference {
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("weight", weight)
-				.add("weightEquation", weightEquation)
 				.add("setupLoot", setupLoot)
 				.add("modifierList", modifierList)
 				.add("required", required)

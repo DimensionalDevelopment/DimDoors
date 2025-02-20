@@ -18,7 +18,7 @@ public class Rift extends RegistryVertex {
 					UUIDUtil.CODEC.fieldOf("id").forGetter(RegistryVertex::getId),
 			Location.CODEC.fieldOf("location").forGetter(Rift::getLocation),
 			Codec.BOOL.fieldOf("isDetached").forGetter(Rift::isDetached),
-			LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(Rift::getProperties))
+			LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(Rift::getProperties))
 			.apply(inst, Rift::new));
 
 	private static final Logger LOGGER = LogManager.getLogger();

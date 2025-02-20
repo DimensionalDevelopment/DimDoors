@@ -61,7 +61,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
 	public static  <T extends PocketGenerator> Products.P5<RecordCodecBuilder.Mu<T>, CompoundTag, Equation, Boolean, List<Modifier>, List<String>> commonFields(RecordCodecBuilder.Instance<T> instance) {
 		return instance.group(
-				CompoundTag.CODEC.optionalFieldOf("builder", null).forGetter(a -> a.builder),
+				CompoundTag.CODEC.optionalFieldOf("builder", new CompoundTag()).forGetter(a -> a.builder),
 				Equation.CODEC.fieldOf("weight").orElseGet(() -> Equation.parseOrCrash(defaultWeightEquation)).forGetter(a -> a.weight),
 				Codec.BOOL.optionalFieldOf("setup_loot", false).forGetter(a -> a.setupLoot),
 				Modifier.CODEC.listOf().optionalFieldOf("modifiers", new ArrayList<>()).forGetter(a -> a.modifierList),

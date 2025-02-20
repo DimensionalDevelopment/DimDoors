@@ -35,6 +35,6 @@ public class PathSelector extends AbstractVirtualPocketList {
 
 	@Override
 	public void init() {
-		this.addAll(PocketLoader.getInstance().getVirtualPockets().getNode(Path.stringPath(path)).values().stream().map(Supplier::get).toList());
+		this.addAll(PocketLoader.getInstance().getVirtualPockets().getNode(Path.stringPath(path)).values().stream().toList());
 	}
 }

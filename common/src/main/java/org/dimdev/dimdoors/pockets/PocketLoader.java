@@ -51,22 +51,16 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		templates.clear();
 		dataTree.clear();
 
-		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/rift_data", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(RiftData.CODEC_LOADER)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		CompletableFuture<SimpleTree<String, Supplier<Modifier>>> futureModifiers = ResourceUtil.loadResourcePathToMap(manager, "pockets/modifier", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC_LOADER)), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, Supplier<VirtualPocket>>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC_LOADER)), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, Supplier<PocketGenerator>>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(PocketGenerator.CODEC_LOADER)), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, Supplier<VirtualPocket>>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC_LOADER)), ResourceUtil.PATH_KEY_PROVIDER);
-		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER);
+		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/rift_data", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(RiftData.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		modifiers = ResourceUtil.loadResourcePathToMap(manager, "pockets/modifier", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		pocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		pocketGenerators = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(PocketGenerator.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		virtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		templates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER).join();
 
 
-		pocketGenerators = futurePocketGeneratorMap.join();
-		pocketGroups = futurePocketGroups.join();
-		virtualPockets = futureVirtualPockets.join();
-		templates = futureTemplates.join();
-		modifiers = futureModifiers.join();
-
-		virtualPockets.values().stream().map(Supplier::get).forEach(VirtualPocket::init);
-		pocketGroups.values().stream().map(Supplier::get).forEach(VirtualPocket::init);
+		virtualPockets.values().forEach(VirtualPocket::init);
+		pocketGroups.values().forEach(VirtualPocket::init);
 	}
 
 //    public void load() {
@@ -91,7 +85,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 //    }
 
 	public RiftData getRiftData(Path<String> path) {
-		return dataTree.get(path).get();
+		return dataTree.get(path);
 	}
 
 	public RiftData getRiftData(String id) {
@@ -125,16 +119,16 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	}
 
 	public VirtualPocket getGroup(Path<String> path) {
-		return pocketGroups.get(path).get();
+		return pocketGroups.get(path);
 	}
 
 	public VirtualPocket getVirtual(Path<String> path) {
-		return virtualPockets.get(path).get();
+		return virtualPockets.get(path);
 	}
 
 
 	public VirtualPocket getVirtual(ResourceLocation id) {
-		return virtualPockets.get(Path.stringPath(id)).get();
+		return virtualPockets.get(Path.stringPath(id));
 	}
 
 
@@ -156,7 +150,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	}
 
 	public PocketGenerator getGenerator(Path<String> path) {
-		return pocketGenerators.get(path).get();
+		return pocketGenerators.get(path);
 	}
 
 
@@ -173,10 +167,10 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	}
 
 	public Modifier getModifier(Path<String> path) {
-		return modifiers.get(path).get();
+		return modifiers.get(path);
 	}
 
-	public void setModifiers(SimpleTree<String, Supplier<Modifier>> modifiers) {
-		this.modifiers = modifiers;
-	}
+//	public void setModifiers(SimpleTree<String, Supplier<Modifier>> modifiers) {
+//		this.modifiers = modifiers;
+//	}
 }

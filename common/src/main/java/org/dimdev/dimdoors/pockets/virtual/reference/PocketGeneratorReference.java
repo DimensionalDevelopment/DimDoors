@@ -26,6 +26,7 @@ import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -35,45 +36,42 @@ import java.util.stream.StreamSupport;
 public abstract class PocketGeneratorReference implements ImplementedVirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	protected String weight;
-	protected Equation weightEquation;
+	protected Equation weight;
 	protected Boolean setupLoot;
 	protected List<Modifier> modifierList;
 	protected List<PocketAddon.PocketBuilderAddon<?, ?>> addons;
 
-	public PocketGeneratorReference(String weight, Boolean setupLoot, List<Modifier> modifierList, List<PocketAddon.PocketBuilderAddon<?, ?>> addons) {
+	public PocketGeneratorReference(Equation weight, Boolean setupLoot, List<Modifier> modifierList, List<PocketAddon.PocketBuilderAddon<?, ?>> addons) {
         this.weight = weight;
         this.setupLoot = setupLoot;
         this.modifierList = modifierList;
         this.addons = addons;
-
-		parseWeight();
     }
 
-	private void parseWeight() {
-		try {
-			this.weightEquation = Equation.parse(weight);
-		} catch (EquationParseException e) {
-			LOGGER.debug("Defaulting to default weight equation for {}", this);
-			LOGGER.debug("Exception Stacktrace", e);
-			try {
-				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.weightEquation = Equation.newEquation(Equation.parse(DimensionalDoors.getConfig().getPocketsConfig().defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
-			} catch (EquationParseException equationParseException) {
-				LOGGER.debug("Defaulting to default weight equation for {}", this);
-				LOGGER.debug("Exception Stacktrace", e);
-				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) DimensionalDoors.getConfig().getPocketsConfig().fallbackWeight, stringBuilder -> stringBuilder.append(weight));
-			}
-		}
-	}
+//	private void parseWeight() {
+//		try {
+//			this.weightEquation = Equation.parse(weight);
+//		} catch (EquationParseException e) {
+//			LOGGER.debug("Defaulting to default weight equation for {}", this);
+//			LOGGER.debug("Exception Stacktrace", e);
+//			try {
+//				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+//				this.weightEquation = Equation.newEquation(Equation.parse(DimensionalDoors.getConfig().getPocketsConfig().defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
+//			} catch (EquationParseException equationParseException) {
+//				LOGGER.debug("Defaulting to default weight equation for {}", this);
+//				LOGGER.debug("Exception Stacktrace", e);
+//				// FIXME: do we actually want to have it serialize to the broken String equation we input?
+//				this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) DimensionalDoors.getConfig().getPocketsConfig().fallbackWeight, stringBuilder -> stringBuilder.append(weight));
+//			}
+//		}
+//	}
 
-	public static  <T extends PocketGeneratorReference> Products.P4<RecordCodecBuilder.Mu<T>, String, Boolean, List<Modifier>, List<PocketAddon.PocketBuilderAddon<?, ?>>> commonFields(RecordCodecBuilder.Instance<T> instance) {
+	public static  <T extends PocketGeneratorReference> Products.P4<RecordCodecBuilder.Mu<T>, Equation, Boolean, List<Modifier>, List<PocketAddon.PocketBuilderAddon<?, ?>>> commonFields(RecordCodecBuilder.Instance<T> instance) {
 		return instance.group(
-				Codec.STRING.optionalFieldOf("weight", null).forGetter(a -> a.weight),
+				Equation.CODEC.optionalFieldOf("weight", Equation.parseOrCrash(DimensionalDoors.getConfig().getPocketsConfig().defaultWeightEquation)).forGetter(a -> a.weight),
 				Codec.BOOL.optionalFieldOf("setup_loot", false).forGetter(a -> a.setupLoot),
-				Modifier.CODEC.listOf().optionalFieldOf("modifiers", null).forGetter(a -> a.modifierList),
-				PocketAddon.BUILDER_CODEC.listOf().optionalFieldOf("addons", null).forGetter(a -> a.addons)
+				Modifier.CODEC.listOf().optionalFieldOf("modifiers", new ArrayList<>()).forGetter(a -> a.modifierList),
+				PocketAddon.BUILDER_CODEC.listOf().optionalFieldOf("addons", new ArrayList<>()).forGetter(a -> a.addons)
 		);
 
 	}
@@ -81,7 +79,7 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	@Override
 	public double getWeight(PocketGenerationContext parameters) {
 		try {
-			return weightEquation != null ? this.weightEquation.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocketGenerator(parameters).getWeight(parameters);
+			return weight != null ? this.weight.apply(parameters.toVariableMap(Maps.newHashMap())) : peekReferencedPocketGenerator(parameters).getWeight(parameters);
 		} catch (RuntimeException e) {
 			LOGGER.error(this.toString());
 			throw new AssertionError(e);
