@@ -16,7 +16,7 @@
     " X "
   ],
   "result": {
-    "item": "dimdoors:magenta_fabric"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "dimdoors:magenta_fabric"
+  }
 }

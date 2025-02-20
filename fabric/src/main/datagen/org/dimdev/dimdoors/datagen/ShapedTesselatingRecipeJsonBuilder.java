@@ -7,14 +7,14 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
 import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
-import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipePattern;
 
 import java.util.List;
 import java.util.Map;
 
-public class ShapedTesselatingRecipeJsonBuilder extends SimpleTesselatingRecipeBuilder<ShapedTesselatingRecipe, ShapedTesselatingRecipePattern> {
+public class ShapedTesselatingRecipeJsonBuilder extends SimpleTesselatingRecipeBuilder<ShapedTesselatingRecipe, ShapedRecipePattern> {
 	private final List<String> rows = Lists.newArrayList();
 	private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
 	private final boolean showNotification = true;
@@ -61,12 +61,12 @@ public class ShapedTesselatingRecipeJsonBuilder extends SimpleTesselatingRecipeB
 	}
 
 	@Override
-	protected ShapedTesselatingRecipe createResult(ItemStack result, ShapedTesselatingRecipePattern pattern) {
+	protected ShapedTesselatingRecipe createResult(ItemStack result, ShapedRecipePattern pattern) {
 		return new ShapedTesselatingRecipe(this.group == null ? "" : this.group, pattern, result, weavingTime, this.showNotification);
 	}
 
-	public ShapedTesselatingRecipePattern ensureValid(ResourceLocation resourceLocation) {
+	public ShapedRecipePattern ensureValid(ResourceLocation resourceLocation) {
 		super.ensureValid(resourceLocation);
-		return ShapedTesselatingRecipePattern.of(this.key, this.rows);
+		return ShapedRecipePattern.of(this.key, this.rows);
 	}
 }

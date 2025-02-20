@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:quartz"
-            ]
+            "items": "minecraft:quartz"
           }
         ]
       },
@@ -30,6 +28,5 @@
     "recipes": [
       "dimdoors:quartz_door"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

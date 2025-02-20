@@ -34,12 +34,14 @@ import org.dimdev.dimdoors.world.pocket.type.PocketImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final Registrar<PocketGeneratorType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
 
-	public static final Codec<PocketGenerator> CODEC = CodecUtils.codecWithReference(ResourceLocation.CODEC.<PocketGeneratorType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec), id -> PocketLoader.getInstance().getGenerator(id));
+	public static final Codec<Supplier<PocketGenerator>> CODEC_LOADER = CodecUtils.codecWithReference(ResourceLocation.CODEC.<PocketGeneratorType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec), id -> PocketLoader.getInstance().getGenerator(id));
+	public static final Codec<PocketGenerator> CODEC = CODEC_LOADER.xmap(Supplier::get, a -> () -> a);
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
 	private static final int fallbackWeight = 5; // TODO: make config
@@ -108,13 +110,13 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	}
 
 	public void applyModifiers(PocketGenerationContext parameters, RiftManager manager) {
-		for (Modifier modifier : modifierList) {
+		for (var modifier : modifierList) {
 			modifier.apply(parameters, manager);
 		}
 	}
 
 	public void applyModifiers(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		for (Modifier modifier : modifierList) {
+		for (var modifier : modifierList) {
 			modifier.apply(parameters, builder);
 		}
 	}

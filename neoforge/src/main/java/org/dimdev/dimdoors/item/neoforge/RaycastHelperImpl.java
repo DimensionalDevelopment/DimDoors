@@ -4,6 +4,6 @@ import net.minecraft.world.entity.player.Player;
 
 public class RaycastHelperImpl {
     public static double reach(Player player) {
-        return player.getBlockReach();
+        return 4.5 + (player.isCreative() ? 0.5 : 0.0);
     }
 }

@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataProvider;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -32,10 +31,10 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 		var pack = generator.createPack();
 
 		pack.addProvider(DimDoorsModelProvider::new);
-		pack.addProvider((DataProvider.Factory<DataProvider>) DimdoorsRecipeProvider::new);
+		pack.addProvider(DimdoorsRecipeProvider::new);
 		pack.addProvider(AdvancementProvider::new);
 		pack.addProvider(org.dimdev.dimdoors.datagen.LootTableProvider::new);
-		pack.addProvider((DataProvider.Factory<DataProvider>) org.dimdev.dimdoors.datagen.LimboDecayProvider::new);
+		pack.addProvider(org.dimdev.dimdoors.datagen.LimboDecayProvider::new);
 		pack.addProvider(BlockTagProvider::new);
 		pack.addProvider(BiomeTagProvider::new);
 		pack.addProvider(ItemTagProvider::new);

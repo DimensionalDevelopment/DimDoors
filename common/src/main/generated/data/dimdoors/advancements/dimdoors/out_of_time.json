@@ -6,17 +6,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
       "translate": "dimdoors.advancement.out_of_time.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
-      "item": "minecraft:respawn_anchor"
+      "count": 1,
+      "id": "minecraft:respawn_anchor"
     },
-    "show_toast": true,
     "title": {
       "translate": "dimdoors.advancement.out_of_time"
     }

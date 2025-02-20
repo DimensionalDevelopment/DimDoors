@@ -81,8 +81,8 @@ public abstract class AbstractPocket {
 		public static final RegistrySupplier<AbstractPocketType<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket.CODEC, IdReferencePocket.IdReferencePocketBuilder.CODEC, IdReferencePocket::new);
 
 		public static final RegistrySupplier<AbstractPocketType<PocketImpl, PocketImpl.PocketImplBuilder>> POCKET = register(DimensionalDoors.id(PocketImpl.KEY), PocketImpl.CODEC, PocketImpl.PocketImplBuilder.CODEC, PocketImpl::new);
-		public static final RegistrySupplier<AbstractPocketType<PrivatePocket, PrivatePocket.PrivatePocketBuilder>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
-		public static final RegistrySupplier<AbstractPocketType<LazyGenerationPocket, LazyGenerationPocket.LazyGenerationPocketBuilderImpl>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket.LazyGenerationPocketBuilderImpl.CODEC, LazyGenerationPocket::builderLazyGenerationPocket);
+		public static final RegistrySupplier<AbstractPocketType<PrivatePocket, PrivatePocket.PrivatePocketBuilder>> PRIVATE_POCKET = AbstractPocketType.register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket.CODEC, PrivatePocket.PrivatePocketBuilder.CODEC, PrivatePocket::new);
+		public static final RegistrySupplier<AbstractPocketType<LazyGenerationPocket, LazyGenerationPocket.LazyGenerationPocketBuilderImpl>> LAZY_GENERATION_POCKET = register(DimensionalDoors.id(LazyGenerationPocket.KEY), LazyGenerationPocket.CODEC, LazyGenerationPocket.LazyGenerationPocketBuilderImpl.CODEC, LazyGenerationPocket::new);
 
 		public static void register() {
 		}
@@ -93,9 +93,6 @@ public abstract class AbstractPocket {
 	}
 
 	public static abstract class AbstractPocketBuilder<P extends AbstractPocketBuilder<P, T>, T extends AbstractPocket> {
-		protected static <T extends AbstractPocketBuilder<?, ?>> Products.P2<RecordCodecBuilder.Mu<T>, Integer, ResourceKey<Level>> commonCodecFields(RecordCodecBuilder.Instance<T> instance) {
-			return instance.group(Codec.INT.fieldOf("id").forGetter(t -> t.id), ResourceKey.codec(Registries.DIMENSION).fieldOf("world").forGetter(a -> a.world));
-		}
 
 		protected int id;
 		protected ResourceKey<Level> world;

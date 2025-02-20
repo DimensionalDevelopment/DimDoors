@@ -89,13 +89,13 @@ public abstract class PocketGeneratorReference implements ImplementedVirtualPock
 	}
 
 	public void applyModifiers(PocketGenerationContext parameters, RiftManager manager) {
-		for (Modifier modifier : modifierList) {
+		for (var modifier : modifierList) {
 			modifier.apply(parameters, manager);
 		}
 	}
 
 	public void applyModifiers(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		for (Modifier modifier : modifierList) {
+		for (var modifier : modifierList) {
 			modifier.apply(parameters, builder);
 		}
 	}

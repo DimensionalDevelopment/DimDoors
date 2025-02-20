@@ -3,11 +3,11 @@ package org.dimdev.dimdoors.pockets.virtual.selection;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
+
+import java.util.function.Supplier;
 
 // TODO: Override equals
 public class PathSelector extends AbstractVirtualPocketList {
@@ -35,6 +35,6 @@ public class PathSelector extends AbstractVirtualPocketList {
 
 	@Override
 	public void init() {
-		this.addAll(PocketLoader.getInstance().getVirtualPockets().getNode(Path.stringPath(path)).values());
+		this.addAll(PocketLoader.getInstance().getVirtualPockets().getNode(Path.stringPath(path)).values().stream().map(Supplier::get).toList());
 	}
 }

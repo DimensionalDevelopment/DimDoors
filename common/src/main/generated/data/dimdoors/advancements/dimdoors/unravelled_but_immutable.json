@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "dimdoors:infrangible_fiber"
-            ]
+            "items": "dimdoors:infrangible_fiber"
           }
         ]
       },
@@ -15,17 +13,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
       "translate": "dimdoors.advancement.unravelled_but_immutable.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
-      "item": "dimdoors:infrangible_fiber"
+      "count": 1,
+      "id": "dimdoors:infrangible_fiber"
     },
-    "show_toast": true,
     "title": {
       "translate": "dimdoors.advancement.unravelled_but_immutable"
     }

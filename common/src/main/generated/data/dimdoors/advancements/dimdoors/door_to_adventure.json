@@ -9,17 +9,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
       "translate": "dimdoors.advancement.door_to_adventure.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
-      "item": "dimdoors:item_ag_dim_dimdoors_gold_door"
+      "count": 1,
+      "id": "dimdoors:item_ag_dim_dimdoors_gold_door"
     },
-    "show_toast": true,
     "title": {
       "translate": "dimdoors.advancement.door_to_adventure"
     }

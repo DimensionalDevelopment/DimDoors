@@ -40,6 +40,7 @@ import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.ModDataComponentTypes;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
@@ -119,6 +120,9 @@ public class DimensionalDoors {
 
 		registerRegistries();
 
+		ModDataComponentTypes.register();
+
+		ModDimensions.init();
 		ModRecipeTypes.init();
 		ModRecipeSerializers.init();
 		ModScreenHandlerTypes.init();
@@ -129,7 +133,6 @@ public class DimensionalDoors {
 		ModBlocks.init();
 		ModCarvers.init();
 		ModBiomes.init();
-		ModDimensions.init();
 		ModStats.init();
 		ModBlockEntityTypes.init();
 		ModCommands.init();

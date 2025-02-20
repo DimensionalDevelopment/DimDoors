@@ -2,11 +2,12 @@ package org.dimdev.dimdoors.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
@@ -80,9 +81,9 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<TesselatingShapelessRecipe> {
-        private static final Codec<TesselatingShapelessRecipe> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter((shapelessRecipe) -> shapelessRecipe.group),
-                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((shapelessRecipe) -> shapelessRecipe.result),
+        private static final MapCodec<TesselatingShapelessRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                Codec.STRING.optionalFieldOf("group", "").forGetter((shapelessRecipe) -> shapelessRecipe.group),
+                ItemStack.STRICT_CODEC.fieldOf("result").forGetter((shapelessRecipe) -> shapelessRecipe.result),
                 Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((list) -> {
                     Ingredient[] ingredients = list.stream().filter((ingredient) -> !ingredient.isEmpty()).toArray(Ingredient[]::new);
                     return ingredients.length == 0 ? DataResult.error(() -> "No ingredients for shapeless recipe") : ingredients.length > 9 ? DataResult.error(() -> "Too many ingredients for shapeless recipe") : DataResult.success(NonNullList.of(Ingredient.EMPTY, ingredients));
@@ -90,30 +91,34 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
                 ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weaving_time").forGetter(TesselatingShapelessRecipe::weavingTime))
                 .apply(instance, TesselatingShapelessRecipe::new));
 
+        public static final StreamCodec<RegistryFriendlyByteBuf, TesselatingShapelessRecipe> STREAM_CODEC = StreamCodec.of(TesselatingShapelessRecipe.Serializer::toNetwork, TesselatingShapelessRecipe.Serializer::fromNetwork);
 
         @Override
-        public Codec<TesselatingShapelessRecipe> codec() {
+        public MapCodec<TesselatingShapelessRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public TesselatingShapelessRecipe fromNetwork(FriendlyByteBuf buffer) {
+        public StreamCodec<RegistryFriendlyByteBuf, TesselatingShapelessRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+
+        private static TesselatingShapelessRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
             String string = buffer.readUtf();
             int i = buffer.readVarInt();
             NonNullList<Ingredient> nonNullList = NonNullList.withSize(i, Ingredient.EMPTY);
-            nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
-            ItemStack itemStack = buffer.readItem();
+            nonNullList.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
+            ItemStack itemStack = ItemStack.STREAM_CODEC.decode(buffer);
             int weavingTime = buffer.readInt();
 
             return new TesselatingShapelessRecipe(string, itemStack, nonNullList, weavingTime);
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, TesselatingShapelessRecipe recipe) {
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, TesselatingShapelessRecipe recipe) {
             buffer.writeUtf(recipe.group);
             buffer.writeVarInt(recipe.ingredients.size());
-            recipe.ingredients.forEach(ingredient -> ingredient.toNetwork(buffer));
-            buffer.writeItem(recipe.result);
+            recipe.ingredients.forEach(ingredient -> Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient));
+            ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
             buffer.writeInt(recipe.weavingTime);
         }
     }

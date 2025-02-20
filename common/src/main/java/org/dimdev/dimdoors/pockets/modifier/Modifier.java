@@ -12,10 +12,13 @@ import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import java.util.function.Supplier;
+
 public interface Modifier {
 	Registrar<ModifierType<? extends Modifier>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ModifierType<? extends Modifier>>builder(DimensionalDoors.id("modifier_type")).build();
 
-	Codec<Modifier> CODEC = CodecUtils.codecWithReference(ResourceLocation.CODEC.<ModifierType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(Modifier::getType, ModifierType::mapCodec), s -> PocketLoader.getInstance().getModifier(s));
+	Codec<Supplier<Modifier>> CODEC_LOADER = CodecUtils.codecWithReference(ResourceLocation.CODEC.<ModifierType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(Modifier::getType, ModifierType::mapCodec), s -> PocketLoader.getInstance().getModifier(s));
+	Codec<Modifier> CODEC = CODEC_LOADER.xmap(Supplier::get, a -> () -> a);
 
 	ModifierType<? extends Modifier> getType();
 

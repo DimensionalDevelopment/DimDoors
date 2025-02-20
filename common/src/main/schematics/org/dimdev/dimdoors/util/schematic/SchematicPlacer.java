@@ -101,7 +101,7 @@ public final class SchematicPlacer {
 			if (e != null) {
 				e.load(nbt);
 
-				e.getSelfAndPassengers().forEach(e1 -> System.out.println("Blep: " + e.getDisplayName().getString() + " " + world.addFreshEntity(e1)));
+//				e.getSelfAndPassengers().forEach(e1 -> System.out.println("Blep: " + e.getDisplayName().getString() + " " + world.addFreshEntity(e1)));
 
 				world.addFreshEntityWithPassengers(e);
 			}

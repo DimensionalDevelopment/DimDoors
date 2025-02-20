@@ -1,0 +1,19 @@
+{
+  "type": "dimdoors:shaped_tesselating",
+  "key": {
+    "O": {
+      "item": "dimdoors:stable_fabric"
+    },
+    "X": {
+      "item": "dimdoors:world_thread"
+    }
+  },
+  "pattern": [
+    "XX",
+    "XO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:black_fabric"
+  }
+}

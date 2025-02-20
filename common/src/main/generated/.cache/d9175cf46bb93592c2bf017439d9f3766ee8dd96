@@ -1,6 +1,6 @@
-// 1.20.2	2024-10-29T13:20:03.7432948	DimensionalDoors/Tags for minecraft:item
-151dcedaed118007af04a870675298bef52a2b9b data\dimdoors\tags\items\limbo_gaze_defying.json
-5fea1b8006abd672ab1fc7002b16a1b9df577fa4 data\dimdoors\tags\items\diamonds.json
-2f1dad2a2e0086d54cf4b88378feacc04341d87f data\dimdoors\tags\items\iron_ingots.json
-3bda2ac68ea4e026440c598eeb2f41ac1cdfabed data\minecraft\tags\items\music_discs.json
-bb6377d3fc324d87297e036c919d4e3dcc54dcc0 data\dimdoors\tags\items\gold_ingots.json
+// 1.20.6	2025-02-19T14:54:07.4647997	DimensionalDoors/Tags for minecraft:item
+f35b9fc6f190e870e052805c9b2f80065fcba266 data\dimdoors\tags\items\limbo_gaze_defying.json
+337270ebe71b5bdf94809dd66a26295077a9312b data\dimdoors\tags\items\diamonds.json
+7e6cc7259d3417b853ba3a05f15ba4e3076d4a18 data\dimdoors\tags\items\iron_ingots.json
+6d32f50c6f7e33ff0293c6ea71c9b9e6c277231d data\minecraft\tags\items\music_discs.json
+ac08a0ea4fb71b57ecfb4c9a63d83af3e8315169 data\dimdoors\tags\items\gold_ingots.json

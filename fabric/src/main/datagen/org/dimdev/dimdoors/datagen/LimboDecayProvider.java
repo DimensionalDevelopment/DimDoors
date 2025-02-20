@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
@@ -24,7 +25,6 @@ import net.minecraft.world.level.material.Fluids;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.LocationValue;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -51,7 +51,7 @@ public class LimboDecayProvider implements DataProvider {
 
 	private final PackOutput.PathProvider decayPatternPathResolver;
 
-	public LimboDecayProvider(PackOutput output) {
+	public LimboDecayProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> providerCompletableFuture) {
 		this.decayPatternPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, "decay_patterns");
     }
 
@@ -326,7 +326,7 @@ public class LimboDecayProvider implements DataProvider {
     public static record DecayPatternData(ResourceLocation id, DecayPattern pattern) {
 
         public void run(BiConsumer<ResourceLocation, JsonObject> consumer) {
-            JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(pattern).getOrThrow(false, DataProvider.LOGGER::error);
+            JsonElement object = JsonOps.INSTANCE.withEncoder(DecayPattern.CODEC).apply(pattern).getOrThrow();
 
             consumer.accept(id, object.getAsJsonObject());
         }

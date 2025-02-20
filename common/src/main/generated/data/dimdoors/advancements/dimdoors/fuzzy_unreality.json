@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "dimdoors:frayed_filament"
-            ]
+            "items": "dimdoors:frayed_filament"
           }
         ]
       },
@@ -15,17 +13,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
       "translate": "dimdoors.advancement.fuzzy_unreality.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
-      "item": "dimdoors:frayed_filament"
+      "count": 1,
+      "id": "dimdoors:frayed_filament"
     },
-    "show_toast": true,
     "title": {
       "translate": "dimdoors.advancement.fuzzy_unreality"
     }

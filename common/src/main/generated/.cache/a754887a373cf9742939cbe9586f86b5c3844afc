@@ -1,4 +1,4 @@
-// 1.20.2	2024-10-29T13:20:03.7502763	DimensionalDoors/Limbo Decay
+// 1.20.6	2025-02-19T14:54:07.4707835	DimensionalDoors/Limbo Decay
 2daf4c1699c218e64219c347cd9ee9aafcb12e66 data\dimdoors\decay_patterns\sand_stairs.json
 44f5ec66483f6169980e6dad8fd7523cdee7336d data\dimdoors\decay_patterns\mud_stairs.json
 1baff2ac3796e87a2c61ece23d4e08c80b6274c8 data\dimdoors\decay_patterns\piston.json
@@ -163,7 +163,7 @@ fd700ef840fc923f6a8954b57124828d124de099 data\dimdoors\decay_patterns\cobweb.jso
 68c131bb922b76a13c8f9de00a596cd5ec6006e7 data\dimdoors\decay_patterns\exposed_cut_copper_slab.json
 92b4b15f2757791c0d6106120457ae401a15e1cc data\dimdoors\decay_patterns\weathered_cut_copper_stairs.json
 0333ee3a25808f4e918affe0ee44df0b09263753 data\dimdoors\decay_patterns\driftwood_gate.json
-79768523ebbf697a54d511f503170775bfb8ce8b data\dimdoors\decay_patterns\red_sandstone.json
+d85c173ee0569ad6cb3421030fda73da6e29d745 data\dimdoors\decay_patterns\red_sandstone.json
 0762806cbf9d3e13b24f419d5a10eef123b2fd13 data\dimdoors\decay_patterns\gritty_stone.json
 09a402f7c929c37cf892972f1e7820d60b3e6237 data\dimdoors\decay_patterns\chest.json
 9f69ca6a95acdde9a3c95e37ddddd7a2e2cefea9 data\dimdoors\decay_patterns\driftwood_wood.json

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.datagen;
 
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
@@ -10,6 +11,7 @@ import org.dimdev.dimdoors.item.ModItems;
 
 public class TesselatingRecipeProvider {
 	public static void generate(RecipeOutput exporter) {
+		ShapelessTesselatingRecipeBuilder.shapeless(ModItems.RIFT_BLADE.get()).requires(Items.IRON_SWORD).requires(Items.ENDER_PEARL, 2).unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.IRON_SWORD)).save(exporter, DimensionalDoors.id("rift_blade"));
 		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.STABLE_FABRIC.get())
 				.pattern("XX")
 				.pattern("XX")

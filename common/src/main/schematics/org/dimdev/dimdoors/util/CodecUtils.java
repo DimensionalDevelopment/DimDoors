@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.util;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import org.dimdev.dimdoors.api.util.Path;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -21,18 +21,21 @@ public class CodecUtils {
 
     }
 
-    public static <T> Codec<T> reference(Function<String, @Nullable T> function) {
-        return Codec.STRING.flatXmap(reference -> {
-            var t = function.apply(reference);
-            return t != null ? DataResult.success(t) : DataResult.error(() -> reference + " doens't correspond to anything.");
-        }, t -> DataResult.error(() -> "Serialization of modifier reference not supported."));
+    public static <T> Codec<Reference<T>> reference(Function<Path<String>, @Nullable T> function) {
+        return Codec.STRING.flatXmap(s -> DataResult.success(new Reference<>(Path.stringPath(s), function)), t -> DataResult.error(() -> "Serialization of modifier reference not supported."));
     }
 
-    public static <T> Codec<T> codecWithReference(Codec<T> base, Function<String, @Nullable T> function) {
+    public static <T> Codec<Supplier<T>> codecWithReference(Codec<T> base, Function<Path<String>, @Nullable T> function) {
         var reference = reference(function);
 
-        return Codec.either(reference, base).xmap(Either::orThrow, Either::right);
+        return Codec.withAlternative(base.xmap(t -> () -> t, Supplier::get), reference);
     }
 
+    public record Reference<T>(Path<String> reference, Function<Path<String>, T> function) implements Supplier<T> {
 
+        @Override
+        public T get() {
+            return function.apply(reference);
+        }
+    }
 }

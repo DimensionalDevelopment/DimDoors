@@ -9,6 +9,7 @@ public class DimensionalDoorsFabric implements ModInitializer {
 	@Override
     public void onInitialize() {
 		StreamUtils.setup(this);
+        ModAttachmentTypes.register();
         DimensionalDoors.init();
 
 		PlayerBlockBreakEvents.AFTER.register(DimensionalDoors::afterBlockBreak);

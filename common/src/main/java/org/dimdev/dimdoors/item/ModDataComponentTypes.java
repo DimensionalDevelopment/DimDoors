@@ -26,4 +26,8 @@ public class ModDataComponentTypes {
     private static <T, V extends Codec<T>, U extends StreamCodec<RegistryFriendlyByteBuf, T>> RegistrySupplier<DataComponentType<T>> register(String name, V codec, U streamCodec) {
         return DATA_COMPONENT_TYPES.register(name, () -> DataComponentType.<T>builder().persistent(codec).networkSynchronized(streamCodec).cacheEncoding().build());
     }
+
+    public static void register() {
+        DATA_COMPONENT_TYPES.register();
+    }
 }

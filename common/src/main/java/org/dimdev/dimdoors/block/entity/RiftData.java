@@ -9,6 +9,9 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.util.CodecUtils;
 
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 public class RiftData {
 
 	private VirtualTarget destination; // How the rift acts as a source
@@ -71,14 +74,26 @@ public class RiftData {
 		this.color = color;
 	}
 
-	public static Codec<RiftData> CODEC = CodecUtils.codecWithReference(RecordCodecBuilder.create(instance -> instance.group(
+	public static final Codec<RiftData> CODEC_LOADER = /*CodecUtils.codecWithReference(RecordCodecBuilder.create(instance -> instance.group(
 			VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
 			LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(RiftData::getProperties),
 			RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
-			Codec.BOOL.fieldOf("alwaysDelete").forGetter(RiftData::isAlwaysDelete),
-			Codec.BOOL.fieldOf("forcedColor").forGetter(RiftData::isForcedColor)
-	).apply(instance, RiftData::new)), s -> PocketLoader.getInstance().getRiftData(s));
+			Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
+			Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor)
+	).apply(instance, RiftData::new)), s -> PocketLoader.getInstance().getRiftData(s))*/ RecordCodecBuilder.create(instance -> instance.group(
+			VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
+			LinkProperties.CODEC.optionalFieldOf("properties", null).forGetter(RiftData::getProperties),
+			RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
+			Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
+			Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor)
+	).apply(instance, RiftData::new));
 
+	public static final Codec<RiftData> CODEC = CODEC_LOADER.xmap(new Function<Supplier<RiftData>, RiftData>() {
+		@Override
+		public RiftData apply(Supplier<RiftData> riftDataSupplier) {
+			return riftDataSupplier.get();
+		}
+	}, a -> () -> a);
 
 	public static CompoundTag toNbt(RiftData data) {
 		CompoundTag nbt = new CompoundTag();

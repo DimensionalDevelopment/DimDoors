@@ -15,7 +15,7 @@
     " # "
   ],
   "result": {
-    "item": "dimdoors:rift_remover"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "dimdoors:rift_remover"
+  }
 }

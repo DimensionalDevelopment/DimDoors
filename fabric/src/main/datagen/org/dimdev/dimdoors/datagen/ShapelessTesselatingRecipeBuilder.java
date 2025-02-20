@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.datagen;
 
-import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -9,10 +9,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 
-import java.util.List;
-
 public class ShapelessTesselatingRecipeBuilder extends SimpleTesselatingRecipeBuilder<TesselatingShapelessRecipe, NonNullList<Ingredient>> {
-    private final List<Ingredient> ingredients = Lists.newArrayList();
+    private final NonNullList<Ingredient> ingredients = NonNullList.create();
 
     public ShapelessTesselatingRecipeBuilder(ItemStack result) {
         super(result);
@@ -72,6 +70,11 @@ public class ShapelessTesselatingRecipeBuilder extends SimpleTesselatingRecipeBu
             this.ingredients.add(ingredient);
         }
         return this;
+    }
+
+    public NonNullList<Ingredient> ensureValid(ResourceLocation resourceLocation) {
+        super.ensureValid(resourceLocation);
+        return ingredients;
     }
 
     @Override

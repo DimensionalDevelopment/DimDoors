@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:world_thread_chestplate"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "world_thread": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:world_thread"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "world_thread"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:world_thread_chestplate"
+    ]
+  }
+}

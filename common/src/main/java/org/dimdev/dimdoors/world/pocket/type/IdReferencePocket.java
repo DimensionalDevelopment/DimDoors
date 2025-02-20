@@ -50,8 +50,7 @@ public class IdReferencePocket extends AbstractPocket {
 
 	public static class IdReferencePocketBuilder extends AbstractPocketBuilder<IdReferencePocketBuilder, IdReferencePocket> {
 		public static final MapCodec<IdReferencePocketBuilder> CODEC = RecordCodecBuilder.mapCodec(instance ->
-				AbstractPocketBuilder.commonCodecFields(instance)
-						.and(Codec.INT.fieldOf("referenced_id").forGetter(a -> a.referencedId)
+				instance.group(Codec.INT.fieldOf("referenced_id").forGetter(a -> a.referencedId)
 						).apply(instance, IdReferencePocketBuilder::configure));
 
 		private int referencedId = Integer.MIN_VALUE;
@@ -73,8 +72,8 @@ public class IdReferencePocket extends AbstractPocket {
 			return this;
 		}
 
-		private static IdReferencePocketBuilder configure(int id, ResourceKey<Level> world, int referenceId) {
-			return new IdReferencePocketBuilder().id(id).world(world).referencedId(referenceId);
+		private static IdReferencePocketBuilder configure(int referenceId) {
+			return new IdReferencePocketBuilder().referencedId(referenceId);
 		}
 	}
 }

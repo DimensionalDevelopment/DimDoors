@@ -4,9 +4,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "minecraft:ender_pearl"
-            ]
+            "items": "minecraft:ender_pearl"
           }
         ]
       },
@@ -14,18 +12,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
       "translate": "dimdoors.advancement.root.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
-      "item": "dimdoors:rift_blade",
-      "nbt": "{Damage:0}"
+      "count": 1,
+      "id": "dimdoors:rift_blade"
     },
-    "show_toast": true,
     "title": {
       "translate": "dimdoors.advancement.root"
     }

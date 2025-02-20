@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "dimdoors:rift_signature"
-            ]
+            "items": "dimdoors:rift_signature"
           }
         ]
       },
@@ -30,6 +28,5 @@
     "recipes": [
       "dimdoors:stabilized_rift_signature"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

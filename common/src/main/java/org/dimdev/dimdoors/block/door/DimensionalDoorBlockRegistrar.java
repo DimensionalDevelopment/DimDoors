@@ -95,7 +95,7 @@ public class DimensionalDoorBlockRegistrar {
 	public void handleEntry(Registrar<Block> registrar, ResourceLocation location, Block original) {
 		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(location)) {
 			if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock doorBlock) {
-				System.out.println("Rare -> Registering: "  + location);
+//				System.out.println("Rare -> Registering: "  + location);
 				register(registrar, location, doorBlock, customDoorFunction.getOrDefault(location, defaultLogic).function());
 			} else if (!(original instanceof DimensionalTrapdoorBlock) && original instanceof TrapDoorBlock trapdoorBlock) {
 //				register(registrar, ResourceLocation, trapdoorBlock, DimensionalDoorBlockRegistrar::createAutoGenDimensionalTrapdoorBlock); //TODO: readd once plan for handling trapdoors is figured out.

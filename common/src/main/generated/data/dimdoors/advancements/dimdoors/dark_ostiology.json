@@ -9,17 +9,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
       "translate": "dimdoors.advancement.dark_ostiology.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
-      "item": "dimdoors:item_ag_dim_minecraft_oak_door"
+      "count": 1,
+      "id": "dimdoors:item_ag_dim_minecraft_oak_door"
     },
-    "show_toast": true,
     "title": {
       "translate": "dimdoors.advancement.dark_ostiology"
     }

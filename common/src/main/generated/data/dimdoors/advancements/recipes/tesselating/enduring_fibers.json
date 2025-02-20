@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:enduring_fibers"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "infrangible_fiber": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:infrangible_fiber"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "infrangible_fiber"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:enduring_fibers"
+    ]
+  }
+}

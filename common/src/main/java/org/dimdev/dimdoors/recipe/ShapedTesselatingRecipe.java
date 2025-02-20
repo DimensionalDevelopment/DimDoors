@@ -1,25 +1,27 @@
 package org.dimdev.dimdoors.recipe;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class ShapedTesselatingRecipe implements TesselatingRecipe {
-    final ShapedTesselatingRecipePattern pattern;
+    final ShapedRecipePattern pattern;
     final ItemStack result;
     final String group;
     final boolean showNotification;
     private final int weavingTime;
 
-    public ShapedTesselatingRecipe(String group, ShapedTesselatingRecipePattern pattern, ItemStack result, int weavingTime, boolean showNotification) {
+    public ShapedTesselatingRecipe(String group, ShapedRecipePattern pattern, ItemStack result, int weavingTime, boolean showNotification) {
         this.group = group;
         this.pattern = pattern;
         this.result = result;
@@ -38,7 +40,7 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
+    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
         return this.result;
     }
 
@@ -66,8 +68,8 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull TesselatingContainer container, @NotNull RegistryAccess registryAccess) {
-        return this.getResultItem(registryAccess).copy();
+    public ItemStack assemble(TesselatingContainer container, HolderLookup.Provider provider) {
+        return this.getResultItem(provider).copy();
     }
 
     public int getWidth() {
@@ -89,36 +91,41 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<ShapedTesselatingRecipe> {
-        public static final Codec<ShapedTesselatingRecipe> CODEC = RecordCodecBuilder.create(instance -> {
+        public static final MapCodec<ShapedTesselatingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> {
             return instance.group(
                     Codec.STRING.optionalFieldOf("group", "").forGetter(a -> a.group),
-                    ShapedTesselatingRecipePattern.MAP_CODEC.forGetter(a -> a.pattern),
+                    ShapedRecipePattern.MAP_CODEC.forGetter(a -> a.pattern),
                     ItemStack.CODEC.fieldOf("result").forGetter(a -> a.result),
                     Codec.INT.optionalFieldOf("weaving_time", 200).forGetter(a -> a.weavingTime),
                     Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(a -> a.showNotification)
             ).apply(instance, ShapedTesselatingRecipe::new);
         });
 
+        public static final StreamCodec<RegistryFriendlyByteBuf, ShapedTesselatingRecipe> STREAM_CODEC = StreamCodec.of(ShapedTesselatingRecipe.Serializer::toNetwork, ShapedTesselatingRecipe.Serializer::fromNetwork);
+
         @Override
-        public Codec<ShapedTesselatingRecipe> codec() {
+        public MapCodec<ShapedTesselatingRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public @NotNull ShapedTesselatingRecipe fromNetwork(FriendlyByteBuf buffer) {
+        public StreamCodec<RegistryFriendlyByteBuf, ShapedTesselatingRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
+
+        private static @NotNull ShapedTesselatingRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
             String string = buffer.readUtf();
-            ShapedTesselatingRecipePattern pattern = ShapedTesselatingRecipePattern.fromNetwork(buffer);
-            ItemStack itemStack = buffer.readItem();
+            ShapedRecipePattern pattern = ShapedRecipePattern.STREAM_CODEC.decode(buffer);
+            ItemStack itemStack = ItemStack.STREAM_CODEC.decode(buffer);
             int weavingTime = buffer.readInt();
             boolean bl = buffer.readBoolean();
             return new ShapedTesselatingRecipe(string, pattern, itemStack, weavingTime, bl);
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, ShapedTesselatingRecipe recipe) {
+        private static void toNetwork(RegistryFriendlyByteBuf buffer, ShapedTesselatingRecipe recipe) {
             buffer.writeUtf(recipe.group);
-            recipe.pattern.toNetwork(buffer);
-            buffer.writeItem(recipe.result);
+            ShapedRecipePattern.STREAM_CODEC.encode(buffer, recipe.pattern);
+            ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
             buffer.writeInt(recipe.weavingTime);
             buffer.writeBoolean(recipe.showNotification);
         }

@@ -1,6 +1,6 @@
-// 1.20.2	2024-10-29T13:20:03.7442929	DimensionalDoors/DimDoors Worldgen
+// 1.20.6	2025-02-19T14:54:07.4657973	DimensionalDoors/DimDoors Worldgen
 20b4f6119127e7339a9d6a140ceff6d098157b37 data\dimdoors\worldgen\structure\enclosed_red_sandstone_gateway.json
-5e0ce47c191aab7bab77498003ddd0d4207eafff data\dimdoors\dimension_type\limbo.json
+c2a8717f15c055af0414946cd217c2a06a530bb7 data\dimdoors\dimension_type\limbo.json
 6ac1cdf41d0719ac460295c049a02ec133e9f30b data\dimdoors\worldgen\noise\limbo\x_shift.json
 4ce33d779673cc53ac0c1c82eb532b638b10ae16 data\dimdoors\worldgen\template_pool\enclosed_gateway.json
 9b0caac50595f2f507ee49a34454de55e5c1eaac data\dimdoors\worldgen\structure\enclosed_mud_gateway.json
@@ -11,7 +11,7 @@
 7cc83ffd0caec7705d52736dc9d60b2b82a6b39a data\dimdoors\worldgen\noise\limbo\strand_b.json
 3d0f05d06b222f19d7abffd57246012b264de1cc data\dimdoors\worldgen\template_pool\enclosed_mud_gateway.json
 3245982954fd597592df09516360429206f09ead data\dimdoors\worldgen\structure\enclosed_sandstone_gateway.json
-8de5db941fafaa9e06dc922752499a29afb14e6f data\dimdoors\dimension_type\pocket.json
+f6bd37e395714c0db3da467133b1037d09b0471c data\dimdoors\dimension_type\pocket.json
 d6332a210c3c021a5aafab387758a7bb7a406406 data\dimdoors\worldgen\biome\limbo.json
 f723fd123a85cf701d46f7091c34d26c1e640ee0 data\dimdoors\worldgen\placed_feature\solid_static_ore.json
 7cc83ffd0caec7705d52736dc9d60b2b82a6b39a data\dimdoors\worldgen\noise\limbo\strand_a.json

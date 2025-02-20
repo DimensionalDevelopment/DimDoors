@@ -42,8 +42,8 @@ public class PocketImpl extends Pocket {
             return AbstractPocketType.POCKET.get();
         }
 
-        private static PocketImplBuilder configure(int id, ResourceKey<Level> world, Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons) {
-            return new PocketImplBuilder().id(id).world(world).offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation).addons(addons);
+        private static PocketImplBuilder configure(Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons) {
+            return new PocketImplBuilder().offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation).addons(addons);
         }
     }
 }

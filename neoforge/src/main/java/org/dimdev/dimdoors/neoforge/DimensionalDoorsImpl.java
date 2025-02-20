@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.neoforge;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
@@ -12,6 +14,7 @@ import net.neoforged.neoforge.event.AddPackFindersEvent;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class DimensionalDoorsImpl {
     public static Path getConfigRoot() {
@@ -36,7 +39,7 @@ public class DimensionalDoorsImpl {
     public static Pack createPack(String id, String name) {
 
         var resourcePath = ModList.get().getModFileById(DimensionalDoors.MOD_ID).getFile().findResource("resourcepacks", id);
-        return Pack.readMetaAndCreate("builtin/" + id, Component.literal(name), false,
-                new PathPackResources.PathResourcesSupplier(resourcePath, false), PackType.SERVER_DATA, Pack.Position.BOTTOM, PackSource.BUILT_IN);
+        return Pack.readMetaAndCreate(new PackLocationInfo(id, Component.literal(name), PackSource.BUILT_IN, Optional.empty()),
+                new PathPackResources.PathResourcesSupplier(resourcePath), PackType.SERVER_DATA, new PackSelectionConfig(false, Pack.Position.BOTTOM, false));
     }
 }

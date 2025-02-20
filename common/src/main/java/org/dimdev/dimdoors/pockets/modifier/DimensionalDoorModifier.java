@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,7 +12,6 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.GeneralUtil;
-import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
@@ -31,7 +29,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	public static final MapCodec<DimensionalDoorModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			GeneralUtil.HORIZONTAL_DIRECTION_CODEC.fieldOf("facing").forGetter(a -> a.facing),
 			GeneralUtil.DIMENSIONAL_DOOR_BLOCK_CODEC.fieldOf("door_type").forGetter(a -> a.doorType),
-			GeneralUtil.RIFT_DATA_CODEC.fieldOf("rift_data").forGetter(a -> a.doorData),
+			RiftData.CODEC.fieldOf("rift_data").forGetter(a -> a.doorData),
 			Equation.CODEC.fieldOf("x").forGetter(a -> a.x),
 			Equation.CODEC.fieldOf("y").forGetter(a -> a.y),
 			Equation.CODEC.fieldOf("z").forGetter(a -> a.z)
@@ -90,7 +88,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 			rift.setDestination(new IdMarker(manager.nextId()));
 		} else {
 			RiftData solvedDoorData = doorData; //NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
-			rift.setData(RiftData.fromNbt(solvedDoorData));
+			rift.setData(solvedDoorData);//RiftData.fromNbt(solvedDoorData));
 		}
 
 		manager.add(rift);

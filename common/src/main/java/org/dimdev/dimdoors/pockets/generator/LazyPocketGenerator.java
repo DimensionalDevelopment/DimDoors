@@ -34,7 +34,9 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	}
 
 	public void generateChunk(LazyGenerationPocket pocket, LevelChunk chunk) {
-		modifierList.stream().filter(LazyModifier.class::isInstance).map(LazyModifier.class::cast).forEach(modifier -> modifier.applyToChunk(pocket, chunk));
+		var provider = chunk.getLevel().registryAccess();
+
+		modifierList.stream().filter(LazyModifier.class::isInstance).map(LazyModifier.class::cast).forEach(modifier -> modifier.applyToChunk(pocket, chunk, provider));
 	}
 
 	// LazyPocketGenerator handles attaching itself so that it can drop itself if it has already generated everything necessary.

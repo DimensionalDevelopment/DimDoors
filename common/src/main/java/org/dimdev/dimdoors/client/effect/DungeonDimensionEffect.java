@@ -9,15 +9,10 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.vehicle.Minecart;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.mixin.client.accessor.DimensionSpecialEffectsMixin;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
@@ -45,11 +40,11 @@ public class DungeonDimensionEffect extends DimensionSpecialEffects implements D
 
 
     @Override
-    public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+    public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
         ClientLevel world = level;
         List<SkyAddon> skyAddons = PocketListenerUtil.applicableAddonsClient(SkyAddon.class, world, camera.getBlockPosition());
         SkyAddon skyAddon = null;
-        if (skyAddons.size() > 0) {
+        if (!skyAddons.isEmpty()) {
             // There should really only be one of these.
             // If anyone needs to use multiple SkyAddons then go ahead and change this.
             skyAddon = skyAddons.get(0);
@@ -58,17 +53,20 @@ public class DungeonDimensionEffect extends DimensionSpecialEffects implements D
         if (skyAddon != null) {
             ResourceLocation key = skyAddon.getEffect();
 
+            PoseStack poseStack = new PoseStack();
+            poseStack.mulPose(modelViewMatrix);
+
             if (key.equals(BuiltinDimensionTypes.END_EFFECTS)) {
                 renderEndSky(poseStack);
             } else if(key.equals(BuiltinDimensionTypes.OVERWORLD_EFFECTS)) {
                 renderOverworld(skyAddon, poseStack, projectionMatrix, partialTick, isFoggy, setupFog);
-            } /*else if (DimensionSpecialEffectsMixin.getEffects().containsKey(key)) {
+            } else if (DimensionSpecialEffectsMixin.getEffects().containsKey(key)) {
                 var effects = DimensionSpecialEffectsMixin.getEffects().get(key);
 
                 if (effects != null) {
                     renderEffect(effects, level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
                 }
-            }*/
+            }
         }
 
         return true;

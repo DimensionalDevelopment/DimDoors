@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "dimdoors:fabric"
+            "items": "#dimdoors:fabric"
           }
         ]
       },
@@ -13,17 +13,14 @@
     }
   },
   "display": {
-    "announce_to_chat": true,
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
       "translate": "dimdoors.advancement.darklight.desc"
     },
-    "frame": "task",
-    "hidden": false,
     "icon": {
-      "item": "dimdoors:black_fabric"
+      "count": 1,
+      "id": "dimdoors:black_fabric"
     },
-    "show_toast": true,
     "title": {
       "translate": "dimdoors.advancement.darklight"
     }

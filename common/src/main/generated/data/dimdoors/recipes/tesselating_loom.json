@@ -21,7 +21,7 @@
     "XAX"
   ],
   "result": {
-    "item": "dimdoors:tesselating_loom"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "dimdoors:tesselating_loom"
+  }
 }

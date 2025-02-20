@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.world;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.world.level.biome.Biome;
@@ -25,7 +25,7 @@ public record AddFeaturesBiomeModifier(HolderSet<Biome> whiteList, HolderSet<Bio
 
     }
 
-    public Codec<? extends BiomeModifier> codec() {
+    public MapCodec<? extends BiomeModifier> codec() {
         return ADD_FEATURES_BIOME_MODIFIER_TYPE.get();
     }
 

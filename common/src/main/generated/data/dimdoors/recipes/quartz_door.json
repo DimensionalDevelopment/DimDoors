@@ -12,7 +12,7 @@
     "XX"
   ],
   "result": {
-    "item": "dimdoors:quartz_door"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "dimdoors:quartz_door"
+  }
 }

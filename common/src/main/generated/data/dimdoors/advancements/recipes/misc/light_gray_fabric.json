@@ -11,9 +11,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "dimdoors:world_thread"
-            ]
+            "items": "dimdoors:world_thread"
           }
         ]
       },
@@ -30,6 +28,5 @@
     "recipes": [
       "dimdoors:light_gray_fabric"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

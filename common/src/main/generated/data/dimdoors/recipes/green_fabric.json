@@ -16,7 +16,7 @@
     " X "
   ],
   "result": {
-    "item": "dimdoors:green_fabric"
-  },
-  "show_notification": true
+    "count": 1,
+    "id": "dimdoors:green_fabric"
+  }
 }

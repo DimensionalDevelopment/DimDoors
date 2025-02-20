@@ -186,13 +186,13 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
         }
 
 
-		protected static <P extends PocketBuilder<?, ?>> Products.P7<RecordCodecBuilder.Mu<P>, Integer, ResourceKey<Level>, Vec3i, Vec3i, VirtualLocation, Integer, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>>> commonPocketBuilderFields(RecordCodecBuilder.Instance<P> instance) {
-			return commonCodecFields(instance)
-					.and(Vec3i.CODEC.optionalFieldOf("origin", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin))
-					.and(Vec3i.CODEC.optionalFieldOf("size", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin))
-					.and(VirtualLocation.CODEC.optionalFieldOf("virtualLocation", null).<P>forGetter(a -> a.virtualLocation))
-					.and(Codec.INT.optionalFieldOf("range", -1).<P>forGetter(a -> a.range))
-					.and(Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.BUILDER_CODEC).optionalFieldOf("addons", new HashMap<>()).forGetter(a -> a.addons));
+		public static <P extends PocketBuilder<?, ?>> Products.P5<RecordCodecBuilder.Mu<P>, Vec3i, Vec3i, VirtualLocation, Integer, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>>> commonPocketBuilderFields(RecordCodecBuilder.Instance<P> instance) {
+			return instance.group(
+					Vec3i.CODEC.optionalFieldOf("origin", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin),
+					Vec3i.CODEC.optionalFieldOf("size", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin),
+					VirtualLocation.CODEC.optionalFieldOf("virtualLocation", null).<P>forGetter(a -> a.virtualLocation),
+					Codec.INT.optionalFieldOf("range", -1).<P>forGetter(a -> a.range),
+					Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.BUILDER_CODEC).optionalFieldOf("addons", new HashMap<>()).forGetter(a -> a.addons));
 		}
 
 		public void initAddons() {

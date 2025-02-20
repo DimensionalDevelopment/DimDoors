@@ -14,12 +14,12 @@ public abstract class TessellatingRecipeMixin implements IShapedRecipe<Container
     }
 
     @Override
-    public int getRecipeWidth() {
+    public int getWidth() {
         return self().getWidth();
     }
 
     @Override
-    public int getRecipeHeight() {
+    public int getHeight() {
         return self().getHeight();
     }
 }

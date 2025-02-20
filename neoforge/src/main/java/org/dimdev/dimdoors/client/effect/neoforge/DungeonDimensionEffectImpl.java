@@ -8,6 +8,6 @@ import org.joml.Matrix4f;
 
 public class DungeonDimensionEffectImpl {
     public static void renderEffect(DimensionSpecialEffects effect, ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
-        effect.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
+        effect.renderSky(level, ticks, partialTick, poseStack.last().pose(), camera, projectionMatrix, isFoggy, setupFog);
     }
 }
