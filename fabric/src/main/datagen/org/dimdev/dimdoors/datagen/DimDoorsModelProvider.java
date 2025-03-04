@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.datagen;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
@@ -14,6 +13,7 @@ import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -196,9 +196,14 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 		itemModelGenerator.generateFlatItem(ModItems.AMALGAM_LUMP.get(), ModelTemplates.FLAT_ITEM);
 		itemModelGenerator.generateFlatItem(ModItems.CLOD.get(), ModelTemplates.FLAT_ITEM);
 
-		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_BOOTS.get(), ModelTemplates.FLAT_ITEM);
-		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_CHESTPLATE.get(), ModelTemplates.FLAT_ITEM);
-		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_HELMET.get(), ModelTemplates.FLAT_ITEM);
-		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_LEGGINGS.get(), ModelTemplates.FLAT_ITEM);
+		itemModelGenerator.generateArmorTrims((ArmorItem) ModItems.WORLD_THREAD_BOOTS.get());
+		itemModelGenerator.generateArmorTrims((ArmorItem) ModItems.WORLD_THREAD_CHESTPLATE.get());
+		itemModelGenerator.generateArmorTrims((ArmorItem) ModItems.WORLD_THREAD_HELMET.get());
+		itemModelGenerator.generateArmorTrims((ArmorItem) ModItems.WORLD_THREAD_LEGGINGS.get());
+
+		itemModelGenerator.generateArmorTrims((ArmorItem) ModItems.GARMENT_OF_REALITY_BOOTS.get());
+		itemModelGenerator.generateArmorTrims((ArmorItem) ModItems.GARMENT_OF_REALITY_CHESTPLATE.get());
+		itemModelGenerator.generateArmorTrims((ArmorItem) ModItems.GARMENT_OF_REALITY_HELMET.get());
+		itemModelGenerator.generateArmorTrims((ArmorItem) ModItems.GARMENT_OF_REALITY_LEGGINGS.get());
 	}
 }

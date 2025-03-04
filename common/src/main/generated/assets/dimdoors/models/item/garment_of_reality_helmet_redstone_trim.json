@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dimdoors:item/garment_of_reality_helmet",
+    "layer1": "minecraft:trims/items/helmet_trim_redstone"
+  }
+}
