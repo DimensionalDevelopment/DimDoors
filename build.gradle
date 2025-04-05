@@ -95,7 +95,7 @@ dependencies {
     shadow("com.github.DimensionalDevelopment:poly2tri.java:${poly2tri_version}")
 
     //Compile Only
-    //compileOnly("com.github.DimensionalDevelopment:AnnotatedNBT:${annotatednbt_version}")
+    compileOnly("com.github.DimensionalDevelopment:AnnotatedNBT:${annotatednbt_version}")
     compileOnly(fg.deobf("curse.maven:opencubicchunks-292243:${cubicchunks_version}"))
 
     //Runtime Stuff
