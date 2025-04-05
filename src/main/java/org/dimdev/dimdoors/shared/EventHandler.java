@@ -5,37 +5,42 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.dimdev.ddutils.TeleportUtils;
 import org.dimdev.dimdoors.shared.rifts.registry.RiftRegistry;
-import org.dimdev.dimdoors.shared.sound.ModSounds;
 import org.dimdev.dimdoors.shared.world.ModDimensions;
 
 import java.util.Objects;
 
+import static net.minecraft.util.DamageSource.FALL;
+import static net.minecraft.util.DamageSource.OUT_OF_WORLD;
+import static net.minecraft.util.SoundCategory.HOSTILE;
+import static net.minecraftforge.fml.common.eventhandler.EventPriority.HIGHEST;
+import static net.minecraftforge.fml.common.eventhandler.EventPriority.LOWEST;
+import static org.dimdev.dimdoors.shared.ModConfig.limbo;
+import static org.dimdev.dimdoors.shared.sound.ModSounds.CRACK;
+
 public final class EventHandler {
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = HIGHEST)
     public static void onLivingHurt(LivingHurtEvent event) {
         Entity entity = event.getEntity();
-        if (entity.dimension == ModDimensions.getLimboDim() && (event.getSource() == DamageSource.FALL)) {
+        DamageSource source = event.getSource();
+        if(entity.dimension==ModDimensions.getLimboDim() && (source==FALL))
             event.setCanceled(true);// no fall damage in limbo
-        } else if(entity instanceof EntityPlayer && ModDimensions.isDimDoorsDimension(entity.dimension) && event.getSource() == DamageSource.OUT_OF_WORLD) {
+        else if(entity instanceof EntityPlayer && ModDimensions.isDimDoorsDimension(entity.dimension) && source==OUT_OF_WORLD)
             event.setCanceled(true);//no void damage for players in dim doors dimensions
-        }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = LOWEST)
     public static void onLivingDeath(LivingDeathEvent event) {
         EntityLivingBase entity = event.getEntityLiving();
-        if(entity instanceof EntityPlayer && (ModDimensions.isDimDoorsDimension(entity.dimension) || ModConfig.limbo.universalLimbo)) {
+        if(entity instanceof EntityPlayer && (ModDimensions.isDimDoorsDimension(entity.dimension) || limbo.universalLimbo)) {
             EntityPlayer player = (EntityPlayer)entity;
             player.extinguish();
             if(!player.getActivePotionEffects().isEmpty()) player.clearActivePotions();
@@ -43,36 +48,34 @@ public final class EventHandler {
             FoodStats food = player.getFoodStats();
             if(Objects.nonNull(food)) {
                 food.setFoodLevel(20);
-                food.setFoodSaturationLevel(6f);
+                if(player.world.isRemote) food.setFoodSaturationLevel(6f);
             }
             teleportToLimbo(player);
             event.setCanceled(true);
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
+    @SubscribeEvent(priority = LOWEST)
+    public static void onDimensionChange(PlayerChangedDimensionEvent event) {
         // TODO: Make this work with other mods (such as Dimensional Industry)
-        if (!ModDimensions.isDimDoorsPocketDimension(event.fromDim) && ModDimensions.isDimDoorsPocketDimension(event.toDim)) {
+        if(!ModDimensions.isDimDoorsPocketDimension(event.fromDim) && ModDimensions.isDimDoorsPocketDimension(event.toDim))
             RiftRegistry.instance().setOverworldRift(event.player.getUniqueID(), null);
-        }
     }
 
     /**
      * Players can no longer fall out of Limbo. Should fix some death related issues and increases the use cases for eternal fabric
      */
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = HIGHEST)
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         EntityPlayer player = event.player;
-        if (ModDimensions.isDimDoorsDimension(player.dimension) && player.posY<-50) {
+        if(ModDimensions.isDimDoorsDimension(player.dimension) && player.posY<-50)
             teleportToLimbo(player);
-        }
     }
 
     private static void teleportToLimbo(EntityPlayer player) {
-        double x = player.posX + MathHelper.clamp(player.world.rand.nextDouble(), 100, 100);
-        double z = player.posZ + MathHelper.clamp(player.world.rand.nextDouble(), -100, 100);
-        TeleportUtils.teleport(player, ModDimensions.getLimboDim(),x,700,z,player.rotationYaw,player.rotationPitch);
-        player.world.playSound(null, player.getPosition(), ModSounds.CRACK, SoundCategory.HOSTILE, 13, 1);
+        double x = player.posX+MathHelper.clamp(player.world.rand.nextDouble(),100,100);
+        double z = player.posZ+MathHelper.clamp(player.world.rand.nextDouble(),-100,100);
+        TeleportUtils.teleport(player,ModDimensions.getLimboDim(),x,700,z,player.rotationYaw,player.rotationPitch);
+        player.world.playSound(null,player.getPosition(),CRACK,HOSTILE,13,1);
     }
 }
