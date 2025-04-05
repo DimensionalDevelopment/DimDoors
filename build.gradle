@@ -1,6 +1,8 @@
+import static org.gradle.api.file.DuplicatesStrategy.INCLUDE
+
 //file:noinspection GroovyAssignabilityCheck
 plugins {
-    id 'com.github.johnrengelman.shadow' version '8.+'
+    id 'com.gradleup.shadow' version '9.+'
     id 'idea'
     id 'java-library'
     id 'net.minecraftforge.gradle' version '6.+'
@@ -22,7 +24,7 @@ group = mod_package
 
 // Java stuff
 compileJava.options.encoding = 'UTF-8'
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of 8
 
 idea {
     module {
@@ -54,25 +56,22 @@ configurations {
 repositories {
     mavenCentral() {
         content {
-            [ 'org.projectlombok' ].forEach { includeGroup it }
+            includeGroup 'org.projectlombok'
         }
     }
     maven {
         name = 'JitPack'
-        url = uri('https://jitpack.io')
-        //content {
-        //    [ 'com.github.DimensionalDevelopment', 'com.github.OpenCubicChunks' ].forEach { includeGroup it }
-        //}
+        url = uri 'https://jitpack.io'
     }
     maven {
         name = 'SonaType'
-        url = uri('https://oss.sonatype.org/content/repositories/public/')
+        url = uri 'https://oss.sonatype.org/content/repositories/public/'
         content {
             [ 'com.flowpowered', 'org.jgrapht', 'org.jheaps' ].forEach { includeGroup it }
         }
     }
     maven {
-        url = uri('https://www.cursemaven.com')
+        url = uri 'https://www.cursemaven.com'
         content {
             includeGroup 'curse.maven'
         }
@@ -83,34 +82,34 @@ repositories {
 dependencies {
     //Minecraft
     //noinspection VulnerableLibrariesLocal
-    minecraft("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    minecraft "net.minecraftforge:forge:${minecraft_version}-$forge_version"
 
     //Lombok
-    annotationProcessor("org.projectlombok:lombok:${lombok_version}")
-    compileOnly("org.projectlombok:lombok:${lombok_version}")
+    annotationProcessor "org.projectlombok:lombok:$lombok_version"
+    compileOnly "org.projectlombok:lombok:$lombok_version"
 
     //Shaded Libraries
-    shadow("com.flowpowered:flow-math:${flowmath_version}")
-    shadow("org.jgrapht:jgrapht-core:${jgrapht_version}")
-    shadow("com.github.DimensionalDevelopment:poly2tri.java:${poly2tri_version}")
+    shadow "com.flowpowered:flow-math:$flowmath_version"
+    shadow "org.jgrapht:jgrapht-core:$jgrapht_version"
+    shadow "com.github.DimensionalDevelopment:poly2tri.java:$poly2tri_version"
 
     //Compile Only
-    compileOnly("com.github.DimensionalDevelopment:AnnotatedNBT:${annotatednbt_version}")
-    compileOnly(fg.deobf("curse.maven:opencubicchunks-292243:${cubicchunks_version}"))
+    compileOnly "com.github.DimensionalDevelopment:AnnotatedNBT:$annotatednbt_version"
+    compileOnly fg.deobf("curse.maven:opencubicchunks-292243:$cubicchunks_version")
 
     //Runtime Stuff
-    runtimeOnly(fg.deobf("curse.maven:had-enough-items-557549:${hei_version}"))
-    runtimeOnly(fg.deobf("curse.maven:the-one-probe-245211:${top_version}"))
+    runtimeOnly fg.deobf("curse.maven:had-enough-items-557549:$hei_version")
+    runtimeOnly fg.deobf("curse.maven:the-one-probe-245211:$top_version")
 }
 
 shadowJar {
     //necessary relocation
     configurations = [project.configurations.shadow]
     [ 'com.flowpowered.math', 'org.jgrapht', 'org.jheaps', 'org.poly2tri'].forEach {
-        pkg -> { relocate pkg, "${shadow_package}.${pkg}" }
+        pkg -> { relocate pkg, "${shadow_package}.$pkg" }
     }
-    setArchiveBaseName(mod_name)
-    setArchiveClassifier('')
+    setArchiveBaseName mod_name
+    setArchiveClassifier ''
     mergeServiceFiles()
 }
 
@@ -122,7 +121,7 @@ reobf {
 }
 
 processResources {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    duplicatesStrategy = INCLUDE
     def replacements = [ 'credits': mod_credits, 'desc': mod_desc, 'logo': mod_logo, 'mcversion': minecraft_version,
                          'modid': mod_id, 'name': mod_name, 'url': mod_url, 'version': version]
     inputs.properties replacements
@@ -143,14 +142,14 @@ jar {
     }
 }
 
-tasks.assemble.dependsOn(shadowJar)
-tasks.shadowJar.dependsOn('reobfJar')
-tasks.jar.finalizedBy('reobfJar')
+tasks.assemble.dependsOn shadowJar
+tasks.shadowJar.dependsOn 'reobfJar'
+tasks.jar.finalizedBy 'reobfJar'
 
-tasks.register('generatePocketSchematics',JavaExec) {
+tasks.register('generatePocketSchematics', JavaExec) {
     dependsOn jar
-    classpath = files('build/libs/'+jar.archiveFileName)
-    classpath += sourceSets.main.runtimeClasspath
+    classpath = files 'build/libs/'+jar.archiveFileName
+    classpath+=sourceSets.main.runtimeClasspath
     mainClass = 'org.dimdev.dimdoors.shared.tools.SchematicGenerator'
     args = ['src/main/resources/assets/dimdoors/pockets/schematic']
 }
