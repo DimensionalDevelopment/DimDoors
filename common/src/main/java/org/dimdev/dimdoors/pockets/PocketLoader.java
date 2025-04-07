@@ -1,39 +1,30 @@
 package org.dimdev.dimdoors.pockets;
 
-import com.google.gson.JsonElement;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.api.util.SimpleTree;
-import org.dimdev.dimdoors.api.util.WeightedList;
-import org.dimdev.dimdoors.block.entity.RiftData;
+import org.dimdev.dimdoors.api.util.*;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class PocketLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final PocketLoader INSTANCE = new PocketLoader();
-	private SimpleTree<String, Supplier<PocketGenerator>> pocketGenerators = new SimpleTree<>(String.class);
-	private SimpleTree<String, Supplier<VirtualPocket>> pocketGroups = new SimpleTree<>(String.class);
-	private SimpleTree<String, Supplier<VirtualPocket>> virtualPockets = new SimpleTree<>(String.class);
+	private SimpleTree<String, PocketGenerator> pocketGenerators = new SimpleTree<>(String.class);
+	private SimpleTree<String, VirtualPocket> pocketGroups = new SimpleTree<>(String.class);
+	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
-	private SimpleTree<String, Supplier<RiftData>> dataTree = new SimpleTree<>(String.class);
-	private SimpleTree<String, Supplier<Modifier>> modifiers = new SimpleTree<>(String.class);
+	private SimpleTree<String, Tag> dataTree = new SimpleTree<>(String.class);
 
 	private PocketLoader() {
 	}
@@ -51,16 +42,21 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		templates.clear();
 		dataTree.clear();
 
-		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/rift_data", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(RiftData.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		modifiers = ResourceUtil.loadResourcePathToMap(manager, "pockets/modifier", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		pocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		pocketGenerators = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(PocketGenerator.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		virtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		templates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER).join();
+		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/json", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.composeIdentity(), ResourceUtil.PATH_KEY_PROVIDER).join();
+
+		CompletableFuture<SimpleTree<String, PocketGenerator>> futurePocketGeneratorMap = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(pocketGeneratorLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futurePocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager)), ResourceUtil.PATH_KEY_PROVIDER);
+		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER);
 
 
-		virtualPockets.values().forEach(VirtualPocket::init);
+		pocketGenerators = futurePocketGeneratorMap.join();
+		pocketGroups = futurePocketGroups.join();
+		virtualPockets = futureVirtualPockets.join();
+		templates = futureTemplates.join();
+
 		pocketGroups.values().forEach(VirtualPocket::init);
+		virtualPockets.values().forEach(VirtualPocket::init);
 	}
 
 //    public void load() {
@@ -84,22 +80,20 @@ public class PocketLoader implements ResourceManagerReloadListener {
 //		}
 //    }
 
-	public RiftData getRiftData(Path<String> path) {
-		return dataTree.get(path);
+	public Tag getDataNbt(String id) {
+		return this.dataTree.get(Path.stringPath(id));
 	}
 
-	public RiftData getRiftData(String id) {
-		return getRiftData(Path.stringPath(id));
+	public CompoundTag getDataNbtCompound(String id) {
+		return NbtUtil.asNbtCompound(getDataNbt(id), "Could not convert Tag \"" + id + "\" to CompoundTag!");
 	}
 
-	public <T> BiFunction<JsonElement, Path<String>, T> jsonCodecLoader(Codec<T> codec) {
-		return (json, ignore) -> {
-			try {
-				return codec.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
-			} catch (Exception e) {
-				throw e;
-			}
-		};
+	private BiFunction<Tag, Path<String>, VirtualPocket> virtualPocketLoader(ResourceManager manager) {
+		return (nbt, ignore) -> VirtualPocket.deserialize(nbt, manager);
+	}
+
+	private BiFunction<Tag, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager) {
+		return (nbt, ignore) -> PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an CompoundTag!"), manager);
 	}
 
 	private PocketTemplate loadPocketTemplate(CompoundTag nbt, Path<String> id) {
@@ -111,26 +105,16 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	}
 
 	public WeightedList<PocketGenerator, PocketGenerationContext> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
-		return new WeightedList<>(pocketGenerators.values().stream().map(Supplier::get).filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
+		return new WeightedList<>(pocketGenerators.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
 
 	public VirtualPocket getGroup(ResourceLocation group) {
-		return getGroup(Path.stringPath(group));
+		return pocketGroups.get(Path.stringPath(group));
 	}
-
-	public VirtualPocket getGroup(Path<String> path) {
-		return pocketGroups.get(path);
-	}
-
-	public VirtualPocket getVirtual(Path<String> path) {
-		return virtualPockets.get(path);
-	}
-
 
 	public VirtualPocket getVirtual(ResourceLocation id) {
 		return virtualPockets.get(Path.stringPath(id));
 	}
-
 
 
 	public static PocketLoader getInstance() {
@@ -141,36 +125,15 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		return this.templates;
 	}
 
-	public SimpleTree<String, Supplier<VirtualPocket>> getPocketGroups() {
+	public SimpleTree<String, VirtualPocket> getPocketGroups() {
 		return this.pocketGroups;
 	}
 
-	public SimpleTree<String, Supplier<VirtualPocket>> getVirtualPockets() {
+	public SimpleTree<String, VirtualPocket> getVirtualPockets() {
 		return this.virtualPockets;
 	}
 
-	public PocketGenerator getGenerator(Path<String> path) {
-		return pocketGenerators.get(path);
-	}
-
-
 	public PocketGenerator getGenerator(ResourceLocation id) {
-		return pocketGenerators.get(Path.stringPath(id)).get();
+		return pocketGenerators.get(Path.stringPath(id));
 	}
-
-	public PocketGenerator getGenerator(String id) {
-		return pocketGenerators.get(Path.stringPath(id)).get();
-	}
-
-	public Modifier getModifier(String id) {
-		return getModifier(Path.stringPath(id));
-	}
-
-	public Modifier getModifier(Path<String> path) {
-		return modifiers.get(path);
-	}
-
-//	public void setModifiers(SimpleTree<String, Supplier<Modifier>> modifiers) {
-//		this.modifiers = modifiers;
-//	}
 }

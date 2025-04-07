@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
@@ -34,7 +33,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static ResourceKey<net.minecraft.world.level.Level> targetWorldResourceKey;
 
-	public static final MapCodec<EscapeTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+	public static final Codec<EscapeTarget> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
 	).apply(instance, EscapeTarget::new));
 
@@ -72,23 +71,16 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 				targetWorldResourceKey = DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld;
 				if (DimensionalDoors.getWorld(targetWorldResourceKey) != null) {
 					LOGGER.log(Level.INFO, "Sending player from limbo to the exit dimension, good luck!");
-
 					var level = DimensionalDoors.getWorld(targetWorldResourceKey);
 					destLoc = new Location(level, level.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, entity.blockPosition()));
 				} else {
 					LOGGER.log(Level.INFO, "Target dimension defined in config does not exist.  Use /forge dimensions for a list!");
 					LOGGER.log(Level.INFO, "Sending player from limbo to worldspawn, good luck!");
-
-					var overworld = DimensionalDoors.getServer().overworld();
-
-					destLoc = new Location(overworld, overworld.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, overworld.getSharedSpawnPos()));
+					destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getHeightmapPos(Heightmap.Types.WORLD_SURFACE, DimensionalDoors.getServer().overworld().getSharedSpawnPos()));
 				}
 			} else {
 				LOGGER.log(Level.INFO, "sending player from limbo to worldspawn, good luck!");
-
-				var overworld = DimensionalDoors.getServer().overworld();
-
-				destLoc = new Location(overworld, overworld.getHeightmapPos(Heightmap.Types.WORLD_SURFACE, overworld.getSharedSpawnPos()));
+				destLoc = new Location(DimensionalDoors.getServer().overworld(), DimensionalDoors.getServer().overworld().getHeightmapPos(Heightmap.Types.WORLD_SURFACE, DimensionalDoors.getServer().overworld().getSharedSpawnPos()));
 			}
 
 

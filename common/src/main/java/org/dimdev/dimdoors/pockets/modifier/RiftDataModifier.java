@@ -1,14 +1,14 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.packs.resources.ResourceManager;
+import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -17,28 +17,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class RiftDataModifier implements Modifier {
-	public static final MapCodec<RiftDataModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			RiftData.CODEC.fieldOf("rift_data").forGetter(a -> a.doorData),
-			Codec.INT_STREAM.fieldOf("ids").xmap(intStream -> intStream.boxed().toList(), integers -> integers.stream().mapToInt(a -> a)).fieldOf("rift_data").forGetter(a -> a.ids)
-	).apply(instance, RiftDataModifier::new));
-
+public class RiftDataModifier extends AbstractModifier {
 	public static final String KEY = "rift_data";
 
-	private RiftData doorData;
+	private CompoundTag doorData;
 	private String doorDataReference;
 	private List<Integer> ids;
 
-	public RiftDataModifier(RiftData doorData, List<Integer> ids) {
-		this.doorData = doorData;
-		this.ids = ids;
+	@Override
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+		// TODO: RiftData via ResourceManager
+		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
+			doorDataReference = nbt.getString("rift_data");
+			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
+		}
+		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
+
+		ids = stream(nbt.getByteArray("ids")).boxed().collect(Collectors.toList());
+		return this;
 	}
 
-    public static IntStream stream(byte[] bytes) {
+	public static IntStream stream(byte[] bytes) {
 		ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		return IntStream.generate(buffer::get).limit(buffer.remaining());
+	}
+
+	public static byte[] toByteArray(int[] ints) {
+		byte[] bytes = new byte[ints.length];
+		for (int i = 0; i < ints.length; i++) {
+			bytes[i] = (byte) ints[i];
+		}
+		return bytes;
+	}
+
+	@Override
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
+
+		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
+		else if (doorData != null) nbt.put("rift_data", doorData);
+		nbt.putByteArray("ids", toByteArray(ids.stream().mapToInt(Integer::intValue).toArray()));
+		return nbt;
 	}
 
 	@Override
@@ -46,7 +68,12 @@ public class RiftDataModifier implements Modifier {
 		return ModifierType.RIFT_DATA_MODIFIER_TYPE.get();
 	}
 
-    @Override
+	@Override
+	public String getKey() {
+		return KEY;
+	}
+
+	@Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("doorData", doorData)
@@ -59,7 +86,7 @@ public class RiftDataModifier implements Modifier {
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
 
-		Consumer<RiftBlockEntity<?>> riftBlockEntityConsumer;
+		Consumer<RiftBlockEntity> riftBlockEntityConsumer;
 
 		if (doorData == null) {
 			riftBlockEntityConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
@@ -77,8 +104,8 @@ public class RiftDataModifier implements Modifier {
 		});
 	}
 
-	private Consumer<RiftBlockEntity<?>> solveData(RiftData doorData, Map<String, Double> variableMap) {
-		CompoundTag solvedDoorData = (CompoundTag) NbtOps.INSTANCE.withEncoder(RiftData.CODEC).apply(doorData).getOrThrow();
+	private Consumer<RiftBlockEntity> solveData(CompoundTag doorData, Map<String, Double> variableMap) {
+		CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
 
 		return rift -> rift.setData(RiftData.fromNbt(solvedDoorData));
 	}

@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
-public abstract class AbstractLazyCompatibleModifier implements LazyCompatibleModifier {
+public abstract class AbstractModifier implements Modifier {
 	private String resourceKey = null;
 
 	@Override

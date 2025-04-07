@@ -1,9 +1,5 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,13 +10,6 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import java.util.UUID;
 
 public class Rift extends RegistryVertex {
-	public static final MapCodec<Rift> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-					UUIDUtil.CODEC.fieldOf("id").forGetter(RegistryVertex::getId),
-			Location.CODEC.fieldOf("location").forGetter(Rift::getLocation),
-			Codec.BOOL.fieldOf("isDetached").forGetter(Rift::isDetached),
-			LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(Rift::getProperties))
-			.apply(inst, Rift::new));
-
 	private static final Logger LOGGER = LogManager.getLogger();
 	private Location location;
 	private boolean isDetached;
@@ -88,6 +77,24 @@ public class Rift extends RegistryVertex {
 	@Override
 	public RegistryVertexType<? extends RegistryVertex> getType() {
 		return RegistryVertexType.RIFT.get();
+	}
+
+	public static CompoundTag toNbt(Rift rift) {
+		CompoundTag nbt = new CompoundTag();
+		nbt.putUUID("id", rift.id);
+		nbt.put("location", Location.toNbt(rift.location));
+		nbt.putBoolean("isDetached", rift.isDetached);
+		if (rift.properties != null) nbt.put("properties", LinkProperties.toNbt(rift.properties));
+		return nbt;
+	}
+
+	public static Rift fromNbt(CompoundTag nbt) {
+		Rift rift = new Rift();
+		rift.id = nbt.getUUID("id");
+		rift.location = Location.fromNbt(nbt.getCompound("location"));
+		rift.isDetached = nbt.getBoolean("isDetached");
+		if (nbt.contains("properties")) rift.properties = LinkProperties.fromNbt(nbt.getCompound("properties"));
+		return rift;
 	}
 
 	public Location getLocation() {

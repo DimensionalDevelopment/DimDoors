@@ -74,14 +74,6 @@ public class RiftData {
 		this.color = color;
 	}
 
-	public static final Codec<RiftData> CODEC = CodecUtils.codecWithReference(RecordCodecBuilder.create(instance -> instance.group(
-			VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
-			LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(RiftData::getProperties),
-			RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
-			Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
-			Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor)
-	).apply(instance, RiftData::new)), s -> PocketLoader.getInstance().getRiftData(s));
-
 	public static CompoundTag toNbt(RiftData data) {
 		CompoundTag nbt = new CompoundTag();
 		if (data.destination != VirtualTarget.NoneTarget.INSTANCE) nbt.put("destination", VirtualTarget.toNbt(data.destination));

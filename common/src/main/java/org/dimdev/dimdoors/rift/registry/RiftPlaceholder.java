@@ -1,18 +1,8 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
 
 public class RiftPlaceholder extends Rift { // TODO: don't extend rift
-	public final static MapCodec<RiftPlaceholder> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			UUIDUtil.CODEC.fieldOf("id").forGetter(RiftPlaceholder::getId)
-	).apply(instance, id -> {
-		var placeholder = new RiftPlaceholder();
-		placeholder.setId(id);
-		return placeholder;
-	}));
-
 	@Override
 	public void sourceGone(RegistryVertex source) {
 	}
@@ -41,5 +31,17 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 	@Override
 	public RegistryVertexType<? extends RegistryVertex> getType() {
 		return RegistryVertexType.RIFT_PLACEHOLDER.get();
+	}
+
+	public static CompoundTag toNbt(RiftPlaceholder vertex) {
+		CompoundTag nbt = new CompoundTag();
+		nbt.putUUID("id", vertex.id);
+		return nbt;
+	}
+
+	public static RiftPlaceholder fromNbt(CompoundTag nbt) {
+		RiftPlaceholder vertex = new RiftPlaceholder();
+		vertex.id = nbt.getUUID("id");
+		return vertex;
 	}
 }

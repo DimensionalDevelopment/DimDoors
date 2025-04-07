@@ -14,7 +14,7 @@ public interface ContainedAddon extends PocketAddon {
 		throw new UnsupportedOperationException("ContainedEventListenerAddons cannot be attach to a Pocket directly");
 	}
 
-	interface ContainedBuilderAddon<T extends ContainedAddon, V extends ContainedBuilderAddon<T, V>> extends PocketBuilderAddon<T, V> {
+	interface ContainedBuilderAddon<T extends ContainedAddon> extends PocketBuilderAddon<T> {
 		ResourceLocation getContainerId();
 
 		AddonContainer<T> supplyContainer();

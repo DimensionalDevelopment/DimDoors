@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -20,28 +18,13 @@ import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class DyeableAddon implements PocketAddon {
-	public static final MapCodec<DyeableAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			PocketColor.CODEC.optionalFieldOf("dyeColor", PocketColor.WHITE).forGetter(a -> a.dyeColor),
-			PocketColor.CODEC.optionalFieldOf("nextDyeColor", PocketColor.NONE).forGetter(a -> a.nextDyeColor),
-			Codec.INT.optionalFieldOf("count", 0).forGetter(a -> a.count)
-	).apply(instance, DyeableAddon::new));
-	public static final ResourceLocation ID = DimensionalDoors.id("dyeable");
+	public static ResourceLocation ID = DimensionalDoors.id("dyeable");
 
 	private static final int BLOCKS_PAINTED_PER_DYE = 1000000;
 
-	protected PocketColor dyeColor;
-	private PocketColor nextDyeColor;
-	private int count;
-
-	public DyeableAddon() {
-		this(PocketColor.WHITE, PocketColor.NONE, 0);
-	}
-
-	public DyeableAddon(PocketColor dyeColor, PocketColor nextDyeColor, int count) {
-        this.dyeColor = dyeColor;
-        this.nextDyeColor = nextDyeColor;
-        this.count = count;
-    }
+	protected PocketColor dyeColor = PocketColor.WHITE;
+	private PocketColor nextDyeColor = PocketColor.NONE;
+	private int count = 0;
 
 	private static int amountOfDyeRequiredToColor(Pocket pocket) {
 		int outerVolume = pocket.getBox().getYSpan() * pocket.getBox().getZSpan() * pocket.getBox().getXSpan();
@@ -99,7 +82,28 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	@Override
-	public PocketAddonType<DyeableAddon, DyeableBuilderAddon> getType() {
+	public PocketAddon fromNbt(CompoundTag nbt) {
+
+		this.dyeColor = PocketColor.from(nbt.getInt("dyeColor"));
+		this.nextDyeColor = PocketColor.from(nbt.getInt("nextDyeColor"));
+		this.count = nbt.getInt("count");
+
+		return this;
+	}
+
+	@Override
+	public CompoundTag toNbt(CompoundTag nbt) {
+		PocketAddon.super.toNbt(nbt);
+
+		nbt.putInt("dyeColor", this.dyeColor.getId());
+		nbt.putInt("nextDyeColor", this.nextDyeColor.getId());
+		nbt.putInt("count", this.count);
+
+		return nbt;
+	}
+
+	@Override
+	public PocketAddonType<? extends PocketAddon> getType() {
 		return PocketAddonType.DYEABLE_ADDON.get();
 	}
 
@@ -117,21 +121,10 @@ public class DyeableAddon implements PocketAddon {
 		}
 	}
 
-	public static class DyeableBuilderAddon implements PocketBuilderAddon<DyeableAddon, DyeableBuilderAddon> {
-		public static final MapCodec<DyeableBuilderAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-				PocketColor.CODEC.optionalFieldOf("dyeColor", PocketColor.NONE).forGetter(a -> a.dyeColor)
-		).apply(instance, DyeableBuilderAddon::new));
+	public static class DyeableBuilderAddon implements PocketBuilderAddon<DyeableAddon> {
 
 		private PocketColor dyeColor = PocketColor.NONE;
 		// TODO: add some Pocket#init so that we can have boolean shouldRepaintOnInit
-
-		public DyeableBuilderAddon() {
-			this(PocketColor.NONE);
-		}
-
-		public DyeableBuilderAddon(PocketColor dyeColor) {
-			this.dyeColor = dyeColor;
-		}
 
 		@Override
 		public void apply(Pocket pocket) {
@@ -146,7 +139,23 @@ public class DyeableAddon implements PocketAddon {
 		}
 
 		@Override
-		public PocketAddonType<DyeableAddon, DyeableBuilderAddon> getType() {
+		public PocketBuilderAddon<DyeableAddon> fromNbt(CompoundTag nbt) {
+			this.dyeColor = PocketColor.from(nbt.getInt("dye_color"));
+
+			return this;
+		}
+
+		@Override
+		public CompoundTag toNbt(CompoundTag nbt) {
+			PocketBuilderAddon.super.toNbt(nbt);
+
+			nbt.putInt("dye_color", dyeColor.getId());
+
+			return nbt;
+		}
+
+		@Override
+		public PocketAddonType<DyeableAddon> getType() {
 			return PocketAddonType.DYEABLE_ADDON.get();
 		}
 	}

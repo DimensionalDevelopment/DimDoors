@@ -70,9 +70,9 @@ public class PocketTemplate {
     }
 
 	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Pocket pocket) {
-		ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
 		pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
-		Map<BlockPos, RiftBlockEntity> absoluteRifts = SchematicPlacer.getAbsoluteRifts(this.schematic, pocket.getOrigin(), world.registryAccess());
+		Map<BlockPos, RiftBlockEntity> absoluteRifts = SchematicPlacer.getAbsoluteRifts(this.schematic, pocket.getOrigin());
+		ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
 		absoluteRifts.values().forEach(rift -> rift.setWorld(world));
 		return absoluteRifts;
 	}

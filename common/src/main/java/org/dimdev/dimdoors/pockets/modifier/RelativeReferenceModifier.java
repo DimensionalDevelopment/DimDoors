@@ -1,10 +1,9 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.StringRepresentable;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -15,31 +14,40 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Optional;
 
-public class RelativeReferenceModifier implements Modifier {
-	public static final MapCodec<RelativeReferenceModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Codec.INT.fieldOf("point_a").forGetter(a -> a.point_a),
-			Codec.INT.fieldOf("point_b").forGetter(a -> a.point_b),
-			StringRepresentable.fromValues(ConnectionType::values).fieldOf("connection").forGetter(a -> a.connection)
-	).apply(instance, RelativeReferenceModifier::new));
-
+public class RelativeReferenceModifier extends AbstractModifier {
 	public static final String KEY = "relative";
 
-	private int point_a;
-    private int point_b;
+	private int point_a, point_b;
 	private ConnectionType connection = ConnectionType.BOTH;
 
-	public RelativeReferenceModifier(int point_a, int point_b, ConnectionType connection) {
-        this.point_a = point_a;
-        this.point_b = point_b;
-        this.connection = connection;
-    }
+	@Override
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+		point_a = nbt.getInt("point_a");
+		point_b = nbt.getInt("point_b");
+		connection = nbt.contains("connection") ? ConnectionType.fromString(nbt.getString("connection")) : ConnectionType.BOTH;
+		return this;
+	}
+
+	@Override
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
+		nbt.putInt("point_a", point_a);
+		nbt.putInt("point_b", point_b);
+		nbt.putString("connection", connection.getSerializedName());
+		return nbt;
+	}
 
 	@Override
 	public ModifierType<? extends Modifier> getType() {
 		return ModifierType.RELATIVE_REFERENCE_MODIFIER_TYPE.get();
 	}
 
-    @Override
+	@Override
+	public String getKey() {
+		return KEY;
+	}
+
+	@Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
 		Optional<Location> riftA = manager.get(point_a).map(rift -> new Location((ServerLevel) rift.getLevel(), rift.getBlockPos()));
 		Optional<Location> riftB = manager.get(point_b).map(rift -> new Location((ServerLevel) rift.getLevel(), rift.getBlockPos()));

@@ -2,14 +2,13 @@ package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -28,30 +27,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShellModifier implements LazyModifier {
-	public static final MapCodec<ShellModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Layer.CODEC.listOf().fieldOf("layers").forGetter(a -> a.layers),
-			BoundingBox.CODEC.optionalFieldOf("box_to_draw_around", BoundingBox.infinite() /* TODO: Verify I didn't mess up with making this infinite*/).forGetter(a -> a.boxToDrawAround)
-			).apply(instance, ShellModifier::new)
-	);
-
+public class ShellModifier extends AbstractLazyModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "shell";
 
-	private final List<Layer> layers;
+	private final List<Layer> layers = new ArrayList<>();
 	private BoundingBox boxToDrawAround;
 
-	public ShellModifier() {
-		this(new ArrayList<>(), null);
-	}
+	@Override
+	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
+		super.toNbtInternal(nbt, allowReference);
 
-	public ShellModifier(List<Layer> layers, BoundingBox boxToDrawAround) {
-		this.layers = layers;
-		this.boxToDrawAround = boxToDrawAround;
+		ListTag layersNbt = new ListTag();
+		for (Layer layer : layers) {
+			layersNbt.add(layer.toNbt());
+		}
+		nbt.put("layers", layersNbt);
+		if (boxToDrawAround != null) {
+			nbt.put("box_to_draw_around", BlockBoxUtil.toNbt(boxToDrawAround));
+		}
+
+		return nbt;
 	}
 
 	@Override
-	public void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk, HolderLookup.Provider provider) {
+	public void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk) {
 
 		int boxExpansion = 0;
 		for (Layer layer : layers) {
@@ -122,9 +122,34 @@ public class ShellModifier implements LazyModifier {
 		}
 	}
 
-    @Override
+	@Override
+	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+		for (Tag layerNbt : nbt.getList("layers", Tag.TAG_COMPOUND)) {
+			CompoundTag nbtCompound = (CompoundTag) layerNbt;
+			try {
+				Layer layer = Layer.fromNbt(nbtCompound);
+				layers.add(layer);
+			} catch (CommandSyntaxException e) {
+				LOGGER.error("could not parse Layer: " + nbtCompound, e);
+			}
+		}
+
+		if (nbt.contains("box_to_draw_around", Tag.TAG_INT_ARRAY)) {
+			int[] box = nbt.getIntArray("box_to_draw_around");
+			boxToDrawAround = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
+		}
+
+		return this;
+	}
+
+	@Override
 	public ModifierType<? extends Modifier> getType() {
 		return ModifierType.SHELL_MODIFIER_TYPE.get();
+	}
+
+	@Override
+	public String getKey() {
+		return KEY;
 	}
 
 	@Override
@@ -184,11 +209,6 @@ public class ShellModifier implements LazyModifier {
 	}
 
 	public static class Layer {
-		public static Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.STRING.fieldOf("block_state").forGetter(a -> a.blockStateString),
-				Codec.STRING.fieldOf("thickness").forGetter(a -> a.thickness)
-		).apply(instance, Layer::new));
-
 		private final String blockStateString;
 		private final String thickness;
 		private Equation thicknessEquation;
@@ -205,7 +225,7 @@ public class ShellModifier implements LazyModifier {
 				this.thicknessEquation = Equation.newEquation(variableMap -> 1d, stringBuilder -> stringBuilder.append(thickness));
 			}
 
-			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow();
+			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow(false, LOGGER::error);
 		}
 
 		public BlockState getBlockState() {
@@ -216,7 +236,7 @@ public class ShellModifier implements LazyModifier {
 			return (int) thicknessEquation.apply(variableMap);
 		}
 
-		public CompoundTag  toNbt() {
+		public CompoundTag toNbt() {
 			CompoundTag nbt = new CompoundTag();
 			nbt.putString("block_state", blockStateString);
 			nbt.putString("thickness", thickness);

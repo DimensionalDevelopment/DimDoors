@@ -1,11 +1,11 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class LocalReference extends RiftReference {
-	public static final MapCodec<LocalReference> CODEC = BlockPos.CODEC.xmap(LocalReference::new, LocalReference::getTarget).fieldOf("target");
+	public static final Codec<LocalReference> CODEC = BlockPos.CODEC.xmap(LocalReference::new, LocalReference::getTarget).fieldOf("target").codec();
 
 	private final BlockPos target;
 

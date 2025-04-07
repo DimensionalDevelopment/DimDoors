@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.world.pocket;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class BlankChunkGenerator extends ChunkGenerator {
-	public static final MapCodec<BlankChunkGenerator> CODEC = RecordCodecBuilder.mapCodec((instance) ->
+	public static final MapCodec<BlankChunkGenerator> CODEC = RecordCodecBuilder.mapCodec(instance ->
 					instance.group(BiomeSource.CODEC.fieldOf("biome_source")
 							.forGetter((generator) -> generator.biomeSource)
 			).apply(instance, instance.stable(BlankChunkGenerator::of))

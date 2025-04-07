@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -11,7 +10,7 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class IdMarker extends VirtualTarget implements EntityTarget {
-	public static final MapCodec<IdMarker> CODEC = Codec.INT.xmap(IdMarker::new, IdMarker::getId).fieldOf("id");
+	public static final Codec<IdMarker> CODEC = Codec.INT.xmap(IdMarker::new, IdMarker::getId).fieldOf("id").codec();
 
 	private final int id;
 

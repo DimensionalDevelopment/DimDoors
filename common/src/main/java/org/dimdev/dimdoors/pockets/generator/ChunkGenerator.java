@@ -12,7 +12,6 @@
 //import net.minecraft.server.level.ThreadedLevelLightEngine;
 //import net.minecraft.server.level.WorldGenRegion;
 //import net.minecraft.server.packs.resources.ResourceManager;
-//import net.minecraft.world.item.enchantment.Enchantment;
 //import net.minecraft.world.level.ChunkPos;
 //import net.minecraft.world.level.LevelHeightAccessor;
 //import net.minecraft.world.level.biome.Biome;
@@ -47,7 +46,6 @@
 //import java.util.concurrent.ExecutionException;
 //import java.util.stream.Collectors;
 //
-// TODO: Figure out how to fix.
 //public class ChunkGenerator extends PocketGenerator {
 //	private static final Logger LOGGER = LogManager.getLogger();
 //	public static final String KEY = "chunk";
@@ -167,7 +165,7 @@
 //				world.setBlockAndUpdate(blockPos, protoRegion.getBlockState(blockPos.offset(pocketOriginChunkOffset).offset(0, virtualYOffset, 0)));
 //			}
 //		}
-//		AABB realBox = AABB.encapsulatingFullBlocks(firstCorner, secondCorner);
+//		AABB realBox = new AABB(firstCorner, secondCorner);
 //		for (ChunkAccess protoChunk : protoChunks) {
 //			for(BlockPos virtualBlockPos : protoChunk.getBlockEntitiesPos()) {
 //				BlockPos realBlockPos = virtualBlockPos.subtract(pocketOriginChunkOffset).offset(0, -virtualYOffset, 0);
