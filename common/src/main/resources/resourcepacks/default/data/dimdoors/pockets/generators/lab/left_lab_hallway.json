@@ -8,7 +8,7 @@
     {
       "type": "dimdoors:rift_data",
       "ids": [1],
-      "rift_data": "dimdoors:rift_data/pocket_entrance"
+      "rift_data": "dimdoors:pocket_entrance"
     },
     {
       "type": "dimdoors:template",

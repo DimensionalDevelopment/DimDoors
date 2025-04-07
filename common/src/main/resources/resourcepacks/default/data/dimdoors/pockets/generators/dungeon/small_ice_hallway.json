@@ -9,14 +9,14 @@
       "ids": [
         1
       ],
-      "rift_data": "dimdoors:rift_data/default_dungeon"
+      "rift_data": "dimdoors:default_dungeon"
     },
     {
       "type": "dimdoors:rift_data",
       "ids": [
         0
       ],
-      "rift_data": "dimdoors:rift_data/pocket_entrance"
+      "rift_data": "dimdoors:pocket_entrance"
     }
   ],
   "id": "dungeon/small_ice_hallway"
