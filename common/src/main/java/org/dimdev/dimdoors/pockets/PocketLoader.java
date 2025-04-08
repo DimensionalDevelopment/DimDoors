@@ -17,8 +17,10 @@ import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -28,15 +30,20 @@ import java.util.stream.Collectors;
 public class PocketLoader implements ResourceManagerReloadListener {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final PocketLoader INSTANCE = new PocketLoader();
-	private SimpleTree<String, Supplier<PocketGenerator>> pocketGenerators = new SimpleTree<>(String.class);
-	private SimpleTree<String, Supplier<VirtualPocket>> pocketGroups = new SimpleTree<>(String.class);
-	private SimpleTree<String, Supplier<VirtualPocket>> virtualPockets = new SimpleTree<>(String.class);
+	private SimpleTree<String, PocketGenerator> pocketGenerators = new SimpleTree<>(String.class);
+	private SimpleTree<String, VirtualPocket> pocketGroups = new SimpleTree<>(String.class);
+	private SimpleTree<String, VirtualPocket> virtualPockets = new SimpleTree<>(String.class);
 	private SimpleTree<String, PocketTemplate> templates = new SimpleTree<>(String.class);
-	private SimpleTree<String, Supplier<RiftData>> dataTree = new SimpleTree<>(String.class);
-	private SimpleTree<String, Supplier<Modifier>> modifiers = new SimpleTree<>(String.class);
+	private SimpleTree<String, RiftData> dataTree = new SimpleTree<>(String.class);
+	private SimpleTree<String, Modifier> modifiers = new SimpleTree<>(String.class);
 
 	private PocketLoader() {
 	}
+
+	private BiFunction<InputStream, Path<String>, RiftData> RIFT_DATA_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(RiftData.CODEC));
+	private BiFunction<InputStream, Path<String>, Modifier> MODIFIER_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC));
+	private BiFunction<InputStream, Path<String>, VirtualPocket> VIRTUAL_POCKET_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC));
+	private BiFunction<InputStream, Path<String>, PocketGenerator> POCKET_GENERATOR_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(PocketGenerator.CODEC));
 
 	public void dump() {
 		virtualPockets.forEach((path, pocketGenerator) -> LOGGER.info("Virtual Pocket: " + path + " -> " + pocketGenerator.toString()));
@@ -50,6 +57,8 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		virtualPockets.clear();
 		templates.clear();
 		dataTree.clear();
+
+		CodecUtils.manager = manager;
 
 		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/rift_data", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(RiftData.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
 		modifiers = ResourceUtil.loadResourcePathToMap(manager, "pockets/modifier", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
@@ -92,7 +101,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		return getRiftData(Path.stringPath(id));
 	}
 
-	public <T> BiFunction<JsonElement, Path<String>, T> jsonCodecLoader(Codec<T> codec) {
+	public static <T> BiFunction<JsonElement, Path<String>, T> jsonCodecLoader(Codec<T> codec) {
 		return (json, ignore) -> {
 			try {
 				return codec.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
@@ -111,7 +120,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	}
 
 	public WeightedList<PocketGenerator, PocketGenerationContext> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {
-		return new WeightedList<>(pocketGenerators.values().stream().map(Supplier::get).filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
+		return new WeightedList<>(pocketGenerators.values().stream().filter(pocketGenerator -> pocketGenerator.checkTags(required, blackList, exact)).collect(Collectors.toList()));
 	}
 
 	public VirtualPocket getGroup(ResourceLocation group) {
@@ -141,11 +150,11 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		return this.templates;
 	}
 
-	public SimpleTree<String, Supplier<VirtualPocket>> getPocketGroups() {
+	public SimpleTree<String, VirtualPocket> getPocketGroups() {
 		return this.pocketGroups;
 	}
 
-	public SimpleTree<String, Supplier<VirtualPocket>> getVirtualPockets() {
+	public SimpleTree<String, VirtualPocket> getVirtualPockets() {
 		return this.virtualPockets;
 	}
 
@@ -155,11 +164,11 @@ public class PocketLoader implements ResourceManagerReloadListener {
 
 
 	public PocketGenerator getGenerator(ResourceLocation id) {
-		return pocketGenerators.get(Path.stringPath(id)).get();
+		return pocketGenerators.get(Path.stringPath(id));
 	}
 
 	public PocketGenerator getGenerator(String id) {
-		return pocketGenerators.get(Path.stringPath(id)).get();
+		return pocketGenerators.get(Path.stringPath(id));
 	}
 
 	public Modifier getModifier(String id) {

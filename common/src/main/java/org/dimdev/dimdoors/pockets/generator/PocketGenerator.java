@@ -40,8 +40,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final Registrar<PocketGeneratorType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
 
-	public static final Codec<Supplier<PocketGenerator>> CODEC_LOADER = CodecUtils.codecWithReference(ResourceLocation.CODEC.<PocketGeneratorType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec), id -> PocketLoader.getInstance().getGenerator(id));
-	public static final Codec<PocketGenerator> CODEC = CODEC_LOADER.xmap(Supplier::get, a -> () -> a);
+	public static final Codec<PocketGenerator> CODEC = CodecUtils.codecWithReference(ResourceLocation.CODEC.<PocketGeneratorType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec), "pockets/generators");
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
 	private static final int fallbackWeight = 5; // TODO: make config

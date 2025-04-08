@@ -82,16 +82,16 @@ public class ResourceUtil {
 	public static  <K, T, M extends Map<K, T>> CompletableFuture<M> loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, ResourceLocation, K> keyProvider) {
 		Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
 //		return StreamUtils.supplyAsync(() -> {
-			map.putAll(ids.entrySet().parallelStream().unordered().collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
+			map.putAll(ids.entrySet().stream()/*parallelStream().unordered()*/.collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
 					id -> keyProvider.apply(startingPath, id.getKey()),
 					id -> {
-						try {
-							return reader.apply(id.getValue().open(), keyProvider.apply(startingPath, id.getKey()));
-						} catch (IOException | RuntimeException e) {
+						try(var is  = id.getValue().open()) {
+							return reader.apply(is, keyProvider.apply(startingPath, id.getKey()));
+						} catch (Exception e) {
 							throw new RuntimeException(e);
 						}
 					}),
-					(a, id, exception) -> LOGGER.error("Error loading resource: " + id, exception))));
+					(a, id, exception) -> LOGGER.error("Error loading resource: " + id + " -> Message: " + exception.getMessage()))));
 			return CompletableFuture.completedFuture(map);
 //		});
 	}

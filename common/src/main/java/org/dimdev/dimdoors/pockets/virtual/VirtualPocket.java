@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 	Codec<VirtualPocket> CODEC_BASE = Codec.either(ImplementedVirtualPocket.CODEC, VirtualPocketList.CODEC).xmap(Either::unwrap, pocket -> pocket instanceof ImplementedVirtualPocket implemented ? Either.left(implemented) : pocket instanceof VirtualPocketList list ? Either.right(list) : Either.right(null));
-	Codec<VirtualPocket> CODEC = CodecUtils.codecWithReference(CODEC_BASE, reference -> PocketLoader.getInstance().getVirtual(reference));
+	Codec<VirtualPocket> CODEC = CodecUtils.codecWithReference(CODEC_BASE, "pockets/virtual");
 
 	Pocket prepareAndPlacePocket(PocketGenerationContext parameters);
 

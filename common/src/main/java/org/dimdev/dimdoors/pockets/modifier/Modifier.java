@@ -17,8 +17,7 @@ import java.util.function.Supplier;
 public interface Modifier {
 	Registrar<ModifierType<? extends Modifier>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ModifierType<? extends Modifier>>builder(DimensionalDoors.id("modifier_type")).build();
 
-	Codec<Supplier<Modifier>> CODEC_LOADER = CodecUtils.codecWithReference(ResourceLocation.CODEC.<ModifierType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(Modifier::getType, ModifierType::mapCodec), s -> PocketLoader.getInstance().getModifier(s));
-	Codec<Modifier> CODEC = CODEC_LOADER.xmap(Supplier::get, a -> () -> a);
+	Codec<Modifier> CODEC = CodecUtils.codecWithReference(ResourceLocation.CODEC.<ModifierType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(Modifier::getType, ModifierType::mapCodec), "pockets/modifier");
 
 	ModifierType<? extends Modifier> getType();
 

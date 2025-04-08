@@ -48,7 +48,7 @@ dependencies {
     modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
     modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config}"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowBundle(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    shadowBundle(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 
     include "com.flowpowered:flow-math:1.0.3"
     include "org.jgrapht:jgrapht-core:1.1.0"

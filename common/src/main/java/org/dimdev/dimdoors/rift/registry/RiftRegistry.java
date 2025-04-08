@@ -35,15 +35,17 @@ public class RiftRegistry {
 	protected Map<UUID, PlayerRiftPointer> lastPrivatePocketExits = new HashMap<>(); // Player UUID -> last rift used to enter pocket
 	protected Map<UUID, PlayerRiftPointer> overworldRifts = new HashMap<>(); // Player UUID -> rift used to exit the overworld
 
-	public static final Codec<RiftRegistry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.unit(DimensionalRegistry.INSTANCE::getPocketRegistry).fieldOf("dummy").forGetter(a -> null),
-			creatListCodec("rifts", Rift.class),
-			creatListCodec("pockets", PocketEntrancePointer.class),
-			Edge.CODEC.listOf().fieldOf("links").forGetter(RiftRegistry::getLinks),
-			PlayerLink.CODEC.listOf().fieldOf("last_private_pocket_entrances").forGetter(riftRegistry -> riftRegistry.writePlayerRiftPointers(riftRegistry.lastPrivatePocketEntrances)),
-			PlayerLink.CODEC.listOf().fieldOf("last_private_pocket_exits").forGetter(riftRegistry -> riftRegistry.writePlayerRiftPointers(riftRegistry.lastPrivatePocketExits)),
-			PlayerLink.CODEC.listOf().fieldOf("overworld_rifts").forGetter(riftRegistry -> riftRegistry.writePlayerRiftPointers(riftRegistry.overworldRifts))
-	).apply(instance, RiftRegistry::new));
+//	public static final Codec<RiftRegistry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+//			Codec.unit(DimensionalRegistry.INSTANCE::getPocketRegistry).fieldOf("dummy").forGetter(a -> null),
+//			creatListCodec("rifts", Rift.class),
+//			creatListCodec("pockets", PocketEntrancePointer.class),
+//			Edge.CODEC.listOf().fieldOf("links").forGetter(RiftRegistry::getLinks),
+//			PlayerLink.CODEC.listOf().fieldOf("last_private_pocket_entrances").forGetter(riftRegistry -> riftRegistry.writePlayerRiftPointers(riftRegistry.lastPrivatePocketEntrances)),
+//			PlayerLink.CODEC.listOf().fieldOf("last_private_pocket_exits").forGetter(riftRegistry -> riftRegistry.writePlayerRiftPointers(riftRegistry.lastPrivatePocketExits)),
+//			PlayerLink.CODEC.listOf().fieldOf("overworld_rifts").forGetter(riftRegistry -> riftRegistry.writePlayerRiftPointers(riftRegistry.overworldRifts))
+//	).apply(instance, RiftRegistry::new));
+
+	public RiftRegistry() {}
 
 	public RiftRegistry(Map<ResourceKey<Level>, PocketDirectory> pocketRegistry, List<Rift> rifts, List<PocketEntrancePointer> pockets, List<Edge> links, List<PlayerLink> last_private_pocket_entrances, List<PlayerLink> last_private_pocket_exits, List<PlayerLink> overworld_rifts) {
 		rifts.forEach(rift -> {
