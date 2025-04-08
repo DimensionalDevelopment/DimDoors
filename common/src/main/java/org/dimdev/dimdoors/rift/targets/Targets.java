@@ -22,18 +22,18 @@ public final class Targets {
 	public static void registerDefaultTargets() {
 
 		DefaultTargets.registerDefaultTarget(ENTITY, new EntityTarget() {
-            @Override
-            public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeRotation, Vec3 relativeVelocity, Location location) {
+			@Override
+			public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeRotation, Vec3 relativeVelocity, Location location) {
 
 				if(location != null){
 					TeleportUtil.teleport(entity, location.getWorld(), Vec3.upFromBottomCenterOf(location.pos,0.0), relativeRotation, relativeVelocity);
 					return true;
 				}
 
-                EntityUtils.chat(entity, Component.translatable("rifts.unlinked2"));
-                return false;
-            }
-        });
+				EntityUtils.chat(entity, Component.translatable("rifts.unlinked2"));
+				return false;
+			}
+		});
 		DefaultTargets.registerDefaultTarget(ITEM, stack -> false);
 
 		DefaultTargets.registerDefaultTarget(FLUID, new FluidTarget() {

@@ -1,19 +1,12 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.CubicSampler;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.mixin.client.accessor.DimensionSpecialEffectsMixin;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class SkyAddon implements AutoSyncedAddon {
@@ -74,7 +67,7 @@ public class SkyAddon implements AutoSyncedAddon {
 	}
 
 	@Override
-	public AutoSyncedAddon read(FriendlyByteBuf buf) {
+	public AutoSyncedAddon read(RegistryFriendlyByteBuf buf) {
 		this.effect = buf.readResourceLocation();
 		this.dayTime = buf.readLong();
 		this.moonPhase = buf.readByte();
@@ -82,7 +75,7 @@ public class SkyAddon implements AutoSyncedAddon {
 	}
 
 	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) {
+	public FriendlyByteBuf write(RegistryFriendlyByteBuf buf) {
 		buf.writeResourceLocation(effect);
 		buf.writeLong(dayTime);
 		buf.writeByte(moonPhase);

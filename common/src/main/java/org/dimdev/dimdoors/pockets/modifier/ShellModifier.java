@@ -225,7 +225,7 @@ public class ShellModifier extends AbstractLazyModifier {
 				this.thicknessEquation = Equation.newEquation(variableMap -> 1d, stringBuilder -> stringBuilder.append(thickness));
 			}
 
-			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow(false, LOGGER::error);
+			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow();
 		}
 
 		public BlockState getBlockState() {

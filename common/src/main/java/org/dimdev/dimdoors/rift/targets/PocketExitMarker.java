@@ -11,9 +11,8 @@ import org.dimdev.dimdoors.api.util.Location;
 
 public class PocketExitMarker extends VirtualTarget implements EntityTarget {
 	public static final Codec<PocketExitMarker> CODEC = Codec.unit(PocketExitMarker::new);
-    public static final PocketExitMarker INSTANCE = new PocketExitMarker();
 
-    private PocketExitMarker() {
+	public PocketExitMarker() {
 	}
 
 	@Override

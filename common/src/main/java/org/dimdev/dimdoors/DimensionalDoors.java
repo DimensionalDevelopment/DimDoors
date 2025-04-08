@@ -14,6 +14,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -183,7 +184,7 @@ public class DimensionalDoors {
 	private static void registerListeners() {
 //		PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
 
-		ServerLifecycleEvents.SERVER_STARTED.register(DimensionalRegistry::init);
+//		ServerLifecycleEvents.SERVER_STARTED.register(DimensionalRegistry::init); TODO: determine if still needed
 
 		ChunkServedCallback.EVENT.register(new ChunkLoadListener()); // lazy pocket gen
 
@@ -245,5 +246,9 @@ public class DimensionalDoors {
 				((DetachedRiftBlockEntity) world.getBlockEntity(pos.below())).setData((riftBlockEntity).getData());
 			}
 		}
+	}
+
+	public static HolderLookup.Provider getLookupProvider() {
+		return getServer().registryAccess();
 	}
 }

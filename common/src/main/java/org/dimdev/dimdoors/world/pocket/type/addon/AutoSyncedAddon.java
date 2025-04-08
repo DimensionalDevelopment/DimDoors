@@ -1,12 +1,13 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface AutoSyncedAddon extends PocketAddon {
-	static <T extends AutoSyncedAddon> List<T> readAutoSyncedAddonList(FriendlyByteBuf buf) {
+	static <T extends AutoSyncedAddon> List<T> readAutoSyncedAddonList(RegistryFriendlyByteBuf buf) {
 		List<T> addons = new ArrayList<>();
 		int addonCount = buf.readInt();
 		try {
@@ -19,7 +20,7 @@ public interface AutoSyncedAddon extends PocketAddon {
 		return addons;
 	}
 
-	static FriendlyByteBuf writeAutoSyncedAddonList(FriendlyByteBuf buf, List<? extends AutoSyncedAddon> addons) {
+	static FriendlyByteBuf writeAutoSyncedAddonList(RegistryFriendlyByteBuf buf, List<? extends AutoSyncedAddon> addons) {
 		buf.writeInt(addons.size());
 		for (AutoSyncedAddon addon : addons) {
 			buf.writeResourceLocation(addon.getType().identifier());
@@ -29,8 +30,8 @@ public interface AutoSyncedAddon extends PocketAddon {
 	}
 
 	// you can generally use FriendlyByteBuf#readCompoundTag for reading
-	AutoSyncedAddon read(FriendlyByteBuf buf);
+	AutoSyncedAddon read(RegistryFriendlyByteBuf buf);
 
 	// you can generally use FriendlyByteBuf#writeCompoundTag for writing
-	FriendlyByteBuf write(FriendlyByteBuf buf);
+	FriendlyByteBuf write(RegistryFriendlyByteBuf buf);
 }

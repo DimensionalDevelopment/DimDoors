@@ -1,21 +1,10 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.InteractionEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PreventBlockModificationAddon implements AutoSyncedAddon { //InteractionEvent.LeftClickBlock/*, PlayerBlockBreakEvents.Before TODO: Figure out*/, UseItemOnBlockCallback {
@@ -51,12 +40,12 @@ public class PreventBlockModificationAddon implements AutoSyncedAddon { //Intera
 //	}
 
 	@Override
-	public AutoSyncedAddon read(FriendlyByteBuf buf) {
+	public AutoSyncedAddon read(RegistryFriendlyByteBuf buf) {
 		return this;
 	}
 
 	@Override
-	public FriendlyByteBuf write(FriendlyByteBuf buf) {
+	public FriendlyByteBuf write(RegistryFriendlyByteBuf buf) {
 		return buf;
 	}
 

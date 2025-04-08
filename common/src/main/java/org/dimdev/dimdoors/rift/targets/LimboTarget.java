@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
@@ -13,6 +14,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 public class LimboTarget extends VirtualTarget implements EntityTarget {
 	public static final LimboTarget INSTANCE = new LimboTarget();
+	public static final Codec<LimboTarget> CODEC = Codec.unit(INSTANCE);
 
 	private LimboTarget() {
 	}

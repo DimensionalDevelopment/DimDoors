@@ -97,7 +97,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 			pocketSyncDirty = false;
 			lastSyncedPocketId = pocket.getId();
 			lastSyncedPocketWorld = world.dimension();
-			sendPacket(getPlayer(), new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getSyncedAddon()));
+			sendPacket(getPlayer(), new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getSyncedAgddon()));
 		}
 	}
 

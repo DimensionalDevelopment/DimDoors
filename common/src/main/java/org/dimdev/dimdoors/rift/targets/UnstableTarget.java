@@ -10,8 +10,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import java.util.Collections;
 
 public class UnstableTarget extends VirtualTarget implements EntityTarget {
-	public static final UnstableTarget INSTANCE = new UnstableTarget();
-    private static final RandomSource RANDOM = RandomSource.create();
+	private static final RandomSource RANDOM = RandomSource.create();
 
 	@Override
 	public VirtualTargetType<? extends VirtualTarget> getType() {

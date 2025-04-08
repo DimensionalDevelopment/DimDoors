@@ -22,14 +22,13 @@ public class LazyGenerationPocket extends Pocket {
 	public void chunkLoaded(LevelChunk chunk) {
 		if (isDoneGenerating()) return;
 
-		ChunkLazilyGeneratedComponent lazyGenned = ChunkLazilyGeneratedComponent.get(chunk);
-		if (lazyGenned.hasBeenLazyGenned()) return;
+		if (ChunkLazilyGeneratedComponent.isGenerated(chunk)) return;
 
 		BoundingBox chunkBox = BlockBoxUtil.getBox(chunk);
 		if (!chunkBox.intersects(getBox())) return;
 
 		generator.generateChunk(this, chunk);
-		lazyGenned.setGenned();
+		ChunkLazilyGeneratedComponent.setGenerated(chunk, true);
 		toBeGennedChunkCount--;
 
 		if (isDoneGenerating()) {

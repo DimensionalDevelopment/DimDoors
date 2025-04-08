@@ -15,6 +15,8 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
+import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddonContainer;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.HashMap;
@@ -55,6 +57,10 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 	public <C extends PocketAddon> C getAddon(ResourceLocation id) {
 		return (C) addons.get(id);
+	}
+
+	public List<AutoSyncedAddon> getSyncedAgddon() {
+		return getAddonsInstanceOf(AutoSyncedAddon.class);
 	}
 
 	public <T> List<T> getAddonsInstanceOf(Class<T> clazz) {

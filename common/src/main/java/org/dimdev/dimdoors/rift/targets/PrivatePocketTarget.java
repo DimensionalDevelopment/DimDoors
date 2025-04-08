@@ -22,12 +22,11 @@ import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 import java.util.UUID;
 
 public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
-    public static final PrivatePocketTarget INSTANCE = new PrivatePocketTarget();
-    private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
 
-	private PrivatePocketTarget() {
+	public PrivatePocketTarget() {
 	}
 
 	@Override
