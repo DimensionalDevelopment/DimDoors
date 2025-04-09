@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.api.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
@@ -71,12 +72,20 @@ public class ResourceUtil {
 	}*/
 
 	public static <R> R loadResource(ResourceManager manager, ResourceLocation resourceKey, Function<InputStream, R> reader) {
-		try {
-			return reader.apply(manager.getResource(resourceKey).get().open());
+		var optional = manager.getResource(resourceKey);
+
+		if(optional.isPresent()) {
+
+			try(var is = optional.get().open()) {
+				var t = reader.apply(is);
+
+				return t;
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+
+		return null;
 	}
 
 	public static  <K, T, M extends Map<K, T>> CompletableFuture<M> loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, ResourceLocation, K> keyProvider) {
@@ -91,7 +100,7 @@ public class ResourceUtil {
 							throw new RuntimeException(e);
 						}
 					}),
-					(a, id, exception) -> LOGGER.error("Error loading resource: " + id + " -> Message: " + exception.getMessage()))));
+					(a, id, exception) -> LOGGER.error("Error loading resource: " + id, exception))));
 			return CompletableFuture.completedFuture(map);
 //		});
 	}

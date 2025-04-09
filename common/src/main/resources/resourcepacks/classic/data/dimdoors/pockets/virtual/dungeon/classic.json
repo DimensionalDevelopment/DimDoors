@@ -1,5 +1,5 @@
 {
-  "type": "list",
+  "type": "dimdoors:list",
   "list": [
     {
       "id": "classic/ruins/broken_pillars",

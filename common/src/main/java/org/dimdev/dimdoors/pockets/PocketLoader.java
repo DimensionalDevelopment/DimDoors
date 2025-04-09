@@ -104,7 +104,8 @@ public class PocketLoader implements ResourceManagerReloadListener {
 	public static <T> BiFunction<JsonElement, Path<String>, T> jsonCodecLoader(Codec<T> codec) {
 		return (json, ignore) -> {
 			try {
-				return codec.decode(JsonOps.INSTANCE, json).getOrThrow().getFirst();
+				var optional = codec.parse(JsonOps.INSTANCE, json).resultOrPartial();
+				return optional.get();
 			} catch (Exception e) {
 				throw e;
 			}

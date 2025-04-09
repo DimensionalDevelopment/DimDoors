@@ -21,7 +21,7 @@ import org.dimdev.dimdoors.pockets.modifier.LazyCompatibleModifier;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public abstract class PocketGeneratorReference implements ImplementedVirtualPocket {
+public abstract class PocketGeneratorReference implements VirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	protected Equation weight;

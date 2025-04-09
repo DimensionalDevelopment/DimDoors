@@ -8,15 +8,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.*;
 
-public class ConditionalSelector implements ImplementedVirtualPocket {
+public class ConditionalSelector implements VirtualPocket {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "conditional";
 
@@ -58,13 +56,8 @@ public class ConditionalSelector implements ImplementedVirtualPocket {
 	}
 
 	@Override
-	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
+	public VirtualPocketType<? extends VirtualPocket> getType() {
 		return VirtualPocketType.CONDITIONAL_SELECTOR.get();
-	}
-
-	@Override
-	public String getKey() {
-		return KEY;
 	}
 
 	@Override

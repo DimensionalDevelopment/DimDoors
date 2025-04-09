@@ -2,12 +2,21 @@ package org.dimdev.dimdoors.pockets.virtual.selection;
 
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public abstract class AbstractVirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements ImplementedVirtualPocket {
+import java.util.Collection;
+
+public abstract class AbstractVirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
+
+	public AbstractVirtualPocketList() {
+		super();
+	}
+
+	public AbstractVirtualPocketList(Collection<VirtualPocket> c) {
+		super(c);
+	}
 
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext context) {

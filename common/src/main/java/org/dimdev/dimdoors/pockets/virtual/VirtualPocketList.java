@@ -1,21 +1,27 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.Util;
-import org.dimdev.dimdoors.api.util.WeightedList;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
+import org.dimdev.dimdoors.pockets.virtual.selection.AbstractVirtualPocketList;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.function.Function;
+import java.util.List;
 
-public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements VirtualPocket {
-	private String resourceKey = null;
+import static org.dimdev.dimdoors.pockets.virtual.VirtualPocket.CODEC;
 
-	public static final Codec<VirtualPocketList> CODEC = Codec.lazyInitialized(() -> VirtualPocket.CODEC.listOf().xmap(virtualPockets -> Util.make(new VirtualPocketList(), list -> list.addAll(virtualPockets)), Function.identity()));
+public class VirtualPocketList extends AbstractVirtualPocketList {
 
-	public VirtualPocketList() {
-		super();
+	public static final MapCodec<VirtualPocketList> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+		Codec.lazyInitialized(() -> VirtualPocket.CODEC).listOf().fieldOf("list").forGetter(a -> a)
+	).apply(instance, VirtualPocketList::new));
+
+	public static final String ID = "list";
+
+	public VirtualPocketList(List<VirtualPocket> list) {
+		super(list);
 	}
 
 	@Override
@@ -40,4 +46,10 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 	public double getWeight(PocketGenerationContext context) {
 		return getTotalWeight(context);
 	}
+
+	@Override
+	public VirtualPocketType<VirtualPocketList> getType() {
+		return VirtualPocketType.LIST.get();
+	}
+
 }

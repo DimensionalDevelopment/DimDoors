@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class TemplateTarget extends WrappedDestinationTarget {
     public static final MapCodec<TemplateTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.INSTANCE).forGetter(a -> a.wrappedDestination),
-                ResourceLocation.CODEC.fieldOf("template").forGetter(a -> a.template)).apply(instance, TemplateTarget::new));
+                ResourceLocation.CODEC.fieldOf("templateId").forGetter(a -> a.template)).apply(instance, TemplateTarget::new));
 
     private final ResourceLocation template;
 

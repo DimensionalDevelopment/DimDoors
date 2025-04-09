@@ -80,7 +80,7 @@ public class RiftData {
 			RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
 			Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
 			Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor)
-	).apply(instance, RiftData::new)), "pockets/rift_data");
+	).apply(instance, RiftData::new)), "pockets/rift_data/");
 
 	public static CompoundTag toNbt(RiftData data) {
 		CompoundTag nbt = new CompoundTag();

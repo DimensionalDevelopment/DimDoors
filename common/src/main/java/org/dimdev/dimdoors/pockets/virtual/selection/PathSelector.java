@@ -5,9 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.pockets.PocketLoader;
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
-
-import java.util.function.Supplier;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 
 // TODO: Override equals
 public class PathSelector extends AbstractVirtualPocketList {
@@ -24,13 +22,8 @@ public class PathSelector extends AbstractVirtualPocketList {
 	}
 
 	@Override
-	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
+	public VirtualPocketType<? extends VirtualPocket> getType() {
 		return VirtualPocketType.PATH_SELECTOR.get();
-	}
-
-	@Override
-	public String getKey() {
-		return KEY;
 	}
 
 	@Override

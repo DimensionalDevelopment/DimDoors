@@ -55,7 +55,7 @@ import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.rift.registry.RegistryVertex;
@@ -167,7 +167,7 @@ public class DimensionalDoors {
 	public static void registerRegistries() {
 		Targets.registerDefaultTargets();
 		VirtualTarget.VirtualTargetType.register();
-		ImplementedVirtualPocket.VirtualPocketType.register();
+		VirtualPocket.VirtualPocketType.register();
 		RegistryVertex.RegistryVertexType.register();
 		Modifier.ModifierType.register();
 		PocketGenerator.PocketGeneratorType.register();

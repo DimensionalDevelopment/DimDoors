@@ -55,14 +55,19 @@ public class CodecUtils {
         return Codec.PASSTHROUGH.flatXmap(new Function<Dynamic<?>, DataResult<? extends T>>() {
             @Override
             public DataResult<? extends T> apply(Dynamic<?> dynamic) {
-                var optional = dynamic.asString().flatMap(ResourceLocation::read).flatMap(resourceLocation -> ResourceUtil.loadResource(manager, resourceLocation, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json))));
+                var optional = dynamic.asString().flatMap(ResourceLocation::read).map(a -> a.withSuffix(".json").withPrefix(path)).flatMap(resourceLocation -> {
+                    return ResourceUtil.loadResource(manager, resourceLocation, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json)));
+                });
 
                 if (optional.isSuccess()) {
                     return optional;
                 }
 
-                var blep = base.parse(dynamic);
-                return blep;
+                try {
+                    return base.parse(dynamic);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, new Function<T, DataResult<? extends Dynamic<?>>>() {
             @Override

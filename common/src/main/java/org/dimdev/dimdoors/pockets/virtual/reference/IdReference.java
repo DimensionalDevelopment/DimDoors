@@ -11,7 +11,7 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.List;
@@ -41,13 +41,8 @@ public class IdReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
+	public VirtualPocketType<? extends VirtualPocket> getType() {
 		return VirtualPocketType.ID_REFERENCE.get();
-	}
-
-	@Override
-	public String getKey() {
-		return KEY;
 	}
 
 	@Override
