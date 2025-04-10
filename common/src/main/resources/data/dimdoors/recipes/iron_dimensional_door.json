@@ -12,7 +12,7 @@
     }
   },
   "result": {
-    "item": "dimdoors:item_ag_dim_minecraft_iron_door",
+    "id": "dimdoors:item_ag_dim_minecraft_iron_door",
     "count": 1
   }
 }

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.pockets.generator;
 
+import com.mojang.datafixers.Products;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
@@ -9,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -21,18 +23,23 @@ public class VoidGenerator extends LazyPocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "void";
 
-	public static MapCodec<VoidGenerator> CODEC = RecordCodecBuilder.<VoidGenerator>mapCodec(instance -> commonFields(instance)
-			.and(Equation.CODEC.fieldOf("width").forGetter(a -> a.width))
-			.and(Equation.CODEC.fieldOf("width").forGetter(a -> a.width))
-			.and(Equation.CODEC.fieldOf("width").forGetter(a -> a.width))
-			.apply(instance, VoidGenerator::new));
+	public static MapCodec<VoidGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+			var common = commonLazyFields(instance);
+
+			return new Products.P9<>(common.t1(), common.t2(), common.t3(), common.t4(), common.t5(), common.t6(),
+
+                    Equation.CODEC.fieldOf("width").forGetter(a -> a.width),
+                    Equation.CODEC.fieldOf("height").forGetter(a -> a.height),
+                    Equation.CODEC.fieldOf("length").forGetter(a -> a.length))
+			.apply(instance, VoidGenerator::new);
+	});
 
 	private Equation width;
 	private Equation height;
 	private Equation length;
 
-	public VoidGenerator(CompoundTag builder, Equation weight, boolean setupLoot, List<Modifier> modifierList, List<String> tags, Equation width, Equation height, Equation length) {
-		super(builder, weight, setupLoot, modifierList, tags);
+	public VoidGenerator(CompoundTag builder, Equation weight, boolean setupLoot, List<Modifier> modifierList, List<String> tags, List<LazyModifier> lazyModifierList, Equation width, Equation height, Equation length) {
+		super(builder, weight, setupLoot, modifierList, tags, lazyModifierList);
         this.width = width;
         this.height = height;
         this.length = length;
@@ -75,6 +82,6 @@ public class VoidGenerator extends LazyPocketGenerator {
 
 	@Override
 	public LazyPocketGenerator getNewInstance() {
-		return new VoidGenerator(builder, weight, setupLoot, modifierList, tags, width, height, length);
+		return new VoidGenerator(builder, weight, setupLoot, modifierList, tags, lazyModifierList, width, height, length);
 	}
 }

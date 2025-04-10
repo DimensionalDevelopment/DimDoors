@@ -11,6 +11,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class PocketImpl extends Pocket {
     public static final String KEY = "pocket";
@@ -42,8 +43,8 @@ public class PocketImpl extends Pocket {
             return AbstractPocketType.POCKET.get();
         }
 
-        private static PocketImplBuilder configure(Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons) {
-            return new PocketImplBuilder().offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation).addons(addons);
+        private static PocketImplBuilder configure(Vec3i origin, Vec3i size, Optional<VirtualLocation> virtualLocation, int range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons) {
+            return new PocketImplBuilder().offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation.orElse(null)).addons(addons);
         }
     }
 }

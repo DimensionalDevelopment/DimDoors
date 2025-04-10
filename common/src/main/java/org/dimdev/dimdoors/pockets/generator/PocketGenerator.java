@@ -63,7 +63,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 				CompoundTag.CODEC.optionalFieldOf("builder", new CompoundTag()).forGetter(a -> a.builder),
 				Equation.CODEC.fieldOf("weight").orElseGet(() -> Equation.parseOrCrash(defaultWeightEquation)).forGetter(a -> a.weight),
 				Codec.BOOL.optionalFieldOf("setup_loot", false).forGetter(a -> a.setupLoot),
-				Modifier.CODEC.listOf().optionalFieldOf("modifiers", new ArrayList<>()).forGetter(a -> a.modifierList),
+				Modifier.CODEC.listOf().xmap(a -> (List<Modifier>) new ArrayList<>(a), a -> a).optionalFieldOf("modifiers", new ArrayList<>()).forGetter(a -> a.modifierList),
 				Codec.STRING.listOf().optionalFieldOf("tags", new ArrayList<>()).forGetter(a -> a.tags)
 		);
 

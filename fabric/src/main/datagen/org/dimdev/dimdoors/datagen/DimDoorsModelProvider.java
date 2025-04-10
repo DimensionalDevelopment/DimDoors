@@ -196,9 +196,9 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 		itemModelGenerator.generateFlatItem(ModItems.AMALGAM_LUMP.get(), ModelTemplates.FLAT_ITEM);
 		itemModelGenerator.generateFlatItem(ModItems.CLOD.get(), ModelTemplates.FLAT_ITEM);
 
-		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_BOOTS.get(), ModelTemplates.FLAT_ITEM);
-		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_CHESTPLATE.get(), ModelTemplates.FLAT_ITEM);
-		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_HELMET.get(), ModelTemplates.FLAT_ITEM);
-		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_LEGGINGS.get(), ModelTemplates.FLAT_ITEM);
+//		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_BOOTS.get(), ModelTemplates.FLAT_ITEM);
+//		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_CHESTPLATE.get(), ModelTemplates.FLAT_ITEM);
+//		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_HELMET.get(), ModelTemplates.FLAT_ITEM);
+//		itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_LEGGINGS.get(), ModelTemplates.FLAT_ITEM);
 	}
 }

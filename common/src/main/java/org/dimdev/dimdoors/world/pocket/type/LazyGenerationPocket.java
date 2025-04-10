@@ -21,6 +21,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class LazyGenerationPocket extends Pocket {
@@ -113,8 +114,8 @@ public class LazyGenerationPocket extends Pocket {
 	public static class LazyGenerationPocketBuilderImpl extends LazyGenerationPocketBuilder<LazyGenerationPocketBuilderImpl, LazyGenerationPocket> {
 		public static final MapCodec<LazyGenerationPocketBuilderImpl> CODEC = RecordCodecBuilder.mapCodec(instance -> PocketBuilder.commonPocketBuilderFields(instance).apply(instance, LazyGenerationPocketBuilderImpl::configure));
 
-		private static LazyGenerationPocketBuilderImpl configure(Vec3i origin, Vec3i size, VirtualLocation virtualLocation, Integer range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?,?>> addons) {
-			return new LazyGenerationPocketBuilderImpl().offsetOrigin(origin).expand(size).virtualLocation(virtualLocation).range(range).addons(addons);
+		private static LazyGenerationPocketBuilderImpl configure(Vec3i origin, Vec3i size, Optional<VirtualLocation> virtualLocation, Integer range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?,?>> addons) {
+			return new LazyGenerationPocketBuilderImpl().offsetOrigin(origin).expand(size).virtualLocation(virtualLocation.orElse(null)).range(range).addons(addons);
 		}
 
 		public LazyGenerationPocketBuilderImpl(Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range) {

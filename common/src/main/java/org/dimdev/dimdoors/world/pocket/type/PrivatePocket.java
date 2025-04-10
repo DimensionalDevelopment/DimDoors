@@ -13,6 +13,7 @@ import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.Map;
+import java.util.Optional;
 
 public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.DyeablePocket {
 	public static String KEY = "private_pocket";
@@ -50,8 +51,8 @@ public class PrivatePocket extends LazyGenerationPocket implements DyeableAddon.
 			return AbstractPocketType.PRIVATE_POCKET.get();
 		}
 
-		private static PrivatePocket.PrivatePocketBuilder configure(Vec3i origin, Vec3i size, VirtualLocation virtualLocation, int range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons) {
-			return builderPrivatePocket().offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation).addons(addons);
+		private static PrivatePocket.PrivatePocketBuilder configure(Vec3i origin, Vec3i size, Optional<VirtualLocation> virtualLocation, int range, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>> addons) {
+			return builderPrivatePocket().offsetOrigin(origin).expand(size).range(range).virtualLocation(virtualLocation.orElse(null)).addons(addons);
 		}
 	}
 

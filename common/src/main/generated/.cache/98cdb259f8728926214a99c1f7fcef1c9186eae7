@@ -1,4 +1,4 @@
-// 1.20.6	2025-02-19T14:54:07.4687889	DimensionalDoors/Recipes
+// 1.20.6	2025-04-09T18:50:37.3984849	DimensionalDoors/Recipes
 46438306b18add5ce1a1d43707ed774139526791 data\dimdoors\recipes\stable_fabric.json
 be014041160dc538419814f117c75d9960886d9d data\dimdoors\advancements\recipes\tesselating\rift_pearl.json
 a7859f897862bb352a6a640b919292cb418d16e9 data\dimdoors\recipes\rift_pearl.json
@@ -75,8 +75,8 @@ e4b4693dbf0b752bd332f7eef366f23c45686c10 data\dimdoors\advancements\recipes\tess
 e69fc846b514505f9ee130276b8310ebc2941f6e data\dimdoors\advancements\recipes\tesselating\world_thread_leggings.json
 69833b369f5aaacf41dcd92aac3c1c9dbc14ee7a data\dimdoors\recipes\world_thread_helmet.json
 ad39a03a6e8466a3bd058ca1c8991b8be52831ef data\dimdoors\advancements\recipes\tesselating\garment_of_reality_boots.json
-30303817b779d83977e755e9f09c2666a861d17b data\dimdoors\recipes\brown_fabric.json
 81a5995719b409053f7ffb39fc2d65d6f9ff3272 data\dimdoors\advancements\recipes\misc\magenta_fabric.json
+30303817b779d83977e755e9f09c2666a861d17b data\dimdoors\recipes\brown_fabric.json
 e01e555536d034a42ee003021386c1c6c7b58b99 data\dimdoors\recipes\black_fabric.json
 7382e1200b563b0e1a34c854b183bee2095d876e data\dimdoors\advancements\recipes\tesselating\fuzzy_fireball.json
 d07ca1f395ee03ab0c86090dea148436030c6eba data\dimdoors\recipes\cyan_fabric.json

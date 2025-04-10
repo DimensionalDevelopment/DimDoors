@@ -1,4 +1,4 @@
-// 1.20.6	2025-02-19T14:54:07.4657973	DimensionalDoors/Model Definitions
+// 1.20.6	2025-04-09T18:50:37.3964907	DimensionalDoors/Model Definitions
 8952aebce8814c204db55e381151039d21f31458 assets\dimdoors\models\block\driftwood_gate_wall.json
 349082cb16a7b175fb9f87b224b7875d9715a238 assets\dimdoors\models\block\deepslate_stairs_inner.json
 bcb276d2bbd9e5771aa0cb82d315b87dbf865f6a assets\dimdoors\blockstates\dark_sand_fence.json
@@ -91,9 +91,9 @@ c1f216328d0cf9b590e58350e3b4429047bb7210 assets\dimdoors\models\block\dark_sand_
 1aeef48a3775e060015e0953558e8334862790e7 assets\dimdoors\blockstates\clay_wall.json
 b9275f1c8c371270ad6d563573c908f928af0bdd assets\dimdoors\models\block\sand_slab.json
 3fdf19422998bfd04cc849c8332107f0ec87c549 assets\dimdoors\blockstates\driftwood_button.json
-119b93d78c62528481f826b6b462a41369c6dfed assets\dimdoors\blockstates\unraveled_button.json
-9bf26b1ef3e70a4fd224045ca46045b4865c5473 assets\dimdoors\blockstates\sand_slab.json
 52492447000175f7f8ae45271f8ca51c0ac67fce assets\dimdoors\blockstates\gold_door.json
+9bf26b1ef3e70a4fd224045ca46045b4865c5473 assets\dimdoors\blockstates\sand_slab.json
+119b93d78c62528481f826b6b462a41369c6dfed assets\dimdoors\blockstates\unraveled_button.json
 e3d6edafbac5397ec12ac38e9e0f3913e07bf905 assets\dimdoors\models\item\mud_fence.json
 52058860a2905ad457521fcef2dfd7fd48ef31ed assets\dimdoors\models\block\unraveled_gate.json
 ebca12dbc95590da3e3b0d223eff730c35584644 assets\dimdoors\models\block\red_sand_slab.json
@@ -341,9 +341,9 @@ d2552babc41a6fa7e5a31b1677bd2699efe0aeda assets\dimdoors\models\item\amalgam_tra
 0ddc6813d805937e6087aed2d2de3e3f57d0cbc0 assets\dimdoors\models\block\sand_wall_inventory.json
 2d5caf588e8a15827d168e2293e8c4306f3ac5c3 assets\dimdoors\models\item\sand_wall.json
 d965d2ebb332c949949f155be90d2df8723b8a2d assets\dimdoors\models\block\driftwood_door_top_left.json
-a0c768a895e3bfae85d2999affb14558193ab9f1 assets\dimdoors\models\block\stone_door_top_left.json
-65750f1d59563a2f5054124d7b6aee56be32d1ab assets\dimdoors\blockstates\red_sand_stairs.json
 c5fe226729969acf52de2f6b4b773c630804547d assets\dimdoors\blockstates\driftwood_planks.json
+65750f1d59563a2f5054124d7b6aee56be32d1ab assets\dimdoors\blockstates\red_sand_stairs.json
+a0c768a895e3bfae85d2999affb14558193ab9f1 assets\dimdoors\models\block\stone_door_top_left.json
 27546e333bab0489735376f37c476e8278637049 assets\minecraft\blockstates\clay.json
 6d6cf12dfb995e7779e16ef780c174a23e86a129 assets\dimdoors\models\item\unraveled_gate.json
 27e9d4c07f7fc893a0d6ea105a694e251e0772cc assets\dimdoors\models\item\end_stone_stairs.json

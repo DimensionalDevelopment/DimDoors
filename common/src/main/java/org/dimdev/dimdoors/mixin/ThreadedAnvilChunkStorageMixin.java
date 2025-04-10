@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
+import dev.architectury.event.events.common.ChunkEvent;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +23,8 @@ public abstract class ThreadedAnvilChunkStorageMixin {
 
     @Inject(method = "method_17227", at = @At("TAIL"))
     private void onChunkLoad(ChunkHolder chunkHolder, ChunkAccess protoChunk, CallbackInfoReturnable<ChunkAccess> callbackInfoReturnable) {
+        System.out.println("BlepBlepBlep");
+
         // We fire the event at TAIL since the chunk is guaranteed to be a WorldChunk then.
         ChunkServedCallback.EVENT.invoker().onChunkServed(this.level, (LevelChunk) callbackInfoReturnable.getReturnValue());
     }

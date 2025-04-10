@@ -40,6 +40,7 @@ import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.item.ModArmorMaterials;
 import org.dimdev.dimdoors.item.ModDataComponentTypes;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
@@ -129,6 +130,7 @@ public class DimensionalDoors {
 		ModSoundEvents.init();
 		ModFluids.init();
 		ModEntityTypes.init();
+		ModArmorMaterials.init();
 		ModItems.init();
 		ModBlocks.init();
 		ModCarvers.init();

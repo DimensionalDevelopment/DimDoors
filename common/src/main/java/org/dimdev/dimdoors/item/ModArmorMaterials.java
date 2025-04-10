@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.dimdev.dimdoors.DimensionalDoors;
 
@@ -20,22 +21,23 @@ import java.util.function.Supplier;
 public class ModArmorMaterials {
 	public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.ARMOR_MATERIAL);
 
-	public static final RegistrySupplier<ArmorMaterial> WORLD_THREAD = register(
-			"world_thread",
-			15,
-			SoundEvents.ARMOR_EQUIP_LEATHER,
-			() -> () -> Ingredient.of(ModItems.WORLD_THREAD.get()),
-			new int[]{1, 2, 3, 1},
-			0.0F,
-			0.0F);
-	public static final RegistrySupplier<ArmorMaterial> GARMENT_OF_REALITY = register(
-			"garment_of_reality",
-			15,
-			SoundEvents.ARMOR_EQUIP_LEATHER,
-			() -> () -> Ingredient.of(ModItems.INFRANGIBLE_FIBER.get()),
-			new int[]{1, 2, 3, 1},
-			0.0F,
-			0.0F); //TODO: DEFINE TRAITS
+//	public static final RegistrySupplier<ArmorMaterial> GARMENT_OF_REALITY = register(
+//			"garment_of_reality",
+//			15,
+//			SoundEvents.ARMOR_EQUIP_LEATHER,
+//			() -> () -> Ingredient.of(Items.STONE),
+//			new int[]{1, 2, 3, 1},
+//			0.0F,
+//			0.0F); //TODO: DEFINE TRAITS
+//
+//	public static final RegistrySupplier<ArmorMaterial> WORLD_THREAD = register(
+//			"world_thread",
+//			15,
+//			SoundEvents.ARMOR_EQUIP_LEATHER,
+//			() -> () -> Ingredient.of(Items.STONE),
+//			new int[]{1, 2, 3, 1},
+//			0.0F,
+//			0.0F);
 
 	public static RegistrySupplier<ArmorMaterial> register(String name, int enchantability, Holder<SoundEvent> equipSound, Supplier<Supplier<Ingredient>> repairIngredient, int[] protectionAmounts, float toughness, float knockbackResistance) {
 		return ARMOR_MATERIALS.register(name, new Supplier<ArmorMaterial>() {
@@ -50,5 +52,9 @@ public class ModArmorMaterials {
 				return new ArmorMaterial(map, enchantability, equipSound, repairIngredient.get(), List.of(), toughness, knockbackResistance);
 			}
 		});
+	}
+
+	public static void init() {
+
 	}
 }

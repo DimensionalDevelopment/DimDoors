@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.pockets.modifier.NoneModifer;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
@@ -20,6 +21,7 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -186,11 +188,11 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
         }
 
 
-		public static <P extends PocketBuilder<?, ?>> Products.P5<RecordCodecBuilder.Mu<P>, Vec3i, Vec3i, VirtualLocation, Integer, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>>> commonPocketBuilderFields(RecordCodecBuilder.Instance<P> instance) {
+		public static <P extends PocketBuilder<?, ?>> Products.P5<RecordCodecBuilder.Mu<P>, Vec3i, Vec3i, Optional<VirtualLocation>, Integer, Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?, ?>>> commonPocketBuilderFields(RecordCodecBuilder.Instance<P> instance) {
 			return instance.group(
 					Vec3i.CODEC.optionalFieldOf("origin", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin),
 					Vec3i.CODEC.optionalFieldOf("size", new Vec3i(0, 0, 0)).<P>forGetter(a -> a.origin),
-					VirtualLocation.CODEC.optionalFieldOf("virtualLocation", null).<P>forGetter(a -> a.virtualLocation),
+					VirtualLocation.CODEC.optionalFieldOf("virtualLocation").<P>forGetter(a -> Optional.ofNullable(a.virtualLocation)),
 					Codec.INT.optionalFieldOf("range", -1).<P>forGetter(a -> a.range),
 					Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.BUILDER_CODEC).optionalFieldOf("addons", new HashMap<>()).forGetter(a -> a.addons));
 		}

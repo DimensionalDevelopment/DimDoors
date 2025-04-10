@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.pockets.generator;
 
+import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -21,6 +22,8 @@ import org.dimdev.dimdoors.command.PocketCommand;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
+import org.dimdev.dimdoors.pockets.modifier.AbsoluteRiftBlockEntityModifier;
+import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.util.schematic.Schematic;
@@ -28,10 +31,7 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SchematicGenerator extends LazyPocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -43,11 +43,15 @@ public class SchematicGenerator extends LazyPocketGenerator {
 	private final List<RiftBlockEntity> rifts = new ArrayList<>();
 	private BlockPos origin;
 
-//	private AbsoluteRiftBlockEntityModifier queuedRiftBlockEntities; //TODO: Figure out if needed.
+	private AbsoluteRiftBlockEntityModifier queuedRiftBlockEntities; //TODO: Figure out if needed.
+
+	public SchematicGenerator(CompoundTag builder, Equation weight, Boolean setupLoot, List<Modifier> modifierList, List<String> tags, List<LazyModifier> lazyModifierList, ResourceLocation id, Optional<BlockPos> pos, BlockPlacementType blockPlacementType) {
+		this(builder, weight, setupLoot, modifierList, tags, lazyModifierList, id, pos.orElse(null), blockPlacementType);
+	}
 
 
-	public SchematicGenerator(CompoundTag builder, Equation weight, Boolean setupLoot, List<Modifier> modifierList, List<String> tags, ResourceLocation id, BlockPos pos, BlockPlacementType blockPlacementType) {
-        super(builder, weight, setupLoot, modifierList, tags);
+	public SchematicGenerator(CompoundTag builder, Equation weight, Boolean setupLoot, List<Modifier> modifierList, List<String> tags, List<LazyModifier> lazyModifierList, ResourceLocation id, BlockPos pos, BlockPlacementType blockPlacementType) {
+        super(builder, weight, setupLoot, modifierList, tags, lazyModifierList);
 		this.id = id;
 		this.origin = pos;
 		placementType = blockPlacementType;
@@ -67,12 +71,15 @@ public class SchematicGenerator extends LazyPocketGenerator {
 		super.generateChunk(pocket, chunk);
 	}
 
-	public static final MapCodec<SchematicGenerator> CODEC = RecordCodecBuilder.<SchematicGenerator>mapCodec(instance -> commonFields(instance).and(
-			Codec.STRING.xmap(DimensionalDoors::id, ResourceLocation::getPath).fieldOf("id").forGetter(a -> a.id)).and(
-			BlockPos.CODEC.optionalFieldOf("origin", null).forGetter(a -> a.origin)).and(
-			BlockPlacementType.CODEC.optionalFieldOf("placement_type", BlockPlacementType.SECTION_NO_UPDATE).forGetter(a -> a.placementType))
-			.apply(instance, SchematicGenerator::new)
-	);
+	public static final MapCodec<SchematicGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> {
+		var common = commonLazyFields(instance);
+
+		return new Products.P9<>(
+                common.t1(), common.t2(), common.t3(), common.t4(), common.t5(), common.t6(), Codec.STRING.xmap(DimensionalDoors::id, ResourceLocation::getPath).fieldOf("id").forGetter(a -> a.id),
+                BlockPos.CODEC.optionalFieldOf("origin").forGetter(a -> Optional.ofNullable(a.origin)),
+                BlockPlacementType.CODEC.optionalFieldOf("placement_type", BlockPlacementType.SECTION_NO_UPDATE).forGetter(a -> a.placementType))
+						.apply(instance, SchematicGenerator::new);
+			});
 
 	@Override
 	public RiftManager getRiftManager(Pocket pocket) {
@@ -86,7 +93,7 @@ public class SchematicGenerator extends LazyPocketGenerator {
 	@Override
 	public LazyPocketGenerator cloneWithLazyModifiers(BlockPos originalOrigin) {
 		LazyPocketGenerator generator = super.cloneWithLazyModifiers(originalOrigin);
-//		generator.lazyModifierList.add(0, queuedRiftBlockEntities);
+		generator.modifierList.add(0, queuedRiftBlockEntities);
 
 		return generator;
 	}
@@ -103,7 +110,7 @@ public class SchematicGenerator extends LazyPocketGenerator {
 
 	@Override
 	public LazyPocketGenerator getNewInstance() {
-		return new SchematicGenerator(builder, weight, setupLoot, modifierList, tags, id, origin, placementType);
+		return new SchematicGenerator(builder, weight, setupLoot, modifierList, tags, lazyModifierList, id, origin, placementType);
 	}
 
 	@Override
@@ -124,7 +131,7 @@ public class SchematicGenerator extends LazyPocketGenerator {
 			Map<BlockPos, RiftBlockEntity> absoluteRifts = template.getAbsoluteRifts(pocket);
 			rifts.addAll(absoluteRifts.values());
 
-//			queuedRiftBlockEntities = new AbsoluteRiftBlockEntityModifier(absoluteRifts); TODO: Marking so not forgetten when evauluating AbsoluteRifBlockEntityModifier
+			queuedRiftBlockEntities = new AbsoluteRiftBlockEntityModifier(absoluteRifts); //TODO: Marking so not forgetten when evauluating AbsoluteRifBlockEntityModifier
 
 		} else {
 			template.place(pocket, placementType);

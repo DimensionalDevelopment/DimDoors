@@ -23,6 +23,6 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         this.tag(ModItemTags.GOLD_INGOTS)/*.add(Items.IRON_INGOT.builtInRegistryHolder().key())*/.addOptionalTag(new ResourceLocation("c", "gold_ingots")).addOptionalTag(new ResourceLocation("forge", "ingots/gold"));
         this.tag(ModItemTags.IRON_INGOTS)/*.add(Items.DIAMOND.builtInRegistryHolder().key())*/.addOptionalTag(new ResourceLocation("c", "iron_ingots")).addOptionalTag(new ResourceLocation("forge", "ingots/iron"));
 
-        this.tag(ModItemTags.LIMBO_GAZE_DEFYING).add(ModItems.WORLD_THREAD_BOOTS.getKey(), ModItems.WORLD_THREAD_CHESTPLATE.getKey(), ModItems.WORLD_THREAD_HELMET.getKey(), ModItems.WORLD_THREAD_LEGGINGS.getKey(), ModItems.GARMENT_OF_REALITY_CHESTPLATE.getKey(), ModItems.GARMENT_OF_REALITY_BOOTS.getKey(), ModItems.GARMENT_OF_REALITY_HELMET.getKey(), ModItems.GARMENT_OF_REALITY_LEGGINGS.getKey());
+//        this.tag(ModItemTags.LIMBO_GAZE_DEFYING).add(ModItems.WORLD_THREAD_BOOTS.getKey(), ModItems.WORLD_THREAD_CHESTPLATE.getKey(), ModItems.WORLD_THREAD_HELMET.getKey(), ModItems.WORLD_THREAD_LEGGINGS.getKey(), ModItems.GARMENT_OF_REALITY_CHESTPLATE.getKey(), ModItems.GARMENT_OF_REALITY_BOOTS.getKey(), ModItems.GARMENT_OF_REALITY_HELMET.getKey(), ModItems.GARMENT_OF_REALITY_LEGGINGS.getKey());
     }
 }
