@@ -123,8 +123,10 @@ public abstract class PocketGeneratorReference implements VirtualPocket {
 		this.applyModifiers(parameters, manager);
 
 		if (pocket instanceof LazyGenerationPocket lazyPocket) {
-            if (generator instanceof LazyPocketGenerator lazyPocketGenerator) {
-                LazyPocketGenerator clonedGenerator = lazyPocketGenerator.cloneWithLazyModifiers(originalOrigin);
+            if (!(generator instanceof LazyPocketGenerator lazyPocketGenerator)) {
+                throw new RuntimeException("pocket was instance of LazyGenerationPocket but generator was not instance of LazyPocketGenerator");
+            } else {
+				LazyPocketGenerator clonedGenerator = lazyPocketGenerator.cloneWithLazyModifiers(originalOrigin);
                 if (setupLoot != null) clonedGenerator.setSetupLoot(setupLoot);
 
                 attachLazyModifiers(clonedGenerator);
@@ -143,8 +145,6 @@ public abstract class PocketGeneratorReference implements VirtualPocket {
                     DimensionalDoors.getServer().tell(new TickTask(server.getTickCount(), () -> (lazyPocket).chunkLoaded(chunk)));
                 }
                 LazyCompatibleModifier.runLeftoverModifications(DimensionalDoors.getWorld(lazyPocket.getWorld()));
-            } else {
-                throw new RuntimeException("pocket was instance of LazyGenerationPocket but generator was not instance of LazyPocketGenerator");
             }
         } else {
 			LazyPocketGenerator.currentlyGenerating = false;

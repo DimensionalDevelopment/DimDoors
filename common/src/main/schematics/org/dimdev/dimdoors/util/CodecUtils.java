@@ -72,7 +72,7 @@ public class CodecUtils {
         }, new Function<T, DataResult<? extends Dynamic<?>>>() {
             @Override
             public DataResult<? extends Dynamic<?>> apply(T t) {
-                return DataResult.error(() -> "Blep");
+                return base.encodeStart(JsonOps.INSTANCE, t).map(a -> new Dynamic<>(JsonOps.INSTANCE, a));
             }
         });
     }

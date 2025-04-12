@@ -56,7 +56,9 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	// LazyPocketGenerator handles attaching itself so that it can drop itself if it has already generated everything necessary.
 	public void attachToPocket(LazyGenerationPocket pocket) {
 		// We assume that this LazyPocketGenerator has not been cloned yet if the modifier list has any entries since it should be empty at this stage
-		if (!this.lazyModifierList.isEmpty()) throw new UnsupportedOperationException("Cannot attach LazyPocketGenerator that has not been cloned yet to pocket");
+//		if (!this.lazyModifierList.isEmpty()) { TODO: Find out if we need this.
+//			throw new UnsupportedOperationException("Cannot attach LazyPocketGenerator that has not been cloned yet to pocket");
+//		}
 		pocket.attachGenerator(this);
 	}
 

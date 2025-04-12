@@ -35,7 +35,7 @@ public abstract class Pocket extends AbstractPocket implements AddonProvider {
 				.and(Codec.unboundedMap(ResourceLocation.CODEC, PocketAddon.CODEC).xmap(m -> (Map<ResourceLocation, PocketAddon>) new HashMap<>(m), Function.identity()).optionalFieldOf("addons", new HashMap<>()).forGetter(a -> a.addons));
 	}
 
-	protected Map<ResourceLocation, PocketAddon> addons;
+	protected Map<ResourceLocation, PocketAddon> addons = new HashMap<>();
 	protected int range = -1;
 	protected BoundingBox box;
 	public VirtualLocation virtualLocation;

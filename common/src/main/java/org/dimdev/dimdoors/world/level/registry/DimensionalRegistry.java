@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.world.level.registry;
 
 import com.mojang.datafixers.util.Function3;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
@@ -10,22 +11,33 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.NbtLoaderUtil;
+import org.dimdev.dimdoors.api.util.NbtUtil;
+import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static net.minecraft.nbt.NbtOps.INSTANCE;
+import static org.dimdev.dimdoors.api.util.NbtLoaderUtil.joinOrThrow;
 
 public class DimensionalRegistry extends SavedData {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
@@ -59,82 +71,121 @@ public class DimensionalRegistry extends SavedData {
 
 	@Override
 	public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-		return (CompoundTag) CODEC.encode(this, INSTANCE, compoundTag).getOrThrow();
+		return writeToNbt(compoundTag);
 	}
 
-	public static Codec<DimensionalRegistry> CODEC = Codec.PASSTHROUGH.comapFlatMap((Function<Dynamic<?>, DataResult<DimensionalRegistry>>) dynamic -> {
-        int riftDataVersion = dynamic.get("RiftDataVersion").asInt(-1);
+//	public static Codec<DimensionalRegistry> CODEC = Codec.PASSTHROUGH.comapFlatMap((Function<Dynamic<?>, DataResult<DimensionalRegistry>>) dynamic -> {
+//        int riftDataVersion = dynamic.get("RiftDataVersion").asInt(-1);
+//
+//		if(riftDataVersion == -1) riftDataVersion = dynamic.get("version").asInt(-1);
+//
+//        if (riftDataVersion < 0) {
+//            throw new IllegalStateException("RiftDataVersion can not be invalid");
+//        } else if (riftDataVersion < RIFT_DATA_VERSION) {
+//            dynamic = RiftSchemas.update(riftDataVersion, dynamic);
+//        } else if (RIFT_DATA_VERSION < riftDataVersion) {
+//            return DataResult.error(() -> "Downgrading is not supported!");
+//        }
+//
+//        return dynamic.read(CODEC_BASE);
+//    }, dimensionalRegistry -> {
+//        var tag = CODEC_BASE.encodeStart(INSTANCE, dimensionalRegistry).getPartialOrThrow();
+//        var dynamic = new Dynamic<>(INSTANCE, tag);
+//        return dynamic.set("version", dynamic.createInt(RIFT_DATA_VERSION));
+//    });
 
-		if(riftDataVersion == -1) riftDataVersion = dynamic.get("version").asInt(-1);
+	private static Factory<DimensionalRegistry> FACTORY = new Factory<>(DimensionalRegistry::new, (tag, provider) -> of(tag), DataFixTypes.LEVEL);
 
-        if (riftDataVersion < 0) {
-            throw new IllegalStateException("RiftDataVersion can not be invalid");
-        } else if (riftDataVersion < RIFT_DATA_VERSION) {
-            dynamic = RiftSchemas.update(riftDataVersion, dynamic);
-        } else if (RIFT_DATA_VERSION < riftDataVersion) {
-            return DataResult.error(() -> "Downgrading is not supported!");
-        }
+	public static DimensionalRegistry of(CompoundTag nbt) {
+		int riftDataVersion = nbt.getInt("RiftDataVersion");
+		if (riftDataVersion < RIFT_DATA_VERSION) {
+			Tag updatedTag = RiftSchemas.update(riftDataVersion, new Dynamic<>(INSTANCE, nbt)).getValue();
+			if (!(updatedTag instanceof CompoundTag updatedCompound)) {
+				throw new IllegalStateException("Updated tag is not a CompoundTag: " + updatedTag.getClass().getName());
+			}
+			nbt = updatedCompound;
+		} else if (RIFT_DATA_VERSION < riftDataVersion) {
+			throw new UnsupportedOperationException("Downgrading is not supported!");
+		}
 
-        return dynamic.read(CODEC_BASE);
-    }, dimensionalRegistry -> {
-        var tag = CODEC_BASE.encodeStart(INSTANCE, dimensionalRegistry).getPartialOrThrow();
-        var dynamic = new Dynamic<>(INSTANCE, tag);
-        return dynamic.set("version", dynamic.createInt(RIFT_DATA_VERSION));
-    });
+		CompoundTag pocketRegistryNbt = NbtLoaderUtil.getRequiredCompound(nbt, "pocket_registry");
 
-	private static Factory<DimensionalRegistry> FACTORY = new Factory<>(DimensionalRegistry::new, (tag, provider) -> INSTANCE.withParser(CODEC).apply(tag).getOrThrow(), DataFixTypes.LEVEL);
+		List<CompletableFuture<Pair<ResourceKey<Level>, PocketDirectory>>> pocketFutures = pocketRegistryNbt.getAllKeys().stream()
+				.map(key -> {
+					CompoundTag directoryTag = NbtLoaderUtil.getRequiredCompound(pocketRegistryNbt, key);
+					ResourceLocation location = ResourceLocation.tryParse(key);
+					if (location == null) {
+						throw new IllegalArgumentException("Invalid resource location: " + key);
+					}
+					ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION, location);
 
-//	public void readFromNbt(Dynamic<?> nbt) {
-//
-//		int riftDataVersion = nbt.get("RiftDataVersion").asInt(0);
-//		if (riftDataVersion < RIFT_DATA_VERSION) {
-//			nbt = RiftSchemas.update(riftDataVersion, nbt);
-//		} else if (RIFT_DATA_VERSION < riftDataVersion) {
-//			throw new UnsupportedOperationException("Downgrading is not supported!");
-//		}
-//
-//		Map<? extends Dynamic<?>, ? extends Dynamic<?>> pocketRegistryNbt = nbt.get("pocket_registry").orElseEmptyMap().getMapValues().getOrThrow();
-//
-//
-//		CompletableFuture<Map<ResourceKey<Level>, PocketDirectory>> futurePocketRegistry = CompletableFuture.supplyAsync(() -> pocketRegistryNbt.keySet().stream().map(key -> {
-//					Dynamic<?> pocketDirectoryNbt = pocketRegistryNbt.get(key);
-//					return CompletableFuture.supplyAsync(() -> new Pair<>(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(key.asString(""))), PocketDirectory.readFromNbt(key, pocketDirectoryNbt)));
-//				}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond)));
-//
-//		CompoundTag privateRegistryNbt = nbt.getCompound("private_registry");
-//		CompletableFuture<PrivateRegistry> futurePrivateRegistry = CompletableFuture.supplyAsync(() -> {
-//			PrivateRegistry privateRegistry = new PrivateRegistry();
-//			privateRegistry.fromNbt(privateRegistryNbt);
-//			return privateRegistry;
-//		});
-//
-//		pocketRegistry = futurePocketRegistry.join();
-//
-//		CompoundTag riftRegistryNbt = nbt.getCompound("rift_registry");
-//		CompletableFuture<RiftRegistry> futureRiftRegistry = CompletableFuture.supplyAsync(() -> RiftRegistry.fromNbt(pocketRegistry, riftRegistryNbt));
-//		riftRegistry = futureRiftRegistry.join();
-//
-//		privateRegistry = futurePrivateRegistry.join();
-//	}
-//
-//	public static void writeToNbt(CompoundTag nbt) {
-//		CompletableFuture<Tag> futurePocketRegistryNbt = StreamUtils.supplyAsync(() -> {
-//			List<CompletableFuture<Pair<String, Tag>>> futurePocketRegistryNbts = new ArrayList<>();
-//			pocketRegistry.forEach((key, value) -> futurePocketRegistryNbts.add(CompletableFuture.supplyAsync(() -> new Pair<>(key.location().toString(), value.writeToNbt()))));
-//			CompoundTag pocketRegistryNbt = new CompoundTag();
-//			futurePocketRegistryNbts.parallelStream().unordered().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond)).forEach(pocketRegistryNbt::put);
-//			return pocketRegistryNbt;
-//		});
-//
-//		CompletableFuture<Tag> futureRiftRegistryNbt = StreamUtils.supplyAsync(riftRegistry::toNbt);
-//		CompletableFuture<Tag> futurePrivateRegistryNbt = CompletableFuture.supplyAsync(() -> privateRegistry.toNbt(new CompoundTag()));
-//
-//		nbt.put("pocket_registry", futurePocketRegistryNbt.join());
-//		nbt.put("rift_registry", futureRiftRegistryNbt.join());
-//		nbt.put("private_registry", futurePrivateRegistryNbt.join());
-//
-//		nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
-//	}
+					return CompletableFuture.supplyAsync(() -> {
+						try {
+							return new Pair<>(resourceKey, PocketDirectory.readFromNbt(resourceKey, directoryTag));
+						} catch (Exception e) {
+							throw new CompletionException("Failed to parse PocketDirectory for key: " + key, e);
+						}
+					});
+				})
+				.toList();
+
+		CompletableFuture<Map<ResourceKey<Level>, PocketDirectory>> futurePocketRegistry =
+				NbtLoaderUtil.joinAllFutures(pocketFutures, "PocketRegistry");
+
+		Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = joinOrThrow(futurePocketRegistry, "PocketRegistry");
+
+		CompoundTag privateRegistryNbt = NbtLoaderUtil.getRequiredCompound(nbt, "private_registry");
+		CompletableFuture<PrivateRegistry> futurePrivateRegistry = NbtLoaderUtil.asyncDecode(privateRegistryNbt, PrivateRegistry.CODEC, "PrivateRegistry");
+		PrivateRegistry privateRegistry = joinOrThrow(futurePrivateRegistry, "PrivateRegistry");
+
+		CompoundTag riftRegistryNbt = NbtLoaderUtil.getRequiredCompound(nbt, "rift_registry");
+		CompletableFuture<RiftRegistry> futureRiftRegistry = CompletableFuture.supplyAsync(() -> {
+			try {
+				return NbtUtil.deserialize(riftRegistryNbt, RiftRegistry.RiftRegistryData.CODEC).create(pocketRegistry);
+			} catch (Exception e) {
+				throw new CompletionException("Failed to deserialize RiftRegistry", e);
+			}
+		});
+		RiftRegistry riftRegistry = joinOrThrow(futureRiftRegistry, "RiftRegistry");
+
+		return new DimensionalRegistry(pocketRegistry, riftRegistry, privateRegistry);
+	}
+
+	public CompoundTag writeToNbt(CompoundTag nbt) {
+		// Serialize pocketRegistry in parallel
+		CompletableFuture<Tag> futurePocketRegistryNbt = StreamUtils.supplyAsync(() -> {
+			List<CompletableFuture<Pair<String, Tag>>> futures = pocketRegistry.entrySet().stream()
+					.map(entry -> CompletableFuture.supplyAsync(() -> {
+						String id = entry.getKey().location().toString();
+						Tag tag = entry.getValue().writeToNbt();
+						return new Pair<>(id, tag);
+					}))
+					.toList();
+
+			Map<String, Tag> result = futures.parallelStream()
+					.map(CompletableFuture::join)
+					.collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond));
+
+			CompoundTag compound = new CompoundTag();
+			result.forEach(compound::put);
+			return compound;
+		});
+
+		// Serialize riftRegistry and privateRegistry
+		CompletableFuture<Tag> futureRiftRegistryNbt =
+				StreamUtils.supplyAsync(() -> NbtUtil.serialize(riftRegistry.asRawData(), RiftRegistry.RiftRegistryData.CODEC));
+
+		CompletableFuture<Tag> futurePrivateRegistryNbt =
+				CompletableFuture.supplyAsync(() -> NbtUtil.serialize(privateRegistry, PrivateRegistry.CODEC));
+
+		// Wait for all futures and write to the compound tag
+		nbt.put("pocket_registry", joinOrThrow(futurePocketRegistryNbt, "pocket_registry"));
+		nbt.put("rift_registry", joinOrThrow(futureRiftRegistryNbt, "rift_registry"));
+		nbt.put("private_registry", joinOrThrow(futurePrivateRegistryNbt, "private_registry"));
+		nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
+
+		return nbt;
+	}
 
 	public static DimensionalRegistry getInstance() {
 		return DimensionalDoors.getServer().overworld().getDataStorage().computeIfAbsent(FACTORY, "dimensional_registry");
@@ -169,4 +220,8 @@ public class DimensionalRegistry extends SavedData {
 		return pocketRegistry;
 	}
 
+	@Override
+	public boolean isDirty() {
+		return true;
+	}
 }

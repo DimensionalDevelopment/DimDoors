@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 
 //@FunctionalInterface
 public interface Equation {
-	Codec<Equation> CODEC = Codec.STRING.xmap(Equation::parseOrCrash, Object::toString);
+	Codec<Equation> CODEC = Codec.STRING.xmap(Equation::parseOrCrash, Equation::asString);
 
 	Equation ZERO = Equation.parseOrCrash("0");
 

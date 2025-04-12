@@ -102,7 +102,7 @@ public class ResourceUtil {
 					}),
 					(a, id, exception) -> LOGGER.error("Error loading resource: " + id, exception))));
 			return CompletableFuture.completedFuture(map);
-//		});
+//		}).join();
 	}
 
 	public static  <T, M extends Collection<T>> CompletableFuture<M> loadResourcePathToCollection(ResourceManager manager, String startingPath, String extension, M collection, BiFunction<InputStream, ResourceLocation, T> reader) {

@@ -1,25 +1,21 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class Rift extends RegistryVertex {
-	public static final MapCodec<Rift> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-					UUIDUtil.CODEC.fieldOf("id").forGetter(RegistryVertex::getId),
-			Location.CODEC.fieldOf("location").forGetter(Rift::getLocation),
-			Codec.BOOL.fieldOf("isDetached").forGetter(Rift::isDetached),
-			LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(Rift::getProperties))
-			.apply(inst, Rift::new));
+	public static final MapCodec<Rift> CODEC = RecordCodecBuilder.mapCodec(a -> commonRiftFields(a).apply(a, Rift::new));
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private Location location;
@@ -37,10 +33,10 @@ public class Rift extends RegistryVertex {
 		this.properties = properties;
 	}
 
-	public Rift(UUID id, Location location, boolean isDetached, LinkProperties properties) {
-		this.location = location;
+	public Rift(UUID id, Optional<Location> location, boolean isDetached, Optional<LinkProperties> properties) {
+		this.location = location.orElse(null);
 		this.isDetached = isDetached;
-		this.properties = properties;
+		this.properties = properties.orElse(null);
 		this.id = id;
 	}
 
@@ -112,5 +108,13 @@ public class Rift extends RegistryVertex {
 
 	public void setProperties(LinkProperties properties) {
 		this.properties = properties;
+	}
+
+	public static <T extends Rift> Products.P4<RecordCodecBuilder.Mu<T>, UUID, Optional<Location>, Boolean, Optional<LinkProperties>> commonRiftFields(RecordCodecBuilder.Instance<T> inst) {
+		return inst.group(
+						UUIDUtil.CODEC.fieldOf("id").forGetter(RegistryVertex::getId),
+						Location.CODEC.optionalFieldOf("location").forGetter(rift -> Optional.ofNullable(rift.getLocation())),
+						Codec.BOOL.optionalFieldOf("isDetached", false).forGetter(Rift::isDetached),
+						LinkProperties.CODEC.optionalFieldOf("properties").forGetter(rift -> Optional.ofNullable(rift.getProperties())));
 	}
 }

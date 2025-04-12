@@ -1,17 +1,23 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
+import org.dimdev.dimdoors.api.util.Location;
 
-public class RiftPlaceholder extends Rift { // TODO: don't extend rift
-	public final static MapCodec<RiftPlaceholder> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			UUIDUtil.CODEC.fieldOf("id").forGetter(RiftPlaceholder::getId)
-	).apply(instance, id -> {
-		var placeholder = new RiftPlaceholder();
-		placeholder.setId(id);
-		return placeholder;
-	}));
+import java.util.Optional;
+import java.util.UUID;
+
+public class RiftPlaceholder extends Rift {
+	public final static MapCodec<RiftPlaceholder> CODEC = RecordCodecBuilder.mapCodec(instance -> commonRiftFields(instance).apply(instance, (id, location, isDetached, properties) -> {
+        var placeholder = new RiftPlaceholder();
+        placeholder.setId(id);
+        placeholder.setProperties(properties.orElse(null));
+        placeholder.setDetached(isDetached);
+        placeholder.setLocation(location.orElse(null));
+        return placeholder;
+    }));
 
 	@Override
 	public void sourceGone(RegistryVertex source) {
@@ -27,15 +33,6 @@ public class RiftPlaceholder extends Rift { // TODO: don't extend rift
 
 	@Override
 	public void targetAdded(RegistryVertex target) {
-	}
-
-	@Override
-	public void targetChanged(RegistryVertex target) {
-	}
-
-	@Override
-	public void markDirty() {
-
 	}
 
 	@Override
