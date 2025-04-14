@@ -178,10 +178,10 @@ public final class ModConfig implements ConfigData {
 		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList();
 		@Tooltip public boolean hardcoreLimbo = false;
 
-		@Tooltip public int limboReturnDistanceMax = 200;
-		@Tooltip public int limboReturnDistanceMin = 100;
+		@Tooltip public int limboReturnDistanceMax = 5000;
+		@Tooltip public int limboReturnDistanceMin = 0;
 
-		@Tooltip public boolean decaySurroundings;
+		@Tooltip public boolean decaySurroundings = true;
 
 		@Tooltip public boolean tryPlayerBedSpawn = false;
 		@Tooltip public boolean defaultToWorldSpawn = true;
