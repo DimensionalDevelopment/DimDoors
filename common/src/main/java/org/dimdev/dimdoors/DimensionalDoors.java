@@ -103,7 +103,7 @@ public class DimensionalDoors {
 
 	private static Supplier<Path> CONFIG_ROOT = () -> dimDoorsMod.getFilePaths().get(0);
 
-	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootJanksonConfigSerializer::new);
+	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootGsonConfigSerializer::new);
 
 	public static ModConfig getConfig() {
 		return CONFIG_MANAGER.get();

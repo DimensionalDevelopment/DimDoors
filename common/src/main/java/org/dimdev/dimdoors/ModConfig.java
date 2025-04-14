@@ -173,16 +173,24 @@ public final class ModConfig implements ConfigData {
 	}
 
 	public static class Limbo {
-
 		@CollapsibleObject
 		@RequiresRestart
 		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList();
 		@Tooltip public boolean hardcoreLimbo = false;
-		@Tooltip public int limboReturnDistance = 100;
+
+		@Tooltip public int limboReturnDistanceMax = 200;
+		@Tooltip public int limboReturnDistanceMin = 100;
+
+		@Tooltip public boolean decaySurroundings;
+
+		@Tooltip public boolean tryPlayerBedSpawn = false;
+		@Tooltip public boolean defaultToWorldSpawn = true;
+
+
 		@Tooltip public float limboBlocksCorruptingExitWorldAmount = 5;
 		@Tooltip @Nullable public ResourceKey<Level> escapeTargetWorld = Level.OVERWORLD;
-		@Tooltip public int escapeTargetWorldYSpawn = 64;
-		@Tooltip public boolean escapeToWorldSpawn = false;
+
+
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {
 			return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level.location().toString());
 		}
@@ -240,12 +248,12 @@ public final class ModConfig implements ConfigData {
 //		}
 //	}
 
-	public static class SubRootJanksonConfigSerializer<T extends ConfigData> implements ConfigSerializer<T> {
-		private static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().registerTypeAdapter(new TypeToken<ResourceKey<Level>>() {}.getType(), new ResourceKeyLevelAdapter()).create();
+	public static class SubRootGsonConfigSerializer<T extends ConfigData> implements ConfigSerializer<T> {
+		private static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(new TypeToken<ResourceKey<Level>>() {}.getType(), new LevelKeyAdapter()).create();
 		private final Config definition;
 		private final Class<T> configClass;
 
-		public SubRootJanksonConfigSerializer(Config definition, Class<T> configClass) {
+		public SubRootGsonConfigSerializer(Config definition, Class<T> configClass) {
 			this.definition = definition;
 			this.configClass = configClass;
 		}
@@ -271,8 +279,8 @@ public final class ModConfig implements ConfigData {
 		public T deserialize() throws SerializationException {
 			Path configPath = getConfigPath();
 			if (Files.exists(configPath)) {
-				try {
-					return GSON.fromJson(Files.readString(getConfigPath()), configClass);
+				try (var reader = Files.newBufferedReader(getConfigPath())) {
+					return GSON.fromJson(reader, configClass);
 				} catch (Throwable e) {
 					throw new SerializationException(e);
 				}
@@ -287,20 +295,16 @@ public final class ModConfig implements ConfigData {
 		}
 	}
 
-	public static class ResourceKeyLevelAdapter implements JsonDeserializer<ResourceKey<Level>>, JsonSerializer<ResourceKey<Level>> {
+	public static final class LevelKeyAdapter implements JsonSerializer<ResourceKey<Level>>, JsonDeserializer<ResourceKey<Level>> {
+
+		@Override
+		public ResourceKey<Level> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			return ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(json.getAsJsonPrimitive().getAsString()));
+		}
 
 		@Override
 		public JsonElement serialize(ResourceKey<Level> src, Type typeOfSrc, JsonSerializationContext context) {
 			return new JsonPrimitive(src.location().toString());
-		}
-
-		@Override
-		public ResourceKey<Level> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			if (!json.isJsonPrimitive() || !json.getAsJsonPrimitive().isString()) {
-				throw new JsonParseException("Expected a string for ResourceKey<Level>");
-			}
-			String location = json.getAsString();
-			return ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(location));
 		}
 	}
 }
