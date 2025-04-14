@@ -14,6 +14,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -34,7 +35,7 @@ public class MonolithEntity extends Mob {
     private static final int MAX_SOUND_COOLDOWN = 200;
     public static final int MAX_AGGRO_RANGE = 35;
     private static final EntityDataAccessor<Integer> AGGRO = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
+//    private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> SOLID = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.BOOLEAN);
 
@@ -114,10 +115,9 @@ public class MonolithEntity extends Mob {
         super.defineSynchedData(builder);
         // Add a short for the aggro level
         builder.define(AGGRO, 0);
-		builder.define(SCALE, 1f);
 		builder.define(PITCH, 1f);
         builder.define(SOLID, true);
-		this.refreshDimensions();
+//		this.refreshDimensions();
     }
 
     @Override
@@ -252,7 +252,7 @@ public class MonolithEntity extends Mob {
     public void addAdditionalSaveData(CompoundTag nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putInt("Aggro", getAggro());
-        nbt.putFloat("scale", getScale());
+//        nbt.putFloat("scale", getScale());
         nbt.putFloat("pitch", getPitch());
     }
 
@@ -260,9 +260,6 @@ public class MonolithEntity extends Mob {
     public void readAdditionalSaveData(CompoundTag nbt) {
         super.readAdditionalSaveData(nbt);
         setAggro(nbt.getInt("Aggro"));
-        if (nbt.contains("scale", Tag.TAG_FLOAT)) {
-        	setScale(nbt.getFloat("scale"));
-		}
         if (nbt.contains("pitch", Tag.TAG_FLOAT)) {
 			setPitch(nbt.getFloat("pitch"));
 		}
@@ -288,13 +285,14 @@ public class MonolithEntity extends Mob {
         this.entityData.set(AGGRO, aggro);
     }
 
-    @Override
-	public float getScale() {
-    	return this.entityData.get(SCALE);
-	}
+//    @Override
+//	public float getScale() {
+//    	return this.entityData.get(SCALE);
+//	}
 
     public void setScale(float scale) {
-    	this.entityData.set(SCALE, scale);
+//    	this.entityData.set(SCALE, scale);
+        getAttribute(Attributes.SCALE).setBaseValue(scale);
         refreshDimensions();
 	}
 
@@ -314,9 +312,9 @@ public class MonolithEntity extends Mob {
 
 	@Override
 	public void onSyncedDataUpdated(EntityDataAccessor<?> data) {
-		if (SCALE.equals(data)) {
-			this.refreshDimensions();
-		}
+//		if (SCALE.equals(data)) {
+//			this.refreshDimensions();
+//		}
 
 		super.onSyncedDataUpdated(data);
 	}

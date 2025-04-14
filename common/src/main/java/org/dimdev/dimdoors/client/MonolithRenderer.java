@@ -3,12 +3,12 @@ package org.dimdev.dimdoors.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.MonolithEntity;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,8 +60,6 @@ public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel>
             DimensionalDoors.id("textures/mob/monolith/solid/monolith_18.png")
     ).collect(Collectors.toList());
 
-
-
     private static MonolithModel INSTANCE;
 
     public MonolithRenderer(EntityRendererProvider.Context ctx) {
@@ -72,30 +70,13 @@ public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel>
         return INSTANCE;
     }
 
-	@Override
-	protected void scale(MonolithEntity entity, PoseStack matrices, float amount) {
-		matrices.scale(entity.getScale(), entity.getScale(), entity.getScale());
-	}
-
-    @Override
-    public void render(MonolithEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-        if(entity.getSolid()) {
-            poseStack.pushPose();
-
-            super.render(entity, entityYaw, partialTicks, poseStack, buffer, packedLight);
-
-            poseStack.popPose();
-
-        }
-    }
-
     @Override
     protected boolean shouldShowName(MonolithEntity mobEntity) {
         return false;
     }
 
     @Override
-    public ResourceLocation getTextureLocation(MonolithEntity entity) {
-        return SOLID.get(entity.getTextureState());
+    public @NotNull ResourceLocation getTextureLocation(MonolithEntity entity) {
+        return (entity.getSolid() ? SOLID : TRANSPARENT).get(entity.getTextureState());
     }
 }
