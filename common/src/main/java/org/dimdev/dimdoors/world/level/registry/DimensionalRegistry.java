@@ -129,8 +129,7 @@ public class DimensionalRegistry extends SavedData {
 				})
 				.toList();
 
-		CompletableFuture<Map<ResourceKey<Level>, PocketDirectory>> futurePocketRegistry =
-				NbtLoaderUtil.joinAllFutures(pocketFutures, "PocketRegistry");
+		CompletableFuture<Map<ResourceKey<Level>, PocketDirectory>> futurePocketRegistry = NbtLoaderUtil.joinAllFutures(pocketFutures, "PocketRegistry");
 
 		Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = joinOrThrow(futurePocketRegistry, "PocketRegistry");
 

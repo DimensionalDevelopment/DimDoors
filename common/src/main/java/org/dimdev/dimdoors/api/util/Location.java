@@ -2,7 +2,9 @@ package org.dimdev.dimdoors.api.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.sk89q.worldedit.math.convolution.HeightMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -15,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
 
@@ -30,6 +33,10 @@ public class Location {
 		this.pos = pos;
 	}
 
+	public Location(ResourceKey<Level> world, int x, int y, int z) {
+		this(world, new BlockPos(x, y, z));
+	}
+
 	public Location(ServerLevel world, int x, int y, int z) {
 		this(world, new BlockPos(x, y, z));
 	}
@@ -42,12 +49,24 @@ public class Location {
 		return this.pos.getX();
 	}
 
+	public Location setX(int x) {
+		return new Location(world, x, getY(), getZ());
+	}
+
 	public int getY() {
 		return this.pos.getY();
 	}
 
+	public Location setY(int y) {
+		return new Location(world, getX(), y, getZ());
+	}
+
 	public int getZ() {
 		return this.pos.getZ();
+	}
+
+	public Location setZ(int z) {
+		return new Location(world, getX(), getY(), z);
 	}
 
 	public BlockState getBlockState() {
@@ -86,6 +105,10 @@ public class Location {
 		return this.world;
 	}
 
+	public Location setWorldId(ResourceKey<Level> world) {
+		return new Location(world, pos);
+	}
+
 	public ServerLevel getWorld() {
 		return DimensionalDoors.getServer().getLevel(this.world);
 	}
@@ -104,4 +127,14 @@ public class Location {
 				new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}
+
+	public static BlockPos getHeightmapPosSafe(ServerLevel level, int x, int z) {
+		var mutablePos = new BlockPos.MutableBlockPos(x, level.getMaxBuildHeight(), z);
+
+		while (mutablePos.getY() > level.getMinBuildHeight() && (!level.getBlockState(mutablePos).isSolid() && level.getFluidState(mutablePos).isEmpty())) mutablePos.move(Direction.DOWN);
+
+		return mutablePos.move(Direction.UP);
+	}
+
+
 }

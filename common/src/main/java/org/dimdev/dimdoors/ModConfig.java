@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.*;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.serializer.ConfigSerializer;
@@ -8,6 +10,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Jankson;
 import me.shedaniel.clothconfig2.gui.entries.SelectionListEntry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.EnvironmentInterface;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -16,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -174,16 +178,24 @@ public final class ModConfig implements ConfigData {
 	}
 
 	public static class Limbo {
-
 		@CollapsibleObject
 		@RequiresRestart
 		@Tooltip private WorldList worldsLeadingToLimbo = new WorldList();
 		@Tooltip public boolean hardcoreLimbo = false;
-		@Tooltip public int limboReturnDistance = 5000;
+
+		@Tooltip public int limboReturnDistanceMax = 200;
+		@Tooltip public int limboReturnDistanceMin = 100;
+
+		@Tooltip public boolean decaySurroundings;
+
+		@Tooltip public boolean tryPlayerBedSpawn = false;
+		@Tooltip public boolean defaultToWorldSpawn = true;
+
+
 		@Tooltip public float limboBlocksCorruptingExitWorldAmount = 5;
 		@Tooltip @Nullable public ResourceKey<Level> escapeTargetWorld = Level.OVERWORLD;
-		@Tooltip public int escapeTargetWorldYSpawn = 64;
-		@Tooltip public boolean escapeToWorldSpawn = false;
+
+
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {
 			return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level.location().toString());
 		}
@@ -241,12 +253,12 @@ public final class ModConfig implements ConfigData {
 //		}
 //	}
 
-	public static class SubRootJanksonConfigSerializer<T extends ConfigData> implements ConfigSerializer<T> {
-		private static final Jankson JANKSON = Jankson.builder().build();
+	public static class SubRootGsonConfigSerializer<T extends ConfigData> implements ConfigSerializer<T> {
+		private static final Gson GSON = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(new TypeToken<ResourceKey<Level>>() {}.getType(), new LevelKeyAdapter()).create();
 		private final Config definition;
 		private final Class<T> configClass;
 
-		public SubRootJanksonConfigSerializer(Config definition, Class<T> configClass) {
+		public SubRootGsonConfigSerializer(Config definition, Class<T> configClass) {
 			this.definition = definition;
 			this.configClass = configClass;
 		}
@@ -261,7 +273,7 @@ public final class ModConfig implements ConfigData {
 			try {
 				Files.createDirectories(configPath.getParent());
 				BufferedWriter writer = Files.newBufferedWriter(configPath);
-				writer.write(JANKSON.toJson(config).toJson(true, true));
+				writer.write(GSON.toJson(config));
 				writer.close();
 			} catch (IOException e) {
 				throw new SerializationException(e);
@@ -272,8 +284,8 @@ public final class ModConfig implements ConfigData {
 		public T deserialize() throws SerializationException {
 			Path configPath = getConfigPath();
 			if (Files.exists(configPath)) {
-				try {
-					return JANKSON.fromJson(JANKSON.load(getConfigPath().toFile()), configClass);
+				try (var reader = Files.newBufferedReader(getConfigPath())) {
+					return GSON.fromJson(reader, configClass);
 				} catch (Throwable e) {
 					throw new SerializationException(e);
 				}
@@ -285,6 +297,19 @@ public final class ModConfig implements ConfigData {
 		@Override
 		public T createDefault() {
 			return Utils.constructUnsafely(configClass);
+		}
+	}
+
+	public static final class LevelKeyAdapter implements JsonSerializer<ResourceKey<Level>>, JsonDeserializer<ResourceKey<Level>> {
+
+		@Override
+		public ResourceKey<Level> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			return ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(json.getAsJsonPrimitive().getAsString()));
+		}
+
+		@Override
+		public JsonElement serialize(ResourceKey<Level> src, Type typeOfSrc, JsonSerializationContext context) {
+			return new JsonPrimitive(src.location().toString());
 		}
 	}
 }
