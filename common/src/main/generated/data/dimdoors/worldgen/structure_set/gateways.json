@@ -8,6 +8,10 @@
   },
   "structures": [
     {
+      "structure": "dimdoors:enclosed_endstone_gateway",
+      "weight": 1
+    },
+    {
       "structure": "dimdoors:enclosed_gateway",
       "weight": 1
     },
