@@ -44,7 +44,7 @@ public final class RiftCrackRenderer {
 
         // generate a series of waveforms
         for (int i = 0; i < jCount; i += 1) {
-            jitters[i] = Math.sin((1F + i / 10F) * time) * Math.cos(1F - i / 10F * time) * motionMagnitude;
+            jitters[i] = jitterScale * Math.sin((1F + i / 10F) * time) * Math.cos(1F - i / 10F * time) * motionMagnitude;
         }
 
         // Draw the rift
