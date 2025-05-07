@@ -132,7 +132,7 @@ public abstract class VirtualTarget implements Target {
 		}
 
 		static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, MapCodec<T> codec, RGBA color) {
-			return REGISTRY.register(new ResourceLocation(id), () -> new VirtualTargetType<T>() {
+			return REGISTRY.register(ResourceLocation.parse(id), () -> new VirtualTargetType<T>() {
 				@Override
 				public MapCodec<T> codec() {
 					return codec;

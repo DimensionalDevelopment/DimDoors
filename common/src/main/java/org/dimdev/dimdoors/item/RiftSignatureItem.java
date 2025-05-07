@@ -134,8 +134,9 @@ public class RiftSignatureItem extends Item {
 
 			// Place a rift at the target point
 
+			var serverPlayer = (ServerPlayer) player;
 
-			stack.hurtAndBreak(1, player.getRandom(), (ServerPlayer) player, () -> {}); // TODO: calculate damage based on position?
+			stack.hurtAndBreak(1, ((ServerPlayer) player).serverLevel(), serverPlayer, a -> {}); // TODO: calculate damage based on position?
 			if(shouldclear){
 				clearSource(stack);
 			}

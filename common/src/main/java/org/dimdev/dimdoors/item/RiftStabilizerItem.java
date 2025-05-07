@@ -50,7 +50,10 @@ public class RiftStabilizerItem extends Item {
 			if (!rift.stabilized && !rift.closing) {
 				rift.setStabilized(true);
 				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1); // TODO: different sound
-				stack.hurtAndBreak(1, player.getRandom(), !player.isLocalPlayer() ? (ServerPlayer) player : null, () -> {});
+
+				var serverPlayer = (ServerPlayer) player;
+
+				stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {});
 				player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stabilized"), true);
 				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 			} else {

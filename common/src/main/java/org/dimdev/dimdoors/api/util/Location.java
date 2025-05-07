@@ -123,7 +123,7 @@ public class Location {
 	public static Location fromNbt(CompoundTag nbt) {
 		int[] pos = nbt.getIntArray("pos");
 		return new Location(
-				ResourceKey.create(Registries.DIMENSION, new ResourceLocation(nbt.getString("world"))),
+				ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
 				new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}

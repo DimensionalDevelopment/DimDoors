@@ -54,7 +54,7 @@ public class MyRenderLayer extends RenderType {
 	);
 
     public static RenderType TESSERACT = RenderType.create("tesseract",
-			DefaultVertexFormat.POSITION_COLOR_TEX,
+			DefaultVertexFormat.POSITION_TEX_COLOR,
 			VertexFormat.Mode.QUADS,
 			256,
 			false,
@@ -66,7 +66,7 @@ public class MyRenderLayer extends RenderType {
 							false,
 							false)
 					)
-					.setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)
+					.setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
 					.createCompositeState(false)
 	);
 

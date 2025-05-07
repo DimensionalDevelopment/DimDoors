@@ -32,7 +32,7 @@ public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
 
                     original.getStateDefinition().getPossibleStates().forEach(blockState -> {
                         var state = copyState(context.block(), blockState);
-                        var model = context.getOrLoadModel(BlockModelShaper.stateToModelLocation(blockState));
+                        var model = context.getOrLoadModel(BlockModelShaper.stateToModelLocation(blockState).id());
                         context.setModel(state.setValue(WaterLoggableDoorBlock.WATERLOGGED, true), model);
                         context.setModel(state, model);
                     });
@@ -54,7 +54,7 @@ public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
         pluginContext.resolveModel().register(modelResolver);
 
         DimensionalDoors.getDimensionalDoorBlockRegistrar().getGennedIds().stream().filter(BuiltInRegistries.BLOCK::containsKey).map(BuiltInRegistries.BLOCK::get).forEach(block -> pluginContext.registerBlockStateResolver(block, resolver));
-        BuiltInRegistries.ITEM.registryKeySet().stream().map(ResourceKey::location).filter(a -> a.getPath().startsWith(PREFIX)).forEach(location -> pluginContext.addModels(new ModelResourceLocation(location, "inventory")));
+        BuiltInRegistries.ITEM.registryKeySet().stream().map(ResourceKey::location).filter(a -> a.getPath().startsWith(PREFIX)).forEach(location -> pluginContext.addModels(new ModelResourceLocation(location, "inventory").id()));
     }
 
 }

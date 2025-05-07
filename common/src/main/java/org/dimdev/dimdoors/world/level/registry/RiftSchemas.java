@@ -18,7 +18,7 @@ public class RiftSchemas {
 		builder.addSchema(1, Schema1::new);
 //		builder.addSchema(2, Schema2::new); TODO: Determine what my changes in 1.21 causes.
 		// TODO: add schemas if schema changes
-	}).buildUnoptimized();
+	}).build().fixer();
 
 	public static <T> Dynamic<T> update(int oldVersion, Dynamic<T> original) {
 		return DATA_FIXER.update(RIFT_DATA_TYPE_REF, original, oldVersion, RIFT_DATA_VERSION);

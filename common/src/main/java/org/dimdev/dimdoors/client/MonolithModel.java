@@ -33,8 +33,8 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
         return LayerDefinition.create(modelData, 128, 128);
     }
 
-	@Override
-	public void renderToBuffer(PoseStack matrixStack, VertexConsumer consumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    @Override
+	public void renderToBuffer(PoseStack matrixStack, VertexConsumer consumer, int packedLight, int packedOverlay, int color) {
 
         final float minScaling = 0;
         final float maxScaling = 0.001f;

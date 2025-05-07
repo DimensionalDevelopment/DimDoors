@@ -113,7 +113,7 @@ public class DimensionalDoorsClient {
         consumer.accept(ModEntityTypes.MASK.get(), context -> new EntityRenderer<MaskEntity>(context) {
 			@Override
 			public ResourceLocation getTextureLocation(MaskEntity entity) {
-				return new ResourceLocation("blep");
+				return ResourceLocation.parse("blep");
 			}
 		});
 	}

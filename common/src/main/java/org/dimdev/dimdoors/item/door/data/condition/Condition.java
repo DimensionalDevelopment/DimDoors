@@ -27,7 +27,7 @@ public interface Condition {
 	ConditionType<?> getType();
 
 	static Condition fromJson(JsonObject json) {
-		ResourceLocation type = new ResourceLocation(json.getAsJsonPrimitive("type").getAsString());
+		ResourceLocation type = ResourceLocation.tryParse(json.getAsJsonPrimitive("type").getAsString());
 		return Objects.requireNonNull(REGISTRY.get(type)).fromJson(json);
 	}
 

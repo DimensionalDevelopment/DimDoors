@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.api.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.core.Vec3i;
@@ -13,7 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.border.WorldBorder;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.stat.ModStats;
@@ -24,11 +23,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @SuppressWarnings("deprecation")
 public final class TeleportUtil {
-	public static  <E extends Entity> E teleport(E entity, Level world, BlockPos pos, float yaw) {
+	public static  Entity teleport(Entity entity, Level world, BlockPos pos, float yaw) {
 		return teleport(entity, world, Vec3.atBottomCenterOf(pos), yaw);
 	}
 
-	public static  <E extends Entity> E teleport(E entity, Level world, Vec3 pos, float yaw) {
+	public static Entity teleport(Entity entity, Level world, Vec3 pos, float yaw) {
 		return teleport(entity, world, pos, new Rotations((float) entity.getX(), yaw, 0), entity.getDeltaMovement());
 	}
 
@@ -53,7 +52,7 @@ public final class TeleportUtil {
 		return new Vec3(newX, original.y, newZ);
 	}
 
-	public static  <E extends Entity> E teleport(E entity, Level world, Vec3 pos, Rotations angle, Vec3 velocity) {
+	public static Entity teleport(Entity entity, Level world, Vec3 pos, Rotations angle, Vec3 velocity) {
 		if (world.isClientSide()) {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
@@ -72,7 +71,7 @@ public final class TeleportUtil {
 			if (entity.level().dimension().equals(world.dimension())) {
 				serverPlayer.connection.teleport(pos.x(), pos.y(), pos.z(), yaw, pitch);
 			} else {
-				entity = teleport(entity, (ServerLevel) world, new PortalInfo(pos, velocity, yaw, pitch));
+				entity = teleport(entity, (ServerLevel) world, pos, velocity, yaw, pitch);
 			}
 
 			serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity.getId(), velocity));
@@ -85,7 +84,7 @@ public final class TeleportUtil {
 			if (entity.level().dimension().equals(world.dimension())) {
 				entity.moveTo(pos.x(), pos.y(), pos.z(), yaw, pitch);
 			} else {
-				entity = teleport(entity, (ServerLevel) world, new PortalInfo(pos, velocity, yaw, pitch));
+				entity = teleport(entity, (ServerLevel) world, pos, velocity, yaw, pitch);
 			}
 		}
 		entity.setDeltaMovement(velocity);
@@ -93,7 +92,7 @@ public final class TeleportUtil {
 		return entity;
 	}
 
-	public static  <E extends Entity> E teleport(E entity, Level world, BlockPos pos, Rotations angle, Vec3 velocity) {
+	public static Entity teleport(Entity entity, Level world, BlockPos pos, Rotations angle, Vec3 velocity) {
 		if (world.isClientSide()) {
 			throw new UnsupportedOperationException("Only supported on ServerWorld");
 		}
@@ -101,15 +100,15 @@ public final class TeleportUtil {
 		return teleport(entity, world, Vec3.atBottomCenterOf(pos), angle, velocity);
 	}
 
-	public static ServerPlayer teleport(ServerPlayer player, Location location) {
+	public static Entity teleport(ServerPlayer player, Location location) {
 		return teleport(player, DimensionalDoors.getWorld(location.world), location.pos, 0);
 	}
 
-	public static ServerPlayer teleport(ServerPlayer player, RotatedLocation location) {
+	public static Entity teleport(ServerPlayer player, RotatedLocation location) {
 		return teleport(player, DimensionalDoors.getWorld(location.world), location.pos, (int) location.yaw);
 	}
 
-	public static  <E extends Entity> E teleportRandom(E entity, Level world, double y) {
+	public static Entity teleportRandom(Entity entity, Level world, double y) {
 		double scale = ThreadLocalRandom.current().nextGaussian() * ThreadLocalRandom.current().nextInt(90);
 		return teleport(
 				entity,
@@ -121,7 +120,7 @@ public final class TeleportUtil {
 				entity.getYRot()
 		);
 	}
-	public static  <E extends Entity> E teleportUntargeted(E entity, Level world) {
+	public static Entity teleportUntargeted(Entity entity, Level world) {
 		double actualScale = entity.level().dimensionType().coordinateScale() / world.dimensionType().coordinateScale();
 		return teleport(
 				entity,
@@ -131,7 +130,7 @@ public final class TeleportUtil {
 		);
 	}
 
-	public static  <E extends Entity> E teleportUntargeted(E entity, Level world, double y) {
+	public static  Entity teleportUntargeted(Entity entity, Level world, double y) {
 		double actualScale = entity.level().dimensionType().coordinateScale() / world.dimensionType().coordinateScale();
 		return teleport(
 				entity,
@@ -144,8 +143,7 @@ public final class TeleportUtil {
 		);
 	}
 
-	@ExpectPlatform
-	public static <E extends Entity> E teleport(E entity, ServerLevel world, PortalInfo portalInfo) {
-		throw new RuntimeException();
+	public static <E extends Entity> Entity teleport(E entity, ServerLevel world, Vec3 pos, Vec3 velocity, float yaw, float pitch) {
+		return entity.changeDimension(new DimensionTransition(world, pos, velocity, yaw, pitch, e -> {}));
 	}
 }

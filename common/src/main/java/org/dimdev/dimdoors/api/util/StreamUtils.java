@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import net.minecraft.ReportType;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,7 +57,7 @@ public class StreamUtils {
         }
 
         if (cause instanceof ReportedException) {
-            Bootstrap.realStdoutPrintln(((ReportedException) cause).getReport().getFriendlyReport());
+            Bootstrap.realStdoutPrintln(((ReportedException) cause).getReport().getFriendlyReport(ReportType.CRASH));
             System.exit(-1);
         }
 

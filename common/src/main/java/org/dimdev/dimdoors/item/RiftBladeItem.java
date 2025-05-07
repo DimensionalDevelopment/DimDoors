@@ -83,6 +83,8 @@ public class RiftBladeItem extends SwordItem {
 
 		var equipmentSlot = hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
 
+		var serverPlayer = (ServerPlayer) player;
+
 		if (RaycastHelper.hitsLivingEntity(hit)) {
 //			double damageMultiplier = (double) stack.getDamageValue() / (double) stack.getMaxDamage(); //TODO: Decide if to remove old code or still use.
 //			// TODO: gaussian, instead or random
@@ -128,7 +130,7 @@ public class RiftBladeItem extends SwordItem {
 
 
 			// Apply damage to the item stack
-			stack.hurtAndBreak(1, player.getRandom(), (ServerPlayer) player, () -> player.broadcastBreakEvent(equipmentSlot));
+			stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
 
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		} else if (RaycastHelper.hitsDetachedRift(hit, world)) {
@@ -139,7 +141,7 @@ public class RiftBladeItem extends SwordItem {
 			world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
 			((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
-			stack.hurtAndBreak(1, player.getRandom(), (ServerPlayer) player, () -> player.broadcastBreakEvent(equipmentSlot));
+			stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);

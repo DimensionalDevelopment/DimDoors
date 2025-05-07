@@ -70,7 +70,10 @@ public class RiftRemoverItem extends Item {
 			if (!Objects.requireNonNull(rift).closing) {
 				rift.setClosing(true);
 				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1);
-				stack.hurtAndBreak(10, player.getRandom(), (ServerPlayer) player, () -> player.broadcastBreakEvent(slot));
+
+				var serverPlayer = (ServerPlayer) player;
+
+				stack.hurtAndBreak(10, serverPlayer.serverLevel(), serverPlayer, a -> {/*serverPlayer.broadcastBreakEvent(slot)*/ });
 				var pos = ((BlockHitResult) hit).getBlockPos();
 				LootParams ctx = new LootParams.Builder((ServerLevel) world)
 						.withParameter(LootContextParams.BLOCK_STATE, world.getBlockState(pos))

@@ -9,7 +9,7 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public record WorldMatchCondition(ResourceKey<Level> world) implements Condition {
 	public static WorldMatchCondition fromJson(JsonObject json) {
-		ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(json.getAsJsonPrimitive("world").getAsString()));
+		ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(json.getAsJsonPrimitive("world").getAsString()));
 		return new WorldMatchCondition(key);
 	}
 
