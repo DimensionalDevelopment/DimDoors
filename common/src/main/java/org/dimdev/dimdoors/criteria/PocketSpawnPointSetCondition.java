@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Optional;
 
 public class PocketSpawnPointSetCondition extends SimpleCriterionTrigger<PocketSpawnPointSetCondition.TriggerInstance> {
-	public static final String ID = "dimdoors:pocket_spawn_point_set";
+	public static final String ID = "pocket_spawn_point_set";
 
 	@Override
 	public Codec<TriggerInstance> codec() {

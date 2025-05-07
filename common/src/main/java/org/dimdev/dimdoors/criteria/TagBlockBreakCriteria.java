@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Optional;
 
 public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakCriteria.TriggerInstance> {
-	public static final String ID = "dimdoors:tag_block_break";
+	public static final String ID = "tag_block_break";
 
 	public void trigger(ServerPlayer player, BlockState block) {
 		this.trigger(player, c -> block.is(c.blockTagKey()));

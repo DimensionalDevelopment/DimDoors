@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
 import dev.architectury.event.events.common.InteractionEvent;
+import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.platform.Mod;
@@ -12,7 +13,6 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -185,7 +185,7 @@ public class DimensionalDoors {
 	private static void registerListeners() {
 //		PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
 
-		ServerLifecycleEvents.SERVER_STARTED.register(DimensionalRegistry::init);
+		LifecycleEvent.SERVER_STARTED.register(DimensionalRegistry::init);
 
 		ChunkServedCallback.EVENT.register(new ChunkLoadListener()); // lazy pocket gen
 

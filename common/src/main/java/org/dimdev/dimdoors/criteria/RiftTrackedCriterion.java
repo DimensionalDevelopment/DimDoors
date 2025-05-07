@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.Optional;
 
 public class RiftTrackedCriterion extends SimpleCriterionTrigger<RiftTrackedCriterion.TriggerInstance> {
-	public static final String ID = "dimdoors:rift_tracked";
+	public static final String ID = "rift_tracked";
 
 	public void trigger(ServerPlayer player) {
 		this.trigger(player, t -> true);

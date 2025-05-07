@@ -50,61 +50,61 @@ public class TesselatingRecipeProvider {
 				.pattern("XOX").
 				pattern("OXO")
 				.pattern("XOX").define('X', ModItems.STABLE_FABRIC.get()).define('O', ModItems.INFRANGIBLE_FIBER.get()).unlockedBy("liminal_lint", TriggerInstance.hasItems(ModItems.LIMINAL_LINT.get())).save(exporter, DimensionalDoors.id("reality_sponge"));
-//		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.WORLD_THREAD_HELMET.get().asItem())
-//				.pattern("XXX").
-//				pattern("X X")
-//				.define('X', ModItems.WORLD_THREAD.get()).unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get())).save(exporter, DimensionalDoors.id("world_thread_helmet"));
-//		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.WORLD_THREAD_CHESTPLATE.get().asItem())
-//				.pattern("X X")
-//				.pattern("XXX")
-//				.pattern("XXX")
-//				.define('X', ModItems.WORLD_THREAD.get())
-//				.unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
-//				.save(exporter, DimensionalDoors.id("world_thread_chestplate"));
-//		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.WORLD_THREAD_LEGGINGS.get().asItem())
-//				.pattern("XXX").
-//				pattern("X X")
-//				.pattern("X X")
-//				.define('X', ModItems.WORLD_THREAD.get())
-//				.unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
-//				.save(exporter, DimensionalDoors.id("world_thread_leggings"));
-//		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.WORLD_THREAD_BOOTS.get().asItem())
-//				.pattern("X X")
-//				.pattern("X X")
-//				.define('X', ModItems.WORLD_THREAD.get())
-//				.unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
-//				.save(exporter, DimensionalDoors.id("world_thread_boots"));
-//
-//		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.GARMENT_OF_REALITY_HELMET.get())
-//		  		.pattern("XXX")
-//				.pattern("XOX")
-//				.define('X', ModItems.STABLE_FABRIC.get())
-//				.define('O', ModItems.INFRANGIBLE_FIBER.get())
-//				.unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
-//				.save(exporter, DimensionalDoors.id("garment_of_reality_helmet"));
-//		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.GARMENT_OF_REALITY_CHESTPLATE.get())
-//				.pattern("XOX")
-//				.pattern("XXX")
-//				.pattern("XXX")
-//				.define('X', ModItems.STABLE_FABRIC.get())
-//				.define('O', ModItems.INFRANGIBLE_FIBER.get())
-//				.unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
-//				.save(exporter, DimensionalDoors.id("garment_of_reality_chestplate"));
-//		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.GARMENT_OF_REALITY_LEGGINGS.get())
-//				.pattern("XXX")
-//				.pattern("XOX")
-//				.pattern("X X")
-//				.define('X', ModItems.STABLE_FABRIC.get())
-//				.define('O', ModItems.INFRANGIBLE_FIBER.get())
-//				.unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
-//				.save(exporter, DimensionalDoors.id("garment_of_reality_leggings"));
-//		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.GARMENT_OF_REALITY_BOOTS.get())
-//				.pattern("X X")
-//				.pattern("XOX")
-//				.define('X', ModItems.STABLE_FABRIC.get())
-//				.define('O', ModItems.INFRANGIBLE_FIBER.get())
-//				.unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
-//				.save(exporter, DimensionalDoors.id("garment_of_reality_boots"));
+		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.WORLD_THREAD_HELMET.get().asItem())
+				.pattern("XXX").
+				pattern("X X")
+				.define('X', ModItems.WORLD_THREAD.get()).unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get())).save(exporter, DimensionalDoors.id("world_thread_helmet"));
+		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.WORLD_THREAD_CHESTPLATE.get().asItem())
+				.pattern("X X")
+				.pattern("XXX")
+				.pattern("XXX")
+				.define('X', ModItems.WORLD_THREAD.get())
+				.unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
+				.save(exporter, DimensionalDoors.id("world_thread_chestplate"));
+		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.WORLD_THREAD_LEGGINGS.get().asItem())
+				.pattern("XXX").
+				pattern("X X")
+				.pattern("X X")
+				.define('X', ModItems.WORLD_THREAD.get())
+				.unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
+				.save(exporter, DimensionalDoors.id("world_thread_leggings"));
+		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.WORLD_THREAD_BOOTS.get().asItem())
+				.pattern("X X")
+				.pattern("X X")
+				.define('X', ModItems.WORLD_THREAD.get())
+				.unlockedBy("world_thread", TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
+				.save(exporter, DimensionalDoors.id("world_thread_boots"));
+
+		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.GARMENT_OF_REALITY_HELMET.get())
+		  		.pattern("XXX")
+				.pattern("XOX")
+				.define('X', ModItems.STABLE_FABRIC.get())
+				.define('O', ModItems.INFRANGIBLE_FIBER.get())
+				.unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+				.save(exporter, DimensionalDoors.id("garment_of_reality_helmet"));
+		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.GARMENT_OF_REALITY_CHESTPLATE.get())
+				.pattern("XOX")
+				.pattern("XXX")
+				.pattern("XXX")
+				.define('X', ModItems.STABLE_FABRIC.get())
+				.define('O', ModItems.INFRANGIBLE_FIBER.get())
+				.unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+				.save(exporter, DimensionalDoors.id("garment_of_reality_chestplate"));
+		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.GARMENT_OF_REALITY_LEGGINGS.get())
+				.pattern("XXX")
+				.pattern("XOX")
+				.pattern("X X")
+				.define('X', ModItems.STABLE_FABRIC.get())
+				.define('O', ModItems.INFRANGIBLE_FIBER.get())
+				.unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+				.save(exporter, DimensionalDoors.id("garment_of_reality_leggings"));
+		ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.GARMENT_OF_REALITY_BOOTS.get())
+				.pattern("X X")
+				.pattern("XOX")
+				.define('X', ModItems.STABLE_FABRIC.get())
+				.define('O', ModItems.INFRANGIBLE_FIBER.get())
+				.unlockedBy("infrangible_fiber", TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+				.save(exporter, DimensionalDoors.id("garment_of_reality_boots"));
 
 	}
 }

@@ -19,6 +19,6 @@ public class ModelBakeryMIxin {
             if(modelId.getPath().contains(DimensionalDoorBlockRegistrar.PREFIX) || modelId.getPath().contains(DimensionalDoorItemRegistrar.PREFIX)) {
                 ci.cancel();
             }
-}
+        }
     }
 }

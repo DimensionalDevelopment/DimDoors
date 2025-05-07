@@ -40,13 +40,13 @@ public class ServerPlayerGameModeMixin {
 //    }
 
     @Inject(method = "removeBlock", at = @At(value = "HEAD"), remap = false)
-    private void onBlockBrokenFront(BlockPos arg, boolean canHarvest, CallbackInfoReturnable<Boolean> cir) {
-        dimdoors$pair = new Pair<>(this.level.getBlockState(arg), this.level.getBlockEntity(arg));
+    private void onBlockBrokenFront(BlockPos pos, BlockState state, boolean canHarvest, CallbackInfoReturnable<Boolean> cir) {
+        dimdoors$pair = new Pair<>(this.level.getBlockState(pos), this.level.getBlockEntity(pos));
     }
 
 
     @Inject(at = @At(value = "TAIL"), method = "removeBlock", remap = false)
-    private void onBlockBrokenBack(BlockPos arg, boolean canHarvest, CallbackInfoReturnable<Boolean> cir) {
-        DimensionalDoors.afterBlockBreak(this.level, this.player, arg, dimdoors$pair.getFirst(), dimdoors$pair.getSecond());
+    private void onBlockBrokenBack(BlockPos pos, BlockState state, boolean canHarvest, CallbackInfoReturnable<Boolean> cir) {
+        DimensionalDoors.afterBlockBreak(this.level, this.player, pos, dimdoors$pair.getFirst(), dimdoors$pair.getSecond());
     }
 }

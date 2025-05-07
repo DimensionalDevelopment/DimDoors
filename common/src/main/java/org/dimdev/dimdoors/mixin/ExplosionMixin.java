@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.stream.Collectors;
 
 @Mixin(Explosion.class)
-public class ExplosionMixin {
+public abstract class ExplosionMixin {
 	@Mutable
 	@Shadow
 	@Final
@@ -29,16 +29,20 @@ public class ExplosionMixin {
 	@Final
 	private Level level;
 
-	@Inject(method = "finalizeExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;shuffle(Lit/unimi/dsi/fastutil/objects/ObjectArrayList;Lnet/minecraft/util/RandomSource;)V", ordinal = 0, shift = At.Shift.AFTER))
+	@Shadow public abstract boolean interactsWithBlocks();
+
+	@Inject(method = "finalizeExplosion", at = @At(value = "HEAD"))
 	private void handleExplosionConvertibleBlocks(boolean b1, CallbackInfo ci) {
-		this.toBlow = this.toBlow.stream().filter(blockPos -> {
-			BlockState state = this.level.getBlockState(blockPos);
-			Block block = state.getBlock();
-			if (!(block instanceof ExplosionConvertibleBlock)) {
-				return true;
-			}
-			InteractionResult result = ((ExplosionConvertibleBlock) block).explode(this.level, blockPos, state, state.hasBlockEntity() ? this.level.getBlockEntity(blockPos) : null);
-			return result == InteractionResult.PASS;
-		}).collect(Collectors.toCollection(ObjectArrayList::new));
+		if(interactsWithBlocks()) {
+			this.toBlow = this.toBlow.stream().filter(blockPos -> {
+				BlockState state = this.level.getBlockState(blockPos);
+				Block block = state.getBlock();
+				if (!(block instanceof ExplosionConvertibleBlock)) {
+					return true;
+				}
+				InteractionResult result = ((ExplosionConvertibleBlock) block).explode(this.level, blockPos, state, state.hasBlockEntity() ? this.level.getBlockEntity(blockPos) : null);
+				return result == InteractionResult.PASS;
+			}).collect(Collectors.toCollection(ObjectArrayList::new));
+		}
 	}
 }

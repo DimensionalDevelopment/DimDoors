@@ -191,7 +191,7 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 		if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
 			return new MessageTarget("rifts.unlinked1");
 		} else {
-			//noinspection ConstantConditions
+			//noinspecti on ConstantConditions
 			this.data.getDestination().setLocation(new Location((ServerLevel) this.level, this.worldPosition));
 			return this.data.getDestination();
 		}

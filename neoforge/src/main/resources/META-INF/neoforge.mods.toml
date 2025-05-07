@@ -19,6 +19,9 @@ config="dimdoors.mixins.json"
 [[mixins]]
 config="dimdoors-common.mixins.json"
 
+[[accessTransformers]]
+file="dimdoors.cfg"
+
 [[dependencies.dimdoors]]
 modId = "neoforge"
 type="required"

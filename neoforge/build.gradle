@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id 'com.gradleup.shadow'
 }
 
 architectury {
@@ -9,14 +9,6 @@ architectury {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
-
-    neoForge {
-//        convertAccessWideners = true
-//        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-//
-//        mixinConfig "dimdoors-common.mixins.json"
-//        mixinConfig "dimdoors.mixins.json"
-    }
 }
 
 configurations {
@@ -26,6 +18,7 @@ configurations {
     }
 
     compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
     developmentNeoForge.extendsFrom common
 
     // Files in this configuration will be bundled into your mod using the Shadow plugin.
@@ -48,7 +41,7 @@ dependencies {
     modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
     modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config}"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowBundle(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
+    shadowBundle(project(path: ":common", configuration: "transformProductionNeoForge"))
 
     include "com.flowpowered:flow-math:1.0.3"
     include "org.jgrapht:jgrapht-core:1.1.0"
@@ -67,11 +60,6 @@ dependencies {
 }
 
 processResources {
-//    inputs.property "version", project.version
-//    inputs.property "minecraft_version", minecraft_version
-//    inputs.property "architectury_version", architectury_version
-//    inputs.property "cloth_config_version", cloth_config
-
     def props = [
             "version": project.version,
             "minecraft_version": minecraft_version,
@@ -79,19 +67,32 @@ processResources {
             "cloth_config_version": cloth_config
     ]
 
-    filesMatching("META-INF/mods.toml") {
+    // Inject trace logging for all matched files
+    eachFile { details ->
+        if (details.path == "META-INF/neoforge.mods.toml") {
+            logger.lifecycle("Matched: ${details.path} — expanding")
+        }
+    }
+
+    filesMatching("META-INF/neoforge.mods.toml") {
         expand props
     }
 
-    from(rootProject.file("common/src/main/resources")) {
+    from("src/main/resources") {
+        include("**/**")
+        duplicatesStrategy = DuplicatesStrategy.WARN
+    }
+
+    from(project(":common").file("src/main/resources")) {
         include("**/**")
         duplicatesStrategy = DuplicatesStrategy.WARN
     }
 }
-
 shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury.common.json"
+    exclude("dimdoors-common-refmap.json")
+    exclude("dimdoors.accesswidener")
 
     configurations = [project.configurations.shadowBundle]
     archiveClassifier = "dev-shadow"
