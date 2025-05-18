@@ -26,7 +26,7 @@ public class ModChunkGeneratorSettings {
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),
-                        DensityFunctions.noise(context.lookup(Registries.NOISE).getOrThrow(ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft:aquifer_lava"))), 1, 1),
+                        DensityFunctions.noise(context.lookup(Registries.NOISE).getOrThrow(ResourceKey.create(Registries.NOISE, ResourceLocation.withDefaultNamespace("aquifer_lava"))), 1, 1),
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),

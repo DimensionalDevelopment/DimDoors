@@ -10,6 +10,8 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.enchantment.ModEnchants;
+import org.dimdev.dimdoors.item.ModJukeboxSongs;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModGatewayPools;
 import org.dimdev.dimdoors.world.ModProcessorLists;
@@ -90,7 +92,9 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 				.add(Registries.STRUCTURE, ModStructures::new)
 				.add(Registries.TEMPLATE_POOL, ModGatewayPools::bootstrap)
 				.add(Registries.STRUCTURE_SET, ModStructureSets::bootstrap)
-				.add(Registries.PROCESSOR_LIST, ModProcessorLists::bootstrap);
+				.add(Registries.PROCESSOR_LIST, ModProcessorLists::bootstrap)
+				.add(Registries.JUKEBOX_SONG, ModJukeboxSongs::bootstrap)
+				.add(Registries.ENCHANTMENT, ModEnchants::bootstrap);
 
 	}
 

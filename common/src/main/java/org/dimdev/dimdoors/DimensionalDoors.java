@@ -140,7 +140,6 @@ public class DimensionalDoors {
 		ModCommands.init();
 		ModParticleTypes.init();
 		ModCriteria.init();
-		ModEnchants.init();
 		ModStructureProccessors.init();
 
 //		ModRecipeBookTypes.init();

@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Supplier;
 
 public class ModRecipeBookGroupsImpl {
-    public static Supplier<RecipeBookCategories> getRecipBookCategories(String name, Supplier<ItemStack> itemStack) {
-        return () -> RecipeBookCategories.create(name, itemStack.get());
-    }
+//    public static Supplier<RecipeBookCategories> getRecipBookCategories(String name, Supplier<ItemStack> itemStack) {
+//        return () -> RecipeBookCategories.create(name, itemStack.get());
+//    }
 }

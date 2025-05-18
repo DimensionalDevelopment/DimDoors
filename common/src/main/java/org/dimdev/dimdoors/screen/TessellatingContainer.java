@@ -6,12 +6,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 
 public class TessellatingContainer extends AbstractContainerMenu /*RecipeBookMenu<Container>*/ {
-
-
 	public static final int DATA_WEAVE_TIME = 0;
 	public static final int DATA_WEAVE_TIME_TOAL = 1;
 
@@ -19,7 +15,11 @@ public class TessellatingContainer extends AbstractContainerMenu /*RecipeBookMen
 	protected Container recipeInv;
 	protected ContainerData data;
 
-	public TessellatingContainer(int id, TesselatingLoomBlockEntity inventory, Inventory playerInventory, ContainerData propertyDelegate) {
+	public TessellatingContainer(int id, Inventory playerInventory) {
+		this(id, new SimpleContainer(10), playerInventory, new SimpleContainerData(2));
+	}
+
+	public TessellatingContainer(int id, Container inventory, Inventory playerInventory, ContainerData propertyDelegate) {
 		super(ModScreenHandlerTypes.TESSELATING_LOOM.get(), id);
 		this.playerInventory = playerInventory;
 		this.recipeInv = inventory;

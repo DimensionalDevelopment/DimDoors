@@ -38,9 +38,9 @@ public class ModDensityFunctions {
         entries.register(TERRAIN, terrain);
 
 
-        var noodle_function = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft:noodle")));
-        var thick_noodle_noise = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, new ResourceLocation("minecraft:noodle_thickness")));
-        var y_function =  new DensityFunctions.HolderHolder(functions.getOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, new ResourceLocation("minecraft:y"))));
+        var noodle_function = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, ResourceLocation.withDefaultNamespace("noodle")));
+        var thick_noodle_noise = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, ResourceLocation.withDefaultNamespace("noodle_thickness")));
+        var y_function =  new DensityFunctions.HolderHolder(functions.getOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, ResourceLocation.withDefaultNamespace("y"))));
 
         var strand = DensityFunctions.add(
                 DensityFunctions.mul(DensityFunctions.interpolated(terrain), DensityFunctions.constant(0.175)),
@@ -138,6 +138,6 @@ public class ModDensityFunctions {
     }
 
     private static ResourceKey<DensityFunction> createKey(String location) {
-        return ResourceKey.create(Registries.DENSITY_FUNCTION, new ResourceLocation(location));
+        return ResourceKey.create(Registries.DENSITY_FUNCTION, ResourceLocation.parse(location));
     }
 }

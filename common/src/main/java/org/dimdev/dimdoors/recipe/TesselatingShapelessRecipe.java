@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -11,6 +12,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -52,16 +54,12 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(TesselatingContainer inv, Level level) {
-        StackedContents stackedContents = new StackedContents();
-        int i = 0;
-        for (int j = 0; j < inv.getContainerSize(); ++j) {
-            ItemStack itemStack = inv.getItem(j);
-            if (itemStack.isEmpty()) continue;
-            ++i;
-            stackedContents.accountStack(itemStack, 1);
+    public boolean matches(CraftingInput craftingInput, Level level) {
+        if (craftingInput.ingredientCount() != this.ingredients.size()) {
+            return false;
+        } else {
+            return craftingInput.size() == 1 && this.ingredients.size() == 1 ? ((Ingredient)this.ingredients.getFirst()).test(craftingInput.getItem(0)) : craftingInput.stackedContents().canCraft(this, (IntList)null);
         }
-        return i == this.ingredients.size() && stackedContents.canCraft(this, null);
     }
 
     @Override
@@ -71,7 +69,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
 
 
     @Override
-    public ItemStack assemble(TesselatingContainer container, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(CraftingInput container, HolderLookup.Provider registryAccess) {
         return this.result.copy();
     }
 

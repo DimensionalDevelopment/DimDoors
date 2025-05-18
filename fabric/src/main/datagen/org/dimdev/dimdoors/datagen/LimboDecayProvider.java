@@ -275,9 +275,9 @@ public class LimboDecayProvider implements DataProvider {
 		Function<Block, Block> waxed = block -> {
 			ResourceLocation id = getId(block);
 
-			return getBlock(new ResourceLocation(id.getNamespace(), "waxed_" + id.getPath()));
+			return getBlock(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "waxed_" + id.getPath()));
 		};
-		Function<Block, ResourceLocation> id = block -> new ResourceLocation("dimdoors:" + getId(block).getPath());
+		Function<Block, ResourceLocation> id = block -> DimensionalDoors.id(getId(block).getPath());
 
 		Block regularWaxed = waxed.apply(regular);
 		Block exposedWaxed = waxed.apply(exposed);

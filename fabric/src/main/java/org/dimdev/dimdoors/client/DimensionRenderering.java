@@ -19,7 +19,7 @@ public class DimensionRenderering {
         DimensionRenderingRegistry.registerCloudRenderer(ModDimensions.PERSONAL, noCloudRenderer);
         DimensionRenderingRegistry.registerCloudRenderer(ModDimensions.PUBLIC, noCloudRenderer);
 
-        Function<DimensionSpecialEffectsExtensions, DimensionRenderingRegistry.SkyRenderer> rendererFactory = dimensionSpecialEffectsExtensions -> context -> dimensionSpecialEffectsExtensions.renderSky(context.world(), 0, context.tickCounter(), context.positionMatrix(), context.camera(), context.projectionMatrix(), false, () -> {});
+        Function<DimensionSpecialEffectsExtensions, DimensionRenderingRegistry.SkyRenderer> rendererFactory = dimensionSpecialEffectsExtensions -> context -> dimensionSpecialEffectsExtensions.renderSky(context.world(), 0, context.tickCounter().getGameTimeDeltaPartialTick(true), context.positionMatrix(), context.camera(), context.projectionMatrix(), false, () -> {});
 
         DimensionRenderingRegistry.registerSkyRenderer(ModDimensions.LIMBO, rendererFactory.apply(LimboDimensionEffect.INSTANCE));
 

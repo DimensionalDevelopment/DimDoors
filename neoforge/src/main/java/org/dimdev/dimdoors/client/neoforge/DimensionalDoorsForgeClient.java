@@ -53,7 +53,7 @@ public class DimensionalDoorsForgeClient {
 
     @SubscribeEvent
     public static void modifyBake(ModelEvent.RegisterAdditional event) {
-        event.register(DimensionalDoorsClient.childItem);
+        event.register(new ModelResourceLocation(DimensionalDoorsClient.childItem, ModelResourceLocation.INVENTORY_VARIANT));
     }
 
     @SubscribeEvent

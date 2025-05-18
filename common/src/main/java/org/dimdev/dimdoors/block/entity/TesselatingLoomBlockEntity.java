@@ -20,20 +20,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
-import org.dimdev.dimdoors.recipe.TesselatingContainer;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer, TesselatingContainer {
+public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvider, WorldlyContainer {
 	public static final int DATA_WEAVING_TIME = 0;
 	public static final int DATA_WEAVING_TIME_TOTAL = 1;
 	public static final int NUM_DATA_VALUES = 2;
@@ -116,10 +117,6 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	@Nullable
 	@Override
 	public TessellatingContainer createMenu(int syncId, Inventory inv, Player player) {
-		return createMenu(syncId, inv);
-	}
-
-	public TessellatingContainer createMenu(int syncId, Inventory inv) {
 		return new TessellatingContainer(syncId, this, inv, dataAccess);
 	}
 
@@ -205,11 +202,6 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	@Override
-	public void fillStackedContents(StackedContents finder) {
-		for (ItemStack stack : this.inventory) finder.accountStack(stack);
-	}
-
-	@Override
 	public void clearContent() {
 		this.inventory.clear();
 	}
@@ -220,7 +212,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 		if (cachedRecipe != null) {
 			Optional<RecipeHolder<TesselatingRecipe>> mapRecipe = getRecipe(cachedRecipe.id());
-			if (mapRecipe.isPresent() && mapRecipe.get().value().matches(this, level)) {
+			if (mapRecipe.isPresent() && mapRecipe.get().value().matches(this.asCraftInput(), level)) {
 				return Optional.of(cachedRecipe);
 			}
 		}
@@ -228,11 +220,11 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	public Optional<RecipeHolder<TesselatingRecipe>> getRecipe(ResourceLocation location) {
-		return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING.get(), this, level, location);
+		return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING.get(), this.asCraftInput(), level, location);
 	}
 
 	public Optional<RecipeHolder<TesselatingRecipe>> getRecipe() {
-		return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING.get(), this, level);
+		return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING.get(), this.asCraftInput(), level);
 	}
 
 	private int getWeavingTotalTime() {
@@ -263,7 +255,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 
 	private void tryWeave() {
-		var output = cachedRecipe.value().assemble(this, level.registryAccess());
+		var output = cachedRecipe.value().assemble(this.asCraftInput(), level.registryAccess());
 
 		if(canAcceptOutput(output)) {
 			weaveTime++;
@@ -280,6 +272,10 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		} else {
 			tryDecrementCookTime();
 		}
+	}
+
+	private CraftingInput asCraftInput() {
+		return CraftingInput.of(3, 3, inventory); //TODO: Investigate if cache can work.
 	}
 
 	private void insertOutput(ItemStack output) {
@@ -363,23 +359,9 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 	}
 
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+	public @NotNull CompoundTag getUpdateTag
+			(HolderLookup.Provider provider) {
 		return this.saveWithFullMetadata(provider);
-	}
-
-	@Override
-	public int getWidth() {
-		return 3;
-	}
-
-	@Override
-	public int getHeight() {
-		return 3;
-	}
-
-	@Override
-	public List<ItemStack> getItems() {
-		return inventory;
 	}
 
 	//	public void awardUsedRecipesAndPopExperience(ServerPlayer player) {

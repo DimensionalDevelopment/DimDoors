@@ -66,17 +66,17 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
 				.parent(root)
 				.save(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
 		AdvancementHolder darkOstiology = Advancement.Builder.advancement()
-				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door")), "dark_ostiology"))
-				.addCriterion("place_door", EnterBlockTrigger.TriggerInstance.entersBlock(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_oak_door"))))
+				.display(makeDisplay(BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_oak_door")), "dark_ostiology"))
+				.addCriterion("place_door", EnterBlockTrigger.TriggerInstance.entersBlock(BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_oak_door"))))
 				.parent(holeInTheSky)
 				.save(advancementConsumer, "dimdoors:dimdoors/dark_ostiology");
 		Advancement.Builder.advancement()
-				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_iron_door")), "public_pocket"))
+				.display(makeDisplay(BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_iron_door")), "public_pocket"))
 				.parent(darkOstiology)
 				.addCriterion("public_pocket", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(ModDimensions.PUBLIC))
 				.save(advancementConsumer, "dimdoors:dimdoors/public_pocket");
 		Advancement.Builder.advancement()
-				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_minecraft_iron_door")), "home_away_from_home"))
+				.display(makeDisplay(BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_iron_door")), "home_away_from_home"))
 				.parent(darkOstiology)
 				.addCriterion("private_pocket", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(ModDimensions.PERSONAL))
 				.save(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
@@ -86,7 +86,7 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
 				.parent(darkOstiology)
 				.save(advancementConsumer, "dimdoors:dimdoors/out_of_time");
 		AdvancementHolder doorToAdventure = Advancement.Builder.advancement()
-				.display(makeDisplay(BuiltInRegistries.BLOCK.get(new ResourceLocation("dimdoors:block_ag_dim_dimdoors_gold_door")), "door_to_adventure"))
+				.display(makeDisplay(BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_gold_door")), "door_to_adventure"))
 				.parent(holeInTheSky)
 				.addCriterion("enter_dungeon", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo((ModDimensions.DUNGEON)))
 				.save(advancementConsumer, "dimdoors:dimdoors/door_to_adventure");

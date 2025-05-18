@@ -8,9 +8,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,12 +61,12 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
      * Used to check if a recipe matches current crafting inventory
      */
     @Override
-    public boolean matches(TesselatingContainer inv, Level level) {
+    public boolean matches(CraftingInput inv, Level level) {
         return this.pattern.matches(inv);
     }
 
     @Override
-    public ItemStack assemble(TesselatingContainer container, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput container, HolderLookup.Provider provider) {
         return this.getResultItem(provider).copy();
     }
 
@@ -88,6 +86,11 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
 
     public int weavingTime() {
         return weavingTime;
+    }
+
+    @Override
+    public @NotNull RecipeType<TesselatingRecipe> getType() {
+        return TesselatingRecipe.super.getType();
     }
 
     public static class Serializer implements RecipeSerializer<ShapedTesselatingRecipe> {

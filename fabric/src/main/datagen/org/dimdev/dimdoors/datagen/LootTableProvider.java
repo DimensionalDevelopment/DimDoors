@@ -4,6 +4,7 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -35,7 +36,7 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 
 			this.add(ModBlocks.SOLID_STATIC.get(), (blockx) -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER.get()));
 
-			this.add(ModBlocks.UNRAVELLED_FABRIC.get(), (blockx) -> BlockLootSubProvider.createSilkTouchDispatchTable(blockx, applyExplosionCondition(blockx, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get()).when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.FORTUNE, 0.1F, 0.14285715F, 0.25F, 1.0F)).otherwise(LootItem.lootTableItem(blockx)))));
+			this.add(ModBlocks.UNRAVELLED_FABRIC.get(), (blockx) -> createSilkTouchDispatchTable(blockx, applyExplosionCondition(blockx, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get()).when(BonusLevelTableCondition.bonusLevelFlatChance(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE), 0.1F, 0.14285715F, 0.25F, 1.0F)).otherwise(LootItem.lootTableItem(blockx)))));
 
 			this.dropSelf(ModBlocks.TESSELATING_LOOM.get());
 
