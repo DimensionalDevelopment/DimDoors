@@ -10,12 +10,10 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.List;
 
-import static org.dimdev.dimdoors.pockets.virtual.VirtualPocket.CODEC;
-
 public class VirtualPocketList extends AbstractVirtualPocketList {
 
 	public static final MapCodec<VirtualPocketList> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-		Codec.lazyInitialized(() -> VirtualPocket.CODEC).listOf().fieldOf("list").forGetter(a -> a)
+		Codec.lazyInitialized(() -> VirtualPocket.CODEC_BASE).listOf().fieldOf("list").forGetter(a -> a)
 	).apply(instance, VirtualPocketList::new));
 
 	public static final String ID = "list";

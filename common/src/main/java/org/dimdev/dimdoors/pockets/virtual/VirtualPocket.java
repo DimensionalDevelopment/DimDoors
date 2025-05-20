@@ -25,7 +25,8 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 	Registrar<VirtualPocket.VirtualPocketType<? extends VirtualPocket>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<VirtualPocket.VirtualPocketType<? extends VirtualPocket>>builder(DimensionalDoors.id("virtual_pocket_type")).build();
 	Codec<VirtualPocket.VirtualPocketType<? extends VirtualPocket>> TYPE_CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 	Codec<VirtualPocket> CODEC_BASE = TYPE_CODEC.dispatch(VirtualPocket::getType, VirtualPocket.VirtualPocketType::mapCodec);
-	Codec<VirtualPocket> CODEC = CodecUtils.codecWithReference(CODEC_BASE, "pockets/virtual/");
+	Codec<VirtualPocket> CODEC_VIRTUAL = CodecUtils.codecWithMapFallback(CODEC_BASE, a -> PocketLoader.getInstance().getVirtual(a));
+	Codec<VirtualPocket> CODEC_GROUP = CodecUtils.codecWithMapFallback(CODEC_BASE, a -> PocketLoader.getInstance().getGroup(a));
 
 	Pocket prepareAndPlacePocket(PocketGenerationContext parameters);
 

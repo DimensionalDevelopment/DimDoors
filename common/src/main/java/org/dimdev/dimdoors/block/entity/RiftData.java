@@ -2,7 +2,13 @@ package org.dimdev.dimdoors.block.entity;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrarManager;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryCodecs;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
@@ -13,7 +19,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class RiftData {
-
 	private VirtualTarget destination; // How the rift acts as a source
 	private LinkProperties properties;
 	private boolean alwaysDelete;
@@ -74,13 +79,15 @@ public class RiftData {
 		this.color = color;
 	}
 
-	public static final Codec<RiftData> CODEC = CodecUtils.codecWithReference(RecordCodecBuilder.create(instance -> instance.group(
+	public static final Codec<RiftData> CODEC_BASE = RecordCodecBuilder.create(instance -> instance.group(
 			VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
 			LinkProperties.CODEC.optionalFieldOf("properties", LinkProperties.NONE).forGetter(RiftData::getProperties),
 			RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor),
 			Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
 			Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor)
-	).apply(instance, RiftData::new)), "pockets/rift_data/");
+	).apply(instance, RiftData::new));
+
+	public static final Codec<RiftData> CODEC = CodecUtils.codecWithMapFallback(CODEC_BASE, a -> PocketLoader.getInstance().getRiftData(a));
 
 	public static CompoundTag toNbt(RiftData data) {
 		CompoundTag nbt = new CompoundTag();

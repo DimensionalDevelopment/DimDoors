@@ -77,7 +77,7 @@ public class ConditionalSelector implements VirtualPocket {
 	public record ConditionPocket(Equation condition, VirtualPocket pocket) {
 		public static final Codec<ConditionPocket> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Equation.CODEC.fieldOf("condition").forGetter(a -> a.condition),
-				VirtualPocket.CODEC.fieldOf("pocket").forGetter(a -> a.pocket)
+				VirtualPocket.CODEC_BASE.fieldOf("pocket").forGetter(a -> a.pocket)
 		).apply(instance, ConditionPocket::new));
 	}
 }

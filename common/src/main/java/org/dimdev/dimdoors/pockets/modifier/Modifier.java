@@ -1,7 +1,9 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+import com.alcatrazescapee.cyanide.codec.Codecs;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.*;
+import dev.architectury.platform.Mod;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -12,12 +14,40 @@ import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public interface Modifier {
 	Registrar<ModifierType<? extends Modifier>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ModifierType<? extends Modifier>>builder(DimensionalDoors.id("modifier_type")).build();
 
-	Codec<Modifier> CODEC = CodecUtils.codecWithReference(ResourceLocation.CODEC.<ModifierType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(Modifier::getType, ModifierType::mapCodec), "pockets/modifier/");
+	Codec<Modifier> CODEC_BASE = ResourceLocation.CODEC.<ModifierType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(Modifier::getType, ModifierType::mapCodec);
+	Codec<Modifier> CODEC = CodecUtils.codecWithMapFallback(CODEC_BASE, a -> PocketLoader.getInstance().getModifier(a));
+	Codec<List<Modifier>> LIST_CODEC = Codec.PASSTHROUGH.<List<Modifier>>flatXmap(new Function<Dynamic<?>, DataResult<List<Modifier>>>() {
+		@Override
+		public DataResult<List<Modifier>> apply(Dynamic<?> dynamic) {
+			DataResult<List<Modifier>> list = dynamic.asStreamOpt().map(stream -> {
+				return stream.map(CODEC::parse).filter(a -> {
+					return a.isSuccess();
+				}).map(a -> {
+					return a.result();
+				}).filter(a -> {
+					return a.isPresent();
+				}).map(a -> {
+					return a.get();
+				}).collect(Collectors.toCollection(ArrayList::new));
+			});
+
+			return list;
+		}
+	}, new Function<List<Modifier>, DataResult<Dynamic<?>>>() {
+		@Override
+		public DataResult<Dynamic<?>> apply(List<Modifier> modifierList) {
+			return DataResult.error(() -> "No encoding!");
+		}
+	});
 
 	ModifierType<? extends Modifier> getType();
 

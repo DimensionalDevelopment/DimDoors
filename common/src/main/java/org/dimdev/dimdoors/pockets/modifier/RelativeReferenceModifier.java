@@ -19,7 +19,7 @@ public class RelativeReferenceModifier implements Modifier {
 	public static final MapCodec<RelativeReferenceModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			Codec.INT.fieldOf("point_a").forGetter(a -> a.point_a),
 			Codec.INT.fieldOf("point_b").forGetter(a -> a.point_b),
-			StringRepresentable.fromValues(ConnectionType::values).fieldOf("connection").forGetter(a -> a.connection)
+			StringRepresentable.fromValues(ConnectionType::values).optionalFieldOf("connection", ConnectionType.BOTH).forGetter(a -> a.connection)
 	).apply(instance, RelativeReferenceModifier::new));
 
 	public static final String KEY = "relative";

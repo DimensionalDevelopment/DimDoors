@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class PocketDirectory {
@@ -39,7 +38,7 @@ public class PocketDirectory {
 	int privatePocketSize;
 	int publicPocketSize;
 	Map<Integer, AbstractPocket> pockets;
-	private SortedMap<Integer, Integer> nextIDMap;
+	private final SortedMap<Integer, Integer> nextIDMap;
 	ResourceKey<Level> worldKey;
 
 	public PocketDirectory(ResourceKey<Level> worldKey) {
@@ -243,51 +242,6 @@ public class PocketDirectory {
 		return this.pockets;
 	}
 
-	public static enum PocketRegistryProxyCodec implements RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> {
-		INSTANCE;
-
-		public static Map<ResourceKey<Level>, PocketDirectory> currentMap;
-
-		@Override
-		public DynamicOps<Map<ResourceKey<Level>, PocketDirectory>> ops() {
-			return null;
-		}
-
-		@Override
-		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> add(Map<ResourceKey<Level>, PocketDirectory> pocketDirectoryMap, Map<ResourceKey<Level>, PocketDirectory> t1) {
-			return null;
-		}
-
-		@Override
-		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> add(Map<ResourceKey<Level>, PocketDirectory> pocketDirectoryMap, DataResult<Map<ResourceKey<Level>, PocketDirectory>> dataResult) {
-			return null;
-		}
-
-		@Override
-		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> add(DataResult<Map<ResourceKey<Level>, PocketDirectory>> dataResult, DataResult<Map<ResourceKey<Level>, PocketDirectory>> dataResult1) {
-			return null;
-		}
-
-		@Override
-		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> withErrorsFrom(DataResult<?> dataResult) {
-			return null;
-		}
-
-		@Override
-		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> setLifecycle(Lifecycle lifecycle) {
-			return null;
-		}
-
-		@Override
-		public RecordBuilder<Map<ResourceKey<Level>, PocketDirectory>> mapError(UnaryOperator<String> unaryOperator) {
-			return null;
-		}
-
-		@Override
-		public DataResult<Map<ResourceKey<Level>, PocketDirectory>> build(Map<ResourceKey<Level>, PocketDirectory> pocketDirectoryMap) {
-			return null;
-		}
-	}
 }
 
 

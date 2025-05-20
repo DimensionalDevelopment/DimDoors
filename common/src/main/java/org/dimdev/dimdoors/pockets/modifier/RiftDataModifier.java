@@ -1,7 +1,10 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
@@ -22,7 +25,7 @@ import java.util.stream.IntStream;
 public class RiftDataModifier implements Modifier {
 	public static final MapCodec<RiftDataModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
 			RiftData.CODEC.fieldOf("rift_data").forGetter(a -> a.doorData),
-			Codec.INT_STREAM.fieldOf("ids").xmap(intStream -> intStream.boxed().toList(), integers -> integers.stream().mapToInt(a -> a)).fieldOf("rift_data").forGetter(a -> a.ids)
+			Codec.INT_STREAM.fieldOf("ids").xmap(intStream -> intStream.boxed().toList(), integers -> integers.stream().mapToInt(a -> a)).forGetter(a -> a.ids)
 	).apply(instance, RiftDataModifier::new));
 
 	public static final String KEY = "rift_data";

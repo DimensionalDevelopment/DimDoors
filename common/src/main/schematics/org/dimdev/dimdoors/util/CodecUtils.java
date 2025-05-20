@@ -1,15 +1,14 @@
 package org.dimdev.dimdoors.util;
 
 import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.JsonOps;
+import com.mojang.serialization.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
+import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,29 +51,95 @@ public class CodecUtils {
 //
 //        return Codec.withAlternative(base, reference);
 
-        return Codec.PASSTHROUGH.flatXmap(new Function<Dynamic<?>, DataResult<? extends T>>() {
-            @Override
-            public DataResult<? extends T> apply(Dynamic<?> dynamic) {
-                var optional = dynamic.asString().flatMap(ResourceLocation::read).map(a -> a.withSuffix(".json").withPrefix(path)).flatMap(resourceLocation -> {
-                    return ResourceUtil.loadResource(manager, resourceLocation, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json)));
-                });
+//        return Codec.PASSTHROUGH.flatXmap(new Function<Dynamic<?>, DataResult<? extends T>>() {
+//            @Override
+//            public DataResult<? extends T> apply(Dynamic<?> dynamic) {
+//                var optional = dynamic.asString().flatMap(ResourceLocation::read).map(a -> a.withSuffix(".json").withPrefix(path)).flatMap(resourceLocation -> {
+//                    return ResourceUtil.loadResource(manager, resourceLocation, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json)));
+//                });
+//
+//                if (optional.isSuccess()) {
+//                    return optional;
+//                }
+//
+//                try {
+//                    return base.parse(dynamic);
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }, new Function<T, DataResult<? extends Dynamic<?>>>() {
+//            @Override
+//            public DataResult<? extends Dynamic<?>> apply(T t) {
+//                return base.encodeStart(JsonOps.INSTANCE, t).map(a -> new Dynamic<>(JsonOps.INSTANCE, a));
+//            }
+//        });
 
-                if (optional.isSuccess()) {
-                    return optional;
-                }
+        return Codec.PASSTHROUGH.flatXmap(
+                dynamic -> {
+                    var stringResult = dynamic.asString().result();
+                    if (stringResult.isPresent()) {
+                        var locationResult = ResourceLocation.read(stringResult.get()).resultOrPartial(a -> System.out.println("Error location not found: " + a));
+                        if (locationResult.isPresent()) {
+                            var resourceLocation = locationResult.get().withSuffix(".json").withPrefix(path);
+                            var loaded = ResourceUtil.loadResource(manager, resourceLocation, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json).ifError(a -> System.out.println("Error with " + resourceLocation + ": " + a.message()))));
+                            if (loaded != null && loaded.isSuccess()) return loaded;
+                        }
+                    }
 
-                try {
-                    return base.parse(dynamic);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }, new Function<T, DataResult<? extends Dynamic<?>>>() {
-            @Override
-            public DataResult<? extends Dynamic<?>> apply(T t) {
-                return base.encodeStart(JsonOps.INSTANCE, t).map(a -> new Dynamic<>(JsonOps.INSTANCE, a));
-            }
-        });
+                    try {
+                        return base.parse(dynamic);
+                    } catch (Exception e) {
+                        return DataResult.error(() -> "Fallback parse failure: " + e.getMessage());
+                    }
+                },
+                t -> base.encodeStart(JsonOps.INSTANCE, t).map(json -> new Dynamic<>(JsonOps.INSTANCE, json))
+        );
     }
 
+    public static <T> Codec.ResultFunction<T> debugResultFunction(Function<T, String> onSuccess, Function<String, String> onError) {
+        return new Codec.ResultFunction<>() {
+            @Override
+            public <D> DataResult<Pair<T, D>> apply(DynamicOps<D> ops, D input, DataResult<Pair<T, D>> result) {
+                result.result().ifPresent(pair -> {
+                    System.err.println(onSuccess.apply(pair.getFirst()));
+                });
+                result.error().ifPresent(error -> {
+                    System.err.println(onError.apply(error.message()));
+                });
+                return result;
+            }
+
+            @Override
+            public <D> DataResult<D> coApply(DynamicOps<D> ops, T input, DataResult<D> result) {
+                return result;
+            }
+        };
+    }
+
+    public static final Codec<Path<String>> RESOURECE_LOCATION_PATH_CODEC = ResourceLocation.CODEC.flatXmap(a -> DataResult.success(Path.stringPath(a)), a -> DataResult.error(() -> " can not encode path."));
+
+    public static <T> Codec<T> codecWithMapFallback(Codec<T> base, Function<Path<String>, T> function) {
+        return Codec.withAlternative(base, RESOURECE_LOCATION_PATH_CODEC, function);
+
+/*
+        return Codec.PASSTHROUGH.flatXmap(new Function<Dynamic<?>, DataResult<T>>() {
+            @Override
+            public DataResult<T> apply(Dynamic<?> dynamic) {
+                var stringResult = codecPath.parse(dynamic);
+
+                if(stringResult.isSuccess()) {
+                    return stringResult;
+                } else {
+
+                    return base.parse(dynamic);
+                }
+            }
+        }, new Function<T, DataResult<Dynamic<?>>>() {
+            @Override
+            public DataResult<Dynamic<?>> apply(T t) {
+                return DataResult.error(() -> "");
+            }
+        });*/
+    }
 }

@@ -10,7 +10,7 @@
             "predicates": {
               "minecraft:enchantments": [
                 {
-                  "enchantment": "minecraft:silk_touch",
+                  "enchantments": "minecraft:silk_touch",
                   "levels": {
                     "min": 1
                   }
@@ -23,7 +23,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dimdoors:lime_fabric"
+          "name": "dimdoors:purple_fabric"
         }
       ],
       "rolls": 1.0

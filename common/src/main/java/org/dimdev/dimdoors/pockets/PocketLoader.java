@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.pockets;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -42,7 +43,7 @@ public class PocketLoader implements ResourceManagerReloadListener {
 
 	private BiFunction<InputStream, Path<String>, RiftData> RIFT_DATA_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(RiftData.CODEC));
 	private BiFunction<InputStream, Path<String>, Modifier> MODIFIER_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC));
-	private BiFunction<InputStream, Path<String>, VirtualPocket> VIRTUAL_POCKET_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC));
+	private BiFunction<InputStream, Path<String>, VirtualPocket> VIRTUAL_POCKET_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC_BASE));
 	private BiFunction<InputStream, Path<String>, PocketGenerator> POCKET_GENERATOR_PROCESSOR = ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(PocketGenerator.CODEC));
 
 	public void dump() {
@@ -60,16 +61,16 @@ public class PocketLoader implements ResourceManagerReloadListener {
 
 		CodecUtils.manager = manager;
 
-		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/rift_data", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(RiftData.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		modifiers = ResourceUtil.loadResourcePathToMap(manager, "pockets/modifier", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		pocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		pocketGenerators = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(PocketGenerator.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
-		virtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		dataTree = ResourceUtil.loadResourcePathToMap(manager, "pockets/rift_data", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(RiftData.CODEC_BASE)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		modifiers = ResourceUtil.loadResourcePathToMap(manager, "pockets/modifier", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(Modifier.CODEC_BASE)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		pocketGenerators = ResourceUtil.loadResourcePathToMap(manager, "pockets/generators", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(PocketGenerator.CODEC_BASE)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		pocketGroups = ResourceUtil.loadResourcePathToMap(manager, "pockets/groups", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC_BASE)), ResourceUtil.PATH_KEY_PROVIDER).join();
+		virtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.JSON_READER.andThenReader(jsonCodecLoader(VirtualPocket.CODEC_BASE)), ResourceUtil.PATH_KEY_PROVIDER).join();
 		templates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(this::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER).join();
-
 
 		virtualPockets.values().forEach(VirtualPocket::init);
 		pocketGroups.values().forEach(VirtualPocket::init);
+		System.out.println();
 	}
 
 //    public void load() {
@@ -163,24 +164,12 @@ public class PocketLoader implements ResourceManagerReloadListener {
 		return pocketGenerators.get(path);
 	}
 
-
 	public PocketGenerator getGenerator(ResourceLocation id) {
 		return pocketGenerators.get(Path.stringPath(id));
-	}
-
-	public PocketGenerator getGenerator(String id) {
-		return pocketGenerators.get(Path.stringPath(id));
-	}
-
-	public Modifier getModifier(String id) {
-		return getModifier(Path.stringPath(id));
 	}
 
 	public Modifier getModifier(Path<String> path) {
 		return modifiers.get(path);
 	}
 
-//	public void setModifiers(SimpleTree<String, Supplier<Modifier>> modifiers) {
-//		this.modifiers = modifiers;
-//	}
 }

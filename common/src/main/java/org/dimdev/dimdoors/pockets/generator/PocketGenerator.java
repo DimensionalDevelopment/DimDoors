@@ -1,7 +1,10 @@
 package org.dimdev.dimdoors.pockets.generator;
 
 import com.mojang.datafixers.Products;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.registries.Registrar;
@@ -34,13 +37,15 @@ import org.dimdev.dimdoors.world.pocket.type.PocketImpl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final Registrar<PocketGeneratorType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
 
-	public static final Codec<PocketGenerator> CODEC = CodecUtils.codecWithReference(ResourceLocation.CODEC.<PocketGeneratorType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec), "pockets/generators/");
+	public static final Codec<PocketGenerator> CODEC_BASE = ResourceLocation.CODEC.<PocketGeneratorType<?>>xmap(REGISTRY::get, REGISTRY::getId).dispatch(PocketGenerator::getType, PocketGeneratorType::mapCodec);
+	public static final Codec<PocketGenerator> CODEC = CodecUtils.codecWithMapFallback(CODEC_BASE, a -> PocketLoader.getInstance().getGenerator(a));
 
 	private static final String defaultWeightEquation = "5"; // TODO: make config
 	private static final int fallbackWeight = 5; // TODO: make config
@@ -63,7 +68,12 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 				CompoundTag.CODEC.optionalFieldOf("builder", new CompoundTag()).forGetter(a -> a.builder),
 				Equation.CODEC.fieldOf("weight").orElseGet(() -> Equation.parseOrCrash(defaultWeightEquation)).forGetter(a -> a.weight),
 				Codec.BOOL.optionalFieldOf("setup_loot", false).forGetter(a -> a.setupLoot),
-				Modifier.CODEC.listOf().xmap(a -> (List<Modifier>) new ArrayList<>(a), a -> a).optionalFieldOf("modifiers", new ArrayList<>()).forGetter(a -> a.modifierList),
+				Modifier.CODEC.listOf().xmap((Function<List<Modifier>, List<Modifier>>) ArrayList::new, new Function<List<Modifier>, List<Modifier>>() {
+					@Override
+					public List<Modifier> apply(List<Modifier> list) {
+						return list;
+					}
+				}).optionalFieldOf("modifiers", new ArrayList<>()).forGetter(a -> a.modifierList),
 				Codec.STRING.listOf().optionalFieldOf("tags", new ArrayList<>()).forGetter(a -> a.tags)
 		);
 

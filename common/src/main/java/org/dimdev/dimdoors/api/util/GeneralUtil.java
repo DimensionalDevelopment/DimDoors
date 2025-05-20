@@ -15,7 +15,6 @@ import org.dimdev.dimdoors.block.entity.RiftData;
 import java.util.function.Function;
 
 public class GeneralUtil {
-    public static final Codec<RiftData> RIFT_DATA_CODEC = RiftData.CODEC;
     public static final Codec<Direction> HORIZONTAL_DIRECTION_CODEC = Direction.CODEC.validate(GeneralUtil::checkIfVertical);
     public static final Codec<DimensionalDoorBlock> DIMENSIONAL_DOOR_BLOCK_CODEC = BuiltInRegistries.BLOCK.byNameCodec().validate(GeneralUtil::verifyIfDimensionalDoo).xmap(DimensionalDoorBlock.class::cast, Function.identity());
     public static final StreamCodec<RegistryFriendlyByteBuf, ResourceLocation> RESOURCE_LOCATION_STREAM_CODEC = StreamCodec.ofMember((value, buf) -> buf.writeResourceLocation(value), FriendlyByteBuf::readResourceLocation);

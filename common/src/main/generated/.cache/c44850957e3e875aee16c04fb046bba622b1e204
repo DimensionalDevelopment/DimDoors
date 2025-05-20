@@ -1,4 +1,5 @@
-// 1.20.6	2025-04-09T18:50:37.3954931	DimensionalDoors/DimDoors Worldgen
+// 1.21.1	2025-05-18T08:11:13.7710468	DimensionalDoors/DimDoors Worldgen
+b805d2d1b2b9c75f5eee2d31f3d7b44664ec3c33 data\dimdoors\enchantment\string_theory.json
 20b4f6119127e7339a9d6a140ceff6d098157b37 data\dimdoors\worldgen\structure\enclosed_red_sandstone_gateway.json
 c2a8717f15c055af0414946cd217c2a06a530bb7 data\dimdoors\dimension_type\limbo.json
 6ac1cdf41d0719ac460295c049a02ec133e9f30b data\dimdoors\worldgen\noise\limbo\x_shift.json
@@ -17,6 +18,7 @@ f723fd123a85cf701d46f7091c34d26c1e640ee0 data\dimdoors\worldgen\placed_feature\s
 7cc83ffd0caec7705d52736dc9d60b2b82a6b39a data\dimdoors\worldgen\noise\limbo\strand_a.json
 2b7be9e22d26b06078f0a6329073debe577c2e71 data\dimdoors\worldgen\configured_feature\decayed_block_ore.json
 61ed0c05b62e0df2f32d9b4d1150b72b8a782c6d data\dimdoors\worldgen\noise\limbo\terrain.json
+13dac29b5546cfa8fdf1f0fdd9b35cca8b454999 data\dimdoors\jukebox_song\creepy.json
 f6af981f4d424d67234d5bbcd6f8f4fd1e4b9704 data\dimdoors\worldgen\template_pool\enclosed_sandstone_gateway.json
 6ac1cdf41d0719ac460295c049a02ec133e9f30b data\dimdoors\worldgen\noise\limbo\z_shift.json
 323cbc2ad51db6e8fafc88e0764fd70616882d53 data\dimdoors\worldgen\structure\enclosed_quartz_gateway.json
@@ -25,12 +27,13 @@ f6af981f4d424d67234d5bbcd6f8f4fd1e4b9704 data\dimdoors\worldgen\template_pool\en
 68cc4778185581ac074e5f8df9e0e27d03ff9f31 data\dimdoors\worldgen\placed_feature\decayed_block_ore.json
 ac47053f951a6d69d6be1c45f9c374de97fe8ea3 data\dimdoors\worldgen\structure\enclosed_prismarine_gateway.json
 c319423fe619e6a774958e904a7c99a232cd4b05 data\dimdoors\worldgen\noise\limbo\y_shift.json
-cf61fc186e0e380674be20e39a8b646611aec78b data\dimdoors\worldgen\biome\dangerous_black_void.json
 cf61fc186e0e380674be20e39a8b646611aec78b data\dimdoors\worldgen\biome\black_void.json
+cf61fc186e0e380674be20e39a8b646611aec78b data\dimdoors\worldgen\biome\dangerous_black_void.json
 e74d671228d637ce6277b4a3d730b9e48fe1f270 data\dimdoors\worldgen\structure\enclosed_endstone_gateway.json
 800b58380552fe5b921bbadb65dfbfff666b5c3a data\dimdoors\worldgen\template_pool\enclosed_quartz_gateway.json
 541b36bddb28e297ad03cb6947a2a89e84bc7b75 data\dimdoors\worldgen\placed_feature\eternal_fluid_spring.json
 0ab2611343b4e77fb0bb18e014ff19a94f104de0 data\dimdoors\worldgen\template_pool\enclosed_endstone_gateway.json
 e499d743604d369c23b3f89728ce5d60f676d5ea data\dimdoors\worldgen\structure\enclosed_gateway.json
-aa300cba216e2805f6a17e7475decf19bfb99c93 data\dimdoors\worldgen\processor_list\dungeon.json
 36213537ff677ab7a5bef0c9529de09803659e6e data\dimdoors\worldgen\biome\white_void.json
+aa300cba216e2805f6a17e7475decf19bfb99c93 data\dimdoors\worldgen\processor_list\dungeon.json
+318be4d79408825c0a3d957d3d83cf2d2bd8898e data\dimdoors\jukebox_song\white_void.json

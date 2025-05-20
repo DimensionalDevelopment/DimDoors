@@ -63,6 +63,8 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 				entries.addAll(registries.lookupOrThrow(Registries.TEMPLATE_POOL));
 				entries.addAll(registries.lookupOrThrow(Registries.STRUCTURE_SET));
 				entries.addAll(registries.lookupOrThrow(Registries.PROCESSOR_LIST));
+				entries.addAll(registries.lookupOrThrow(Registries.JUKEBOX_SONG));
+				entries.addAll(registries.lookupOrThrow(Registries.ENCHANTMENT));
 			}
 		});
 	}
