@@ -56,10 +56,7 @@ public class DimensionalRegistry extends SavedData {
 	}
 
 	public static void init(MinecraftServer server) {
-//		server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<ProxyData>(() -> instance, (compoundTag, provider) -> {
-//            INSTANCE.withDecoder(CODEC_BASE).apply(compoundTag);
-//            return instance;
-//        }, DataFixTypes.LEVEL /*TODO: FIgure out if correct for a singlemon data*/), "dimensional_registry");
+		server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<DimensionalRegistry>(DimensionalRegistry::new, (compoundTag, provider) -> INSTANCE.withDecoder(  ,CODEC_BASE).andThen(a -> a.map(Pair::getFirst)).andThen(a -> a.result()).apply(compoundTag).orElseThrow(), DataFixTypes.LEVEL /*TODO: FIgure out if correct for a singlemon data*/), "dimensional_registry");
 	}
 
 	public static final Codec<DimensionalRegistry> CODEC_BASE = RecordCodecBuilder.create(instance -> instance.group(
