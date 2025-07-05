@@ -1,17 +1,16 @@
 package org.dimdev.dimdoors.world.pocket;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.*;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
-import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -25,61 +24,48 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class PocketDirectory {
-	public static final Codec<PocketDirectory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-					ResourceKey.codec(Registries.DIMENSION).fieldOf("world_key").forGetter(directory -> directory.worldKey),
-					Codec.INT.fieldOf("grid_size").forGetter(directory -> directory.gridSize),
-					Codec.INT.fieldOf("private_pocket_size").forGetter(directory -> directory.privatePocketSize),
-					Codec.INT.fieldOf("public_pocket_size").forGetter(directory -> directory.publicPocketSize),
-					CodecUtils.<Integer, Integer, SortedMap<Integer, Integer>>listMap(Codec.INT, Codec.INT, TreeMap::new).fieldOf("next_id_map").forGetter(directory -> directory.nextIDMap),
-					CodecUtils.<Integer, AbstractPocket, Map<Integer, AbstractPocket>>listMap(Codec.INT, AbstractPocket.CODEC, HashMap::new).fieldOf("pockets").forGetter(a -> a.pockets))
-			.apply(instance, PocketDirectory::new));
-
 	int gridSize; // Determines how much pockets in their dimension are spaced
 	int privatePocketSize;
 	int publicPocketSize;
-	Map<Integer, AbstractPocket> pockets;
-	private final SortedMap<Integer, Integer> nextIDMap;
+	Map<Integer, AbstractPocket<?>> pockets;
+	private SortedMap<Integer, Integer> nextIDMap;
 	ResourceKey<Level> worldKey;
 
 	public PocketDirectory(ResourceKey<Level> worldKey) {
-		this(worldKey, DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize, 0, 0, new TreeMap<>(), new HashMap<>());
+		this.gridSize = DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize;
+		this.worldKey = worldKey;
+		this.nextIDMap = new TreeMap<>();
+		this.pockets = new HashMap<>();
 	}
 
 	@TestOnly
 	public PocketDirectory(ResourceKey<Level> worldKey, int gridSize) {
-		this(worldKey, gridSize, 0, 0, new TreeMap<>(), new HashMap<>());
+		this.gridSize = gridSize;
+		this.worldKey = worldKey;
+		this.nextIDMap = new TreeMap<>();
+		this.pockets = new HashMap<>();
 	}
 
-	public PocketDirectory(ResourceKey<Level> worldKey, Integer gridSize, Integer privatePocketSize, Integer publicPocketSize, SortedMap<Integer, Integer> nextIDMap, Map<Integer, AbstractPocket> pockets) {
-        this.worldKey = worldKey;
-        this.gridSize = gridSize;
-        this.privatePocketSize = privatePocketSize;
-        this.publicPocketSize = publicPocketSize;
-        this.nextIDMap = nextIDMap;
-        this.pockets = pockets;
-    }
-
-
-	public static PocketDirectory readFromNbt(ResourceKey<Level> id, CompoundTag nbt) {
-		PocketDirectory directory = new PocketDirectory(id);
+	public static PocketDirectory readFromNbt(String id, CompoundTag nbt, HolderLookup.Provider provider) {
+		PocketDirectory directory = new PocketDirectory(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(id)));
 		// no need to parallelize
 		directory.gridSize = nbt.getInt("grid_size");
 		directory.privatePocketSize = nbt.getInt("private_pocket_size");
 		directory.publicPocketSize = nbt.getInt("public_pocket_size");
 		// same thing, too short anyways
-		var nextIdMapNbt = nbt.getCompound("next_id_map");
+		CompoundTag nextIdMapNbt = nbt.getCompound("next_id_map");
 		directory.nextIDMap.putAll(nextIdMapNbt.getAllKeys().stream().collect(Collectors.toMap(Integer::parseInt, nextIdMapNbt::getInt)));
 
 		CompoundTag pocketsNbt = nbt.getCompound("pockets");
 		directory.pockets = pocketsNbt.getAllKeys().stream().unordered().map(key -> {
 			CompoundTag pocketNbt = pocketsNbt.getCompound(key);
-			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketNbt)));
+			return CompletableFuture.supplyAsync(() -> new Pair<>(Integer.parseInt(key), AbstractPocket.deserialize(pocketNbt, provider)));
 		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond));
 
 		return directory;
 	}
 
-	public CompoundTag writeToNbt() {
+	public CompoundTag writeToNbt(HolderLookup.Provider provider) {
 		CompoundTag nbt = new CompoundTag();
 		nbt.putInt("grid_size", this.gridSize);
 		nbt.putInt("private_pocket_size", this.privatePocketSize);
@@ -90,7 +76,7 @@ public class PocketDirectory {
 		nbt.put("next_id_map", nextIdMapNbt);
 
 		CompoundTag pocketsNbt = new CompoundTag();
-		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toNbt())))
+		this.pockets.entrySet().parallelStream().unordered().map(entry -> CompletableFuture.supplyAsync(() -> new Pair<>(entry.getKey().toString(), entry.getValue().toNbt(new CompoundTag(), provider))))
 				.map(CompletableFuture::join).sequential().forEach(pair -> pocketsNbt.put(pair.getFirst(), pair.getSecond()));
 		nbt.put("pockets", pocketsNbt);
 
@@ -156,7 +142,7 @@ public class PocketDirectory {
 		return pocket;
 	}
 
-	private void addPocket(AbstractPocket pocket) {
+	private void addPocket(AbstractPocket<?> pocket) {
 		pockets.put(pocket.getId(), pocket);
 	}
 
@@ -171,7 +157,7 @@ public class PocketDirectory {
 	 * @return The pocket which occupies the GridPos represented by that ID, or null if there was no pocket occupying that GridPos.
 	 */
 	public Pocket getPocket(int id) {
-		AbstractPocket pocket = this.pockets.get(id);
+		AbstractPocket<?> pocket = this.pockets.get(id);
 		return pocket == null ? null : pocket.getReferencedPocket(this);
 	}
 
@@ -238,10 +224,7 @@ public class PocketDirectory {
 		return this.publicPocketSize;
 	}
 
-	public Map<Integer, AbstractPocket> getPockets() {
+	public Map<Integer, AbstractPocket<?>> getPockets() {
 		return this.pockets;
 	}
-
 }
-
-

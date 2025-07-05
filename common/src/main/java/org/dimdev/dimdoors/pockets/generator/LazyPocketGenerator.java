@@ -1,13 +1,15 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import com.mojang.datafixers.Products;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
@@ -16,7 +18,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
@@ -25,7 +26,6 @@ import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class LazyPocketGenerator extends PocketGenerator {
@@ -34,32 +34,62 @@ public abstract class LazyPocketGenerator extends PocketGenerator {
 	public static boolean currentlyGenerating = false;
 	public static Queue<LevelChunk> generationQueue = new LinkedList<>();
 
+
 	protected List<LazyModifier> lazyModifierList = new ArrayList<>();
 
-	public static  <T extends LazyPocketGenerator> Products.P6<RecordCodecBuilder.Mu<T>, CompoundTag, Equation, Boolean, List<Modifier>, List<String>, List<LazyModifier>> commonLazyFields(RecordCodecBuilder.Instance<T> instance) {
-		return commonFields(instance).and(
-				Modifier.CODEC.flatXmap(a -> a instanceof LazyModifier lazyModifier ? DataResult.success(lazyModifier) : DataResult.error(() -> "Modifier wasn't lazy."), DataResult::success).listOf().xmap(a -> (List<LazyModifier>) new ArrayList<>(a), a -> a).optionalFieldOf("lazy_modifiers", new ArrayList<>()).forGetter(a -> a.lazyModifierList));
-	}
-
-
-	public LazyPocketGenerator(CompoundTag builder, Equation weight, boolean setupLoot, List<Modifier> modifierList, List<String> tags, List<LazyModifier> lazyModifierList) {
-		super(builder, weight, setupLoot, modifierList, tags);
-        this.lazyModifierList = lazyModifierList;
-    }
-
 	public void generateChunk(LazyGenerationPocket pocket, LevelChunk chunk) {
-		var provider = chunk.getLevel().registryAccess();
-
-		lazyModifierList.forEach(modifier -> modifier.applyToChunk(pocket, chunk, provider));
+		lazyModifierList.forEach(modifier -> modifier.applyToChunk(pocket, chunk));
 	}
 
 	// LazyPocketGenerator handles attaching itself so that it can drop itself if it has already generated everything necessary.
 	public void attachToPocket(LazyGenerationPocket pocket) {
 		// We assume that this LazyPocketGenerator has not been cloned yet if the modifier list has any entries since it should be empty at this stage
-//		if (!this.lazyModifierList.isEmpty()) { TODO: Find out if we need this.
-//			throw new UnsupportedOperationException("Cannot attach LazyPocketGenerator that has not been cloned yet to pocket");
-//		}
+		if (!this.modifierList.isEmpty()) throw new UnsupportedOperationException("Cannot attach LazyPocketGenerator that has not been cloned yet to pocket");
 		pocket.attachGenerator(this);
+	}
+
+	@Override
+	public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+		super.fromNbt(nbt, provider, manager);
+
+		if (nbt.contains("lazy_modifiers")) {
+			ListTag modifiersNbt = nbt.getList("lazy_modifiers", 10);
+			for (int i = 0; i < modifiersNbt.size(); i++) {
+				// TODO: skip deserialization of single Modifiers on Exception.
+				// TODO: Modifier via ResourceManager
+				lazyModifierList.add((LazyModifier) Modifier.deserialize(modifiersNbt.getCompound(i), manager));
+			}
+		}
+
+		if (nbt.contains("lazy_modifier_references")) {
+			ListTag modifiersNbt = nbt.getList("lazy_modifier_references", Tag.TAG_STRING);
+			for (Tag nbtElement : modifiersNbt) {
+				// TODO: skip deserialization of single Modifiers on Exception.
+				// TODO: Modifier via ResourceManager
+				lazyModifierList.add((LazyModifier) Modifier.deserialize(nbtElement, manager));
+			}
+		}
+
+		return this;
+	}
+
+	@Override
+	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+		super.toNbtInternal(nbt, provider, allowReference);
+
+		if (lazyModifierList.size() > 0) {
+			List<Tag> lazyModNbts = lazyModifierList.stream().map(lazyModifier -> lazyModifier.toNbt(new CompoundTag(), provider, allowReference)).toList();
+
+			ListTag lazyModifiersNbt = new ListTag();
+			lazyModifiersNbt.addAll(lazyModNbts.stream().filter(CompoundTag.class::isInstance).toList());
+			nbt.put("lazy_modifiers", lazyModifiersNbt);
+
+			ListTag lazyModifierReferences = new ListTag();
+			lazyModifiersNbt.addAll(lazyModNbts.stream().filter(StringTag.class::isInstance).toList());
+			nbt.put("lazy_modifier_references", lazyModifierReferences);
+		}
+
+		return nbt;
 	}
 
 	@Override

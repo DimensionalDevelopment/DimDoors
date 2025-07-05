@@ -1,32 +1,65 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.resources.ResourceLocation;
-import org.dimdev.dimdoors.DimensionalDoors;
+import com.google.common.collect.Multimap;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.packs.resources.ResourceManager;
+import org.dimdev.dimdoors.api.util.ReferenceSerializable;
+import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.PocketLoader;
-import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.pockets.virtual.reference.TagReference;
-import org.dimdev.dimdoors.pockets.virtual.selection.ConditionalSelector;
-import org.dimdev.dimdoors.pockets.virtual.selection.PathSelector;
-import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Supplier;
+import java.util.Collection;
 
-public interface VirtualPocket extends Weighted<PocketGenerationContext> {
-	Registrar<VirtualPocket.VirtualPocketType<? extends VirtualPocket>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<VirtualPocket.VirtualPocketType<? extends VirtualPocket>>builder(DimensionalDoors.id("virtual_pocket_type")).build();
-	Codec<VirtualPocket.VirtualPocketType<? extends VirtualPocket>> TYPE_CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
-	Codec<VirtualPocket> CODEC_BASE = TYPE_CODEC.dispatch(VirtualPocket::getType, VirtualPocket.VirtualPocketType::mapCodec);
-	Codec<VirtualPocket> CODEC_VIRTUAL = CodecUtils.codecWithMapFallback(CODEC_BASE, a -> PocketLoader.getInstance().getVirtual(a));
-	Codec<VirtualPocket> CODEC_GROUP = CodecUtils.codecWithMapFallback(CODEC_BASE, a -> PocketLoader.getInstance().getGroup(a));
+public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable {
+	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
+
+	static VirtualPocket deserialize(Tag nbt, HolderLookup.Provider provider) {
+		return deserialize(nbt, provider, null);
+	}
+
+
+	//TODO: split up in ImplementedVirtualPocket and VirtualPocketList
+	static VirtualPocket deserialize(Tag nbt, HolderLookup.Provider provider, @Nullable ResourceManager manager) {
+		return switch (nbt.getId()) {
+			case Tag.TAG_LIST -> // It's a list of VirtualPocket
+					VirtualPocketList.deserialize((ListTag) nbt, provider, manager);
+			case Tag.TAG_COMPOUND -> // It's a serialized VirtualPocket
+					ImplementedVirtualPocket.deserialize((CompoundTag) nbt, provider, manager);
+			// TODO: throw if manager is null
+			case Tag.TAG_STRING -> // It's a reference to a resource location
+					ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, provider, manager)));
+			default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
+		};
+	}
+
+	static Tag serialize(VirtualPocket virtualPocket, HolderLookup.Provider provider, boolean allowReference) {
+		if (virtualPocket instanceof VirtualPocketList) {
+			return VirtualPocketList.serialize((VirtualPocketList) virtualPocket, provider, allowReference);
+		}
+		return ImplementedVirtualPocket.serialize((ImplementedVirtualPocket) virtualPocket, provider, allowReference);
+	}
+
+	static Tag serialize(VirtualPocket virtualPocket, HolderLookup.Provider provider) {
+		return serialize(virtualPocket, provider, false);
+	}
+
+	void setResourceKey(String resourceKey);
+
+	String getResourceKey();
+
+	default void processFlags(Multimap<String, String> flags) {
+		// TODO: discuss some flag standardization
+		Collection<String> reference = flags.get("reference");
+		if (reference.stream().findFirst().map(string -> string.equals("local") || string.equals("global")).orElse(false)) {
+			setResourceKey(flags.get("resource_key").stream().findFirst().orElse(null));
+		}
+	}
 
 	Pocket prepareAndPlacePocket(PocketGenerationContext parameters);
 
@@ -34,59 +67,8 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext> {
 
 	PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters);
 
-	VirtualPocketType<? extends VirtualPocket> getType();
-
 	// Override where needed
 	default void init() {
 
-	}
-
-	public static record VirtualPocketType<T extends VirtualPocket>(MapCodec<T> mapCodec) {
-		public static final RegistrySupplier<VirtualPocketType<NoneVirtualPocket>> NONE = register(DimensionalDoors.id(NoneVirtualPocket.KEY), MapCodec.unit(() -> NoneVirtualPocket.NONE));
-		public static final RegistrySupplier<VirtualPocketType<IdReference>> ID_REFERENCE = register(DimensionalDoors.id(IdReference.KEY), IdReference.CODEC);
-		public static final RegistrySupplier<VirtualPocketType<TagReference>> TAG_REFERENCE = register(DimensionalDoors.id(TagReference.KEY), TagReference.CODEC);
-		public static final RegistrySupplier<VirtualPocketType<ConditionalSelector>> CONDITIONAL_SELECTOR = register(DimensionalDoors.id(ConditionalSelector.KEY), ConditionalSelector.CODEC);
-		public static final RegistrySupplier<VirtualPocketType<PathSelector>> PATH_SELECTOR = register(DimensionalDoors.id(PathSelector.KEY), PathSelector.CODEC);
-		public static final RegistrySupplier<VirtualPocketType<VirtualPocketList>> LIST = register(DimensionalDoors.id(VirtualPocketList.ID), VirtualPocketList.CODEC);
-
-		public static void register() {}
-
-		static <U extends VirtualPocket> RegistrySupplier<VirtualPocketType<U>> register(ResourceLocation id, MapCodec<U> factory) {
-			return REGISTRY.register(id, () -> new VirtualPocketType<U>(factory));
-		}
-	}
-
-	// TODO: NoneReference instead?
-	class NoneVirtualPocket implements VirtualPocket {
-		public static final String KEY = "none";
-		public static final NoneVirtualPocket NONE = new NoneVirtualPocket();
-
-		private NoneVirtualPocket() {
-		}
-
-		@Override
-		public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
-			throw new UnsupportedOperationException("Cannot place a NoneVirtualPocket");
-		}
-
-		@Override
-		public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
-			throw new UnsupportedOperationException("Cannot get next pocket generator reference on a NoneVirtualPocket");
-		}
-
-		@Override
-		public PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters) {
-			throw new UnsupportedOperationException("Cannot peek next pocket generator reference on a NoneVirtualPocket");
-		}
-
-		@Override
-		public VirtualPocketType<? extends VirtualPocket> getType() {
-			return VirtualPocketType.NONE.get();
-		}
-
-		@Override
-		public double getWeight(PocketGenerationContext parameters) {
-			return 0;
-		}
 	}
 }

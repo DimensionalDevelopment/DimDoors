@@ -16,6 +16,7 @@ import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
+import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class ClientPacketHandler implements ClientPacketListener {
 	private int gridSize = 1;
 	private int pocketId = Integer.MIN_VALUE;
 	private int pocketRange = 1;
-	private List<PocketAddon> addons = new ArrayList<>();
+	private List<AutoSyncedAddon> addons = new ArrayList<>();
 
 	public static void init() {
 		NetworkManager.registerReceiver(NetworkManager.Side.S2C, PlayerInventorySlotUpdateS2CPacket.TYPE, PlayerInventorySlotUpdateS2CPacket.STREAM_CODEC, PlayerInventorySlotUpdateS2CPacket::apply);
@@ -79,7 +80,7 @@ public class ClientPacketHandler implements ClientPacketListener {
 		return pocketRange;
 	}
 
-	public List<PocketAddon> getAddons() {
+	public List<AutoSyncedAddon> getAddons() {
 		return addons;
 	}
 

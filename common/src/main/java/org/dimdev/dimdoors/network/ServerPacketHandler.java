@@ -24,6 +24,7 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -87,6 +88,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 		return networkHandler.player;
 	}
 
+
 	// TODO: attach this to some event to detect other kinds teleportation
 	public void syncPocketAddonsIfNeeded(Level world, BlockPos pos) {
 		if (!ModDimensions.isPocketDimension(world)) return;
@@ -97,7 +99,7 @@ public class ServerPacketHandler implements ServerPacketListener {
 			pocketSyncDirty = false;
 			lastSyncedPocketId = pocket.getId();
 			lastSyncedPocketWorld = world.dimension();
-			sendPacket(getPlayer(), new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getSyncedAddon()));
+			sendPacket(getPlayer(), new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getAddonsInstanceOf(AutoSyncedAddon.class)));
 		}
 	}
 

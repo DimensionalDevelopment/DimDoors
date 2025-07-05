@@ -1,22 +1,15 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import com.mojang.datafixers.Products;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class Rift extends RegistryVertex {
-	public static final MapCodec<Rift> CODEC = RecordCodecBuilder.mapCodec(a -> commonRiftFields(a).apply(a, Rift::new));
-
 	private static final Logger LOGGER = LogManager.getLogger();
 	private Location location;
 	private boolean isDetached;
@@ -33,10 +26,10 @@ public class Rift extends RegistryVertex {
 		this.properties = properties;
 	}
 
-	public Rift(UUID id, Optional<Location> location, boolean isDetached, Optional<LinkProperties> properties) {
-		this.location = location.orElse(null);
+	public Rift(UUID id, Location location, boolean isDetached, LinkProperties properties) {
+		this.location = location;
 		this.isDetached = isDetached;
-		this.properties = properties.orElse(null);
+		this.properties = properties;
 		this.id = id;
 	}
 
@@ -86,6 +79,24 @@ public class Rift extends RegistryVertex {
 		return RegistryVertexType.RIFT.get();
 	}
 
+	public static CompoundTag toNbt(Rift rift) {
+		CompoundTag nbt = new CompoundTag();
+		nbt.putUUID("id", rift.id);
+		nbt.put("location", Location.toNbt(rift.location));
+		nbt.putBoolean("isDetached", rift.isDetached);
+		if (rift.properties != null) nbt.put("properties", LinkProperties.toNbt(rift.properties));
+		return nbt;
+	}
+
+	public static Rift fromNbt(CompoundTag nbt) {
+		Rift rift = new Rift();
+		rift.id = nbt.getUUID("id");
+		rift.location = Location.fromNbt(nbt.getCompound("location"));
+		rift.isDetached = nbt.getBoolean("isDetached");
+		if (nbt.contains("properties")) rift.properties = LinkProperties.fromNbt(nbt.getCompound("properties"));
+		return rift;
+	}
+
 	public Location getLocation() {
 		return location;
 	}
@@ -108,13 +119,5 @@ public class Rift extends RegistryVertex {
 
 	public void setProperties(LinkProperties properties) {
 		this.properties = properties;
-	}
-
-	public static <T extends Rift> Products.P4<RecordCodecBuilder.Mu<T>, UUID, Optional<Location>, Boolean, Optional<LinkProperties>> commonRiftFields(RecordCodecBuilder.Instance<T> inst) {
-		return inst.group(
-						UUIDUtil.CODEC.fieldOf("id").forGetter(RegistryVertex::getId),
-						Location.CODEC.optionalFieldOf("location").forGetter(rift -> Optional.ofNullable(rift.getLocation())),
-						Codec.BOOL.optionalFieldOf("isDetached", false).forGetter(Rift::isDetached),
-						LinkProperties.CODEC.optionalFieldOf("properties").forGetter(rift -> Optional.ofNullable(rift.getProperties())));
 	}
 }

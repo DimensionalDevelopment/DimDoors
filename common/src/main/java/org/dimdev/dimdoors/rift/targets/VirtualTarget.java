@@ -8,8 +8,8 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.animal.Cod;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
@@ -23,17 +23,31 @@ import java.util.Objects;
  * entity. Only virtual targets can be saved to NBT.
  */
 public abstract class VirtualTarget implements Target {
-	public static final Codec<VirtualTarget> CODEC = VirtualTargetType.CODEC.dispatch("type", VirtualTarget::getType, VirtualTargetType::codec);
+	public static final Codec<VirtualTarget> CODEC = VirtualTargetType.CODEC.dispatch("type", VirtualTarget::getType, VirtualTargetType::mapCodec);
 	public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
 	protected Location location;
 
 	public static VirtualTarget fromNbt(CompoundTag nbt) {
 		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
+
+//		ResourceLocation id = new ResourceLocation(nbt.getString("type"));
+//		return Objects.requireNonNull(REGISTRY.get(id), "Unknown virtual target type " + id).fromNbt(nbt);
 	}
 
-	public static <T extends VirtualTarget> Tag toNbt(T virtualTarget) {
-		return CODEC.encode(virtualTarget, NbtOps.INSTANCE, new CompoundTag()).getOrThrow();
+	public static <T extends VirtualTarget> CompoundTag toNbt(T virtualTarget) {
+		var data = (CompoundTag) virtualTarget.getType().codec().encode(virtualTarget, NbtOps.INSTANCE, new CompoundTag()).getOrThrow();
+		data.putString("type", virtualTarget.getType().getId().toString());
+
+		return data;
+
+//		ResourceLocation id = REGISTRY.getId(virtualTarget.getType());
+//		String type = id.toString();
+//
+//		CompoundTag nbt = virtualTarget.getType().toNbt(virtualTarget);
+//		nbt.putString("type", type);
+//
+//		return nbt;
 	}
 
 	public void register() {
@@ -77,9 +91,9 @@ public abstract class VirtualTarget implements Target {
 		return false;
 	}
 
-    public abstract VirtualTarget copy();
+	public abstract VirtualTarget copy();
 
-    public interface VirtualTargetType<T extends VirtualTarget> {
+	public interface VirtualTargetType<T extends VirtualTarget> {
 		Registrar<VirtualTargetType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<VirtualTargetType<?>>builder(DimensionalDoors.id("virtual_type")).build();
 		Codec<VirtualTargetType<?>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 
@@ -102,7 +116,8 @@ public abstract class VirtualTarget implements Target {
 
 		Map<VirtualTargetType<?>, String> TRANSLATION_KEYS = new Object2ObjectArrayMap<>();
 
-		MapCodec<T> codec();
+		Codec<T> codec();
+		MapCodec<T> mapCodec();
 
 		RGBA getColor();
 
@@ -133,9 +148,16 @@ public abstract class VirtualTarget implements Target {
 
 		static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, MapCodec<T> codec, RGBA color) {
 			return REGISTRY.register(ResourceLocation.parse(id), () -> new VirtualTargetType<T>() {
+				private Codec<T> cached = codec.codec(); //TODO: REvert codecs to mapCodec vs caching when motive is there.
+
 				@Override
-				public MapCodec<T> codec() {
+				public MapCodec<T> mapCodec() {
 					return codec;
+				}
+
+				@Override
+				public Codec<T> codec() {
+					return cached;
 				}
 
 				@Override

@@ -51,7 +51,7 @@ public class TesselatingReiCompatClient implements REIClientPlugin {
         registry.registerRecipeFiller(ShapedTesselatingRecipe.class, ModRecipeTypes.TESSELATING.get(), (Function<RecipeHolder<ShapedTesselatingRecipe>, Display>) DefaultTesselatingShapedDisplay::new);
         registry.registerRecipeFiller(TesselatingShapelessRecipe.class, ModRecipeTypes.TESSELATING.get(), (Function<RecipeHolder<TesselatingShapelessRecipe>, Display>) DefaultTesselatingShapelessDisplay::new);
 
-        Decay.DecayLoader.getInstance().getBlockPatterns().forEach((block, patterns) -> {
+        Decay.DecayLoader.getBlockPatterns().forEach((block, patterns) -> {
             registry.add(DefaultDecaysIntoDisplay.of(block, patterns));
         });
     }

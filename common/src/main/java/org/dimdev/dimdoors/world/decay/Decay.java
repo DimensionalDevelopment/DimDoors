@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -66,9 +67,9 @@ public final class Decay {
 		BlockState targetState = world.getBlockState(pos);
 		FluidState fluidState = world.getFluidState(pos);
 
-		Collection<DecayPattern> patterns = DecayLoader.getInstance().getPatterns(targetState.getBlockHolder().unwrapKey().get());
+		Collection<DecayPattern> patterns = DecayLoader.getPatterns(targetState.getBlockHolder().unwrapKey().get());
 
-		if(patterns.isEmpty()) patterns = DecayLoader.getInstance().getPatterns(fluidState.getType().builtInRegistryHolder().key());
+		if(patterns.isEmpty()) patterns = DecayLoader.getPatterns(fluidState.getType().builtInRegistryHolder().key());
 
 		if(patterns.isEmpty()) {
 			return;
@@ -106,23 +107,14 @@ public final class Decay {
 		}
 	}
 
-    public static class DecayLoader implements ResourceManagerReloadListener {
+    public static class DecayLoader {
 		private static final Logger LOGGER = LogManager.getLogger();
-		private static final DecayLoader INSTANCE = new DecayLoader();
-		private final Map<ResourceKey<Block>, List<DecayPattern>> blockPatterns = new HashMap<>();
-		private final Map<ResourceKey<Fluid>, List<DecayPattern>> fluidPatterns = new HashMap<>();
+		private static final Map<ResourceKey<Block>, List<DecayPattern>> blockPatterns = new HashMap<>();
+		private static final Map<ResourceKey<Fluid>, List<DecayPattern>> fluidPatterns = new HashMap<>();
 
-		private DecayLoader() {
-		}
-
-		public static DecayLoader getInstance() {
-			return INSTANCE;
-		}
-
-		@Override
-		public void onResourceManagerReload(ResourceManager manager) {
+		public static void reload(HolderLookup.Provider provider, ResourceManager manager) {
 			blockPatterns.clear();
-			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(this::loadPattern));
+			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(DecayLoader::loadPattern));
 			for (DecayPattern pattern : futurePatternList.join()) {
 				for (ResourceKey<Block> block : pattern.constructApplicableBlocks()) {
 					blockPatterns.computeIfAbsent(block, (b) -> new ArrayList<>());
@@ -136,11 +128,11 @@ public final class Decay {
 			}
 		}
 
-		private DecayPattern loadPattern(JsonElement json, ResourceLocation ignored) {
+		private static DecayPattern loadPattern(JsonElement json, ResourceLocation ignored) {
 			return JsonOps.INSTANCE.withDecoder(DecayPattern.CODEC).apply(json).getOrThrow().getFirst();
 		}
 
-		public Collection<DecayPattern> getPatterns(Object object) {
+		public static Collection<DecayPattern> getPatterns(Object object) {
 			if(object instanceof ResourceKey<?> key) {
 				if (key.isFor(Registries.BLOCK) && blockPatterns.containsKey(key)) return blockPatterns.get(key);
 				else if (key.isFor(Registries.FLUID) && fluidPatterns.containsKey(key)) return fluidPatterns.get(key);
@@ -149,11 +141,11 @@ public final class Decay {
 			return Collections.emptyList();
 		}
 
-		public Collection<DecayPattern> getPatterns(ResourceKey<Fluid> fluid) {
+		public static Collection<DecayPattern> getPatterns(ResourceKey<Fluid> fluid) {
 			return fluidPatterns.getOrDefault(fluid, Collections.emptyList());
 		}
 
-        public Map<ResourceKey<Block>, List<DecayPattern>> getBlockPatterns() {
+        public static Map<ResourceKey<Block>, List<DecayPattern>> getBlockPatterns() {
 			return blockPatterns;
         }
     }

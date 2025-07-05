@@ -1,9 +1,8 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 
 public interface LazyModifier extends Modifier {
-	void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk, HolderLookup.Provider provider);
+	void applyToChunk(LazyGenerationPocket pocket, ChunkAccess chunk);
 }

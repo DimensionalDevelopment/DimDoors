@@ -17,13 +17,13 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.Map;
 
 public class PocketTemplate {
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final boolean replacingPlaceholders = false;
-    private final Schematic schematic;
+	private static final Logger LOGGER = LogManager.getLogger();
+	private static final boolean replacingPlaceholders = false;
+	private final Schematic schematic;
 	private final ResourceLocation id;
 
 	public PocketTemplate(Schematic schematic, ResourceLocation id) {
-        this.schematic = schematic;
+		this.schematic = schematic;
 		this.id = id;
 	}
 
@@ -62,17 +62,17 @@ public class PocketTemplate {
     }
      */
 
-    public void place(Pocket pocket, BlockPlacementType placementType) {
-        pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
-        ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
-        BlockPos origin = pocket.getOrigin();
+	public void place(Pocket pocket, BlockPlacementType placementType) {
+		pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
+		ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
+		BlockPos origin = pocket.getOrigin();
 		SchematicPlacer.place(this.schematic, world, origin, placementType);
-    }
+	}
 
 	public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Pocket pocket) {
-		ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
 		pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
-		Map<BlockPos, RiftBlockEntity> absoluteRifts = SchematicPlacer.getAbsoluteRifts(this.schematic, pocket.getOrigin(), world.registryAccess());
+		Map<BlockPos, RiftBlockEntity> absoluteRifts = SchematicPlacer.getAbsoluteRifts(this.schematic, pocket.getOrigin(), DimensionalDoors.getWorld(pocket.getWorld()).registryAccess());
+		ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
 		absoluteRifts.values().forEach(rift -> rift.setWorld(world));
 		return absoluteRifts;
 	}
@@ -81,13 +81,13 @@ public class PocketTemplate {
 		SchematicPlacer.place(this.schematic, DimensionalDoors.getWorld(pocket.getWorld()), chunk, originalOrigin, placementType);
 	}
 
-    public static boolean isReplacingPlaceholders() {
-        return replacingPlaceholders;
-    }
+	public static boolean isReplacingPlaceholders() {
+		return replacingPlaceholders;
+	}
 
-    public Schematic getSchematic() {
-        return this.schematic;
-    }
+	public Schematic getSchematic() {
+		return this.schematic;
+	}
 
 	public ResourceLocation getId() {
 		return id;

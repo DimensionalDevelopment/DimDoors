@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.item.door;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -18,25 +19,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 // TODO: make it async?
-public final class DoorRiftDataLoader implements ResourceManagerReloadListener {
-	private static final DoorRiftDataLoader INSTANCE = new DoorRiftDataLoader();
+public final class DoorRiftDataLoader {
 	private static final Logger LOGGER = LogManager.getLogger("DoorRiftDataLoader");
 	private static final Gson GSON = new GsonBuilder().create();
-	private final Map<Item, RiftDataList> itemRiftData = new HashMap<>();
+	private static final Map<Item, RiftDataList> itemRiftData = new HashMap<>();
 
-	public static DoorRiftDataLoader getInstance() {
-		return INSTANCE;
-	}
-
-	private DoorRiftDataLoader() {
-	}
-
-	public RiftDataList getRiftData(Item item) {
+	public static RiftDataList getRiftData(Item item) {
 		return itemRiftData.get(item);
 	}
 
-	@Override
-	public void onResourceManagerReload(ResourceManager manager) {
+	public static void reload(HolderLookup.Provider provider, ResourceManager manager) {
 		itemRiftData.clear();
 		Map<ResourceLocation, Resource> resources = manager.listResources("door/data", id -> id.getPath().endsWith(".json"));
 		resources.forEach((id, resource) -> {

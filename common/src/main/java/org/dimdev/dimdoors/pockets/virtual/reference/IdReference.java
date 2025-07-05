@@ -1,33 +1,38 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import com.google.common.base.MoreObjects;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.modifier.Modifier;
-import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
-import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
-
-import java.util.List;
+import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 
 public class IdReference extends PocketGeneratorReference {
 	public static final String KEY = "id";
 
-	public static final MapCodec<IdReference> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
-			.and(Codec.STRING.xmap(DimensionalDoors::id, ResourceLocation::getPath).fieldOf("id").forGetter(a -> a.id)
-	).apply(instance, IdReference::new));
-
 	private ResourceLocation id;
 
-	public IdReference(Equation weight, Boolean setupLoot, List<Modifier> modifierList, List<PocketAddon.PocketBuilderAddon<?, ?>> addons, ResourceLocation id) {
-		super(weight, setupLoot, modifierList, addons);
-		this.id = id;
+	@Override
+	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+		super.fromNbt(nbt, provider, manager);
+
+		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
+		id = DimensionalDoors.id(nbt.getString("id"));
+
+		return this;
+	}
+
+	@Override
+	protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+		super.toNbtInternal(nbt, provider, allowReference);
+
+		nbt.putString("id", id.getPath());
+
+		return nbt;
 	}
 
 	@Override
@@ -41,8 +46,13 @@ public class IdReference extends PocketGeneratorReference {
 	}
 
 	@Override
-	public VirtualPocketType<? extends VirtualPocket> getType() {
+	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
 		return VirtualPocketType.ID_REFERENCE.get();
+	}
+
+	@Override
+	public String getKey() {
+		return KEY;
 	}
 
 	@Override
@@ -50,6 +60,7 @@ public class IdReference extends PocketGeneratorReference {
 		return MoreObjects.toStringHelper(this)
 				.add("id", id)
 				.add("weight", weight)
+				.add("weightEquation", weightEquation)
 				.add("setupLoot", setupLoot)
 				.add("modifierList", modifierList)
 				.toString();

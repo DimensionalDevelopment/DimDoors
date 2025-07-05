@@ -9,6 +9,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -71,9 +72,9 @@ public class TemplateUtils {
         }
         LootParams ctx = new LootParams.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
         table.fill(inventory, ctx, world.getSeed());
-		if (inventory.isEmpty()) {
-			logger.error(", however Inventory is: empty!");
-		}
+        if (inventory.isEmpty()) {
+            logger.error(", however Inventory is: empty!");
+        }
     }
 
     static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
@@ -86,7 +87,7 @@ public class TemplateUtils {
             }
         }
 
-        if (entranceWeights.size() == 0) {
+        if (entranceWeights.isEmpty()) {
             return;
         }
 
@@ -132,35 +133,35 @@ public class TemplateUtils {
 
                 CompoundTag newTag = new CompoundTag();
                 EntranceRiftBlockEntity rift = new EntranceRiftBlockEntity(pos, Schematic.getBlockSample(schematic).getBlockState(pos));
-				switch (blockEntityTag.getString("placeholder")) {
-					case "deeper_depth_door" -> {
-						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-						rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
-						rift.saveAdditional(newTag, world.registryAccess());
-					}
-					case "less_deep_depth_door" -> {
-						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-						rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
-						rift.saveAdditional(newTag, world.registryAccess());
-					}
-					case "overworld_door" -> {
-						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-						rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
-						rift.saveAdditional(newTag, world.registryAccess());
-					}
-					case "entrance_door" -> {
-						rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-						rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
-						rift.saveAdditional(newTag, world.registryAccess());
-					}
-					case "gateway_portal" -> {
-						rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
-						rift.setDestination(DefaultDungeonDestinations.getGateway());
-						rift.saveAdditional(newTag, world.registryAccess());
-					}
-					default -> throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
-				}
-				rift.setWorld(world.getLevel());
+                switch (blockEntityTag.getString("placeholder")) {
+                    case "deeper_depth_door" -> {
+                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
+                        rift.saveAdditional(newTag, world.registryAccess());
+                    }
+                    case "less_deep_depth_door" -> {
+                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
+                        rift.saveAdditional(newTag, world.registryAccess());
+                    }
+                    case "overworld_door" -> {
+                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
+                        rift.saveAdditional(newTag, world.registryAccess());
+                    }
+                    case "entrance_door" -> {
+                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
+                        rift.saveAdditional(newTag, world.registryAccess());
+                    }
+                    case "gateway_portal" -> {
+                        rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
+                        rift.setDestination(DefaultDungeonDestinations.getGateway());
+                        rift.saveAdditional(newTag, world.registryAccess());
+                    }
+                    default -> throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
+                }
+                rift.setWorld(world.getLevel());
                 blockEntities.add(newTag);
             } else {
                 blockEntities.add(blockEntityTag);

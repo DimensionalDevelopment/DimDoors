@@ -1,6 +1,4 @@
-{
-  "type": "dimdoors:list",
-  "list": [
+[
     {
       "path": "dimdoors:dungeon/",
       "type": "dimdoors:path"
@@ -10,4 +8,3 @@
       "id": "lab/lab_hallway"
     }
   ]
-}

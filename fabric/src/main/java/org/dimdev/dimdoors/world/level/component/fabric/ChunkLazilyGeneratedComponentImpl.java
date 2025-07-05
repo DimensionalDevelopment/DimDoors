@@ -11,12 +11,12 @@ public class ChunkLazilyGeneratedComponentImpl {
     }
 
     public static boolean isGenerated(LevelChunk chunk) {
-        ServerChunkEvents.CHUNK_LOAD.register(new ServerChunkEvents.Load() {
-            @Override
-            public void onChunkLoad(ServerLevel serverLevel, LevelChunk levelChunk) {
-
-            }
-        });
+//        ServerChunkEvents.CHUNK_LOAD.register(new ServerChunkEvents.Load() {
+//            @Override
+//            public void onChunkLoad(ServerLevel serverLevel, LevelChunk levelChunk) {
+//
+//            }
+//        });
 
         return chunk.hasAttached(ModAttachmentTypes.HAS_BEEN_LAZY_GENNED) ? chunk.getAttached(ModAttachmentTypes.HAS_BEEN_LAZY_GENNED) : false;
     }

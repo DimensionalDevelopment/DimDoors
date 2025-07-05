@@ -13,12 +13,15 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
@@ -56,6 +59,7 @@ import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
+import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
@@ -80,6 +84,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
@@ -151,13 +156,17 @@ public class DimensionalDoors {
 
 		initBuiltinPacks();
 
-		ReloadListenerRegistry.register(PackType.SERVER_DATA, PocketLoader.getInstance());
-		ReloadListenerRegistry.register(PackType.SERVER_DATA, Decay.DecayLoader.getInstance());
-		ReloadListenerRegistry.register(PackType.SERVER_DATA, DoorRiftDataLoader.getInstance());
-
+		registerServerLoader("pocket_loader", PocketLoader::reload);
+		registerServerLoader("decay_loader", Decay.DecayLoader::reload);
+		registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
 
 		registerListeners();
 		SchemFixer.run();
+	}
+
+	@ExpectPlatform
+	public static void registerServerLoader(String pocketLoader, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
+
 	}
 
 	@ExpectPlatform
@@ -168,7 +177,7 @@ public class DimensionalDoors {
 	public static void registerRegistries() {
 		Targets.registerDefaultTargets();
 		VirtualTarget.VirtualTargetType.register();
-		VirtualPocket.VirtualPocketType.register();
+		ImplementedVirtualPocket.VirtualPocketType.register();
 		RegistryVertex.RegistryVertexType.register();
 		Modifier.ModifierType.register();
 		PocketGenerator.PocketGeneratorType.register();

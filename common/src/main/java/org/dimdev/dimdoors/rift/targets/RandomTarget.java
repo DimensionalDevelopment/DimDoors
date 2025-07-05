@@ -102,7 +102,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		}
 
 		Location selectedLink;
-		if (riftWeights.isEmpty()) {
+		if (riftWeights.size() == 0) {
 			if (this.newRiftWeight == -1) {
 				selectedLink = null;
 			} else {

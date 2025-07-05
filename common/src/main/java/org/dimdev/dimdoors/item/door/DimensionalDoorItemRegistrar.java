@@ -144,7 +144,7 @@ public class DimensionalDoorItemRegistrar {
 
 		@Override
 		public void setupRift(EntranceRiftBlockEntity entranceRift) {
-			RiftDataList data = DoorRiftDataLoader.getInstance().getRiftData(originalItem);
+			RiftDataList data = DoorRiftDataLoader.getRiftData(originalItem);
 			if (data != null) {
 				RiftDataList.OptRiftData riftData = data.getRiftData(entranceRift);
 				entranceRift.setDestination(riftData.getDestination());
@@ -175,7 +175,7 @@ public class DimensionalDoorItemRegistrar {
 
 		@Override
 		protected void setupRift(EntranceRiftBlockEntity entranceRift) {
-			RiftDataList data = DoorRiftDataLoader.getInstance().getRiftData(originalItem);
+			RiftDataList data = DoorRiftDataLoader.getRiftData(originalItem);
 			if (data != null) {
 				RiftDataList.OptRiftData riftData = data.getRiftData(entranceRift);
 				entranceRift.setDestination(riftData.getDestination());

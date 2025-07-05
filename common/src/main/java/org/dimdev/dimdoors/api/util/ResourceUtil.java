@@ -1,9 +1,10 @@
 package org.dimdev.dimdoors.api.util;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
@@ -33,11 +34,7 @@ public class ResourceUtil {
 
 	public static final ComposableFunction<Tag, JsonElement> NBT_TO_JSON = json -> NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, json);
 
-	public static final ComposableFunction<InputStream, JsonElement> JSON_READER = inputStream -> {
-		var json = GSON.fromJson(new InputStreamReader(inputStream), JsonElement.class);
-
-		return json;
-	};
+	public static final ComposableFunction<InputStream, JsonElement> JSON_READER = inputStream -> GSON.fromJson(new InputStreamReader(inputStream), JsonElement.class);
 	public static final ComposableFunction<InputStream, Tag> NBT_READER = JSON_READER.andThenComposable(JSON_TO_NBT);
 	public static final ComposableFunction<InputStream, CompoundTag> COMPRESSED_NBT_READER = inputStream -> {
 		try {
@@ -47,7 +44,7 @@ public class ResourceUtil {
 		}
 	};
 
-	/*public static <R extends ReferenceSerializable> R loadReferencedResource(ResourceManager manager, String startingPath, String resourceKey, Function<InputStream, R> reader) {
+	public static <R extends ReferenceSerializable> R loadReferencedResource(ResourceManager manager, String startingPath, String resourceKey, Function<InputStream, R> reader) {
 		// last two is resource path, rest is flags
 		String[] splitResourceKey = resourceKey.split("\\|");
 
@@ -66,43 +63,35 @@ public class ResourceUtil {
 
 		String identifier = splitResourceKey[splitResourceKey.length - 1];
 		int identifierSplitIndex = identifier.indexOf(':');
-		R resource = loadResource(manager, new ResourceLocation(identifier.substring(0, identifierSplitIndex), startingPath + identifier.substring(identifierSplitIndex + 1)), reader);
+		R resource = loadResource(manager, ResourceLocation.fromNamespaceAndPath(identifier.substring(0, identifierSplitIndex), startingPath + identifier.substring(identifierSplitIndex + 1)), reader);
 		resource.processFlags(flags);
 		return resource;
-	}*/
+	}
 
 	public static <R> R loadResource(ResourceManager manager, ResourceLocation resourceKey, Function<InputStream, R> reader) {
-		var optional = manager.getResource(resourceKey);
-
-		if(optional.isPresent()) {
-
-			try(var is = optional.get().open()) {
-				var t = reader.apply(is);
-
-				return t;
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+		try {
+			return reader.apply(manager.getResource(resourceKey).get().open());
 		}
-
-		return null;
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static  <K, T, M extends Map<K, T>> CompletableFuture<M> loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, ResourceLocation, K> keyProvider) {
 		Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
-//		return StreamUtils.supplyAsync(() -> {
-			map.putAll(ids.entrySet().stream()/*parallelStream().unordered()*/.collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
+		return StreamUtils.supplyAsync(() -> {
+			map.putAll(ids.entrySet().parallelStream().unordered().collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
 					id -> keyProvider.apply(startingPath, id.getKey()),
 					id -> {
-						try(var is  = id.getValue().open()) {
-							return reader.apply(is, keyProvider.apply(startingPath, id.getKey()));
-						} catch (Exception e) {
+						try {
+							return reader.apply(id.getValue().open(), keyProvider.apply(startingPath, id.getKey()));
+						} catch (IOException | RuntimeException e) {
 							throw new RuntimeException(e);
 						}
 					}),
 					(a, id, exception) -> LOGGER.error("Error loading resource: " + id, exception))));
-			return CompletableFuture.completedFuture(map);
-//		}).join();
+			return map;
+		});
 	}
 
 	public static  <T, M extends Collection<T>> CompletableFuture<M> loadResourcePathToCollection(ResourceManager manager, String startingPath, String extension, M collection, BiFunction<InputStream, ResourceLocation, T> reader) {
@@ -121,9 +110,9 @@ public class ResourceUtil {
 	}
 
 	public interface ComposableFunction<T, R> extends Function<T, R> {
-		 default <K, V> BiFunction<T, K, V> andThenReader(BiFunction<R, K, V> function) {
+		default <K, V> BiFunction<T, K, V> andThenReader(BiFunction<R, K, V> function) {
 			return (t, k) -> function.apply(apply(t), k);
-		 }
+		}
 
 		default <K> BiFunction<T, K, R> composeIdentity() {
 			return (t, k) -> apply(t);

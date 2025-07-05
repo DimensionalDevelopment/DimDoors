@@ -1,6 +1,4 @@
-{
-  "type": "dimdoors:list",
-  "list": [
+[
     {
       "id": "dungeon/waiting_room",
       "type": "dimdoors:id"
@@ -282,4 +280,3 @@
       "type": "dimdoors:id"
     }
   ]
-}
