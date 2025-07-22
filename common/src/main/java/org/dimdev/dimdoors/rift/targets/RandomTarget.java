@@ -195,6 +195,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
 	private static void linkRifts(Location from, Location to) {
 		RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
+		//This is the freaking potato texture from tf2. Bad things happen if this invocation is removed
+		to.getWorld(); //TODO: Figure out how ensure world is loaded before .getBlockEntity is called so that this janky line isn't needed.
 		RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
 		fromBe.setDestination(RiftReference.tryMakeLocal(from, to));
 		fromBe.setChanged();

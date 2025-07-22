@@ -64,8 +64,8 @@ public final class TeleportUtil {
 
 		if (entity instanceof ServerPlayer serverPlayer) {
 			// This is what the vanilla tp command does. Let's hope this works.
-			ChunkPos chunkPos = new ChunkPos(new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)));
-			((ServerLevel) world).getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
+//			ChunkPos chunkPos = new ChunkPos(new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)));
+//			((ServerLevel) world).getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkPos, 1, entity.getId());
 			entity.stopRiding();
 
 			if (entity.level().dimension().equals(world.dimension())) {
@@ -74,7 +74,7 @@ public final class TeleportUtil {
 				entity = teleport(entity, (ServerLevel) world, pos, velocity, yaw, pitch);
 			}
 
-			serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity.getId(), velocity));
+//			serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(entity.getId(), velocity));
 			((ExtendedServerPlayNetworkHandler) (serverPlayer.connection)).getDimDoorsPacketHandler().syncPocketAddonsIfNeeded(world, new BlockPos((int) pos.x, (int) pos.y, (int) pos.z));
 
 			if (world.dimension() == ModDimensions.DUNGEON) {
