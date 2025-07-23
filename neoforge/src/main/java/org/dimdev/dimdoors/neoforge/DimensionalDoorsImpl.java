@@ -17,6 +17,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.resource.ContextAwareReloadListener;
@@ -40,6 +41,7 @@ public class DimensionalDoorsImpl {
     }
 
     public static void initBuiltinPacks() {
+        NeoForge.EVENT_BUS.addListener(DimensionalDoorsImpl::addReloaders);
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener(DimensionalDoorsImpl::addPackFinders);
     }
 
@@ -55,7 +57,7 @@ public class DimensionalDoorsImpl {
         }
     }
 
-    @SubscribeEvent
+//    @SubscribeEvent
     public static void addReloaders(AddReloadListenerEvent event) {
         loaders.forEach(pair -> event.addListener(new NeoforgeResourceLoader(pair.getSecond())));
     }

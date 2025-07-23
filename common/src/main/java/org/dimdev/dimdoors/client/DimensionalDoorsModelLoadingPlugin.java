@@ -21,21 +21,12 @@ public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
         var resolver = new BlockStateResolver() {
             @Override
             public void resolveBlockStates(Context context) {
-                var identifier = BuiltInRegistries.BLOCK.getKey(context.block());
+                if (DimensionalDoors.getDimensionalDoorBlockRegistrar().isMapped(context.block().arch$registryName())) {
+                    var model = context.getOrLoadModel(DimensionalDoorsClient.childItem);
 
-                var blockRegistrar = DimensionalDoors.getDimensionalDoorBlockRegistrar();
-
-                if (blockRegistrar.isMapped(identifier)) {
-                    var mapped = blockRegistrar.get(identifier);
-
-                    var original = BuiltInRegistries.BLOCK.get(mapped);
-
-                    original.getStateDefinition().getPossibleStates().forEach(blockState -> {
-                        var state = copyState(context.block(), blockState);
-                        var model = context.getOrLoadModel(BlockModelShaper.stateToModelLocation(blockState).id());
-                        context.setModel(state.setValue(WaterLoggableDoorBlock.WATERLOGGED, true), model);
+                    for (var state : context.block().getStateDefinition().getPossibleStates()) {
                         context.setModel(state, model);
-                    });
+                    }
                 }
             }
         };

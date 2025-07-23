@@ -40,7 +40,9 @@ public class ModArmorMaterials {
 			0.0F);
 
 	public static RegistrySupplier<ArmorMaterial> register(String name, int enchantability, Holder<SoundEvent> equipSound, Supplier<Supplier<Ingredient>> repairIngredient, int[] protectionAmounts, float toughness, float knockbackResistance) {
-		return ARMOR_MATERIALS.register(name, () -> {
+		var id = DimensionalDoors.id(name);
+
+		return ARMOR_MATERIALS.register(id, () -> {
 			Map<ArmorItem.Type, Integer> map = Util.make(new HashMap<>(), typeMap -> {
 				for (int i = 0; i < protectionAmounts.length; i++) {
 					var type = ArmorItem.Type.values()[i];
@@ -48,7 +50,7 @@ public class ModArmorMaterials {
 				}
 			});
 
-			return new ArmorMaterial(map, enchantability, equipSound, repairIngredient.get(), List.of(), toughness, knockbackResistance);
+			return new ArmorMaterial(map, enchantability, equipSound, repairIngredient.get(), List.of(new ArmorMaterial.Layer(id)), toughness, knockbackResistance);
         });
 	}
 

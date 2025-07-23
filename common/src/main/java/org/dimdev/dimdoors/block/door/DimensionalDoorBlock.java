@@ -18,6 +18,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -313,5 +314,10 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 	public Block baseBlock() {
 		return BuiltInRegistries.BLOCK.get(DimensionalDoors.getDimensionalDoorBlockRegistrar().get(BuiltInRegistries.BLOCK.getKey(this)));
+	}
+
+	@Override
+	protected RenderShape getRenderShape(BlockState blockState) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 }

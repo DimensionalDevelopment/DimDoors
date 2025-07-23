@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
@@ -33,6 +34,7 @@ import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
+import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.Rift;
@@ -47,10 +49,28 @@ import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBlock> {
 	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
 	private static final Logger LOGGER = LogManager.getLogger();
+	private BlockState doorBlockState;
 	private boolean locked;
 
 	public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.ENTRANCE_RIFT.get(), pos, state);
+
+		if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoGenDimensionalDoorBlock) {
+			doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
+		} else {
+			doorBlockState = state;
+		}
+	}
+
+	@Override
+	public void setBlockState(BlockState state) {
+		super.setBlockState(state);
+
+		if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoGenDimensionalDoorBlock) {
+			doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
+		} else {
+			doorBlockState = state;
+		}
 	}
 
 	@Override
@@ -230,5 +250,9 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBloc
 	@Override
 	public boolean stablized() {
 		return true;
+	}
+
+	public BlockState getRenderBlockState() {
+		return doorBlockState;
 	}
 }
