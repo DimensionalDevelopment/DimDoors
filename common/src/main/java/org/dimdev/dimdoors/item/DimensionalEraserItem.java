@@ -31,7 +31,7 @@ public class DimensionalEraserItem extends Item {
 
 		HitResult hit = RaycastHelper.raycast(player, 1.0F, a -> !(a instanceof Player));
 
-		if (hit != null && hit.getType() == HitResult.Type.ENTITY) {
+		if (!world.isClientSide() && hit != null && hit.getType() == HitResult.Type.ENTITY) {
 			if(((EntityHitResult) hit).getEntity() instanceof ServerPlayer) {
 				BlockPos teleportPos = ((EntityHitResult) hit).getEntity().blockPosition();
 				while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
