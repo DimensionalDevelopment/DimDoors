@@ -24,6 +24,7 @@ public final class ModSoundEvents {
 	public static final RegistrySupplier<SoundEvent> WHITE_VOID = register("white_void");
 	public static final RegistrySupplier<SoundEvent> BLOOP = register("bloop");
 	public static final RegistrySupplier<SoundEvent> TESSELATING_WEAVE = register("tesselating_weave");
+	public static final RegistrySupplier<SoundEvent> THEY_STARE_BACK = register("they_stare_back");
 
 	private static RegistrySupplier<SoundEvent> register(String id) {
 		return SOUND_EVENTS.register(id, () -> SoundEvent.createVariableRangeEvent(DimensionalDoors.id(id)));

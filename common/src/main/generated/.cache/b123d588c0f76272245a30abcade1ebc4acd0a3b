@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // 1.21.1	2025-07-22T20:42:30.4475077	DimensionalDoors/Model Definitions
+=======
+// 1.20.1	2024-11-18T07:27:57.1184751	DimensionalDoors/Model Definitions
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 8952aebce8814c204db55e381151039d21f31458 assets\dimdoors\models\block\driftwood_gate_wall.json
 349082cb16a7b175fb9f87b224b7875d9715a238 assets\dimdoors\models\block\deepslate_stairs_inner.json
 bcb276d2bbd9e5771aa0cb82d315b87dbf865f6a assets\dimdoors\blockstates\dark_sand_fence.json
@@ -6,8 +10,13 @@ bcb276d2bbd9e5771aa0cb82d315b87dbf865f6a assets\dimdoors\blockstates\dark_sand_f
 6608706c3d3192ade09d63b8ce75baa77dd7e778 assets\dimdoors\models\block\driftwood_fence_inventory.json
 0d50c614b3295db616f8755d98b96df1179c5f27 assets\dimdoors\models\block\netherrack_fence_side.json
 cbcba80e6af3716ab21c0205bf99014c336c5bb6 assets\dimdoors\blockstates\driftwood_stairs.json
+<<<<<<< HEAD
 61fd0c28238e7b2bfb68654903a7b3fc196b3a4a assets\dimdoors\models\block\amalgam_trapdoor_top.json
 e9be67269b98fad7ff47e0122361120c9b8eb463 assets\dimdoors\models\item\end_stone_wall.json
+=======
+e9be67269b98fad7ff47e0122361120c9b8eb463 assets\dimdoors\models\item\end_stone_wall.json
+61fd0c28238e7b2bfb68654903a7b3fc196b3a4a assets\dimdoors\models\block\amalgam_trapdoor_top.json
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 9c7f287a9e9b5dbd01faf0caa2c899ca1df805da assets\dimdoors\models\item\unraveled_slab.json
 7a5c445ffee9db7b980c08e6a0fb9130996fd7e0 assets\dimdoors\models\block\gold_door_top_right_open.json
 8f3f250bb2640bc296ac8f87520ca49046bd8630 assets\dimdoors\models\block\mud_fence_post.json
@@ -91,9 +100,15 @@ c1f216328d0cf9b590e58350e3b4429047bb7210 assets\dimdoors\models\block\dark_sand_
 1aeef48a3775e060015e0953558e8334862790e7 assets\dimdoors\blockstates\clay_wall.json
 b9275f1c8c371270ad6d563573c908f928af0bdd assets\dimdoors\models\block\sand_slab.json
 3fdf19422998bfd04cc849c8332107f0ec87c549 assets\dimdoors\blockstates\driftwood_button.json
+<<<<<<< HEAD
 119b93d78c62528481f826b6b462a41369c6dfed assets\dimdoors\blockstates\unraveled_button.json
 52492447000175f7f8ae45271f8ca51c0ac67fce assets\dimdoors\blockstates\gold_door.json
 9bf26b1ef3e70a4fd224045ca46045b4865c5473 assets\dimdoors\blockstates\sand_slab.json
+=======
+9bf26b1ef3e70a4fd224045ca46045b4865c5473 assets\dimdoors\blockstates\sand_slab.json
+119b93d78c62528481f826b6b462a41369c6dfed assets\dimdoors\blockstates\unraveled_button.json
+52492447000175f7f8ae45271f8ca51c0ac67fce assets\dimdoors\blockstates\gold_door.json
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 e3d6edafbac5397ec12ac38e9e0f3913e07bf905 assets\dimdoors\models\item\mud_fence.json
 52058860a2905ad457521fcef2dfd7fd48ef31ed assets\dimdoors\models\block\unraveled_gate.json
 ebca12dbc95590da3e3b0d223eff730c35584644 assets\dimdoors\models\block\red_sand_slab.json
@@ -212,8 +227,13 @@ e640b5b57b090ea9936476687e184a6078fe307c assets\minecraft\models\block\mud.json
 dca98dbcea66404cc98e561602bc6ee72d1ae168 assets\dimdoors\models\item\unraveled_button.json
 04b4ea9ce3e707fd556d4f0496cafd0e23f59f1b assets\dimdoors\models\block\gravel_wall_side_tall.json
 cb1e416d4d63472391695f02cba2237799d889e7 assets\dimdoors\models\item\deepslate_wall.json
+<<<<<<< HEAD
 ab42187d40e5a0588b2d146c7bcb3f76ff0c9370 assets\dimdoors\models\block\mud_stairs.json
 16690129dcec97eb3ce6594105f0733eda0f53ad assets\dimdoors\models\block\mud_stairs_outer.json
+=======
+16690129dcec97eb3ce6594105f0733eda0f53ad assets\dimdoors\models\block\mud_stairs_outer.json
+ab42187d40e5a0588b2d146c7bcb3f76ff0c9370 assets\dimdoors\models\block\mud_stairs.json
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 1669a85afd577ccd6992072a190145050af0aa88 assets\dimdoors\blockstates\unraveled_slab.json
 f3e1621b5c8a27979a830ea3164f3aaedc5f50b7 assets\dimdoors\models\block\unraveled_stairs_outer.json
 5beb77905f4db69dc6a2eddca71a60f2713e25d5 assets\dimdoors\models\block\clod_ore.json
@@ -237,8 +257,13 @@ ef873980068cb2cc15f387ec0e0fe5d56e1a5c50 assets\dimdoors\models\block\netherrack
 d58ebf96e87e8f14e769c17bbab21c9c363a8591 assets\dimdoors\models\block\sand_stairs.json
 379348499d8ae1f057b5673329cfe9ff49229679 assets\dimdoors\models\item\rift_pearl.json
 4fc901cc5dc739b3955feb367d29da1a57e9cedd assets\dimdoors\models\block\amalgam_door_bottom_right.json
+<<<<<<< HEAD
 575011c960fb5793620c20f344f7b45c8e3d08e5 assets\dimdoors\models\item\driftwood_trapdoor.json
 df9341149d89683f1261b07dfa459472e6cad7c7 assets\dimdoors\models\item\garment_of_reality_leggings.json
+=======
+df9341149d89683f1261b07dfa459472e6cad7c7 assets\dimdoors\models\item\garment_of_reality_leggings.json
+575011c960fb5793620c20f344f7b45c8e3d08e5 assets\dimdoors\models\item\driftwood_trapdoor.json
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 b322b88251562bd2f48586aaa9d1ac1d86bc0772 assets\dimdoors\models\block\unraveled_stairs_inner.json
 138a03b7d1a980f54a1607a14f17d98fa54581ab assets\dimdoors\models\item\gravel_fence.json
 181ac0e973f73b3d08b17049ef9b7b5d71636a71 assets\dimdoors\models\item\fabric_of_finality.json
@@ -326,9 +351,15 @@ bcd621cddd741522b02a68d31596e39bbaccf39a assets\dimdoors\models\item\dark_sand.j
 e6cd320a743a0c37917b4f4d8e9ddc87e8429bae assets\dimdoors\models\block\gravel_fence_inventory.json
 70430eea77b7cc6d96b6ca03cb2d52075010265c assets\dimdoors\models\block\deepslate_slab.json
 846d009818b96465bd23b9816d8a567c75a28e64 assets\dimdoors\blockstates\driftwood_slab.json
+<<<<<<< HEAD
 17dadc19a3aef51d28dbe608d3a587b7fe0934d9 assets\dimdoors\blockstates\unraveled_fence.json
 45804e93796876352041cdf56a6fa7c346fb7271 assets\dimdoors\blockstates\gravel_wall.json
 6cb32abfd150e2b83d89ea623073aa78f0efa127 assets\dimdoors\blockstates\driftwood_wood.json
+=======
+45804e93796876352041cdf56a6fa7c346fb7271 assets\dimdoors\blockstates\gravel_wall.json
+6cb32abfd150e2b83d89ea623073aa78f0efa127 assets\dimdoors\blockstates\driftwood_wood.json
+17dadc19a3aef51d28dbe608d3a587b7fe0934d9 assets\dimdoors\blockstates\unraveled_fence.json
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 137230477ec5fd9885cada6d008e8683c7da15da assets\dimdoors\models\item\liminal_lint.json
 e6d466bad348d2d781317efa6117d5dc1d2fb6be assets\dimdoors\models\block\netherrack_stairs_outer.json
 464789558353e874dfa3ff185a1965b10987d6f9 assets\dimdoors\models\block\driftwood_gate_open.json
@@ -341,9 +372,15 @@ d2552babc41a6fa7e5a31b1677bd2699efe0aeda assets\dimdoors\models\item\amalgam_tra
 0ddc6813d805937e6087aed2d2de3e3f57d0cbc0 assets\dimdoors\models\block\sand_wall_inventory.json
 2d5caf588e8a15827d168e2293e8c4306f3ac5c3 assets\dimdoors\models\item\sand_wall.json
 d965d2ebb332c949949f155be90d2df8723b8a2d assets\dimdoors\models\block\driftwood_door_top_left.json
+<<<<<<< HEAD
 c5fe226729969acf52de2f6b4b773c630804547d assets\dimdoors\blockstates\driftwood_planks.json
 65750f1d59563a2f5054124d7b6aee56be32d1ab assets\dimdoors\blockstates\red_sand_stairs.json
 a0c768a895e3bfae85d2999affb14558193ab9f1 assets\dimdoors\models\block\stone_door_top_left.json
+=======
+a0c768a895e3bfae85d2999affb14558193ab9f1 assets\dimdoors\models\block\stone_door_top_left.json
+c5fe226729969acf52de2f6b4b773c630804547d assets\dimdoors\blockstates\driftwood_planks.json
+65750f1d59563a2f5054124d7b6aee56be32d1ab assets\dimdoors\blockstates\red_sand_stairs.json
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 27546e333bab0489735376f37c476e8278637049 assets\minecraft\blockstates\clay.json
 6d6cf12dfb995e7779e16ef780c174a23e86a129 assets\dimdoors\models\item\unraveled_gate.json
 27e9d4c07f7fc893a0d6ea105a694e251e0772cc assets\dimdoors\models\item\end_stone_stairs.json
@@ -351,6 +388,7 @@ a0c768a895e3bfae85d2999affb14558193ab9f1 assets\dimdoors\models\block\stone_door
 d63f5563710e26301291885b64afc5d787bf86ec assets\dimdoors\blockstates\unraveled_spike.json
 fe149ff0300c69e4d6bfe08f527ff9fcca70ae9b assets\dimdoors\blockstates\gravel_stairs.json
 058a4b3137b9c635c60bd445585d95a2ed5f7c60 assets\dimdoors\models\block\clay_wall_side.json
+<<<<<<< HEAD
 9945bcb61d2fa7a4a144311cd46d9c45f10b0041 assets\dimdoors\models\block\dark_sand_wall_post.json
 4e8b93d90a817b2305c896e130fd2a47351f209c assets\dimdoors\models\item\driftwood_planks.json
 946301c3c1caab9671fff2317ad79ad1105b2c43 assets\dimdoors\models\block\amalgam_stairs.json
@@ -358,6 +396,15 @@ b72fdaa01684150f9254f37b58b41dea09c8ea00 assets\dimdoors\models\block\end_stone_
 4fa77364448cd2333639827712f1c531da553873 assets\dimdoors\models\item\amalgam_lump.json
 a981c01da599db65d76ca9262d1ce94cae317cf2 assets\dimdoors\models\block\unravelled_fabric.json
 f9231c469bda43fa73dc0e7c9abcc8fa6fc87901 assets\dimdoors\models\item\garment_of_reality_chestplate.json
+=======
+4e8b93d90a817b2305c896e130fd2a47351f209c assets\dimdoors\models\item\driftwood_planks.json
+9945bcb61d2fa7a4a144311cd46d9c45f10b0041 assets\dimdoors\models\block\dark_sand_wall_post.json
+946301c3c1caab9671fff2317ad79ad1105b2c43 assets\dimdoors\models\block\amalgam_stairs.json
+b72fdaa01684150f9254f37b58b41dea09c8ea00 assets\dimdoors\models\block\end_stone_wall_side.json
+4fa77364448cd2333639827712f1c531da553873 assets\dimdoors\models\item\amalgam_lump.json
+f9231c469bda43fa73dc0e7c9abcc8fa6fc87901 assets\dimdoors\models\item\garment_of_reality_chestplate.json
+a981c01da599db65d76ca9262d1ce94cae317cf2 assets\dimdoors\models\block\unravelled_fabric.json
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 34da7268da48e8679b0da7d40cc7aff37db60676 assets\dimdoors\models\item\clay_wall.json
 df918bd3dfffef986b3f7b8f42d448f8f060f0fa assets\dimdoors\models\block\end_stone_stairs_outer.json
 2af9286dcfe5b22cd967f423bcf5806429502591 assets\dimdoors\blockstates\dark_sand_button.json

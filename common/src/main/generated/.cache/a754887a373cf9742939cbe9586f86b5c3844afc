@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // 1.21.1	2025-07-22T20:42:30.4514965	DimensionalDoors/Limbo Decay
+=======
+// 1.20.1	2024-11-18T07:27:57.1224649	DimensionalDoors/Limbo Decay
+>>>>>>> 2721ac61 (Added They Stare Back Disc....I took fare too long getting this in. I'm so sorry I took a year plus to do this Firel.)
 2daf4c1699c218e64219c347cd9ee9aafcb12e66 data\dimdoors\decay_patterns\sand_stairs.json
 44f5ec66483f6169980e6dad8fd7523cdee7336d data\dimdoors\decay_patterns\mud_stairs.json
 1baff2ac3796e87a2c61ece23d4e08c80b6274c8 data\dimdoors\decay_patterns\piston.json
