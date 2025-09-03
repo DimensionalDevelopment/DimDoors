@@ -43,11 +43,13 @@ public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<Entr
 		var state = blockEntity.getRenderBlockState();
 
 		renderBlockState(state, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
+        if(state.getBlock() instanceof DoorBlock) {
+            matrixStack.pushPose();
 
-		matrixStack.pushPose();
-		matrixStack.translate(0, 1, 0);
-		renderBlockState(state.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
-		matrixStack.popPose();
+            matrixStack.translate(0, 1, 0);
+            renderBlockState(state.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER), blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
+            matrixStack.popPose();
+        }
 
 
 		DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, blockEntity.getTransformer(), tickDelta, light, overlay, blockEntity.isTall());
