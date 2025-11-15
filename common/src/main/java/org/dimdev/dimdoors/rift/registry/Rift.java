@@ -68,7 +68,7 @@ public class Rift extends RegistryVertex {
 		for (Location location : DimensionalRegistry.getRiftRegistry().getSources(this.location)) {
 			DimensionalRegistry.getRiftRegistry().getRift(location).targetChanged(this);
 		}
-	}
+    }
 
 	private void updateColor() {
 		if(this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) riftBlockEntity.updateColor();

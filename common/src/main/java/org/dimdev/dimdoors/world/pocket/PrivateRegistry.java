@@ -20,29 +20,22 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class PrivateRegistry {
-	protected static class PocketInfo {
-		public final ResourceKey<Level> world;
-		public final int id;
+    protected record PocketInfo(ResourceKey<Level> world, int id) {
 
-		public PocketInfo(ResourceKey<Level> world, int id) {
-			this.world = world;
-			this.id = id;
-		}
+        public static CompoundTag toNbt(PocketInfo info) {
+            CompoundTag nbt = new CompoundTag();
+            nbt.putString("world", info.world.location().toString());
+            nbt.putInt("id", info.id);
+            return nbt;
+        }
 
-		public static CompoundTag toNbt(PocketInfo info) {
-			CompoundTag nbt = new CompoundTag();
-			nbt.putString("world", info.world.location().toString());
-			nbt.putInt("id", info.id);
-			return nbt;
-		}
-
-		public static PocketInfo fromNbt(CompoundTag nbt) {
-			return new PocketInfo(
-					ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
-					nbt.getInt("id")
-			);
-		}
-	}
+        public static PocketInfo fromNbt(CompoundTag nbt) {
+            return new PocketInfo(
+                    ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
+                    nbt.getInt("id")
+            );
+        }
+    }
 
 	private static final String DATA_NAME = "dimdoors_private_pockets";
 
@@ -84,7 +77,8 @@ public class PrivateRegistry {
 
 	public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {
 		this.privatePocketMap.put(playerUUID, new PocketInfo(pocket.getWorld(), pocket.getId()));
-	}
+        DimensionalRegistry.setDirty();
+    }
 
 	public UUID getPrivatePocketOwner(Pocket pocket) {
 		return this.privatePocketMap.inverse().get(new PocketInfo(pocket.getWorld(), pocket.getId()));

@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -143,12 +144,14 @@ public class PocketDirectory {
 	}
 
 	private void addPocket(AbstractPocket<?> pocket) {
-		pockets.put(pocket.getId(), pocket);
+        pockets.put(pocket.getId(), pocket);
+        DimensionalRegistry.setDirty();
 	}
 
 	// TODO: rework this method to remove references as well
 	public void removePocket(int id) {
 		this.pockets.remove(id);
+        DimensionalRegistry.setDirty();
 	}
 
 	/**

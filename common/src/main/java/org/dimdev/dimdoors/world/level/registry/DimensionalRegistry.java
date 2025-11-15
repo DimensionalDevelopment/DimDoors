@@ -24,14 +24,14 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public class DimensionalRegistry extends SavedData {
+public class DimensionalRegistry {
 	public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
 	private static Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
 	private static RiftRegistry riftRegistry = new RiftRegistry();
 	private static PrivateRegistry privateRegistry = new PrivateRegistry();
 
-	public static class DummyData extends SavedData {
-		public static final DummyData INSTANCE = new DummyData();
+	private static class DummyData extends SavedData {
+		private static final DummyData INSTANCE = new DummyData();
 
 		@Override
 		public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
@@ -39,22 +39,17 @@ public class DimensionalRegistry extends SavedData {
 
 			return compoundTag;
 		}
+    }
 
-
-	}
+    public static void setDirty() {
+        DummyData.INSTANCE.setDirty();
+    }
 
 	public static void init(MinecraftServer server) {
 		server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<DummyData>(() -> DummyData.INSTANCE, (compoundTag, provider) -> {
             readFromNbt(compoundTag, provider);
             return DummyData.INSTANCE;
         }, DataFixTypes.LEVEL /*TODO: FIgure out if correct for a singlemon data*/), "dimensional_registry");
-	}
-
-	@Override
-	public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-		writeToNbt(compoundTag, provider);
-
-		return compoundTag;
 	}
 
 	public static void readFromNbt(CompoundTag nbt, HolderLookup.Provider provider) {
@@ -119,8 +114,13 @@ public class DimensionalRegistry extends SavedData {
 			throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
 		}
 
-		return pocketRegistry.computeIfAbsent(key, PocketDirectory::new);
+		return pocketRegistry.computeIfAbsent(key, DimensionalRegistry::createPocketRegistry);
 	}
+
+    private static PocketDirectory createPocketRegistry(ResourceKey<Level> key) {
+        setDirty();
+        return new PocketDirectory(key);
+    }
 
 	private static Map<ResourceKey<Level>, PocketDirectory> getPocketDirectories() {
 		return pocketRegistry;
@@ -133,10 +133,5 @@ public class DimensionalRegistry extends SavedData {
 
 	public Map<ResourceKey<Level>, PocketDirectory> getPocketRegistry() {
 		return pocketRegistry;
-	}
-
-	@Override
-	public boolean isDirty() {
-		return true;
 	}
 }

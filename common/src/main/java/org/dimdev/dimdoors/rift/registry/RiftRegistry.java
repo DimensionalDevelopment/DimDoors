@@ -179,6 +179,8 @@ public class RiftRegistry {
 			this.locationMap.put(location, rift);
 			this.uuidMap.put(rift.id, rift);
 			this.graph.addVertex(rift);
+
+            DimensionalRegistry.setDirty();
 		}
 		return rift;
 	}
@@ -201,7 +203,9 @@ public class RiftRegistry {
 		this.uuidMap.put(rift.id, rift);
 		this.locationMap.put(location, rift);
 		rift.markDirty();
-	}
+
+        DimensionalRegistry.setDirty();
+    }
 
 	public void removeRift(Location location) {
 		LOGGER.debug("Removing rift at " + location);
@@ -218,7 +222,9 @@ public class RiftRegistry {
 		// Notify the adjacent vertices of the change
 		for (DefaultEdge edge : incomingEdges) this.graph.getEdgeSource(edge).targetGone(rift);
 		for (DefaultEdge edge : outgoingEdges) this.graph.getEdgeTarget(edge).sourceGone(rift);
-	}
+
+        DimensionalRegistry.setDirty();
+    }
 
 	private void addEdge(RegistryVertex from, RegistryVertex to) {
 		this.graph.addEdge(from, to);
@@ -229,11 +235,13 @@ public class RiftRegistry {
 		if (to instanceof Rift) {
 			((Rift) to).markDirty();
 		}
+
 	}
 
 	private void removeEdge(RegistryVertex from, RegistryVertex to) {
 		this.graph.removeEdge(from, to);
-	}
+        DimensionalRegistry.setDirty();
+    }
 
 	public void addLink(Location locationFrom, Location locationTo) {
 		LOGGER.debug("Adding link " + locationFrom + " -> " + locationTo);
@@ -248,7 +256,9 @@ public class RiftRegistry {
 			from.targetAdded(to);
 			to.sourceAdded(from);
 		}
-	}
+
+        DimensionalRegistry.setDirty();
+    }
 
 	public void removeLink(Location locationFrom, Location locationTo) {
 		LOGGER.debug("Removing link " + locationFrom + " -> " + locationTo);
@@ -261,14 +271,17 @@ public class RiftRegistry {
 		// Notify the linked vertices of the change
 		from.targetGone(to);
 		to.sourceGone(from);
-	}
+
+        DimensionalRegistry.setDirty();
+    }
 
 	public void setProperties(Location location, LinkProperties properties) {
 		LOGGER.debug("Setting DungeonLinkProperties for rift at " + location + " to " + properties);
 		Rift rift = this.getRift(location);
 		rift.setProperties(properties);
 		rift.markDirty();
-	}
+        DimensionalRegistry.setDirty();
+    }
 
 	public Set<Location> getPocketEntrances(Pocket pocket) {
 		PocketEntrancePointer pointer = this.pocketEntranceMap.get(pocket);
@@ -311,7 +324,9 @@ public class RiftRegistry {
 				}),
 				this.getRift(location)
 		);
-	}
+
+        DimensionalRegistry.setDirty();
+    }
 
 	public Location getPrivatePocketEntrance(UUID playerUUID) {
 		// Try to get the last used entrance
@@ -342,7 +357,8 @@ public class RiftRegistry {
 	public void setLastPrivatePocketEntrance(UUID playerUUID, Location rift) {
 		LOGGER.debug("Setting last used private pocket entrance for " + playerUUID + " at " + rift);
 		this.setPlayerRiftPointer(playerUUID, rift, this.lastPrivatePocketEntrances);
-	}
+        DimensionalRegistry.setDirty();
+    }
 
 	public Location getPrivatePocketExit(UUID playerUUID) {
 		PlayerRiftPointer entrancePointer = this.lastPrivatePocketExits.get(playerUUID);
@@ -353,7 +369,8 @@ public class RiftRegistry {
 	public void setLastPrivatePocketExit(UUID playerUUID, Location rift) {
 		LOGGER.debug("Setting last used private pocket exit for " + playerUUID + " at " + rift);
 		this.setPlayerRiftPointer(playerUUID, rift, this.lastPrivatePocketExits);
-	}
+        DimensionalRegistry.setDirty();
+    }
 
 	public Location getOverworldRift(UUID playerUUID) {
 		/*
@@ -378,7 +395,8 @@ public class RiftRegistry {
 		this.setPlayerRiftPointer(playerUUID, rift, this.overworldRifts);
 		 */
 		overworldLocations.put(playerUUID, rift);
-	}
+        DimensionalRegistry.setDirty();
+    }
 
 	public Collection<Rift> getRifts() {
 		return this.locationMap.values();
