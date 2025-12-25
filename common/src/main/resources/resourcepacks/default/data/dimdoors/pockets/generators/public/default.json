@@ -3,7 +3,7 @@
   "length": "5 + 16 * public_size",
   "type": "dimdoors:void",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

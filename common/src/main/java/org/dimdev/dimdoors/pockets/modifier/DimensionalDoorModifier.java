@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.pockets.modifier;
 import com.google.common.base.MoreObjects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -25,13 +26,12 @@ import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
-import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
+public class DimensionalDoorModifier extends AbstractModifier {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final String KEY = "door";
 
@@ -49,7 +49,7 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	private Equation zEquation;
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
 		String facingString = nbt.getString("facing");
 		facing = Direction.byName(nbt.getString("facing"));
 		if (facing == null || facing.getAxis().isVertical()) {
@@ -86,8 +86,8 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 	}
 
 	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
+	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+		super.toNbtInternal(nbt, provider, allowReference);
 
 		nbt.putString("facing", facing.getSerializedName());
 		nbt.putString("door_type", doorTypeString);
@@ -129,42 +129,30 @@ public class DimensionalDoorModifier extends AbstractLazyCompatibleModifier {
 
 	@Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
-		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
-		BlockPos pocketOrigin = manager.getPocket().getOrigin();
-		BlockPos pos = new BlockPos((int) (xEquation.apply(variableMap) + pocketOrigin.getX()), (int) (yEquation.apply(variableMap) + pocketOrigin.getY()), (int) (zEquation.apply(variableMap) + pocketOrigin.getZ()));
+        Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
+        BlockPos pocketOrigin = manager.getPocket().getOrigin();
+        BlockPos pos = new BlockPos((int) (xEquation.apply(variableMap) + pocketOrigin.getX()), (int) (yEquation.apply(variableMap) + pocketOrigin.getY()), (int) (zEquation.apply(variableMap) + pocketOrigin.getZ()));
 
-		BlockState lower = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).setValue(DimensionalDoorBlock.FACING, facing);
-		BlockState upper = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
-		EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.get().create(pos, lower);
-		rift.setLevel(parameters.world());
+        BlockState lower = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).setValue(DimensionalDoorBlock.FACING, facing);
+        BlockState upper = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
+        EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.get().create(pos, lower);
+        rift.setLevel(parameters.world());
 
-		if (doorData == null) {
-			rift.setDestination(new IdMarker(manager.nextId()));
-		} else {
-			CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
-			rift.setData(RiftData.fromNbt(solvedDoorData));
-		}
+        if (doorData == null) {
+            rift.setDestination(new IdMarker(manager.nextId()));
+        } else {
+            CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
+            rift.setData(RiftData.fromNbt(solvedDoorData));
+        }
 
-		manager.add(rift);
+        manager.add(rift);
 
-		if (manager.getPocket() instanceof LazyGenerationPocket) {
+        ServerLevel world = parameters.world();
 
-			// queue two separate tasks, Cubic Chunks may cause the positions to be in different chunks.
-			queueChunkModificationTask(new ChunkPos(pos), chunk -> {
-				chunk.setBlockState(pos, lower, false);
-				chunk.setBlockEntity(rift);
-			});
-			queueChunkModificationTask(new ChunkPos(pos.above()), chunk -> {
-				chunk.setBlockState(pos.above(), upper, false);
-			});
-		} else {
-			ServerLevel world = parameters.world();
+        world.setBlockAndUpdate(pos, lower);
+        world.setBlockAndUpdate(pos.above(), upper);
 
-			world.setBlockAndUpdate(pos, lower);
-			world.setBlockAndUpdate(pos.above(), upper);
-
-			world.setBlockEntity(rift);
-		}
+        world.setBlockEntity(rift);
 	}
 
 	@Override

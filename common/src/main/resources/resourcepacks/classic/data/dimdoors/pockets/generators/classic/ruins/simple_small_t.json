@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "classic/ruins/heart_of_disorder",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

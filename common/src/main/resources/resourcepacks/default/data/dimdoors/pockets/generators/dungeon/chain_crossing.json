@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/chain_crossing",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

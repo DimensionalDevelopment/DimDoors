@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/freeroam_empty_street",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

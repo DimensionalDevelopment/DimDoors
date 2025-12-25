@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/river_road_twin_bridges",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

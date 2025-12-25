@@ -3,7 +3,7 @@
   "id": "dungeon/upwards_t_treasure",
   "setup_loot": true,
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

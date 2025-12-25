@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,35 +27,35 @@ import java.util.stream.Stream;
 public final class SchematicPlacer {
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	private SchematicPlacer() {
-	}
+//	private SchematicPlacer() {
+//	}
 
-	public static void place(Schematic schematic, WorldGenLevel world, BlockPos origin, BlockPlacementType placementType) {
+	public static List<BlockEntity> place(Schematic schematic, WorldGenLevel world, BlockPos origin, BlockPlacementType placementType) {
 		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
 		for (String id : schematic.getMetadata().requiredMods()) {
 			if (!Platform.isModLoaded(id)) {
 				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
 			}
 		}
-		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		blockSample.place(origin, world, placementType, false);
+
+		return schematic.place(origin, world, placementType);
 	}
 
-	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin, HolderLookup.Provider provider) {
-		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		return blockSample.getAbsoluteRifts(origin, provider);
-	}
-
-	public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
-		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
-		for (String id : schematic.getMetadata().requiredMods()) {
-			if (!Platform.isModLoaded(id)) {
-				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
-			}
-		}
-		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-		blockSample.place(origin, world, chunk, placementType, false);
-	}
+//	public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin, HolderLookup.Provider provider) {
+//		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
+//		return blockSample.getAbsoluteRifts(origin, provider);
+//	}
+//
+//	public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
+//		LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
+//		for (String id : schematic.getMetadata().requiredMods()) {
+//			if (!Platform.isModLoaded(id)) {
+//				LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
+//			}
+//		}
+//		RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
+//		blockSample.place(origin, world, chunk, placementType, false);
+//	}
 
 
 
@@ -89,24 +90,7 @@ public final class SchematicPlacer {
 		return new int[0][0];
 	}
 
-	private static void placeEntities(BlockPos origin, Schematic schematic, WorldGenLevel world) {
-		List<CompoundTag> entityNbts = schematic.getEntities();
-		for (CompoundTag nbt : entityNbts) {
-			ListTag nbtList = Objects.requireNonNull(nbt.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().name() + "\" did not have a Pos nbt list!");
-			SchematicPlacer.processPos(nbtList, origin, schematic.getOffset(), nbt);
 
-			EntityType<?> entityType = EntityType.by(fixEntityId(nbt)).orElseThrow(AssertionError::new);
-			Entity e = entityType.create(world.getLevel());
-			// TODO: fail with an exception
-			if (e != null) {
-				e.load(nbt);
-
-//				e.getSelfAndPassengers().forEach(e1 -> System.out.println("Blep: " + e.getDisplayName().getString() + " " + world.addFreshEntity(e1)));
-
-				world.addFreshEntityWithPassengers(e);
-			}
-		}
-	}
 
 	public static CompoundTag fixEntityId(CompoundTag nbt) {
 		if (!nbt.contains("Id") && nbt.contains("id")) {

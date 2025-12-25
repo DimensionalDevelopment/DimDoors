@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/long_corridor",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

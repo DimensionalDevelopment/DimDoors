@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -28,15 +29,15 @@ public class TemplateModifier extends AbstractModifier {
     private List<Integer> ids;
 
     @Override
-    public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+    public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
         templateId = ResourceLocation.tryParse(nbt.getString("templateId"));
         ids = stream(nbt.getByteArray("ids")).boxed().collect(Collectors.toList());
         return this;
     }
 
     @Override
-    public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-        super.toNbtInternal(nbt, allowReference);
+    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+        super.toNbtInternal(nbt, provider, allowReference);
 
         nbt.putString("templateId", templateId.toString());
         nbt.putByteArray("ids", toByteArray(ids.stream().mapToInt(Integer::intValue).toArray()));

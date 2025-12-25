@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -24,7 +25,7 @@ public class OffsetModifier extends AbstractModifier {
 	private Equation offsetZEquation;
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
 		try {
 			offsetX = nbt.contains("offset_x") ? nbt.getString("offset_x") : "0";
 			offsetXEquation = Equation.parse(offsetX);
@@ -40,8 +41,8 @@ public class OffsetModifier extends AbstractModifier {
 	}
 
 	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
+	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+		super.toNbtInternal(nbt, provider, allowReference);
 
 		if (!offsetX.equals("0")) nbt.putString("offset_x", offsetX);
 		if (!offsetY.equals("0")) nbt.putString("offset_y", offsetY);

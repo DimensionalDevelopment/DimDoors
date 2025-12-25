@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "classic/ruins/small_exit_prison",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

@@ -73,7 +73,7 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 	protected void openContainer(Level level, BlockPos bpos, ServerPlayer player) {
 		BlockEntity be = level.getBlockEntity(bpos);
 		if (be instanceof TesselatingLoomBlockEntity provider) {
-			MenuRegistry.openExtendedMenu(player, provider, buf -> buf.writeBlockPos(bpos));
+			player.openMenu(provider);
 			player.awardStat(Stats.INTERACT_WITH_FURNACE);
 		} // end-if
 		else {

@@ -92,7 +92,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		super.saveAdditional(nbt, provider);
 		CompoundTag inventoryTag = new CompoundTag();
 		ContainerHelper.saveAllItems(inventoryTag, inventory, provider);
-		inventoryTag.put("Output", output.save(provider, new CompoundTag()));
+		if(!output.isEmpty()) inventoryTag.put("Output", output.save(provider, new CompoundTag()));
 		nbt.put(INVENTORY_TAG, inventoryTag);
 		nbt.putInt(WEAVE_TIME_TAG, this.weaveTime);
 		nbt.putInt(WEAVE_TIME_TOTAL_TAG, this.weaveTimeTotal);

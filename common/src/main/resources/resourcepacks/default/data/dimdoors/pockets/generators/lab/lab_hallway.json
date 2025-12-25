@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "lab/lab_hallway",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

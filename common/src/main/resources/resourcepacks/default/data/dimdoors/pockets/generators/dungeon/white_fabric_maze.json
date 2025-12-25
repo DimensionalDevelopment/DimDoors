@@ -3,7 +3,7 @@
   "id": "dungeon/white_fabric_maze",
   "setup_loot": true,
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

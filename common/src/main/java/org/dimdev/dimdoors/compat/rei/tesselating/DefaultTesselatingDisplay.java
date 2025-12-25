@@ -40,30 +40,6 @@ public abstract class DefaultTesselatingDisplay<C extends TesselatingRecipe> ext
         this.weavingTime = recipe.value().weavingTime();
     }
 
-//    private static final List<CraftingRecipeSizeProvider<?>> SIZE_PROVIDER = new ArrayList<>();
-
-//    static {
-//        try {
-//            Class.forName("me.shedaniel.rei.plugin.common.displays.crafting.%s.DefaultCraftingDisplayImpl".formatted(Platform.isForge() ? "forge" : "fabric"))
-//                    .getDeclaredMethod("registerPlatformSizeProvider")
-//                    .invoke(null);
-//        } catch (IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-
-//    /**
-//     * Registers a size provider for crafting recipes.
-//     * This is not reloadable, please statically register your provider, and
-//     * do not repeatedly register it.
-//     *
-//     * @param sizeProvider the provider to register
-//     * @param <R>          the recipe type
-//     */
-//    public static <R extends Recipe<?>> void registerSizeProvider(CraftingRecipeSizeProvider<R> sizeProvider) {
-//        SIZE_PROVIDER.add(0, sizeProvider);
-//    }
-
     @Nullable
     public static DefaultTesselatingDisplay<?> of(RecipeHolder<Recipe<?>> recipe) {
         if (recipe.value() instanceof TesselatingShapelessRecipe) {
@@ -136,28 +112,6 @@ public abstract class DefaultTesselatingDisplay<C extends TesselatingRecipe> ext
         return craftingGridWidth * y + x;
     }
 
-//    public static BasicDisplay.Serializer<DefaultTesselatingDisplay<?>> serializer() {
-//        return BasicDisplay.Serializer.<DefaultTesselatingDisplay<?>>of((input, output, location, tag) -> {
-//            if (tag.contains("REIRecipeType")) {
-//                String type = tag.getString("REIRecipeType");
-//                return switch (type) {
-//                    case "Shapeless" -> DefaultCustomShapelessDisplay.simple(input, output, location);
-//                    case "Shaped" -> DefaultCustomShapedDisplay.simple(input, output, tag.getInt("RecipeWidth"), tag.getInt("RecipeHeight"), location);
-//                    default -> throw new IllegalArgumentException("Unknown recipe type: " + type);
-//                };
-//            } else {
-//                return DefaultCustomDisplay.simple(input, output, location);
-//            }
-//        }, (display, tag) -> {
-//            tag.putString("REIRecipeType", display.isShapeless() ? "Shapeless" : "Shaped");
-//            if (!display.isShapeless()) {
-//                tag.putInt("RecipeWidth", display.getInputWidth(3, 3));
-//                tag.putInt("RecipeHeight", display.getInputHeight(3, 3));
-//            }
-//        });
-//    }
-//
-//    @Override
     public List<InputIngredient<EntryStack<?>>> getInputIngredients(MenuSerializationContext<?, ?, ?> context, MenuInfo<?, ?> info, boolean fill) {
         int craftingWidth = 3, craftingHeight = 3;
 
@@ -176,7 +130,6 @@ public abstract class DefaultTesselatingDisplay<C extends TesselatingRecipe> ext
 
     public List<InputIngredient<EntryStack<?>>> getInputIngredients(int craftingWidth, int craftingHeight) {
         int inputWidth = getInputWidth(craftingWidth, craftingHeight);
-        int inputHeight = getInputHeight(craftingWidth, craftingHeight);
 
         Map<IntIntPair, InputIngredient<EntryStack<?>>> grid = new HashMap<>();
 

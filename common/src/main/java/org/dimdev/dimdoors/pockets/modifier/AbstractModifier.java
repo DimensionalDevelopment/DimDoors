@@ -23,13 +23,13 @@ public abstract class AbstractModifier implements Modifier {
 		if (allowReference && this.getResourceKey() != null) {
 			return StringTag.valueOf(this.getResourceKey());
 		}
-		return toNbtInternal(nbt, allowReference);
+		return toNbtInternal(nbt, provider, allowReference);
 	}
 
 	// utility so the first part of toNbt can be extracted into default method
 	// at this point we know for a fact, that we need to serialize into the CompoundTag
 	// overwrite in subclass
-	protected CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
+	protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
 		return this.getType().toNbt(nbt);
 	}
 }

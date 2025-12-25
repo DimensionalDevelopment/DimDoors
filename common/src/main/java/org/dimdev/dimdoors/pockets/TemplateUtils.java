@@ -36,6 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static com.mojang.text2speech.Narrator.LOGGER;
+
 public class TemplateUtils {
     static void setupEntityPlaceholders(List<CompoundTag> entities, CompoundTag entityTag) {
         if (entityTag.contains("placeholder")) {
@@ -81,17 +83,22 @@ public class TemplateUtils {
         ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
         HashMap<RiftBlockEntity, Float> entranceWeights = new HashMap<>();
 
-        for (RiftBlockEntity rift : rifts) { // Find an entrance
+        // Add logging to debug
+        LOGGER.info("Registering {} rifts for pocket {}", rifts.size(), pocket.getId());
+
+        for (RiftBlockEntity rift : rifts) {
             if (rift.getDestination() instanceof PocketEntranceMarker) {
                 entranceWeights.put(rift, ((PocketEntranceMarker) rift.getDestination()).getWeight());
             }
         }
 
         if (entranceWeights.isEmpty()) {
+            LOGGER.warn("No entrance markers found in pocket {}", pocket.getId());
             return;
         }
 
         RiftBlockEntity selectedEntrance = MathUtil.weightedRandom(entranceWeights);
+        LOGGER.info("Selected entrance at {} for pocket {}", selectedEntrance.getBlockPos(), pocket.getId());
 
         // Replace entrances with appropriate destinations
         for (RiftBlockEntity rift : rifts) {
@@ -100,7 +107,11 @@ public class TemplateUtils {
                 if (rift == selectedEntrance) {
                     rift.setDestination(((PocketEntranceMarker) dest).getIfDestination());
                     rift.register();
-                    DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, new Location((ServerLevel) rift.getLevel(), rift.getBlockPos()));
+
+                    // FIX: Use 'world' instead of rift.getLevel()
+                    Location entranceLocation = new Location(world, rift.getBlockPos());
+                    DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, entranceLocation);
+                    LOGGER.info("Registered pocket entrance at {}", entranceLocation);
                 } else {
                     rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
                 }
@@ -121,58 +132,58 @@ public class TemplateUtils {
         }
     }
 
-    public static void replacePlaceholders(Schematic schematic, WorldGenLevel world) {
-        // Replace placeholders (some schematics will contain them)
-        List<CompoundTag> blockEntities = new ArrayList<>();
-        for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
-            if (blockEntityTag.contains("placeholder")) {
-                int x = blockEntityTag.getInt("x");
-                int y = blockEntityTag.getInt("y");
-                int z = blockEntityTag.getInt("z");
-                BlockPos pos = new BlockPos(x, y, z);
-
-                CompoundTag newTag = new CompoundTag();
-                EntranceRiftBlockEntity rift = new EntranceRiftBlockEntity(pos, Schematic.getBlockSample(schematic).getBlockState(pos));
-                switch (blockEntityTag.getString("placeholder")) {
-                    case "deeper_depth_door" -> {
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
-                        rift.saveAdditional(newTag, world.registryAccess());
-                    }
-                    case "less_deep_depth_door" -> {
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
-                        rift.saveAdditional(newTag, world.registryAccess());
-                    }
-                    case "overworld_door" -> {
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
-                        rift.saveAdditional(newTag, world.registryAccess());
-                    }
-                    case "entrance_door" -> {
-                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
-                        rift.saveAdditional(newTag, world.registryAccess());
-                    }
-                    case "gateway_portal" -> {
-                        rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
-                        rift.setDestination(DefaultDungeonDestinations.getGateway());
-                        rift.saveAdditional(newTag, world.registryAccess());
-                    }
-                    default -> throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
-                }
-                rift.setWorld(world.getLevel());
-                blockEntities.add(newTag);
-            } else {
-                blockEntities.add(blockEntityTag);
-            }
-        }
-        schematic.setBlockEntities(blockEntities);
-
-        List<CompoundTag> entities = new ArrayList<>();
-        for (CompoundTag entityTag : schematic.getEntities()) {
-            TemplateUtils.setupEntityPlaceholders(entities, entityTag);
-        }
-        schematic.setEntities(entities);
-    }
+//    public static void replacePlaceholders(Schematic schematic, WorldGenLevel world) {
+//        // Replace placeholders (some schematics will contain them)
+//        List<CompoundTag> blockEntities = new ArrayList<>();
+//        for (CompoundTag blockEntityTag : schematic.getBlockEntities()) {
+//            if (blockEntityTag.contains("placeholder")) {
+//                int x = blockEntityTag.getInt("x");
+//                int y = blockEntityTag.getInt("y");
+//                int z = blockEntityTag.getInt("z");
+//                BlockPos pos = new BlockPos(x, y, z);
+//
+//                CompoundTag newTag = new CompoundTag();
+//                EntranceRiftBlockEntity rift = new EntranceRiftBlockEntity(pos, Schematic.getBlockSample(schematic).getBlockState(pos));
+//                switch (blockEntityTag.getString("placeholder")) {
+//                    case "deeper_depth_door" -> {
+//                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+//                        rift.setDestination(DefaultDungeonDestinations.getDeeperDungeonDestination());
+//                        rift.saveAdditional(newTag, world.registryAccess());
+//                    }
+//                    case "less_deep_depth_door" -> {
+//                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+//                        rift.setDestination(DefaultDungeonDestinations.getShallowerDungeonDestination());
+//                        rift.saveAdditional(newTag, world.registryAccess());
+//                    }
+//                    case "overworld_door" -> {
+//                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+//                        rift.setDestination(DefaultDungeonDestinations.getOverworldDestination());
+//                        rift.saveAdditional(newTag, world.registryAccess());
+//                    }
+//                    case "entrance_door" -> {
+//                        rift.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+//                        rift.setDestination(DefaultDungeonDestinations.getTwoWayPocketEntrance());
+//                        rift.saveAdditional(newTag, world.registryAccess());
+//                    }
+//                    case "gateway_portal" -> {
+//                        rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
+//                        rift.setDestination(DefaultDungeonDestinations.getGateway());
+//                        rift.saveAdditional(newTag, world.registryAccess());
+//                    }
+//                    default -> throw new RuntimeException("Unknown block entity placeholder: " + blockEntityTag.getString("placeholder"));
+//                }
+//                rift.setWorld(world.getLevel());
+//                blockEntities.add(newTag);
+//            } else {
+//                blockEntities.add(blockEntityTag);
+//            }
+//        }
+//        schematic.setBlockEntities(blockEntities);
+//
+//        List<CompoundTag> entities = new ArrayList<>();
+//        for (CompoundTag entityTag : schematic.getEntities()) {
+//            TemplateUtils.setupEntityPlaceholders(entities, entityTag);
+//        }
+//        schematic.setEntities(entities);
+//    }
 }

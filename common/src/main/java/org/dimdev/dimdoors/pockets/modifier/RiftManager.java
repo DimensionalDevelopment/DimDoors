@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
-import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class RiftManager {
@@ -97,7 +96,4 @@ public class RiftManager {
 		return rifts;
 	}
 
-	public boolean isPocketLazy() {
-		return pocket instanceof LazyGenerationPocket;
-	}
 }

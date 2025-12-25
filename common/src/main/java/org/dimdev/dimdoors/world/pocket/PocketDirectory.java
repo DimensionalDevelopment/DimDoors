@@ -8,7 +8,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -132,6 +136,8 @@ public class PocketDirectory {
 		nextIDMap.put(base3Size, cursor + squaredSize);
 		addPocket(pocket);
 
+        preloadPocketChunks(pocket);
+
 		IdReferencePocket.IdReferencePocketBuilder idReferenceBuilder = IdReferencePocket.builder();
 		for (int i = 1; i < squaredSize; i++) {
 			addPocket(idReferenceBuilder
@@ -142,6 +148,22 @@ public class PocketDirectory {
 		}
 		return pocket;
 	}
+
+    private void preloadPocketChunks(Pocket pocket) {
+        ServerLevel level = DimensionalDoors.getWorld(pocket.getWorld());
+        BoundingBox box = pocket.getBox();
+
+        int minCX = box.minX() >> 4;
+        int maxCX = box.maxX() >> 4;
+        int minCZ = box.minZ() >> 4;
+        int maxCZ = box.maxZ() >> 4;
+
+        for (int cx = minCX; cx <= maxCX; cx++) {
+            for (int cz = minCZ; cz <= maxCZ; cz++) {
+                level.getChunk(cx, cz);
+            }
+        }
+    }
 
 	private void addPocket(AbstractPocket<?> pocket) {
         pockets.put(pocket.getId(), pocket);

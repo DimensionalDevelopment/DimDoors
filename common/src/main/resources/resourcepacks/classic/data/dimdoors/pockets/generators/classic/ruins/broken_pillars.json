@@ -3,7 +3,7 @@
   "setup_loot": true,
   "id": "classic/ruins/broken_pillars",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

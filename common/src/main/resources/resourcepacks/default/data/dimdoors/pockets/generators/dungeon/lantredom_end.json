@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/lantredom_end",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket",
+    "type": "dimdoors:pocket",
     "addons": [
       {
         "type": "dimdoors:sky",

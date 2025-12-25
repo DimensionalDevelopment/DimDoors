@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "classic/ruins/exit_ruins_with_hidden_door",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

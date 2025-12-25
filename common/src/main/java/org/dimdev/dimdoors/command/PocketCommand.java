@@ -4,8 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.architectury.platform.Platform;
-import dev.architectury.utils.GameInstance;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -110,13 +108,13 @@ public class PocketCommand {
 
 	private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
 		SchematicPlacer.place(
-				template.getSchematic(),
+				template.schematic(),
 				source.serverLevel(),
 				source.blockPosition(),
 				blockPlacementType
 		);
 
-		String id = template.getId().toString();
+		String id = template.id().toString();
 		source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level().dimension().location().toString()), true);
 		return Command.SINGLE_SUCCESS;
 	}

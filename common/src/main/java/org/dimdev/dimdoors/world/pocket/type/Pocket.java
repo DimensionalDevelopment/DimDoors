@@ -31,6 +31,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	private int range = -1;
 	protected BoundingBox box;
 	public VirtualLocation virtualLocation;
+    private Map<BlockPos, BlockEntity> cachedBlockEntities = null;
 
 	public Pocket(int id, ResourceKey<Level> world, int x, int z) {
 		super(id, world);
@@ -140,14 +141,35 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return this;
 	}
 
-	public Map<BlockPos, BlockEntity> getBlockEntities() {
-		Level serverWorld = DimensionalDoors.getWorld(this.getWorld());
-		Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
-		ChunkPos.rangeClosed(new ChunkPos(new BlockPos(box.minX(), box.minY(), box.minY())), new ChunkPos(new BlockPos(box.maxX(), box.maxY(), box.maxZ()))).forEach(chunkPos -> serverWorld.getChunk(chunkPos.x, chunkPos.z).getBlockEntities().forEach((blockPos, blockEntity) -> {
-			if (this.box.isInside(blockPos)) blockEntities.put(blockPos, blockEntity);
-		}));
-		return blockEntities;
-	}
+    public void cacheBlockEntities(List<BlockEntity> entities) {
+        this.cachedBlockEntities = entities.stream()
+                .collect(Collectors.toMap(BlockEntity::getBlockPos, be -> be));
+    }
+
+    public Map<BlockPos, BlockEntity> getBlockEntities() {
+        if (cachedBlockEntities != null) {
+            return cachedBlockEntities;
+        }
+
+        Level serverWorld = DimensionalDoors.getWorld(this.getWorld());
+        Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();
+
+        // VERIFY THIS LINE - should be minZ() not minY()
+        ChunkPos minChunk = new ChunkPos(box.minX() >> 4, box.minZ() >> 4);
+        ChunkPos maxChunk = new ChunkPos(box.maxX() >> 4, box.maxZ() >> 4);
+
+        ChunkPos.rangeClosed(minChunk, maxChunk).forEach(chunkPos -> {
+            serverWorld.getChunk(chunkPos.x, chunkPos.z)
+                    .getBlockEntities()
+                    .forEach((blockPos, blockEntity) -> {
+                        if (this.box.isInside(blockPos)) {
+                            blockEntities.put(blockPos, blockEntity);
+                        }
+                    });
+        });
+
+        return blockEntities;
+    }
 
 	public BoundingBox getBox() {
 		return box;

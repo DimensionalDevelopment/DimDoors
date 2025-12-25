@@ -34,40 +34,15 @@ public interface Modifier extends ReferenceSerializable {
 		};
 	}
 
-	static Modifier deserialize(Tag nbt) {
-		return deserialize(nbt, null);
-	}
-
-	static Modifier deserialize(CompoundTag nbt, ResourceManager manager) {
+	static Modifier deserialize(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
 		ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type")); // TODO: return some NONE Modifier if type cannot be found or deserialization fails.
-		return REGISTRY.get(id).fromNbt(nbt, manager);
+		return REGISTRY.get(id).fromNbt(nbt, provider, manager);
 	}
 
-	static Modifier deserialize(CompoundTag nbt) {
-		return deserialize(nbt, null);
-	}
-
-	static Tag serialize(Modifier modifier, boolean allowReference) {
-		return modifier.toNbt(new CompoundTag(), DimensionalDoors.getServer().overworld().registryAccess(), allowReference);
-	}
-
-	static Tag serialize(Modifier modifier) {
-		return serialize(modifier, false);
-	}
-
-
-	Modifier fromNbt(CompoundTag nbt, ResourceManager manager);
-
-	default Modifier fromNbt(CompoundTag nbt) {
-		return fromNbt(nbt, null);
-	}
+    Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager);
 
 	default Tag toNbt(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
 		return this.getType().toNbt(nbt);
-	}
-
-	default Tag toNbt(CompoundTag nbt, HolderLookup.Provider provider) {
-		return toNbt(nbt, provider, false);
 	}
 
 	void setResourceKey(String resourceKey);
@@ -101,11 +76,7 @@ public interface Modifier extends ReferenceSerializable {
 
 		RegistrySupplier<ModifierType<TemplateModifier>> TEMPLATE_MODIFIER_TYPE = register(DimensionalDoors.id(TemplateModifier.KEY), TemplateModifier::new);
 
-		Modifier fromNbt(CompoundTag nbt, ResourceManager manager);
-
-		default Modifier fromNbt(CompoundTag nbt) {
-			return fromNbt(nbt, null);
-		}
+		Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager);
 
 		CompoundTag toNbt(CompoundTag nbt);
 
@@ -114,8 +85,8 @@ public interface Modifier extends ReferenceSerializable {
 		static <U extends Modifier> RegistrySupplier<ModifierType<U>> register(ResourceLocation id, Supplier<U> factory) {
 			return REGISTRY.register(id, () -> new ModifierType<U>() {
 				@Override
-				public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
-					return factory.get().fromNbt(nbt, manager);
+				public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+					return factory.get().fromNbt(nbt, provider, manager);
 				}
 
 				@Override

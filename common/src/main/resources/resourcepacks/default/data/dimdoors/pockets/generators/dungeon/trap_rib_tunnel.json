@@ -3,7 +3,7 @@
   "setup_loot": true,
   "id": "dungeon/trap_rib_tunnel",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

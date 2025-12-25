@@ -7,8 +7,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -18,15 +16,11 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.generator.LazyPocketGenerator;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.modifier.LazyCompatibleModifier;
-import org.dimdev.dimdoors.pockets.modifier.LazyModifier;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.pockets.virtual.AbstractVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
-import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.ArrayList;
@@ -106,7 +100,7 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		ListTag modifiersNbt = new ListTag();
 		// TODO: deserialize with ResourceManager
 		for (Modifier modifier : modifierList) {
-			modifiersNbt.add(modifier.toNbt(new CompoundTag(), provider));
+			modifiersNbt.add(modifier.toNbt(new CompoundTag(), provider, allowReference));
 		}
 		if (modifiersNbt.size() > 0) nbt.put("modifiers", modifiersNbt);
 
@@ -150,46 +144,13 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		generator.applyModifiers(parameters, builder);
 		this.applyModifiers(parameters, builder);
 
-		LazyPocketGenerator.currentlyGenerating = true;
-		// ensure we aren't missing any chunks that were already loaded previously
-		// for lazy gen
-		Set<LevelChunk> alreadyLoadedChunks = StreamSupport.stream(parameters.world().getChunkSource().chunkMap.getChunks().spliterator(), false).map(ChunkHolder::getTickingChunk).filter(Objects::nonNull).collect(Collectors.toSet());
-
 		Pocket pocket = generator.prepareAndPlacePocket(parameters, builder);
-		BlockPos originalOrigin = pocket.getOrigin();
 
 		RiftManager manager = generator.getRiftManager(pocket);
 
 		generator.applyModifiers(parameters, manager);
 
 		this.applyModifiers(parameters, manager);
-
-		if (pocket instanceof LazyGenerationPocket) {
-			if (!(generator instanceof LazyPocketGenerator)) throw new RuntimeException("pocket was instance of LazyGenerationPocket but generator was not instance of LazyPocketGenerator");
-			LazyGenerationPocket lazyPocket = (LazyGenerationPocket) pocket;
-			LazyPocketGenerator clonedGenerator = ((LazyPocketGenerator) generator).cloneWithLazyModifiers(originalOrigin);
-			if (setupLoot != null) clonedGenerator.setSetupLoot(setupLoot);
-
-			attachLazyModifiers(clonedGenerator);
-			clonedGenerator.attachToPocket(lazyPocket);
-			lazyPocket.init();
-
-			alreadyLoadedChunks.forEach(lazyPocket::chunkLoaded);
-
-			LazyPocketGenerator.currentlyGenerating = false;
-
-			while (!LazyPocketGenerator.generationQueue.isEmpty()) {
-				LevelChunk chunk = LazyPocketGenerator.generationQueue.remove();
-
-				LazyCompatibleModifier.runQueuedModifications(chunk);
-				MinecraftServer server = DimensionalDoors.getServer();
-				DimensionalDoors.getServer().tell(new TickTask(server.getTickCount(), () -> (lazyPocket).chunkLoaded(chunk)));
-			}
-			LazyCompatibleModifier.runLeftoverModifications(DimensionalDoors.getWorld(lazyPocket.getWorld()));
-		} else {
-			LazyPocketGenerator.currentlyGenerating = false;
-			LazyPocketGenerator.generationQueue.clear();
-		}
 
 		generator.setup(pocket, manager, parameters, setupLoot != null ? setupLoot : generator.isSetupLoot());
 
@@ -213,7 +174,4 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 	@Override
 	public abstract String toString();
 
-	public void attachLazyModifiers(LazyPocketGenerator generator) {
-		generator.attachLazyModifiers(modifierList.stream().filter(LazyModifier.class::isInstance).map(LazyModifier.class::cast).collect(Collectors.toList()));
-	}
 }

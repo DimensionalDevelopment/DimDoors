@@ -1,22 +1,19 @@
 package org.dimdev.dimdoors.util;
 
-import com.google.gson.JsonElement;
-import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.block.entity.RiftData;
-import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class CodecUtils {
     public static <T, V, U extends Map<T, V>> Codec<U> listMap(Codec<T> keyCodec, Codec<V> valueCodec, Supplier<U> supplier) {
@@ -141,5 +138,29 @@ public class CodecUtils {
                 return DataResult.error(() -> "");
             }
         });*/
+    }
+
+    public static <T> Codec<Map<T, CompoundTag>> createTagMapCodec(Codec<T> codec) {
+        var mapCodec = codec.fieldOf("Pos");
+        return CompoundTag.CODEC.flatXmap(nbt -> {
+            if (nbt.contains("Id") && !nbt.contains("id")) {
+                nbt.putString("id", nbt.getString("Id"));
+            }
+
+            if(!nbt.contains("id")) {
+                return DataResult.error(() -> "The tag did not have an 'id' nbt string");
+            }
+
+            return DataResult.success(nbt);
+        }, DataResult::success).flatXmap(tagToPair(mapCodec), pairToTag(mapCodec)).listOf().xmap(entries -> entries.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), map -> map.entrySet().stream().toList());
+
+    }
+
+    private static <T> Function<CompoundTag, DataResult<Map.Entry<T, CompoundTag>>> tagToPair(MapCodec<T> codec) {
+        return tag -> codec.compressedDecode(NbtOps.INSTANCE, tag).map(t -> Map.entry(t, tag));
+    }
+
+    private static <T> Function<Map.Entry<T, CompoundTag>, DataResult<CompoundTag>> pairToTag(MapCodec<T> codec) {
+        return pair -> codec.encode(pair.getKey(), NbtOps.INSTANCE, NbtOps.INSTANCE.mapBuilder()).build(pair.getValue()).map(CompoundTag.class::cast);
     }
 }

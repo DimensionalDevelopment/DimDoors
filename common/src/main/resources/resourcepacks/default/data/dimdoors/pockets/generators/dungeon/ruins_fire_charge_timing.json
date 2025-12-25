@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

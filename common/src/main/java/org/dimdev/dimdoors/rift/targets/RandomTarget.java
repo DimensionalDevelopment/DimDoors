@@ -173,10 +173,11 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 				LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
 				Pocket pocket = generatePocket(virtualLocation, new GlobalReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
-				// Link the rift if necessary and teleport the entity
-				if (!this.noLink)
-					linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
-				return (Target) DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).getBlockEntity();
+
+                if (!this.noLink) linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
+                var entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+                var beEntrance = entrance != null ? entrance.getBlockEntity() : null;
+                return beEntrance != null ? (Target) entrance : null;
 			}
 		} else {
 			// An existing rift was selected
@@ -194,6 +195,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 	}
 
 	private static void linkRifts(Location from, Location to) {
+        if (from == null || to == null) return;
+
 		RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
 		//This is the freaking potato texture from tf2. Bad things happen if this invocation is removed
 //		to.getWorld(); //TODO: Figure out how ensure world is loaded before .getBlockEntity is called so that this janky line isn't needed.

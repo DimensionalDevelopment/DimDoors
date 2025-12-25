@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/rising_hand",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

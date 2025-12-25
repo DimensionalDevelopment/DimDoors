@@ -50,7 +50,6 @@ import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
 import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
-import org.dimdev.dimdoors.listener.ChunkLoadListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
@@ -194,8 +193,6 @@ public class DimensionalDoors {
 //		PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
 
 		LifecycleEvent.SERVER_STARTED.register(DimensionalRegistry::init);
-
-		ChunkServedCallback.EVENT.register(new ChunkLoadListener()); // lazy pocket gen
 
 		InteractionEvent.LEFT_CLICK_BLOCK.register(new AttackBlockCallbackListener());
 

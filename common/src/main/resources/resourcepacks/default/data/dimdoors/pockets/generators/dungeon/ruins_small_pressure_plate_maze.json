@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/ruins_small_pressure_plate_maze",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

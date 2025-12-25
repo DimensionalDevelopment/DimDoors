@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/ruins_diamond_tnt_trap_b",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

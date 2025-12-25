@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -11,11 +12,14 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -30,7 +34,6 @@ import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
-import org.dimdev.dimdoors.world.pocket.type.LazyGenerationPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.ArrayList;
@@ -128,7 +131,7 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 		if (nbt.contains("modifiers")) {
 			ListTag modifiersNbt = nbt.getList("modifiers", 10);
 			for (int i = 0; i < modifiersNbt.size(); i++) {
-				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i), manager));
+				modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i), provider, manager));
 			}
 		}
 
@@ -232,24 +235,23 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	}
 
 	public void setup(Pocket pocket, RiftManager manager, PocketGenerationContext parameters, boolean setupLootTables) {
-		ServerLevel world = parameters.world();
+        ServerLevel world = parameters.world();
 
-		if (!(pocket instanceof LazyGenerationPocket)) { // should not iterate over that which does not exist & area may be massive, getBlockEntities() might force generation
-			if (setupLootTables) // temp
-				pocket.getBlockEntities().forEach((blockPos, blockEntity) -> {
-					if (/*setupLootTables &&*/ blockEntity instanceof Container inventory) { // comment in if needed
-						if (inventory.isEmpty()) {
-							if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
-								TemplateUtils.setupLootTable(world, blockEntity, inventory, LOGGER);
-								if (inventory.isEmpty()) {
-									LOGGER.error(", however Inventory is: empty!");
-								}
-							}
-						}
-					}
-				});
-		}
-		manager.getRifts().forEach(rift -> rift.getDestination().setLocation(new Location(world, rift.getBlockPos())));
+        if (setupLootTables) // temp
+            pocket.getBlockEntities().forEach((blockPos, blockEntity) -> {
+                if (/*setupLootTables &&*/ blockEntity instanceof Container inventory) { // comment in if needed
+                    if (inventory.isEmpty()) {
+                        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
+                            TemplateUtils.setupLootTable(world, blockEntity, inventory, LOGGER);
+                            if (inventory.isEmpty()) {
+                                LOGGER.error(", however Inventory is: empty!");
+                            }
+                        }
+                    }
+                }
+            });
+
+        manager.getRifts().forEach(rift -> rift.getDestination().setLocation(new Location(world, rift.getBlockPos())));
 		TemplateUtils.registerRifts(manager.getRifts(), parameters.linkTo(), parameters.linkProperties(), pocket);
 	}
 

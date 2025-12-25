@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -28,11 +29,11 @@ public class RiftDataModifier extends AbstractModifier {
 	private List<Integer> ids;
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
 		// TODO: RiftData via ResourceManager
 		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
 			doorDataReference = nbt.getString("rift_data");
-			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
+			doorData = PocketLoader.getDataNbtCompound(doorDataReference);
 		}
 		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
 
@@ -54,8 +55,8 @@ public class RiftDataModifier extends AbstractModifier {
 	}
 
 	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
+	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+		super.toNbtInternal(nbt, provider, allowReference);
 
 		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
 		else if (doorData != null) nbt.put("rift_data", doorData);

@@ -2,7 +2,7 @@
   "type": "dimdoors:schematic",
   "id": "dungeon/party",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

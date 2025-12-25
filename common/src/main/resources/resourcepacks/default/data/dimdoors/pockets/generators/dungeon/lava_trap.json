@@ -3,7 +3,7 @@
   "setup_loot": true,
   "id": "dungeon/lava_trap",
   "builder": {
-    "type": "dimdoors:lazy_gen_pocket"
+    "type": "dimdoors:pocket"
   },
   "modifiers": [
     {

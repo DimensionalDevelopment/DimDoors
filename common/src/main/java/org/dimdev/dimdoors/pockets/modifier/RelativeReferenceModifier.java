@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -21,7 +22,7 @@ public class RelativeReferenceModifier extends AbstractModifier {
 	private ConnectionType connection = ConnectionType.BOTH;
 
 	@Override
-	public Modifier fromNbt(CompoundTag nbt, ResourceManager manager) {
+	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
 		point_a = nbt.getInt("point_a");
 		point_b = nbt.getInt("point_b");
 		connection = nbt.contains("connection") ? ConnectionType.fromString(nbt.getString("connection")) : ConnectionType.BOTH;
@@ -29,8 +30,8 @@ public class RelativeReferenceModifier extends AbstractModifier {
 	}
 
 	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, boolean allowReference) {
-		super.toNbtInternal(nbt, allowReference);
+	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+		super.toNbtInternal(nbt, provider, allowReference);
 		nbt.putInt("point_a", point_a);
 		nbt.putInt("point_b", point_b);
 		nbt.putString("connection", connection.getSerializedName());

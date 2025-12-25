@@ -30,7 +30,7 @@ public class WorldeditHelper {
 		boolean async = DimensionalDoors.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
 		Consumer<Runnable> taskAcceptor = async ? r -> source.getServer().execute(r) : Runnable::run;
 		Runnable task = () -> {
-			CompoundTag nbt = Schematic.toNbt(template.getSchematic());
+			CompoundTag nbt = Schematic.toNbt(template.schematic());
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			try {
 				NbtIo.writeCompressed(nbt, stream);
@@ -45,7 +45,7 @@ public class WorldeditHelper {
 			}
 			taskAcceptor.accept(() -> {
 				WorldEdit.getInstance().getSessionManager().get(getSessionOwner(player)).setClipboard(new ClipboardHolder(clipboard));
-				source.sendSuccess(() -> Component.translatable("commands.pocket.loadedSchem", template.getId()), true);
+				source.sendSuccess(() -> Component.translatable("commands.pocket.loadedSchem", template.id()), true);
 			});
 		};
 		if (async) {
