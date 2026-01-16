@@ -30,7 +30,7 @@ public class DungeonTarget extends RandomTarget {
 
 	@Override
 	public VirtualTarget copy() {
-		return new DungeonTarget(getNewRiftWeight(), getNewRiftWeight(), getCoordFactor(), getPositiveDepthFactor(), getNegativeDepthFactor(), getAcceptedGroups(), isNoLink(), isNoLinkBack(), dungeonGroup);
+		return new DungeonTarget(getNewRiftWeight(), getWeightMaximum(), getCoordFactor(), getPositiveDepthFactor(), getNegativeDepthFactor(), getAcceptedGroups(), isNoLink(), isNoLinkBack(), dungeonGroup);
 	}
 
 	public static DungeonTargetBuilder builder() {

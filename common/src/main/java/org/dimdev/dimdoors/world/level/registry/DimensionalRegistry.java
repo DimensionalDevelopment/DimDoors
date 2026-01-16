@@ -61,45 +61,32 @@ public class DimensionalRegistry {
 		}
 
 		CompoundTag pocketRegistryNbt = nbt.getCompound("pocket_registry");
-		CompletableFuture<Map<ResourceKey<Level>, PocketDirectory>> futurePocketRegistry = CompletableFuture.supplyAsync(() -> pocketRegistryNbt.getAllKeys().stream().map(key -> {
-			CompoundTag pocketDirectoryNbt = pocketRegistryNbt.getCompound(key);
-			return CompletableFuture.supplyAsync(() -> new Pair<>(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt, provider)));
-		}).parallel().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond)));
+
+        for(var key : pocketRegistryNbt.getAllKeys()) {
+            CompoundTag pocketDirectoryNbt = pocketRegistryNbt.getCompound(key);
+            pocketRegistry.put(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt, provider));
+        }
 
 		CompoundTag privateRegistryNbt = nbt.getCompound("private_registry");
-		CompletableFuture<PrivateRegistry> futurePrivateRegistry = CompletableFuture.supplyAsync(() -> {
-			PrivateRegistry privateRegistry = new PrivateRegistry();
-			privateRegistry.fromNbt(privateRegistryNbt);
-			return privateRegistry;
-		});
 
-		pocketRegistry = futurePocketRegistry.join();
+        privateRegistry = new PrivateRegistry();
+        privateRegistry.fromNbt(privateRegistryNbt);
 
-		CompoundTag riftRegistryNbt = nbt.getCompound("rift_registry");
-		CompletableFuture<RiftRegistry> futureRiftRegistry = CompletableFuture.supplyAsync(() -> RiftRegistry.fromNbt(pocketRegistry, riftRegistryNbt));
-		riftRegistry = futureRiftRegistry.join();
+        CompoundTag riftRegistryNbt = nbt.getCompound("rift_registry");
+        riftRegistry = RiftRegistry.fromNbt(pocketRegistry, riftRegistryNbt);
+    }
 
-		privateRegistry = futurePrivateRegistry.join();
-	}
+    public static void writeToNbt(CompoundTag nbt, HolderLookup.Provider provider) {
+        CompoundTag pocketRegistryNbt = new CompoundTag();
+        pocketRegistry.forEach((key, value) -> {
+            pocketRegistryNbt.put(key.location().toString(), value.writeToNbt(provider));
+        });
 
-	public static void writeToNbt(CompoundTag nbt, HolderLookup.Provider provider) {
-		CompletableFuture<Tag> futurePocketRegistryNbt = StreamUtils.supplyAsync(() -> {
-			List<CompletableFuture<Pair<String, Tag>>> futurePocketRegistryNbts = new ArrayList<>();
-			pocketRegistry.forEach((key, value) -> futurePocketRegistryNbts.add(CompletableFuture.supplyAsync(() -> new Pair<>(key.location().toString(), value.writeToNbt(provider)))));
-			CompoundTag pocketRegistryNbt = new CompoundTag();
-			futurePocketRegistryNbts.parallelStream().unordered().map(CompletableFuture::join).collect(Collectors.toConcurrentMap(Pair::getFirst, Pair::getSecond)).forEach(pocketRegistryNbt::put);
-			return pocketRegistryNbt;
-		});
-
-		CompletableFuture<Tag> futureRiftRegistryNbt = StreamUtils.supplyAsync(riftRegistry::toNbt);
-		CompletableFuture<Tag> futurePrivateRegistryNbt = CompletableFuture.supplyAsync(() -> privateRegistry.toNbt(new CompoundTag()));
-
-		nbt.put("pocket_registry", futurePocketRegistryNbt.join());
-		nbt.put("rift_registry", futureRiftRegistryNbt.join());
-		nbt.put("private_registry", futurePrivateRegistryNbt.join());
-
-		nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
-	}
+        nbt.put("pocket_registry", pocketRegistryNbt);
+        nbt.put("rift_registry", riftRegistry.toNbt());
+        nbt.put("private_registry", privateRegistry.toNbt(new CompoundTag()));
+        nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
+    }
 
 	public static RiftRegistry getRiftRegistry() {
 		return riftRegistry;

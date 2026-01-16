@@ -102,7 +102,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 		}
 
 		Location selectedLink;
-		if (riftWeights.size() == 0) {
+		if (riftWeights.isEmpty()) {
 			if (this.newRiftWeight == -1) {
 				selectedLink = null;
 			} else {
@@ -154,7 +154,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 				BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
 				if (pos.getY() == -1) {
 					// No blocks at that XZ (hole in bedrock)
-					pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getX());
+					pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ());
 				}
 				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
 
@@ -177,7 +177,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
                 if (!this.noLink) linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
                 var entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
                 var beEntrance = entrance != null ? entrance.getBlockEntity() : null;
-                return beEntrance != null ? (Target) entrance : null;
+                return beEntrance != null ? (Target) beEntrance : null;
 			}
 		} else {
 			// An existing rift was selected
