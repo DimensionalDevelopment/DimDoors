@@ -147,9 +147,9 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
     }
 
     public Map<BlockPos, BlockEntity> getBlockEntities() {
-        if (cachedBlockEntities != null) {
-            return cachedBlockEntities;
-        }
+//        if (cachedBlockEntities != null) {
+//            return cachedBlockEntities;
+//        }
 
         Level serverWorld = DimensionalDoors.getWorld(this.getWorld());
         Map<BlockPos, BlockEntity> blockEntities = new HashMap<>();

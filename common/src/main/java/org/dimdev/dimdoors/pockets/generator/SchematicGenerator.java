@@ -110,12 +110,12 @@ public class SchematicGenerator extends PocketGenerator {
         );
 
         // Get block entities directly from placement
-        List<BlockEntity> placedEntities = template.place(pocket, placementType);
+        template.place(pocket, placementType);
 
         // Cache them in the pocket
-        pocket.cacheBlockEntities(placedEntities);
+//        pocket.cacheBlockEntities(placedEntities);
 
-        LOGGER.info("Cached {} block entities in pocket", placedEntities.size());
+//        LOGGER.info("Cached {} block entities in pocket", placedEntities.size());
 
         return pocket;
     }
@@ -134,7 +134,7 @@ public class SchematicGenerator extends PocketGenerator {
 	public Vec3i getSize(PocketGenerationContext parameters) {
 		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
 		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
-		Schematic schem = template.schematic();
+		Schematic schem = template.getSchematic();
 		return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());
 	}
 }

@@ -108,13 +108,13 @@ public class PocketCommand {
 
 	private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
 		SchematicPlacer.place(
-				template.schematic(),
+				template.getSchematic(),
 				source.serverLevel(),
 				source.blockPosition(),
 				blockPlacementType
 		);
 
-		String id = template.id().toString();
+		String id = template.getId().toString();
 		source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level().dimension().location().toString()), true);
 		return Command.SINGLE_SUCCESS;
 	}

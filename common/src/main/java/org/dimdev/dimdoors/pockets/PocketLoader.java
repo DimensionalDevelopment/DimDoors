@@ -47,6 +47,7 @@ public class PocketLoader {
 		CompletableFuture<SimpleTree<String, VirtualPocket>> futureVirtualPockets = ResourceUtil.loadResourcePathToMap(manager, "pockets/virtual", ".json", new SimpleTree<>(String.class), ResourceUtil.NBT_READER.andThenReader(virtualPocketLoader(manager, provider)), ResourceUtil.PATH_KEY_PROVIDER);
 		CompletableFuture<SimpleTree<String, PocketTemplate>> futureTemplates = ResourceUtil.loadResourcePathToMap(manager, "pockets/schematic", ".schem", new SimpleTree<>(String.class), ResourceUtil.COMPRESSED_NBT_READER.andThenReader(PocketLoader::loadPocketTemplate), ResourceUtil.PATH_KEY_PROVIDER);
 
+        CompletableFuture.allOf(futurePocketGeneratorMap, futurePocketGroups, futureVirtualPockets, futureTemplates).join();
 
 		pocketGenerators = futurePocketGeneratorMap.join();
 		pocketGroups = futurePocketGroups.join();
