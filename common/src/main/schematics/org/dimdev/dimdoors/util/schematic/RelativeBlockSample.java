@@ -114,9 +114,11 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
     public void place(BlockPos origin, WorldGenLevel world, BlockPlacementType placementType, boolean biomes, HolderLookup.Provider provider) {
         // TODO: properly implement placement types
         this.blockContainer.forEach((pos, state) -> {
-            BlockPos actualPos = origin.offset(pos);
-            world.setBlock(actualPos, state, 0, 0);
-            if (placementType.shouldMarkForUpdate()) ((ServerLevel) world).getChunkSource().blockChanged(actualPos);
+            if(state != null) {
+                BlockPos actualPos = origin.offset(pos);
+                world.setBlock(actualPos, state, 0, 0);
+                if (placementType.shouldMarkForUpdate()) ((ServerLevel) world).getChunkSource().blockChanged(actualPos);
+            }
         });
         for (Map.Entry<BlockPos, CompoundTag> entry : this.blockEntityContainer.entrySet()) {
             BlockPos pos = entry.getKey();
