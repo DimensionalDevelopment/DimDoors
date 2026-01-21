@@ -12,6 +12,8 @@ import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
+import java.util.List;
+
 import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 
 public class BlockDecayImplResult extends BlockDecayResult<BlockDecayImplResult> {
@@ -36,5 +38,10 @@ public class BlockDecayImplResult extends BlockDecayResult<BlockDecayImplResult>
 
         world.setBlockAndUpdate(pos, newState);
         return entropy;
+    }
+
+    @Override
+    public List<Result> produces() {
+        return List.of(new Result(block, 1));
     }
 }

@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:packed_ice"
   },
   "result": {
     "type": "dimdoors:block",

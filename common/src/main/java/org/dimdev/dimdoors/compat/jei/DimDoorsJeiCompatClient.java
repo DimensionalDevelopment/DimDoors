@@ -1,0 +1,65 @@
+package org.dimdev.dimdoors.compat.jei;
+
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.*;
+import mezz.jei.api.runtime.IIngredientManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.compat.jei.tesselating.DimDoorsRecipes;
+import org.dimdev.dimdoors.compat.jei.tesselating.TesselatingRecipeCategory;
+import org.dimdev.dimdoors.recipe.ModRecipeTypes;
+import org.dimdev.dimdoors.recipe.TesselatingRecipe;
+import org.dimdev.dimdoors.world.decay.DecayPattern;
+import org.jetbrains.annotations.Nullable;
+
+import static org.dimdev.dimdoors.compat.jei.ModRecipeTypes.TESSELATING;
+
+@JeiPlugin
+public class DimDoorsJeiCompatClient implements IModPlugin {
+    private static final ResourceLocation id = DimensionalDoors.id("tesselating");
+    @Nullable private TesselatingRecipeCategory tesselatingCategory;
+//    @Nullable private DecayCategory decayCategory;
+
+
+    @Override
+    public ResourceLocation getPluginUid() {
+        return id;
+    }
+
+    @Override
+    public void registerCategories(IRecipeCategoryRegistration registration) {
+        registration.addRecipeCategories(this.tesselatingCategory = new TesselatingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+//        registration.addRecipeCategories(this.decayCategory = new DecayCategory(registration.getJeiHelpers().getGuiHelper()));
+    }
+
+    @Override
+    public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
+        IModPlugin.super.registerVanillaCategoryExtensions(registration);
+    }
+
+    @Override
+    public void registerRecipes(IRecipeRegistration registration) {
+        IIngredientManager ingredientManager = registration.getIngredientManager();
+        DimDoorsRecipes dimDoorsRecipes = new DimDoorsRecipes(ingredientManager);
+
+        var tesselatingRecipes = dimDoorsRecipes.getTesselating(tesselatingCategory);
+        var handledTesselatingRecipes = tesselatingRecipes.get(true);
+
+        registration.addRecipes(TESSELATING, handledTesselatingRecipes);
+    }
+
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addRecipeClickArea(TesselatingLoomScreen.class, 88, 32, 28, 23, TESSELATING);
+    }
+
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(ModBlocks.TESSELATING_LOOM.get(), TESSELATING);
+    }
+}

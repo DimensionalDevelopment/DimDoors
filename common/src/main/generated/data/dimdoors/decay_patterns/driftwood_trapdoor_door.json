@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "dimdoors:driftwood_door"
   },
   "result": {
     "type": "dimdoors:double_block",

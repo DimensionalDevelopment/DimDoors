@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:respawn_anchor"
   },
   "result": {
     "type": "dimdoors:block",

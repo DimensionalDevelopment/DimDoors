@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.world.decay.conditions;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -53,7 +55,12 @@ public class SimpleDecayCondition extends GenericDecayCondition<Block> {
     }
 
     @Override
-	public Set<ResourceKey<Block>> constructApplicableBlocks() {
-        return getTagOrElementLocation().getValues(BuiltInRegistries.BLOCK);
-	}
+    public ResourceKey<Registry<Block>> registry() {
+        return Registries.BLOCK;
+    }
+
+    @Override
+    public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
+        return super.test(world, pos, origin, targetBlock, targetFluid, source);
+    }
 }

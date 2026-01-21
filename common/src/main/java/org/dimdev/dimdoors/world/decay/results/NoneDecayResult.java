@@ -9,6 +9,8 @@ import org.dimdev.dimdoors.world.decay.DecayResult;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
+import java.util.List;
+
 public class NoneDecayResult implements DecayResult {
     public static final String KEY = "none";
     private static final NoneDecayResult INSTANCE = new NoneDecayResult();
@@ -30,7 +32,7 @@ public class NoneDecayResult implements DecayResult {
     }
 
     @Override
-    public Object produces(Object prior) {
-        return ItemStack.EMPTY;
+    public List<Result> produces() {
+        return List.of();
     }
 }

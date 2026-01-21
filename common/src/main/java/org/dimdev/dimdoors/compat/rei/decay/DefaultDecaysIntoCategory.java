@@ -17,9 +17,9 @@ import org.dimdev.dimdoors.world.decay.DecayResult;
 
 import java.util.List;
 
-public class DefaultDecaysIntoCategory implements DisplayCategory<DefaultDecaysIntoDisplay> {
+public class DefaultDecaysIntoCategory implements DisplayCategory<DecayPatternDisplay> {
     @Override
-    public CategoryIdentifier<? extends DefaultDecaysIntoDisplay> getCategoryIdentifier() {
+    public CategoryIdentifier<DecayPatternDisplay> getCategoryIdentifier() {
         return TesselatingReiCompatClient.DECAYS_INTO;
     }
 
@@ -34,15 +34,14 @@ public class DefaultDecaysIntoCategory implements DisplayCategory<DefaultDecaysI
     }
 
     @Override
-    public List<Widget> setupDisplay(DefaultDecaysIntoDisplay display, Rectangle bounds) {
+    public List<Widget> setupDisplay(DecayPatternDisplay display, Rectangle bounds) {
         Point startPoint = new Point(bounds.getCenterX() - 58, bounds.getCenterY() - 27);
         List<Widget> widgets = Lists.newArrayList();
         widgets.add(Widgets.createRecipeBase(bounds));
         widgets.add(Widgets.createArrow(new Point(startPoint.x + 60, startPoint.y + 18)));
         widgets.add(Widgets.createResultSlotBackground(new Point(startPoint.x + 95, startPoint.y + 19)));
-        List<EntryStack<?>> input = display.getDecayEntries();
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 19, startPoint.y + 19)).entry(DefaultDecaysIntoDisplay.toEntryStack(DecayResult.defaultProduces(display.key()))).markInput());
-        widgets.add(Widgets.createSlot(new Point(startPoint.x + 95, startPoint.y + 19)).entries(input).disableBackground().markOutput());
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 19, startPoint.y + 19)).entries(display.getInputEntries().get(0)).markInput());
+        widgets.add(Widgets.createSlot(new Point(startPoint.x + 95, startPoint.y + 19)).entries(display.getOutputEntries().get(0)).disableBackground().markOutput());
         return widgets;
     }
 

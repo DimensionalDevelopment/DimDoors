@@ -21,6 +21,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.resource.ContextAwareReloadListener;
+import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.nio.file.Path;
@@ -34,7 +35,7 @@ import java.util.function.Consumer;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = DimensionalDoors.MOD_ID)
 public class DimensionalDoorsImpl {
-    private static List<Pair<ResourceLocation, BiConsumer<HolderLookup.Provider, ResourceManager>>> loaders = new ArrayList<>();
+    private static List<Triple<ResourceLocation, BiConsumer<HolderLookup.Provider, ResourceManager>, Boolean>> loaders = new ArrayList<>();
 
     public static Path getConfigRoot() {
         return FMLPaths.CONFIGDIR.get();
@@ -59,7 +60,7 @@ public class DimensionalDoorsImpl {
 
 //    @SubscribeEvent
     public static void addReloaders(AddReloadListenerEvent event) {
-        loaders.forEach(pair -> event.addListener(new NeoforgeResourceLoader(pair.getSecond())));
+        loaders.forEach(pair -> event.addListener(new NeoforgeResourceLoader(pair.getMiddle())));
     }
 
     public static Pack createPack(String id, String name) {
@@ -69,8 +70,8 @@ public class DimensionalDoorsImpl {
                 new PathPackResources.PathResourcesSupplier(resourcePath), PackType.SERVER_DATA, new PackSelectionConfig(false, Pack.Position.BOTTOM, false));
     }
 
-    public static void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
-        loaders.add(Pair.of(DimensionalDoors.id(name), consumer));
+    public static void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer, boolean loadAfterTags) {
+        loaders.add(Triple.of(DimensionalDoors.id(name), consumer, loadAfterTags));
     }
 
     private static class NeoforgeResourceLoader extends ContextAwareReloadListener implements ResourceManagerReloadListener {

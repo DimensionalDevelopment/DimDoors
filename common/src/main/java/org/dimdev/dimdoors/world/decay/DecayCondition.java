@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.world.decay;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -38,13 +39,4 @@ public interface DecayCondition {
     DecayConditionType<? extends DecayCondition> getType();
 
     boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source);
-
-	default Set<ResourceKey<Fluid>> constructApplicableFluids() {
-		return Collections.emptySet();
-	}
-
-	default Set<ResourceKey<Block>> constructApplicableBlocks() {
-		return Collections.emptySet();
-	}
-
 }

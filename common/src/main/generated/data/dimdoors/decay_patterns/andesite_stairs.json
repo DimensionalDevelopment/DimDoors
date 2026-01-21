@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:polished_andesite_stairs"
   },
   "result": {
     "type": "dimdoors:block",

@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.world.decay.conditions;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -13,6 +15,8 @@ import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayCondition;
 import org.dimdev.dimdoors.world.decay.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
+
+import java.util.Set;
 
 public class DimensionDecayCondition extends GenericDecayCondition<DimensionType> {
     public static MapCodec<DimensionDecayCondition> CODEC = createCodec(DimensionDecayCondition::new, Registries.DIMENSION_TYPE);
@@ -46,5 +50,10 @@ public class DimensionDecayCondition extends GenericDecayCondition<DimensionType
     @Override
     public Holder<DimensionType> getHolder(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
         return world.dimensionTypeRegistration();
+    }
+
+    @Override
+    public ResourceKey<Registry<DimensionType>> registry() {
+        return Registries.DIMENSION_TYPE;
     }
 }

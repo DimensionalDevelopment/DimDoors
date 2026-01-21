@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:beehive"
   },
   "result": {
     "type": "dimdoors:block",

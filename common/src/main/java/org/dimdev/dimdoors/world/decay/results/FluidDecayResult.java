@@ -14,6 +14,8 @@ import org.dimdev.dimdoors.world.decay.DecayResult;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
+import java.util.List;
+
 public class FluidDecayResult implements DecayResult {
 	public static final MapCodec<FluidDecayResult> CODEC = RecordCodecBuilder.mapCodec(instance -> DecayResult.entropyCodec(instance).and(BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(blockDecayResult -> blockDecayResult.fluid)).apply(instance, FluidDecayResult::new));
 
@@ -52,10 +54,10 @@ public class FluidDecayResult implements DecayResult {
 		return entropy;
 	}
 
-	@Override
-	public Object produces(Object prior) {
-		return FluidStack.create(fluid, 1000);
-	}
+    @Override
+    public List<Result> produces() {
+        return List.of(new Result(fluid, 1));
+    }
 
 	private static <T extends Comparable<T>> FluidState transferProperty(FluidState from, FluidState to, Property<T> property) {
 		return to.setValue(property, from.getValue(property));

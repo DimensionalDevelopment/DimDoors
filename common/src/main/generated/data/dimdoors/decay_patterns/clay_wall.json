@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:brick_wall"
   },
   "result": {
     "type": "dimdoors:none"

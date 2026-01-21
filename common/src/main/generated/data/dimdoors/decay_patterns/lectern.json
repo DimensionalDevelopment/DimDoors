@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:bookshelf"
   },
   "result": {
     "type": "dimdoors:block",

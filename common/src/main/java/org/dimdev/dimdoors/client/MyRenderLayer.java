@@ -29,46 +29,46 @@ public class MyRenderLayer extends RenderType {
         super(string, vertexFormat, drawMode, j, bl, bl2, runnable, runnable2);
     }
 
-    public static RenderType CRACK = RenderType.create("crack",
-			DefaultVertexFormat.POSITION_COLOR,
-			VertexFormat.Mode.TRIANGLES,
-			256,
-			false,
-			false,
-			CompositeState.builder()
-					.setCullState(CullStateShard.NO_CULL)
-					.setLightmapState(RenderStateShard.NO_LIGHTMAP)
-					.setTextureState(RenderStateShard.NO_TEXTURE)
-					.setTransparencyState(new TransparencyStateShard("crack_transparency",
-							() -> {
-								RenderSystem.enableBlend();
-								RenderSystem.blendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-							},
-							() -> {
-								RenderSystem.disableBlend();
-								RenderSystem.defaultBlendFunc();
-							})
-					)
-					.setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
-					.createCompositeState(false)
-	);
-
-    public static RenderType TESSERACT = RenderType.create("tesseract",
-			DefaultVertexFormat.POSITION_TEX_COLOR,
-			VertexFormat.Mode.QUADS,
-			256,
-			false,
-			false,
-			CompositeState.builder()
-					.setCullState(RenderStateShard.NO_CULL)
-					.setLightmapState(RenderStateShard.NO_LIGHTMAP)
-					.setTextureState(new TextureStateShard(DetachedRiftBlockEntityRenderer.TESSERACT_PATH,
-							false,
-							false)
-					)
-					.setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-					.createCompositeState(false)
-	);
+//    public static RenderType CRACK = RenderType.create("crack",
+//			DefaultVertexFormat.POSITION_COLOR,
+//			VertexFormat.Mode.TRIANGLES,
+//			256,
+//			false,
+//			false,
+//			CompositeState.builder()
+//					.setCullState(CullStateShard.NO_CULL)
+//					.setLightmapState(RenderStateShard.NO_LIGHTMAP)
+//					.setTextureState(RenderStateShard.NO_TEXTURE)
+//					.setTransparencyState(new TransparencyStateShard("crack_transparency",
+//							() -> {
+//								RenderSystem.enableBlend();
+//								RenderSystem.blendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+//							},
+//							() -> {
+//								RenderSystem.disableBlend();
+//								RenderSystem.defaultBlendFunc();
+//							})
+//					)
+//					.setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+//					.createCompositeState(false)
+//	);
+//
+//    public static RenderType TESSERACT = RenderType.create("tesseract",
+//			DefaultVertexFormat.POSITION_TEX_COLOR,
+//			VertexFormat.Mode.QUADS,
+//			256,
+//			false,
+//			false,
+//			CompositeState.builder()
+//					.setCullState(RenderStateShard.NO_CULL)
+//					.setLightmapState(RenderStateShard.NO_LIGHTMAP)
+//					.setTextureState(new TextureStateShard(DetachedRiftBlockEntityRenderer.TESSERACT_PATH,
+//							false,
+//							false)
+//					)
+//					.setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
+//					.createCompositeState(false)
+//	);
 
 	public static RenderType getMonolith(ResourceLocation texture) {
 		RenderType.CompositeState multiPhaseParameters = RenderType.CompositeState.builder().setTextureState(new TextureStateShard(texture, false, false))

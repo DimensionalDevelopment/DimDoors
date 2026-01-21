@@ -2,16 +2,20 @@ package org.dimdev.dimdoors.world.decay;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.level.Level;
@@ -30,6 +34,7 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -67,7 +72,7 @@ public final class Decay {
 		BlockState targetState = world.getBlockState(pos);
 		FluidState fluidState = world.getFluidState(pos);
 
-		Collection<DecayPattern> patterns = DecayLoader.getPatterns(targetState.getBlockHolder().unwrapKey().get());
+		Collection<DecayPatternHolder> patterns = DecayLoader.getPatterns(targetState.getBlockHolder().unwrapKey().get());
 
 		if(patterns.isEmpty()) patterns = DecayLoader.getPatterns(fluidState.getType().builtInRegistryHolder().key());
 
@@ -75,8 +80,8 @@ public final class Decay {
 			return;
 		}
 
-		for(DecayPattern pattern : patterns) {
-			if (!world.isNaturalSpawningAllowed(pos) || !pattern.test(world, pos, origin, targetState, fluidState, source)) {
+		for(DecayPatternHolder pattern : patterns) {
+			if (!world.isNaturalSpawningAllowed(pos) || !pattern.value().test(world, pos, origin, targetState, fluidState, source)) {
 				continue;
 			}
 			world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
@@ -88,7 +93,7 @@ public final class Decay {
 		}
 	}
 
-	public static void queueDecay(ServerLevel world, BlockPos pos, BlockState origin, DecayPattern pattern, DecaySource source, int delay) {
+	public static void queueDecay(ServerLevel world, BlockPos pos, BlockState origin, DecayPatternHolder pattern, DecaySource source, int delay) {
 		DecayTask task = new DecayTask(pos, origin, pattern, source, delay);
 		if (delay <= 0) {
 			task.process(world);
@@ -109,30 +114,20 @@ public final class Decay {
 
     public static class DecayLoader {
 		private static final Logger LOGGER = LogManager.getLogger();
-		private static final Map<ResourceKey<Block>, List<DecayPattern>> blockPatterns = new HashMap<>();
-		private static final Map<ResourceKey<Fluid>, List<DecayPattern>> fluidPatterns = new HashMap<>();
+		private static final Map<ResourceKey<Block>, List<DecayPatternHolder>> blockPatterns = new HashMap<>();
+		private static final Map<ResourceKey<Fluid>, List<DecayPatternHolder>> fluidPatterns = new HashMap<>();
+
+        private static List<DecayPatternHolder> undiffernitatedPatterns = new ArrayList<>();
 
 		public static void reload(HolderLookup.Provider provider, ResourceManager manager) {
-			blockPatterns.clear();
-			CompletableFuture<List<DecayPattern>> futurePatternList = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(DecayLoader::loadPattern));
-			for (DecayPattern pattern : futurePatternList.join()) {
-				for (ResourceKey<Block> block : pattern.constructApplicableBlocks()) {
-					blockPatterns.computeIfAbsent(block, (b) -> new ArrayList<>());
-					blockPatterns.get(block).add(pattern);
-				}
+            undiffernitatedPatterns = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(DecayLoader::loadPattern)).join();
+        }
 
-				for (ResourceKey<Fluid> fluid : pattern.constructApplicableFluids()) {
-					fluidPatterns.computeIfAbsent(fluid, (b) -> new ArrayList<>());
-					fluidPatterns.get(fluid).add(pattern);
-				}
-			}
+		private static DecayPatternHolder loadPattern(JsonElement json, ResourceLocation id) {
+			return new DecayPatternHolder(id, JsonOps.INSTANCE.withDecoder(DecayPattern.CODEC).apply(json).getOrThrow().getFirst());
 		}
 
-		private static DecayPattern loadPattern(JsonElement json, ResourceLocation ignored) {
-			return JsonOps.INSTANCE.withDecoder(DecayPattern.CODEC).apply(json).getOrThrow().getFirst();
-		}
-
-		public static Collection<DecayPattern> getPatterns(Object object) {
+		public static Collection<DecayPatternHolder> getPatterns(Object object) {
 			if(object instanceof ResourceKey<?> key) {
 				if (key.isFor(Registries.BLOCK) && blockPatterns.containsKey(key)) return blockPatterns.get(key);
 				else if (key.isFor(Registries.FLUID) && fluidPatterns.containsKey(key)) return fluidPatterns.get(key);
@@ -141,24 +136,48 @@ public final class Decay {
 			return Collections.emptyList();
 		}
 
-		public static Collection<DecayPattern> getPatterns(ResourceKey<Fluid> fluid) {
+		public static Collection<DecayPatternHolder> getPatterns(ResourceKey<Fluid> fluid) {
 			return fluidPatterns.getOrDefault(fluid, Collections.emptyList());
 		}
 
-        public static Map<ResourceKey<Block>, List<DecayPattern>> getBlockPatterns() {
+        public static Map<ResourceKey<Block>, List<DecayPatternHolder>> getBlockPatterns() {
 			return blockPatterns;
+        }
+
+        public static Map<ResourceKey<Fluid>, List<DecayPatternHolder>> getFluidPatterns() {
+            return fluidPatterns;
+        }
+
+        public static void populate(MinecraftServer server) {
+            blockPatterns.clear();
+            fluidPatterns.clear();
+            var registry = DimensionalDoors.getServer().registryAccess();
+
+            for (DecayPatternHolder pattern : undiffernitatedPatterns) {
+                var value = pattern.value();
+                value.constructApplicable(registry, Registries.BLOCK).forEach(block -> {
+                    blockPatterns.computeIfAbsent(block, (b) -> new ArrayList<>());
+                    blockPatterns.get(block).add(pattern);
+                });
+
+
+                value.constructApplicable(registry, Registries.FLUID).forEach(fluid -> {
+                    fluidPatterns.computeIfAbsent(fluid, (b) -> new ArrayList<>());
+                    fluidPatterns.get(fluid).add(pattern);
+                });
+            };
         }
     }
 
 	private static class DecayTask {
 		private final BlockPos pos;
 		private final BlockState origin;
-		private final DecayPattern processor;
+		private final DecayPatternHolder processor;
 		private final DecaySource source;
 		private int delay;
 
 
-		public DecayTask(BlockPos pos, BlockState origin, DecayPattern processor, DecaySource source, int delay) {
+		public DecayTask(BlockPos pos, BlockState origin, DecayPatternHolder processor, DecaySource source, int delay) {
 			this.pos = pos;
 			this.origin = origin;
 			this.processor = processor;
@@ -183,9 +202,9 @@ public final class Decay {
 			if (source.decayIntoWorldThread()) {
 				if (DimensionalDoors.getConfig().getDecayConfig().decaysIntoAir)
 					world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-				else processor.process(world, pos, origin, targetBlock, targetFluid, source);
+				else processor.value().process(world, pos, origin, targetBlock, targetFluid, source);
 			} else {
-				processor.process(world, pos, origin, targetBlock, targetFluid, source);
+				processor.value().process(world, pos, origin, targetBlock, targetFluid, source);
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:cyan_glazed_terracotta"
   },
   "result": {
     "type": "dimdoors:block",

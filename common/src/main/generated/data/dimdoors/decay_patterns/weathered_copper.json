@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:oxidized_copper"
   },
   "result": {
     "type": "dimdoors:block",

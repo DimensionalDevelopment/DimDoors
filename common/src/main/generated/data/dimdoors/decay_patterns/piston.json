@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:sticky_piston"
   },
   "result": {
     "type": "dimdoors:block",

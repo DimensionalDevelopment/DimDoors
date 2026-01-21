@@ -46,7 +46,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
 		}
 
     	if (DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore || RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis() >= 0)
-            this.renderTesseract(vcs.getBuffer(DimensionalDoorsClient.detector.shaderPackOn() ? RenderType.entityCutoutNoCull(TESSERACT_PATH) : MyRenderLayer.TESSERACT), rift, matrices, tickDelta);
+            this.renderTesseract(vcs.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), rift, matrices, tickDelta);
         this.renderCrack(vcs.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), matrices, rift);
     }
 

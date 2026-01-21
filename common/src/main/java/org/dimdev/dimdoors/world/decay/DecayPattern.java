@@ -5,6 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -13,9 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public record DecayPattern(List<DecayCondition> conditions, DecayResult result) {
     public static Codec<DecayPattern> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -35,17 +41,13 @@ public record DecayPattern(List<DecayCondition> conditions, DecayResult result) 
         ENTROPY_EVENT.invoker().entropy(world, pos, result.process(world, pos, origin, targetBlock, targetFluid, source));
     }
 
-	public Set<ResourceKey<Block>> constructApplicableBlocks() {
-		return conditions.stream().flatMap(a -> a.constructApplicableBlocks().stream()).collect(Collectors.toSet());
-	}
-
-	public Set<ResourceKey<Fluid>> constructApplicableFluids() {
-        return conditions.stream().flatMap(a -> a.constructApplicableFluids().stream()).collect(Collectors.toSet());
-	}
-
-    public Object willBecome(Object prior) {
-        return result.produces(prior);
+    public <T> Stream<ResourceKey<T>> constructApplicable(RegistryAccess access, ResourceKey<Registry<T>> key) {
+        return conditions.stream().filter(a -> a instanceof Applicator<?>).map(a -> (Applicator<?>) a).filter(a -> key.equals(a.registry())).flatMap(a -> a.constructApplicable(access)).map(b -> b.cast(key)).filter(Optional::isPresent).map(Optional::get);
     }
+
+//    public Object willBecome(Object prior) {
+//        return result.produces(prior);
+//    }
 
     public boolean shouldDropThread(ServerLevel world, BlockPos pos) {
         return world.getRandom().nextFloat() < result.worldThreadChance();

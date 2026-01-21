@@ -40,6 +40,7 @@ public class DyeableAddon implements PocketAddon {
 		BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).getOrNull().defaultBlockState();;
 
 		BlockPos.betweenClosedStream(pocket.getBox()).forEach(pos -> {
+            System.out.println(pos + ": " + serverWorld.getBlockState(pos).toString());
 			if (serverWorld.getBlockState(pos).getBlock() instanceof AncientFabricBlock) {
 				serverWorld.setBlockAndUpdate(pos, outerWall);
 			} else if (serverWorld.getBlockState(pos).getBlock() instanceof FabricBlock) {
@@ -163,13 +164,14 @@ public class DyeableAddon implements PocketAddon {
 
 	public interface DyeablePocket extends AddonProvider {
 		default boolean addDye(Entity entity, DyeColor dyeColor) {
-			ensureIsPocket();
-			if (!this.hasAddon(ID)) {
-				DyeableAddon addon = new DyeableAddon();
-				this.addAddon(addon);
-				return addon.addDye((Pocket) this, entity, dyeColor);
-			}
-			return this.<DyeableAddon>getAddon(ID).addDye((Pocket) this, entity, dyeColor);
+//          TODO: REnable personal pocket dyeing.
+//			ensureIsPocket();
+//			if (!this.hasAddon(ID)) {
+//				DyeableAddon addon = new DyeableAddon();
+//				this.addAddon(addon);
+//				return addon.addDye((Pocket) this, entity, dyeColor);
+//			}
+//			return this.<DyeableAddon>getAddon(ID).addDye((Pocket) this, entity, dyeColor);
 		}
 	}
 }

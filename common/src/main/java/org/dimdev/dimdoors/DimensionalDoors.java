@@ -13,6 +13,7 @@ import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -21,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.CloseableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -159,13 +161,25 @@ public class DimensionalDoors {
 		registerServerLoader("decay_loader", Decay.DecayLoader::reload);
 		registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
 
+        LifecycleEvent.SERVER_STARTING.register(new LifecycleEvent.ServerState() {
+            @Override
+            public void stateChanged(MinecraftServer server) {
+                Decay.DecayLoader.populate(server);
+            }
+        });
+
 		registerListeners();
 		SchemFixer.run();
 	}
 
-	@ExpectPlatform
-	public static void registerServerLoader(String pocketLoader, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
+    @ExpectPlatform
+    public static void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer, boolean loadAfterTags) {
 
+    }
+
+
+	public static void registerServerLoader(String pocketLoader, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
+        registerServerLoader(pocketLoader, consumer, false);
 	}
 
 	@ExpectPlatform

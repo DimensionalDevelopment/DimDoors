@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:carved_pumpkin"
   },
   "result": {
     "type": "dimdoors:block",

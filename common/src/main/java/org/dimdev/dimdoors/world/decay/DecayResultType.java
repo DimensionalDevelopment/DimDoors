@@ -24,7 +24,7 @@ public record DecayResultType<T extends DecayResult>(MapCodec<T> codec) {
     public static void register() {
     }
 
-    static <T, V, U extends DecayResult> RegistrySupplier<DecayResultType<U>> register(ResourceLocation id, MapCodec<U> codec) {
+    static <T, U extends DecayResult> RegistrySupplier<DecayResultType<U>> register(ResourceLocation id, MapCodec<U> codec) {
         return REGISTRY.register(id, () -> new DecayResultType<>(codec));
     }
 }

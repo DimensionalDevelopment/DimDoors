@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:cracked_stone_bricks"
   },
   "result": {
     "type": "dimdoors:block",

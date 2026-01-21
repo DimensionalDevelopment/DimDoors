@@ -71,16 +71,16 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 	private void processEntity(PrivatePocket pocket, BlockEntity blockEntity, Entity entity, UUID uuid, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
 		if (entity instanceof ItemEntity) {
 			Item item = ((ItemEntity) entity).getItem().getItem();
-
-			if (item instanceof DyeItem) {
-				if (pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getDyeColor())) {
-					entity.remove(Entity.RemovalReason.DISCARDED);
-				} else {
-					((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
-				}
-			} else {
+//          TODO: Readd dying of personal pcokets.
+//			if (item instanceof DyeItem) {
+//				if (pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getDyeColor())) {
+//					entity.remove(Entity.RemovalReason.DISCARDED);
+//				} else {
+//					((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
+//				}
+//			} else {
 				((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
-			}
+//			}
 		} else {
 			((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
 			DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, this.location);

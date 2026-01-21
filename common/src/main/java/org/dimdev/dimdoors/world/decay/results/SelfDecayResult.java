@@ -8,6 +8,8 @@ import org.dimdev.dimdoors.world.decay.DecayResult;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
+import java.util.List;
+
 import static org.dimdev.dimdoors.world.decay.DecayResultType.SELF_RESULT_TYPE;
 
 public class SelfDecayResult implements DecayResult {
@@ -28,5 +30,10 @@ public class SelfDecayResult implements DecayResult {
 	public int process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
         world.setBlockAndUpdate(pos, origin);
         return 0;
+    }
+
+    @Override
+    public List<Result> produces() {
+        return List.of();
     }
 }

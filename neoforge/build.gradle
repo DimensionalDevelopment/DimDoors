@@ -52,11 +52,17 @@ dependencies {
 //    modApi "lol.bai:badpackets:forge-0.4.2"
 //    modApi "com.sk89q.worldedit:worldedit-forge-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modCompileOnly("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:$rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:$rei_version"
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:$rei_version"
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.properties["rei"]}")
+    modCompileOnlyApi("mezz.jei:jei-${project.properties["minecraft_version"]}-neoforge-api:${project.properties["jei"]}")
 
-//    modApi("curse.maven:jei-${project.properties["jei_project"]}:${project.properties["jei_forge"]}")
+    switch (project.findProperty('recipe_viewer')?.toString()) {
+        case 'rei':
+            modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${project.findProperty('rei')}"
+            break
+        case 'jei':
+            modRuntimeOnly "mezz.jei:jei-${project.findProperty('minecraft_version')}-neoforge:${project.findProperty('jei')}"
+            break
+    }
 }
 
 processResources {

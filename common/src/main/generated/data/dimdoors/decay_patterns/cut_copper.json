@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:exposed_cut_copper"
   },
   "result": {
     "type": "dimdoors:block",

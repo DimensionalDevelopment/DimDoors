@@ -4,24 +4,27 @@ import com.google.common.collect.Streams;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import org.dimdev.dimdoors.world.decay.Applicator;
 import org.dimdev.dimdoors.world.decay.DecayCondition;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public abstract class GenericDecayCondition<T> implements DecayCondition {
+public abstract class GenericDecayCondition<T> implements DecayCondition, Applicator<T> {
     public static <T extends GenericDecayCondition<?>, V> MapCodec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
         Codec<TagOrElementLocation<V>> codec = Codec.STRING.comapFlatMap(string -> string.startsWith("#") ? ResourceLocation.read(string.substring(1)).map(resourceLocation -> new TagOrElementLocation<>(resourceLocation, true, key)) : ResourceLocation.read(string).map(resourceLocation -> new TagOrElementLocation<V>(resourceLocation, false, key)), TagOrElementLocation::decoratedId);
 
@@ -46,13 +49,18 @@ public abstract class GenericDecayCondition<T> implements DecayCondition {
 
     @Override
     public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
-        return tagOrElementLocation.test(getHolder(world, pos, origin, targetBlock, targetFluid, source));
+        return invert != tagOrElementLocation.test(getHolder(world, pos, origin, targetBlock, targetFluid, source));
     }
 
     public abstract Holder<T> getHolder(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source);
 
     public boolean invert() {
         return invert;
+    }
+
+    @Override
+    public Stream<ResourceKey<T>> constructApplicable(RegistryAccess access) {
+        return access.lookup(registry()).map(tagOrElementLocation::getValues).stream().flatMap(Collection::stream);
     }
 
     public static final class TagOrElementLocation<T> {
@@ -86,8 +94,8 @@ public abstract class GenericDecayCondition<T> implements DecayCondition {
             return tag != null && holder.is(tag) || holder.is(key);
         }
 
-        public Set<ResourceKey<T>> getValues(Registry<T> registry) {
-            return key != null ? Set.of(key) : Streams.stream(registry.getTagOrEmpty(tag)).map(Holder::unwrapKey).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
+        public Set<ResourceKey<T>> getValues(HolderLookup.RegistryLookup<T> lookup) {
+            return key != null ? Set.of(key) : lookup.get(tag).stream().flatMap(a -> a.stream()).map(Holder::unwrapKey).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
         }
     }
 }

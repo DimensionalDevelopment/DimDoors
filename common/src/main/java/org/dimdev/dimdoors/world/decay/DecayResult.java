@@ -5,12 +5,18 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+
+import java.util.List;
 
 public interface DecayResult {
     public static <T extends DecayResult> Products.P2<RecordCodecBuilder.Mu<T>, Integer, Float> entropyCodec(RecordCodecBuilder.Instance<T> instance) {
@@ -34,13 +40,16 @@ public interface DecayResult {
 
     int process(Level world, BlockPos pos, BlockState origin, BlockState targetState, FluidState targetFluid, DecaySource source);
 
-    default Object produces(Object prior) {
-        return defaultProduces(prior);
-    }
+    List<Result> produces();
 
     static Object defaultProduces(Object object) {
-        if(object instanceof Fluid fluid) return FluidStack.create(fluid, FluidStack.bucketAmount());
-        else if(object instanceof Block block) return new ItemStack(block);
-        else return null;
+        if(object instanceof ResourceKey<?> key) {
+            var keyValue = BuiltInRegistries.REGISTRY.get(key.registry()).getOptional(key.location()).orElse(null);
+            if (keyValue instanceof Fluid fluid) return FluidStack.create(fluid, FluidStack.bucketAmount());
+            else if (keyValue instanceof Block block) return new ItemStack(block);
+            else return null;
+        } else return null;
     }
+
+    public record Result(Object obj, int amount) {}
 }

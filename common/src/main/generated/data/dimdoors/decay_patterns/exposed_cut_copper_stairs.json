@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:weathered_cut_copper_stairs"
   },
   "result": {
     "type": "dimdoors:block",

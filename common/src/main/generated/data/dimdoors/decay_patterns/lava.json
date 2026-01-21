@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:magma_block"
+  },
+  "result": {
+    "type": "dimdoors:fluid",
+    "entropy": 1,
+    "fluid": "minecraft:lava",
+    "world_thread_chance": 0.01
+  }
+}

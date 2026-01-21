@@ -23,10 +23,12 @@ dependencies {
 
 //    modApi("com.sk89q.worldedit:worldedit-core:${project.properties["worldedit"]}")
 
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${project.properties["rei_version"]}")
-    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin:${project.properties["rei_version"]}")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${project.properties["rei"]}")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-default-plugin:${project.properties["rei"]}")
 
-//    modApi("curse.maven:jei-${project.properties["jei_project"]}:${project.properties["jei_fabric"]}")
+    modCompileOnlyApi("mezz.jei:jei-${project.properties["minecraft_version"]}-lib:${project.properties["jei"]}")
+    modCompileOnlyApi("mezz.jei:jei-${project.properties["minecraft_version"]}-common-api:${project.properties["jei"]}")
+    modRuntimeOnly("mezz.jei:jei-${project.properties["minecraft_version"]}-common:${project.properties["jei"]}")
 }
 
 sourceSets.main {

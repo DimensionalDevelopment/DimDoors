@@ -8,6 +8,8 @@ import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.world.decay.DecayResult;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 
+import java.util.List;
+
 public abstract class BlockDecayResult<T extends BlockDecayResult<T>> implements DecayResult {
     public static <T extends BlockDecayResult<T>> Products.P3<RecordCodecBuilder.Mu<T>, Integer, Float, Block> blockDecayCodec(RecordCodecBuilder.Instance<T> instance) {
         return DecayResult.entropyCodec(instance).and(BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(blockDecayResult -> blockDecayResult.block));
@@ -38,7 +40,7 @@ public abstract class BlockDecayResult<T extends BlockDecayResult<T>> implements
     public abstract DecayResultType<T> getType();
 
     @Override
-    public Object produces(Object prior) {
-        return new ItemStack(block);
+    public List<Result> produces() {
+        return List.of(new Result(block, 1));
     }
 }

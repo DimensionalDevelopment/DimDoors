@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:fluid",
+    "entry": "minecraft:lava"
   },
   "result": {
     "type": "dimdoors:block",

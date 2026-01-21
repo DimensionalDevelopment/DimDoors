@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:diamond_ore"
   },
   "result": {
     "type": "dimdoors:block",

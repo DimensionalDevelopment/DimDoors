@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:white_concrete_powder"
   },
   "result": {
     "type": "dimdoors:block",

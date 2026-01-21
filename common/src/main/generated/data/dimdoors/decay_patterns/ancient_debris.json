@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:netherite_block"
   },
   "result": {
     "type": "dimdoors:block",

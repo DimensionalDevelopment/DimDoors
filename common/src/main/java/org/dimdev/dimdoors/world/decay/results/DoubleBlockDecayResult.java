@@ -17,6 +17,8 @@ import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.DecayResultType;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
+import java.util.List;
+
 public class DoubleBlockDecayResult extends BlockDecayResult<DoubleBlockDecayResult> {
 	public static final MapCodec<DoubleBlockDecayResult> CODEC = RecordCodecBuilder.mapCodec(instance -> blockDecayCodec(instance).apply(instance, DoubleBlockDecayResult::new));
 
@@ -58,8 +60,8 @@ public class DoubleBlockDecayResult extends BlockDecayResult<DoubleBlockDecayRes
 		return 0;
 	}
 
-	@Override
-	public Object produces(Object prior) {
-		return new ItemStack(block, 2);
+    @Override
+    public List<Result> produces() {
+        return List.of(new Result(block, 2));
 	}
 }

@@ -35,6 +35,9 @@ subprojects {
         maven {
             url = "https://maven.parchmentmc.org"
         }
+        maven {
+            url = "https://maven.blamejared.com/"
+        }
     }
 
     base {

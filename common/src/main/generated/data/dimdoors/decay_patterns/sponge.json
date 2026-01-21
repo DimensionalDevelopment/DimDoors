@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:wet_sponge"
   },
   "result": {
     "type": "dimdoors:block",

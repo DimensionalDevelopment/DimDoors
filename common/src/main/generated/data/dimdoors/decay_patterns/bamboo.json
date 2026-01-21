@@ -1,6 +1,7 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "minecraft:scaffolding"
   },
   "result": {
     "type": "dimdoors:block",

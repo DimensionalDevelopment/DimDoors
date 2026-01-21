@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.fabric;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +15,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
@@ -32,16 +35,21 @@ public class DimensionalDoorsImpl {
         ResourceManagerHelper.registerBuiltinResourcePack(id("classic"), FabricLoader.getInstance().getModContainer(MOD_ID).get(), ResourcePackActivationType.DEFAULT_ENABLED);
     }
 
-    public static void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
+    public static void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer, boolean loadAfterTags) {
         var id = DimensionalDoors.id(name);
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(id, provider -> new FabricResourceLoader(id, manager -> consumer.accept(provider, manager)));
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(id, provider -> new FabricResourceLoader(id, manager -> consumer.accept(provider, manager), loadAfterTags ? List.of(ResourceReloadListenerKeys.TAGS) : List.of()));
     }
 
-    private record FabricResourceLoader(ResourceLocation id, Consumer<ResourceManager> consumer) implements IdentifiableResourceReloadListener, ResourceManagerReloadListener {
+    private record FabricResourceLoader(ResourceLocation id, Consumer<ResourceManager> consumer, List<ResourceLocation> dependecies) implements IdentifiableResourceReloadListener, ResourceManagerReloadListener {
 
         @Override
         public ResourceLocation getFabricId() {
             return id;
+        }
+
+        @Override
+        public Collection<ResourceLocation> getFabricDependencies() {
+            return dependecies;
         }
 
         @Override
