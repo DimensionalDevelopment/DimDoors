@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_mud_gate"
+    "entry": "#dimdoors:decays_to/mud_gate"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:mud_gate",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

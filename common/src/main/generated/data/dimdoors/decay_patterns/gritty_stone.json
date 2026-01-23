@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_gritty_stone"
+    "entry": "#dimdoors:decays_to/gritty_stone"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:gritty_stone",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

@@ -4,9 +4,6 @@
     "entry": "minecraft:cut_copper_slab"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:amalgam_slab",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_cobblestone_wall"
+    "entry": "#dimdoors:decays_to/cobblestone_wall"
   },
   "result": {
     "type": "dimdoors:block",

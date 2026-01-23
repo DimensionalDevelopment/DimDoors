@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_clay_fence"
+    "entry": "#dimdoors:decays_to/clay_fence"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:clay_fence",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

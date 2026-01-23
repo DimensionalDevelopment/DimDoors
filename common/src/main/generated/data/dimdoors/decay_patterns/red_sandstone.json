@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_red_sandstone"
+    "entry": "#dimdoors:decays_to/red_sandstone"
   },
   "result": {
     "type": "dimdoors:block",

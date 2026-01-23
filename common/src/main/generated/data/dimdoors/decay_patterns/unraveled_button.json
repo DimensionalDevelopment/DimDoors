@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_unraveled_button"
+    "entry": "#dimdoors:decays_to/unraveled_button"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:unraveled_button",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

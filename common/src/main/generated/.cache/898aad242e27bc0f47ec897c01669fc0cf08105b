@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-20T13:34:04.605729	DimensionalDoors/Block Loot Tables
+// 1.21.1	2026-01-23T03:57:14.2423465	DimensionalDoors/Block Loot Tables
 55dc49e6e27f61eb91946738dc4a0d08e55111fa data\dimdoors\loot_table\blocks\dark_sand.json
 37e857a73c51d2f3b956254da341ac17fc21be15 data\dimdoors\loot_table\blocks\driftwood_trapdoor.json
 912af60201e7be7320f2fcd1456bac43ca9439c3 data\dimdoors\loot_table\blocks\gravel_wall.json
@@ -47,7 +47,7 @@ f6adc64a5bf211f8cb71fcc41a6c4306629fe40c data\dimdoors\loot_table\blocks\marking
 4724bb4787618f9b9254f4dc51d6fb96613edf11 data\dimdoors\loot_table\blocks\amalgam_stairs.json
 3698fef15bab141bbb8042279d9103ce603a9c34 data\dimdoors\loot_table\blocks\red_fabric.json
 d4b24506811495a340eecb786378303a22e4a1ce data\dimdoors\loot_table\blocks\tesselating_loom.json
-c69b7d919bc3f9d796f4e35dee96a790fcaa95f6 data\dimdoors\loot_table\blocks\unravelled_fabric.json
+3def9a2110a64edeefbe7bbdd46752c154f93503 data\dimdoors\loot_table\blocks\unravelled_fabric.json
 67034a840b50ef535afe050da04051c5df8ae109 data\dimdoors\loot_table\blocks\clay_wall.json
 28a15de76f061aeaffae10920aeecb7760f9b2ed data\dimdoors\loot_table\blocks\light_gray_fabric.json
 03731937f06a1ce92b773542a3b2a608f25b1897 data\dimdoors\loot_table\blocks\clod_block.json
@@ -56,6 +56,7 @@ b05396705d01443319fc7cf2f15246657ded81a0 data\dimdoors\loot_table\blocks\solid_s
 2c83da251cf7a26d0c3a20c39505986f358c4f7e data\dimdoors\loot_table\blocks\amalgam_trapdoor.json
 49ab0d7d75c3482ae7f0bd7ae38aadcdce2d6174 data\dimdoors\loot_table\blocks\unraveled_gate.json
 eaba410721b60ed21e7266347e66a07cc050ff3d data\dimdoors\loot_table\blocks\dark_sand_wall.json
+2033aff8d00474c639bd7020b655c4eda079042d data\dimdoors\loot_table\blocks\reality_sponge.json
 888dc9ccca6ab07ce75e50b44e077f6001b365c4 data\dimdoors\loot_table\blocks\amalgam_door.json
 99c3bf3bf47a92116c9ea527ab59635840fdeccc data\dimdoors\loot_table\blocks\clay_fence.json
 feebb83a0e45c0a76c569c0a55c3bb0738abc60a data\dimdoors\loot_table\blocks\dark_sand_fence.json

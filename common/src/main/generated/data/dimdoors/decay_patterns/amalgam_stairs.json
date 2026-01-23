@@ -4,9 +4,6 @@
     "entry": "minecraft:cut_copper_stairs"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:amalgam_stairs",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

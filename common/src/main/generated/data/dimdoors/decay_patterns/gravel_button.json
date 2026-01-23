@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_gravel_button"
+    "entry": "#dimdoors:decays_to/gravel_button"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:gravel_button",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

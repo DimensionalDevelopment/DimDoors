@@ -1,0 +1,9 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/unraveled_fabric"
+  },
+  "result": {
+    "type": "dimdoors:none"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_granite_slab"
+    "entry": "#dimdoors:decays_to/granite_slab"
   },
   "result": {
     "type": "dimdoors:block",

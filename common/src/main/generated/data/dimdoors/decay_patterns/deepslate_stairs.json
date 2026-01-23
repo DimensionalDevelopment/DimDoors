@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_deepslate_stairs"
+    "entry": "#dimdoors:decays_to/deepslate_stairs"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:deepslate_stairs",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

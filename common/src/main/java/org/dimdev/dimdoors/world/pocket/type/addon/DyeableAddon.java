@@ -163,7 +163,7 @@ public class DyeableAddon implements PocketAddon {
 	}
 
 	public interface DyeablePocket extends AddonProvider {
-		default boolean addDye(Entity entity, DyeColor dyeColor) {
+//		default boolean addDye(Entity entity, DyeColor dyeColor) {
 //          TODO: REnable personal pocket dyeing.
 //			ensureIsPocket();
 //			if (!this.hasAddon(ID)) {
@@ -172,6 +172,6 @@ public class DyeableAddon implements PocketAddon {
 //				return addon.addDye((Pocket) this, entity, dyeColor);
 //			}
 //			return this.<DyeableAddon>getAddon(ID).addDye((Pocket) this, entity, dyeColor);
-		}
+//		}
 	}
 }

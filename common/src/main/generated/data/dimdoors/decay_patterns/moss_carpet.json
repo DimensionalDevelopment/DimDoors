@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#minecraft:wool_carpets"
+    "entry": "#dimdoors:decays_to/moss_carpet"
   },
   "result": {
     "type": "dimdoors:block",

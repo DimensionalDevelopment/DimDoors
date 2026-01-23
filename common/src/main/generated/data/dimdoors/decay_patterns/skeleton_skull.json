@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_skeleton_skull"
+    "entry": "#dimdoors:decays_to/skeleton_skull"
   },
   "result": {
     "type": "dimdoors:block",

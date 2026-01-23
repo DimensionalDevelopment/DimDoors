@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_gravel_slab"
+    "entry": "#dimdoors:decays_to/gravel_slab"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:gravel_slab",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

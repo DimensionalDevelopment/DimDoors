@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#minecraft:flower_pots",
+      "required": false
+    },
+    {
+      "id": "#minecraft:candles",
+      "required": false
+    }
+  ]
+}

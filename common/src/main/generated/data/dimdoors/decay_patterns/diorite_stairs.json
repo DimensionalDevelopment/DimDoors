@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_diorite_stairs"
+    "entry": "#dimdoors:decays_to/diorite_stairs"
   },
   "result": {
     "type": "dimdoors:block",

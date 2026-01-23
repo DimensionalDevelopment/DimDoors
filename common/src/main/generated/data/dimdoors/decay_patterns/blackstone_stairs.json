@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_blackstone_stairs"
+    "entry": "#dimdoors:decays_to/blackstone_stairs"
   },
   "result": {
     "type": "dimdoors:block",

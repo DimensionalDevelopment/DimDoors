@@ -6,7 +6,7 @@
     },
     {
       "type": "dimdoors:block",
-      "entry": "#dimdoors:decay_to_solid_static"
+      "entry": "#dimdoors:decays_to/solid_static"
     }
   ],
   "result": {

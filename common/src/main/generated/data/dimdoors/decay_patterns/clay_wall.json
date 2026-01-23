@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "minecraft:brick_wall"
+    "entry": "#dimdoors:decays_to/clay_stairs"
   },
   "result": {
     "type": "dimdoors:none"

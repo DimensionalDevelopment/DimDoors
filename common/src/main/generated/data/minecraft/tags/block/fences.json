@@ -5,6 +5,9 @@
     "dimdoors:mud_fence",
     "dimdoors:unraveled_fence",
     "dimdoors:netherrack_fence",
-    "dimdoors:dark_sand_fence"
+    "dimdoors:dark_sand_fence",
+    "dimdoors:clay_gate",
+    "dimdoors:mud_gate",
+    "dimdoors:unraveled_gate"
   ]
 }

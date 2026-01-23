@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_driftwood_log"
+    "entry": "#dimdoors:decays_to/driftwood_log"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:driftwood_log",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

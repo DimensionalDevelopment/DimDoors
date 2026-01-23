@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_driftwood_slab"
+    "entry": "#dimdoors:decays_to/driftwood_slab"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:driftwood_slab",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

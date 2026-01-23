@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_dark_prismarine_stairs"
+    "entry": "#dimdoors:decays_to/dark_prismarine_stairs"
   },
   "result": {
     "type": "dimdoors:block",

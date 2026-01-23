@@ -1,11 +1,9 @@
 {
   "conditions": {
-    "type": "dimdoors:none"
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/unraveled_gate"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:unraveled_gate",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

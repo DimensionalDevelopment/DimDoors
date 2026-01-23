@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_deepslate"
+    "entry": "#dimdoors:decays_to/deepslate"
   },
   "result": {
     "type": "dimdoors:block",

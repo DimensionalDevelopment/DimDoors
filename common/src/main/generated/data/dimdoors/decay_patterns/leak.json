@@ -4,9 +4,6 @@
     "entry": "minecraft:water"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:leak",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

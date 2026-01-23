@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_wither_rose"
+    "entry": "#dimdoors:decays_to/wither_rose"
   },
   "result": {
     "type": "dimdoors:block",

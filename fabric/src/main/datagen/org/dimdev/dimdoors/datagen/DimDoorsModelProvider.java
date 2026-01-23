@@ -95,7 +95,8 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 				.fenceGate(ModBlocks.UNRAVELED_GATE.get())
 				.button(ModBlocks.UNRAVELED_BUTTON.get())
 				.slab(ModBlocks.UNRAVELED_SLAB.get())
-				.stairs(ModBlocks.UNRAVELED_STAIRS.get());
+				.stairs(ModBlocks.UNRAVELED_STAIRS.get())
+                .wall(ModBlocks.UNRAVELED_WALL.get());
 
 		generator.family(Blocks.MUD)
 				.fence(ModBlocks.MUD_FENCE.get())

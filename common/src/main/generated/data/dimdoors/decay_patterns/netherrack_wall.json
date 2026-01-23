@@ -1,12 +1,9 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:netherrack_wall"
+    "entry": "#dimdoors:decays_to/netherrack_wall"
   },
   "result": {
-    "type": "dimdoors:block",
-    "block": "dimdoors:netherrack_wall",
-    "entropy": 1,
-    "world_thread_chance": 0.01
+    "type": "dimdoors:none"
   }
 }

@@ -1,0 +1,9 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/endstone_wall"
+  },
+  "result": {
+    "type": "dimdoors:none"
+  }
+}

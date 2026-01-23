@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_prismarine_wall"
+    "entry": "#dimdoors:decays_to/prismarine_wall"
   },
   "result": {
     "type": "dimdoors:block",

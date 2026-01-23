@@ -10,6 +10,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
@@ -27,18 +28,28 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
 			}
 			this.dropSelf(ModBlocks.GOLD_DOOR.get());
 			this.dropSelf(ModBlocks.QUARTZ_DOOR.get());
-//		this.addDropWithSilkTouch(ModBlocks.OAK_DIMENSIONAL_DOOR);
-//		this.addDropWithSilkTouch(ModBlocks.IRON_DIMENSIONAL_DOOR);
-//		this.addDropWithSilkTouch(ModBlocks.GOLD_DIMENSIONAL_DOOR);
-//		this.addDropWithSilkTouch(ModBlocks.QUARTZ_DIMENSIONAL_DOOR);
 			this.dropWhenSilkTouch(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR.get());
 			this.dropWhenSilkTouch(ModBlocks.MARKING_PLATE.get());
 
 			this.add(ModBlocks.SOLID_STATIC.get(), (blockx) -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER.get()));
 
-			this.add(ModBlocks.UNRAVELLED_FABRIC.get(), (blockx) -> createSilkTouchDispatchTable(blockx, applyExplosionCondition(blockx, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get()).when(BonusLevelTableCondition.bonusLevelFlatChance(registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE), 0.1F, 0.14285715F, 0.25F, 1.0F)).otherwise(LootItem.lootTableItem(blockx)))));
-
+        this.add(ModBlocks.UNRAVELLED_FABRIC.get(), block ->
+                this.createSilkTouchDispatchTable(
+                        block,
+                        LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get())
+                                .when(BonusLevelTableCondition.bonusLevelFlatChance(
+                                        registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE),
+                                        0.1F, 0.14285715F, 0.25F, 1.0F
+                                ))
+                                .when(ExplosionCondition.survivesExplosion())
+                                .otherwise(
+                                        LootItem.lootTableItem(block)
+                                                .when(ExplosionCondition.survivesExplosion())
+                                )
+                )
+        );
 			this.dropSelf(ModBlocks.TESSELATING_LOOM.get());
+            this.dropSelf(ModBlocks.REALITY_SPONGE.get());
 
 			this.dropSelf(ModBlocks.DRIFTWOOD_WOOD.get());
 			this.dropSelf(ModBlocks.DRIFTWOOD_LOG.get());

@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "#dimdoors:decay_to_stone"
+    "entry": "#dimdoors:decays_to/stone"
   },
   "result": {
     "type": "dimdoors:block",
