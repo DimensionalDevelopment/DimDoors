@@ -155,11 +155,55 @@ public class LimboDecayProvider implements DataProvider {
 
 		addPattern(Blocks.ICE, Blocks.PACKED_ICE);
 		addPattern(Blocks.IRON_BLOCK, Blocks.ANVIL);
-		createOxidizationChain(Blocks.COPPER_BLOCK, Blocks.EXPOSED_COPPER, Blocks.WEATHERED_COPPER, Blocks.OXIDIZED_COPPER);
-		createOxidizationChain(Blocks.CUT_COPPER, Blocks.EXPOSED_CUT_COPPER, Blocks.WEATHERED_CUT_COPPER, Blocks.OXIDIZED_CUT_COPPER);
-		createOxidizationChain(Blocks.CUT_COPPER_SLAB, Blocks.EXPOSED_CUT_COPPER_SLAB, Blocks.WEATHERED_CUT_COPPER_SLAB, Blocks.OXIDIZED_CUT_COPPER_SLAB);
-		createOxidizationChain(Blocks.CUT_COPPER_STAIRS, Blocks.EXPOSED_CUT_COPPER_STAIRS, Blocks.WEATHERED_CUT_COPPER_STAIRS, Blocks.OXIDIZED_CUT_COPPER_STAIRS);
-		addPattern(Blocks.ANCIENT_DEBRIS, Blocks.NETHERITE_BLOCK);
+
+		createOxidizationChain(
+                Blocks.COPPER_BLOCK, Blocks.WAXED_COPPER_BLOCK,
+                Blocks.EXPOSED_COPPER, Blocks.WAXED_EXPOSED_COPPER,
+                Blocks.WEATHERED_COPPER, Blocks.WAXED_WEATHERED_COPPER,
+                Blocks.OXIDIZED_COPPER, Blocks.WAXED_OXIDIZED_COPPER
+        );
+		createOxidizationChain(
+                Blocks.CUT_COPPER, Blocks.WAXED_CUT_COPPER,
+                Blocks.EXPOSED_CUT_COPPER, Blocks.WAXED_EXPOSED_CUT_COPPER,
+                Blocks.WEATHERED_CUT_COPPER, Blocks.WAXED_WEATHERED_CUT_COPPER,
+                Blocks.OXIDIZED_CUT_COPPER, Blocks.WAXED_OXIDIZED_CUT_COPPER
+                );
+		createOxidizationChain(
+                Blocks.CUT_COPPER_SLAB, Blocks.WAXED_CUT_COPPER_SLAB,
+                Blocks.EXPOSED_CUT_COPPER_SLAB, Blocks.WAXED_EXPOSED_CUT_COPPER_SLAB,
+                Blocks.WEATHERED_CUT_COPPER_SLAB, Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB,
+                Blocks.OXIDIZED_CUT_COPPER_SLAB, Blocks.WAXED_OXIDIZED_CUT_COPPER_SLAB
+        );
+		createOxidizationChain(
+                Blocks.CUT_COPPER_STAIRS, Blocks.WAXED_CUT_COPPER_STAIRS,
+                Blocks.EXPOSED_CUT_COPPER_STAIRS, Blocks.WAXED_EXPOSED_CUT_COPPER_STAIRS,
+                Blocks.WEATHERED_CUT_COPPER_STAIRS, Blocks.WAXED_WEATHERED_CUT_COPPER_STAIRS,
+                Blocks.OXIDIZED_CUT_COPPER_STAIRS, Blocks.WAXED_OXIDIZED_CUT_COPPER_STAIRS
+                );
+
+        createOxidizationChain(
+                Blocks.COPPER_BULB, Blocks.WAXED_COPPER_BULB,
+                Blocks.EXPOSED_COPPER_BULB, Blocks.WAXED_EXPOSED_COPPER_BULB,
+                Blocks.WEATHERED_COPPER_BULB, Blocks.WAXED_WEATHERED_COPPER_BULB,
+                Blocks.OXIDIZED_COPPER_BULB, Blocks.WAXED_OXIDIZED_COPPER_BULB
+                );
+
+        createOxidizationChain(
+                Blocks.COPPER_DOOR, Blocks.WAXED_COPPER_DOOR,
+                Blocks.EXPOSED_COPPER_DOOR, Blocks.WAXED_EXPOSED_COPPER_DOOR,
+                Blocks.WEATHERED_COPPER_DOOR, Blocks.WAXED_WEATHERED_COPPER_DOOR,
+                Blocks.OXIDIZED_COPPER_DOOR, Blocks.WAXED_OXIDIZED_COPPER_DOOR
+        );
+
+        createOxidizationChain(
+                Blocks.COPPER_DOOR, Blocks.WAXED_COPPER_DOOR,
+                Blocks.EXPOSED_COPPER_DOOR, Blocks.WAXED_EXPOSED_COPPER_DOOR,
+                Blocks.WEATHERED_COPPER_DOOR, Blocks.WAXED_WEATHERED_COPPER_DOOR,
+                Blocks.OXIDIZED_COPPER_DOOR, Blocks.WAXED_OXIDIZED_COPPER_DOOR
+                );
+
+
+        addPattern(Blocks.ANCIENT_DEBRIS, Blocks.NETHERITE_BLOCK);
 		addPattern(Blocks.DIRT, ModBlockTags.DECAYS_TO_DIRT);
 		addPattern(Blocks.CRIMSON_NYLIUM, Blocks.WARPED_NYLIUM);
 		addPattern(ModBlocks.DRIFTWOOD_PLANKS, ModBlockTags.DECAYS_TO_DRIFTWOOD_PLANK);
@@ -314,27 +358,17 @@ public class LimboDecayProvider implements DataProvider {
 		else return NoneDecayResult.instance();
 	}
 
-	private void createOxidizationChain(Block regular, Block exposed, Block weathered, Block oxidized) {
-		Function<Block, Block> waxed = block -> {
-			ResourceLocation id = getBlockId(block);
+	private void createOxidizationChain(Block... blocks) {
+        for (int i = 0; i < blocks.length - 2; i += 2) {
+            var from = blocks[i];
+            var fromWaxed = blocks[i+1];
+            var to = blocks[i+2];
+            var toWaxed = blocks[i+3];
 
-			return getBlock(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "waxed_" + id.getPath()));
-		};
-		Function<Block, ResourceLocation> id = block -> DimensionalDoors.id(getId(block));
-
-		Block regularWaxed = waxed.apply(regular);
-		Block exposedWaxed = waxed.apply(exposed);
-		Block weatheredWaxed = waxed.apply(weathered);
-		Block oxidizedWaxed = waxed.apply(oxidized);
-
-		addPattern(weathered, oxidized);
-		addPattern(exposed, weathered);
-		addPattern(regular, exposed);
-
-		addPattern(DimensionalDoors.id("regular_copper_wax"), regular, regularWaxed);
-		addPattern(DimensionalDoors.id("exposed_copper_wax"), exposed, exposedWaxed);
-		addPattern(DimensionalDoors.id("weathered_copper_wax"), weathered, weatheredWaxed);
-		addPattern(DimensionalDoors.id("oxidized_copper_wax"), oxidized, oxidizedWaxed);
+            addPattern(to, from);
+            addPattern(DimensionalDoors.id("dewaxed_" + getId(from)), from, fromWaxed);
+            addPattern(DimensionalDoors.id("dewaxed_" + getId(to)), to, toWaxed);
+        }
 	}
 
 	private Block getBlock(ResourceLocation id) {

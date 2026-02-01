@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "minecraft:oxidized_cut_copper"
+    "entry": "minecraft:exposed_cut_copper"
   },
   "result": {
     "type": "dimdoors:block",

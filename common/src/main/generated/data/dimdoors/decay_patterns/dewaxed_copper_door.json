@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:waxed_copper_door"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:copper_door",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

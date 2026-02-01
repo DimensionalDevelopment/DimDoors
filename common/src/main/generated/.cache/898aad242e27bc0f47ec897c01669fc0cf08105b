@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-23T03:57:14.2423465	DimensionalDoors/Block Loot Tables
+// 1.21.1	2026-01-31T21:33:03.4958626	DimensionalDoors/Block Loot Tables
 55dc49e6e27f61eb91946738dc4a0d08e55111fa data\dimdoors\loot_table\blocks\dark_sand.json
 37e857a73c51d2f3b956254da341ac17fc21be15 data\dimdoors\loot_table\blocks\driftwood_trapdoor.json
 912af60201e7be7320f2fcd1456bac43ca9439c3 data\dimdoors\loot_table\blocks\gravel_wall.json
@@ -28,8 +28,8 @@ f82e208ca860a857c879956110d16603c2bfd21e data\dimdoors\loot_table\blocks\driftwo
 2a33f904528c037479c316990ab9c8c5965f15af data\dimdoors\loot_table\blocks\light_blue_fabric.json
 0f04d1b2a842dd53156ca43dea72f8e1bcf601f0 data\dimdoors\loot_table\blocks\sand_wall.json
 954e56c5775f8951c54bafa7b2c016e25bc445d6 data\dimdoors\loot_table\blocks\unraveled_button.json
-85cfb500b73b76248debcb4e4852c428daaf4b24 data\dimdoors\loot_table\blocks\mud_slab.json
 97b73037a9c44a7ac587d7b107f0ff63913c527d data\dimdoors\loot_table\blocks\gravel_button.json
+85cfb500b73b76248debcb4e4852c428daaf4b24 data\dimdoors\loot_table\blocks\mud_slab.json
 69b2b18016ace0d223f61dd36def17f824206807 data\dimdoors\loot_table\blocks\lime_fabric.json
 0c2a5514b0d32952f0e489984e9ed79dd6400dd3 data\dimdoors\loot_table\blocks\rust.json
 e1a0f9d4f06628910b1a0be2e1ffe188aaf61689 data\dimdoors\loot_table\blocks\netherrack_fence.json

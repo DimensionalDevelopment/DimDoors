@@ -36,6 +36,7 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAYS_TO_DARK_SAND_WALL = decaysTo("decay_dark_sand_wall");
 
 	public static final TagKey<Block> DECAYS_TO_AMALGAM = decaysTo("amalgam");
+    public static final TagKey<Block> DECAYS_TO_AMALGAM_DOOR = decaysTo("amalgam_door");
 	public static final TagKey<Block> DECAYS_TO_DIRT = decaysTo("dirt");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_PLANK = decaysTo("driftwood_plank");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_FENCE = decaysTo("driftwood_fence");

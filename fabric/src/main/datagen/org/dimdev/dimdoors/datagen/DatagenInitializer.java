@@ -1,17 +1,29 @@
 package org.dimdev.dimdoors.datagen;
 
+import com.google.common.hash.HashCode;
+import com.mojang.blaze3d.platform.NativeImage;
+import me.shedaniel.errornotifier.launch.ColorUtil;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
+import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.CachedOutput;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.item.ModJukeboxSongs;
+import org.dimdev.dimdoors.painting.ModPaintings;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModGatewayPools;
 import org.dimdev.dimdoors.world.ModProcessorLists;
@@ -20,7 +32,15 @@ import org.dimdev.dimdoors.world.carvers.ModCarvers;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.jetbrains.annotations.Nullable;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.List;
 import java.util.OptionalLong;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.dimdev.dimdoors.world.ModDimensions.LIMBO_TYPE_KEY;
 import static org.dimdev.dimdoors.world.ModDimensions.POCKET_TYPE_KEY;
@@ -32,14 +52,61 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 
 		var pack = generator.createPack();
 
+        pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) (output, registriesFuture) -> new DataProvider() {
+            @Override
+            public CompletableFuture<?> run(CachedOutput cachedOutput) {
+                var path = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "textures/painting");
+
+                return registriesFuture.thenApply(provider -> provider.lookupOrThrow(Registries.PAINTING_VARIANT))
+                        .thenApply(lookup -> ModPaintings.PLACEHOLDERS.stream().map(lookup::getOrThrow).toList())
+                        .thenAccept(references -> references.forEach(painting -> {
+                            var key = painting.key();
+                            var value = painting.value();
+
+                            var width = value.width() * 16;
+                            var height = value.height() * 16;
+
+                            try {
+                                var image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+                                var graphics = image.createGraphics();
+
+                                graphics.setColor(Color.decode("#452719"));
+                                graphics.fillRect(0, 0, width, height);
+                                graphics.setColor(Color.decode("#404040"));
+                                graphics.fillRect(1, 1, width-2, height-2);
+
+                                var writer = new ByteArrayOutputStream();
+
+                                ImageIO.write(image, "PNG", writer);
+
+                                var filePath = path.file(key.location(), "png");
+
+                                var bytes = writer.toByteArray();
+
+                                cachedOutput.writeIfNeeded(filePath, bytes, HashCode.fromBytes(bytes));
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }));
+            }
+
+            @Override
+            public String getName() {
+                return "Paintings Textures";
+            }
+        });
+
 		pack.addProvider(DimDoorsModelProvider::new);
 		pack.addProvider(DimdoorsRecipeProvider::new);
 		pack.addProvider(AdvancementProvider::new);
-		pack.addProvider(org.dimdev.dimdoors.datagen.LootTableProvider::new);
-		pack.addProvider(org.dimdev.dimdoors.datagen.LimboDecayProvider::new);
+		pack.addProvider(LootTableProvider::new);
+		pack.addProvider(LimboDecayProvider::new);
+
 		pack.addProvider(BlockTagProvider::new);
 		pack.addProvider(BiomeTagProvider::new);
 		pack.addProvider(ItemTagProvider::new);
+        pack.addProvider(PaintingTagProvider::new);
 		pack.addProvider((output, registriesFuture) -> new FabricDynamicRegistryProvider(output, registriesFuture) {
 
 			@Override
@@ -65,6 +132,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 				entries.addAll(registries.lookupOrThrow(Registries.PROCESSOR_LIST));
 				entries.addAll(registries.lookupOrThrow(Registries.JUKEBOX_SONG));
 				entries.addAll(registries.lookupOrThrow(Registries.ENCHANTMENT));
+                entries.addAll(registries.lookupOrThrow(Registries.PAINTING_VARIANT));
 			}
 		});
 	}
@@ -96,7 +164,8 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 				.add(Registries.STRUCTURE_SET, ModStructureSets::bootstrap)
 				.add(Registries.PROCESSOR_LIST, ModProcessorLists::bootstrap)
 				.add(Registries.JUKEBOX_SONG, ModJukeboxSongs::bootstrap)
-				.add(Registries.ENCHANTMENT, ModEnchants::bootstrap);
+				.add(Registries.ENCHANTMENT, ModEnchants::bootstrap)
+                .add(Registries.PAINTING_VARIANT, ModPaintings::bootstrap);
 
 	}
 

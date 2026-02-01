@@ -1,11 +1,11 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "minecraft:exposed_copper"
+    "entry": "minecraft:waxed_copper_bulb"
   },
   "result": {
     "type": "dimdoors:block",
-    "block": "minecraft:copper_block",
+    "block": "minecraft:copper_bulb",
     "entropy": 1,
     "world_thread_chance": 0.01
   }

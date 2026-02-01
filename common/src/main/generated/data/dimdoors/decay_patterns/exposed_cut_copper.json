@@ -1,7 +1,7 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "minecraft:weathered_cut_copper"
+    "entry": "minecraft:cut_copper"
   },
   "result": {
     "type": "dimdoors:block",

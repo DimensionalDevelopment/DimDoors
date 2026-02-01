@@ -1,0 +1,12 @@
+{
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:weathered_copper_bulb"
+  },
+  "result": {
+    "type": "dimdoors:block",
+    "block": "minecraft:oxidized_copper_bulb",
+    "entropy": 1,
+    "world_thread_chance": 0.01
+  }
+}

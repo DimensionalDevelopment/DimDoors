@@ -279,7 +279,14 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 		tag(ModBlockTags.DECAYS_TO_DARK_SAND_SLAB);
 		tag(ModBlockTags.DECAYS_TO_DARK_SAND_STAIRS);
 		tag(ModBlockTags.DECAYS_TO_DARK_SAND_WALL);
-		add(ModBlockTags.DECAYS_TO_AMALGAM,
+
+        add(ModBlockTags.DECAYS_TO_AMALGAM_DOOR,
+                Blocks.IRON_DOOR,
+                Blocks.COPPER_DOOR,
+                ModBlocks.GOLD_DOOR
+        );
+
+        add(ModBlockTags.DECAYS_TO_AMALGAM,
                 Blocks.IRON_BLOCK,
 				Blocks.COPPER_BLOCK,
 				Blocks.CUT_COPPER,

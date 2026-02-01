@@ -1,11 +1,11 @@
 {
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "minecraft:exposed_cut_copper_slab"
+    "entry": "minecraft:waxed_weathered_copper"
   },
   "result": {
     "type": "dimdoors:block",
-    "block": "minecraft:cut_copper_slab",
+    "block": "minecraft:weathered_copper",
     "entropy": 1,
     "world_thread_chance": 0.01
   }
