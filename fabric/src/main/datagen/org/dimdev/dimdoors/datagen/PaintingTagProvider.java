@@ -31,7 +31,7 @@ public class PaintingTagProvider extends FabricTagProvider<PaintingVariant> {
             public Integer apply(Holder.Reference<PaintingVariant> paintingVariantReference) {
                 var value = paintingVariantReference.value();
 
-                return (value.width() -1) + ((value.height() - 1) * 4);
+                return ((value.width() - 1) * 4) + (value.height() - 1);
             }
         }));
 
@@ -43,6 +43,6 @@ public class PaintingTagProvider extends FabricTagProvider<PaintingVariant> {
             }
         });
 
-        tag(PaintingVariantTags.PLACEABLE).add(ModPaintings.LIMBO).addAll(ModPaintings.PLACEHOLDERS);
+        tag(PaintingVariantTags.PLACEABLE).add(ModPaintings.LIMBO);
     }
 }

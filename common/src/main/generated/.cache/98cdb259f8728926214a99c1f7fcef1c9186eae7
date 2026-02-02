@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-02T03:54:55.0627107	DimensionalDoors/Recipes
+// 1.21.1	2026-02-02T13:12:09.5639343	DimensionalDoors/Recipes
 f3ceb1c1d020439b6a80b4826cf4ec471166f229 data\dimdoors\recipe\rift_stabilizer.json
 4754a9ec0e2e5b32de0c7910662290febc59ee06 data\dimdoors\recipe\fabric_of_reality.json
 d87da93f0d45b1707a680197ba54c5e5f859c604 data\dimdoors\advancement\recipes\misc\black_fabric.json
@@ -12,8 +12,8 @@ f9d7bbe52fe5f05532f12cf2fd9bd6cfc9414513 data\dimdoors\recipe\fabric_of_finality
 890041da75e8ae611df679de72cbe5c5e9c16cf4 data\dimdoors\advancement\recipes\misc\purple_fabric.json
 4161fa666695793a78bc3b691752b3781a7201be data\dimdoors\advancement\recipes\misc\stabilized_rift_signature.json
 327f1e1313a42a031d9f7553d53a89cd6d29c8e6 data\dimdoors\advancement\recipes\tesselating\fabric_of_reality.json
-b262774b4eb38aa0c0e8727ad0f8791a1d333c5c data\dimdoors\recipe\blue_fabric.json
 0a6efa50a834aa84edf64c0f08ec0cf51a1e5cba data\dimdoors\advancement\recipes\misc\green_fabric.json
+b262774b4eb38aa0c0e8727ad0f8791a1d333c5c data\dimdoors\recipe\blue_fabric.json
 8b56eb1ea864742c319604d937a3a5eb2bc90f1d data\dimdoors\recipe\world_thread_boots.json
 64ac153b46184aabd918cf4b769b87309286a5ec data\dimdoors\advancement\recipes\misc\blue_fabric.json
 46438306b18add5ce1a1d43707ed774139526791 data\dimdoors\recipe\stable_fabric.json
@@ -30,8 +30,8 @@ f5ab3150c239438959cb2e04325d9fc3dc4fd23e data\dimdoors\advancement\recipes\misc\
 ea9a0a415e4c7a24cd0bdaa3e1fb7907647118be data\dimdoors\recipe\red_fabric.json
 668cb8a806bbe9f778e0a0c99ea2b8c817e7ede8 data\dimdoors\recipe\fuzzy_fireball.json
 a7859f897862bb352a6a640b919292cb418d16e9 data\dimdoors\recipe\rift_pearl.json
-6caf257b77573155b9179c989dc80876259329a9 data\dimdoors\advancement\recipes\misc\light_blue_fabric.json
 5a956f223f5dee8869530adb1361d66a7fcb0167 data\dimdoors\advancement\recipes\misc\light_gray_fabric.json
+6caf257b77573155b9179c989dc80876259329a9 data\dimdoors\advancement\recipes\misc\light_blue_fabric.json
 1380e9577eadbe3354df7a06713496071d5f9b13 data\dimdoors\recipe\gray_fabric.json
 3521f91728d384a2436126fc275a3bef4a855b8e data\dimdoors\recipe\world_thread_chestplate.json
 28e77f9733edd7014759ca21522e0a32098d50e1 data\dimdoors\advancement\recipes\misc\yellow_fabric.json
