@@ -1,4 +1,5 @@
 {
+  "type": "dimdoors:compound",
   "conditions": {
     "type": "dimdoors:block",
     "entry": "#dimdoors:decays_to/skeleton_wall_skull"

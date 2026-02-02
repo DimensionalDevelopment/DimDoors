@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-31T21:33:03.4948638	DimensionalDoors/Recipes
+// 1.21.1	2026-02-02T03:54:55.0627107	DimensionalDoors/Recipes
 f3ceb1c1d020439b6a80b4826cf4ec471166f229 data\dimdoors\recipe\rift_stabilizer.json
 4754a9ec0e2e5b32de0c7910662290febc59ee06 data\dimdoors\recipe\fabric_of_reality.json
 d87da93f0d45b1707a680197ba54c5e5f859c604 data\dimdoors\advancement\recipes\misc\black_fabric.json
@@ -8,12 +8,12 @@ f9d7bbe52fe5f05532f12cf2fd9bd6cfc9414513 data\dimdoors\recipe\fabric_of_finality
 57f0459daae1ce00e21f19863a1c71cee0efee41 data\dimdoors\recipe\light_blue_fabric.json
 6db6489525090419557e2d3c92af845f79b50cb3 data\dimdoors\advancement\recipes\misc\gray_fabric.json
 749e810e6ed85de63f509197baab6a7d97c39de4 data\dimdoors\recipe\reality_sponge.json
-890041da75e8ae611df679de72cbe5c5e9c16cf4 data\dimdoors\advancement\recipes\misc\purple_fabric.json
 31c0f1b76df146591cbd6dcb8e4393c0d13722f4 data\dimdoors\advancement\recipes\misc\stone_door.json
+890041da75e8ae611df679de72cbe5c5e9c16cf4 data\dimdoors\advancement\recipes\misc\purple_fabric.json
 4161fa666695793a78bc3b691752b3781a7201be data\dimdoors\advancement\recipes\misc\stabilized_rift_signature.json
 327f1e1313a42a031d9f7553d53a89cd6d29c8e6 data\dimdoors\advancement\recipes\tesselating\fabric_of_reality.json
-0a6efa50a834aa84edf64c0f08ec0cf51a1e5cba data\dimdoors\advancement\recipes\misc\green_fabric.json
 b262774b4eb38aa0c0e8727ad0f8791a1d333c5c data\dimdoors\recipe\blue_fabric.json
+0a6efa50a834aa84edf64c0f08ec0cf51a1e5cba data\dimdoors\advancement\recipes\misc\green_fabric.json
 8b56eb1ea864742c319604d937a3a5eb2bc90f1d data\dimdoors\recipe\world_thread_boots.json
 64ac153b46184aabd918cf4b769b87309286a5ec data\dimdoors\advancement\recipes\misc\blue_fabric.json
 46438306b18add5ce1a1d43707ed774139526791 data\dimdoors\recipe\stable_fabric.json

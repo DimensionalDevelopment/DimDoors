@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.compat.rei.decay;
 
-import dev.architectury.extensions.injected.InjectedRegistryEntryExtension;
 import dev.architectury.fluid.FluidStack;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.entry.EntryStack;
@@ -14,22 +12,15 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
 import org.dimdev.dimdoors.world.decay.*;
-import org.dimdev.dimdoors.world.decay.results.BlockDecayResult;
+import org.dimdev.dimdoors.world.decay.conditions.Applicator;
+import org.dimdev.dimdoors.world.decay.results.DecayResult;
 
-import javax.swing.text.html.Option;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DecayPatternDisplay extends BasicDisplay {
@@ -42,18 +33,21 @@ public class DecayPatternDisplay extends BasicDisplay {
     }
 
     public static List<DecayPatternDisplay> list(DecayPatternHolder patternHolder, RegistryAccess registryAccess) {
-        var pattern = patternHolder.value();
-        var output = List.of(pattern.result().produces().stream().map(DecayPatternDisplay::toEntryStack).collect(EntryIngredient.collector()));
-        return pattern.conditions().stream()
-                .flatMap(a -> {
-                    return a instanceof Applicator<?> applicator ? applicator.constructApplicable(registryAccess) : Stream.<ResourceKey<?>>empty();
-                })
-                .map(a -> DecayPatternDisplay.toEntryStack(a))
-                .filter(a -> !a.isEmpty())
-                .map(stack -> EntryIngredient.of(stack))
-                .map(o -> Collections.singletonList(o))
-                .map(input ->  new DecayPatternDisplay(input, output))
-                .toList();
+        //TODO: Redo
+        return Collections.emptyList();
+
+//        var pattern = patternHolder.value();
+//        var output = List.of(pattern.result().produces().stream().map(DecayPatternDisplay::toEntryStack).collect(EntryIngredient.collector()));
+//        return pattern.conditions().stream()
+//                .flatMap(a -> {
+//                    return a instanceof Applicator<?> applicator ? applicator.constructApplicable(registryAccess) : Stream.<ResourceKey<?>>empty();
+//                })
+//                .map(a -> DecayPatternDisplay.toEntryStack(a))
+//                .filter(a -> !a.isEmpty())
+//                .map(stack -> EntryIngredient.of(stack))
+//                .map(o -> Collections.singletonList(o))
+//                .map(input ->  new DecayPatternDisplay(input, output))
+//                .toList();
     }
 
 //    public static DecayPatternDisplay of(DecayPatternHolder patternHolder) {

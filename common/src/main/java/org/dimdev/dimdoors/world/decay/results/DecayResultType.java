@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay;
+package org.dimdev.dimdoors.world.decay.results;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -7,7 +7,6 @@ import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.decay.results.*;
 
 public record DecayResultType<T extends DecayResult>(MapCodec<T> codec) {
     public static final Registrar<DecayResultType<? extends DecayResult>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayResultType<? extends DecayResult>>builder(DimensionalDoors.id("decay_result_type")).build();

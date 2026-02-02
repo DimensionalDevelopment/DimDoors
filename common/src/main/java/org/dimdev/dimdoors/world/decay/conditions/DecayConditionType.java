@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.decay;
+package org.dimdev.dimdoors.world.decay.conditions;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -7,10 +7,6 @@ import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.decay.conditions.DecaySourceCondition;
-import org.dimdev.dimdoors.world.decay.conditions.DimensionDecayCondition;
-import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
-import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
 
 public record DecayConditionType<T extends DecayCondition>(MapCodec<T> codec) {
     public static final Registrar<DecayConditionType<? extends DecayCondition>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<DecayConditionType<? extends DecayCondition>>builder(DimensionalDoors.id("decay_condition_type")).build();

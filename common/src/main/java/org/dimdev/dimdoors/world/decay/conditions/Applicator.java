@@ -1,12 +1,9 @@
-package org.dimdev.dimdoors.world.decay;
+package org.dimdev.dimdoors.world.decay.conditions;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.material.Fluid;
 
-import java.util.Set;
 import java.util.stream.Stream;
 
 public interface Applicator<T> {

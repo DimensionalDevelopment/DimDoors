@@ -3,10 +3,7 @@ package org.dimdev.dimdoors.world.decay.results;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import org.dimdev.dimdoors.world.decay.DecayResult;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
 
 import java.util.List;
 

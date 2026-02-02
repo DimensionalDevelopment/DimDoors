@@ -2,15 +2,25 @@ package org.dimdev.dimdoors.util;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.TagKey;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
+import org.dimdev.dimdoors.world.decay.conditions.GenericDecayCondition;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -162,5 +172,51 @@ public class CodecUtils {
 
     private static <T> Function<Map.Entry<T, CompoundTag>, DataResult<CompoundTag>> pairToTag(MapCodec<T> codec) {
         return pair -> codec.encode(pair.getKey(), NbtOps.INSTANCE, NbtOps.INSTANCE.mapBuilder()).build(pair.getValue()).map(CompoundTag.class::cast);
+    }
+
+    public static <T extends GenericDecayCondition<?>, V> MapCodec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
+        return RecordCodecBuilder.mapCodec(instance -> instance.group(
+                TagOrElementLocation.codec(key).fieldOf("entry").forGetter(t -> (TagOrElementLocation<V>) t.getTagOrElementLocation()),
+                Codec.BOOL.optionalFieldOf("invert", false).forGetter(GenericDecayCondition::invert)
+        ).apply(instance, function));
+    }
+
+    public static final class TagOrElementLocation<T> {
+        private TagKey<T> tag;
+        private ResourceKey<T> key;
+
+        public static <T> Codec<TagOrElementLocation<T>> codec(ResourceKey<Registry<T>> key) {
+            return Codec.STRING.comapFlatMap(string -> string.startsWith("#") ? ResourceLocation.read(string.substring(1)).map(resourceLocation -> new TagOrElementLocation<>(resourceLocation, true, key)) : ResourceLocation.read(string).map(resourceLocation -> new TagOrElementLocation<T>(resourceLocation, false, key)), TagOrElementLocation::decoratedId);
+        }
+
+        public static <T> TagOrElementLocation<T> of(TagKey<T> tag, ResourceKey<Registry<T>> registry) {
+            return new TagOrElementLocation<>(tag.location(), true, registry);
+        }
+
+        public static <T> TagOrElementLocation<T> of(ResourceKey<T> tag, ResourceKey<Registry<T>> registry) {
+            return new TagOrElementLocation<>(tag.location(), false, registry);
+        }
+
+        public TagOrElementLocation(ResourceLocation id, boolean tag, ResourceKey<Registry<T>> registryResourceKey) {
+            if(tag) this.tag = TagKey.create(registryResourceKey, id);
+            else this.key = ResourceKey.create(registryResourceKey, id);
+        }
+
+        @Override
+            public String toString() {
+                return this.decoratedId();
+        }
+
+        private String decoratedId() {
+            return this.tag != null ? "#" + tag.location() : this.key.location().toString();
+        }
+
+        public boolean test(Holder<T> holder) {
+            return tag != null && holder.is(tag) || holder.is(key);
+        }
+
+        public Set<ResourceKey<T>> getValues(HolderLookup.RegistryLookup<T> lookup) {
+            return key != null ? Set.of(key) : lookup.get(tag).stream().flatMap(a -> a.stream()).map(Holder::unwrapKey).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toSet());
+        }
     }
 }

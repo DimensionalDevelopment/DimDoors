@@ -4,7 +4,7 @@
 //import mezz.jei.api.helpers.IGuiHelper;
 //import mezz.jei.api.recipe.IFocusGroup;
 //import mezz.jei.api.recipe.category.AbstractRecipeCategory;
-//import org.dimdev.dimdoors.world.decay.DecayPattern;
+//import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
 //
 //public class DecayCategory extends AbstractRecipeCategory<DecayPattern> {
 //    public DecayCategory(IGuiHelper guiHelper) {

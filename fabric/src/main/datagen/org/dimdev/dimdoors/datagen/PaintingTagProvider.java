@@ -35,14 +35,11 @@ public class PaintingTagProvider extends FabricTagProvider<PaintingVariant> {
             }
         }));
 
-        map.forEach(new BiConsumer<Integer, List<Holder.Reference<PaintingVariant>>>() {
-            @Override
-            public void accept(Integer index, List<Holder.Reference<PaintingVariant>> references) {
-                var key = ModPaintings.PLACEHOLDERS.get(index);
+        map.forEach((index, references) -> {
+            var key = ModPaintings.PLACEHOLDERS.get(index);
 
-                if(key != null) {
-                    tag(TagKey.create(key.registryKey(), key.location().withPrefix("decays_into_"))).addAll(references.stream().map(a -> a.key()).toList());
-                }
+            if(key != null) {
+                tag(TagKey.create(key.registryKey(), key.location().withPrefix("decays_into_"))).addAll(references.stream().map(a -> a.key()).toList());
             }
         });
 

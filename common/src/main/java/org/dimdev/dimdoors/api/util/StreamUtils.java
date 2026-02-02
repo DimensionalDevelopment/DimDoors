@@ -5,12 +5,16 @@ import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import net.minecraft.ReportType;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.decoration.PaintingVariant;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,6 +127,10 @@ public class StreamUtils {
 
     public static <M> CompletableFuture<M> supplyAsync(Supplier<M> supplier) {
         return CompletableFuture.supplyAsync(supplier, POOL);
+    }
+
+    public static <V extends ResourceKey<?>> void unwrap(Optional<V> optional, Consumer<V> consumer) {
+        optional.ifPresent(consumer);
     }
 
     private static final class RunnableExecuteAction extends ForkJoinTask<Void> {

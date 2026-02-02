@@ -1,8 +1,10 @@
 package org.dimdev.dimdoors.world.decay;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
+import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
+
+import java.util.function.Consumer;
 
 public record DecayPatternHolder(ResourceLocation id, DecayPattern value) {
 //    public static final StreamCodec<RegistryFriendlyByteBuf, DecayPatternHolder> STREAM_CODEC;
@@ -17,6 +19,36 @@ public record DecayPatternHolder(ResourceLocation id, DecayPattern value) {
 
     public String toString() {
         return this.id.toString();
+    }
+
+    public static Builder builder(ResourceLocation id) {
+        return new Builder(id);
+    }
+
+    public static class Builder {
+        private ResourceLocation id;
+        private DecayPattern.Builder<?> pattern;
+
+        private Builder(ResourceLocation id) {
+            this.id = id;
+        }
+
+        public Builder pattern(DecayPattern.Builder<?> pattern) {
+            this.pattern = pattern;
+            return this;
+        }
+
+        public DecayPatternHolder build(HolderLookup.Provider provider) {
+            if (pattern == null) {
+                throw new IllegalStateException("DecayPattern must not be null");
+            }
+
+            return new DecayPatternHolder(id, pattern.build(provider));
+        }
+
+        public void accept(Consumer<DecayPatternHolder> consumer, HolderLookup.Provider provider) {
+            consumer.accept(build(provider));
+        }
     }
 
     static {

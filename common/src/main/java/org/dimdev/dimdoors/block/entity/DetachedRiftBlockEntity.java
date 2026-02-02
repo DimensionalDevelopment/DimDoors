@@ -57,11 +57,12 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> 
 	 * Checks the blocks around the location of the floating rift and applies the decay
 	 */
 	public void applySpreadDecay(ServerLevel world, BlockPos pos) {
-		float chance = size/100f;
-		if ((random.nextFloat()) <= chance) {
-			BlockPos selected = BlockPos.randomInCube(world.getRandom(), 1, pos, (int) (chance)).iterator().next();
-			Decay.decayBlock(world, selected, world.getBlockState(selected), DecaySource.RIFT);
-		}
+//        TODO: Reimplment
+//		float chance = size/100f;
+//		if ((random.nextFloat()) <= chance) {
+//			BlockPos selected = BlockPos.randomInCube(world.getRandom(), 1, pos, (int) (chance)).iterator().next();
+//			Decay.decayBlock(world, selected, world.getBlockState(selected), DecaySource.RIFT);
+//		}
 	}
 
 	public void setClosing(boolean closing) {

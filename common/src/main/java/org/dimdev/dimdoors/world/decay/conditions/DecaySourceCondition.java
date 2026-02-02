@@ -6,8 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayCondition;
-import org.dimdev.dimdoors.world.decay.DecayConditionType;
+import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 public record DecaySourceCondition(DecaySource source) implements DecayCondition {
@@ -22,7 +21,7 @@ public record DecaySourceCondition(DecaySource source) implements DecayCondition
     }
 
     @Override
-    public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
-        return this.source == source;
+    public boolean test(Decay.DecayContext context) {
+        return this.source == context.source();
     }
 }

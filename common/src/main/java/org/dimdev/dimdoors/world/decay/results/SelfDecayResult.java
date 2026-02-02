@@ -4,13 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayResult;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.List;
 
-import static org.dimdev.dimdoors.world.decay.DecayResultType.SELF_RESULT_TYPE;
+import static org.dimdev.dimdoors.world.decay.results.DecayResultType.SELF_RESULT_TYPE;
 
 public class SelfDecayResult implements DecayResult {
     public static final String KEY = "self";
@@ -27,8 +26,7 @@ public class SelfDecayResult implements DecayResult {
     }
 
     @Override
-	public int process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
-        world.setBlockAndUpdate(pos, origin);
+	public int process(Decay.DecayContext context) {
         return 0;
     }
 

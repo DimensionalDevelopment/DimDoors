@@ -1,4 +1,5 @@
 {
+  "type": "dimdoors:compound",
   "conditions": {
     "type": "dimdoors:block",
     "entry": "#dimdoors:decays_to/decay_dark_sand_stairs"

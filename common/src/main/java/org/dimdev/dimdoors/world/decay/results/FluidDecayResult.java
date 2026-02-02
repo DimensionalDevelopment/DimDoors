@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.world.decay.results;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.Level;
@@ -10,8 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayResult;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.List;
@@ -48,9 +46,9 @@ public class FluidDecayResult implements DecayResult {
 	}
 
 	@Override
-	public int process(Level world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid, DecaySource source) {
+	public int process(Decay.DecayContext context) {
 		BlockState newState = fluid.defaultFluidState().createLegacyBlock();
-		world.setBlockAndUpdate(pos, newState);
+		context.world().setBlockAndUpdate(context.targetBlockPos(), newState);
 		return entropy;
 	}
 

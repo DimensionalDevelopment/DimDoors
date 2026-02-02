@@ -1,4 +1,5 @@
 {
+  "type": "dimdoors:compound",
   "conditions": {
     "type": "dimdoors:block",
     "entry": "minecraft:cyan_concrete_powder"

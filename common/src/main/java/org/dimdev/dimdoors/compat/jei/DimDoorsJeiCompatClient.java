@@ -2,19 +2,14 @@ package org.dimdev.dimdoors.compat.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.compat.jei.tesselating.DimDoorsRecipes;
 import org.dimdev.dimdoors.compat.jei.tesselating.TesselatingRecipeCategory;
-import org.dimdev.dimdoors.recipe.ModRecipeTypes;
-import org.dimdev.dimdoors.recipe.TesselatingRecipe;
-import org.dimdev.dimdoors.world.decay.DecayPattern;
 import org.jetbrains.annotations.Nullable;
 
 import static org.dimdev.dimdoors.compat.jei.ModRecipeTypes.TESSELATING;

@@ -18,11 +18,7 @@ public class RealitySpongeBlock extends Block {
 	@Override
 	public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
 		for (Direction direction : Direction.values()) {
-			BlockPos currentPos = pos.relative(direction);
-
-			if(!world.isEmptyBlock(currentPos)) {
-				Decay.decayBlock(world, currentPos, state, DecaySource.REAlITY_SPONGE);
-			}
+            Decay.decayBlock(world, pos, state, direction, DecaySource.REAlITY_SPONGE);
 		}
 	}
 }

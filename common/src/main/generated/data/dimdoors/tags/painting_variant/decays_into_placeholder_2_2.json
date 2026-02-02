@@ -1,16 +1,16 @@
 {
   "values": [
     "minecraft:water",
-    "minecraft:skull_and_roses",
-    "minecraft:void",
-    "minecraft:fire",
-    "minecraft:humble",
     "minecraft:match",
-    "minecraft:earth",
-    "minecraft:wind",
     "minecraft:baroque",
-    "minecraft:wither",
     "minecraft:bust",
-    "minecraft:stage"
+    "minecraft:wither",
+    "minecraft:humble",
+    "minecraft:earth",
+    "minecraft:fire",
+    "minecraft:stage",
+    "minecraft:wind",
+    "minecraft:void",
+    "minecraft:skull_and_roses"
   ]
 }

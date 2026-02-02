@@ -1,4 +1,4 @@
-// 1.21.1	2026-01-31T21:33:03.4978561	DimensionalDoors/Tags for minecraft:block
+// 1.21.1	2026-02-02T03:54:55.0647056	DimensionalDoors/Tags for minecraft:block
 206658bed803b57978678a1150f4283b14382f5d data\minecraft\tags\block\trapdoors.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\dimdoors\tags\block\decays_to\stone.json
 66273896ab68f401c9ffcc8892c73692302af411 data\minecraft\tags\block\stairs.json
@@ -47,8 +47,8 @@ db1c81bd4fa453111199ce17a160ee0d39da1501 data\minecraft\tags\block\wooden_doors.
 8b9a343e8315ff3e53f1c0bd7ed18851be4c9263 data\minecraft\tags\block\wooden_trapdoors.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\dimdoors\tags\block\decays_to\glass_pane.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\dimdoors\tags\block\decays_to\amalgam.json
-47522108c6078bc52d300d022e83309f5644317e data\dimdoors\tags\block\decays_to\unraveled_gate.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\dimdoors\tags\block\decays_to\solid_static.json
+47522108c6078bc52d300d022e83309f5644317e data\dimdoors\tags\block\decays_to\unraveled_gate.json
 8b9a343e8315ff3e53f1c0bd7ed18851be4c9263 data\dimdoors\tags\block\decays_to\moss_carpet.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\dimdoors\tags\block\decays_to\amalgam_ore.json
 35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\dimdoors\tags\block\decays_to\netherwart_block.json

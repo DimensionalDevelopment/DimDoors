@@ -1,19 +1,15 @@
-package org.dimdev.dimdoors.world.decay;
+package org.dimdev.dimdoors.world.decay.conditions;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 
 public interface DecayCondition {
@@ -29,7 +25,7 @@ public interface DecayCondition {
         }
 
         @Override
-        public boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
+        public boolean test(Decay.DecayContext context) {
             return false;
         }
 	};
@@ -38,5 +34,5 @@ public interface DecayCondition {
 
     DecayConditionType<? extends DecayCondition> getType();
 
-    boolean test(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source);
+    boolean test(Decay.DecayContext context);
 }

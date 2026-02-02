@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.List;
@@ -32,12 +32,14 @@ public class BlockDecayImplResult extends BlockDecayResult<BlockDecayImplResult>
     }
 
     @Override
-    public int process(Level world, BlockPos pos, BlockState origin, BlockState target, FluidState targetFluid, DecaySource source) {
+    public int process(Decay.DecayContext context) {
+        var target = context.targetBlockState();
+        var pos = context.targetBlockPos();
         BlockState newState = copyState(block, target);
 
         if(target.getBlock() instanceof DoublePlantBlock || target.getBlock() instanceof DoorBlock) pos = target.getValue(DoublePlantBlock.HALF) == DoubleBlockHalf.UPPER ? pos.above() : pos;
 
-        world.setBlockAndUpdate(pos, newState);
+        context.world().setBlockAndUpdate(pos, newState);
         return entropy;
     }
 

@@ -25,8 +25,6 @@ import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
 import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
 import org.dimdev.dimdoors.world.decay.Decay;
-import org.dimdev.dimdoors.world.decay.DecayPattern;
-import org.dimdev.dimdoors.world.decay.DecayPatternHolder;
 
 import java.util.Collection;
 import java.util.Map;
@@ -49,9 +47,9 @@ public class TesselatingReiCompatClient implements REIClientPlugin {
 
         var registryAccess = DimensionalDoors.getServer().registryAccess();
 
-        var list = Stream.of(Decay.DecayLoader.getBlockPatterns(), Decay.DecayLoader.getFluidPatterns())
-                .map(Map::values)
-                .flatMap(Collection::stream)
+        var list = Decay.DecayLoader.getPatterns()
+                .entrySet().stream()
+                .map(Map.Entry::getValue)
                 .flatMap(Collection::stream)
                 .flatMap(a -> DecayPatternDisplay.list(a, registryAccess).stream())
                 .toList();

@@ -1,12 +1,10 @@
 package org.dimdev.dimdoors.world.decay.results;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import org.dimdev.dimdoors.world.decay.DecayResult;
-import org.dimdev.dimdoors.world.decay.DecayResultType;
+import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.List;
@@ -27,7 +25,7 @@ public class NoneDecayResult implements DecayResult {
     }
 
     @Override
-    public int process(Level world, BlockPos pos, BlockState origin, BlockState targetBlock, FluidState targetFluid, DecaySource source) {
+    public int process(Decay.DecayContext context) {
         return 0;
     }
 
