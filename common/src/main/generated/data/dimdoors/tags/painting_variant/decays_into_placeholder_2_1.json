@@ -1,9 +1,9 @@
 {
   "values": [
-    "minecraft:creebet",
-    "minecraft:sunset",
-    "minecraft:sea",
     "minecraft:pool",
+    "minecraft:sea",
+    "minecraft:sunset",
+    "minecraft:creebet",
     "minecraft:courbet"
   ]
 }

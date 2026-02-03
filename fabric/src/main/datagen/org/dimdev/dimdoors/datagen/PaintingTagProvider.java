@@ -9,12 +9,10 @@ import net.minecraft.tags.PaintingVariantTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import org.dimdev.dimdoors.painting.ModPaintings;
-import org.joml.Vector2i;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,15 +29,19 @@ public class PaintingTagProvider extends FabricTagProvider<PaintingVariant> {
             public Integer apply(Holder.Reference<PaintingVariant> paintingVariantReference) {
                 var value = paintingVariantReference.value();
 
-                return ((value.width() - 1) * 4) + (value.height() - 1);
+                return (value.width() - 1) + (value.height() - 1) * 4;
             }
         }));
 
         map.forEach((index, references) -> {
-            var key = ModPaintings.PLACEHOLDERS.get(index);
+            var key = ModPaintings.PAINTINGS_TO_DECAY_INTO.get(index);
 
             if(key != null) {
-                tag(TagKey.create(key.registryKey(), key.location().withPrefix("decays_into_"))).addAll(references.stream().map(a -> a.key()).toList());
+                var id = key.location().withPrefix("decays_into_");
+
+                if(!id.getPath().contains("placeholder")) id = id.withSuffix("_painting");
+
+                tag(TagKey.create(key.registryKey(), id)).addAll(references.stream().map(Holder.Reference::key).toList());
             }
         });
 

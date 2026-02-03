@@ -1,13 +1,9 @@
 package org.dimdev.dimdoors.datagen;
 
 import com.google.common.hash.HashCode;
-import com.mojang.blaze3d.platform.NativeImage;
-import me.shedaniel.errornotifier.launch.ColorUtil;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -15,12 +11,9 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.level.dimension.DimensionType;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.item.ModJukeboxSongs;
 import org.dimdev.dimdoors.painting.ModPaintings;
@@ -36,11 +29,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.util.List;
 import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static org.dimdev.dimdoors.world.ModDimensions.LIMBO_TYPE_KEY;
 import static org.dimdev.dimdoors.world.ModDimensions.POCKET_TYPE_KEY;
@@ -58,7 +48,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
                 var path = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "textures/painting");
 
                 return registriesFuture.thenApply(provider -> provider.lookupOrThrow(Registries.PAINTING_VARIANT))
-                        .thenApply(lookup -> ModPaintings.PLACEHOLDERS.stream().map(lookup::getOrThrow).toList())
+                        .thenApply(lookup -> ModPaintings.PAINTINGS_TO_DECAY_INTO.stream().filter(a -> a.location().getPath().startsWith("placeholder")).map(lookup::getOrThrow).toList())
                         .thenAccept(references -> references.forEach(painting -> {
                             var key = painting.key();
                             var value = painting.value();

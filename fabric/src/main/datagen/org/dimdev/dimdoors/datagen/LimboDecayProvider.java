@@ -20,7 +20,6 @@ import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -213,8 +212,12 @@ public class LimboDecayProvider implements DataProvider {
                 Blocks.OXIDIZED_COPPER_DOOR, Blocks.WAXED_OXIDIZED_COPPER_DOOR
         );
 
-        for (var key : ModPaintings.PLACEHOLDERS) {
-            addPaintingPattern(key, TagKey.create(key.registryKey(), key.location().withPrefix("decays_into_"))).accept(consumer, provider);
+        for (var key : ModPaintings.PAINTINGS_TO_DECAY_INTO) {
+            var id = key.location().withPrefix("decays_into_");
+
+            if(!id.getPath().contains("placeholder")) id = id.withSuffix("_painting");
+
+            addPaintingPattern(key, TagKey.create(key.registryKey(), id)).accept(consumer, provider);
         }
 
 

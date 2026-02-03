@@ -1,41 +1,40 @@
 package org.dimdev.dimdoors.painting;
 
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.EnchantmentTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.decoration.PaintingVariant;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class ModPaintings {
     public static ResourceKey<PaintingVariant> LIMBO = key("limbo");
+    public static ResourceKey<PaintingVariant> EYES = key("eyes");
+    public static ResourceKey<PaintingVariant> PORTAL = key("portal");
+    public static ResourceKey<PaintingVariant> FREEDOM = key("freedom");
 
-    public static final List<ResourceKey<PaintingVariant>> PLACEHOLDERS;
+    public static final List<ResourceKey<PaintingVariant>> PAINTINGS_TO_DECAY_INTO;
 
     public static void bootstrap(BootstrapContext<PaintingVariant> context) {
         register(context, LIMBO, 4, 2);
+        register(context, PORTAL, 2, 4);
+        register(context, FREEDOM, 2, 2);
+        register(context, EYES, 2, 2);
 
-        for (int x = 1; x < 5; x++) {
-            for (int y = 1; y < 5; y++) {
-                placeholder(context, x, y);
+
+        for (int index = 0; index < PAINTINGS_TO_DECAY_INTO.size(); index++) {
+            var x = index % 4;
+            var y = index / 4;
+
+            var key = PAINTINGS_TO_DECAY_INTO.get(index);
+
+            if(key.location().getPath().startsWith("placeholder")) {
+                register(context, key, x+1, y+1);
             }
         }
-    }
-
-    private static void placeholder(BootstrapContext<PaintingVariant> context, int x, int y) {
-        register(context, key("placeholder_" + x + "_" + y), x, y);
     }
 
     private static ResourceKey<PaintingVariant> key(String name) {
@@ -46,15 +45,24 @@ public class ModPaintings {
         bootstrapContext.register(resourceKey, new PaintingVariant(width, height, resourceKey.location()));
     }
 
-    static {
-        var list = new ArrayList<ResourceKey<PaintingVariant>>();
+    private static void addIntoList(List<ResourceKey<PaintingVariant>> list, ResourceKey<PaintingVariant> key, int width, int height) {
+        list.set((width -1) + ((height - 1) * 4), key);
+    }
 
-        for (int x = 1; x < 5; x++) {
-            for (int y = 1; y < 5; y++) {
-                list.add(key("placeholder_" + x + "_" + y));
+    static {
+        var list = new ArrayList<ResourceKey<PaintingVariant>>(16);
+
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 4; x++) {
+                list.add(key("placeholder_" + (x + 1) + "_" + (y + 1)));
             }
         }
 
-        PLACEHOLDERS = Collections.unmodifiableList(list);
+//        list.set(6, FREEDOM);
+        addIntoList(list, LIMBO, 4, 2);
+        addIntoList(list, FREEDOM, 2, 2);
+        addIntoList(list, PORTAL, 2, 4);
+
+        PAINTINGS_TO_DECAY_INTO = Collections.unmodifiableList(list);
     }
 }
