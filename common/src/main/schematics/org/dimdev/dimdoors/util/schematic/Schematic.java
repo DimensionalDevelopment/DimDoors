@@ -24,10 +24,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Schematic {
     private static final Consumer<String> PRINT_TO_STDERR = System.err::println;
+    private static final Codec<List<CompoundTag>> ID_CORRECTED_COMPOUND_TAG_LIST = CompoundTag.CODEC.xmap(nbt -> {
+        if (nbt.contains("Id")) {
+            nbt.put("id", nbt.get("Id")); // boogers
+            nbt.remove("Id");
+        }
+
+        return nbt;
+    }, Function.identity()).listOf();
+
     public static final Codec<Schematic> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
             Codec.INT.fieldOf("Version").forGetter(Schematic::getVersion),
             Codec.INT.optionalFieldOf("Data Version", SharedConstants.getCurrentVersion().getPackVersion(PackType.SERVER_DATA)).forGetter(Schematic::getDataVersion),
@@ -39,8 +49,8 @@ public class Schematic {
             Codec.INT.fieldOf("PaletteMax").forGetter(Schematic::getPaletteMax),
             SchematicBlockPalette.CODEC.fieldOf("Palette").forGetter(Schematic::getBlockPalette),
             Codec.BYTE_BUFFER.fieldOf("BlockData").forGetter(Schematic::getBlockData),
-            Codec.list(CompoundTag.CODEC).optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
-            Codec.list(CompoundTag.CODEC).optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities)/*,*/
+            ID_CORRECTED_COMPOUND_TAG_LIST.optionalFieldOf("BlockEntities", ImmutableList.of()).forGetter(Schematic::getBlockEntities),
+            ID_CORRECTED_COMPOUND_TAG_LIST.optionalFieldOf("Entities", ImmutableList.of()).forGetter(Schematic::getEntities)/*,*/
 //			Codec.unboundedMap(BuiltinRegistries.BIOME.getCodec(), Codec.INT).optionalFieldOf("BiomePalette", Collections.emptyMap()).forGetter(Schematic::getBiomePalette),
 //			Codec.BYTE_BUFFER.optionalFieldOf("BiomeData", ByteBuffer.wrap(new byte[0])).forGetter(Schematic::getBlockData)
     ).apply(instance, Schematic::new));

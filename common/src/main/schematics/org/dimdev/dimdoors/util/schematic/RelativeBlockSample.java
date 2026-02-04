@@ -125,11 +125,6 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
             BlockPos actualPos = origin.offset(entry.getKey());
 
             CompoundTag nbt = entry.getValue();
-            if(nbt.contains("Id")) {
-                nbt.put("id", nbt.get("Id")); // boogers
-                nbt.remove("Id");
-            }
-
             BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, this.getBlockState(pos), nbt, provider);
             if (blockEntity != null) {
                 placementType.getBlockEntityPlacer().accept(world.getLevel(), blockEntity);
@@ -137,6 +132,7 @@ public class RelativeBlockSample implements BlockGetter, LevelWriter {
         }
         for (Map.Entry<CompoundTag, Vec3> entry : this.entityContainer.entrySet()) {
             CompoundTag nbt = entry.getKey();
+
             ListTag doubles = nbt.getList("Pos", Tag.TAG_DOUBLE);
             Vec3 vec = entry.getValue().add(origin.getX(), origin.getY(), origin.getZ());
             doubles.set(0, NbtOps.INSTANCE.createDouble(vec.x));
