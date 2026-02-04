@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.util;
 
+import com.mojang.datafixers.Products;
+import com.mojang.datafixers.types.templates.Product;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -174,11 +176,15 @@ public class CodecUtils {
         return pair -> codec.encode(pair.getKey(), NbtOps.INSTANCE, NbtOps.INSTANCE.mapBuilder()).build(pair.getValue()).map(CompoundTag.class::cast);
     }
 
-    public static <T extends GenericDecayCondition<?>, V> MapCodec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
-        return RecordCodecBuilder.mapCodec(instance -> instance.group(
+    public static <T extends GenericDecayCondition<?>, V> Products.P2<RecordCodecBuilder.Mu<T>, TagOrElementLocation<V>, Boolean> decayConditionFields(RecordCodecBuilder.Instance<T> instance, ResourceKey<Registry<V>> key) {
+        return instance.group(
                 TagOrElementLocation.codec(key).fieldOf("entry").forGetter(t -> (TagOrElementLocation<V>) t.getTagOrElementLocation()),
                 Codec.BOOL.optionalFieldOf("invert", false).forGetter(GenericDecayCondition::invert)
-        ).apply(instance, function));
+        );
+    }
+
+    public static <T extends GenericDecayCondition<?>, V> MapCodec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
+        return RecordCodecBuilder.mapCodec(instance -> decayConditionFields(instance, key).apply(instance, function));
     }
 
     public static final class TagOrElementLocation<T> {

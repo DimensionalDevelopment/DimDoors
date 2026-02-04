@@ -32,7 +32,6 @@ public class HitBlockWithItemC2SPacket implements CustomPacketPayload {
 	public HitBlockWithItemC2SPacket() {
 	}
 
-	@Environment(EnvType.CLIENT)
 	public HitBlockWithItemC2SPacket(InteractionHand hand, BlockPos pos, Direction direction) {
 		this.hand = hand;
 		this.pos = pos;

@@ -533,5 +533,14 @@
   "dimdoors.mode.disable": "Disable",
 
   "category.dimdoors.tesselating": "Tesselating",
-  "category.dimdoors.decays_into": "Decays Into"
+  "category.dimdoors.decays_into": "Decays Into",
+
+  "painting.dimdoors.limbo.title": "Limbo",
+  "painting.dimdoors.limbo.author": "Waterpicker",
+  "painting.dimdoors.portal.title": "Portal",
+  "painting.dimdoors.portal.author": "A timetravellingBlockhead",
+  "painting.dimdoors.eyes.title": "Eyes",
+  "painting.dimdoors.eyes.author": "Anims",
+  "painting.dimdoors.freedom.title": "Freedom",
+  "painting.dimdoors.freedom.author": "ImprovInAFedora"
 }

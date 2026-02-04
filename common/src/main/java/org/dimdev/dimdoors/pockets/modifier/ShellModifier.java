@@ -56,7 +56,7 @@ public class ShellModifier extends AbstractModifier {
 				Layer layer = Layer.fromNbt(nbtCompound);
 				layers.add(layer);
 			} catch (CommandSyntaxException e) {
-				LOGGER.error("could not parse Layer: " + nbtCompound, e);
+                LOGGER.error("could not parse Layer: {}", nbtCompound, e);
 			}
 		}
 
@@ -79,14 +79,6 @@ public class ShellModifier extends AbstractModifier {
 	}
 
 	@Override
-	public void apply(PocketGenerationContext parameters, RiftManager manager) {
-        for (int i = layers.size() - 1; i >= 0; i--) {
-            Layer layer = layers.get(i);
-            drawLayer(layer, manager.getPocket(), parameters.world());
-        }
-    }
-
-	@Override
 	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 		for (Layer layer : layers) {
@@ -96,33 +88,77 @@ public class ShellModifier extends AbstractModifier {
 		}
 	}
 
-	private void drawLayer(Layer layer, Pocket pocket, ServerLevel world) {
-		int thickness = layer.getThickness(pocket.toVariableMap(new HashMap<>()));
-		final BlockState blockState = layer.getBlockState();
-		BoundingBox pocketBox = pocket.getBox();
+    @Override
+    public void apply(PocketGenerationContext parameters, RiftManager manager) {
+        Pocket pocket = manager.getPocket();
+        BoundingBox templateBox = pocket.getBox();
+        var variableMap = pocket.toVariableMap(new HashMap<>());
 
-		// x-planes
-		BlockPos.betweenClosedStream(BoundingBox.fromCorners(new Vec3i(pocketBox.maxX() + 1, pocketBox.minY() - thickness, pocketBox.minZ() - thickness), new Vec3i(pocketBox.maxX() + thickness, pocketBox.maxY() + thickness, pocketBox.maxZ() + thickness)))
-				.forEach(blockPos -> world.setBlockAndUpdate(blockPos, blockState));
-		BlockPos.betweenClosedStream(BoundingBox.fromCorners(new Vec3i(pocketBox.minX() - 1, pocketBox.minY() - thickness, pocketBox.minZ() - thickness), new Vec3i(pocketBox.minX() - thickness, pocketBox.maxY() + thickness, pocketBox.maxZ() + thickness)))
-				.forEach(blockPos -> world.setBlockAndUpdate(blockPos, blockState));
+        int cumulativeThickness = 0;
 
-		// y-planes
-		BlockPos.betweenClosedStream(BoundingBox.fromCorners(new Vec3i(pocketBox.minX(), pocketBox.maxY() + 1, pocketBox.minZ() - thickness), new Vec3i(pocketBox.maxX(), pocketBox.maxY() + thickness, pocketBox.maxZ() + thickness)))
-				.forEach(blockPos -> world.setBlockAndUpdate(blockPos, blockState));
-		BlockPos.betweenClosedStream(BoundingBox.fromCorners(new Vec3i(pocketBox.minX(), pocketBox.minY() - 1, pocketBox.minZ() - thickness), new Vec3i(pocketBox.maxX(), pocketBox.minY() - thickness, pocketBox.maxZ() + thickness)))
-				.forEach(blockPos -> world.setBlockAndUpdate(blockPos, blockState));
+        for (Layer layer : layers) {
+            int thickness = layer.getThickness(variableMap);
 
-		// z-planes
-		BlockPos.betweenClosedStream(BoundingBox.fromCorners(new Vec3i(pocketBox.minX(), pocketBox.minY(), pocketBox.minZ() - 1), new Vec3i(pocketBox.maxX(), pocketBox.maxY(), pocketBox.minZ() - thickness)))
-				.forEach(blockPos -> world.setBlockAndUpdate(blockPos, blockState));
-		BlockPos.betweenClosedStream(BoundingBox.fromCorners(new Vec3i(pocketBox.minX(), pocketBox.minY(), pocketBox.maxZ() + 1), new Vec3i(pocketBox.maxX(), pocketBox.maxY(), pocketBox.maxZ() + thickness)))
-				.forEach(blockPos -> world.setBlockAndUpdate(blockPos, blockState));
+            // Draw this layer as a SOLID shell
+            drawLayer(layer, templateBox, cumulativeThickness, thickness, parameters.world());
 
-		pocket.expand(thickness);
-	}
+            cumulativeThickness += thickness;
+        }
+    }
 
-	@Override
+    private void drawLayer(Layer layer, BoundingBox templateBox, int offset, int thickness, ServerLevel world) {
+        final BlockState state = layer.getBlockState();
+        final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+        final int innerMinX = templateBox.minX() - offset;
+        final int innerMinY = templateBox.minY() - offset;
+        final int innerMinZ = templateBox.minZ() - offset;
+        final int innerMaxX = templateBox.maxX() + offset;
+        final int innerMaxY = templateBox.maxY() + offset;
+        final int innerMaxZ = templateBox.maxZ() + offset;
+
+        final int outerMinX = innerMinX - thickness;
+        final int outerMinY = innerMinY - thickness;
+        final int outerMinZ = innerMinZ - thickness;
+        final int outerMaxX = innerMaxX + thickness;
+        final int outerMaxY = innerMaxY + thickness;
+        final int outerMaxZ = innerMaxZ + thickness;
+
+        // -X
+        drawSide(world, pos, state, outerMinX, outerMinY, outerMinZ, innerMinX - 1, outerMaxY, outerMaxZ);
+
+        // +X
+        drawSide(world, pos, state, innerMaxX + 1, outerMinY, outerMinZ, outerMaxX, outerMaxY, outerMaxZ);
+
+        // -Y
+        drawSide(world, pos, state, innerMinX, outerMinY, outerMinZ, innerMaxX, innerMinY - 1, outerMaxZ);
+
+        // +Y
+        drawSide(world, pos, state, innerMinX, innerMaxY + 1, outerMinZ, innerMaxX, outerMaxY, outerMaxZ);
+
+        // -Z
+        drawSide(world, pos, state, innerMinX, innerMinY, outerMinZ, innerMaxX, innerMaxY, innerMinZ - 1);
+
+        // +Z
+        drawSide(world, pos, state, innerMinX, innerMinY, innerMaxZ + 1, innerMaxX, innerMaxY, outerMaxZ);
+    }
+
+
+    private static void drawSide(
+            ServerLevel world,
+            BlockPos.MutableBlockPos pos,
+            BlockState state,
+            int minX, int minY, int minZ,
+            int maxX, int maxY, int maxZ
+    ) {
+        for (int x = minX; x <= maxX; x++)
+            for (int y = minY; y <= maxY; y++)
+                for (int z = minZ; z <= maxZ; z++)
+                    world.setBlockAndUpdate(pos.set(x, y, z), state);
+    }
+
+
+    @Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("layers", layers)

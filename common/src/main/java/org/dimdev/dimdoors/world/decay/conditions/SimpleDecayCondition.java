@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.decay.Decay;
 
+import java.util.function.Supplier;
+
 public class SimpleDecayCondition extends GenericDecayCondition<Block> {
     public static final MapCodec<SimpleDecayCondition> CODEC = CodecUtils.createCodec(SimpleDecayCondition::new, Registries.BLOCK);
 
@@ -42,6 +44,16 @@ public class SimpleDecayCondition extends GenericDecayCondition<Block> {
     public static SimpleDecayCondition of(Block block) {
         return of(block, false);
     }
+
+    public static SimpleDecayCondition of(Supplier<Block> block, boolean invert) {
+        return of(block.get(), invert);
+    }
+
+    public static SimpleDecayCondition of(Supplier<Block> block) {
+        return of(block, false);
+    }
+
+
 
 
     @Override

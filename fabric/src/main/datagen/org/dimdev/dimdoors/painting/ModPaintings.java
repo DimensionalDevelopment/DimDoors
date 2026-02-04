@@ -25,16 +25,16 @@ public class ModPaintings {
         register(context, EYES, 2, 2);
 
 
-        for (int index = 0; index < PAINTINGS_TO_DECAY_INTO.size(); index++) {
-            var x = index % 4;
-            var y = index / 4;
-
-            var key = PAINTINGS_TO_DECAY_INTO.get(index);
-
-            if(key.location().getPath().startsWith("placeholder")) {
-                register(context, key, x+1, y+1);
-            }
-        }
+//        for (int index = 0; index < PAINTINGS_TO_DECAY_INTO.size(); index++) {
+//            var x = index % 4;
+//            var y = index / 4;
+//
+//            var key = PAINTINGS_TO_DECAY_INTO.get(index);
+//
+//            if(key.location().getPath().startsWith("placeholder")) {
+//                register(context, key, x+1, y+1);
+//            }
+//        }
     }
 
     private static ResourceKey<PaintingVariant> key(String name) {

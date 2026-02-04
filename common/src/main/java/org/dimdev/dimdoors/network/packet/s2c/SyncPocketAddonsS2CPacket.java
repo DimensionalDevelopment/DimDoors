@@ -30,8 +30,6 @@ public class SyncPocketAddonsS2CPacket implements CustomPacketPayload {
 	private int pocketRange;
 	private List<AutoSyncedAddon> addons;
 
-	@Environment(EnvType.CLIENT)
-
 	public SyncPocketAddonsS2CPacket(ResourceKey<Level> world, int gridSize, int pocketId, int pocketRange, List<AutoSyncedAddon> addons) {
 		this.world = world;
 		this.gridSize = gridSize;

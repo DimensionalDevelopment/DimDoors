@@ -193,7 +193,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	}
 
 	public void expand(int amount) {
-		this.box.inflatedBy(amount);
+		this.box = this.box.inflatedBy(amount);
 	}
 
 	public static PocketBuilder<?, Pocket> builder() {

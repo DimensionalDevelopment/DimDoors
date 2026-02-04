@@ -42,56 +42,56 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 
 		var pack = generator.createPack();
 
-        pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) (output, registriesFuture) -> new DataProvider() {
-            @Override
-            public CompletableFuture<?> run(CachedOutput cachedOutput) {
-                var path = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "textures/painting");
+//        pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) (output, registriesFuture) -> new DataProvider() {
+//            @Override
+//            public CompletableFuture<?> run(CachedOutput cachedOutput) {
+//                var path = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "textures/painting");
 
-                return registriesFuture.thenApply(provider -> provider.lookupOrThrow(Registries.PAINTING_VARIANT))
-                        .thenApply(lookup -> ModPaintings.PAINTINGS_TO_DECAY_INTO.stream().filter(a -> a.location().getPath().startsWith("placeholder")).map(lookup::getOrThrow).toList())
-                        .thenAccept(references -> references.forEach(painting -> {
-                            var key = painting.key();
-                            var value = painting.value();
-
-                            var width = value.width() * 16;
-                            var height = value.height() * 16;
-
-                            try {
-                                var image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
-                                var graphics = image.createGraphics();
-
-                                graphics.setColor(Color.decode("#452719"));
-                                graphics.fillRect(0, 0, width, height);
-                                graphics.setColor(Color.decode("#404040"));
-                                graphics.fillRect(1, 1, width-2, height-2);
-
-                                var writer = new ByteArrayOutputStream();
-
-                                ImageIO.write(image, "PNG", writer);
-
-                                var filePath = path.file(key.location(), "png");
-
-                                var bytes = writer.toByteArray();
-
-                                cachedOutput.writeIfNeeded(filePath, bytes, HashCode.fromBytes(bytes));
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }));
-            }
-
-            @Override
-            public String getName() {
-                return "Paintings Textures";
-            }
-        });
+//                return registriesFuture.thenApply(provider -> provider.lookupOrThrow(Registries.PAINTING_VARIANT))
+//                        .thenApply(lookup -> ModPaintings.PAINTINGS_TO_DECAY_INTO.stream().filter(a -> a.location().getPath().startsWith("placeholder")).map(lookup::getOrThrow).toList())
+//                        .thenAccept(references -> references.forEach(painting -> {
+//                            var key = painting.key();
+//                            var value = painting.value();
+//
+//                            var width = value.width() * 16;
+//                            var height = value.height() * 16;
+//
+//                            try {
+//                                var image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+//
+//                                var graphics = image.createGraphics();
+//
+//                                graphics.setColor(Color.decode("#452719"));
+//                                graphics.fillRect(0, 0, width, height);
+//                                graphics.setColor(Color.decode("#404040"));
+//                                graphics.fillRect(1, 1, width-2, height-2);
+//
+//                                var writer = new ByteArrayOutputStream();
+//
+//                                ImageIO.write(image, "PNG", writer);
+//
+//                                var filePath = path.file(key.location(), "png");
+//
+//                                var bytes = writer.toByteArray();
+//
+//                                cachedOutput.writeIfNeeded(filePath, bytes, HashCode.fromBytes(bytes));
+//                            } catch (Exception e) {
+//                                throw new RuntimeException(e);
+//                            }
+//                        }));
+//            }
+//
+//            @Override
+//            public String getName() {
+//                return "Paintings Textures";
+//            }
+//        });
 
 		pack.addProvider(DimDoorsModelProvider::new);
 		pack.addProvider(DimdoorsRecipeProvider::new);
 		pack.addProvider(AdvancementProvider::new);
 		pack.addProvider(LootTableProvider::new);
-		pack.addProvider(LimboDecayProvider::new);
+		pack.addProvider(AbstractionDecayProvider::new);
 
 		pack.addProvider(BlockTagProvider::new);
 		pack.addProvider(BiomeTagProvider::new);

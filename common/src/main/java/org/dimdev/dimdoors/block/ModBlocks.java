@@ -153,11 +153,11 @@ public final class ModBlocks {
     public static final RegistrySupplier<Block> AMALGAM_BLOCK = registerDecay("amalgam_block", () -> new Block(ofFullCopy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
     public static final RegistrySupplier<Block> AMALGAM_DOOR = registerDecay("amalgam_door", () -> new DoorBlock(BlockSetType.IRON, ofFullCopy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion()));
     public static final RegistrySupplier<Block> AMALGAM_TRAPDOOR = registerDecay("amalgam_trapdoor", () -> new TrapDoorBlock(BlockSetType.IRON, ofFullCopy(IRON_BLOCK).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).isValidSpawn((state, world, pos, type) -> false)));
-    public static final RegistrySupplier<Block> RUST = registerDecay("rust", () -> new Block(ofFullCopy(OAK_WOOD)));
     public static final RegistrySupplier<Block> AMALGAM_SLAB = registerSlab("amalgam_slab", AMALGAM_BLOCK);
     public static final RegistrySupplier<Block> AMALGAM_STAIRS = registerStairs("amalgam_stairs", AMALGAM_BLOCK);
     public static final RegistrySupplier<Block> AMALGAM_ORE = registerDecay("amalgam_ore", () -> new DropExperienceBlock(ConstantInt.of(1), ofFullCopy(STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
 
+    public static final RegistrySupplier<Block> RUST = registerDecay("rust", () -> new Block(ofFullCopy(OAK_WOOD)));
 
     public static final RegistrySupplier<Block> DRIFTWOOD_WOOD = registerDecay("driftwood_wood", () -> new RotatedPillarBlock(ofFullCopy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
     public static final RegistrySupplier<Block> DRIFTWOOD_LOG = registerDecay("driftwood_log", () -> new RotatedPillarBlock(ofFullCopy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
@@ -230,7 +230,9 @@ public final class ModBlocks {
 
 	public static final RegistrySupplier<Block> UNRAVELED_SPIKE = registerDecay("unraveled_spike", () -> new PointedDripstoneBlock(of(UNRAVELLED_FABRIC.get()).lightLevel(state -> 0))); //TODO: make this proper class later
 	public static final RegistrySupplier<Block> GRITTY_STONE = registerDecay("gritty_stone", () -> new Block(of(STONE)));
-    public static final RegistrySupplier<Block> SAND_LAYER = register("sand_layer", () -> new CarpetBlock(BlockBehaviour.Properties.ofFullCopy(SAND)));
+//    public static final RegistrySupplier<Block> DARK_SAND_LAYER = register("dark_sand_layer", () -> new CarpetBlock(BlockBehaviour.Properties.ofFullCopy(SAND)));
+//    public static final RegistrySupplier<Block> LINT_LAYER = register("dark_sand_layer", () -> new CarpetBlock(BlockBehaviour.Properties.ofFullCopy(UNRAVELLED_FABRIC.get())));
+
 
     public static void init() {
 		BLOCKS.register();

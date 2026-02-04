@@ -1,6 +1,8 @@
 {
   "comparator_output": 10,
-  "description": "",
+  "description": {
+    "translate": "item.dimdoors.they_stare_back_record.desc"
+  },
   "length_in_seconds": 226.0,
   "sound_event": "dimdoors:they_stare_back"
 }

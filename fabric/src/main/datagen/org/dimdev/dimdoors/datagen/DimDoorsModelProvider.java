@@ -138,6 +138,8 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
 		registerUnraveledSpike(generator);
 
+
+        generator.createAirLikeBlock(ModBlocks.LIMBO_AIR.get(), Blocks.BARRIER.asItem());
 	}
 
 	private void registerUnraveledSpike(BlockModelGenerators generator) {

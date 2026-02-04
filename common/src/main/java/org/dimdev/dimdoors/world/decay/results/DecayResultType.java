@@ -14,7 +14,7 @@ public record DecayResultType<T extends DecayResult>(MapCodec<T> codec) {
 
     public static final Codec<DecayResultType<? extends DecayResult>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 
-    public static final RegistrySupplier<DecayResultType<BlockDecayImplResult>> BLOCK_RESULT_TYPE = register(DimensionalDoors.id(BlockDecayImplResult.KEY), BlockDecayImplResult.CODEC);
+    public static final RegistrySupplier<DecayResultType<SingleBlockDecayResult>> BLOCK_RESULT_TYPE = register(DimensionalDoors.id(SingleBlockDecayResult.KEY), SingleBlockDecayResult.CODEC);
     public static final RegistrySupplier<DecayResultType<NoneDecayResult>> NONE_PROCESSOR_TYPE = register(DimensionalDoors.id(NoneDecayResult.KEY), MapCodec.unit(NoneDecayResult::instance));
     public static final RegistrySupplier<DecayResultType<SelfDecayResult>> SELF_RESULT_TYPE = register(DimensionalDoors.id(SelfDecayResult.KEY), MapCodec.unit(SelfDecayResult::instance));
     public static final RegistrySupplier<DecayResultType<DoubleBlockDecayResult>> DOUBLE_BLOCK_RESULT_TYPE = register(DimensionalDoors.id(DoubleBlockDecayResult.KEY), DoubleBlockDecayResult.CODEC);

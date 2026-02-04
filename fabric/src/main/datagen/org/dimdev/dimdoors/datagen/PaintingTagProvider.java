@@ -32,19 +32,19 @@ public class PaintingTagProvider extends FabricTagProvider<PaintingVariant> {
                 return (value.width() - 1) + (value.height() - 1) * 4;
             }
         }));
+//
+//        map.forEach((index, references) -> {
+//            var key = ModPaintings.PAINTINGS_TO_DECAY_INTO.get(index);
+//
+//            if(key != null) {
+//                var id = key.location().withPrefix("decays_into_");
+//
+//                if(!id.getPath().contains("placeholder")) id = id.withSuffix("_painting");
+//
+//                tag(TagKey.create(key.registryKey(), id)).addAll(references.stream().map(Holder.Reference::key).toList());
+//            }
+//        });
 
-        map.forEach((index, references) -> {
-            var key = ModPaintings.PAINTINGS_TO_DECAY_INTO.get(index);
-
-            if(key != null) {
-                var id = key.location().withPrefix("decays_into_");
-
-                if(!id.getPath().contains("placeholder")) id = id.withSuffix("_painting");
-
-                tag(TagKey.create(key.registryKey(), id)).addAll(references.stream().map(Holder.Reference::key).toList());
-            }
-        });
-
-        tag(PaintingVariantTags.PLACEABLE).add(ModPaintings.LIMBO);
+        tag(PaintingVariantTags.PLACEABLE).add(ModPaintings.LIMBO, ModPaintings.EYES, ModPaintings.FREEDOM, ModPaintings.PORTAL);
     }
 }
