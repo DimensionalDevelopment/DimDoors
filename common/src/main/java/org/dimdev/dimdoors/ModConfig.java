@@ -197,14 +197,14 @@ public final class ModConfig implements ConfigData {
 
 
 		public boolean shouldUseLimbo(ResourceKey<Level> level) {
-			return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level.location().toString());
+			return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level);
 		}
 
 		public static final class WorldList {
-			@Tooltip public List<String> list;
+			@Tooltip public List<ResourceKey<Level>> list;
 			@Tooltip public boolean blacklist;
 
-			public WorldList(List<String> list, boolean blacklist) {
+			public WorldList(List<ResourceKey<Level>> list, boolean blacklist) {
 				this.list = list;
 				this.blacklist = blacklist;
 			}
