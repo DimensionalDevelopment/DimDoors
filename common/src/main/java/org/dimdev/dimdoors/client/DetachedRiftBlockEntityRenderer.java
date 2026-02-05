@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import com.flowpowered.math.TrigMath;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.architectury.utils.GameInstance;
@@ -15,6 +13,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.RGBA;
@@ -58,7 +57,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
     }
 
     private void renderTesseract(VertexConsumer vc, DetachedRiftBlockEntity rift, PoseStack matrices, float tickDelta) {
-        double radian = this.nextAngle(rift, tickDelta) * TrigMath.DEG_TO_RAD;
+        float radian = (float) (this.nextAngle(rift, tickDelta) * Mth.DEG_TO_RAD);
         RGBA color = rift.getColor();
         if (Objects.equals(color, RGBA.NONE)) {
             color = DEFAULT_COLOR;
@@ -69,7 +68,7 @@ public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<Deta
         matrices.translate(0.5, 0.5, 0.5);
         matrices.scale(0.25f, 0.25f, 0.25f);
 
-        TESSERACT.draw(matrices.last().pose(), vc, color, radian);
+        Tesseract.draw(matrices.last().pose(), vc, color, radian);
 
         matrices.popPose();
     }

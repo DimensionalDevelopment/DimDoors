@@ -64,7 +64,6 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    includeCompile "com.flowpowered:flow-math:1.0.3"
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 

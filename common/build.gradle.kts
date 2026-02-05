@@ -15,7 +15,6 @@ dependencies {
     modApi("me.shedaniel.cloth:cloth-config:${rootProject.properties["cloth_config"]}")
     modCompileOnlyApi("mcp.mobius.waila:wthit-api:fabric-${project.properties["wthitVersion"]}")
 
-    modApi("com.flowpowered:flow-math:1.0.3")
     modApi("org.jgrapht:jgrapht-core:1.1.0")
     modApi("curse.maven:iris-${project.properties["iris"]}:${project.properties["iris_version"]}")
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")

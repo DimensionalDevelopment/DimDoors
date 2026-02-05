@@ -43,7 +43,6 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle(project(path: ":common", configuration: "transformProductionNeoForge"))
 
-    include "com.flowpowered:flow-math:1.0.3"
     include "org.jgrapht:jgrapht-core:1.1.0"
     include "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 

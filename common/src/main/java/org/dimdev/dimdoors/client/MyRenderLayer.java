@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import com.flowpowered.math.vector.VectorNi;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fabricmc.api.EnvType;
@@ -20,7 +17,6 @@ import static org.lwjgl.opengl.GL11.GL_ZERO;
 @Environment(EnvType.CLIENT)
 public class MyRenderLayer extends RenderType {
     public static final ResourceLocation WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
-    public static final VectorNi COLORLESS = new VectorNi(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255);
     private static final ResourceLocation KEY_PATH = DimensionalDoors.id("textures/other/keyhole.png");
     private static final ResourceLocation KEYHOLE_LIGHT = DimensionalDoors.id("textures/other/keyhole_light.png");
     private static final RandomSource RANDOM = RandomSource.create(31100L);
