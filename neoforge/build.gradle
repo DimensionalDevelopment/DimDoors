@@ -66,7 +66,7 @@ dependencies {
 
 processResources {
     def props = [
-            "version": project.version,
+            "version": mod_version,
             "minecraft_version": minecraft_version,
             "architectury_version": architectury_version,
             "cloth_config_version": cloth_config
