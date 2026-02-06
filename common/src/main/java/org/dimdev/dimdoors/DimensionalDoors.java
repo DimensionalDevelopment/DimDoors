@@ -14,6 +14,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -90,8 +91,8 @@ public class DimensionalDoors {
 	private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
 	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
 
-	public static ResourceLocation id(String id) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+	public static Identifier id(String id) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, id);
 	}
 
 	public static MinecraftServer getServer() {

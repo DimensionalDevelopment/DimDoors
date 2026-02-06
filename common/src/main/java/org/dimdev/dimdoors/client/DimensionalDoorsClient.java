@@ -22,11 +22,13 @@ import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -126,18 +128,16 @@ public class DimensionalDoorsClient {
 		if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) detector = new IrisCompat();
     }
 
-	@Environment(EnvType.CLIENT)
 	public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer) {
 		consumer.accept(ModEntityTypes.MONOLITH.get(), MonolithRenderer::new);
         consumer.accept(ModEntityTypes.MASK.get(), context -> new EntityRenderer<MaskEntity>(context) {
-			@Override
-			public ResourceLocation getTextureLocation(MaskEntity entity) {
-				return ResourceLocation.parse("blep");
-			}
+            @Override
+            public EntityRenderState createRenderState() {
+                return new EntityRenderState();
+            }
 		});
 	}
 
-	@Environment(EnvType.CLIENT)
 	public static void initBlockEntitiesClient() {
 		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), context -> new EntranceRiftBlockEntityRenderer());
 		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), ctx -> new DetachedRiftBlockEntityRenderer());

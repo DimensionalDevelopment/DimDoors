@@ -89,15 +89,15 @@ public class TransformationMatrix3d extends TransformationMatrixdImpl<Transforma
 		}
 
 		public TransformationMatrix3dBuilder rotate(Rotations angle) {
-			return this.rotateZ(Math.toRadians(angle.getZ())) // roll
-					.rotateX(Math.toRadians(angle.getX())) // pitch
-					.rotateY(Math.toRadians(-angle.getY())); // yaw
+			return this.rotateZ(Math.toRadians(angle.z())) // roll
+					.rotateX(Math.toRadians(angle.x())) // pitch
+					.rotateY(Math.toRadians(-angle.y())); // yaw
 		}
 
 		public TransformationMatrix3dBuilder inverseRotate(Rotations angle) {
-			return this.rotateZ(-Math.toRadians(angle.getZ())) // roll
-					.rotateX(-Math.toRadians(angle.getX())) // pitch
-					.rotateY(-Math.toRadians(-angle.getY())); // yaw
+			return this.rotateZ(-Math.toRadians(angle.z())) // roll
+					.rotateX(-Math.toRadians(angle.x())) // pitch
+					.rotateY(-Math.toRadians(-angle.y())); // yaw
 		}
 	}
 }

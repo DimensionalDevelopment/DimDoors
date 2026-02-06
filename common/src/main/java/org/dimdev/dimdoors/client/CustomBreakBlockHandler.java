@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 
 import java.util.HashMap;
@@ -11,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-@Environment(EnvType.CLIENT)
 public class CustomBreakBlockHandler {
 	private static final Map<BlockPos, BreakBlockInfo> customBreakBlockMap = new ConcurrentHashMap<>();
 	private static final ReentrantLock lock = new ReentrantLock();

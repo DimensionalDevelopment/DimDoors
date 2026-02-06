@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 
@@ -41,14 +42,14 @@ public interface LocationCondition {
         public static final Registrar<LocationConditionType<? extends LocationCondition>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<LocationConditionType<? extends LocationCondition>>builder(DimensionalDoors.id("location_condition_type")).build();
 
 
-        public static final Codec<LocationConditionType<? extends LocationCondition>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
+        public static final Codec<LocationConditionType<? extends LocationCondition>> CODEC = Identifier.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 
         public static final RegistrySupplier<LocationConditionType<LocationCondition>> ALWAYS_TRUE = register(DimensionalDoors.id("always_true"), AlwaysTrue.CODEC);
 
         public static void register() {
         }
 
-        static <T, V, U extends LocationCondition> RegistrySupplier<LocationConditionType<U>> register(ResourceLocation id, MapCodec<U> codec) {
+        static <T, V, U extends LocationCondition> RegistrySupplier<LocationConditionType<U>> register(Identifier id, MapCodec<U> codec) {
             return REGISTRY.register(id, () -> new LocationConditionType<>(codec));
         }
     }

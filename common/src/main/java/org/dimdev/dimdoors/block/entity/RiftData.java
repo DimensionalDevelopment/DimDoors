@@ -6,6 +6,8 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 public class RiftData {
+    public static final Codec<>
+
 	private VirtualTarget destination = VirtualTarget.NoneTarget.INSTANCE; // How the rift acts as a source
 	private LinkProperties properties = null;
 	private boolean alwaysDelete;

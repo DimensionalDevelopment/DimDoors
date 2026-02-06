@@ -64,7 +64,7 @@ public enum BlockPlacementType implements StringRepresentable {
 
 	private static void queueBlockEntity(Level world, BlockEntity blockEntity) {
 		MinecraftServer server = world.getServer();
-		server.tell(new TickTask(server.getTickCount(), () -> world.setBlockEntity(blockEntity)));
+		server.doRunTask(new TickTask(server.getTickCount(), () -> world.setBlockEntity(blockEntity)));
 	}
 
 	@Override

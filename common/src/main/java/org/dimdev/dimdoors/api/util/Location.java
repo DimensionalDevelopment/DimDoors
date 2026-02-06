@@ -10,8 +10,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -20,6 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
+
+import java.util.Optional;
 
 public class Location {
 	public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> instance.group(Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(location -> location.world), BlockPos.CODEC.fieldOf("pos").forGetter(location -> location.pos)).apply(instance, Location::new));
@@ -115,23 +117,23 @@ public class Location {
 
 	public static CompoundTag toNbt(Location location) {
 		CompoundTag nbt = new CompoundTag();
-		nbt.putString("world", location.world.location().toString());
+		nbt.putString("world", location.world.identifier().toString());
 		nbt.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
 		return nbt;
 	}
 
 	public static Location fromNbt(CompoundTag nbt) {
-		int[] pos = nbt.getIntArray("pos");
+		int[] pos = nbt.getIntArray("pos").orElseThrow();
 		return new Location(
-				ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
+				ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getString("world").orElseThrow())),
 				new BlockPos(pos[0], pos[1], pos[2])
 		);
 	}
 
 	public static BlockPos getHeightmapPosSafe(ServerLevel level, int x, int z) {
-		var mutablePos = new BlockPos.MutableBlockPos(x, level.getMaxBuildHeight(), z);
+		var mutablePos = new BlockPos.MutableBlockPos(x, level.getMaxY(), z);
 
-		while (mutablePos.getY() > level.getMinBuildHeight() && (!level.getBlockState(mutablePos).isSolid() && level.getFluidState(mutablePos).isEmpty())) mutablePos.move(Direction.DOWN);
+		while (mutablePos.getY() > level.getMinY() && (!level.getBlockState(mutablePos).isSolid() && level.getFluidState(mutablePos).isEmpty())) mutablePos.move(Direction.DOWN);
 
 		return mutablePos.move(Direction.UP);
 	}

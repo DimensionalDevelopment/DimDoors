@@ -9,8 +9,11 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
@@ -25,8 +28,18 @@ import org.dimdev.dimdoors.rift.targets.IdMarker;
 
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<EntranceRiftBlockEntity> {
+
+    @Override
+    public BlockEntityRenderState createRenderState() {
+        return null;
+    }
+
+    @Override
+    public void submit(BlockEntityRenderState blockEntityRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
+
+    }
+
 	@Override
 	public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
 		if (Minecraft.getInstance().player != null)
@@ -58,7 +71,7 @@ public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<Entr
 
 	private void renderBlockState(BlockState renderState, RandomSource random, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
 		var model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(renderState);
-		var renderType = ItemBlockRenderTypes.getRenderType(renderState, false);
+		var renderType = ItemBlockRenderTypes.getRenderType(renderState);
 		var vertexConsumer = vertexConsumerProvider.getBuffer(renderType);
 
 		for (var direction : Direction.values()) {

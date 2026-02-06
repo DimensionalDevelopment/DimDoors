@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,14 +62,15 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 		this.updateTimer = random.nextInt(UPDATE_PERIOD);
 	}
 
-	@Override
-	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-		super.loadAdditional(nbt, provider);
-		this.deserialize(nbt);
+    @Override
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+		this.deserialize(input);
 	}
 
-	public void deserialize(CompoundTag nbt) {
-		this.data = RiftData.fromNbt(nbt.getCompound("data"));
+	public void deserialize(ValueInput input) {
+        this.data = input.read("data", RiftData)
+        this.data = RiftData.fromNbt(nbt..getCompound("data"));
 		this.closing = nbt.getBoolean("closing");
 		this.stabilized = nbt.getBoolean("stablized");
 		this.size = nbt.getFloat("size");

@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,7 +74,12 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBloc
 		}
 	}
 
-	@Override
+    @Override
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+    }
+
+    @Override
 	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
 		super.loadAdditional(nbt, provider);
 		locked = nbt.getBoolean("locked");

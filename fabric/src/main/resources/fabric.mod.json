@@ -1,25 +1,18 @@
 {
   "schemaVersion": 1,
-  "id": "dimdoors",
+  "id": "${mod_id}",
   "version": "${version}",
-  "name": "DimensionalDoors",
-  "description": "Bend and twist reality, creating rifts, pocket dimensions, and much more",
+  "name": "${mod_name}",
+  "description": "${description}",
   "authors": [
-    "StevenRS11",
-    "SenseiKiwi",
-    "Zixiken",
-    "Waterpicker",
-    "Robijnvogel",
-    "ZombieHDGaming",
-    "Runemoro"
+    "${mod_author}"
   ],
   "contact": {
-    "homepage": "https://dimdev.org/",
-    "sources": "https://github.com/DimensionalDevelopment/DimDoors",
-    "issues": "https://github.com/DimensionalDevelopment/DimDoors/issues"
+    "sources": "${mod_sources}",
+    "issues": "$mod_issues"
   },
-  "license": "MIT",
-  "icon": "assets/dimdoors/icon.png",
+  "license": "${license}",
+  "icon": "${mod_id}.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -43,13 +36,14 @@
     ]
   },
   "mixins": [
-    "dimdoors.mixins.json",
-    "dimdoors-common.mixins.json"
+    "${mod_id}.mixins.json",
+    "${mod_id}.fabric.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*",
-    "minecraft": ">=${minecraft_version}",
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=${java_version}",
     "architectury": ">=${architectury_version}",
     "cloth-config": ">=${cloth_config_version}"
   },

@@ -13,7 +13,7 @@ public class BlockBoxUtil {
 
 	public static BoundingBox getBox(ChunkAccess chunk) {
 		ChunkPos pos = chunk.getPos();
-		return BoundingBox.fromCorners(new Vec3i(pos.getMinBlockX(), chunk.getMinBuildHeight(), pos.getMinBlockZ()), new Vec3i(pos.getMaxBlockX(), chunk.getMaxBuildHeight() - 1, pos.getMaxBlockZ()));
+		return BoundingBox.fromCorners(new Vec3i(pos.getMinBlockX(), chunk.getMinY(), pos.getMinBlockZ()), new Vec3i(pos.getMaxBlockX(), chunk.getMaxY() - 1, pos.getMaxBlockZ()));
 	}
 
 	public static BoundingBox intersect(BoundingBox box1, BoundingBox box2) {

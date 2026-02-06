@@ -4,10 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.core.Direction;
 import org.joml.Quaternionf;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
-@Environment(EnvType.CLIENT)
 public enum DefaultTransformation implements Transformer {
 	DOWN {
 		@Override
