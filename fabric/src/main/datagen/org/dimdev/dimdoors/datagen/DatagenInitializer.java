@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -92,6 +93,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 		pack.addProvider(AdvancementProvider::new);
 		pack.addProvider(LootTableProvider::new);
 		pack.addProvider(AbstractionDecayProvider::new);
+        pack.addProvider(LanguageProvider::new);
 
 		pack.addProvider(BlockTagProvider::new);
 		pack.addProvider(BiomeTagProvider::new);

@@ -45,6 +45,6 @@ public class PaintingTagProvider extends FabricTagProvider<PaintingVariant> {
 //            }
 //        });
 
-        tag(PaintingVariantTags.PLACEABLE).add(ModPaintings.LIMBO, ModPaintings.EYES, ModPaintings.FREEDOM, ModPaintings.PORTAL);
+        tag(PaintingVariantTags.PLACEABLE).add(ModPaintings.LIMBO, ModPaintings.EYES, ModPaintings.FREEDOM, ModPaintings.PORTAL, ModPaintings.GATEWAY_AT_NIGHT);
     }
 }

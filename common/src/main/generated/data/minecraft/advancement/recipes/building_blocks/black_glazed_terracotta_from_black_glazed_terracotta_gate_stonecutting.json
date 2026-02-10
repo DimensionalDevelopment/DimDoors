@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_black_glazed_terracotta_gate": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:black_glazed_terracotta_gate"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:black_glazed_terracotta_from_black_glazed_terracotta_gate_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_black_glazed_terracotta_gate"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:black_glazed_terracotta_from_black_glazed_terracotta_gate_stonecutting"
+    ]
+  }
+}

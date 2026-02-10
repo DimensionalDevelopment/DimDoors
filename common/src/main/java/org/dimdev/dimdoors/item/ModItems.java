@@ -109,7 +109,7 @@ public final class ModItems {
 
 	public static DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CREATIVE_MODE_TAB);
 	public static final RegistrySupplier<CreativeModeTab> DIMENSIONAL_DOORS = CREATIVE_TABS.register("dimensional_doors", () -> CreativeTabRegistry.create(builder -> builder.icon(() -> new ItemStack(ModItems.RIFT_BLADE.get())).title(Component.translatable("itemGroup.dimdoors.dimensional_doors"))));
-	public static final RegistrySupplier<CreativeModeTab> DECAY = CREATIVE_TABS.register("decay", () -> CreativeTabRegistry.create(builder -> builder.icon(() -> new ItemStack(ModBlocks.UNRAVELED_FENCE.get())).title(Component.translatable("itemGroup.dimdoors.decay"))));
+	public static final RegistrySupplier<CreativeModeTab> DECAY = CREATIVE_TABS.register("decay", () -> CreativeTabRegistry.create(builder -> builder.icon(() -> new ItemStack(ModBlocks.UNRAVELED_SET.fence().get())).title(Component.translatable("itemGroup.dimdoors.decay"))));
 
 	public static RegistrySupplier<Item> registerRegular(String name, Function<Item.Properties, Item> item) {
 		return register(name, () -> item.apply(new Item.Properties().arch$tab(DIMENSIONAL_DOORS)));

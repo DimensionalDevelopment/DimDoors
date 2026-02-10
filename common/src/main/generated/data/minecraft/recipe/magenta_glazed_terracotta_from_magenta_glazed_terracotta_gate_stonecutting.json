@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "dimdoors:magenta_glazed_terracotta_gate"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:magenta_glazed_terracotta"
+  }
+}

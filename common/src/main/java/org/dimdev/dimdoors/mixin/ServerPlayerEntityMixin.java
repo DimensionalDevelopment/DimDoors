@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.stats.Stat;
 import net.minecraft.util.RandomSource;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.UnravelledFabricBlock;
 import org.dimdev.dimdoors.criteria.ModCriteria;
@@ -38,7 +40,10 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 
 	@Shadow public abstract void awardStat(Stat<?> arg, int i);
 
-	private static final float RANDOM_ACTION_CHANCE = 0.1F;
+    @Shadow
+    @Final
+    public ServerPlayerGameMode gameMode;
+    private static final float RANDOM_ACTION_CHANCE = 0.1F;
 	private static final float CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS = 0.1F;
 	private static final int CHUNK_SIZES = 25;
 	private static final int POSITION_AWAY = 50;
@@ -150,6 +155,4 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 			ModCriteria.POCKET_SPAWN_POINT_SET.get().trigger((ServerPlayer) (Object) this);
 		}
 	}
-
-
 }

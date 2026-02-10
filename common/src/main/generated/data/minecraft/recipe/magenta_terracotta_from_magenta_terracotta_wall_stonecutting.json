@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "dimdoors:magenta_terracotta_wall"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:magenta_terracotta"
+  }
+}

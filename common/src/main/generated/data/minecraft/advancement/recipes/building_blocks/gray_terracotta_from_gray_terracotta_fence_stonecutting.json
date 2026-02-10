@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gray_terracotta_fence": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:gray_terracotta_fence"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:gray_terracotta_from_gray_terracotta_fence_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_gray_terracotta_fence"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:gray_terracotta_from_gray_terracotta_fence_stonecutting"
+    ]
+  }
+}

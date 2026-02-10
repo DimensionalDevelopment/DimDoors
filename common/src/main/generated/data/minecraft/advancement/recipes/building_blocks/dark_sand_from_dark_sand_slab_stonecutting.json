@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_dark_sand_slab": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:dark_sand_slab"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:dark_sand_from_dark_sand_slab_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_dark_sand_slab"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:dark_sand_from_dark_sand_slab_stonecutting"
+    ]
+  }
+}

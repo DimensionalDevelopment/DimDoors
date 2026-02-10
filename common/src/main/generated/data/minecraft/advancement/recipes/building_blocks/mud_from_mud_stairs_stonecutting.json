@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mud_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:mud_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:mud_from_mud_stairs_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mud_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:mud_from_mud_stairs_stonecutting"
+    ]
+  }
+}

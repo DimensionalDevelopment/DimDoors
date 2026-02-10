@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_gravel_fence": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:gravel_fence"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:gravel_from_gravel_fence_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_gravel_fence"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:gravel_from_gravel_fence_stonecutting"
+    ]
+  }
+}

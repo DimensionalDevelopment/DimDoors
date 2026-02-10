@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "dimdoors:netherrack_wall"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:netherrack"
+  }
+}

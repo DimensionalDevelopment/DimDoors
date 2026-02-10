@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "dimdoors:purple_terracotta_slab"
+  },
+  "result": {
+    "id": "dimdoors:purple_glazed_terracotta_slab"
+  }
+}

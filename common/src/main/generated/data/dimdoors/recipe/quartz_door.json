@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
+  "category": "redstone",
   "key": {
-    "X": {
-      "item": "minecraft:quartz"
+    "#": {
+      "tag": "c:gems/quartz"
     }
   },
   "pattern": [
-    "XX",
-    "XX",
-    "XX"
+    "##",
+    "##",
+    "##"
   ],
   "result": {
-    "count": 1,
+    "count": 3,
     "id": "dimdoors:quartz_door"
   }
 }

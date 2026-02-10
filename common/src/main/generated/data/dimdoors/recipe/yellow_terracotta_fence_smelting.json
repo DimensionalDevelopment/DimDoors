@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "dimdoors:yellow_terracotta_fence"
+  },
+  "result": {
+    "id": "dimdoors:yellow_glazed_terracotta_fence"
+  }
+}

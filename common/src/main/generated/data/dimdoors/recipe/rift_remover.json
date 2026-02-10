@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "#": {
-      "tag": "dimdoors:gold_ingots"
+      "tag": "c:ingots/gold"
     },
     "X": {
-      "item": "minecraft:ender_pearl"
+      "tag": "c:ender_pearls"
     }
   },
   "pattern": [

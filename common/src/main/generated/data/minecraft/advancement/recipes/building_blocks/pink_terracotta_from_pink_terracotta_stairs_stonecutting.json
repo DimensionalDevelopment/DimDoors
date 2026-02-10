@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_pink_terracotta_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:pink_terracotta_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:pink_terracotta_from_pink_terracotta_stairs_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_pink_terracotta_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:pink_terracotta_from_pink_terracotta_stairs_stonecutting"
+    ]
+  }
+}

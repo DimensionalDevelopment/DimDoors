@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:white_terracotta_from_white_terracotta_slab_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_white_terracotta_slab": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:white_terracotta_slab"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_white_terracotta_slab"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:white_terracotta_from_white_terracotta_slab_stonecutting"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "dimdoors:orange_terracotta_stairs"
+  },
+  "result": {
+    "id": "dimdoors:orange_glazed_terracotta_stairs"
+  }
+}

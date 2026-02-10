@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:yellow_terracotta_from_yellow_terracotta_wall_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_yellow_terracotta_wall": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:yellow_terracotta_wall"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_yellow_terracotta_wall"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:yellow_terracotta_from_yellow_terracotta_wall_stonecutting"
+    ]
+  }
+}

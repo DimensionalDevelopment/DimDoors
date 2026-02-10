@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "dimdoors:block/gray_glazed_terracott_slab"
+    },
+    "type=double": {
+      "model": "minecraft:block/gray_glazed_terracotta"
+    },
+    "type=top": {
+      "model": "dimdoors:block/gray_glazed_terracott_slab_top"
+    }
+  }
+}

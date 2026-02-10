@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "dimdoors:clod"
+    },
+    {
+      "item": "dimdoors:clod"
+    },
+    {
+      "item": "dimdoors:clod"
+    },
+    {
+      "item": "dimdoors:clod"
+    },
+    {
+      "item": "dimdoors:clod"
+    },
+    {
+      "item": "dimdoors:clod"
+    },
+    {
+      "item": "dimdoors:clod"
+    },
+    {
+      "item": "dimdoors:clod"
+    },
+    {
+      "item": "dimdoors:clod"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:clod_block"
+  }
+}

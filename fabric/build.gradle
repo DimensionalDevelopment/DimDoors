@@ -91,6 +91,8 @@ dependencies {
             break;
         }
     }
+
+    modRuntimeOnly "curse.maven:modmenu-308702:5810603"
 }
 
 processResources {

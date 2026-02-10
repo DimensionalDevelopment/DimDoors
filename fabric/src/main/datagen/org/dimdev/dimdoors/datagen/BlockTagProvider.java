@@ -3,21 +3,17 @@ package org.dimdev.dimdoors.datagen;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 
-import java.util.Objects;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 	public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
@@ -304,24 +300,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 //
 //		add(ModBlockTags.DECAYS_TO_DRIFTWOOD_PLANK).addOptionalTag(BlockTags.PLANKS.location());
 
-		add(BlockTags.FENCES).add(
-				ModBlocks.CLAY_FENCE.getKey(),
-				ModBlocks.GRAVEL_FENCE.getKey(),
-				ModBlocks.MUD_FENCE.getKey(),
-				ModBlocks.UNRAVELED_FENCE.getKey(),
-				ModBlocks.NETHERRACK_FENCE.getKey(),
-				ModBlocks.DARK_SAND_FENCE.getKey());
-
-		add(BlockTags.WALLS).add(
-				ModBlocks.CLAY_WALL.getKey(),
-				ModBlocks.DARK_SAND_WALL.getKey(),
-				ModBlocks.DEEPSLATE_WALL.getKey(),
-				ModBlocks.GRAVEL_WALL.getKey(),
-				ModBlocks.NETHERRACK_WALL.getKey(),
-				ModBlocks.END_STONE_WALL.getKey(),
-				ModBlocks.RED_SAND_WALL.getKey(),
-				ModBlocks.SAND_WALL.getKey()
-		);
+		add(BlockTags.WALLS, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.wall()).toList());
 
         add(BlockTags.LOGS, ModBlocks.DRIFTWOOD_LOG);
         add(BlockTags.PLANKS, ModBlocks.DRIFTWOOD_PLANKS);
@@ -337,38 +316,18 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         add(BlockTags.TRAPDOORS, ModBlocks.AMALGAM_TRAPDOOR);
         add(BlockTags.SLABS,
                 ModBlocks.AMALGAM_SLAB,
-                ModBlocks.SAND_SLAB,
-                ModBlocks.GRAVEL_SLAB,
-                ModBlocks.DARK_SAND_SLAB,
-                ModBlocks.CLAY_SLAB,
-                ModBlocks.MUD_SLAB,
-                ModBlocks.UNRAVELED_SLAB,
-                ModBlocks.DEEPSLATE_SLAB,
-                ModBlocks.SAND_SLAB,
-                ModBlocks.END_STONE_STAIRS,
-                ModBlocks.NETHERRACK_SLAB
+                ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.slab()).toList()
         );
 
-        add(BlockTags.FENCES,
-                ModBlocks.CLAY_GATE,
-                ModBlocks.MUD_GATE,
-                ModBlocks.UNRAVELED_GATE
-        );
+        add(BlockTags.FENCE_GATES, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.gate()).toList());
 
-        add(BlockTags.STAIRS,
-                ModBlocks.GRAVEL_STAIRS,
-                ModBlocks.DARK_SAND_STAIRS,
-                ModBlocks.CLAY_STAIRS,
-                ModBlocks.MUD_STAIRS,
-                ModBlocks.UNRAVELED_STAIRS,
-                ModBlocks.DEEPSLATE_STAIRS,
-                ModBlocks.RED_SAND_STAIRS,
-                ModBlocks.SAND_STAIRS,
-                ModBlocks.END_STONE_STAIRS,
-                ModBlocks.NETHERRACK_STAIRS
-        );
+        add(BlockTags.FENCES, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.fence()).toList());
 
+        add(BlockTags.STAIRS, ModBlocks.AMALGAM_STAIRS, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.stairs()).toList());
 
+        add(BlockTags.BUTTONS, ModBlocks.AMALGAM_STAIRS, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.button()).toList());
+
+        add(ModBlockTags.DECAYS_TO_DRIFTWOOD_LOG, ModBlocks.DRIFTWOOD_LOG, ModBlocks.DRIFTWOOD_WOOD);
 
         add(BlockTags.MINEABLE_WITH_PICKAXE,
                 ModBlocks.GOLD_DOOR,
@@ -402,23 +361,45 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 ModBlocks.AMALGAM_ORE,
                 ModBlocks.CLOD_ORE,
                 ModBlocks.CLOD_BLOCK,
-                ModBlocks.UNRAVELED_FENCE,
-                ModBlocks.UNRAVELED_GATE,
-                ModBlocks.UNRAVELED_BUTTON,
-                ModBlocks.UNRAVELED_SLAB,
-                ModBlocks.UNRAVELED_STAIRS,
-                ModBlocks.DEEPSLATE_SLAB,
-                ModBlocks.DEEPSLATE_STAIRS,
-                ModBlocks.DEEPSLATE_WALL,
-                ModBlocks.END_STONE_SLAB,
-                ModBlocks.END_STONE_STAIRS,
-                ModBlocks.END_STONE_WALL,
-                ModBlocks.NETHERRACK_FENCE,
-                ModBlocks.NETHERRACK_SLAB,
-                ModBlocks.NETHERRACK_STAIRS,
-                ModBlocks.NETHERRACK_WALL,
+                ModBlocks.UNRAVELED_SET,
+                ModBlocks.DEEPSLATE_SET,
+                ModBlocks.END_STONE_SET,
+                ModBlocks.NETHERRACK_SET,
                 ModBlocks.UNRAVELED_SPIKE,
-                ModBlocks.GRITTY_STONE
+                ModBlocks.GRITTY_STONE,
+                ModBlocks.TERRACOTTA_SET,
+                ModBlocks.WHITE_TERRACOTTA_SET,
+                ModBlocks.WHITE_GLAZED_TERRACOTTA_SET,
+                ModBlocks.ORANGE_TERRACOTTA_SET,
+                ModBlocks.ORANGE_GLAZED_TERRACOTTA_SET,
+                ModBlocks.MAGENTA_TERRACOTTA_SET,
+                ModBlocks.MAGENTA_GLAZED_TERRACOTTA_SET,
+                ModBlocks.LIGHT_BLUE_TERRACOTTA_SET,
+                ModBlocks.LIGHT_BLUE_GLAZED_TERRACOTTA_SET,
+                ModBlocks.YELLOW_TERRACOTTA_SET,
+                ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET,
+                ModBlocks.LIME_TERRACOTTA_SET,
+                ModBlocks.LIME_GLAZED_TERRACOTTA_SET,
+                ModBlocks.PINK_TERRACOTTA_SET,
+                ModBlocks.PINK_GLAZED_TERRACOTTA_SET,
+                ModBlocks.GRAY_TERRACOTTA_SET,
+                ModBlocks.GRAY_GLAZED_TERRACOTTASET,
+                ModBlocks.LIGHT_GRAY_TERRACOTTASET,
+                ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTASET,
+                ModBlocks.CYAN_TERRACOTTA_SET,
+                ModBlocks.CYAN_GLAZED_TERRACOTTA_SET,
+                ModBlocks.PURPLE_TERRACOTTA_SET,
+                ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET,
+                ModBlocks.BLUE_TERRACOTTA_SET,
+                ModBlocks.BLUE_GLAZED_TERRACOTTA_SET,
+                ModBlocks.BROWN_TERRACOTTA_SET,
+                ModBlocks.BROWN_GLAZED_TERRACOTTA_SET,
+                ModBlocks.GREEN_TERRACOTTA_SET,
+                ModBlocks.GREEN_GLAZED_TERRACOTTA_SET,
+                ModBlocks.RED_TERRACOTTA_SET,
+                ModBlocks.RED_GLAZED_TERRACOTTA_SET,
+                ModBlocks.BLACK_TERRACOTTA_SET,
+                ModBlocks.BLACK_GLAZED_TERRACOTTA_SET
         );
 
         add(BlockTags.MINEABLE_WITH_AXE,
@@ -435,43 +416,48 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         );
 
         add(BlockTags.MINEABLE_WITH_SHOVEL,
-                ModBlocks.GRAVEL_FENCE,
-                ModBlocks.GRAVEL_BUTTON,
-                ModBlocks.GRAVEL_SLAB,
-                ModBlocks.GRAVEL_STAIRS,
-                ModBlocks.GRAVEL_WALL,
+                ModBlocks.GRAVEL_SET,
                 ModBlocks.DARK_SAND,
-                ModBlocks.DARK_SAND_FENCE,
-                ModBlocks.DARK_SAND_BUTTON,
-                ModBlocks.DARK_SAND_SLAB,
-                ModBlocks.DARK_SAND_STAIRS,
-                ModBlocks.DARK_SAND_WALL,
-                ModBlocks.CLAY_FENCE,
-                ModBlocks.CLAY_GATE,
-                ModBlocks.CLAY_BUTTON,
-                ModBlocks.CLAY_SLAB,
-                ModBlocks.CLAY_STAIRS,
-                ModBlocks.CLAY_WALL,
-                ModBlocks.MUD_FENCE,
-                ModBlocks.MUD_GATE,
-                ModBlocks.MUD_BUTTON,
-                ModBlocks.MUD_SLAB,
-                ModBlocks.MUD_STAIRS,
-                ModBlocks.RED_SAND_SLAB,
-                ModBlocks.RED_SAND_STAIRS,
-                ModBlocks.RED_SAND_WALL,
-                ModBlocks.SAND_SLAB,
-                ModBlocks.SAND_STAIRS,
-                ModBlocks.SAND_WALL
+                ModBlocks.DARK_SAND_SET,
+                ModBlocks.CLAY_SET,
+                ModBlocks.MUD_SET,
+                ModBlocks.RED_SAND_SET,
+                ModBlocks.SAND_SET
         );
 	}
 
-	private TagAppender<Block> add(TagKey<Block> tag, Object... blocks) {
+	private TagAppender<Block> add(TagKey<Block> tag, Object... objects) {
 		var appender = tag(tag);
 
-        Stream.of(blocks).map(a -> a instanceof RegistrySupplier<?> supplier ? supplier.get() instanceof Block block ? block : a instanceof Block block ? block : null : null).filter(Objects::nonNull).map(Block::builtInRegistryHolder).map(Holder.Reference::key).forEach(appender::add);
+        for(var object : objects) {
+            if(object instanceof RegistrySupplier<?> supplier) {
+                if(supplier.get() instanceof Block block) {
+                    appender.add(block.builtInRegistryHolder().key());
+                }
+            } else if (object instanceof Block block) {
+                appender.add(block.builtInRegistryHolder().key());
+            } else if (object instanceof TagKey<?> key && key.isFor(Registries.BLOCK)) {
+                appender.addTag((TagKey<Block>) key);
+            } else if (object instanceof List<?> list) {
+                for(var element : list) {
+                    if (element instanceof RegistrySupplier<?> supplier) {
+                        if (supplier.get() instanceof Block block) {
+                            appender.add(block.builtInRegistryHolder().key());
+                        }
+                    } else if (element instanceof Block block) {
+                        appender.add(block.builtInRegistryHolder().key());
+                    }
+                }
+            } else if (object instanceof ModBlocks.DecayGroupSet set) {
+                set.fence().unwrapKey().ifPresent(appender::add);
+                set.gate().unwrapKey().ifPresent(appender::add);
+                set.button().unwrapKey().ifPresent(appender::add);
+                set.slab().unwrapKey().ifPresent(appender::add);
+                set.stairs().unwrapKey().ifPresent(appender::add);
+                set.wall().unwrapKey().ifPresent(appender::add);
+            }
+        }
 
-        Stream.of(blocks).filter(a -> a instanceof TagKey<?> key && key.isFor(Registries.BLOCK)).map(a -> (TagKey<Block>) a).forEach(appender::addTag);
 
 		return appender;
 	}

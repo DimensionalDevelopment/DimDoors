@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "minecraft:purple_glazed_terracotta"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:purple_glazed_terracotta_button"
+  }
+}

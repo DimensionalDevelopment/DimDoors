@@ -67,69 +67,51 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 		generator.createTrivialCube(ModBlocks.CLOD_ORE.get());
 		generator.createTrivialCube(ModBlocks.CLOD_BLOCK.get());
 
-		generator.family(Blocks.GRAVEL)
-				.fence(ModBlocks.GRAVEL_FENCE.get())
-				.button(ModBlocks.GRAVEL_BUTTON.get())
-				.slab(ModBlocks.GRAVEL_SLAB.get())
-				.stairs(ModBlocks.GRAVEL_STAIRS.get())
-				.wall(ModBlocks.GRAVEL_WALL.get());
+        generateDecaySet(generator, Blocks.RED_SAND, ModBlocks.RED_SAND_SET);
+        generateDecaySet(generator, Blocks.GRAVEL, ModBlocks.GRAVEL_SET);
+        generateDecaySet(generator, ModBlocks.DARK_SAND.get(), ModBlocks.DARK_SAND_SET);
+        generateDecaySet(generator, Blocks.CLAY, ModBlocks.CLAY_SET);
+        generateDecaySet(generator, Blocks.TERRACOTTA, ModBlocks.TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.WHITE_TERRACOTTA, ModBlocks.WHITE_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.WHITE_GLAZED_TERRACOTTA, ModBlocks.WHITE_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.ORANGE_TERRACOTTA, ModBlocks.ORANGE_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.ORANGE_GLAZED_TERRACOTTA, ModBlocks.ORANGE_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.MAGENTA_TERRACOTTA, ModBlocks.MAGENTA_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.MAGENTA_GLAZED_TERRACOTTA, ModBlocks.MAGENTA_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.LIGHT_BLUE_TERRACOTTA, ModBlocks.LIGHT_BLUE_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA, ModBlocks.LIGHT_BLUE_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.YELLOW_TERRACOTTA, ModBlocks.YELLOW_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.YELLOW_GLAZED_TERRACOTTA, ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.LIME_TERRACOTTA, ModBlocks.LIME_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.LIME_GLAZED_TERRACOTTA, ModBlocks.LIME_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.PINK_TERRACOTTA, ModBlocks.PINK_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.PINK_GLAZED_TERRACOTTA, ModBlocks.PINK_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.GRAY_TERRACOTTA, ModBlocks.GRAY_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.GRAY_GLAZED_TERRACOTTA, ModBlocks.GRAY_GLAZED_TERRACOTTASET);
+        generateDecaySet(generator, Blocks.LIGHT_GRAY_TERRACOTTA, ModBlocks.LIGHT_GRAY_TERRACOTTASET);
+        generateDecaySet(generator, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTASET);
+        generateDecaySet(generator, Blocks.CYAN_TERRACOTTA, ModBlocks.CYAN_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.CYAN_GLAZED_TERRACOTTA, ModBlocks.CYAN_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.PURPLE_TERRACOTTA, ModBlocks.PURPLE_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.PURPLE_GLAZED_TERRACOTTA, ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.BLUE_TERRACOTTA, ModBlocks.BLUE_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.BLUE_GLAZED_TERRACOTTA, ModBlocks.BLUE_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.BROWN_TERRACOTTA, ModBlocks.BROWN_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.BROWN_GLAZED_TERRACOTTA, ModBlocks.BROWN_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.GREEN_TERRACOTTA, ModBlocks.GREEN_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.GREEN_GLAZED_TERRACOTTA, ModBlocks.GREEN_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.RED_TERRACOTTA, ModBlocks.RED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.RED_GLAZED_TERRACOTTA, ModBlocks.RED_GLAZED_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.BLACK_TERRACOTTA, ModBlocks.BLACK_TERRACOTTA_SET);
+        generateDecaySet(generator, Blocks.BLACK_GLAZED_TERRACOTTA, ModBlocks.BLACK_GLAZED_TERRACOTTA_SET);
 
-		generator.family(ModBlocks.DARK_SAND.get())
-				.fence(ModBlocks.DARK_SAND_FENCE.get())
-				.button(ModBlocks.DARK_SAND_BUTTON.get())
-				.slab(ModBlocks.DARK_SAND_SLAB.get())
-				.stairs(ModBlocks.DARK_SAND_STAIRS.get())
-				.wall(ModBlocks.DARK_SAND_WALL.get());
 
-		generator.family(Blocks.CLAY)
-				.fence(ModBlocks.CLAY_FENCE.get())
-				.fenceGate(ModBlocks.CLAY_GATE.get())
-				.button(ModBlocks.CLAY_BUTTON.get())
-				.slab(ModBlocks.CLAY_SLAB.get())
-				.stairs(ModBlocks.CLAY_STAIRS.get())
-				.wall(ModBlocks.CLAY_WALL.get());
-
-
-	generator.family(ModBlocks.UNRAVELLED_FABRIC.get())
-				.fence(ModBlocks.UNRAVELED_FENCE.get())
-				.fenceGate(ModBlocks.UNRAVELED_GATE.get())
-				.button(ModBlocks.UNRAVELED_BUTTON.get())
-				.slab(ModBlocks.UNRAVELED_SLAB.get())
-				.stairs(ModBlocks.UNRAVELED_STAIRS.get())
-                .wall(ModBlocks.UNRAVELED_WALL.get());
-
-		generator.family(Blocks.MUD)
-				.fence(ModBlocks.MUD_FENCE.get())
-				.fenceGate(ModBlocks.MUD_GATE.get())
-				.button(ModBlocks.MUD_BUTTON.get())
-				.slab(ModBlocks.MUD_SLAB.get())
-				.stairs(ModBlocks.MUD_STAIRS.get());
-
-		generator.family(Blocks.DEEPSLATE)
-				.slab(ModBlocks.DEEPSLATE_SLAB.get())
-				.stairs(ModBlocks.DEEPSLATE_STAIRS.get())
-				.wall(ModBlocks.DEEPSLATE_WALL.get());
-
-		generator.family(Blocks.RED_SAND)
-				.slab(ModBlocks.RED_SAND_SLAB.get())
-				.stairs(ModBlocks.RED_SAND_STAIRS.get())
-				.wall(ModBlocks.RED_SAND_WALL.get());
-
-		generator.family(Blocks.SAND)
-				.slab(ModBlocks.SAND_SLAB.get())
-				.stairs(ModBlocks.SAND_STAIRS.get())
-				.wall(ModBlocks.SAND_WALL.get());
-
-		generator.family(Blocks.END_STONE)
-				.slab(ModBlocks.END_STONE_SLAB.get())
-				.stairs(ModBlocks.END_STONE_STAIRS.get())
-				.wall(ModBlocks.END_STONE_WALL.get());
-
-		generator.family(Blocks.NETHERRACK)
-				.fence(ModBlocks.NETHERRACK_FENCE.get())
-				.slab(ModBlocks.NETHERRACK_SLAB.get())
-				.stairs(ModBlocks.NETHERRACK_STAIRS.get())
-				.wall(ModBlocks.NETHERRACK_WALL.get());
+        generateDecaySet(generator, Blocks.MUD, ModBlocks.MUD_SET);
+        generateDecaySet(generator, ModBlocks.UNRAVELLED_FABRIC.get(), ModBlocks.UNRAVELED_SET);
+        generateDecaySet(generator, Blocks.DEEPSLATE, ModBlocks.DEEPSLATE_SET);
+        generateDecaySet(generator, Blocks.SAND, ModBlocks.SAND_SET);
+        generateDecaySet(generator, Blocks.END_STONE, ModBlocks.END_STONE_SET);
+        generateDecaySet(generator, Blocks.NETHERRACK, ModBlocks.NETHERRACK_SET);
 
 		generator.createTrivialCube(ModBlocks.DRIFTWOOD_LEAVES.get());
 		generator.createCrossBlockWithDefaultItem(ModBlocks.DRIFTWOOD_SAPLING.get(), BlockModelGenerators.TintState.NOT_TINTED); //TODO: Decide if we need potted version
@@ -141,8 +123,17 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
         generator.createAirLikeBlock(ModBlocks.LIMBO_AIR.get(), Blocks.BARRIER.asItem());
 	}
+    private void generateDecaySet(BlockModelGenerators generator, Block block, ModBlocks.DecayGroupSet set) {
+        generator.family(block)
+                .button(set.button().get())
+                .slab(set.slab().get())
+                .stairs(set.stairs().get())
+                .wall(set.wall().get())
+                .fence(set.fence().get())
+                .fenceGate(set.gate().get());
+    }
 
-	private void registerUnraveledSpike(BlockModelGenerators generator) {
+    private void registerUnraveledSpike(BlockModelGenerators generator) {
 		PropertyDispatch.C2<Direction, DripstoneThickness> doubleProperty = PropertyDispatch.properties(BlockStateProperties.VERTICAL_DIRECTION, BlockStateProperties.DRIPSTONE_THICKNESS);
 		for (DripstoneThickness thickness : DripstoneThickness.values()) {
 			doubleProperty.select(Direction.UP, thickness, createPointedUnraveledspikeVariant(generator, Direction.UP, thickness));

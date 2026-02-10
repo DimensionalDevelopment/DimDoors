@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "dimdoors:white_glazed_terracotta_button"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:white_glazed_terracotta"
+  }
+}

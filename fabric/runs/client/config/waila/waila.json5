@@ -1,0 +1,90 @@
+{
+  general: {
+    // config.waila.display_tooltip
+    // json5.waila.config.default_value
+    displayTooltip: true,
+    // config.waila.sneaky_details
+    // json5.waila.config.default_value
+    shiftForDetails: false,
+    // config.waila.hide_sneak_text
+    // json5.waila.config.default_value
+    hideShiftText: false,
+    // config.waila.display_mode
+    // json5.waila.config.default_value
+    // json5.waila.config.available_values
+    displayMode: "TOGGLE",
+    // config.waila.hide_from_players
+    // json5.waila.config.default_value
+    hideFromPlayerList: true,
+    // config.waila.hide_from_debug
+    // json5.waila.config.default_value
+    hideFromDebug: true,
+    // config.waila.tts
+    // json5.waila.config.default_value
+    enableTextToSpeech: false,
+    // config.waila.rate_limit
+    // json5.waila.config.default_value
+    rateLimit: 250
+  },
+  overlay: {
+    position: {
+      align: {
+        // json5.waila.config.default_value
+        // json5.waila.config.available_values
+        x: "CENTER",
+        // json5.waila.config.default_value
+        // json5.waila.config.available_values
+        y: "TOP"
+      },
+      anchor: {
+        // json5.waila.config.default_value
+        // json5.waila.config.available_values
+        x: "CENTER",
+        // json5.waila.config.default_value
+        // json5.waila.config.available_values
+        y: "TOP"
+      },
+      // config.waila.overlay_pos_x
+      // json5.waila.config.default_value
+      x: 0,
+      // config.waila.overlay_pos_y
+      // json5.waila.config.default_value
+      y: 0,
+      // config.waila.boss_bars_overlap
+      // json5.waila.config.default_value
+      bossBarsOverlap: false
+    },
+    color: {
+      // config.waila.overlay_background_alpha
+      // json5.waila.config.default_value
+      backgroundAlpha: 204,
+      // Custom Themes
+      themes: [],
+      // config.waila.overlay_theme
+      // json5.waila.config.default_value
+      activeTheme: "waila:vanilla"
+    },
+    // config.waila.overlay_scale
+    // json5.waila.config.default_value
+    scale: 1.0,
+    // config.waila.overlay_fps
+    // json5.waila.config.default_value
+    fps: 30
+  },
+  // Text formatters
+  formatter: {
+    // json5.waila.config.default_value
+    modName: "§9§o%s",
+    // json5.waila.config.default_value
+    blockName: "§f%s",
+    // json5.waila.config.default_value
+    fluidName: "§f%s",
+    // json5.waila.config.default_value
+    entityName: "§f%s",
+    // json5.waila.config.default_value
+    registryName: "§8%s"
+  },
+  // Internal value, DO NOT TOUCH!
+  // json5.waila.config.default_value
+  configVersion: 1
+}

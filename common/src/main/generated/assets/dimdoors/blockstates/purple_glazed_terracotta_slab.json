@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "dimdoors:block/purple_glazed_terracotta_slab"
+    },
+    "type=double": {
+      "model": "minecraft:block/purple_glazed_terracotta"
+    },
+    "type=top": {
+      "model": "dimdoors:block/purple_glazed_terracotta_slab_top"
+    }
+  }
+}

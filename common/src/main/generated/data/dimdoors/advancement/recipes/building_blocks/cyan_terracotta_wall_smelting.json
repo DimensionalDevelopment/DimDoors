@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dimdoors:cyan_terracotta_wall_smelting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "inventory_changed": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:cyan_terracotta_wall"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "inventory_changed"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dimdoors:cyan_terracotta_wall_smelting"
+    ]
+  }
+}

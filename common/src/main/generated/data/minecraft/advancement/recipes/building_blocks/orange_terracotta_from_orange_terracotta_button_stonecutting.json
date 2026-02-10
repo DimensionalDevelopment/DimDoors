@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_orange_terracotta_button": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:orange_terracotta_button"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:orange_terracotta_from_orange_terracotta_button_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_orange_terracotta_button"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:orange_terracotta_from_orange_terracotta_button_stonecutting"
+    ]
+  }
+}

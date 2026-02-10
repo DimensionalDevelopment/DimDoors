@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
+  "category": "redstone",
   "key": {
-    "X": {
-      "item": "minecraft:stone"
+    "#": {
+      "tag": "c:stones"
     }
   },
   "pattern": [
-    "XX",
-    "XX",
-    "XX"
+    "##",
+    "##",
+    "##"
   ],
   "result": {
-    "count": 1,
+    "count": 3,
     "id": "dimdoors:stone_door"
   }
 }

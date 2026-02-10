@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "dimdoors:brown_terracotta_fence"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:brown_terracotta"
+  }
+}

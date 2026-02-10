@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "minecraft:lime_terracotta"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:lime_terracotta_button"
+  }
+}

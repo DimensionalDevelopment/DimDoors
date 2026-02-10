@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_netherrack_stairs": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:netherrack_stairs"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:netherrack_from_netherrack_stairs_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_netherrack_stairs"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:netherrack_from_netherrack_stairs_stonecutting"
+    ]
+  }
+}

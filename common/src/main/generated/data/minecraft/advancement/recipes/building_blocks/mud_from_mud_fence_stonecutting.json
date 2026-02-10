@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mud_fence": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:mud_fence"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:mud_from_mud_fence_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mud_fence"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:mud_from_mud_fence_stonecutting"
+    ]
+  }
+}

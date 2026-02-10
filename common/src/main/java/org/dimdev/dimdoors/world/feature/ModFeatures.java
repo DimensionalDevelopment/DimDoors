@@ -7,12 +7,18 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.SpringConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
+import net.minecraft.world.level.levelgen.feature.featuresize.TwoLayersFeatureSize;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlacer;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
+import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.structure.templatesystem.BlockMatchTest;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -29,6 +35,7 @@ public final class ModFeatures {
 		public static final ResourceKey<ConfiguredFeature<?, ?>> SOLID_STATIC_ORE = of("solid_static_ore");
 		public static final ResourceKey<ConfiguredFeature<?, ?>> DECAYED_BLOCK_ORE = of("decayed_block_ore");
 		public static final ResourceKey<ConfiguredFeature<?, ?>> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
+        public static final ResourceKey<ConfiguredFeature<?, ?>> DRIFTWOOD_TREE = of("driftwood_tree");
 
 		public static ResourceKey<ConfiguredFeature<?, ?>> of(String id) {
 			return ResourceKey.create(Registries.CONFIGURED_FEATURE, id(id));
@@ -38,6 +45,7 @@ public final class ModFeatures {
 			bootstapContext.register(Configured.DECAYED_BLOCK_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(new BlockMatchTest(ModBlocks.UNRAVELLED_FABRIC.get()), ModBlocks.DECAYED_BLOCK.get().defaultBlockState())), 64, 0.0f)));
 			bootstapContext.register(Configured.SOLID_STATIC_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(new BlockMatchTest(ModBlocks.UNRAVELLED_FABRIC.get()), ModBlocks.SOLID_STATIC.get().defaultBlockState())), 4, 0.0f)));
 			bootstapContext.register(Configured.ETERNAL_FLUID_SPRING, new ConfiguredFeature<>(Feature.SPRING, new SpringConfiguration(ModFluids.ETERNAL_FLUID.get().defaultFluidState(), true, 1, 4, Placed.holderSet(ModBlocks.UNRAVELLED_FABRIC, ModBlocks.UNRAVELLED_BLOCK, ModBlocks.UNFOLDED_BLOCK, ModBlocks.UNWARPED_BLOCK))));
+            bootstapContext.register(Configured.DRIFTWOOD_TREE, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(BlockStateProvider.simple(ModBlocks.DRIFTWOOD_LOG.get()), new StraightTrunkPlacer(4, 2, 0), BlockStateProvider.simple(ModBlocks.DRIFTWOOD_LEAVES.get()), new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3), new TwoLayersFeatureSize(1, 0, 1)).ignoreVines().build()));
 		}
 	}
 

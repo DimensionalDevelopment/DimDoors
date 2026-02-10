@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_sand_button": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:sand_button"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:sand_from_sand_button_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_sand_button"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:sand_from_sand_button_stonecutting"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:unravelled_fabric_from_unraveled_wall_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_unraveled_wall": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:unraveled_wall"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_unraveled_wall"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:unravelled_fabric_from_unraveled_wall_stonecutting"
+    ]
+  }
+}

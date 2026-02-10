@@ -20,7 +20,9 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
 import org.dimdev.dimdoors.fluid.ModFluids;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -153,8 +155,8 @@ public final class ModBlocks {
     public static final RegistrySupplier<Block> AMALGAM_BLOCK = registerDecay("amalgam_block", () -> new Block(ofFullCopy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F, 6.0F).sound(SoundType.METAL)));
     public static final RegistrySupplier<Block> AMALGAM_DOOR = registerDecay("amalgam_door", () -> new DoorBlock(BlockSetType.IRON, ofFullCopy(IRON_BLOCK).mapColor(COLOR_LIGHT_GRAY).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).noOcclusion()));
     public static final RegistrySupplier<Block> AMALGAM_TRAPDOOR = registerDecay("amalgam_trapdoor", () -> new TrapDoorBlock(BlockSetType.IRON, ofFullCopy(IRON_BLOCK).requiresCorrectToolForDrops().strength(5.0F).sound(SoundType.METAL).isValidSpawn((state, world, pos, type) -> false)));
-    public static final RegistrySupplier<Block> AMALGAM_SLAB = registerSlab("amalgam_slab", AMALGAM_BLOCK);
-    public static final RegistrySupplier<Block> AMALGAM_STAIRS = registerStairs("amalgam_stairs", AMALGAM_BLOCK);
+    public static final RegistrySupplier<Block> AMALGAM_SLAB = registerDecay("amalgam_slab", () -> new SlabBlock(of(AMALGAM_BLOCK.get())));
+    public static final RegistrySupplier<Block> AMALGAM_STAIRS = registerDecay("amalgam_stairs", () -> new StairBlock(AMALGAM_BLOCK.get().defaultBlockState(), of(AMALGAM_BLOCK.get())));
     public static final RegistrySupplier<Block> AMALGAM_ORE = registerDecay("amalgam_ore", () -> new DropExperienceBlock(ConstantInt.of(1), ofFullCopy(STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F)));
 
     public static final RegistrySupplier<Block> RUST = registerDecay("rust", () -> new Block(ofFullCopy(OAK_WOOD)));
@@ -163,72 +165,102 @@ public final class ModBlocks {
     public static final RegistrySupplier<Block> DRIFTWOOD_LOG = registerDecay("driftwood_log", () -> new RotatedPillarBlock(ofFullCopy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F).sound(SoundType.WOOD)));
     public static final RegistrySupplier<Block> DRIFTWOOD_PLANKS = registerDecay("driftwood_planks", () -> new Block(ofFullCopy(OAK_WOOD).mapColor(COLOR_LIGHT_GRAY).strength(2.0F, 3.0F).sound(SoundType.WOOD)));
     public static final RegistrySupplier<Block> DRIFTWOOD_LEAVES = registerDecay("driftwood_leaves", () -> new LeavesBlock(of(OAK_LEAVES)));
-    public static final RegistrySupplier<Block> DRIFTWOOD_SAPLING = registerDecay("driftwood_sapling", () -> new Block(of(OAK_SAPLING)));
-    public static final RegistrySupplier<Block> DRIFTWOOD_FENCE = registerFence("driftwood_fence", DRIFTWOOD_PLANKS);
-    public static final RegistrySupplier<Block> DRIFTWOOD_GATE = registerFenceGate("driftwood_gate", DRIFTWOOD_PLANKS);
-    public static final RegistrySupplier<Block> DRIFTWOOD_BUTTON = registerButton("driftwood_button", DRIFTWOOD_PLANKS);
-    public static final RegistrySupplier<Block> DRIFTWOOD_SLAB = registerSlab("driftwood_slab", DRIFTWOOD_PLANKS);
-    public static final RegistrySupplier<Block> DRIFTWOOD_STAIRS = registerStairs("driftwood_stairs", DRIFTWOOD_PLANKS);
+    public static final RegistrySupplier<Block> DRIFTWOOD_SAPLING = registerDecay("driftwood_sapling", () -> new DriftwoodSaplingBlock(of(OAK_SAPLING)));
+    public static final RegistrySupplier<Block> DRIFTWOOD_FENCE = registerDecay("driftwood_fence", () -> new FenceBlock(of(DRIFTWOOD_PLANKS.get())));
+    public static final RegistrySupplier<Block> DRIFTWOOD_GATE = registerDecay("driftwood_gate", () -> new FenceGateBlock(WoodType.OAK, of(DRIFTWOOD_PLANKS.get())));
+    public static final RegistrySupplier<Block> DRIFTWOOD_BUTTON = registerDecay("driftwood_button", () -> new ButtonBlock(BlockSetType.STONE, 20, of(DRIFTWOOD_PLANKS.get()).noCollission().strength(0.5F)));
+    public static final RegistrySupplier<Block> DRIFTWOOD_SLAB = registerDecay("driftwood_slab", () -> new SlabBlock(of(DRIFTWOOD_PLANKS.get())));
+    public static final RegistrySupplier<Block> DRIFTWOOD_STAIRS = registerDecay("driftwood_stairs", () -> new StairBlock(DRIFTWOOD_PLANKS.get().defaultBlockState(), of(DRIFTWOOD_PLANKS.get())));
     public static final RegistrySupplier<Block> DRIFTWOOD_DOOR = registerDecay("driftwood_door", () -> new DoorBlock(BlockSetType.OAK, ofFullCopy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion()));
     public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = registerDecay("driftwood_trapdoor", () -> new TrapDoorBlock(BlockSetType.OAK, ofFullCopy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false)));
 
+    public static final RegistrySupplier<Block> DARK_SAND = registerDecay("dark_sand", () -> new Block(ofFullCopy(SAND).mapColor(COLOR_BLACK).strength(0.5F).sound(SoundType.SAND)));
 
-    public static final RegistrySupplier<Block> GRAVEL_FENCE = registerFence("gravel_fence", GRAVEL);
-	public static final RegistrySupplier<Block> GRAVEL_BUTTON = registerButton("gravel_button", GRAVEL);
-	public static final RegistrySupplier<Block> GRAVEL_SLAB = registerSlab("gravel_slab", GRAVEL);
-	public static final RegistrySupplier<Block> GRAVEL_STAIRS = registerStairs("gravel_stairs", GRAVEL);
-	public static final RegistrySupplier<Block> GRAVEL_WALL = registerWall("gravel_wall", GRAVEL);
+    public record DecayGroupSet(
+            RegistrySupplier<Block> fence,
+            RegistrySupplier<Block> gate,
+            RegistrySupplier<Block> button,
+            RegistrySupplier<Block> slab,
+            RegistrySupplier<Block> stairs,
+            RegistrySupplier<Block> wall
+    ) {
+        public static final List<DecayGroupSet> SETS = new ArrayList<>();
 
-	public static final RegistrySupplier<Block> DARK_SAND = register("dark_sand", () -> new Block(ofFullCopy(SAND).mapColor(COLOR_BLACK).strength(0.5F).sound(SoundType.SAND)));
-	public static final RegistrySupplier<Block> DARK_SAND_FENCE = registerFence("dark_sand_fence", DARK_SAND);
-	public static final RegistrySupplier<Block> DARK_SAND_BUTTON = registerButton("dark_sand_button", DARK_SAND);
-	public static final RegistrySupplier<Block> DARK_SAND_SLAB = registerSlab("dark_sand_slab", DARK_SAND);
-	public static final RegistrySupplier<Block> DARK_SAND_STAIRS = registerStairs("dark_sand_stairs", DARK_SAND);
-	public static final RegistrySupplier<Block> DARK_SAND_WALL = registerWall("dark_sand_wall", DARK_SAND);
+        public static DecayGroupSet create(String name, Supplier<Block> block, Supplier<BlockBehaviour.Properties> properites) {
+            var set = new DecayGroupSet(
+                    registerDecay(name + "_fence", () -> new FenceBlock(properites.get())),
+                    registerDecay(name + "_gate", () -> new FenceGateBlock(WoodType.OAK, properites.get())),
+                    registerDecay(name + "_button", () ->  new ButtonBlock(BlockSetType.STONE, 20, properites.get().noCollission().strength(0.5F))),
+                    registerDecay(name + "_slab", () -> new SlabBlock(properites.get())),
+                    registerDecay(name + "_stairs", () -> new StairBlock(block.get().defaultBlockState(), properites.get())),
+                    registerDecay(name + "_wall", () -> new WallBlock(properites.get()))
+            );
 
-	public static final RegistrySupplier<Block> CLAY_FENCE = registerFence("clay_fence", CLAY);
-	public static final RegistrySupplier<Block> CLAY_GATE = registerFenceGate("clay_gate", CLAY);
-	public static final RegistrySupplier<Block> CLAY_BUTTON = registerButton("clay_button", CLAY);
-	public static final RegistrySupplier<Block> CLAY_SLAB = registerSlab("clay_slab", CLAY);
-	public static final RegistrySupplier<Block> CLAY_STAIRS = registerStairs("clay_stairs", CLAY);
-    public static final RegistrySupplier<Block> CLAY_WALL = registerWall("clay_wall", CLAY);
+            SETS.add(set);
 
+            return set;
+        }
 
-	public static final RegistrySupplier<Block> MUD_FENCE = registerFence("mud_fence", MUD);
-	public static final RegistrySupplier<Block> MUD_GATE = registerFenceGate("mud_gate", MUD);
-	public static final RegistrySupplier<Block> MUD_BUTTON = registerButton("mud_button", MUD);
-	public static final RegistrySupplier<Block> MUD_SLAB = registerSlab("mud_slab", MUD);
-	public static final RegistrySupplier<Block> MUD_STAIRS = registerStairs("mud_stairs", MUD);
+        public static DecayGroupSet create(String name, Supplier<Block> block) {
+            return create(name, block, () -> of(block.get()));
+        }
 
-	public static final RegistrySupplier<Block> UNRAVELED_FENCE = registerFence("unraveled_fence", UNRAVELLED_FABRIC);
-	public static final RegistrySupplier<Block> UNRAVELED_GATE = registerFenceGate("unraveled_gate", UNRAVELLED_FABRIC);
-	public static final RegistrySupplier<Block> UNRAVELED_BUTTON = registerButton("unraveled_button", UNRAVELLED_FABRIC);
-	public static final RegistrySupplier<Block> UNRAVELED_SLAB = registerSlab("unraveled_slab", UNRAVELLED_FABRIC);
-	public static final RegistrySupplier<Block> UNRAVELED_STAIRS = registerStairs("unraveled_stairs", UNRAVELLED_FABRIC);
-    public static final RegistrySupplier<Block> UNRAVELED_WALL = registerWall("unraveled_wall", UNRAVELLED_FABRIC);
+        public static DecayGroupSet create(String name, Block block) {
 
-	public static final RegistrySupplier<Block> DEEPSLATE_SLAB = registerSlab("deepslate_slab", Blocks.DEEPSLATE);
-	public static final RegistrySupplier<Block> DEEPSLATE_STAIRS = registerStairs("deepslate_stairs", Blocks.DEEPSLATE);
-	public static final RegistrySupplier<Block> DEEPSLATE_WALL = registerWall("deepslate_wall", Blocks.DEEPSLATE);
+            return create(name, () -> block, () -> of(block));
+        }
+    }
 
-	public static final RegistrySupplier<Block> RED_SAND_SLAB = registerSlab("red_sand_slab", Blocks.RED_SAND);
-	public static final RegistrySupplier<Block> RED_SAND_STAIRS = registerStairs("red_sand_stairs", Blocks.RED_SAND);
-	public static final RegistrySupplier<Block> RED_SAND_WALL = registerWall("red_sand_wall", Blocks.RED_SAND);
+    public static final DecayGroupSet GRAVEL_SET = DecayGroupSet.create("gravel", GRAVEL);
 
-	public static final RegistrySupplier<Block> SAND_SLAB = registerSlab("sand_slab", SAND);
-	public static final RegistrySupplier<Block> SAND_STAIRS = registerStairs("sand_stairs", SAND);
-	public static final RegistrySupplier<Block> SAND_WALL = registerWall("sand_wall", SAND);
+    public static final DecayGroupSet DARK_SAND_SET = DecayGroupSet.create("dark_sand", DARK_SAND);
 
-	public static final RegistrySupplier<Block> END_STONE_SLAB = registerSlab("end_stone_slab", Blocks.END_STONE);
-	public static final RegistrySupplier<Block> END_STONE_STAIRS = registerStairs("end_stone_stairs", Blocks.END_STONE);
-	public static final RegistrySupplier<Block> END_STONE_WALL = registerWall("end_stone_wall", Blocks.END_STONE);
+    public static final DecayGroupSet CLAY_SET = DecayGroupSet.create("clay", CLAY);
 
- 	public static final RegistrySupplier<Block> NETHERRACK_FENCE = registerFence("netherrack_fence", Blocks.NETHERRACK);
- 	public static final RegistrySupplier<Block> NETHERRACK_SLAB = registerSlab("netherrack_slab", Blocks.NETHERRACK);
- 	public static final RegistrySupplier<Block> NETHERRACK_STAIRS = registerStairs("netherrack_stairs", Blocks.NETHERRACK);
- 	public static final RegistrySupplier<Block> NETHERRACK_WALL = registerWall("netherrack_wall", Blocks.NETHERRACK);
+    public static final DecayGroupSet TERRACOTTA_SET = DecayGroupSet.create("terracotta", TERRACOTTA);
 
-	public static final RegistrySupplier<Block> UNRAVELED_SPIKE = registerDecay("unraveled_spike", () -> new PointedDripstoneBlock(of(UNRAVELLED_FABRIC.get()).lightLevel(state -> 0))); //TODO: make this proper class later
+    public static final DecayGroupSet WHITE_TERRACOTTA_SET = DecayGroupSet.create("white_terracotta", Blocks.WHITE_TERRACOTTA);
+    public static final DecayGroupSet WHITE_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("white_glazed_terracotta", Blocks.WHITE_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet ORANGE_TERRACOTTA_SET = DecayGroupSet.create("orange_terracotta", Blocks.ORANGE_TERRACOTTA);
+    public static final DecayGroupSet ORANGE_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("orange_glazed_terracotta", Blocks.ORANGE_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet MAGENTA_TERRACOTTA_SET = DecayGroupSet.create("magenta_terracotta", Blocks.MAGENTA_TERRACOTTA);
+    public static final DecayGroupSet MAGENTA_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("magenta_glazed_terracotta", Blocks.MAGENTA_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet LIGHT_BLUE_TERRACOTTA_SET = DecayGroupSet.create("light_blue_terracotta", Blocks.LIGHT_BLUE_TERRACOTTA);
+    public static final DecayGroupSet LIGHT_BLUE_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("light_blue_glazed_terracotta", Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet YELLOW_TERRACOTTA_SET = DecayGroupSet.create("yellow_terracotta", Blocks.YELLOW_TERRACOTTA);
+    public static final DecayGroupSet YELLOW_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("yellow_glazed_terracotta", Blocks.YELLOW_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet LIME_TERRACOTTA_SET = DecayGroupSet.create("lime_terracotta", Blocks.LIME_TERRACOTTA);
+    public static final DecayGroupSet LIME_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("lime_glazed_terracotta", Blocks.LIME_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet PINK_TERRACOTTA_SET = DecayGroupSet.create("pink_terracotta", Blocks.PINK_TERRACOTTA);
+    public static final DecayGroupSet PINK_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("pink_glazed_terracotta", Blocks.PINK_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet GRAY_TERRACOTTA_SET = DecayGroupSet.create("gray_terracotta", Blocks.GRAY_TERRACOTTA);
+    public static final DecayGroupSet GRAY_GLAZED_TERRACOTTASET = DecayGroupSet.create("gray_glazed_terracott", Blocks.GRAY_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet LIGHT_GRAY_TERRACOTTASET = DecayGroupSet.create("light_gray_terr", Blocks.LIGHT_GRAY_TERRACOTTA);
+    public static final DecayGroupSet LIGHT_GRAY_GLAZED_TERRACOTTASET = DecayGroupSet.create("light_gray_glazed_terracott", Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet CYAN_TERRACOTTA_SET = DecayGroupSet.create("cyan_terracotta", Blocks.CYAN_TERRACOTTA);
+    public static final DecayGroupSet CYAN_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("cyan_glazed_terracotta", Blocks.CYAN_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet PURPLE_TERRACOTTA_SET = DecayGroupSet.create("purple_terracotta", Blocks.PURPLE_TERRACOTTA);
+    public static final DecayGroupSet PURPLE_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("purple_glazed_terracotta", Blocks.PURPLE_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet BLUE_TERRACOTTA_SET = DecayGroupSet.create("blue_terracotta", Blocks.BLUE_TERRACOTTA);
+    public static final DecayGroupSet BLUE_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("blue_glazed_terracotta", Blocks.BLUE_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet BROWN_TERRACOTTA_SET = DecayGroupSet.create("brown_terracotta", Blocks.BROWN_TERRACOTTA);
+    public static final DecayGroupSet BROWN_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("brown_glazed_terracotta", Blocks.BROWN_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet GREEN_TERRACOTTA_SET = DecayGroupSet.create("green_terracotta", Blocks.GREEN_TERRACOTTA);
+    public static final DecayGroupSet GREEN_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("green_glazed_terracotta", Blocks.GREEN_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet RED_TERRACOTTA_SET = DecayGroupSet.create("red_terracotta", Blocks.RED_TERRACOTTA);
+    public static final DecayGroupSet RED_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("red_glazed_terracotta", Blocks.RED_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet BLACK_TERRACOTTA_SET = DecayGroupSet.create("black_terracotta", Blocks.BLACK_TERRACOTTA);
+    public static final DecayGroupSet BLACK_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("black_glazed_terracotta", Blocks.BLACK_GLAZED_TERRACOTTA);
+
+    public static final DecayGroupSet MUD_SET = DecayGroupSet.create("mud", () -> MUD, () -> of(MUD).isViewBlocking(Blocks::never).isSuffocating(Blocks::never));
+    public static final DecayGroupSet UNRAVELED_SET = DecayGroupSet.create("unraveled", UNRAVELLED_FABRIC);
+    public static final DecayGroupSet DEEPSLATE_SET = DecayGroupSet.create("deepslate", Blocks.DEEPSLATE);
+    public static final DecayGroupSet RED_SAND_SET = DecayGroupSet.create("red_sand", Blocks.RED_SAND);
+    public static final DecayGroupSet SAND_SET = DecayGroupSet.create("sand", Blocks.SAND);
+    public static final DecayGroupSet END_STONE_SET = DecayGroupSet.create("end_stone", Blocks.END_STONE);
+    public static final DecayGroupSet NETHERRACK_SET = DecayGroupSet.create("netherrack", Blocks.NETHERRACK);
+
+    public static final RegistrySupplier<Block> UNRAVELED_SPIKE = registerDecay("unraveled_spike", () -> new PointedDripstoneBlock(of(UNRAVELLED_FABRIC.get()).lightLevel(state -> 0))); //TODO: make this proper class later
 	public static final RegistrySupplier<Block> GRITTY_STONE = registerDecay("gritty_stone", () -> new Block(of(STONE)));
 //    public static final RegistrySupplier<Block> DARK_SAND_LAYER = register("dark_sand_layer", () -> new CarpetBlock(BlockBehaviour.Properties.ofFullCopy(SAND)));
 //    public static final RegistrySupplier<Block> LINT_LAYER = register("dark_sand_layer", () -> new CarpetBlock(BlockBehaviour.Properties.ofFullCopy(UNRAVELLED_FABRIC.get())));
@@ -257,7 +289,7 @@ public final class ModBlocks {
 
 	@Environment(EnvType.CLIENT)
 	public static void initClient() {
-		RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR.get(), ModBlocks.GOLD_DOOR.get(), ModBlocks.DRIFTWOOD_LEAVES.get(), ModBlocks.UNRAVELED_SPIKE.get(), ModBlocks.DRIFTWOOD_DOOR.get());
+		RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR.get(), ModBlocks.GOLD_DOOR.get(), ModBlocks.DRIFTWOOD_LEAVES.get(), ModBlocks.DRIFTWOOD_SAPLING.get(), ModBlocks.DRIFTWOOD_DOOR.get(), ModBlocks.DRIFTWOOD_TRAPDOOR.get(), ModBlocks.UNRAVELED_SPIKE.get(), ModBlocks.DRIFTWOOD_DOOR.get());
 	}
 
 	public static RegistrySupplier<Block> ancientFabricFromDye(DyeColor color) {
@@ -289,70 +321,7 @@ public final class ModBlocks {
 		return supplier;
 	}
 
-	public static RegistrySupplier<Block> registerFence(String name, Block block) {
-		return registerDecay(name, () -> new FenceBlock(of(block)));
-	}
-
-	public static RegistrySupplier<Block> registerFence(String name, RegistrySupplier<Block> block) {
-		return registerDecay(name, () -> new FenceBlock(of(block.get())));
-	}
-
-	public static RegistrySupplier<Block> registerFenceGate(String name, Block block) {
-		return registerDecay(name, () -> new FenceGateBlock(WoodType.OAK, of(block))); // TODO: parameterize WoodType and BlockSetType
-	}
-
-	public static RegistrySupplier<Block> registerFenceGate(String name, RegistrySupplier<Block> block) {
-		return registerDecay(name, () -> new FenceGateBlock(WoodType.OAK, of(block.get()))); // TODO: parameterize WoodType and BlockSetType
-	}
-
-	public static RegistrySupplier<Block> registerButton(String name, Block block) {
-		return registerDecay(name, () -> new ButtonBlock(BlockSetType.STONE, 20, of(block).noCollission().strength(0.5F)));
-	}
-
-	public static RegistrySupplier<Block> registerButton(String name, RegistrySupplier<Block> block) {
-		return registerDecay(name, () -> new ButtonBlock(BlockSetType.STONE, 20, of(block.get()).noCollission().strength(0.5F)));
-	}
-
-	public static RegistrySupplier<Block> registerSlab(String name, Block block) {
-		return registerDecay(name, () -> new SlabBlock(of(block)));
-	}
-
-	public static RegistrySupplier<Block> registerSlab(String name, RegistrySupplier<Block> block) {
-		return registerDecay(name, () -> new SlabBlock(of(block.get())));
-	}
-
-	public static RegistrySupplier<Block> registerStairs(String name, Block block) {
-		return registerDecay(name, () -> new StairBlock(block.defaultBlockState(), of(block)));
-	}
-
-	public static RegistrySupplier<Block> registerStairs(String name, RegistrySupplier<Block> block) {
-		return registerDecay(name, () -> {
-			var b = block.get();
-			return new StairBlock(b.defaultBlockState(), of(b));
-		});
-	}
-
-	public static RegistrySupplier<Block> registerWall(String name, Block block) {
-		return registerDecay(name, () -> new WallBlock(of(block)));
-	}
-
-	public static RegistrySupplier<Block> registerWall(String name, RegistrySupplier<Block> block) {
-		return registerDecay(name, () -> new WallBlock(of(block.get())));
-	}
-	
-//	private static BlockBehaviour.Properties of(Material material, MaterialColor color) {
-//		return BlockBehaviour.Properties.of(material, color);
-//	}
-//
-//	private static BlockBehaviour.Properties of(Material material) {
-//		return BlockBehaviour.Properties.of(material);
-//	}
-//
-//	private static BlockBehaviour.Properties of(Material material, DyeColor dyeColor) {
-//		return BlockBehaviour.Properties.of(material, dyeColor);
-//	}
-
-	private static BlockBehaviour.Properties of(Block block) {
+    private static BlockBehaviour.Properties of(Block block) {
 		return ofFullCopy(block);
 	}
 }

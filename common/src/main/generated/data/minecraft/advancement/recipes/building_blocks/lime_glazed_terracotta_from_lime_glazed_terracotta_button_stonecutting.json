@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lime_glazed_terracotta_button": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dimdoors:lime_glazed_terracotta_button"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "minecraft:lime_glazed_terracotta_from_lime_glazed_terracotta_button_stonecutting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_lime_glazed_terracotta_button"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "minecraft:lime_glazed_terracotta_from_lime_glazed_terracotta_button_stonecutting"
+    ]
+  }
+}

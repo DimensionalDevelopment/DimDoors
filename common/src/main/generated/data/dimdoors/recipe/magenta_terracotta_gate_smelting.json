@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "blocks",
+  "cookingtime": 200,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "dimdoors:magenta_terracotta_gate"
+  },
+  "result": {
+    "id": "dimdoors:magenta_glazed_terracotta_gate"
+  }
+}

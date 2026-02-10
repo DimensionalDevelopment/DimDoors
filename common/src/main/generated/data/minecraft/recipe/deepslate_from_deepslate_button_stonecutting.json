@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "dimdoors:deepslate_button"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:deepslate"
+  }
+}

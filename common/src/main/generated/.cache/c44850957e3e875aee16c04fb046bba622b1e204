@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-04T01:40:56.9911187	DimensionalDoors/DimDoors Worldgen
+// 1.21.1	2026-02-10T17:22:38.5018339	DimensionalDoors/DimDoors Worldgen
 b805d2d1b2b9c75f5eee2d31f3d7b44664ec3c33 data\dimdoors\enchantment\string_theory.json
 20b4f6119127e7339a9d6a140ceff6d098157b37 data\dimdoors\worldgen\structure\enclosed_red_sandstone_gateway.json
 c2a8717f15c055af0414946cd217c2a06a530bb7 data\dimdoors\dimension_type\limbo.json
@@ -24,11 +24,13 @@ b9b3069aa3a15593922b235108096dc7d6f64e34 data\dimdoors\painting_variant\limbo.js
 72a2b15ef67b04b86c38450bd5fe3688a14f0d19 data\dimdoors\jukebox_song\creepy.json
 3015f32dd4d18a7e34f0d26318ce0162c7b38c86 data\dimdoors\jukebox_song\they_stare_back.json
 f6af981f4d424d67234d5bbcd6f8f4fd1e4b9704 data\dimdoors\worldgen\template_pool\enclosed_sandstone_gateway.json
+7d366fa3069287bddc77afe836d58adc7066f770 data\dimdoors\painting_variant\gateway_at_night.json
 6ac1cdf41d0719ac460295c049a02ec133e9f30b data\dimdoors\worldgen\noise\limbo\z_shift.json
 323cbc2ad51db6e8fafc88e0764fd70616882d53 data\dimdoors\worldgen\structure\enclosed_quartz_gateway.json
 710bddfec348f13f4acdeab059728e24f76d3ada data\dimdoors\worldgen\configured_feature\solid_static_ore.json
 121abed43731ccfb3d576d471d588b6efc81f558 data\dimdoors\worldgen\configured_carver\limbo.json
 68cc4778185581ac074e5f8df9e0e27d03ff9f31 data\dimdoors\worldgen\placed_feature\decayed_block_ore.json
+c2b2190b67fce19286933732f8fa1a90c14dfe9b data\dimdoors\worldgen\configured_feature\driftwood_tree.json
 ac47053f951a6d69d6be1c45f9c374de97fe8ea3 data\dimdoors\worldgen\structure\enclosed_prismarine_gateway.json
 c319423fe619e6a774958e904a7c99a232cd4b05 data\dimdoors\worldgen\noise\limbo\y_shift.json
 cf61fc186e0e380674be20e39a8b646611aec78b data\dimdoors\worldgen\biome\black_void.json

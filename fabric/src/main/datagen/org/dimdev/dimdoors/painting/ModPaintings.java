@@ -15,6 +15,7 @@ public class ModPaintings {
     public static ResourceKey<PaintingVariant> EYES = key("eyes");
     public static ResourceKey<PaintingVariant> PORTAL = key("portal");
     public static ResourceKey<PaintingVariant> FREEDOM = key("freedom");
+    public static ResourceKey<PaintingVariant> GATEWAY_AT_NIGHT = key("gateway_at_night");
 
     public static final List<ResourceKey<PaintingVariant>> PAINTINGS_TO_DECAY_INTO;
 
@@ -23,6 +24,7 @@ public class ModPaintings {
         register(context, PORTAL, 2, 4);
         register(context, FREEDOM, 2, 2);
         register(context, EYES, 2, 2);
+        register(context, GATEWAY_AT_NIGHT, 4, 2);
 
 
 //        for (int index = 0; index < PAINTINGS_TO_DECAY_INTO.size(); index++) {
