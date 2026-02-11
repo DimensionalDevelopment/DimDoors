@@ -1,4 +1,3 @@
-// 1.21.1	2026-02-10T18:11:52.8758842	DimensionalDoors/Tags for minecraft:item
-337270ebe71b5bdf94809dd66a26295077a9312b data\c\tags\item\gems\diamond.json
-ac08a0ea4fb71b57ecfb4c9a63d83af3e8315169 data\c\tags\item\ingots\gold.json
-7e6cc7259d3417b853ba3a05f15ba4e3076d4a18 data\c\tags\item\ingots\iron.json
+// 1.21.1	2026-02-10T18:50:37.9610176	DimensionalDoors/Tags for minecraft:item
+f35b9fc6f190e870e052805c9b2f80065fcba266 data\dimdoors\tags\item\limbo_gaze_defying.json
+203425be761455c558f707a48db27b318fe47ec5 data\dimdoors\tags\item\driftwood_logs.json

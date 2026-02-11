@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
@@ -22,6 +23,8 @@ import org.dimdev.dimdoors.tag.ModItemTags;
 
 import java.util.concurrent.CompletableFuture;
 
+import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
+
 public class DimdoorsRecipeProvider extends RecipeProvider {
 	public DimdoorsRecipeProvider(PackOutput dataGenerator, CompletableFuture<HolderLookup.Provider> completableFuture) {
 		super(dataGenerator, completableFuture);
@@ -37,6 +40,11 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
 
         threeByThreePacker(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.CLOD_BLOCK.get(), ModItems.CLOD.get());
         threeByThreePacker(exporter, RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMALGAM_BLOCK.get(), ModItems.AMALGAM_LUMP.get());
+
+        dimDoorRecipe(Blocks.OAK_DOOR, exporter);
+        dimDoorRecipe(Blocks.IRON_DOOR, exporter);
+        dimDoorRecipe(ModBlocks.GOLD_DOOR.get(), exporter);
+        dimDoorRecipe(ModBlocks.QUARTZ_DOOR.get(), exporter);
 
 
         var ingredient = Ingredient.of(ModItems.AMALGAM_LUMP.get());
@@ -114,6 +122,8 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
 		ColoredFabricRecipeProvider.generate(exporter);
 		TesselatingRecipeProvider.generate(exporter);
 
+
+
         blockSetRecipes(ModBlocks.GRAVEL_SET, Blocks.GRAVEL, exporter);
         blockSetRecipes(ModBlocks.DARK_SAND_SET, ModBlocks.DARK_SAND.get(), exporter);
         blockSetRecipes(ModBlocks.CLAY_SET, Blocks.CLAY, exporter);
@@ -176,6 +186,19 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
         terraCottaRecipes(ModBlocks.RED_TERRACOTTA_SET, Blocks.RED_TERRACOTTA, ModBlocks.RED_GLAZED_TERRACOTTA_SET, Blocks.RED_GLAZED_TERRACOTTA, DyeColor.RED, exporter);
         terraCottaRecipes(ModBlocks.BLACK_TERRACOTTA_SET, Blocks.BLACK_TERRACOTTA, ModBlocks.BLACK_GLAZED_TERRACOTTA_SET, Blocks.BLACK_GLAZED_TERRACOTTA, DyeColor.BLACK, exporter);
 	}
+
+    private void dimDoorRecipe(Block block, RecipeOutput exporter) {
+        var id = block.builtInRegistryHolder().key().location();
+        var door = BuiltInRegistries.ITEM.get(DimensionalDoors.id(PREFIX + id.getNamespace() + "_" + id.getPath()));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, door)
+                .group("dimensional_doors")
+                .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(block))
+                .pattern("XOX")
+                .define('X', block)
+                .define('O', ConventionalItemTags.ENDER_PEARLS)
+                .save(exporter);
+    }
 
     private void terraCottaRecipes(ModBlocks.DecayGroupSet baseSet, ItemLike baseInput, ModBlocks.DecayGroupSet glazedSet, ItemLike glazedInput, DyeColor color, RecipeOutput exporter) {
         blockSetRecipes(baseSet, baseInput, exporter);

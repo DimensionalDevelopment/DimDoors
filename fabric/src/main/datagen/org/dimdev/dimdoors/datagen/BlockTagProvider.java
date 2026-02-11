@@ -327,8 +327,6 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
         add(BlockTags.BUTTONS, ModBlocks.AMALGAM_STAIRS, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.button()).toList());
 
-        add(ModBlockTags.DECAYS_TO_DRIFTWOOD_LOG, ModBlocks.DRIFTWOOD_LOG, ModBlocks.DRIFTWOOD_WOOD);
-
         add(BlockTags.MINEABLE_WITH_PICKAXE,
                 ModBlocks.GOLD_DOOR,
                 ModBlocks.AMALGAM_BLOCK,
