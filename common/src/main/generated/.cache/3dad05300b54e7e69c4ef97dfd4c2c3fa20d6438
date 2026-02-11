@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-10T17:22:38.5207843	DimensionalDoors/Tags for minecraft:block
+// 1.21.1	2026-02-10T18:11:52.8928397	DimensionalDoors/Tags for minecraft:block
 40661294dece6f7cd8b849fea2a1b6094e30dcfb data\minecraft\tags\block\leaves.json
 206658bed803b57978678a1150f4283b14382f5d data\minecraft\tags\block\trapdoors.json
 b4133380cdcbcf84f3a0d04043c8d3861e16175f data\minecraft\tags\block\saplings.json
@@ -10,6 +10,7 @@ ce7aa6175d3bfa92583fdccf3d1d5f42afd5aa9e data\minecraft\tags\block\wooden_button
 a1ddd4161ebb75dc5f0dfa826dbaff89f9cc9f61 data\minecraft\tags\block\slabs.json
 5381089cac668940b3f12295dd58b4cf9370d0e1 data\minecraft\tags\block\wooden_fences.json
 8b9a343e8315ff3e53f1c0bd7ed18851be4c9263 data\minecraft\tags\block\wooden_trapdoors.json
+203425be761455c558f707a48db27b318fe47ec5 data\dimdoors\tags\block\decays_to\driftwood_log.json
 9624beabe18c9c469289843eb00c23d08ba521a1 data\minecraft\tags\block\fences.json
 a0d68e4a8d4a60fd55aca94d5ac1eb7f04a1b833 data\minecraft\tags\block\mineable\shovel.json
 91b8a0415d5c85a30d7fe8ddf883d7023f52e1db data\minecraft\tags\block\buttons.json

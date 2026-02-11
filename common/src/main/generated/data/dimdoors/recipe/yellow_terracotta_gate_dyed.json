@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "stained_terracotta",
+  "ingredients": [
+    {
+      "item": "dimdoors:terracotta_gate"
+    },
+    {
+      "item": "minecraft:yellow_dye"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:yellow_terracotta_gate"
+  }
+}

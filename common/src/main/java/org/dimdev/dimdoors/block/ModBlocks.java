@@ -235,8 +235,8 @@ public final class ModBlocks {
     public static final DecayGroupSet PINK_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("pink_glazed_terracotta", Blocks.PINK_GLAZED_TERRACOTTA);
     public static final DecayGroupSet GRAY_TERRACOTTA_SET = DecayGroupSet.create("gray_terracotta", Blocks.GRAY_TERRACOTTA);
     public static final DecayGroupSet GRAY_GLAZED_TERRACOTTASET = DecayGroupSet.create("gray_glazed_terracott", Blocks.GRAY_GLAZED_TERRACOTTA);
-    public static final DecayGroupSet LIGHT_GRAY_TERRACOTTASET = DecayGroupSet.create("light_gray_terr", Blocks.LIGHT_GRAY_TERRACOTTA);
-    public static final DecayGroupSet LIGHT_GRAY_GLAZED_TERRACOTTASET = DecayGroupSet.create("light_gray_glazed_terracott", Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA);
+    public static final DecayGroupSet LIGHT_GRAY_TERRACOTTA_SET = DecayGroupSet.create("light_gray_terr", Blocks.LIGHT_GRAY_TERRACOTTA);
+    public static final DecayGroupSet LIGHT_GRAY_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("light_gray_glazed_terracott", Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA);
     public static final DecayGroupSet CYAN_TERRACOTTA_SET = DecayGroupSet.create("cyan_terracotta", Blocks.CYAN_TERRACOTTA);
     public static final DecayGroupSet CYAN_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("cyan_glazed_terracotta", Blocks.CYAN_GLAZED_TERRACOTTA);
     public static final DecayGroupSet PURPLE_TERRACOTTA_SET = DecayGroupSet.create("purple_terracotta", Blocks.PURPLE_TERRACOTTA);

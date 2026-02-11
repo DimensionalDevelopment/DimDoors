@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "stained_terracotta",
+  "ingredients": [
+    {
+      "item": "dimdoors:terracotta_stairs"
+    },
+    {
+      "item": "minecraft:pink_dye"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:pink_terracotta_stairs"
+  }
+}

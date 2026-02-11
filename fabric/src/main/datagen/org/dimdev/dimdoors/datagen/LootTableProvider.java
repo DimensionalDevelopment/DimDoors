@@ -5,15 +5,11 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.predicates.BonusLevelTableCondition;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
@@ -21,7 +17,6 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 public class LootTableProvider extends FabricBlockLootTableProvider {
 
@@ -110,8 +105,8 @@ public class LootTableProvider extends FabricBlockLootTableProvider {
         this.dropSelf(ModBlocks.PINK_GLAZED_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.GRAY_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.GRAY_GLAZED_TERRACOTTASET);
-        this.dropSelf(ModBlocks.LIGHT_GRAY_TERRACOTTASET);
-        this.dropSelf(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTASET);
+        this.dropSelf(ModBlocks.LIGHT_GRAY_TERRACOTTA_SET);
+        this.dropSelf(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.CYAN_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.CYAN_GLAZED_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.PURPLE_TERRACOTTA_SET);

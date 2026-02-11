@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "stained_terracotta",
+  "ingredients": [
+    {
+      "item": "dimdoors:terracotta_button"
+    },
+    {
+      "item": "minecraft:purple_dye"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "dimdoors:purple_terracotta_button"
+  }
+}

@@ -5,15 +5,12 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.BlockFamilies;
-import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.recipes.*;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -121,38 +118,38 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
         blockSetRecipes(ModBlocks.DARK_SAND_SET, ModBlocks.DARK_SAND.get(), exporter);
         blockSetRecipes(ModBlocks.CLAY_SET, Blocks.CLAY, exporter);
         blockSetRecipes(ModBlocks.TERRACOTTA_SET, Blocks.TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.WHITE_TERRACOTTA_SET, Blocks.WHITE_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.WHITE_GLAZED_TERRACOTTA_SET, Blocks.WHITE_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.ORANGE_TERRACOTTA_SET, Blocks.ORANGE_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.ORANGE_GLAZED_TERRACOTTA_SET, Blocks.ORANGE_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.MAGENTA_TERRACOTTA_SET, Blocks.MAGENTA_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.MAGENTA_GLAZED_TERRACOTTA_SET, Blocks.MAGENTA_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.LIGHT_BLUE_TERRACOTTA_SET, Blocks.LIGHT_BLUE_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.LIGHT_BLUE_GLAZED_TERRACOTTA_SET, Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.YELLOW_TERRACOTTA_SET, Blocks.YELLOW_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET, Blocks.YELLOW_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.LIME_TERRACOTTA_SET, Blocks.LIME_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.LIME_GLAZED_TERRACOTTA_SET, Blocks.LIME_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.PINK_TERRACOTTA_SET, Blocks.PINK_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.PINK_GLAZED_TERRACOTTA_SET, Blocks.PINK_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.GRAY_TERRACOTTA_SET, Blocks.GRAY_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.GRAY_GLAZED_TERRACOTTASET, Blocks.GRAY_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.LIGHT_GRAY_TERRACOTTASET, Blocks.LIGHT_GRAY_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTASET, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.CYAN_TERRACOTTA_SET, Blocks.CYAN_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.CYAN_GLAZED_TERRACOTTA_SET, Blocks.CYAN_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.PURPLE_TERRACOTTA_SET, Blocks.PURPLE_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET, Blocks.PURPLE_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.BLUE_TERRACOTTA_SET, Blocks.BLUE_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.BLUE_GLAZED_TERRACOTTA_SET, Blocks.BLUE_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.BROWN_TERRACOTTA_SET, Blocks.BROWN_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.BROWN_GLAZED_TERRACOTTA_SET, Blocks.BROWN_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.GREEN_TERRACOTTA_SET, Blocks.GREEN_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.GREEN_GLAZED_TERRACOTTA_SET, Blocks.GREEN_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.RED_TERRACOTTA_SET, Blocks.RED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.RED_GLAZED_TERRACOTTA_SET, Blocks.RED_GLAZED_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.BLACK_TERRACOTTA_SET, Blocks.BLACK_TERRACOTTA, exporter);
-        blockSetRecipes(ModBlocks.BLACK_GLAZED_TERRACOTTA_SET, Blocks.BLACK_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.WHITE_TERRACOTTA_SET, Blocks.WHITE_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.WHITE_GLAZED_TERRACOTTA_SET, Blocks.WHITE_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.ORANGE_TERRACOTTA_SET, Blocks.ORANGE_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.ORANGE_GLAZED_TERRACOTTA_SET, Blocks.ORANGE_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.MAGENTA_TERRACOTTA_SET, Blocks.MAGENTA_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.MAGENTA_GLAZED_TERRACOTTA_SET, Blocks.MAGENTA_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.LIGHT_BLUE_TERRACOTTA_SET, Blocks.LIGHT_BLUE_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.LIGHT_BLUE_GLAZED_TERRACOTTA_SET, Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.YELLOW_TERRACOTTA_SET, Blocks.YELLOW_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET, Blocks.YELLOW_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.LIME_TERRACOTTA_SET, Blocks.LIME_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.LIME_GLAZED_TERRACOTTA_SET, Blocks.LIME_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.PINK_TERRACOTTA_SET, Blocks.PINK_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.PINK_GLAZED_TERRACOTTA_SET, Blocks.PINK_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.GRAY_TERRACOTTA_SET, Blocks.GRAY_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.GRAY_GLAZED_TERRACOTTASET, Blocks.GRAY_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.LIGHT_GRAY_TERRACOTTASET, Blocks.LIGHT_GRAY_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTASET, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.CYAN_TERRACOTTA_SET, Blocks.CYAN_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.CYAN_GLAZED_TERRACOTTA_SET, Blocks.CYAN_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.PURPLE_TERRACOTTA_SET, Blocks.PURPLE_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET, Blocks.PURPLE_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.BLUE_TERRACOTTA_SET, Blocks.BLUE_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.BLUE_GLAZED_TERRACOTTA_SET, Blocks.BLUE_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.BROWN_TERRACOTTA_SET, Blocks.BROWN_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.BROWN_GLAZED_TERRACOTTA_SET, Blocks.BROWN_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.GREEN_TERRACOTTA_SET, Blocks.GREEN_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.GREEN_GLAZED_TERRACOTTA_SET, Blocks.GREEN_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.RED_TERRACOTTA_SET, Blocks.RED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.RED_GLAZED_TERRACOTTA_SET, Blocks.RED_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.BLACK_TERRACOTTA_SET, Blocks.BLACK_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.BLACK_GLAZED_TERRACOTTA_SET, Blocks.BLACK_GLAZED_TERRACOTTA, exporter);
         blockSetRecipes(ModBlocks.MUD_SET, Blocks.MUD, exporter);
         blockSetRecipes(ModBlocks.UNRAVELED_SET, ModBlocks.UNRAVELLED_FABRIC.get(), exporter);
         blockSetRecipes(ModBlocks.DEEPSLATE_SET, Blocks.DEEPSLATE, exporter);
@@ -162,24 +159,45 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
         blockSetRecipes(ModBlocks.NETHERRACK_SET, Blocks.NETHERRACK, exporter);
 
         decaySmeltSet(ModBlocks.CLAY_SET, ModBlocks.TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.WHITE_TERRACOTTA_SET, ModBlocks.WHITE_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.ORANGE_TERRACOTTA_SET, ModBlocks.ORANGE_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.MAGENTA_TERRACOTTA_SET, ModBlocks.MAGENTA_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.LIGHT_BLUE_TERRACOTTA_SET, ModBlocks.LIGHT_BLUE_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.YELLOW_TERRACOTTA_SET, ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.LIME_TERRACOTTA_SET, ModBlocks.LIME_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.PINK_TERRACOTTA_SET, ModBlocks.PINK_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.GRAY_TERRACOTTA_SET, ModBlocks.GRAY_GLAZED_TERRACOTTASET, exporter);
-        decaySmeltSet(ModBlocks.LIGHT_GRAY_TERRACOTTASET, ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTASET, exporter);
-        decaySmeltSet(ModBlocks.CYAN_TERRACOTTA_SET, ModBlocks.CYAN_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.PURPLE_TERRACOTTA_SET, ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.BLUE_TERRACOTTA_SET, ModBlocks.BLUE_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.BROWN_TERRACOTTA_SET, ModBlocks.BROWN_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.GREEN_TERRACOTTA_SET, ModBlocks.GREEN_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.RED_TERRACOTTA_SET, ModBlocks.RED_GLAZED_TERRACOTTA_SET, exporter);
-        decaySmeltSet(ModBlocks.BLACK_TERRACOTTA_SET, ModBlocks.BLACK_GLAZED_TERRACOTTA_SET, exporter);
+        terraCottaRecipes(ModBlocks.WHITE_TERRACOTTA_SET, Blocks.WHITE_TERRACOTTA, ModBlocks.WHITE_GLAZED_TERRACOTTA_SET, Blocks.WHITE_GLAZED_TERRACOTTA, DyeColor.WHITE, exporter);
+        terraCottaRecipes(ModBlocks.ORANGE_TERRACOTTA_SET, Blocks.ORANGE_TERRACOTTA, ModBlocks.ORANGE_GLAZED_TERRACOTTA_SET, Blocks.ORANGE_GLAZED_TERRACOTTA, DyeColor.ORANGE, exporter);
+        terraCottaRecipes(ModBlocks.MAGENTA_TERRACOTTA_SET, Blocks.MAGENTA_TERRACOTTA, ModBlocks.MAGENTA_GLAZED_TERRACOTTA_SET, Blocks.MAGENTA_GLAZED_TERRACOTTA, DyeColor.MAGENTA, exporter);
+        terraCottaRecipes(ModBlocks.LIGHT_BLUE_TERRACOTTA_SET, Blocks.LIGHT_BLUE_TERRACOTTA, ModBlocks.LIGHT_BLUE_GLAZED_TERRACOTTA_SET, Blocks.LIGHT_BLUE_GLAZED_TERRACOTTA, DyeColor.LIGHT_BLUE, exporter);
+        terraCottaRecipes(ModBlocks.YELLOW_TERRACOTTA_SET, Blocks.YELLOW_TERRACOTTA, ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET, Blocks.YELLOW_GLAZED_TERRACOTTA, DyeColor.YELLOW, exporter);
+        terraCottaRecipes(ModBlocks.LIME_TERRACOTTA_SET, Blocks.LIME_TERRACOTTA, ModBlocks.LIME_GLAZED_TERRACOTTA_SET, Blocks.LIME_GLAZED_TERRACOTTA, DyeColor.LIME, exporter);
+        terraCottaRecipes(ModBlocks.PINK_TERRACOTTA_SET, Blocks.PINK_TERRACOTTA, ModBlocks.PINK_GLAZED_TERRACOTTA_SET, Blocks.PINK_GLAZED_TERRACOTTA, DyeColor.PINK, exporter);
+        terraCottaRecipes(ModBlocks.GRAY_TERRACOTTA_SET, Blocks.GRAY_TERRACOTTA, ModBlocks.GRAY_GLAZED_TERRACOTTASET, Blocks.GRAY_GLAZED_TERRACOTTA, DyeColor.GRAY, exporter);
+        terraCottaRecipes(ModBlocks.LIGHT_GRAY_TERRACOTTA_SET, Blocks.LIGHT_GRAY_TERRACOTTA, ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, DyeColor.LIGHT_GRAY, exporter);
+        terraCottaRecipes(ModBlocks.CYAN_TERRACOTTA_SET, Blocks.CYAN_TERRACOTTA, ModBlocks.CYAN_GLAZED_TERRACOTTA_SET, Blocks.CYAN_GLAZED_TERRACOTTA, DyeColor.CYAN, exporter);
+        terraCottaRecipes(ModBlocks.PURPLE_TERRACOTTA_SET, Blocks.PURPLE_TERRACOTTA, ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET, Blocks.PURPLE_GLAZED_TERRACOTTA, DyeColor.PURPLE, exporter);
+        terraCottaRecipes(ModBlocks.BLUE_TERRACOTTA_SET, Blocks.BLUE_TERRACOTTA, ModBlocks.BLUE_GLAZED_TERRACOTTA_SET, Blocks.BLUE_GLAZED_TERRACOTTA, DyeColor.BLUE, exporter);
+        terraCottaRecipes(ModBlocks.BROWN_TERRACOTTA_SET, Blocks.BROWN_TERRACOTTA, ModBlocks.BROWN_GLAZED_TERRACOTTA_SET, Blocks.BROWN_GLAZED_TERRACOTTA, DyeColor.BROWN, exporter);
+        terraCottaRecipes(ModBlocks.GREEN_TERRACOTTA_SET, Blocks.GREEN_TERRACOTTA, ModBlocks.GREEN_GLAZED_TERRACOTTA_SET, Blocks.GREEN_GLAZED_TERRACOTTA, DyeColor.GREEN, exporter);
+        terraCottaRecipes(ModBlocks.RED_TERRACOTTA_SET, Blocks.RED_TERRACOTTA, ModBlocks.RED_GLAZED_TERRACOTTA_SET, Blocks.RED_GLAZED_TERRACOTTA, DyeColor.RED, exporter);
+        terraCottaRecipes(ModBlocks.BLACK_TERRACOTTA_SET, Blocks.BLACK_TERRACOTTA, ModBlocks.BLACK_GLAZED_TERRACOTTA_SET, Blocks.BLACK_GLAZED_TERRACOTTA, DyeColor.BLACK, exporter);
 	}
 
+    private void terraCottaRecipes(ModBlocks.DecayGroupSet baseSet, ItemLike baseInput, ModBlocks.DecayGroupSet glazedSet, ItemLike glazedInput, DyeColor color, RecipeOutput exporter) {
+        blockSetRecipes(baseSet, baseInput, exporter);
+        blockSetRecipes(glazedSet, glazedInput, exporter);
+        decaySmeltSet(baseSet, glazedSet, exporter);
+
+        dyedRecipe(ModBlocks.TERRACOTTA_SET.fence(), baseSet.fence(), color, exporter);
+        dyedRecipe(ModBlocks.TERRACOTTA_SET.gate(), baseSet.gate(), color, exporter);
+        dyedRecipe(ModBlocks.TERRACOTTA_SET.button(), baseSet.button(), color, exporter);
+        dyedRecipe(ModBlocks.TERRACOTTA_SET.slab(), baseSet.slab(), color, exporter);
+        dyedRecipe(ModBlocks.TERRACOTTA_SET.stairs(), baseSet.stairs(), color, exporter);
+        dyedRecipe(ModBlocks.TERRACOTTA_SET.wall(), baseSet.wall(), color, exporter);
+    }
+
+    private void dyedRecipe(RegistrySupplier<? extends ItemLike> base, RegistrySupplier<? extends ItemLike> glazed, DyeColor color, RecipeOutput exporter) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, glazed.get())
+                .group("stained_terracotta")
+                .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(base.get()))
+                .requires(base.get())
+                .requires(DyeItem.byColor(color))
+                .save(exporter, glazed.getId().withSuffix("_dyed"));
+    }
 
     private void blockSetRecipes(ModBlocks.DecayGroupSet set, ItemLike craftingInput, RecipeOutput exporter) {
         var craftingTrigger = InventoryChangeTrigger.TriggerInstance.hasItems(craftingInput);
