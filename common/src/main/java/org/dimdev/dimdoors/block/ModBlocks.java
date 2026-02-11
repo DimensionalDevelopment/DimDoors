@@ -7,13 +7,16 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -252,7 +255,7 @@ public final class ModBlocks {
     public static final DecayGroupSet BLACK_TERRACOTTA_SET = DecayGroupSet.create("black_terracotta", Blocks.BLACK_TERRACOTTA);
     public static final DecayGroupSet BLACK_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("black_glazed_terracotta", Blocks.BLACK_GLAZED_TERRACOTTA);
 
-    public static final DecayGroupSet MUD_SET = DecayGroupSet.create("mud", () -> MUD, () -> of(MUD).isViewBlocking(Blocks::never).isSuffocating(Blocks::never));
+    public static final DecayGroupSet MUD_SET = DecayGroupSet.create("mud", () -> MUD, () -> of(MUD).isViewBlocking((blockState, blockGetter, blockPos) -> false).isSuffocating((blockState, blockGetter, blockPos) -> false));
     public static final DecayGroupSet UNRAVELED_SET = DecayGroupSet.create("unraveled", UNRAVELLED_FABRIC);
     public static final DecayGroupSet DEEPSLATE_SET = DecayGroupSet.create("deepslate", Blocks.DEEPSLATE);
     public static final DecayGroupSet RED_SAND_SET = DecayGroupSet.create("red_sand", Blocks.RED_SAND);

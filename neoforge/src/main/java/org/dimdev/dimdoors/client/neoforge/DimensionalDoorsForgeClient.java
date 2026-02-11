@@ -5,6 +5,8 @@ import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -101,25 +103,37 @@ public class DimensionalDoorsForgeClient {
         event.register(new ModelResourceLocation(DimensionalDoorsClient.childItem, ModelResourceLocation.STANDALONE_VARIANT));
     }
 
+    /**
+     * Replaces:
+     *  - all generated DimDoors blockstate models with the baked template model
+     *  - all items whose path starts with PREFIX (inventory variant) with the baked template model
+     */
     @SubscribeEvent
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-        var registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar();
-        var bakery    = event.getModelBakery();
-        var models    = event.getModels();
+        ModelBakery bakery = event.getModelBakery();
+        var models = event.getModels();
 
-        var childBaked = bakery.getBakedTopLevelModels().get(new ModelResourceLocation(DimensionalDoorsClient.childItem, ModelResourceLocation.STANDALONE_VARIANT));
+        BakedModel childBaked = bakery.getBakedTopLevelModels().get(
+                new ModelResourceLocation(DimensionalDoorsClient.childItem, ModelResourceLocation.STANDALONE_VARIANT)
+        );
         if (childBaked == null) {
             DimensionalDoors.LOGGER.error("DimDoors: childItem model missing at bake time!");
-            return; // prevents a hard crash
+            return;
         }
 
-        DimensionalDoors.getDimensionalDoorBlockRegistrar().getGennedIds().stream().filter(BuiltInRegistries.BLOCK::containsKey).map(BuiltInRegistries.BLOCK::get)
-                .map(Block::getStateDefinition).flatMap(a -> a.getPossibleStates().stream()).map(BlockModelShaper::stateToModelLocation).forEach(location -> models.put(location, childBaked));
+        // Blockstates: override every possible state model location for generated DimDoors blocks.
+        DimensionalDoors.getDimensionalDoorBlockRegistrar()
+                .getGennedIds().stream()
+                .filter(BuiltInRegistries.BLOCK::containsKey)
+                .map(BuiltInRegistries.BLOCK::get)
+                .flatMap(block -> block.getStateDefinition().getPossibleStates().stream())
+                .map(BlockModelShaper::stateToModelLocation)
+                .forEach(location -> models.put(location, childBaked));
 
-
+        // Items: override inventory model for any item whose id path starts with PREFIX.
         BuiltInRegistries.ITEM.keySet().stream()
-                .filter(loc -> loc.getPath().startsWith(PREFIX))
-                .forEach(loc -> models.put(new ModelResourceLocation(loc, "inventory"), childBaked));
+                .filter(id -> id.getPath().startsWith(PREFIX))
+                .forEach(id -> models.put(ModelResourceLocation.inventory(id), childBaked));
     }
 
     @SubscribeEvent
