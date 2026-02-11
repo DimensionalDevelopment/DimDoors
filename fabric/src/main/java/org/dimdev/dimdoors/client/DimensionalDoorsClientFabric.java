@@ -1,11 +1,13 @@
 package org.dimdev.dimdoors.client;
 
+import dev.architectury.registry.menu.MenuRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.particle.ParticleProvider;
@@ -14,6 +16,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.entity.EntityType;
+import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -25,6 +29,8 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
     public void onInitializeClient() {
         DimensionalDoorsClient.init();
         ModelLoadingPlugin.register(new DimensionalDoorsModelLoadingPlugin());
+
+        MenuScreens.register(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
 
         DimensionRenderering.initClient();
         DimensionalDoorsClient.initParticles(

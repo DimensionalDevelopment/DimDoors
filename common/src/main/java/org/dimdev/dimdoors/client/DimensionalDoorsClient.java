@@ -90,7 +90,6 @@ public class DimensionalDoorsClient {
 
 		registerCompats();
 
-		MenuRegistry.registerScreenFactory(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
 //		ModFluids.initClient();
 		initBlockEntitiesClient();
 		ModBlocks.initClient();

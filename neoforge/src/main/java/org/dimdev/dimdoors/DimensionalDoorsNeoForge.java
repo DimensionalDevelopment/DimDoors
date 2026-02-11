@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors;
 
+import dev.architectury.platform.hooks.EventBusesHooks;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.bus.api.IEventBus;
@@ -13,8 +14,6 @@ import org.dimdev.dimdoors.world.ModBiomeModifiers;
 @Mod(DimensionalDoors.MOD_ID)
 public class DimensionalDoorsNeoForge {
     public DimensionalDoorsNeoForge(IEventBus bus) {
-        // Submit our event bus to let architectury register our content on the right time
-//        EventBusesHooks.registerModEventBus(DimensionalDoors.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
         StreamUtils.setup(this);
         ModAttachmentTypes.register(bus);
         DimensionalDoors.init();

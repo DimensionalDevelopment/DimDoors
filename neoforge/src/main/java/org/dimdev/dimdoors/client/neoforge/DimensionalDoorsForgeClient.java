@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.client.neoforge;
 
 import dev.architectury.core.fluid.ArchitecturyFlowingFluid;
 import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.block.BlockModelShaper;
@@ -18,10 +19,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -31,7 +29,9 @@ import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.ModEntityModelLayers;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
+import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.fluid.ModFluids;
+import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
@@ -59,6 +59,10 @@ public class DimensionalDoorsForgeClient {
 
     }
 
+    @SubscribeEvent
+    private static void initalizeMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
+    }
 
     @SubscribeEvent
     private static void initializeClient(RegisterClientExtensionsEvent event) throws Exception {
