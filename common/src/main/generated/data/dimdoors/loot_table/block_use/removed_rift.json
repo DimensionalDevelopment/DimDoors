@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block_use",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "dimdoors:world_thread"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

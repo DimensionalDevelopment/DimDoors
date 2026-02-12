@@ -1,16 +1,11 @@
 package org.dimdev.dimdoors.datagen;
 
-import com.google.common.hash.HashCode;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -26,12 +21,7 @@ import org.dimdev.dimdoors.world.carvers.ModCarvers;
 import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.jetbrains.annotations.Nullable;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.util.OptionalLong;
-import java.util.concurrent.CompletableFuture;
 
 import static org.dimdev.dimdoors.world.ModDimensions.LIMBO_TYPE_KEY;
 import static org.dimdev.dimdoors.world.ModDimensions.POCKET_TYPE_KEY;
@@ -91,7 +81,9 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 		pack.addProvider(DimDoorsModelProvider::new);
 		pack.addProvider(DimdoorsRecipeProvider::new);
 		pack.addProvider(AdvancementProvider::new);
-		pack.addProvider(LootTableProvider::new);
+		pack.addProvider(BlockLootTableProvider::new);
+        pack.addProvider(ChestLootTableProvider::new);
+        pack.addProvider(BlockUseLootTableProvider::new);
 		pack.addProvider(AbstractionDecayProvider::new);
         pack.addProvider(LanguageProvider::new);
 

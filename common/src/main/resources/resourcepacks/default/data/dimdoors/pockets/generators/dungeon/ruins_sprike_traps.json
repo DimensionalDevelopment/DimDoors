@@ -1,6 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "id": "dungeon/ruins_sprike_traps",
+  "setup_loot": true,
   "builder": {
     "type": "dimdoors:pocket"
   },

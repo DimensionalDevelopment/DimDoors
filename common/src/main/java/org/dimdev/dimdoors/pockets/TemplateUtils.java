@@ -5,8 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -23,6 +22,7 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.world.ModLootTables;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -57,20 +57,24 @@ public class TemplateUtils {
         }
     }
 
-    public static void setupLootTable(ServerLevel world, BlockEntity tile, Container inventory, Logger logger) {
-        LootTable table;
-        if (tile instanceof ChestBlockEntity) {
-            logger.debug("Now populating chest.");
-            table = world.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, DimensionalDoors.id("dungeon_chest")));
-        } else {
+    public static void setupLootTable(ServerLevel world, RandomizableContainerBlockEntity randomizable, Logger logger) {
+        ResourceKey<LootTable> table;
+        if (randomizable instanceof DispenserBlockEntity) {
             logger.debug("Now populating dispenser.");
-            table = world.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, DimensionalDoors.id("dispenser_projectiles")));
+            table = ModLootTables.DISPENSER_PROJECTILES;
+        } else {
+            logger.debug("Now populating chest.");
+            table = ModLootTables.DUNGEON_CHEST;
         }
-        LootParams ctx = new LootParams.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
-        table.fill(inventory, ctx, world.getSeed());
-        if (inventory.isEmpty()) {
-            logger.error(", however Inventory is: empty!");
-        }
+
+wwwwwwwww        randomizable.setLootTable(table);
+        randomizable.setLootTableSeed(world.getRandom().nextLong());
+
+//        LootParams ctx = new LootParams.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
+//        table.fill(inventory, ctx, world.getSeed());
+//        if (inventory.isEmpty()) {
+//            logger.error(", however Inventory is: empty!");
+//        }
     }
 
     static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {

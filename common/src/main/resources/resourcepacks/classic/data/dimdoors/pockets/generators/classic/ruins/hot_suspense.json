@@ -1,6 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "id": "classic/ruins/hot_suspense",
+  "setup_loot": true,
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,5 +1,6 @@
 {
   "type": "dimdoors:schematic",
+  "setup_loot": true,
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -19,6 +19,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -241,11 +242,11 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
             pocket.getBlockEntities().forEach((blockPos, blockEntity) -> {
                 if (/*setupLootTables &&*/ blockEntity instanceof Container inventory) { // comment in if needed
                     if (inventory.isEmpty()) {
-                        if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof DispenserBlockEntity) {
-                            TemplateUtils.setupLootTable(world, blockEntity, inventory, LOGGER);
-                            if (inventory.isEmpty()) {
-                                LOGGER.error(", however Inventory is: empty!");
-                            }
+                        if (blockEntity instanceof RandomizableContainerBlockEntity randomizableContainerBlock) {
+                            TemplateUtils.setupLootTable(world, randomizableContainerBlock, LOGGER);
+//                            if (inventory.isEmpty()) {
+//                                LOGGER.error(", however Inventory is: empty!");
+//                            }
                         }
                     }
                 }
