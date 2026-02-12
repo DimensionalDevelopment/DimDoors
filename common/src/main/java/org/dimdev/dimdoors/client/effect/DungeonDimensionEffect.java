@@ -234,7 +234,7 @@ public class DungeonDimensionEffect extends DimensionSpecialEffects implements D
 
     @Override
     public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix) {
-        return true;
+        return false;
     }
 
     @Override

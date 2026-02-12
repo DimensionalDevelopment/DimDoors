@@ -65,14 +65,4 @@ public class LimboDimensionEffect extends DimensionSpecialEffects implements Dim
 
         return true;
     }
-
-    @Override
-    public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix) {
-        return true;
-    }
-
-    @Override
-    public boolean renderSnowAndRain(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {
-        return true;
-    }
 }
