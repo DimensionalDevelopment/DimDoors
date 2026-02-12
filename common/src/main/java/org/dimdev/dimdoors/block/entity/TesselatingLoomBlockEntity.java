@@ -11,6 +11,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
@@ -24,9 +25,11 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
+import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -266,7 +269,9 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 				takeInputs();
 				insertOutput(output);
-			}
+			} else if(weaveTime % 60 == 0) {
+                level.playSound(null, this.getBlockPos(), ModSoundEvents.TESSELATING_WEAVE.get(), SoundSource.BLOCKS);
+            }
 
 			setChanged();
 		} else {
