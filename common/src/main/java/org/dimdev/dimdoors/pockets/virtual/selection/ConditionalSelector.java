@@ -70,7 +70,12 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 		return nbt;
 	}
 
-	@Override
+    @Override
+    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot) {
+        return getNextPocket(parameters).prepareAndPlacePocket(parameters, setupLoot);
+    }
+
+    @Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
 		return getNextPocket(parameters).prepareAndPlacePocket(parameters);
 	}

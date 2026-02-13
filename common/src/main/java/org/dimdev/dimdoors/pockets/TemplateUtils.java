@@ -21,6 +21,7 @@ import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
+import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModLootTables;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -67,7 +68,7 @@ public class TemplateUtils {
             table = ModLootTables.DUNGEON_CHEST;
         }
 
-wwwwwwwww        randomizable.setLootTable(table);
+        randomizable.setLootTable(table);
         randomizable.setLootTableSeed(world.getRandom().nextLong());
 
 //        LootParams ctx = new LootParams.Builder(world).withParameter(LootContextParams.ORIGIN, Vec3.atLowerCornerOf(tile.getBlockPos())).create(LootContextParamSets.CHEST);
@@ -127,6 +128,21 @@ wwwwwwwww        randomizable.setLootTable(table);
         for (RiftBlockEntity rift : rifts) {
             rift.register();
             rift.setChanged();
+        }
+    }
+
+    public static void linkRifts(Location from, Location to) {
+        if (from == null || to == null) return;
+        RiftBlockEntity<?> fromBe = (RiftBlockEntity<?>) from.getBlockEntity();
+        //This is the freaking potato texture from tf2. Bad things happen if this invocation is removed
+//		to.getWorld(); //TODO: Figure out how ensure world is loaded before .getBlockEntity is called so that this janky line isn't needed.
+        RiftBlockEntity<?> toBe = (RiftBlockEntity<?>) to.getBlockEntity();
+        fromBe.setDestination(RiftReference.tryMakeLocal(from, to));
+        fromBe.setChanged();
+        if (toBe != null && toBe.getProperties() != null) {
+            toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().getLinksRemaining() - 1));
+            toBe.updateProperties();
+            toBe.setChanged();
         }
     }
 

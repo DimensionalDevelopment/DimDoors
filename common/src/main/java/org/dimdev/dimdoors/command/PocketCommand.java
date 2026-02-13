@@ -2,24 +2,40 @@ package org.dimdev.dimdoors.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import dev.architectury.platform.Platform;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.datafixers.types.Func;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.BlockPlacementType;
-import org.dimdev.dimdoors.command.arguments.BlockPlacementTypeArgumentType;
-import org.dimdev.dimdoors.command.arguments.PocketTemplateArgumentType;
-import org.dimdev.dimdoors.pockets.PocketLoader;
-import org.dimdev.dimdoors.pockets.PocketTemplate;
+import org.dimdev.dimdoors.api.util.*;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.item.RiftSignatureItem;
+import org.dimdev.dimdoors.pockets.*;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
+import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
+import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.targets.GlobalReference;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -30,52 +46,74 @@ public class PocketCommand {
 	// TODO: probably move somewhere else
 	public static final Map<UUID, CommandSourceStack> logSetting = new HashMap<>();
 
+    public static ArgumentBuilder<CommandSourceStack, ?> placeOption(String name, Supplier<SimpleTree<String, ? extends PocketCreator>> mapSupplier, Function<ResourceLocation, PocketCreator> idFunction) {
+        BiFunction<ResourceLocation, PocketGenerationContext, @Nullable Pocket> function = (resourceLocation, context) -> {
+            var t = idFunction.apply(resourceLocation);
+            if(t != null) return t.prepareAndPlacePocket(context);
+            return null;
+        };
+
+        return literal(name).then(
+                argument("id", ResourceLocationArgument.id())
+                        .requires(CommandSourceStack::isPlayer)
+                        .suggests((ctx, builder) -> getSuggestions(mapSupplier.get().keySet(), builder))
+                        .executes(new Command<CommandSourceStack>() {
+                    @Override
+                    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+                        var id = ResourceLocationArgument.getId(context, "id");
+
+                        var player = context.getSource().getPlayerOrException();
+                        var level = player.serverLevel();
+                        var pos = player.blockPosition();
+
+                        var location = new Location(level, pos);
+
+                        var rift = RiftSignatureItem.PlacementLogic.getLogic(level, pos).getRift(level, pos);
+
+                        if(rift.isEmpty()) return 0;
+
+                        var pocketGenerationContext = new PocketGenerationContext(level, VirtualLocation.fromLocation(location), new GlobalReference(location), LinkProperties.NONE, level.registryAccess());
+
+                        var pocket = function.apply(id, pocketGenerationContext);
+
+                        if(pocket == null) return 0;
+
+                        TemplateUtils.linkRifts(location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
+
+                        return 1;
+                    }
+                }));
+    }
+
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		dispatcher.register(
 				literal("pocket")
 						.requires(source -> source.hasPermission(2))
-						.then(
-								literal("schematic")
-										.then(
-												literal("place")
-														.then(
-																argument("pocket_template", new PocketTemplateArgumentType())
-																		.executes(ctx -> place(ctx.getSource().getPlayerOrException(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementType.SECTION_NO_UPDATE))
-																		.then(
-																				argument("placement_type", new BlockPlacementTypeArgumentType())
-																						.executes(ctx -> place(ctx.getSource().getPlayerOrException(), PocketTemplateArgumentType.getValue(ctx, "pocket_template"), BlockPlacementTypeArgumentType.getBlockPlacementType(ctx, "placement_type")))
-																		)
-														)
-										)
-										.then(
-												literal("load")
-														.requires(source -> Platform.isModLoaded("worldedit"))
-														.then(
-																argument("pocket_template", new PocketTemplateArgumentType())
-																		.executes(ctx -> load(ctx.getSource(), PocketTemplateArgumentType.getValue(ctx, "pocket_template")))
-														)
-										)
-						)
-						.then(
-								literal("log")
-										// TODO: make command toggle logging of pocket creation to console if used from console
-										.then(literal("creation")
-												.requires(commandSource -> commandSource.getEntity() instanceof ServerPlayer)
-												.executes(ctx -> {
-													CommandSourceStack commandSource = ctx.getSource();
-													UUID playerUUID = commandSource.getPlayerOrException().getUUID();
-													if (logSetting.containsKey(playerUUID)) {
-														logSetting.remove(playerUUID);
-														commandSource.sendSuccess(() -> Component.translatable("commands.pocket.log.creation.off"), false);
-													} else {
-														logSetting.put(playerUUID, commandSource);
-														commandSource.sendSuccess(() -> Component.translatable("commands.pocket.log.creation.on"), false);
-													}
-													return Command.SINGLE_SUCCESS;
-												})
-										)
+                        .then(placeOption("virtual_pocket", PocketLoader::getVirtualPockets, PocketLoader::getVirtual))
+                        .then(placeOption("pocket_group", PocketLoader::getPocketGroups, PocketLoader::getGroup))
+                        .then(placeOption("pocket_generator", PocketLoader::getPocketGenerators, PocketLoader::getGenerator)
 
-						)
+//                        .then(
+//                                literal("place")
+//                                        .then(placeOption("virtualPockets", () -> PocketLoader.getVirtualPockets(), (id) -> PocketLoader.getVirtual(id));
+//                                                argument("virtualPockets", ResourceLocationArgument.id())
+//                                                        .suggests((commandContext, suggestionsBuilder) -> {
+//                                                            return
+//                                                        }).then()
+//                                        )
+//                                        .then(
+//                                                argument("pocketGroups", ResourceLocationArgument.id())
+//                                                        .suggests((commandContext, suggestionsBuilder) -> {
+//                                                            return SuggestionsBuilder
+//                                                        }).then()
+//                                        )
+//                                        .then(
+//                                                argument("pocketGenerators", ResourceLocationArgument.id())
+//                                                        .suggests((commandContext, suggestionsBuilder) -> {
+//                                                            return SuggestionsBuilder
+//                                                        }).then()
+//                                        )
+//                        )
 						.then(
 								literal("dump")
 										.requires(src -> src.hasPermission(4))
@@ -83,7 +121,7 @@ public class PocketCommand {
 											ctx.getSource().sendSuccess(() -> Component.literal("Dumping pocket data"), false);
 											CompletableFuture.runAsync(() -> {
 												try {
-													PocketLoader.getInstance().dump();
+													PocketLoader.dump();
 												} catch (Exception e) {
 													LOGGER.error("Error dumping pocket data", e);
 												}
@@ -95,10 +133,10 @@ public class PocketCommand {
 											return Command.SINGLE_SUCCESS;
 										})
 						)
-		);
+		));
 	}
 
-	private static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
+    private static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
 		try {
 			return WorldeditHelper.load(source, template);
 		} catch (NoClassDefFoundError e) {
@@ -106,7 +144,13 @@ public class PocketCommand {
 		}
 	}
 
-	private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
+    public static CompletableFuture<Suggestions> getSuggestions(Set<Path<String>> paths, SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggest(StreamUtils.execute(() -> paths)
+                .parallelStream().flatMap(path -> path.reduce(String::concat).stream()), builder);
+    }
+
+
+    private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
 		SchematicPlacer.place(
 				template.getSchematic(),
 				source.serverLevel(),

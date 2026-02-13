@@ -31,6 +31,7 @@ public class PocketLoader {
 	public static void dump() {
 		virtualPockets.forEach((path, pocketGenerator) -> LOGGER.info("Virtual Pocket: " + path + " -> " + pocketGenerator.toString()));
 		pocketGroups.forEach((path, pocketGenerator) -> LOGGER.info("Pocket Group: " + path + " -> " + pocketGenerator.toString()));
+        pocketGenerators.forEach((path, pocketGenerator) -> LOGGER.info("Pocket Generator: " + path + " -> " + pocketGenerator.toString()));
 	}
 
 	public static void reload(HolderLookup.Provider provider, ResourceManager manager) {
@@ -136,7 +137,11 @@ public class PocketLoader {
 		return virtualPockets;
 	}
 
-	public static PocketGenerator getGenerator(ResourceLocation id) {
+    public static SimpleTree<String, PocketGenerator> getPocketGenerators() {
+        return pocketGenerators;
+    }
+
+    public static PocketGenerator getGenerator(ResourceLocation id) {
 		return pocketGenerators.get(Path.stringPath(id));
 	}
 }

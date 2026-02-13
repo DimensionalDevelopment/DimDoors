@@ -88,7 +88,12 @@ public class VirtualPocketList extends WeightedList<VirtualPocket, PocketGenerat
 		return getNextPocketGeneratorReference(context).prepareAndPlacePocket(context);
 	}
 
-	public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext context) {
+    @Override
+    public Pocket prepareAndPlacePocket(PocketGenerationContext context, Boolean setupLoot) {
+        return getNextPocketGeneratorReference(context).prepareAndPlacePocket(context, setupLoot);
+    }
+
+    public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext context) {
 		return getNextRandomWeighted(context).getNextPocketGeneratorReference(context);
 	}
 

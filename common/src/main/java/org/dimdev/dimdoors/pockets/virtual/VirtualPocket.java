@@ -9,6 +9,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.api.util.ReferenceSerializable;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
+import org.dimdev.dimdoors.pockets.PocketCreator;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
-public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable {
+public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable, PocketCreator {
 	String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
 
 	static VirtualPocket deserialize(Tag nbt, HolderLookup.Provider provider) {
@@ -60,8 +61,6 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Refere
 			setResourceKey(flags.get("resource_key").stream().findFirst().orElse(null));
 		}
 	}
-
-	Pocket prepareAndPlacePocket(PocketGenerationContext parameters);
 
 	PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters);
 

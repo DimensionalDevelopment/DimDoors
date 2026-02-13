@@ -12,9 +12,15 @@ import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 
 public class IdReference extends PocketGeneratorReference {
-	public static final String KEY = "id";
+    public static final String KEY = "id";
+    private ResourceLocation id;
 
-	private ResourceLocation id;
+    public IdReference() {}
+
+
+    public IdReference(ResourceLocation id) {
+        this.id = id;
+    }
 
 	@Override
 	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
@@ -42,7 +48,7 @@ public class IdReference extends PocketGeneratorReference {
 
 	@Override
 	public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
-		return PocketLoader.getInstance().getGenerator(id);
+		return PocketLoader.getGenerator(id);
 	}
 
 	@Override

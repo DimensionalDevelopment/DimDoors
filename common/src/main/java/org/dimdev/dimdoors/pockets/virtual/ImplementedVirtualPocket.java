@@ -118,7 +118,12 @@ public interface ImplementedVirtualPocket extends VirtualPocket {
 			throw new UnsupportedOperationException("Cannot place a NoneVirtualPocket");
 		}
 
-		@Override
+        @Override
+        public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot) {
+            throw new UnsupportedOperationException("Cannot place a NoneVirtualPocket");
+        }
+
+        @Override
 		public PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters) {
 			throw new UnsupportedOperationException("Cannot get next pocket generator reference on a NoneVirtualPocket");
 		}

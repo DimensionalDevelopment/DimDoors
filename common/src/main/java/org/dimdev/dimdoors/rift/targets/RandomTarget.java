@@ -16,6 +16,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
+import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -71,35 +72,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 	public Target receiveOther() { // TODO: Wrap rather than replace
 		VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(this.location);
 
-		Map<Location, Float> riftWeights = new HashMap<>();
-		if (this.newRiftWeight > 0) riftWeights.put(null, this.newRiftWeight);
-
-		for (Rift otherRift : DimensionalRegistry.getRiftRegistry().getRifts()) {
-			VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.getLocation());
-			if (otherRift.getProperties() == null) continue;
-			double otherWeight = otherRift.isDetached() ? otherRift.getProperties().floatingWeight : otherRift.getProperties().getEntranceWeight();
-			if (otherWeight == 0 || Sets.intersection(this.acceptedGroups, otherRift.getProperties().getGroups()).isEmpty())
-				continue;
-
-			// Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
-			if (otherRift.getProperties().getLinksRemaining() == 0) continue;
-			double depthDifference = otherVirtualLocation.getDepth() - virtualLocationHere.getDepth();
-			double coordDistance = Math.sqrt(this.sq(otherVirtualLocation.getX() - virtualLocationHere.getX())
-					+ this.sq(otherVirtualLocation.getZ() - virtualLocationHere.getZ()));
-			double depthFactor = depthDifference > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
-			double distance = Math.sqrt(this.sq(this.coordFactor * coordDistance) + this.sq(depthFactor * depthDifference));
-
-			// Calculate the weight as 4m/pi w/(m^2/d + d)^2. This is similar to how gravitational/electromagnetic attraction
-			// works in physics (G m1 m2/d^2 and k_e m1 m2/d^2). Even though we add a depth dimension to the world, we keep
-			// the weight inversly proportionally to the area of a sphere (the square of the distance) rather than a
-			// hypersphere (the cube of the area) because the y coordinate does not matter for now. We use m^2/d + d
-			// rather than d such that the probability near 0 tends to 0 rather than infinity. f(m^2/d) is a special case
-			// of f((m^(a+1)/a)/d^a). m is the location of f's maximum. The constant 4m/pi makes it such that a newRiftWeight
-			// of 1 is equivalent to having a total link weight of 1 distributed equally across all layers.
-			// TODO: We might want an a larger than 1 to make the function closer to 1/d^2
-			double weight = 4 * this.weightMaximum / Math.PI * otherWeight / this.sq(this.sq(this.weightMaximum) / distance + distance);
-			riftWeights.put(otherRift.getLocation(), (float) weight);
-		}
+		Map<Location, Float> riftWeights = calculateRiftWeights(virtualLocationHere);
 
 		Location selectedLink;
 		if (riftWeights.isEmpty()) {
@@ -164,8 +137,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 				riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
 				if (!this.noLinkBack && !riftEntity.getProperties().isOneWay())
-					linkRifts(new Location(world, pos), this.location);
-				if (!this.noLink) linkRifts(this.location, new Location(world, pos));
+					TemplateUtils.linkRifts(new Location(world, pos), this.location);
+				if (!this.noLink) TemplateUtils.linkRifts(this.location, new Location(world, pos));
 				return riftEntity.as(Targets.ENTITY);
 			} else {
 				// Make a new dungeon pocket
@@ -174,7 +147,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 				Pocket pocket = generatePocket(virtualLocation, new GlobalReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
 
-                if (!this.noLink) linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
+                if (!this.noLink) TemplateUtils.linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
                 var entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
                 var beEntrance = entrance != null ? entrance.getBlockEntity() : null;
                 return beEntrance != null ? (Target) beEntrance : null;
@@ -184,33 +157,51 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 			RiftBlockEntity riftEntity = (RiftBlockEntity) selectedLink.getBlockEntity();
 
 			// Link the rifts if necessary and teleport the entity
-			if (!this.noLink) linkRifts(this.location, selectedLink);
-			if (!this.noLinkBack && !riftEntity.getProperties().isOneWay()) linkRifts(selectedLink, this.location);
+			if (!this.noLink) TemplateUtils.linkRifts(this.location, selectedLink);
+			if (!this.noLinkBack && !riftEntity.getProperties().isOneWay()) TemplateUtils.linkRifts(selectedLink, this.location);
 			return riftEntity;
 		}
 	}
 
-	protected Pocket generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
+    private Map<Location, Float> calculateRiftWeights(VirtualLocation virtualLocation) {
+        var weights = new HashMap<Location, Float>();
+        if (this.newRiftWeight > 0) weights.put(null, this.newRiftWeight);
+
+        for (Rift otherRift : DimensionalRegistry.getRiftRegistry().getRifts()) {
+            VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.getLocation());
+            if (otherRift.getProperties() == null) continue;
+            double otherWeight = otherRift.isDetached() ? otherRift.getProperties().floatingWeight : otherRift.getProperties().getEntranceWeight();
+            if (otherWeight == 0 || Sets.intersection(this.acceptedGroups, otherRift.getProperties().getGroups()).isEmpty())
+                continue;
+
+            // Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
+            if (otherRift.getProperties().getLinksRemaining() == 0) continue;
+            double depthDifference = otherVirtualLocation.getDepth() - virtualLocation.getDepth();
+            double coordDistance = Math.sqrt(this.sq(otherVirtualLocation.getX() - virtualLocation.getX())
+                    + this.sq(otherVirtualLocation.getZ() - virtualLocation.getZ()));
+            double depthFactor = depthDifference > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
+            double distance = Math.sqrt(this.sq(this.coordFactor * coordDistance) + this.sq(depthFactor * depthDifference));
+
+            // Calculate the weight as 4m/pi w/(m^2/d + d)^2. This is similar to how gravitational/electromagnetic attraction
+            // works in physics (G m1 m2/d^2 and k_e m1 m2/d^2). Even though we add a depth dimension to the world, we keep
+            // the weight inversly proportionally to the area of a sphere (the square of the distance) rather than a
+            // hypersphere (the cube of the area) because the y coordinate does not matter for now. We use m^2/d + d
+            // rather than d such that the probability near 0 tends to 0 rather than infinity. f(m^2/d) is a special case
+            // of f((m^(a+1)/a)/d^a). m is the location of f's maximum. The constant 4m/pi makes it such that a newRiftWeight
+            // of 1 is equivalent to having a total link weight of 1 distributed equally across all layers.
+            // TODO: We might want an a larger than 1 to make the function closer to 1/d^2
+            double weight = 4 * this.weightMaximum / Math.PI * otherWeight / this.sq(this.sq(this.weightMaximum) / distance + distance);
+            weights.put(otherRift.getLocation(), (float) weight);
+        }
+
+        return weights;
+    }
+
+    protected Pocket generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
 		return PocketGenerator.generateDungeonPocketV2(location, linkTo, props);
 	}
 
-	private static void linkRifts(Location from, Location to) {
-        if (from == null || to == null) return;
-
-		RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
-		//This is the freaking potato texture from tf2. Bad things happen if this invocation is removed
-//		to.getWorld(); //TODO: Figure out how ensure world is loaded before .getBlockEntity is called so that this janky line isn't needed.
-		RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
-		fromBe.setDestination(RiftReference.tryMakeLocal(from, to));
-		fromBe.setChanged();
-		if (toBe != null && toBe.getProperties() != null) {
-			toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().getLinksRemaining() - 1));
-			toBe.updateProperties();
-			toBe.setChanged();
-		}
-	}
-
-	private double sq(double a) {
+    private double sq(double a) {
 		return a * a;
 	}
 

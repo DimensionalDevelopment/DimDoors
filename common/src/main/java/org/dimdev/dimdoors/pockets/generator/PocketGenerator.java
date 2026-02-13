@@ -30,6 +30,7 @@ import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
+import org.dimdev.dimdoors.pockets.PocketCreator;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
@@ -43,7 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable {
+public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable, PocketCreator {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final Registrar<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
 	public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
@@ -210,6 +211,28 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
 	public abstract Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
+    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
+        return prepareAndPlacePocket(parameters, setupLoot);
+    }
+
+    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot) {
+
+        Pocket.PocketBuilder<?, ?> builder = pocketBuilder(parameters)
+                .virtualLocation(parameters.sourceVirtualLocation()); // TODO: virtualLocation thing still makes little sense
+
+        this.applyModifiers(parameters, builder);
+
+        Pocket pocket = prepareAndPlacePocket(parameters, builder);
+
+        RiftManager manager = getRiftManager(pocket);
+
+        this.applyModifiers(parameters, manager);
+
+        setup(pocket, manager, parameters, setupLoot != null ? setupLoot : false);
+
+        return pocket;
+    }
+
 	public abstract PocketGeneratorType<? extends PocketGenerator> getType();
 
 	public abstract String getKey();
@@ -222,6 +245,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 	public boolean isSetupLoot() {
 		return setupLoot != null && setupLoot;
 	}
+
+
 
 	public void applyModifiers(PocketGenerationContext parameters, RiftManager manager) {
 		for (Modifier modifier : modifierList) {

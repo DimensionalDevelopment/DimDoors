@@ -134,8 +134,12 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		}
 	}
 
+    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
+        return prepareAndPlacePocket(parameters, setupLoot);
+    }
+
 	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
+	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot) {
 		PocketGenerator generator = getReferencedPocketGenerator(parameters);
 
 
