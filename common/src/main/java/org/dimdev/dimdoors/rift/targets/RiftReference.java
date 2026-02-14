@@ -58,7 +58,7 @@ public abstract class RiftReference extends VirtualTarget implements LocationPro
 
 	@Override
 	public void unregister() {
-		DimensionalRegistry.getRiftRegistry().removeLink(this.location, this.getReferencedLocation());
+		if(this.location != null) DimensionalRegistry.getRiftRegistry().removeLink(this.location, this.getReferencedLocation());
 	}
 
 	@Override

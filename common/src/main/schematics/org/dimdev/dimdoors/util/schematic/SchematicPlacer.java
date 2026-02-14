@@ -1,26 +1,20 @@
 package org.dimdev.dimdoors.util.schematic;
 
 import dev.architectury.platform.Platform;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.BlockPlacementType;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -30,7 +24,7 @@ public final class SchematicPlacer {
     private SchematicPlacer() {
     }
 
-    public static void place(Schematic schematic, WorldGenLevel world, BlockPos origin, BlockPlacementType placementType) {
+    public static void place(Schematic schematic, ServerLevel world, BlockPos origin) {
         LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
         for (String id : schematic.getMetadata().requiredMods()) {
             if (!Platform.isModLoaded(id)) {
@@ -38,7 +32,7 @@ public final class SchematicPlacer {
             }
         }
         RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-        blockSample.place(origin, world, placementType, false, world.registryAccess());
+        blockSample.place(origin, world, false, world.registryAccess());
     }
 
 //    public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin) {
@@ -46,17 +40,17 @@ public final class SchematicPlacer {
 //        return blockSample.getAbsoluteRifts(origin);
 //    }
 
-    public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
-        LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
-        for (String id : schematic.getMetadata().requiredMods()) {
-            if (!Platform.isModLoaded(id)) {
-                LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
-            }
-        }
-        RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-        blockSample.place(origin, world, chunk, placementType, false, world.registryAccess());
-    }
-
+//    public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
+//        LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
+//        for (String id : schematic.getMetadata().requiredMods()) {
+//            if (!Platform.isModLoaded(id)) {
+//                LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
+//            }
+//        }
+//        RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
+//        blockSample.place(origin, world, chunk, placementType, false, world.registryAccess());
+//    }
+//
 
 
     public static int[][][] getBlockData(Schematic schematic) {

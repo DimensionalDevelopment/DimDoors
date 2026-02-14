@@ -11,8 +11,6 @@ import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.Map;
-
 public class PocketTemplate {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final boolean replacingPlaceholders = false;
@@ -63,7 +61,7 @@ public class PocketTemplate {
         pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
         ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
         BlockPos origin = pocket.getOrigin();
-        SchematicPlacer.place(this.schematic, world, origin, placementType);
+        SchematicPlacer.place(this.schematic, world, origin);
     }
 
 //    public Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Pocket pocket) {

@@ -21,7 +21,7 @@ public class ModDataComponentTypes {
 
     public static final RegistrySupplier<DataComponentType<RotatedLocation>> DESTINATION = register("destination", RotatedLocation.CODEC, RotatedLocation.STREAM_CODEC);
     public static final RegistrySupplier<DataComponentType<Integer>> COUNT = register("count", Codec.INT, StreamCodec.of(RegistryFriendlyByteBuf::writeVarInt, RegistryFriendlyByteBuf::readVarInt));
-    public static final RegistrySupplier<DataComponentType<Set<UUID>>> KEY_IDS = register("count", UUIDUtil.CODEC_LINKED_SET, ByteBufCodecs.collection(LinkedHashSet::new, UUIDUtil.STREAM_CODEC));
+    public static final RegistrySupplier<DataComponentType<Set<UUID>>> KEY_IDS = register("key_ids", UUIDUtil.CODEC_LINKED_SET, ByteBufCodecs.collection(LinkedHashSet::new, UUIDUtil.STREAM_CODEC));
 
     private static <T, V extends Codec<T>, U extends StreamCodec<RegistryFriendlyByteBuf, T>> RegistrySupplier<DataComponentType<T>> register(String name, V codec, U streamCodec) {
         return DATA_COMPONENT_TYPES.register(name, () -> DataComponentType.<T>builder().persistent(codec).networkSynchronized(streamCodec).cacheEncoding().build());

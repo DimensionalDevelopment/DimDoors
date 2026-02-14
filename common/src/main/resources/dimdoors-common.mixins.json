@@ -12,6 +12,7 @@
     "ExtendedServerPlayNetworkhandlerMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",
+    "LevelChunkMixin",
     "NetherFortressPiecesAccessor",
     "NetherFortressPiecesMixin",
     "PlayerEntityMixin",

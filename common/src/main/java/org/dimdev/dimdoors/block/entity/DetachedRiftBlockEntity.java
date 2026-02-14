@@ -6,6 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -65,7 +67,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> 
 //		}
 	}
 
-	public void setClosing(boolean closing) {
+    public void setClosing(boolean closing) {
 		this.closing = closing;
 		this.setChanged();
 	}
@@ -183,5 +185,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> 
 		if (!level.isClientSide() && DimensionalDoors.getConfig().getGeneralConfig().enableRiftDecay) {
 			applySpreadDecay((ServerLevel) level, pos);
 		}
+
+        setChanged();
 	}
 }

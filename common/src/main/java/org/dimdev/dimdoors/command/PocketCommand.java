@@ -7,7 +7,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import com.mojang.datafixers.types.Func;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
@@ -17,12 +16,8 @@ import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.*;
-import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.RiftSignatureItem;
 import org.dimdev.dimdoors.pockets.*;
-import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
-import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
-import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.GlobalReference;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
@@ -145,8 +140,7 @@ public class PocketCommand {
 	}
 
     public static CompletableFuture<Suggestions> getSuggestions(Set<Path<String>> paths, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(StreamUtils.execute(() -> paths)
-                .parallelStream().flatMap(path -> path.reduce(String::concat).stream()), builder);
+        return SharedSuggestionProvider.suggest(StreamUtils.execute(() -> paths.parallelStream().flatMap(path -> path.reduce(String::concat).stream())), builder);
     }
 
 
@@ -154,9 +148,8 @@ public class PocketCommand {
 		SchematicPlacer.place(
 				template.getSchematic(),
 				source.serverLevel(),
-				source.blockPosition(),
-				blockPlacementType
-		);
+				source.blockPosition()
+        );
 
 		String id = template.getId().toString();
 		source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level().dimension().location().toString()), true);

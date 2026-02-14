@@ -24,4 +24,12 @@ public class IdCounter {
 	public static int count(ItemStack stack) {
 		return get(stack);
 	}
+
+    public static int getAndIncrement(ItemStack provider) {
+        var value = get(provider);
+
+        set(provider, value + 1);
+
+        return value;
+    }
 }

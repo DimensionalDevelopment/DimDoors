@@ -54,7 +54,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 				if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() < IdCounter.get(stack)) {
 					EntityUtils.chat(player, Component.literal("Id: " + ((IdMarker) rift.getDestination()).getId()));
 				} else {
-					int id = IdCounter.increment(stack);
+					int id = IdCounter.getAndIncrement(stack);
 
 					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
 
