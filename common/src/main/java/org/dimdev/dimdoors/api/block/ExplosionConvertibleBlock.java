@@ -7,5 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface ExplosionConvertibleBlock {
-	InteractionResult explode(Level world, BlockPos pos, BlockState state, BlockEntity blockEntity);
+//	InteractionResult explode(Level world, BlockPos pos, BlockState state, BlockEntity blockEntity);
+
+    BlockState convert(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity);
 }

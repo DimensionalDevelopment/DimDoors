@@ -27,6 +27,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
+import org.dimdev.dimdoors.block.PerservesBlockEntity;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
@@ -255,7 +256,7 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 
 	public abstract boolean isLocked();
 
-	public void copyFrom(DetachedRiftBlockEntity rift) {
+	public void copyFrom(RiftBlockEntity<?> rift) {
 		this.data.setDestination(rift.data.getDestination());
 		this.data.setProperties(rift.data.getProperties());
 		this.data.setAlwaysDelete(rift.data.isAlwaysDelete());

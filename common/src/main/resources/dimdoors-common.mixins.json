@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "mixins": [
     "ArgumentTypesMixin",
+    "BlockBehaviourMixin",
     "BlockMixin",
     "DoorBlockMixin",
     "EntityMixin",

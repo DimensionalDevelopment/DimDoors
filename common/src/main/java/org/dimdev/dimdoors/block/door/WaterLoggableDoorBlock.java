@@ -76,12 +76,7 @@ public class WaterLoggableDoorBlock extends DoorBlock implements SimpleWaterlogg
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		}
 
-		BlockState newState = super.updateShape(state, direction, neighborState, world, pos, neighborPos);
-
-		// commented out code is redundant with the very odd implementations of Block#replace and World#breakBlock
-		// please keep it anyways in case it is needed in the future
-		//if (newState.isAir() && state.getFluidState().getFluid() == Fluids.WATER) return Blocks.WATER.getDefaultState();
-		return newState;
+		return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
 	}
 
 	@Override

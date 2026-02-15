@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.block.door;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -48,6 +50,8 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
@@ -144,12 +148,12 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return InteractionResult.SUCCESS;
 	}
 
-	@Override
-	public void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack stack, boolean dropExperience) {
-		if(level.getBlockEntity(pos) instanceof EntranceRiftBlockEntity blockEntity) {
-			level.getServer().submit(() -> blockEntity.generateDetached(level));
-		}
-	}
+//	@Override
+//	public void spawnAfterBreak(BlockState state, ServerLevel level, BlockPos pos, ItemStack stack, boolean dropExperience) {
+//		if(level.getBlockEntity(pos) instanceof EntranceRiftBlockEntity blockEntity) {
+//			level.getServer().submit(() -> blockEntity.generateDetached(level));
+//		}
+//	}
 
 	@Override
 	public boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockPlaceContext) {
@@ -196,21 +200,18 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 	}
 
+    @Override
+    public void wasExploded(Level level, BlockPos blockPos, Explosion explosion) {
+        BlockEntity entity = level.getBlockEntity(blockPos);
 
-	@Override
-	public void wasExploded(Level world, BlockPos pos, Explosion explosion) {
-		if(world.getBlockState(pos).isAir()) {
-			//LOGGER.log(Level.ERROR, "IS AIR");
-			return;
-		}
-		if(world.isClientSide()) {
-			return;
-		}
-		//LOGGER.log(Level.ERROR, "WAS DESTROYED BY EXPLOSION");
-		BlockState state = world.getBlockState(pos);
-		super.wasExploded(world, pos, explosion);
-	}
-	@Override
+        if(entity instanceof EntranceRiftBlockEntity riftBlockEntity) {
+            level.setBlock(blockPos, ModBlocks.DETACHED_RIFT.get().defaultBlockState(), 3);
+
+            level.getBlockEntity(blockPos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(detachedRiftBlockEntity -> detachedRiftBlockEntity.copyFrom(riftBlockEntity));
+        }
+    }
+
+    @Override
 	public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
 		BlockEntity bottomEntity;
 		BlockEntity topEntity;
@@ -236,6 +237,19 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 	}
 
+    @Override
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
+        if (state.getValue(WATERLOGGED)) {
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+        }
+
+        DoubleBlockHalf doubleBlockHalf = (DoubleBlockHalf)state.getValue(HALF);
+        if (direction.getAxis() == Direction.Axis.Y && doubleBlockHalf == DoubleBlockHalf.LOWER == (direction == Direction.UP)) {
+            return neighborState.getBlock() instanceof DoorBlock && neighborState.getValue(HALF) != doubleBlockHalf ? (BlockState)neighborState.setValue(HALF, doubleBlockHalf) : Blocks.AIR.defaultBlockState();
+        } else {
+            return doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(world, pos) ? ModBlocks.DETACHED_RIFT.get().defaultBlockState(): state;
+        }
+    }
 
 	@Override
 	public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
@@ -297,16 +311,49 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return true;
 	}
 
-	@Override
-	public InteractionResult explode(Level world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-		if (blockEntity == null) {
-			return InteractionResult.PASS;
-		}
-		createDetachedRift(world, pos, state);
-		return InteractionResult.SUCCESS;
-	}
+    @Override
+    public boolean stateContainsRift(BlockState oldState) {
+        return oldState.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
+    }
 
-	@Nullable
+
+
+//    @Override
+//    protected void onExplosionHit(BlockState blockState, Level level, BlockPos blockPos, Explosion explosion, BiConsumer<ItemStack, BlockPos> biConsumer) {
+//        if (!blockState.isAir() && explosion.getBlockInteraction() != Explosion.BlockInteraction.TRIGGER_BLOCK) {
+//            Block block = blockState.getBlock();
+//            boolean bl = explosion.getIndirectSourceEntity() instanceof Player;
+//            if (block.dropFromExplosion(explosion) && level instanceof ServerLevel serverLevel) {
+//                BlockEntity blockEntity = blockState.hasBlockEntity() ? level.getBlockEntity(blockPos) : null;
+//                LootParams.Builder builder = (new LootParams.Builder(serverLevel)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(blockPos)).withParameter(LootContextParams.TOOL, ItemStack.EMPTY).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockEntity).withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getDirectSourceEntity());
+//                if (explosion.getBlockInteraction() == Explosion.BlockInteraction.DESTROY_WITH_DECAY) {
+//                    builder.withParameter(LootContextParams.EXPLOSION_RADIUS, explosion.radius());
+//                }
+//
+//                blockState.spawnAfterBreak(serverLevel, blockPos, ItemStack.EMPTY, bl);
+//                blockState.getDrops(builder).forEach((itemStack) -> biConsumer.accept(itemStack, blockPos));
+//            }
+//
+//            level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
+//            block.wasExploded(level, blockPos, explosion);
+//        }
+//    }
+
+//    @Override
+//	public InteractionResult explode(Level world, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+//		if (blockEntity == null) {
+//			return InteractionResult.PASS;
+//		}
+//		createDetachedRift(world, pos, state);
+//		return InteractionResult.SUCCESS;
+//	}
+
+    @Override
+    public BlockState convert(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
+        return blockEntity == null ? null : ModBlocks.DETACHED_RIFT.get().defaultBlockState();
+    }
+
+    @Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
 		return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
