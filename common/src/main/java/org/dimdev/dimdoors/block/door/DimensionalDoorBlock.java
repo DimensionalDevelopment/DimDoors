@@ -199,13 +199,13 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
     @Override
-    public void wasExploded(Level level, BlockPos blockPos, Explosion explosion) {
-        BlockEntity entity = level.getBlockEntity(blockPos);
+    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+        BlockEntity entity = level.getBlockEntity(pos);
 
         if(entity instanceof EntranceRiftBlockEntity riftBlockEntity) {
-            level.setBlock(blockPos, ModBlocks.DETACHED_RIFT.get().defaultBlockState(), 3);
+            level.setBlock(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState(), 3);
 
-            level.getBlockEntity(blockPos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(detachedRiftBlockEntity -> detachedRiftBlockEntity.copyFrom(riftBlockEntity));
+            level.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(detachedRiftBlockEntity -> detachedRiftBlockEntity.copyFrom(riftBlockEntity));
         }
     }
 
