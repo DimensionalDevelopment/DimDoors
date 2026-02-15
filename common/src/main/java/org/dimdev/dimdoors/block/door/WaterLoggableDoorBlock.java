@@ -36,66 +36,54 @@ public class WaterLoggableDoorBlock extends DoorBlock implements SimpleWaterlogg
 		builder.add(WATERLOGGED);
 	}
 
-	@Override
-	public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
-		InteractionResult result = super.useWithoutItem(state, world, pos, player, hit);
-		if (result.consumesAction()) {
-			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-		}
-		return result;
-	}
+//	@Override
+//	public InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+//		InteractionResult result = super.useWithoutItem(state, world, pos, player, hit);
+//		if (result.consumesAction()) {
+//			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+//		}
+//		return result;
+//	}
+
+
 
 	@Override
 	public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
 		BlockPos up = pos.above();
-		world.setBlock(up, state.setValue(HALF, DoubleBlockHalf.UPPER).setValue(WATERLOGGED, world.getFluidState(up).getType() == Fluids.WATER), 3);
+		world.setBlock(up, state.setValue(HALF, DoubleBlockHalf.UPPER).setValue(WATERLOGGED, world.isWaterAt(up)), 3);
 	}
 
-	@Override
-	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
-		boolean bl = world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.relative(state.getValue(HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
-		super.neighborChanged(state, world, pos, block, fromPos, notify);
-		if (bl && !world.isClientSide && state.getValue(WATERLOGGED)) {
-			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-		}
-	}
+//	@Override
+//	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
+//		boolean bl = world.hasNeighborSignal(pos) || world.hasNeighborSignal(pos.relative(state.getValue(HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
+//		super.neighborChanged(state, world, pos, block, fromPos, notify);
+//		if (bl && !world.isClientSide && state.getValue(WATERLOGGED)) {
+//			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+//		}
+//	}
 
 	@Nullable
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-		boolean water = ctx.getLevel().getFluidState(ctx.getClickedPos()).getType() == Fluids.WATER;
-		BlockState state = super.getStateForPlacement(ctx);
-		if (state == null) return null;
-		if (water) return state.setValue(WATERLOGGED, true);
-		return state;
+        FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
+        boolean bl = fluidState.getType() == Fluids.WATER;
+        return (BlockState)super.getStateForPlacement(ctx).setValue(WATERLOGGED, bl);
 	}
 
-	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-		if (state.getValue(WATERLOGGED)) {
-			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-		}
+    protected BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+        if ((Boolean)blockState.getValue(WATERLOGGED)) {
+            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+        }
 
-		return super.updateShape(state, direction, neighborState, world, pos, neighborPos);
-	}
+        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+    }
 
-	@Override
-	public FluidState getFluidState(BlockState state) {
-		return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
-	}
+    protected FluidState getFluidState(BlockState blockState) {
+        return (Boolean)blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
+    }
 
 	@Override
 	public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
-		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
-		if (doubleBlockHalf == DoubleBlockHalf.UPPER) {
-			BlockPos blockPos = pos.below();
-			BlockState blockState = world.getBlockState(blockPos);
-			if (blockState.is(state.getBlock()) && blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
-				world.setBlock(blockPos, world.getFluidState(blockPos).getType() == Fluids.WATER ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 35);
-				world.levelEvent(player, 2001, blockPos, Block.getId(blockState));
-			}
-		}
-		super.playerWillDestroy(world, pos, state, player);
-		return state;
+		return super.playerWillDestroy(world, pos, state, player);
 	}
 }

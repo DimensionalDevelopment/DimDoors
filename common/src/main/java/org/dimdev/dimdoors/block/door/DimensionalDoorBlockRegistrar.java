@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
@@ -191,14 +192,20 @@ public class DimensionalDoorBlockRegistrar {
 			throw new RuntimeException("AutoGenDimensionalDoorBlock should be instantiated as anonymous inner class overriding appendProperties!");
 		}
 
-		@Override
-		public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-			var defaultState = originalBlock.defaultBlockState();
+        @Override
+        public BlockState getEffectiveBlockState(BlockState state) {
+            var baseState = originalBlock.defaultBlockState();
 
-			return defaultState.getDrops(params);
-		}
+            return state.getProperties().stream()
+                    .filter(baseState::hasProperty)
+                    .reduce(
+                            baseState,
+                            (newState, property) -> transferProperty(state, newState, property),
+                            (a, b) -> b
+                    );
+        }
 
-		@Override
+        @Override
 		public MutableComponent getName() {
 			return Component.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
 		}
