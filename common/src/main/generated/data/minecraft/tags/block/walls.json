@@ -1,8 +1,9 @@
 {
   "values": [
-    "dimdoors:gravel_wall",
-    "dimdoors:dark_sand_wall",
-    "dimdoors:clay_wall",
+    "dimdoors:unraveled_wall",
+    "dimdoors:deepslate_wall",
+    "dimdoors:end_stone_wall",
+    "dimdoors:netherrack_wall",
     "dimdoors:terracotta_wall",
     "dimdoors:white_terracotta_wall",
     "dimdoors:white_glazed_terracotta_wall",
@@ -36,12 +37,12 @@
     "dimdoors:red_glazed_terracotta_wall",
     "dimdoors:black_terracotta_wall",
     "dimdoors:black_glazed_terracotta_wall",
+    "dimdoors:gravel_wall",
+    "dimdoors:gravel_wall",
+    "dimdoors:dark_sand_wall",
+    "dimdoors:clay_wall",
     "dimdoors:mud_wall",
-    "dimdoors:unraveled_wall",
-    "dimdoors:deepslate_wall",
     "dimdoors:red_sand_wall",
-    "dimdoors:sand_wall",
-    "dimdoors:end_stone_wall",
-    "dimdoors:netherrack_wall"
+    "dimdoors:sand_wall"
   ]
 }

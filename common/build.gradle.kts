@@ -19,7 +19,7 @@ dependencies {
     modApi("curse.maven:iris-${project.properties["iris"]}:${project.properties["iris_version"]}")
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
     modApi("com.github.DimensionalDevelopment:poly2tri.java:0.1.1")
-
+    modImplementation("curse.maven:selene-499980:7522322")
 //    modApi("com.sk89q.worldedit:worldedit-core:${project.properties["worldedit"]}")
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api:${project.properties["rei"]}")

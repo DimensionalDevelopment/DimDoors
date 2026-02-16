@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "org.dimdev.dimdoors.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "mixins": [
     "ArgumentTypesMixin",
@@ -15,6 +15,7 @@
     "ItemMixin$SettingsMixin",
     "LevelChunkMixin",
     "LevelMixin",
+    "MappedRegistryMixin",
     "NetherFortressPiecesAccessor",
     "NetherFortressPiecesMixin",
     "PlayerEntityMixin",

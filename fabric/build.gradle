@@ -76,6 +76,7 @@ dependencies {
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
 //    modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
+    modImplementation("curse.maven:selene-499980:7522322")
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.properties["rei"]}")
 

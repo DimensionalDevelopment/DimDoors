@@ -3,29 +3,34 @@ package org.dimdev.dimdoors.datagen;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
-	public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(output, lookupProvider);
-	}
+    public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider);
+    }
 
-	@Override
-	protected void addTags(HolderLookup.Provider arg) {
-		configure(arg.asGetterLookup());
-	}
+    @Override
+    protected void addTags(HolderLookup.Provider arg) {
+        configure(arg.asGetterLookup());
+    }
 
-	protected void configure(HolderGetter.Provider arg) {
+    protected void configure(HolderGetter.Provider arg) {
 //
 //		add(ModBlockTags.DECAYS_TO_AIR,
 //				Blocks.COBWEB,
@@ -300,129 +305,203 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
 //
 //		add(ModBlockTags.DECAYS_TO_DRIFTWOOD_PLANK).addOptionalTag(BlockTags.PLANKS.location());
 
-		add(BlockTags.WALLS, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.wall()).toList());
-
-        add(BlockTags.LOGS, ModBlocks.DRIFTWOOD_LOG);
-        add(BlockTags.PLANKS, ModBlocks.DRIFTWOOD_PLANKS);
-        add(BlockTags.LEAVES, ModBlocks.DRIFTWOOD_LEAVES);
-        add(BlockTags.SAPLINGS, ModBlocks.DRIFTWOOD_SAPLING);
-        add(BlockTags.WOODEN_FENCES, ModBlocks.DRIFTWOOD_FENCE);
-        add(BlockTags.WOODEN_BUTTONS, ModBlocks.DRIFTWOOD_BUTTON);
-        add(BlockTags.WOODEN_SLABS, ModBlocks.DRIFTWOOD_SLAB);
-        add(BlockTags.WOODEN_STAIRS, ModBlocks.DRIFTWOOD_STAIRS);
-        add(BlockTags.WOODEN_DOORS, ModBlocks.DRIFTWOOD_DOOR);
-        add(BlockTags.WOODEN_TRAPDOORS, ModBlocks.DRIFTWOOD_TRAPDOOR);
-
-        add(BlockTags.TRAPDOORS, ModBlocks.AMALGAM_TRAPDOOR);
-        add(BlockTags.SLABS,
-                ModBlocks.AMALGAM_SLAB,
-                ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.slab()).toList()
+        add(ModBlocks.DRIFTWOOD_LOG,
+                BlockTags.COMPLETES_FIND_TREE_TUTORIAL,
+                BlockTags.SNAPS_GOAT_HORN,
+                BlockTags.LOGS_THAT_BURN,
+                BlockTags.MINEABLE_WITH_AXE,
+                BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE,
+                ModBlockTags.DRIFTWOOD_LOGS,
+                BlockTags.LOGS,
+                BlockTags.PARROTS_SPAWNABLE_ON
         );
 
-        add(BlockTags.FENCE_GATES, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.gate()).toList());
+        add(ModBlocks.DRIFTWOOD_PLANKS,
+                BlockTags.PLANKS,
+                BlockTags.MINEABLE_WITH_AXE
+        );
 
-        add(BlockTags.FENCES, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.fence()).toList());
+        add(ModBlocks.DRIFTWOOD_LEAVES,
+                BlockTags.LAVA_POOL_STONE_CANNOT_REPLACE,
+                BlockTags.COMPLETES_FIND_TREE_TUTORIAL,
+                BlockTags.LEAVES,
+                BlockTags.MINEABLE_WITH_HOE,
+                BlockTags.PARROTS_SPAWNABLE_ON,
+                BlockTags.REPLACEABLE_BY_TREES,
+                BlockTags.SWORD_EFFICIENT
+        );
 
-        add(BlockTags.STAIRS, ModBlocks.AMALGAM_STAIRS, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.stairs()).toList());
+        add(ModBlocks.DRIFTWOOD_SAPLING,
+                BlockTags.SAPLINGS,
+                BlockTags.MINEABLE_WITH_AXE,
+                BlockTags.SWORD_EFFICIENT
+        );
 
-        add(BlockTags.BUTTONS, ModBlocks.AMALGAM_STAIRS, ModBlocks.DecayGroupSet.SETS.stream().map(a -> a.button()).toList());
+        add(ModBlocks.DRIFTWOOD_FENCE,
+                ConventionalBlockTags.WOODEN_FENCES,
+                BlockTags.WOODEN_FENCES,
+                ConventionalBlockTags.FENCES,
+                BlockTags.WOODEN_FENCES,
+                BlockTags.MINEABLE_WITH_AXE
+        );
+
+        add(ModBlocks.DRIFTWOOD_GATE,
+                ConventionalBlockTags.FENCE_GATES,
+                BlockTags.FENCE_GATES,
+                ConventionalBlockTags.WOODEN_FENCE_GATES,
+                BlockTags.UNSTABLE_BOTTOM_CENTER,
+                BlockTags.MINEABLE_WITH_AXE
+        );
+
+        add(ModBlocks.DRIFTWOOD_BUTTON,
+                BlockTags.WOODEN_FENCES,
+                BlockTags.MINEABLE_WITH_AXE,
+                BlockTags.BUTTONS
+        );
+
+        add(ModBlocks.DRIFTWOOD_SLAB,
+                BlockTags.MINEABLE_WITH_AXE,
+                BlockTags.SLABS,
+                BlockTags.WOODEN_SLABS
+        );
+
+        add(ModBlocks.DRIFTWOOD_STAIRS,
+                BlockTags.MINEABLE_WITH_AXE,
+                BlockTags.WOODEN_STAIRS,
+                BlockTags.STAIRS
+        );
+
+        add(ModBlocks.DRIFTWOOD_DOOR,
+                BlockTags.MINEABLE_WITH_AXE,
+                BlockTags.WOODEN_DOORS,
+                BlockTags.DOORS,
+                BlockTags.MOB_INTERACTABLE_DOORS
+        );
+
+        add(ModBlocks.DRIFTWOOD_TRAPDOOR,
+                BlockTags.TRAPDOORS,
+                BlockTags.WOODEN_TRAPDOORS,
+                BlockTags.MINEABLE_WITH_AXE
+        );
+
+        add(BlockTags.DOORS, ModBlocks.STONE_DOOR, ModBlocks.QUARTZ_DOOR, ModBlocks.AMALGAM_DOOR);
+        add(BlockTags.TRAPDOORS, ModBlocks.AMALGAM_TRAPDOOR);
+
+        add(ModBlocks.DARK_SAND,
+                BlockTags.SMELTS_TO_GLASS,
+                ConventionalBlockTags.SANDS,
+                BlockTags.CAMEL_SAND_STEP_SOUND_BLOCKS,
+                BlockTags.ENDERMAN_HOLDABLE,
+                ConventionalBlockTags.SANDS,
+                BlockTags.BAMBOO_PLANTABLE_ON,
+                BlockTags.MINEABLE_WITH_SHOVEL,
+                ConventionalBlockTags.BLACK_DYED,
+                BlockTags.SAND,
+                BlockTags.DEAD_BUSH_MAY_PLACE_ON,
+                ConventionalBlockTags.BLACK_DYED
+        );
+
+        setupSet(ModBlocks.UNRAVELED_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.DEEPSLATE_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.END_STONE_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.NETHERRACK_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.WHITE_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.WHITE_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.ORANGE_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.ORANGE_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.MAGENTA_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.MAGENTA_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.LIGHT_BLUE_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.LIGHT_BLUE_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.YELLOW_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.LIME_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.LIME_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.PINK_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.PINK_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.GRAY_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.GRAY_GLAZED_TERRACOTTASET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.LIGHT_GRAY_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.CYAN_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.CYAN_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.PURPLE_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.BLUE_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.BLUE_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.BROWN_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.BROWN_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.GREEN_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.GREEN_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.RED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.RED_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.BLACK_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.BLACK_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
 
         add(BlockTags.MINEABLE_WITH_PICKAXE,
-                ModBlocks.GOLD_DOOR,
-                ModBlocks.AMALGAM_BLOCK,
                 ModBlocks.REALITY_SPONGE,
-                ModBlocks.GOLD_DOOR,
-                ModBlocks.QUARTZ_DOOR,
-                ModBlocks.WHITE_FABRIC,
-                ModBlocks.ORANGE_FABRIC,
-                ModBlocks.MAGENTA_FABRIC,
-                ModBlocks.LIGHT_BLUE_FABRIC,
-                ModBlocks.YELLOW_FABRIC,
-                ModBlocks.LIME_FABRIC,
-                ModBlocks.PINK_FABRIC,
-                ModBlocks.GRAY_FABRIC,
-                ModBlocks.LIGHT_GRAY_FABRIC,
-                ModBlocks.CYAN_FABRIC,
-                ModBlocks.PURPLE_FABRIC,
-                ModBlocks.BLUE_FABRIC,
-                ModBlocks.BROWN_FABRIC,
-                ModBlocks.GREEN_FABRIC,
-                ModBlocks.RED_FABRIC,
-                ModBlocks.BLACK_FABRIC,
                 ModBlocks.UNRAVELLED_FABRIC,
-                ModBlocks.AMALGAM_BLOCK,
-                ModBlocks.AMALGAM_DOOR,
-                ModBlocks.AMALGAM_TRAPDOOR,
                 ModBlocks.RUST,
-                ModBlocks.AMALGAM_SLAB,
-                ModBlocks.AMALGAM_STAIRS,
-                ModBlocks.AMALGAM_ORE,
-                ModBlocks.CLOD_ORE,
-                ModBlocks.CLOD_BLOCK,
-                ModBlocks.UNRAVELED_SET,
-                ModBlocks.DEEPSLATE_SET,
-                ModBlocks.END_STONE_SET,
-                ModBlocks.NETHERRACK_SET,
                 ModBlocks.UNRAVELED_SPIKE,
-                ModBlocks.GRITTY_STONE,
-                ModBlocks.TERRACOTTA_SET,
-                ModBlocks.WHITE_TERRACOTTA_SET,
-                ModBlocks.WHITE_GLAZED_TERRACOTTA_SET,
-                ModBlocks.ORANGE_TERRACOTTA_SET,
-                ModBlocks.ORANGE_GLAZED_TERRACOTTA_SET,
-                ModBlocks.MAGENTA_TERRACOTTA_SET,
-                ModBlocks.MAGENTA_GLAZED_TERRACOTTA_SET,
-                ModBlocks.LIGHT_BLUE_TERRACOTTA_SET,
-                ModBlocks.LIGHT_BLUE_GLAZED_TERRACOTTA_SET,
-                ModBlocks.YELLOW_TERRACOTTA_SET,
-                ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET,
-                ModBlocks.LIME_TERRACOTTA_SET,
-                ModBlocks.LIME_GLAZED_TERRACOTTA_SET,
-                ModBlocks.PINK_TERRACOTTA_SET,
-                ModBlocks.PINK_GLAZED_TERRACOTTA_SET,
-                ModBlocks.GRAY_TERRACOTTA_SET,
-                ModBlocks.GRAY_GLAZED_TERRACOTTASET,
-                ModBlocks.LIGHT_GRAY_TERRACOTTA_SET,
-                ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET,
-                ModBlocks.CYAN_TERRACOTTA_SET,
-                ModBlocks.CYAN_GLAZED_TERRACOTTA_SET,
-                ModBlocks.PURPLE_TERRACOTTA_SET,
-                ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET,
-                ModBlocks.BLUE_TERRACOTTA_SET,
-                ModBlocks.BLUE_GLAZED_TERRACOTTA_SET,
-                ModBlocks.BROWN_TERRACOTTA_SET,
-                ModBlocks.BROWN_GLAZED_TERRACOTTA_SET,
-                ModBlocks.GREEN_TERRACOTTA_SET,
-                ModBlocks.GREEN_GLAZED_TERRACOTTA_SET,
-                ModBlocks.RED_TERRACOTTA_SET,
-                ModBlocks.RED_GLAZED_TERRACOTTA_SET,
-                ModBlocks.BLACK_TERRACOTTA_SET,
-                ModBlocks.BLACK_GLAZED_TERRACOTTA_SET
+                ModBlocks.GRITTY_STONE
         );
 
-        add(BlockTags.MINEABLE_WITH_AXE,
-                ModBlocks.DRIFTWOOD_WOOD,
-                ModBlocks.DRIFTWOOD_LOG,
-                ModBlocks.DRIFTWOOD_PLANKS,
-                ModBlocks.DRIFTWOOD_FENCE,
-                ModBlocks.DRIFTWOOD_GATE,
-                ModBlocks.DRIFTWOOD_BUTTON,
-                ModBlocks.DRIFTWOOD_SLAB,
-                ModBlocks.DRIFTWOOD_STAIRS,
-                ModBlocks.DRIFTWOOD_DOOR,
-                ModBlocks.DRIFTWOOD_TRAPDOOR
-        );
+        add(ModBlocks.CLOD_ORE, ConventionalBlockTags.ORES, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.CLOD_BLOCK, BlockTags.BEACON_BASE_BLOCKS, BlockTags.MINEABLE_WITH_PICKAXE);
 
-        add(BlockTags.MINEABLE_WITH_SHOVEL,
-                ModBlocks.GRAVEL_SET,
-                ModBlocks.DARK_SAND,
-                ModBlocks.DARK_SAND_SET,
-                ModBlocks.CLAY_SET,
-                ModBlocks.MUD_SET,
-                ModBlocks.RED_SAND_SET,
-                ModBlocks.SAND_SET
-        );
-	}
+        add(ModBlocks.WHITE_FABRIC, ConventionalBlockTags.WHITE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.ORANGE_FABRIC, ConventionalBlockTags.ORANGE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.MAGENTA_FABRIC, ConventionalBlockTags.MAGENTA_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.LIGHT_BLUE_FABRIC, ConventionalBlockTags.LIGHT_BLUE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.YELLOW_FABRIC, ConventionalBlockTags.YELLOW_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.LIME_FABRIC, ConventionalBlockTags.LIME_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.PINK_FABRIC, ConventionalBlockTags.PINK_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.GRAY_FABRIC, ConventionalBlockTags.GRAY_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.LIGHT_GRAY_FABRIC, ConventionalBlockTags.LIGHT_GRAY_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.CYAN_FABRIC, ConventionalBlockTags.CYAN_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.PURPLE_FABRIC, ConventionalBlockTags.PURPLE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.BLUE_FABRIC, ConventionalBlockTags.BLUE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.BROWN_FABRIC, ConventionalBlockTags.BROWN_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.GREEN_FABRIC, ConventionalBlockTags.GREEN_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.RED_FABRIC, ConventionalBlockTags.RED_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.BLACK_FABRIC, ConventionalBlockTags.BLACK_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+
+        add(ModBlocks.AMALGAM_SLAB, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.SLABS);
+        add(ModBlocks.AMALGAM_STAIRS, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.STAIRS);
+        add(ModBlocks.AMALGAM_ORE, ConventionalBlockTags.ORES, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.AMALGAM_BLOCK, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.BEACON_BASE_BLOCKS);
+        add(ModBlocks.AMALGAM_TRAPDOOR, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.TRAPDOORS);
+
+        add(ModBlocks.GOLD_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.STONE_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.QUARTZ_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.AMALGAM_DOOR, BlockTags.DOORS, BlockTags.MINEABLE_WITH_PICKAXE);
+
+
+        setupSet(ModBlocks.GRAVEL_SET, BlockTags.MINEABLE_WITH_SHOVEL);
+        setupSet(ModBlocks.GRAVEL_SET, BlockTags.MINEABLE_WITH_SHOVEL);
+        setupSet(ModBlocks.DARK_SAND_SET, BlockTags.MINEABLE_WITH_SHOVEL);
+        setupSet(ModBlocks.CLAY_SET, BlockTags.MINEABLE_WITH_SHOVEL);
+        setupSet(ModBlocks.MUD_SET, BlockTags.MINEABLE_WITH_SHOVEL);
+        setupSet(ModBlocks.RED_SAND_SET, BlockTags.MINEABLE_WITH_SHOVEL);
+        setupSet(ModBlocks.SAND_SET, BlockTags.MINEABLE_WITH_SHOVEL);
+    }
+
+    private void setupSet(ModBlocks.DecayGroupSet set, TagKey<Block> tag) {
+        add(set.button(), BlockTags.BUTTONS, tag);
+        add(set.wall(), BlockTags.WALLS, tag);
+        add(set.fence(), BlockTags.FENCES, tag);
+        add(set.gate(), BlockTags.FENCE_GATES, tag);
+        add(set.slab(), BlockTags.SLABS, tag);
+        add(set.stairs(), BlockTags.STAIRS, tag);
+    }
+
+    private void add(RegistrySupplier<Block> block, TagKey<Block>... objects) {
+        var key = block.getKey();
+        for (TagKey<Block> object : objects)
+            tag(object).add(key);
+    }
 
 	private TagAppender<Block> add(TagKey<Block> tag, Object... objects) {
 		var appender = tag(tag);
@@ -436,7 +515,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 appender.add(block.builtInRegistryHolder().key());
             } else if (object instanceof TagKey<?> key && key.isFor(Registries.BLOCK)) {
                 appender.addTag((TagKey<Block>) key);
-            } else if (object instanceof List<?> list) {
+            } else if (object instanceof Collection<?> list) {
                 for(var element : list) {
                     if (element instanceof RegistrySupplier<?> supplier) {
                         if (supplier.get() instanceof Block block) {

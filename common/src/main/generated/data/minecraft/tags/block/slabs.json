@@ -1,9 +1,10 @@
 {
   "values": [
-    "dimdoors:amalgam_slab",
-    "dimdoors:gravel_slab",
-    "dimdoors:dark_sand_slab",
-    "dimdoors:clay_slab",
+    "dimdoors:driftwood_slab",
+    "dimdoors:unraveled_slab",
+    "dimdoors:deepslate_slab",
+    "dimdoors:end_stone_slab",
+    "dimdoors:netherrack_slab",
     "dimdoors:terracotta_slab",
     "dimdoors:white_terracotta_slab",
     "dimdoors:white_glazed_terracotta_slab",
@@ -37,12 +38,13 @@
     "dimdoors:red_glazed_terracotta_slab",
     "dimdoors:black_terracotta_slab",
     "dimdoors:black_glazed_terracotta_slab",
+    "dimdoors:amalgam_slab",
+    "dimdoors:gravel_slab",
+    "dimdoors:gravel_slab",
+    "dimdoors:dark_sand_slab",
+    "dimdoors:clay_slab",
     "dimdoors:mud_slab",
-    "dimdoors:unraveled_slab",
-    "dimdoors:deepslate_slab",
     "dimdoors:red_sand_slab",
-    "dimdoors:sand_slab",
-    "dimdoors:end_stone_slab",
-    "dimdoors:netherrack_slab"
+    "dimdoors:sand_slab"
   ]
 }

@@ -1,8 +1,8 @@
 {
   "values": [
-    "dimdoors:driftwood_wood",
     "dimdoors:driftwood_log",
     "dimdoors:driftwood_planks",
+    "dimdoors:driftwood_sapling",
     "dimdoors:driftwood_fence",
     "dimdoors:driftwood_gate",
     "dimdoors:driftwood_button",

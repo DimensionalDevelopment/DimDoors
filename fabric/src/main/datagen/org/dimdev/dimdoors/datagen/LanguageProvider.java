@@ -553,7 +553,9 @@ public class LanguageProvider extends FabricLanguageProvider {
     private void add(TranslationBuilder builder, RegistrySupplier<?> supplier) {
         var object = supplier.get();
         var string = capitialize(supplier.getId().getPath());
-        
+
+
+
         if(object instanceof Block block) {
             builder.add(block, string);
         } else if(object instanceof CreativeModeTab tab) {

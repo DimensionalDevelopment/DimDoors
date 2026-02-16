@@ -44,7 +44,7 @@ public abstract class LevelChunkMixin {
     }
 
     @Inject(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/chunk/LevelChunk;addAndRegisterBlockEntity(Lnet/minecraft/world/level/block/entity/BlockEntity;)V"))
-    public void blockEntityRetrieve(BlockPos blockPos, BlockState newState, boolean moved, CallbackInfoReturnable<BlockState> cir, @Local(name = "blockEntity") BlockEntity blockEntity) {
+    public void blockEntityRetrieve(BlockPos blockPos, BlockState newState, boolean moved, CallbackInfoReturnable<BlockState> cir, @Local BlockEntity blockEntity) {
         if(blockEntityToBetransfered != null) {
             if(newState.getBlock() instanceof PerservesBlockEntity perservesBlockEntity) {
                 perservesBlockEntity.attemptTransfer(blockEntity, blockEntityToBetransfered);

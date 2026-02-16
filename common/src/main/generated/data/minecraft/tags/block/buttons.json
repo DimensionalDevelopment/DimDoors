@@ -1,9 +1,10 @@
 {
   "values": [
-    "dimdoors:amalgam_stairs",
-    "dimdoors:gravel_button",
-    "dimdoors:dark_sand_button",
-    "dimdoors:clay_button",
+    "dimdoors:driftwood_button",
+    "dimdoors:unraveled_button",
+    "dimdoors:deepslate_button",
+    "dimdoors:end_stone_button",
+    "dimdoors:netherrack_button",
     "dimdoors:terracotta_button",
     "dimdoors:white_terracotta_button",
     "dimdoors:white_glazed_terracotta_button",
@@ -37,12 +38,12 @@
     "dimdoors:red_glazed_terracotta_button",
     "dimdoors:black_terracotta_button",
     "dimdoors:black_glazed_terracotta_button",
+    "dimdoors:gravel_button",
+    "dimdoors:gravel_button",
+    "dimdoors:dark_sand_button",
+    "dimdoors:clay_button",
     "dimdoors:mud_button",
-    "dimdoors:unraveled_button",
-    "dimdoors:deepslate_button",
     "dimdoors:red_sand_button",
-    "dimdoors:sand_button",
-    "dimdoors:end_stone_button",
-    "dimdoors:netherrack_button"
+    "dimdoors:sand_button"
   ]
 }

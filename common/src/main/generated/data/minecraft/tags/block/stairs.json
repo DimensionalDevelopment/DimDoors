@@ -1,9 +1,10 @@
 {
   "values": [
-    "dimdoors:amalgam_stairs",
-    "dimdoors:gravel_stairs",
-    "dimdoors:dark_sand_stairs",
-    "dimdoors:clay_stairs",
+    "dimdoors:driftwood_stairs",
+    "dimdoors:unraveled_stairs",
+    "dimdoors:deepslate_stairs",
+    "dimdoors:end_stone_stairs",
+    "dimdoors:netherrack_stairs",
     "dimdoors:terracotta_stairs",
     "dimdoors:white_terracotta_stairs",
     "dimdoors:white_glazed_terracotta_stairs",
@@ -37,12 +38,13 @@
     "dimdoors:red_glazed_terracotta_stairs",
     "dimdoors:black_terracotta_stairs",
     "dimdoors:black_glazed_terracotta_stairs",
+    "dimdoors:amalgam_stairs",
+    "dimdoors:gravel_stairs",
+    "dimdoors:gravel_stairs",
+    "dimdoors:dark_sand_stairs",
+    "dimdoors:clay_stairs",
     "dimdoors:mud_stairs",
-    "dimdoors:unraveled_stairs",
-    "dimdoors:deepslate_stairs",
     "dimdoors:red_sand_stairs",
-    "dimdoors:sand_stairs",
-    "dimdoors:end_stone_stairs",
-    "dimdoors:netherrack_stairs"
+    "dimdoors:sand_stairs"
   ]
 }

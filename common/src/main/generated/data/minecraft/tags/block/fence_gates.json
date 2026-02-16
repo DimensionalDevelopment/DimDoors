@@ -1,8 +1,10 @@
 {
   "values": [
-    "dimdoors:gravel_gate",
-    "dimdoors:dark_sand_gate",
-    "dimdoors:clay_gate",
+    "dimdoors:driftwood_gate",
+    "dimdoors:unraveled_gate",
+    "dimdoors:deepslate_gate",
+    "dimdoors:end_stone_gate",
+    "dimdoors:netherrack_gate",
     "dimdoors:terracotta_gate",
     "dimdoors:white_terracotta_gate",
     "dimdoors:white_glazed_terracotta_gate",
@@ -36,12 +38,12 @@
     "dimdoors:red_glazed_terracotta_gate",
     "dimdoors:black_terracotta_gate",
     "dimdoors:black_glazed_terracotta_gate",
+    "dimdoors:gravel_gate",
+    "dimdoors:gravel_gate",
+    "dimdoors:dark_sand_gate",
+    "dimdoors:clay_gate",
     "dimdoors:mud_gate",
-    "dimdoors:unraveled_gate",
-    "dimdoors:deepslate_gate",
     "dimdoors:red_sand_gate",
-    "dimdoors:sand_gate",
-    "dimdoors:end_stone_gate",
-    "dimdoors:netherrack_gate"
+    "dimdoors:sand_gate"
   ]
 }

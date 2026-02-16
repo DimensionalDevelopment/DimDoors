@@ -6,6 +6,9 @@ import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModBlockTags {
+    public static final TagKey<Block> DRIFTWOOD_LOGS = of("driftwood_logs");
+    public static final TagKey<Block> AUTO_GENERATED_DIMDOORS = of("auto_generated_dimdoors");
+
 	public static final TagKey<Block> MINOR_PLANTS = of("minor_plants");
 	public static final TagKey<Block> DECAYS_TO_AIR = decaysTo("air");
 	public static final TagKey<Block> DECAYS_TO_RAIL = decaysTo("rail");

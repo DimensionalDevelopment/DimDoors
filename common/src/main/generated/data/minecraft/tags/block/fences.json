@@ -1,8 +1,9 @@
 {
   "values": [
-    "dimdoors:gravel_fence",
-    "dimdoors:dark_sand_fence",
-    "dimdoors:clay_fence",
+    "dimdoors:unraveled_fence",
+    "dimdoors:deepslate_fence",
+    "dimdoors:end_stone_fence",
+    "dimdoors:netherrack_fence",
     "dimdoors:terracotta_fence",
     "dimdoors:white_terracotta_fence",
     "dimdoors:white_glazed_terracotta_fence",
@@ -36,12 +37,12 @@
     "dimdoors:red_glazed_terracotta_fence",
     "dimdoors:black_terracotta_fence",
     "dimdoors:black_glazed_terracotta_fence",
+    "dimdoors:gravel_fence",
+    "dimdoors:gravel_fence",
+    "dimdoors:dark_sand_fence",
+    "dimdoors:clay_fence",
     "dimdoors:mud_fence",
-    "dimdoors:unraveled_fence",
-    "dimdoors:deepslate_fence",
     "dimdoors:red_sand_fence",
-    "dimdoors:sand_fence",
-    "dimdoors:end_stone_fence",
-    "dimdoors:netherrack_fence"
+    "dimdoors:sand_fence"
   ]
 }

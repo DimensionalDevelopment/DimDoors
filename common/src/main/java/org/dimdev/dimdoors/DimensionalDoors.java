@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
@@ -12,8 +13,14 @@ import dev.architectury.platform.Platform;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicServerResourceProvider;
+import net.mehvahdjukaar.moonlight.api.resources.pack.PackGenerationStrategy;
+import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
+import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -78,8 +85,12 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
@@ -153,6 +164,24 @@ public class DimensionalDoors {
 		registerServerLoader("pocket_loader", PocketLoader::reload);
 		registerServerLoader("decay_loader", Decay.DecayLoader::reload);
 		registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
+        RegHelper.registerDynamicResourceProvider(new DynamicServerResourceProvider(ResourceLocation.fromNamespaceAndPath("dimdoors", "dimensional_doors"), PackGenerationStrategy.REGEN_ON_EVERY_RELOAD) {
+            @Override
+            protected Collection<String> gatherSupportedNamespaces() {
+                return List.of("minecraft");
+            }
+
+            @Override
+            protected void regenerateDynamicAssets(Consumer<ResourceGenTask> consumer) {
+                var registry = BuiltInRegistries.BLOCK;
+
+                var map = registry.holders()
+                        .filter(a -> a.value() instanceof DoorBlock door)
+                        .filter(a -> !(a.value() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock))
+                        .collect(Collectors.toMap(a -> a.key().location(), a -> a.tags().toList()));
+
+                System.out.println();
+            }
+        });
 
         LifecycleEvent.SERVER_STARTING.register(new LifecycleEvent.ServerState() {
             @Override
