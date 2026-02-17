@@ -22,6 +22,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock;
@@ -142,7 +143,9 @@ public class DimensionalDoorsForgeClient {
 
     @SubscribeEvent
     public static void registerDimensionEffect(RegisterDimensionSpecialEffectsEvent event) {
-        event.register(DimensionalDoors.id("limbo"), LimboDimensionEffect.INSTANCE);
-        event.register(DimensionalDoors.id("dungeon"), DungeonDimensionEffect.INSTANCE);
+
+
+        event.register(DimensionalDoors.id("limbo"), new NfVoidDimensionEffects(LimboDimensionEffect.INSTANCE));
+        event.register(DimensionalDoors.id("dungeon"), new NfVoidDimensionEffects(DungeonDimensionEffect.INSTANCE));
     }
 }

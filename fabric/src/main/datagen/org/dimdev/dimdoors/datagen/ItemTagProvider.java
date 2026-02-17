@@ -3,20 +3,19 @@ package org.dimdev.dimdoors.datagen;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.fabricmc.fabric.api.tag.convention.v2.ConventionalFluidTags;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.tag.ModBlockTags;
 import org.dimdev.dimdoors.tag.ModItemTags;
 
 import java.util.concurrent.CompletableFuture;
@@ -112,6 +111,40 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         add(ModBlocks.DRIFTWOOD_TRAPDOOR, ItemTags.WOODEN_TRAPDOORS, ItemTags.TRAPDOORS);
 
         ModBlocks.DecayGroupSet.SETS.forEach(this::add);
+
+        add(ModBlocks.WHITE_FABRIC, ConventionalItemTags.WHITE_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.ORANGE_FABRIC, ConventionalItemTags.ORANGE_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.MAGENTA_FABRIC, ConventionalItemTags.MAGENTA_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.LIGHT_BLUE_FABRIC, ConventionalItemTags.LIGHT_BLUE_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.YELLOW_FABRIC, ConventionalItemTags.YELLOW_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.LIME_FABRIC, ConventionalItemTags.LIME_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.PINK_FABRIC, ConventionalItemTags.PINK_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.GRAY_FABRIC, ConventionalItemTags.GRAY_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.LIGHT_GRAY_FABRIC, ConventionalItemTags.LIGHT_GRAY_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.CYAN_FABRIC, ConventionalItemTags.CYAN_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.PURPLE_FABRIC, ConventionalItemTags.PURPLE_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.BLUE_FABRIC, ConventionalItemTags.BLUE_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.BROWN_FABRIC, ConventionalItemTags.BROWN_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.GREEN_FABRIC, ConventionalItemTags.GREEN_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.RED_FABRIC, ConventionalItemTags.RED_DYED, ModItemTags.FABRIC);
+        add(ModBlocks.BLACK_FABRIC, ConventionalItemTags.BLACK_DYED, ModItemTags.FABRIC);
+
+        add(ModBlocks.WHITE_ANCIENT_FABRIC, ConventionalItemTags.WHITE_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.ORANGE_ANCIENT_FABRIC, ConventionalItemTags.ORANGE_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.MAGENTA_ANCIENT_FABRIC, ConventionalItemTags.MAGENTA_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.LIGHT_BLUE_ANCIENT_FABRIC, ConventionalItemTags.LIGHT_BLUE_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.YELLOW_ANCIENT_FABRIC, ConventionalItemTags.YELLOW_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.LIME_ANCIENT_FABRIC, ConventionalItemTags.LIME_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.PINK_ANCIENT_FABRIC, ConventionalItemTags.PINK_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.GRAY_ANCIENT_FABRIC, ConventionalItemTags.GRAY_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.LIGHT_GRAY_ANCIENT_FABRIC, ConventionalItemTags.LIGHT_GRAY_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.CYAN_ANCIENT_FABRIC, ConventionalItemTags.CYAN_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.PURPLE_ANCIENT_FABRIC, ConventionalItemTags.PURPLE_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.BLUE_ANCIENT_FABRIC, ConventionalItemTags.BLUE_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.BROWN_ANCIENT_FABRIC, ConventionalItemTags.BROWN_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.GREEN_ANCIENT_FABRIC, ConventionalItemTags.GREEN_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.RED_ANCIENT_FABRIC, ConventionalItemTags.RED_DYED, ModItemTags.ANCIENT_FABRIC);
+        add(ModBlocks.BLACK_ANCIENT_FABRIC, ConventionalItemTags.BLACK_DYED, ModItemTags.ANCIENT_FABRIC);
     }
 
     private void add(TagKey<Item> tag, RegistrySupplier<? extends ItemLike>... suppliers) {

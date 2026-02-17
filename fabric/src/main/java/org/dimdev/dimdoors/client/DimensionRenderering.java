@@ -5,6 +5,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.effect.DimensionSpecialEffectsExtensions;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
+import org.dimdev.dimdoors.client.effect.VoidDimensionSpecialEffects;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.function.Function;
@@ -29,8 +30,10 @@ public class DimensionRenderering {
         DimensionRenderingRegistry.registerSkyRenderer(ModDimensions.PERSONAL, pocketRenderer);
         DimensionRenderingRegistry.registerSkyRenderer(ModDimensions.PUBLIC, pocketRenderer);
 
-        DimensionRenderingRegistry.registerDimensionEffects(DimensionalDoors.id("limbo"), LimboDimensionEffect.INSTANCE);
-        DimensionRenderingRegistry.registerDimensionEffects(DimensionalDoors.id("dungeon"), DungeonDimensionEffect.INSTANCE);
+        var effects = new VoidDimensionSpecialEffects();
+
+        DimensionRenderingRegistry.registerDimensionEffects(DimensionalDoors.id("limbo"), effects);
+        DimensionRenderingRegistry.registerDimensionEffects(DimensionalDoors.id("dungeon"), effects);
     }
 
 }

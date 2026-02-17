@@ -164,24 +164,6 @@ public class DimensionalDoors {
 		registerServerLoader("pocket_loader", PocketLoader::reload);
 		registerServerLoader("decay_loader", Decay.DecayLoader::reload);
 		registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
-        RegHelper.registerDynamicResourceProvider(new DynamicServerResourceProvider(ResourceLocation.fromNamespaceAndPath("dimdoors", "dimensional_doors"), PackGenerationStrategy.REGEN_ON_EVERY_RELOAD) {
-            @Override
-            protected Collection<String> gatherSupportedNamespaces() {
-                return List.of("minecraft");
-            }
-
-            @Override
-            protected void regenerateDynamicAssets(Consumer<ResourceGenTask> consumer) {
-                var registry = BuiltInRegistries.BLOCK;
-
-                var map = registry.holders()
-                        .filter(a -> a.value() instanceof DoorBlock door)
-                        .filter(a -> !(a.value() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock))
-                        .collect(Collectors.toMap(a -> a.key().location(), a -> a.tags().toList()));
-
-                System.out.println();
-            }
-        });
 
         LifecycleEvent.SERVER_STARTING.register(new LifecycleEvent.ServerState() {
             @Override

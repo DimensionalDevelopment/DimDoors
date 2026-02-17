@@ -22,27 +22,12 @@ import java.util.List;
 
 import static net.minecraft.client.renderer.blockentity.TheEndPortalRenderer.END_SKY_LOCATION;
 
-public class DungeonDimensionEffect extends DimensionSpecialEffects implements DimensionSpecialEffectsExtensions {
+public class DungeonDimensionEffect implements DimensionSpecialEffectsExtensions {
     public static DungeonDimensionEffect INSTANCE = new DungeonDimensionEffect();
-    private DungeonDimensionEffect() {
-        super(-30, false, SkyType.NONE, false, true);
-    }
-
-    @Override
-    public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
-        return fogColor;
-    }
-
-    @Override
-    public boolean isFoggyAt(int x, int y) {
-        return false;
-    }
-
 
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
-        ClientLevel world = level;
-        List<SkyAddon> skyAddons = PocketListenerUtil.applicableAddonsClient(SkyAddon.class, world, camera.getBlockPosition());
+        List<SkyAddon> skyAddons = PocketListenerUtil.applicableAddonsClient(SkyAddon.class, level, camera.getBlockPosition());
         SkyAddon skyAddon = null;
         if (!skyAddons.isEmpty()) {
             // There should really only be one of these.
@@ -231,16 +216,4 @@ public class DungeonDimensionEffect extends DimensionSpecialEffects implements D
 //        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
 //        RenderSystem.depthMask(true);
     }
-
-    @Override
-    public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix) {
-        return false;
-    }
-
-    @Override
-    public boolean renderSnowAndRain(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {
-        return true;
-    }
-
-
 }

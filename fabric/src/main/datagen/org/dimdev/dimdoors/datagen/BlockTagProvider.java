@@ -9,16 +9,12 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
     public BlockTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
@@ -452,22 +448,39 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         add(ModBlocks.CLOD_ORE, ConventionalBlockTags.ORES, BlockTags.MINEABLE_WITH_PICKAXE);
         add(ModBlocks.CLOD_BLOCK, BlockTags.BEACON_BASE_BLOCKS, BlockTags.MINEABLE_WITH_PICKAXE);
 
-        add(ModBlocks.WHITE_FABRIC, ConventionalBlockTags.WHITE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.ORANGE_FABRIC, ConventionalBlockTags.ORANGE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.MAGENTA_FABRIC, ConventionalBlockTags.MAGENTA_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.LIGHT_BLUE_FABRIC, ConventionalBlockTags.LIGHT_BLUE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.YELLOW_FABRIC, ConventionalBlockTags.YELLOW_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.LIME_FABRIC, ConventionalBlockTags.LIME_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.PINK_FABRIC, ConventionalBlockTags.PINK_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.GRAY_FABRIC, ConventionalBlockTags.GRAY_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.LIGHT_GRAY_FABRIC, ConventionalBlockTags.LIGHT_GRAY_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.CYAN_FABRIC, ConventionalBlockTags.CYAN_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.PURPLE_FABRIC, ConventionalBlockTags.PURPLE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.BLUE_FABRIC, ConventionalBlockTags.BLUE_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.BROWN_FABRIC, ConventionalBlockTags.BROWN_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.GREEN_FABRIC, ConventionalBlockTags.GREEN_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.RED_FABRIC, ConventionalBlockTags.RED_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
-        add(ModBlocks.BLACK_FABRIC, ConventionalBlockTags.BLACK_DYED, BlockTags.MINEABLE_WITH_PICKAXE);
+        add(ModBlocks.WHITE_FABRIC, ConventionalBlockTags.WHITE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.ORANGE_FABRIC, ConventionalBlockTags.ORANGE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.MAGENTA_FABRIC, ConventionalBlockTags.MAGENTA_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.LIGHT_BLUE_FABRIC, ConventionalBlockTags.LIGHT_BLUE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.YELLOW_FABRIC, ConventionalBlockTags.YELLOW_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.LIME_FABRIC, ConventionalBlockTags.LIME_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.PINK_FABRIC, ConventionalBlockTags.PINK_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.GRAY_FABRIC, ConventionalBlockTags.GRAY_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.LIGHT_GRAY_FABRIC, ConventionalBlockTags.LIGHT_GRAY_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.CYAN_FABRIC, ConventionalBlockTags.CYAN_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.PURPLE_FABRIC, ConventionalBlockTags.PURPLE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.BLUE_FABRIC, ConventionalBlockTags.BLUE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.BROWN_FABRIC, ConventionalBlockTags.BROWN_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.GREEN_FABRIC, ConventionalBlockTags.GREEN_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.RED_FABRIC, ConventionalBlockTags.RED_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+        add(ModBlocks.BLACK_FABRIC, ConventionalBlockTags.BLACK_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.FABRIC);
+
+        add(ModBlocks.WHITE_ANCIENT_FABRIC, ConventionalBlockTags.WHITE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.ORANGE_ANCIENT_FABRIC, ConventionalBlockTags.ORANGE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.MAGENTA_ANCIENT_FABRIC, ConventionalBlockTags.MAGENTA_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.LIGHT_BLUE_ANCIENT_FABRIC, ConventionalBlockTags.LIGHT_BLUE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.YELLOW_ANCIENT_FABRIC, ConventionalBlockTags.YELLOW_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.LIME_ANCIENT_FABRIC, ConventionalBlockTags.LIME_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.PINK_ANCIENT_FABRIC, ConventionalBlockTags.PINK_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.GRAY_ANCIENT_FABRIC, ConventionalBlockTags.GRAY_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.LIGHT_GRAY_ANCIENT_FABRIC, ConventionalBlockTags.LIGHT_GRAY_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.CYAN_ANCIENT_FABRIC, ConventionalBlockTags.CYAN_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.PURPLE_ANCIENT_FABRIC, ConventionalBlockTags.PURPLE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.BLUE_ANCIENT_FABRIC, ConventionalBlockTags.BLUE_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.BROWN_ANCIENT_FABRIC, ConventionalBlockTags.BROWN_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.GREEN_ANCIENT_FABRIC, ConventionalBlockTags.GREEN_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.RED_ANCIENT_FABRIC, ConventionalBlockTags.RED_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
+        add(ModBlocks.BLACK_ANCIENT_FABRIC, ConventionalBlockTags.BLACK_DYED, BlockTags.MINEABLE_WITH_PICKAXE, ModBlockTags.ANCIENT_FABRIC);
 
         add(ModBlocks.AMALGAM_SLAB, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.SLABS);
         add(ModBlocks.AMALGAM_STAIRS, BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.STAIRS);

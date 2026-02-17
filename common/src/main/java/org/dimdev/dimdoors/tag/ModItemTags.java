@@ -10,6 +10,8 @@ public class ModItemTags {
     public static final TagKey<Item> LIMBO_GAZE_DEFYING = of("limbo_gaze_defying");
     public static final TagKey<Item> DRIFTWOOD_LOGS = of("driftwood_logs");
     public static final TagKey<Item> DIMENSIONAL_DOORS = of("dimensional_doors");
+    public static final TagKey<Item> FABRIC = of("fabric");
+    public static final TagKey<Item> ANCIENT_FABRIC = of("ancient_fabric");
 
 
     private static TagKey<Item> of(String id) {

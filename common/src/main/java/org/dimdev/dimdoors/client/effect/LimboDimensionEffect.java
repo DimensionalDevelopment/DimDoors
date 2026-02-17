@@ -12,24 +12,10 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.joml.Matrix4f;
 
-public class LimboDimensionEffect extends DimensionSpecialEffects implements DimensionSpecialEffectsExtensions {
+public class LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
     public static final LimboDimensionEffect INSTANCE = new LimboDimensionEffect();
     private static final ResourceLocation MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
     private static final ResourceLocation SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
-
-    private LimboDimensionEffect() {
-        super(-30, true, SkyType.NONE, false, true);
-    }
-
-    @Override
-    public Vec3 getBrightnessDependentFogColor(Vec3 fogColor, float brightness) {
-        return fogColor;
-    }
-
-    @Override
-    public boolean isFoggyAt(int x, int y) {
-        return false;
-    }
 
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {

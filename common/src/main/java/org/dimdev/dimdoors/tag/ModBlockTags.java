@@ -7,7 +7,9 @@ import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModBlockTags {
     public static final TagKey<Block> DRIFTWOOD_LOGS = of("driftwood_logs");
-    public static final TagKey<Block> AUTO_GENERATED_DIMDOORS = of("auto_generated_dimdoors");
+    public static final TagKey<Block> DIMENSIONAL_DOORS = of("dimensional_doorss");
+    public static final TagKey<Block> FABRIC = of("fabric");
+    public static final TagKey<Block> ANCIENT_FABRIC = of("ancient_fabric");
 
 	public static final TagKey<Block> MINOR_PLANTS = of("minor_plants");
 	public static final TagKey<Block> DECAYS_TO_AIR = decaysTo("air");
