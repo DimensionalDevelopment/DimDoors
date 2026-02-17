@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-16T05:41:25.2262133	DimensionalDoors/Tags for minecraft:block
+// 1.21.1	2026-02-16T19:29:56.1495549	DimensionalDoors/Tags for minecraft:block
 13ad6af80078dbe7caffdebc0594632155af1aa6 data\c\tags\block\dyed\gray.json
 c685f5edd9e8377a4160b58d7420890dd9c96169 data\minecraft\tags\block\camel_sand_step_sound_blocks.json
 7192a6a29ad8a8a941224e401e813eb14fb752e2 data\minecraft\tags\block\trapdoors.json
@@ -20,9 +20,9 @@ be2545e69d231c3239fd210716eccad2d8ee9312 data\minecraft\tags\block\mineable\shov
 34cd16328f0fb57e37526790a4ca65bd8f9d6aef data\minecraft\tags\block\wooden_slabs.json
 67c212e116180f64d90633088dc793f748b2e88d data\minecraft\tags\block\mineable\pickaxe.json
 d65a176f5462fbe7e42a5d0627c6626c894fd9fb data\c\tags\block\sands.json
-ccab0f4d0740db60339ff5692c07f3d704a319b0 data\minecraft\tags\block\mineable\axe.json
-18ef648ae8bd9439c8cf73538a187b41516835cb data\minecraft\tags\block\wooden_stairs.json
+ef20e52044fab208a00a538c6fd458a0e11ce55d data\minecraft\tags\block\mineable\axe.json
 f953f53a8d813691d070c51e520a0262428a8f7b data\minecraft\tags\block\slabs.json
+18ef648ae8bd9439c8cf73538a187b41516835cb data\minecraft\tags\block\wooden_stairs.json
 325d6fcec61a0c65ffbce393b47d92a582118640 data\c\tags\block\dyed\red.json
 d2cc426a9dc65bd711b66fd3096c885df12aedfe data\c\tags\block\ores.json
 4e658256b68d127315b88dcb8987591d255b44fb data\minecraft\tags\block\unstable_bottom_center.json

@@ -164,10 +164,8 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
 	@Override
-	public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+	public @NotNull List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         state = getEffectiveBlockState(state);
-
-//        if(ExplosionCondition.INSTANCE.test(params.))
 
         return state.getBlock().getDrops(state, params);
 	}

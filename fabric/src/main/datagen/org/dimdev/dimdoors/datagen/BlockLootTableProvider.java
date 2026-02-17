@@ -40,8 +40,10 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         for (RegistrySupplier<Block> block : ModBlocks.FABRIC_BLOCKS.values()) {
             this.dropWhenSilkTouch(block.get());
         }
-        this.dropSelf(ModBlocks.GOLD_DOOR.get());
-        this.dropSelf(ModBlocks.QUARTZ_DOOR.get());
+        this.add(ModBlocks.GOLD_DOOR.get(), this::createDoorTable);
+        this.add(ModBlocks.QUARTZ_DOOR.get(), this::createDoorTable);
+        this.add(ModBlocks.STONE_DOOR.get(), this::createDoorTable);
+
         this.dropWhenSilkTouch(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR.get());
         this.dropWhenSilkTouch(ModBlocks.MARKING_PLATE.get());
 
@@ -81,15 +83,14 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         this.dropSelf(ModBlocks.DRIFTWOOD_BUTTON.get());
         this.dropSelf(ModBlocks.DRIFTWOOD_SLAB.get());
         this.dropSelf(ModBlocks.DRIFTWOOD_STAIRS.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_DOOR.get());
+        this.add(ModBlocks.DRIFTWOOD_DOOR.get(), this::createDoorTable);
         this.dropSelf(ModBlocks.DRIFTWOOD_TRAPDOOR.get());
         this.dropSelf(ModBlocks.AMALGAM_BLOCK.get());
-        this.dropSelf(ModBlocks.AMALGAM_DOOR.get());
+        this.add(ModBlocks.AMALGAM_DOOR.get(), this::createDoorTable);
         this.dropSelf(ModBlocks.AMALGAM_TRAPDOOR.get());
         this.dropSelf(ModBlocks.RUST.get());
         this.dropSelf(ModBlocks.AMALGAM_SLAB.get());
         this.dropSelf(ModBlocks.AMALGAM_STAIRS.get());
-        this.dropSelf(ModBlocks.AMALGAM_ORE.get());
         this.add(ModBlocks.AMALGAM_ORE.get(), (blockx) -> createOreDrop(blockx, ModItems.AMALGAM_LUMP.get()));
         this.add(ModBlocks.CLOD_ORE.get(), (blockx) -> createOreDrop(blockx, ModItems.CLOD.get()));
         this.dropSelf(ModBlocks.CLOD_BLOCK.get());

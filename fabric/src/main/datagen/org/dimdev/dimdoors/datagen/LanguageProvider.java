@@ -7,11 +7,19 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.StringUtils;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
+import org.dimdev.dimdoors.painting.ModPaintings;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -529,16 +537,26 @@ public class LanguageProvider extends FabricLanguageProvider {
         builder.add("category.dimdoors.tesselating", "Tesselating");
         builder.add("category.dimdoors.decays_into", "Decays Into");
 
-        builder.add("painting.dimdoors.limbo.title", "Limbo");
-        builder.add("painting.dimdoors.limbo.author", "Waterpicker");
-        builder.add("painting.dimdoors.portal.title", "Portal");
-        builder.add("painting.dimdoors.portal.author", "timetravellingBlockhead");
-        builder.add("painting.dimdoors.eyes.title", "Eyes");
-        builder.add("painting.dimdoors.eyes.author", "Anims");
-        builder.add("painting.dimdoors.freedom.title", "Freedom");
-        builder.add("painting.dimdoors.freedom.author", "ImprovInAFedora");
-        builder.add("painting.dimdoors.gateway_at_night.title", "Gateway At Night");
-        builder.add("painting.dimdoors.gateway_at_night.author", "timetravellingBlockhead");
+        add(builder, ModPaintings.LIMBO, "Limbo", "Waterpicker");
+        add(builder, ModPaintings.PORTAL, "Portal", "timetravellingBlockhead");
+        add(builder, ModPaintings.EYES, "Eyes", "Anims");
+        add(builder, ModPaintings.FREEDOM, "Freedom", "ImprovInAFedora");
+        add(builder, ModPaintings.GATEWAY_AT_NIGHT, "Gateway At Night", "timetravellingBlockhead");
+
+        add(builder, ModFluids.ETERNAL_FLUID, "Eternal Fluid");
+        add(builder, ModFluids.FLOWING_ETERNAL_FLUID, "Flowing Eternal Fluid");
+        add(builder, ModFluids.LEAK, "Leak");
+        add(builder, ModFluids.FLOWING_LEAK, "Flowing Leak");
+    }
+
+    private void add(TranslationBuilder builder, ResourceKey<PaintingVariant> key, String name, String author) {
+        var baseLang = key.location().toLanguageKey("painting");
+        builder.add(baseLang + ".title", name);
+        builder.add(baseLang + ".author", author);
+    }
+
+    private void add(TranslationBuilder builder, RegistrySupplier<? extends Fluid> supplier, String contents) {
+        builder.add(supplier.getId().toLanguageKey("fluid"), contents);
     }
 
     private void addBlockSet(TranslationBuilder builder, ModBlocks.DecayGroupSet set) {

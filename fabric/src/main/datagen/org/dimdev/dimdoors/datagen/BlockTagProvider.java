@@ -401,6 +401,8 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 ConventionalBlockTags.BLACK_DYED
         );
 
+        add(ModBlocks.TESSELATING_LOOM, BlockTags.MINEABLE_WITH_AXE);
+
         setupSet(ModBlocks.UNRAVELED_SET, BlockTags.MINEABLE_WITH_PICKAXE);
         setupSet(ModBlocks.DEEPSLATE_SET, BlockTags.MINEABLE_WITH_PICKAXE);
         setupSet(ModBlocks.END_STONE_SET, BlockTags.MINEABLE_WITH_PICKAXE);

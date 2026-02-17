@@ -9,6 +9,7 @@
     "dimdoors:driftwood_slab",
     "dimdoors:driftwood_stairs",
     "dimdoors:driftwood_door",
-    "dimdoors:driftwood_trapdoor"
+    "dimdoors:driftwood_trapdoor",
+    "dimdoors:tesselating_loom"
   ]
 }

@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 public class ModItemTags {
     public static final TagKey<Item> LIMBO_GAZE_DEFYING = of("limbo_gaze_defying");
     public static final TagKey<Item> DRIFTWOOD_LOGS = of("driftwood_logs");
+    public static final TagKey<Item> DIMENSIONAL_DOORS = of("dimensional_doors");
 
 
     private static TagKey<Item> of(String id) {
