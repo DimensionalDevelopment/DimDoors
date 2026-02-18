@@ -31,7 +31,7 @@ public class RelativeBlockSample {
     private final Map<BlockPos, BlockData> blockDataContainer;
     private final BiMap<CompoundTag, Vec3> entityContainer;
 
-    private class BlockData {
+    private static class BlockData {
         public BlockState state;
         public CompoundTag blockEntity;
         public Biome biome;

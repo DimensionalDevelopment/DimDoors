@@ -265,13 +265,10 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
         if (setupLootTables) // temp
             pocket.getBlockEntities().forEach((blockPos, blockEntity) -> {
-                if (/*setupLootTables &&*/ blockEntity instanceof Container inventory) { // comment in if needed
+                if (blockEntity instanceof Container inventory) { // comment in if needed
                     if (inventory.isEmpty()) {
                         if (blockEntity instanceof RandomizableContainerBlockEntity randomizableContainerBlock) {
                             TemplateUtils.setupLootTable(world, randomizableContainerBlock, LOGGER);
-//                            if (inventory.isEmpty()) {
-//                                LOGGER.error(", however Inventory is: empty!");
-//                            }
                         }
                     }
                 }

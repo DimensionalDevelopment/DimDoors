@@ -67,7 +67,10 @@ public class WaterLoggableDoorBlock extends DoorBlock implements SimpleWaterlogg
 	public BlockState getStateForPlacement(BlockPlaceContext ctx) {
         FluidState fluidState = ctx.getLevel().getFluidState(ctx.getClickedPos());
         boolean bl = fluidState.getType() == Fluids.WATER;
-        return (BlockState)super.getStateForPlacement(ctx).setValue(WATERLOGGED, bl);
+        var state = super.getStateForPlacement(ctx);
+        if(state != null) state = state.setValue(WATERLOGGED, bl);
+
+        return state;
 	}
 
     protected BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {

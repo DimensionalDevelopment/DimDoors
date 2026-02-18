@@ -1,15 +1,15 @@
 {
   "type": "dimdoors:schematic",
-  "id": "myth/cave",
+  "id": "dungeon/gap_hallway",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
-      "ids": [1],
+      "ids": [0],
       "rift_data": "dimdoors:pocket_entrance"
     },
     {
       "type": "dimdoors:rift_data",
-      "ids": [2],
+      "ids": [1],
       "rift_data": "dimdoors:default_dungeon"
     }
   ]

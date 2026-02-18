@@ -140,7 +140,7 @@ public class PocketCommand {
 	}
 
     public static CompletableFuture<Suggestions> getSuggestions(Set<Path<String>> paths, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(StreamUtils.execute(() -> paths.parallelStream().flatMap(path -> path.reduce(String::concat).stream())), builder);
+        return SharedSuggestionProvider.suggest(paths.stream().flatMap(path -> path.reduce(String::concat).stream()), builder);
     }
 
 

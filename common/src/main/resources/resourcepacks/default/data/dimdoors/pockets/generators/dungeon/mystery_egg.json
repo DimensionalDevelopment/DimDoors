@@ -1,16 +1,11 @@
 {
   "type": "dimdoors:schematic",
-  "id": "myth/cave",
+  "id": "dungeon/mystery_egg",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
       "ids": [1],
       "rift_data": "dimdoors:pocket_entrance"
-    },
-    {
-      "type": "dimdoors:rift_data",
-      "ids": [2],
-      "rift_data": "dimdoors:default_dungeon"
     }
   ]
 }

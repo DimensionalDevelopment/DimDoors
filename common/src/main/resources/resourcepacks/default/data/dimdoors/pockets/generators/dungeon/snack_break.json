@@ -1,9 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "myth/jungle_entrance",
-  "builder": {
-    "type": "dimdoors:pocket"
-  },
+  "id": "dungeon/snack_break",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
@@ -14,12 +11,6 @@
       "type": "dimdoors:rift_data",
       "ids": [2],
       "rift_data": "dimdoors:default_dungeon"
-    },
-    {
-      "type": "dimdoors:template",
-      "ids": [3],
-      "templateId": "dimdoors:myth/jungle_spire"
     }
-  ],
-  "tags": ["myth"]
+  ]
 }
