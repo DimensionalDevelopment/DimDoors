@@ -1,0 +1,19 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "myth/jungle_spire",
+  "builder": {
+    "type": "dimdoors:pocket"
+  },
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [1],
+      "rift_data": "dimdoors:pocket_entrance"
+    },
+    {
+      "type": "dimdoors:template",
+      "ids": [2],
+      "templateId": "dimdoors:myth/jungle_village"
+    }
+  ]
+}

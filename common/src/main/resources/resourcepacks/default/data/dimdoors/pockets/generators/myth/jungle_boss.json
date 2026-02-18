@@ -1,0 +1,14 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "myth/jungle_boss",
+  "builder": {
+    "type": "dimdoors:pocket"
+  },
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [1],
+      "rift_data": "dimdoors:pocket_entrance"
+    }
+  ]
+}
