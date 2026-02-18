@@ -51,7 +51,7 @@ public class SchemConverter {
     public static void main(String[] args) throws IOException {
         SharedConstants.setVersion(DetectedVersion.tryDetectVersion());
 
-        var path = Path.of("D:\\Git Repos\\DimDoors\\common\\src\\main\\resources\\resourcepacks\\classic\\data\\dimdoors\\pockets\\schematic\\");
+        var path = Path.of("D:\\Git Repos\\DimDoors\\common\\src\\main\\resources\\resourcepacks\\classic\\data\\dimdoors\\pockets\\schematic");
 
         Files.walk(path).filter(a -> a.toString().endsWith(".schem")).forEach(SchemConverter::convert);
 
@@ -75,25 +75,70 @@ public class SchemConverter {
             toVersion = SharedConstants.getCurrentVersion().getDataVersion().getVersion();
             fromVersion = NbtUtils.getDataVersion(nbt, toVersion);
 
+            var isDirty = false;
+            var lootTablePurged = false;
 
             if (nbt.contains("BlockEntities")) {
-                var value = nbt.getList("BlockEntities", Tag.TAG_COMPOUND).stream().map(CompoundTag.class::cast).map(SchemConverter::updateBlockEntity).collect(Collectors.toCollection(ListTag::new));
-                nbt.put("BlockEntities", value);
+//                var value = nbt.getList("BlockEntities", Tag.TAG_COMPOUND).stream().map(CompoundTag.class::cast).map(SchemConverter::updateBlockEntity).collect(Collectors.toCollection(ListTag::new));
+//                nbt.put("BlockEntities", value);
+
+                var value = nbt.getList("BlockEntities", 10);
+
+                for(var entry : value) {
+                    var compound = (CompoundTag) entry;
+
+                    if(compound.contains("LootTable")) {
+                        if(compound.getString("LootTable").equals("dimdoors:dungeon_chest")) {
+                            isDirty = true;
+                            compound.remove("LootTable");
+                            lootTablePurged = true;
+                        }
+                    }
+
+                    if(compound.contains("Items")) {
+                        var items = compound.getList("Items", 10);
+
+                        if(items.isEmpty()) {
+                            compound.remove("Items");
+                            isDirty = true;
+                            lootTablePurged = true;
+                        } else {
+
+
+
+                            for (var entry1 : items) {
+                                var item = (CompoundTag) entry1;
+
+                                if (item.contains("Count")) {
+                                    item.putInt("count", item.getInt("Count"));
+                                    isDirty = true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                NbtIo.writeCompressed(nbt, path);
+            }
+//
+//            if (nbt.contains("Entities")) {
+//                var value = nbt.getList("Entities", Tag.TAG_COMPOUND).stream().map(CompoundTag.class::cast).map(SchemConverter::updateEntity).collect(Collectors.toCollection(ListTag::new));
+//                nbt.put("Entities", value);
+//            }
+
+            if(fromVersion == toVersion) {
+                isDirty = true;
+                nbt.putInt("DataVersion", toVersion);
             }
 
-            if (nbt.contains("Entities")) {
-                var value = nbt.getList("Entities", Tag.TAG_COMPOUND).stream().map(CompoundTag.class::cast).map(SchemConverter::updateEntity).collect(Collectors.toCollection(ListTag::new));
-                nbt.put("Entities", value);
+            if(isDirty) {
+                NbtIo.writeCompressed(nbt, path);
+                if (lootTablePurged) System.out.println(path);
             }
-
-
-            nbt.putInt("DataVersion", toVersion);
-
-            NbtIo.writeCompressed(nbt, path);
         } catch (IOException e) {
-            System.out.println("Failed to convert path: " + path);
+//            System.out.println("Failed to convert path: " + path);
         } finally {
-            System.out.println("Succeeded to convert path: " + path);
+//            System.out.println("Succeeded to convert path: " + path);
         }
     }
 
