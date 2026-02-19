@@ -17,7 +17,7 @@
 * Fixed Tesselating Loom screen not opening on neoforge
 * Fixed setup_loot in pocket json config not applying. 
 * Purged references to dimdoors:dungeon_chest from schematics in preparation for proper usage of setup_loot later.
-* Revamped Pocket command to directly spawn a rift at the player with a specific pocket generator, pocket group, or virtual pocket.
+* Revamped Pocket command to directly spawn a rift at the player with a specific pocket generator, pocket group, or virtual pocket. Currently needs to be in one of the pocket dimensions to work.
 * Tweaked the rift configuraiton tool.
 * Fixed Void Why, Trap Rib Tunnel and Ruins Small Pressure Plate
 * Fixed Dimensional Door blocks just outright deleting when block underneath is deleted or its exploded.
