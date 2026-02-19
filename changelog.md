@@ -23,3 +23,4 @@
 * Fixed Dimensional Door blocks just outright deleting when block underneath is deleted or its exploded.
 * Fixed Dimensional Door blocks not showing proper break and mining particles.
 * Added a buttload of tags for blocks and items.
+* Made networking functional.
