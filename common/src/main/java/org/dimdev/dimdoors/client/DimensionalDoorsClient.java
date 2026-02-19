@@ -44,7 +44,7 @@ import org.dimdev.dimdoors.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.item.RaycastHelper;
-import org.dimdev.dimdoors.network.client.ClientPacketHandler;
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
@@ -76,7 +76,7 @@ public class DimensionalDoorsClient {
 
 	public static void init() {
 		Platform.getMod(DimensionalDoors.MOD_ID).registerConfigurationScreen(ModMenu::getConfigScreen);
-		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketHandler.sendPacket(new NetworkHandlerInitializedC2SPacket()));
+		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket()));
 
 		ClientGuiEvent.DEBUG_TEXT_LEFT.register(strings -> {
             assert Minecraft.getInstance().player != null;
@@ -115,8 +115,6 @@ public class DimensionalDoorsClient {
                 .setSaveConsumer(newValue -> Utils.setUnsafely(field, config, ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(newValue)))).build()), isResourceKeyOfType(Level.class));
 
 		registerListeners();
-
-		ClientPacketHandler.init();
 
 //		ModRecipeBookGroups.init();
     }

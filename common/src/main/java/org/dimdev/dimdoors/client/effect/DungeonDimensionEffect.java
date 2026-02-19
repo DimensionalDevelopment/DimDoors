@@ -1,20 +1,15 @@
 package org.dimdev.dimdoors.client.effect;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Axis;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
-import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.mixin.client.accessor.DimensionSpecialEffectsMixin;
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.world.pocket.type.addon.SkyAddon;
 import org.joml.Matrix4f;
 
@@ -27,7 +22,7 @@ public class DungeonDimensionEffect implements DimensionSpecialEffectsExtensions
 
     @Override
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
-        List<SkyAddon> skyAddons = PocketListenerUtil.applicableAddonsClient(SkyAddon.class, level, camera.getBlockPosition());
+        List<SkyAddon> skyAddons = ClientPacketListener.applicableAddonsClient(SkyAddon.class, level, camera.getBlockPosition());
         SkyAddon skyAddon = null;
         if (!skyAddons.isEmpty()) {
             // There should really only be one of these.

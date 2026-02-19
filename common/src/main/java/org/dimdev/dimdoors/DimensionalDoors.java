@@ -157,8 +157,6 @@ public class DimensionalDoors {
 		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar();
 		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(dimensionalDoorItemRegistrar);
 
-		ServerPacketHandler.init();
-
 		initBuiltinPacks();
 
 		registerServerLoader("pocket_loader", PocketLoader::reload);
@@ -180,7 +178,6 @@ public class DimensionalDoors {
     public static void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer, boolean loadAfterTags) {
 
     }
-
 
 	public static void registerServerLoader(String pocketLoader, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
         registerServerLoader(pocketLoader, consumer, false);

@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class UseBlockCallbackListener implements InteractionEvent.RightClickBloc
 	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face) {
 		List<InteractionEvent.RightClickBlock> applicableAddons;
 		var world = player.level();
-		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(InteractionEvent.RightClickBlock.class, world, pos);
+		if (world.isClientSide) applicableAddons = ClientPacketListener.applicableAddonsClient(InteractionEvent.RightClickBlock.class, world, pos);
 		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(InteractionEvent.RightClickBlock.class, world, pos);
 
 		for (InteractionEvent.RightClickBlock listener : applicableAddons) {

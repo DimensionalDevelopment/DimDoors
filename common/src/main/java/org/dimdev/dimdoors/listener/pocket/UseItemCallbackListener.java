@@ -6,6 +6,7 @@ import dev.architectury.event.events.common.InteractionEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class UseItemCallbackListener implements InteractionEvent.RightClickItem 
 	public CompoundEventResult<ItemStack> click(Player player, InteractionHand hand) {
 		List<InteractionEvent.RightClickItem> applicableAddons;
 		var world = player.level();
-		if (world.isClientSide) applicableAddons = PocketListenerUtil.applicableAddonsClient(InteractionEvent.RightClickItem.class, world, player.blockPosition());
+		if (world.isClientSide) applicableAddons = ClientPacketListener.applicableAddonsClient(InteractionEvent.RightClickItem.class, world, player.blockPosition());
 		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(InteractionEvent.RightClickItem.class, world, player.blockPosition());
 
 		for (InteractionEvent.RightClickItem listener : applicableAddons) {

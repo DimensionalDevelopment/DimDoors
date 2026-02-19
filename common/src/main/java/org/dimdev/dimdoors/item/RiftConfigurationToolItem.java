@@ -56,7 +56,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 				} else {
 					int id = IdCounter.getAndIncrement(stack);
 
-					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
+					ServerPacketHandler.sync((ServerPlayer) player, stack, hand);
 
 					EntityUtils.chat(player, Component.literal("Rift stripped of data and set to target id: " + id));
 
@@ -97,7 +97,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 				} else if (IdCounter.get(stack) != 0) {
 					IdCounter.set(stack, 0);
 
-					ServerPacketHandler.get((ServerPlayer) player).sync(stack, hand);
+					ServerPacketHandler.sync((ServerPlayer) player, stack, hand);
 
 					EntityUtils.chat(player, Component.literal("Counter has been reset."));
 					return CompoundEventResult.interruptTrue(false);

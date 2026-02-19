@@ -12,10 +12,6 @@ public record NetworkHandlerInitializedC2SPacket() implements CustomPacketPayloa
 	public static final StreamCodec<FriendlyByteBuf, NetworkHandlerInitializedC2SPacket> STREAM_CODEC = StreamCodec.unit(new NetworkHandlerInitializedC2SPacket());
 	public static final Type<NetworkHandlerInitializedC2SPacket> TYPE = new Type<NetworkHandlerInitializedC2SPacket>(DimensionalDoors.id("network_handler_initialized"));
 
-	public static void apply(NetworkHandlerInitializedC2SPacket packet, NetworkManager.PacketContext context) {
-		ServerPacketHandler.get((ServerPlayer) context.getPlayer()).onNetworkHandlerInitialized(packet);
-	}
-
 	@Override
 	public Type<NetworkHandlerInitializedC2SPacket> type() {
 		return TYPE;

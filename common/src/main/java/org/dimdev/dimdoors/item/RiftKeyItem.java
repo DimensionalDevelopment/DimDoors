@@ -84,7 +84,7 @@ public class RiftKeyItem extends Item {
 					entranceRiftBlockEntity.setLocked(false);
 					entranceRiftBlockEntity.setChanged();
 					EntityUtils.chat(player, Component.translatable("rifts.unlocked"));
-					ServerPacketHandler.get((ServerPlayer) player).sync(context.getItemInHand(), context.getHand());
+					ServerPacketHandler.sync((ServerPlayer) player, context.getItemInHand(), context.getHand());
 					return InteractionResult.SUCCESS;
 				} else {
 					EntityUtils.chat(player, Component.translatable("rifts.cantUnlock"));
@@ -94,7 +94,7 @@ public class RiftKeyItem extends Item {
 				add(context.getItemInHand(), rift.getId());
 				entranceRiftBlockEntity.setChanged();
 				EntityUtils.chat(player, Component.translatable("rifts.locked"));
-				ServerPacketHandler.get((ServerPlayer) player).sync(context.getItemInHand(), context.getHand());
+				ServerPacketHandler.sync((ServerPlayer) player, context.getItemInHand(), context.getHand());
  				return InteractionResult.SUCCESS;
 			}
 		}
