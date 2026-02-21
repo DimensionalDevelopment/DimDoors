@@ -88,6 +88,7 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
         pack.addProvider(LanguageProvider::new);
 
 		pack.addProvider(BlockTagProvider::new);
+        pack.addProvider(FluidTagProvider::new);
 		pack.addProvider(BiomeTagProvider::new);
 		pack.addProvider(ItemTagProvider::new);
         pack.addProvider(PaintingTagProvider::new);

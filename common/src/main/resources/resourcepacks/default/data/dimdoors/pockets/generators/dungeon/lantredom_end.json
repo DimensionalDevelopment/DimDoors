@@ -5,8 +5,10 @@
     "type": "dimdoors:pocket",
     "addons": [
       {
-        "type": "dimdoors:sky",
-        "effect": "minecraft:the_end"
+        "type": "dimdoors:environment",
+        "environment": {
+          "type": "dimdoors:end"
+        }
       }
     ]
   },

@@ -28,10 +28,10 @@ public class ModFluids {
 			.sourceTexture(DimensionalDoors.id("block/leak_still"))
 			.flowingTexture(DimensionalDoors.id("block/leak_flow"))
 			.overlayTexture(DimensionalDoors.id("block/leak_flow"));
-	public static final RegistrySupplier<? extends  Fluid> FLOWING_LEAK = register("flowing_leak_fluid", () -> new ArchitecturyFlowingFluid.Flowing(ModFluids.LEAK_ATTRIBUTES));
-	public static final RegistrySupplier<? extends FlowingFluid> LEAK = register("leak", () -> new ArchitecturyFlowingFluid.Source(ModFluids.LEAK_ATTRIBUTES));
+	public static final RegistrySupplier<Fluid> FLOWING_LEAK = register("flowing_leak_fluid", () -> new ArchitecturyFlowingFluid.Flowing(ModFluids.LEAK_ATTRIBUTES));
+	public static final RegistrySupplier<FlowingFluid> LEAK = register("leak", () -> new ArchitecturyFlowingFluid.Source(ModFluids.LEAK_ATTRIBUTES));
 
-	private static <T extends Fluid> RegistrySupplier<? extends T> register(String string, Supplier<T> fluid) {
+	private static <T extends Fluid> RegistrySupplier<T> register(String string, Supplier<T> fluid) {
 		return FLUIDS.register(DimensionalDoors.id(string), fluid);
 	}
 

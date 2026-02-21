@@ -24,7 +24,7 @@ public class NfVoidDimensionEffects extends VoidDimensionSpecialEffects {
 
     @Override
     public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
-        return renderer.renderClouds(level, ticks, partialTick, poseStack, camX, camY, camZ, projectionMatrix);
+        return renderer.renderClouds(level, ticks, partialTick, poseStack, camX, camY, camZ, modelViewMatrix, projectionMatrix);
     }
 
     @Override

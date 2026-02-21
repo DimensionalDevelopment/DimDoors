@@ -13,7 +13,7 @@ public interface DimensionSpecialEffectsExtensions {
 	 *
 	 * @return true to prevent vanilla cloud rendering
 	 */
-	default boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix) {
+	default boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
 		return true;
 	}
 

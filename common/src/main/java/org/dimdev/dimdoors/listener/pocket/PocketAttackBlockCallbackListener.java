@@ -6,23 +6,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import org.dimdev.dimdoors.network.client.ClientPacketListener;
-
-import java.util.List;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 public class PocketAttackBlockCallbackListener implements InteractionEvent.LeftClickBlock {
 	@Override
 	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction direction) {
-		List<InteractionEvent.LeftClickBlock> applicableAddons;
-		var level = player.level();
-		if (level.isClientSide) applicableAddons = ClientPacketListener.applicableAddonsClient(InteractionEvent.LeftClickBlock.class, level, pos);
-		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(InteractionEvent.LeftClickBlock.class, level, pos);
 
-		EventResult result;
-		for (InteractionEvent.LeftClickBlock listener : applicableAddons) {
-			result = listener.click(player, hand, pos, direction);
-			if (result != EventResult.pass()) return result;
-		}
-		return EventResult.pass();
+		var level = player.level();
+        return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get(), level, pos).map(addon -> addon.click(player, hand, pos, direction)).filter(result -> result != EventResult.pass()).orElse(EventResult.pass());
 	}
 }

@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
@@ -13,14 +12,8 @@ import dev.architectury.platform.Platform;
 import dev.architectury.utils.GameInstance;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
-import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicServerResourceProvider;
-import net.mehvahdjukaar.moonlight.api.resources.pack.PackGenerationStrategy;
-import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
-import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -55,7 +48,6 @@ import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
-import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -80,17 +72,12 @@ import org.dimdev.dimdoors.world.decay.results.DecayResultType;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
-import org.dimdev.dimdoors.world.pocket.type.addon.PreventBlockModificationAddon;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
@@ -215,17 +202,13 @@ public class DimensionalDoors {
 		BlockEvent.BREAK.register((level, pos, state, player, xp) -> {
 			if(player.isCreative()) return EventResult.pass();
 
-			var applicableAddons = PocketListenerUtil.applicableAddons(PreventBlockModificationAddon.class, level, pos);
-
-			return applicableAddons.isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
+            else return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get(), level, pos).isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
 		});
 
 		BlockEvent.PLACE.register((level, pos, state, placer) -> {
 			if(placer instanceof Player p && p.isCreative()) return EventResult.pass();
 
-				var applicableAddons = PocketListenerUtil.applicableAddons(PreventBlockModificationAddon.class, level, pos);
-
-				return applicableAddons.isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
+            else return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get(), level, pos).isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
 
 		});
 

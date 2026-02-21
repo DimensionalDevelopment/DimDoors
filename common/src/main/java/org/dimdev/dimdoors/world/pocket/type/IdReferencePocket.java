@@ -49,6 +49,8 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 	}
 
 	public static class IdReferencePocketBuilder extends AbstractPocketBuilder<IdReferencePocketBuilder, IdReferencePocket> {
+
+
 		private int referencedId = Integer.MIN_VALUE;
 
 		protected IdReferencePocketBuilder(AbstractPocketType<IdReferencePocket> type) {
@@ -74,7 +76,12 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 			return nbt;
 		}
 
-		public IdReferencePocketBuilder referencedId(int referencedId) {
+        @Override
+        public AbstractPocketType<?> getType() {
+            return AbstractPocketType.ID_REFERENCE.get();
+        }
+
+        public IdReferencePocketBuilder referencedId(int referencedId) {
 			this.referencedId = referencedId;
 			return this;
 		}

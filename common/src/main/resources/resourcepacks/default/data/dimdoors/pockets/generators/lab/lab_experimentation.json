@@ -5,9 +5,12 @@
     "type": "dimdoors:pocket",
     "addons": [
       {
-        "type": "dimdoors:sky",
-        "effect": "minecraft:overworld",
-        "dayTime": 6000
+        "type": "dimdoors:environment",
+        "environment": {
+          "type": "dimdoors:overworld",
+          "day_time": 6000,
+          "cloud_height": 250
+        }
       }
     ]
   },

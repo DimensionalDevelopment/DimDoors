@@ -39,6 +39,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.config.ModMenu;
+import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
@@ -93,6 +94,8 @@ public class DimensionalDoorsClient {
 //		ModFluids.initClient();
 		initBlockEntitiesClient();
 		ModBlocks.initClient();
+
+        EnvironmentAddonClient.init();
 
         var guiRegistry = AutoConfig.getGuiRegistry(ModConfig.class);
 

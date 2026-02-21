@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.network.client;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -19,11 +18,10 @@ import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
-import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
@@ -38,7 +36,7 @@ public class ClientPacketListener {
 	private static int gridSize = 1;
 	private static int pocketId = Integer.MIN_VALUE;
 	private static int pocketRange = 1;
-	private static List<AutoSyncedAddon> addons = new ArrayList<>();
+	private static Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon> addons = new HashMap<>();
 
     @ExpectPlatform
 	public static <T extends CustomPacketPayload> void sendPacket(T packet) {
@@ -71,7 +69,7 @@ public class ClientPacketListener {
 		return pocketRange;
 	}
 
-	public static List<AutoSyncedAddon> getAddons() {
+	public static Map<PocketAddon.PocketAddonType<?,?>, PocketAddon> getAddons() {
 		return addons;
 	}
 
@@ -88,7 +86,7 @@ public class ClientPacketListener {
 		gridSize = packet.gridSize();
 		pocketId = packet.pocketId();
 		pocketRange = packet.pocketRange();
-		addons = packet.addons();
+		addons = packet.addons().stream().collect(Collectors.toMap(PocketAddon::getType, Function.identity()));
 	}
 
 	public static void onMonolithAggroParticles(MonolithAggroParticlesPacket packet) {
@@ -123,13 +121,13 @@ public class ClientPacketListener {
 	}
 
     @Environment(EnvType.CLIENT)
-    public static <T> List<T> applicableAddonsClient(Class<T> clazz, Level world, BlockPos pos) {
-        if (!world.dimension().equals(getPocketWorld())) return Collections.emptyList();
+    public static <T extends PocketAddon> Optional<T> getAddonClient(PocketAddon.PocketAddonType<T, ?> type, Level world, BlockPos pos) {
+        if (!world.dimension().equals(pocketWorld)) return Optional.empty();
 
         int pocketId = GridUtil.gridPosToID(new GridUtil.GridPos(pos, getGridSize()));
         if (pocketId < getPocketId() || pocketId >= getPocketId() + getPocketRange()) {
-            return Collections.emptyList();
+            return Optional.empty();
         }
-        return getAddons().stream().filter(clazz::isInstance).map(clazz::cast).collect(Collectors.toList());
+        return Optional.ofNullable((T) addons.get(type));
     }
 }

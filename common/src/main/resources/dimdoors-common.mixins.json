@@ -38,6 +38,7 @@
     "client.BuiltinModelItemRendererMixin",
     "client.ClientPlayerInteractionManagerMixin",
     "client.InGameHudMixin",
+    "client.LevelRendererMixin",
     "client.ParticleEngineMixin",
     "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",

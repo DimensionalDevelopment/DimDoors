@@ -20,7 +20,6 @@ import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.dimdoors.world.pocket.type.addon.AutoSyncedAddon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -87,7 +86,7 @@ public class ServerPacketHandler {
                 pocketSyncDirty = false;
                 lastSyncedPocketId = pocket.getId();
                 lastSyncedPocketWorld = world.dimension();
-                return new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getAddonsInstanceOf(AutoSyncedAddon.class));
+                return new SyncPocketAddonsS2CPacket(world.dimension(), directory.getGridSize(), pocket.getId(), pocket.getRange(), pocket.getAddons(a -> a.getType().isSyncable()));
             }
 
             return null;

@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -166,6 +167,8 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
 		abstract public P fromNbt(CompoundTag nbt, HolderLookup.Provider provider);
 
 		abstract public CompoundTag toNbt(CompoundTag nbt, HolderLookup.Provider provider);
+
+        abstract public AbstractPocketType<?> getType();
 
 		/*
 		public P fromTag(CompoundTag tag) {

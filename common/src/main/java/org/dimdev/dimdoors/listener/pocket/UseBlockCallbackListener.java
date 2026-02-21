@@ -13,15 +13,15 @@ import java.util.List;
 public class UseBlockCallbackListener implements InteractionEvent.RightClickBlock {
 	@Override
 	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face) {
-		List<InteractionEvent.RightClickBlock> applicableAddons;
-		var world = player.level();
-		if (world.isClientSide) applicableAddons = ClientPacketListener.applicableAddonsClient(InteractionEvent.RightClickBlock.class, world, pos);
-		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(InteractionEvent.RightClickBlock.class, world, pos);
-
-		for (InteractionEvent.RightClickBlock listener : applicableAddons) {
-			EventResult result = listener.click(player, hand, pos, face);
-			if (result != EventResult.pass()) return result;
-		}
+//        TODO: Implment right click addon
+//
+//		var world = player.level();
+//        List<InteractionEvent.RightClickBlock> applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.RightClickBlock.class, world, pos);
+//
+//		for (InteractionEvent.RightClickBlock listener : applicableAddons) {
+//			EventResult result = listener.click(player, hand, pos, face);
+//			if (result != EventResult.pass()) return result;
+//		}
 		return EventResult.pass();
 	}
 }

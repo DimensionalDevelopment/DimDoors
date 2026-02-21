@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -18,16 +18,15 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 	public static String KEY = "pocket";
 
-	private final Map<ResourceLocation, PocketAddon> addons = new HashMap<>();
+	private final Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon> addons = new HashMap<>();
 	private int range = -1;
 	protected BoundingBox box;
 	public VirtualLocation virtualLocation;
@@ -59,12 +58,15 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		return (C) addons.get(id);
 	}
 
-	public <T> List<T> getAddonsInstanceOf(Class<T> clazz) {
+	public List<PocketAddon> getAddons(Predicate<PocketAddon> predicate) {
 		return addons.values().stream()
-				.filter(clazz::isInstance)
-				.map(clazz::cast)
+                .filter(predicate)
 				.collect(Collectors.toList());
 	}
+
+    public <T extends PocketAddon> Optional<T> getAddon(PocketAddon.PocketAddonType<T, ?>  type) {
+        return Optional.ofNullable((T) addons.get(type));
+    }
 
 	public boolean isInBounds(BlockPos pos) {
 		return this.box.isInside(pos);
@@ -111,9 +113,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		nbt.putIntArray("box", IntStream.of(this.box.minX(), this.box.minY(), this.box.minZ(), this.box.maxX(), this.box.maxY(), this.box.maxZ()).toArray());
 		nbt.put("virtualLocation", VirtualLocation.toNbt(this.virtualLocation));
 
-		ListTag addonsTag = new ListTag();
-		addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
-		if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
+        PocketAddon.LIST_CODEC.encodeStart(NbtOps.INSTANCE, new ArrayList<>(addons.values())).result().ifPresent(tag -> nbt.put("addons", tag));
 
 		return nbt;
 	}
@@ -131,11 +131,10 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 		this.box = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
 		this.virtualLocation = VirtualLocation.fromNbt(nbt.getCompound("virtualLocation"));
 
-		if (nbt.contains("addons", Tag.TAG_LIST)) {
-			for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
-				PocketAddon addon = PocketAddon.deserialize((CompoundTag) addonTag);
-				addons.put(addon.getId(), addon);
-			}
+        if (nbt.contains("addons", Tag.TAG_LIST)) {
+            PocketAddon.LIST_CODEC.parse(NbtOps.INSTANCE, nbt.get("addons")).result().ifPresent(addons -> {
+                addons.forEach(a -> a.addAddon(this.addons));
+            });
 		}
 
 		return this;
@@ -206,7 +205,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 	// TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
 	public static class PocketBuilder<P extends PocketBuilder<P, T>, T extends Pocket> extends AbstractPocketBuilder<P, T> {
-		private final Map<ResourceLocation, PocketAddon.PocketBuilderAddon<?>> addons = new HashMap<>();
+		private Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon.PocketBuilderAddon<?, ?>> addons = new HashMap<>();
 
 		private Vec3i origin = new Vec3i(0, 0, 0);
 		private Vec3i size = new Vec3i(0, 0, 0);
@@ -225,29 +224,32 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
 		// TODO: actually utilize fromTag/ toTag methods + implement them
 		public P fromNbt(CompoundTag nbt, HolderLookup.Provider provider) {
-			if (nbt.contains("addons", Tag.TAG_LIST)) {
-				for (Tag addonTag : nbt.getList("addons", Tag.TAG_COMPOUND)) {
-					PocketAddon.PocketBuilderAddon<?> addon = PocketAddon.deserializeBuilder((CompoundTag) addonTag);
-					addons.put(addon.getId(), addon);
-				}
+            if (nbt.contains("addons", Tag.TAG_LIST)) {
+                PocketAddon.LIST_BUILDER_CODEC.decode(NbtOps.INSTANCE, nbt.get("addons")).map(a -> a.getFirst()).result().ifPresent(tag -> {
+                    tag.forEach(addon -> this.addons.put(addon.getType(), addon));
+                });
 			}
 
 			return getSelf();
 		}
 
 		public CompoundTag toNbt(CompoundTag nbt, HolderLookup.Provider provider) {
-			ListTag addonsTag = new ListTag();
-			addonsTag.addAll(addons.values().stream().map(addon -> addon.toNbt(new CompoundTag())).collect(Collectors.toList()));
-			if (addonsTag.size() > 0) nbt.put("addons", addonsTag);
+            PocketAddon.LIST_BUILDER_CODEC.encodeStart(NbtOps.INSTANCE, this.addons.values().stream().toList()).result().ifPresent(tag -> {
+                nbt.put("addons", tag);
+            });
 
 			return nbt;
 		}
 
-		public boolean hasAddon(ResourceLocation id) {
+        public AbstractPocketType<?> getType() {
+            return AbstractPocketType.POCKET.get();
+        }
+
+        public boolean hasAddon(ResourceLocation id) {
 			return addons.containsKey(id);
 		}
 
-		protected <C extends PocketAddon.PocketBuilderAddon<?>> boolean addAddon(C addon) {
+		protected <C extends PocketAddon.PocketBuilderAddon<?, ?>> boolean addAddon(C addon) {
 			if (addon.applicable(this)) {
 				addon.addAddon(addons);
 				return true;
@@ -255,8 +257,8 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 			return false;
 		}
 
-		public <C extends PocketAddon.PocketBuilderAddon<?>> C getAddon(ResourceLocation id) {
-			return (C) addons.get(id);
+		public <C extends PocketAddon.PocketBuilderAddon<?, ?>> C getAddon(PocketAddon.PocketAddonType<?, ?> type) {
+			return (C) addons.get(type);
 		}
 
 		@Override

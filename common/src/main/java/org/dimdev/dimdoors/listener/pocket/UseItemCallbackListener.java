@@ -13,15 +13,16 @@ import java.util.List;
 public class UseItemCallbackListener implements InteractionEvent.RightClickItem {
 	@Override
 	public CompoundEventResult<ItemStack> click(Player player, InteractionHand hand) {
-		List<InteractionEvent.RightClickItem> applicableAddons;
-		var world = player.level();
-		if (world.isClientSide) applicableAddons = ClientPacketListener.applicableAddonsClient(InteractionEvent.RightClickItem.class, world, player.blockPosition());
-		else applicableAddons = PocketListenerUtil.applicableAddonsCommon(InteractionEvent.RightClickItem.class, world, player.blockPosition());
-
-		for (InteractionEvent.RightClickItem listener : applicableAddons) {
-			CompoundEventResult<ItemStack> result = listener.click(player, hand);
-			if (result.result() != EventResult.pass()) return result;
-		}
+//        TODO: Implment Right click controlling addon
+//		List<InteractionEvent.RightClickItem> applicableAddons;
+//		var world = player.level();
+//		if (world.isClientSide) applicableAddons = ClientPacketListener.getAddonClient(InteractionEvent.RightClickItem.class, world, player.blockPosition());
+//		else applicableAddons = PocketListenerUtil.getAddonCommon(InteractionEvent.RightClickItem.class, world, player.blockPosition());
+//
+//		for (InteractionEvent.RightClickItem listener : applicableAddons) {
+//			CompoundEventResult<ItemStack> result = listener.click(player, hand);
+//			if (result.result() != EventResult.pass()) return result;
+//		}
 		return CompoundEventResult.pass();
 	}
 }
