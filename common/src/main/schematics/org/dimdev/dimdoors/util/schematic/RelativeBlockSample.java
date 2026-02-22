@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class RelativeBlockSample {
-    public static boolean shouldUpdate;
+    public static boolean shouldUpdate = true;
     public final Schematic schematic;
     private final Map<BlockPos, BlockData> blockDataContainer;
     private final BiMap<CompoundTag, Vec3> entityContainer;
