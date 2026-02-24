@@ -1,11 +1,21 @@
 package org.dimdev.dimdoors.client;
 
-//import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.resources.ResourceLocation;
+import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.entity.MaskEntity;
+import org.jetbrains.annotations.NotNull;
 
-//@Environment(EnvType.CLIENT)
-//public class MaskRenderer extends GeoEntityRenderer<MaskEntity> {
-//    public MaskRenderer(EntityRendererFactory.Context ctx) {
-//        super(ctx, new MaskModel());
-//        this.shadowRadius = 0.7f;
-//    }
-//}
+public class MaskRenderer extends MobRenderer<MaskEntity, MaskModel> {
+    private static final ResourceLocation TEXTURE = DimensionalDoors.id("textures/mob/mask/mask.png");
+
+    public MaskRenderer(EntityRendererProvider.Context ctx) {
+        super(ctx, new MaskModel(ctx), 0.7f);
+    }
+
+    @Override
+    public @NotNull ResourceLocation getTextureLocation(MaskEntity entity) {
+        return TEXTURE;
+    }
+}

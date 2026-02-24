@@ -129,12 +129,7 @@ public class DimensionalDoorsClient {
 	@Environment(EnvType.CLIENT)
 	public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer) {
 		consumer.accept(ModEntityTypes.MONOLITH.get(), MonolithRenderer::new);
-        consumer.accept(ModEntityTypes.MASK.get(), context -> new EntityRenderer<MaskEntity>(context) {
-			@Override
-			public ResourceLocation getTextureLocation(MaskEntity entity) {
-				return ResourceLocation.parse("blep");
-			}
-		});
+        consumer.accept(ModEntityTypes.MASK.get(), MaskRenderer::new);
 	}
 
 	@Environment(EnvType.CLIENT)

@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.entity;
 
-//import org.dimdev.dimdoors.client.MaskRenderer;
-
 import dev.architectury.registry.level.entity.EntityAttributeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
