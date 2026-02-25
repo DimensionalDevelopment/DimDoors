@@ -138,7 +138,7 @@ public class MaskAnimations {
                     position(0.5f, -1f, 0f, 1f),
                     position(0.7917f, 0f, 0f, 0f)
             ))
-            .addAnimation("middleftlimb", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+            .addAnimation("middleleftlimb", new AnimationChannel(AnimationChannel.Targets.ROTATION,
                     rotation(0.0f, 0, 0, 0),
                     rotation(0.5f, 0, 100, 0),
                     rotation(0.7917f, 0, -45, 0),

@@ -27,10 +27,10 @@ public class ModEntityTypes {
     public static void init() {
         ENTITY_TYPES.register();
         EntityAttributeRegistry.register(MONOLITH, MonolithEntity::createMobAttributes);
-        EntityAttributeRegistry.register(MASK, MonolithEntity::createMobAttributes);
+        EntityAttributeRegistry.register(MASK, MaskEntity::createAttributes);
     }
 
     private static <E extends Entity> RegistrySupplier<EntityType<E>> register(String id, EntityType.EntityFactory<E> factory, float width, float height, boolean fixed) {
-        return ENTITY_TYPES.register(id, () -> EntityType.Builder.of(factory, MobCategory.MONSTER).sized(width, height).canSpawnFarFromPlayer().fireImmune().build(id));
+        return ENTITY_TYPES.register(id, () -> EntityType.Builder.of(factory, MobCategory.MONSTER).sized(width, height).clientTrackingRange(64).canSpawnFarFromPlayer().fireImmune().build(id));
     }
 }
