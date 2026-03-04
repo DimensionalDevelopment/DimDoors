@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.entity;
+package org.dimdev.dimdoors.entity.mask;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,56 +31,26 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 public class MaskEntity extends PathfinderMob {
+    static final EntityDataAccessor<Byte> MASK_MODE = SynchedEntityData.defineId(MaskEntity.class, EntityDataSerializers.BYTE);
 
-    private static final EntityDataAccessor<Byte> DATA_MODE = SynchedEntityData.defineId(MaskEntity.class, EntityDataSerializers.BYTE);
+    private MaskCounters counters;
 
-    private static final byte MODE_GUARD = 0;
-    private static final byte MODE_PATROL = 1;
-    private static final byte MODE_WANDER = 2;
-    private static final byte MODE_CHASE = 3;
-    private static final byte MODE_SPOTTING = 4;
-
-    // Detection/acquisition range (used by canSeePlayer / targeting)
-    private static final double MAX_DETECTION_DISTANCE_SQ = 36.0;
-
-    // Chase leash range (used only to abort chase + teleport home)
-    private static final double TELEPORT_BACK_DISTANCE_SQ = 2500.0;
-
-    private static final int SPOTTING_DURATION_TICKS = 33;
-    private static final double CATCH_DISTANCE_SQ = 2.25;
-    private static final int CHASE_BLOCK_BREAK_INTERVAL = 6;
-    private static final double BLOCK_BREAK_PROBE_DISTANCE = 0.8;
-    private static final int GUARD_WALL_CHECK_DISTANCE = 3;
-    private static final int GUARD_CANDIDATE_ATTEMPTS = 8;
-    private static final int WANDER_WALL_CLEARANCE = 2;
-    private static final int WANDER_CANDIDATE_ATTEMPTS = 8;
-    private static final int PATROL_BLOCK_BREAK_INTERVAL = 6;
-    private static final double PATROL_BLOCK_BREAK_PROBE_DISTANCE = 0.6;
-    private static final double CHASE_MAX_HORIZONTAL_SPEED = 0.12;
-    private static final double CHASE_ACCEL_PER_TICK = 0.01;
-    private static final int PASSIVE_SCAN_INTERVAL_TICKS = 10;
-    private static final int LOST_SIGHT_GIVE_UP_TICKS = 60;
-    private static final double ALERT_RADIUS_SQ = 100.0;
-
-    private int lostSightTicks = 0;
-    private int spottingLostSightTicks = 0;
-    private static final int SPOTTING_LOST_SIGHT_CANCEL_TICKS = 10;
 
     public final AnimationState idleState = new AnimationState();
     public final AnimationState spottedState = new AnimationState();
 
+    private int lostSightTicks = 0;
+    private int spottingLostSightTicks = 0;
     private int spottingTicks = 0;
     private int chaseTicks = 0;
-    private static final int MAX_CHASE_TICKS = 400;
     private int passiveScanTicks = 0;
+    private int patrolPauseTicks = 0;
 
     private BlockPos homePos;
     private BlockPos patrolTargetA;
     private BlockPos patrolTargetB;
     private int patrolIndex = 0;
-    private byte resumeMode = MODE_GUARD;
-    private int patrolPauseTicks = 0;
-    private static final int PATROL_PAUSE_DURATION_TICKS = 40;
+    private MaskMode resumeMode = MaskMode.GUARD;
 
     protected MaskEntity(EntityType<? extends MaskEntity> entityType, Level level) {
         super(entityType, level);
@@ -94,7 +64,7 @@ public class MaskEntity extends PathfinderMob {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
-        builder.define(DATA_MODE, MODE_GUARD);
+        builder.define(MASK_MODE, (byte) MaskMode.GUARD.ordinal());
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -115,129 +85,134 @@ public class MaskEntity extends PathfinderMob {
         super.tick();
 
         if (this.level().isClientSide) {
-            spottedState.animateWhen(getMode() == MODE_SPOTTING, this.tickCount);
-            idleState.animateWhen(getMode() != MODE_SPOTTING, this.tickCount);
+            spottedState.animateWhen(getMode() == MaskMode.SPOTTING, this.tickCount);
+            idleState.animateWhen(getMode() != MaskMode.SPOTTING, this.tickCount);
             return;
         }
 
-        if (getMode() == MODE_GUARD || getMode() == MODE_PATROL || getMode() == MODE_WANDER) {
-            passiveScanTicks++;
+        switch (getMode()) {
+            case MaskMode.SPOTTING -> tickSpotting();
+            case MaskMode.CHASE -> tickChase();
+            default -> tickOther();
+        }
+    }
 
-            if (passiveScanTicks >= PASSIVE_SCAN_INTERVAL_TICKS) {
-                passiveScanTicks = 0;
+    private void tickOther() {
+        passiveScanTicks++;
 
-                if (this.getTarget() == null) {
-                    Player nearest = findNearestDetectablePlayer();
-                    if (nearest != null) {
-                        this.setTarget(nearest);
-                        alertNearbyMasks(nearest);
-                    }
+        if (passiveScanTicks >= MaskContaints.PASSIVE_SCAN_INTERVAL_TICKS) {
+            passiveScanTicks = 0;
+
+            if (this.getTarget() == null) {
+                Player nearest = findNearestDetectablePlayer();
+                if (nearest != null) {
+                    this.setTarget(nearest);
+                    alertNearbyMasks(nearest);
                 }
             }
         }
+    }
 
-        if (getMode() == MODE_SPOTTING) {
-            LivingEntity target = this.getTarget();
+    private void tickChase() {
+        chaseTicks++;
 
-            if (!(target instanceof Player player)) {
-                super.setTarget(null);
-                spottingTicks = 0;
-                spottingLostSightTicks = 0;
-                lostSightTicks = 0;
-                passiveScanTicks = 0;
-                setMode(resumeMode);
-                return;
-            }
+        Player nearest = findNearestChasePlayer();
+        if (nearest != null && nearest != this.getTarget()) {
+            super.setTarget(nearest);
+        }
 
-            if (player.isCreative() || player.isSpectator()) {
-                super.setTarget(null);
-                spottingTicks = 0;
-                spottingLostSightTicks = 0;
-                lostSightTicks = 0;
-                passiveScanTicks = 0;
-                setMode(resumeMode);
-                return;
-            }
-
-            faceTargetInstantly(player);
-
-            boolean visible = canSeePlayer(player);
-            if (visible) {
-                spottingLostSightTicks = 0;
-            } else {
-                spottingLostSightTicks++;
-            }
-
-            if (spottingLostSightTicks > SPOTTING_LOST_SIGHT_CANCEL_TICKS) {
-                super.setTarget(null);
-                spottingTicks = 0;
-                spottingLostSightTicks = 0;
-                lostSightTicks = 0;
-                passiveScanTicks = 0;
-                setMode(resumeMode);
-                return;
-            }
-
-            if (spottingTicks >= SPOTTING_DURATION_TICKS) {
-                Vec3 v = this.getDeltaMovement();
-                this.setDeltaMovement(0.0, v.y, 0.0);
-                chaseTicks = 0;
-                lostSightTicks = 0;
-                passiveScanTicks = 0;
-                setMode(MODE_CHASE);
-                spottingTicks = 0;
-                spottingLostSightTicks = 0;
-                return;
-            }
-
-            spottingTicks++;
+        Player target = this.getTarget() instanceof Player p ? p : null;
+        if (target == null) {
+            resetChase();
             return;
         }
 
-        if (getMode() == MODE_CHASE) {
-            chaseTicks++;
-
-            Player nearest = findNearestChasePlayer();
-            if (nearest != null && nearest != this.getTarget()) {
-                super.setTarget(nearest);
-            }
-
-            Player target = this.getTarget() instanceof Player p ? p : null;
-            if (target == null) {
-                resetChase();
-                return;
-            }
-
-            if (target.isCreative() || target.isSpectator()) {
-                resetChase();
-                return;
-            }
-
-            faceTargetInstantly(target);
-
-            boolean insideSolid = isChaseInsideSolid();
-            boolean visible = canSeePlayer(target);
-
-            if (visible || insideSolid) {
-                lostSightTicks = 0;
-            } else {
-                lostSightTicks++;
-            }
-
-            if (lostSightTicks > LOST_SIGHT_GIVE_UP_TICKS || chaseTicks > MAX_CHASE_TICKS || this.distanceToSqr(target) > TELEPORT_BACK_DISTANCE_SQ) {
-                resetChase();
-                return;
-            }
-
-            if (this.distanceToSqr(target) < CATCH_DISTANCE_SQ) {
-                catchPlayer(target);
-                return;
-            }
-
-            if (insideSolid && this.tickCount % 5 == 0) {
-                this.level().playSound(null, this.blockPosition(), SoundEvents.STONE_HIT, SoundSource.HOSTILE, 0.5F, 0.8F);
-            }
+        if (target.isCreative() || target.isSpectator()) {
+            resetChase();
+            return;
         }
+
+        faceTargetInstantly(target);
+
+        boolean insideSolid = isChaseInsideSolid();
+        boolean visible = canSeePlayer(target);
+
+        if (visible || insideSolid) {
+            lostSightTicks = 0;
+        } else {
+            lostSightTicks++;
+        }
+
+        if (lostSightTicks > MaskContaints.LOST_SIGHT_GIVE_UP_TICKS || chaseTicks > MaskContaints.MAX_CHASE_TICKS || this.distanceToSqr(target) > MaskContaints.TELEPORT_BACK_DISTANCE_SQ) {
+            resetChase();
+            return;
+        }
+
+        if (this.distanceToSqr(target) < MaskContaints.CATCH_DISTANCE_SQ) {
+            catchPlayer(target);
+            return;
+        }
+
+        if (insideSolid && this.tickCount % 5 == 0) {
+            this.level().playSound(null, this.blockPosition(), SoundEvents.STONE_HIT, SoundSource.HOSTILE, 0.5F, 0.8F);
+        }
+    }
+
+    private void tickSpotting() {
+        LivingEntity target = this.getTarget();
+
+        if (!(target instanceof Player player)) {
+            super.setTarget(null);
+            spottingTicks = 0;
+            spottingLostSightTicks = 0;
+            lostSightTicks = 0;
+            passiveScanTicks = 0;
+            setMode(resumeMode);
+            return;
+        }
+
+        if (player.isCreative() || player.isSpectator()) {
+            super.setTarget(null);
+            spottingTicks = 0;
+            spottingLostSightTicks = 0;
+            lostSightTicks = 0;
+            passiveScanTicks = 0;
+            setMode(resumeMode);
+            return;
+        }
+
+        faceTargetInstantly(player);
+
+        boolean visible = canSeePlayer(player);
+        if (visible) {
+            spottingLostSightTicks = 0;
+        } else {
+            spottingLostSightTicks++;
+        }
+
+        if (spottingLostSightTicks > MaskContaints.SPOTTING_LOST_SIGHT_CANCEL_TICKS) {
+            super.setTarget(null);
+            spottingTicks = 0;
+            spottingLostSightTicks = 0;
+            lostSightTicks = 0;
+            passiveScanTicks = 0;
+            setMode(resumeMode);
+            return;
+        }
+
+        if (spottingTicks >= MaskContaints.SPOTTING_DURATION_TICKS) {
+            Vec3 v = this.getDeltaMovement();
+            this.setDeltaMovement(0.0, v.y, 0.0);
+            chaseTicks = 0;
+            lostSightTicks = 0;
+            passiveScanTicks = 0;
+            setMode(MaskMode.CHASE);
+            spottingTicks = 0;
+            spottingLostSightTicks = 0;
+            return;
+        }
+
+        spottingTicks++;
     }
 
     private void resetChase() {
@@ -262,16 +237,16 @@ public class MaskEntity extends PathfinderMob {
         this.setDeltaMovement(0.0, v.y, 0.0);
     }
 
-    public void configurePassiveMode(byte mode, BlockPos homePos) {
+    public void configurePassiveMode(MaskMode mode, BlockPos homePos) {
         this.homePos = homePos;
         this.patrolPauseTicks = 0;
 
-        if (mode == MODE_GUARD || mode == MODE_WANDER) {
+        if (mode == MaskMode.GUARD || mode == MaskMode.WANDER) {
             this.resumeMode = mode;
             this.setMode(mode);
         } else {
-            this.resumeMode = MODE_GUARD;
-            this.setMode(MODE_GUARD);
+            this.resumeMode = MaskMode.GUARD;
+            this.setMode(MaskMode.GUARD);
         }
     }
 
@@ -281,15 +256,15 @@ public class MaskEntity extends PathfinderMob {
         this.patrolTargetB = patrolTargetB;
         this.patrolIndex = 0;
         this.patrolPauseTicks = 0;
-        this.resumeMode = MODE_PATROL;
-        this.setMode(MODE_PATROL);
+        this.resumeMode = MaskMode.PATROL;
+        this.setMode(MaskMode.PATROL);
     }
 
     private void tryBreakBlockInPath() {
         Vec3 movement = this.getDeltaMovement();
         if (movement.lengthSqr() < 1.0E-6) return;
 
-        Vec3 dir = movement.normalize().scale(BLOCK_BREAK_PROBE_DISTANCE);
+        Vec3 dir = movement.normalize().scale(MaskContaints.BLOCK_BREAK_PROBE_DISTANCE);
 
         BlockPos pos = BlockPos.containing(position().add(dir));
         BlockState state = this.level().getBlockState(pos);
@@ -307,7 +282,7 @@ public class MaskEntity extends PathfinderMob {
     private boolean canSeePlayer(LivingEntity target) {
         if (!(target instanceof Player player) || player.isCreative() || player.isSpectator()) return false;
         double distSq = this.distanceToSqr(player);
-        if (distSq > MAX_DETECTION_DISTANCE_SQ) return false;
+        if (distSq > MaskContaints.MAX_DETECTION_DISTANCE_SQ) return false;
         Vec3 eye = this.getEyePosition();
         Vec3 targetEye = player.getEyePosition();
         HitResult hit = this.level().clip(new ClipContext(eye, targetEye, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
@@ -341,37 +316,37 @@ public class MaskEntity extends PathfinderMob {
         Vec3 v = this.getDeltaMovement();
         this.setDeltaMovement(0.0, v.y, 0.0);
 
-        setMode(MODE_SPOTTING);
+        setMode(MaskMode.SPOTTING);
     }
 
-    public byte getMode() {
-        return this.entityData.get(DATA_MODE);
+    public MaskMode getMode() {
+        return MaskMode.values()[this.entityData.get(MASK_MODE)];
     }
 
-    public void setPassiveMode(byte mode) {
-        if (mode == MODE_GUARD || mode == MODE_PATROL || mode == MODE_WANDER) {
+    public void setPassiveMode(MaskMode mode) {
+        if (mode == MaskMode.GUARD || mode == MaskMode.PATROL || mode == MaskMode.WANDER) {
             this.resumeMode = mode;
             this.setMode(mode);
         } else {
-            this.resumeMode = MODE_GUARD;
-            this.setMode(MODE_GUARD);
+            this.resumeMode = MaskMode.GUARD;
+            this.setMode(MaskMode.GUARD);
         }
     }
 
-    public void setMode(byte mode) {
-        byte prev = getMode();
-        this.entityData.set(DATA_MODE, mode);
+    public void setMode(MaskMode mode) {
+        MaskMode prev = getMode();
+        this.entityData.set(MASK_MODE, (byte) mode.ordinal());
 
         if (prev != mode) {
             passiveScanTicks = 0;
         }
 
-        if (mode == MODE_PATROL && prev != MODE_PATROL) {
+        if (mode == MaskMode.PATROL && prev != MaskMode.PATROL) {
             patrolPauseTicks = 0;
         }
 
-        this.setGlowingTag(mode == MODE_CHASE);
-        this.noPhysics = mode == MODE_CHASE;
+        this.setGlowingTag(mode == MaskMode.CHASE);
+        this.noPhysics = mode == MaskMode.CHASE;
     }
 
     private void alertNearbyMasks(Player player) {
@@ -380,7 +355,7 @@ public class MaskEntity extends PathfinderMob {
                 continue;
             }
 
-            if (this.distanceToSqr(other) <= ALERT_RADIUS_SQ) {
+            if (this.distanceToSqr(other) <= MaskContaints.ALERT_RADIUS_SQ) {
                 other.setTarget(player);
             }
         }
@@ -391,8 +366,8 @@ public class MaskEntity extends PathfinderMob {
             return;
         }
 
-        byte currentMode = getMode();
-        if (currentMode == MODE_GUARD || currentMode == MODE_PATROL || currentMode == MODE_WANDER) {
+        MaskMode currentMode = getMode();
+        if (currentMode == MaskMode.GUARD || currentMode == MaskMode.PATROL || currentMode == MaskMode.WANDER) {
             resumeMode = currentMode;
         }
 
@@ -409,7 +384,7 @@ public class MaskEntity extends PathfinderMob {
         }
 
         this.getLookControl().setLookAt(player, 10.0F, 10.0F);
-        setMode(MODE_CHASE);
+        setMode(MaskMode.CHASE);
     }
 
     private Player findNearestPlayerIgnoringLineOfSight(double maxDistSq) {
@@ -432,7 +407,7 @@ public class MaskEntity extends PathfinderMob {
     }
 
     private Player findNearestChasePlayer() {
-        return findNearestPlayerIgnoringLineOfSight(TELEPORT_BACK_DISTANCE_SQ);
+        return findNearestPlayerIgnoringLineOfSight(MaskContaints.TELEPORT_BACK_DISTANCE_SQ);
     }
 
     private boolean isChaseInsideSolid() {
@@ -454,11 +429,11 @@ public class MaskEntity extends PathfinderMob {
 
         if (target != null) {
             byte currentMode = getMode();
-            if (currentMode != MODE_SPOTTING && currentMode != MODE_CHASE) {
-                if (currentMode == MODE_GUARD || currentMode == MODE_PATROL || currentMode == MODE_WANDER) {
+            if (currentMode != MaskMode.SPOTTING && currentMode != MaskMode.CHASE) {
+                if (currentMode == MaskMode.GUARD || currentMode == MaskMode.PATROL || currentMode == MaskMode.WANDER) {
                     resumeMode = currentMode;
                 } else {
-                    resumeMode = MODE_GUARD;
+                    resumeMode = MaskMode.GUARD;
                 }
                 triggerSpotted();
             }
@@ -537,7 +512,7 @@ public class MaskEntity extends PathfinderMob {
 
     private Player findNearestDetectablePlayer() {
         Player best = null;
-        double bestDistSq = MAX_DETECTION_DISTANCE_SQ;
+        double bestDistSq = MaskContaints.MAX_DETECTION_DISTANCE_SQ;
 
         for (Player player : this.level().players()) {
             if (!canSeePlayer(player)) {
@@ -585,9 +560,9 @@ public class MaskEntity extends PathfinderMob {
 
             boolean insideSolid = mask.isChaseInsideSolid();
             double accelScale = insideSolid ? 0.35 : 1.0;
-            double speedCap = insideSolid ? (CHASE_MAX_HORIZONTAL_SPEED * 0.35) : CHASE_MAX_HORIZONTAL_SPEED;
+            double speedCap = insideSolid ? (MaskContaints.CHASE_MAX_HORIZONTAL_SPEED * 0.35) : MaskContaints.CHASE_MAX_HORIZONTAL_SPEED;
 
-            Vec3 accel = toTarget.normalize().scale(CHASE_ACCEL_PER_TICK * accelScale);
+            Vec3 accel = toTarget.normalize().scale(MaskContaints.CHASE_ACCEL_PER_TICK * accelScale);
             Vec3 vel = mask.getDeltaMovement().add(accel);
 
             double vx = vel.x;
@@ -606,7 +581,7 @@ public class MaskEntity extends PathfinderMob {
 
         private void executeGuard() {
             if (homePos != null && mask.tickCount % 60 == 0) {
-                for (int attempt = 0; attempt < GUARD_CANDIDATE_ATTEMPTS; attempt++) {
+                for (int attempt = 0; attempt < MaskContaints.GUARD_CANDIDATE_ATTEMPTS; attempt++) {
                     double dx = (mask.random.nextDouble() - 0.5) * 3;
                     double dy = (mask.random.nextDouble() - 0.5) * 1;
                     double dz = (mask.random.nextDouble() - 0.5) * 3;
@@ -628,7 +603,7 @@ public class MaskEntity extends PathfinderMob {
 
         private void executeWander() {
             if (mask.random.nextInt(30) == 0) {
-                for (int attempt = 0; attempt < WANDER_CANDIDATE_ATTEMPTS; attempt++) {
+                for (int attempt = 0; attempt < MaskContaints.WANDER_CANDIDATE_ATTEMPTS; attempt++) {
                     double dx = (mask.random.nextDouble() - 0.5) * 20;
                     double dy = (mask.random.nextDouble() - 0.5) * 5;
                     double dz = (mask.random.nextDouble() - 0.5) * 20;
@@ -661,7 +636,7 @@ public class MaskEntity extends PathfinderMob {
 
             if (mask.distanceToSqr(Vec3.atCenterOf(target)) < 4) {
                 if (patrolPauseTicks <= 0) {
-                    patrolPauseTicks = PATROL_PAUSE_DURATION_TICKS;
+                    patrolPauseTicks = MaskContaints.PATROL_PAUSE_DURATION_TICKS;
                 }
 
                 patrolPauseTicks--;
@@ -684,9 +659,9 @@ public class MaskEntity extends PathfinderMob {
 
             mask.getMoveControl().setWantedPosition(tx, ty, tz, 0.2);
 
-            if (mask.tickCount % PATROL_BLOCK_BREAK_INTERVAL == 0) {
-                if (mask.tryBreakBlockToward(tx, ty, tz, PATROL_BLOCK_BREAK_PROBE_DISTANCE)) {
-                    Player nearest = mask.findNearestPlayerIgnoringLineOfSight(MAX_DETECTION_DISTANCE_SQ);
+            if (mask.tickCount % MaskContaints.PATROL_BLOCK_BREAK_INTERVAL == 0) {
+                if (mask.tryBreakBlockToward(tx, ty, tz, MaskContaints.PATROL_BLOCK_BREAK_PROBE_DISTANCE)) {
+                    Player nearest = mask.findNearestPlayerIgnoringLineOfSight(MaskContaints.MAX_DETECTION_DISTANCE_SQ);
                     if (nearest != null) {
                         mask.setTarget(nearest);
                         mask.alertNearbyMasks(nearest);
@@ -700,10 +675,10 @@ public class MaskEntity extends PathfinderMob {
             byte mode = mask.getMode();
 
             switch (mode) {
-                case MODE_CHASE -> executeChase();
-                case MODE_GUARD -> executeGuard();
-                case MODE_PATROL -> executePatrol();
-                case MODE_WANDER -> executeWander();
+                case MaskMode.CHASE -> executeChase();
+                case MaskMode.GUARD -> executeGuard();
+                case MaskMode.PATROL -> executePatrol();
+                case MaskMode.WANDER -> executeWander();
                 default -> {}
             }
         }
@@ -712,9 +687,9 @@ public class MaskEntity extends PathfinderMob {
     private boolean isTooCloseToWall(double x, double y, double z) {
         BlockPos center = BlockPos.containing(x, y, z);
 
-        for (int dx = -WANDER_WALL_CLEARANCE; dx <= WANDER_WALL_CLEARANCE; dx++) {
+        for (int dx = -MaskContaints.WANDER_WALL_CLEARANCE; dx <= MaskContaints.WANDER_WALL_CLEARANCE; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                for (int dz = -WANDER_WALL_CLEARANCE; dz <= WANDER_WALL_CLEARANCE; dz++) {
+                for (int dz = -MaskContaints.WANDER_WALL_CLEARANCE; dz <= MaskContaints.WANDER_WALL_CLEARANCE; dz++) {
                     if (dx == 0 && dy == 0 && dz == 0) continue;
 
                     BlockPos p = center.offset(dx, dy, dz);
@@ -740,7 +715,7 @@ public class MaskEntity extends PathfinderMob {
 
         Vec3 forward = dir.normalize();
 
-        for (int i = 1; i <= GUARD_WALL_CHECK_DISTANCE; i++) {
+        for (int i = 1; i <= MaskContaints.GUARD_WALL_CHECK_DISTANCE; i++) {
             BlockPos p =  BlockPos.containing(this.position().add(forward.scale(i)));
             BlockState s = this.level().getBlockState(p);
             if (!s.isAir() && s.isSolid()) {
@@ -790,7 +765,7 @@ public class MaskEntity extends PathfinderMob {
 
         @Override
         public void tick() {
-            boolean chase = MaskEntity.this.getMode() == MODE_CHASE;
+            boolean chase = MaskEntity.this.getMode() == MaskMode.CHASE;
             boolean insideSolid = chase && MaskEntity.this.isChaseInsideSolid();
 
             if (!chase && !insideSolid) {

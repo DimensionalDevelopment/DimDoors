@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.entity.mask.MaskEntity;
 
 public class ModEntityTypes {
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.ENTITY_TYPE);

@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.entity.MaskEntity;
+import org.dimdev.dimdoors.entity.mask.MaskEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class MaskRenderer extends MobRenderer<MaskEntity, MaskModel> {

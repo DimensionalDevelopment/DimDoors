@@ -2,15 +2,12 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
-import org.dimdev.dimdoors.entity.MaskEntity;
+import org.dimdev.dimdoors.entity.mask.MaskEntity;
 
 public class MaskModel extends HierarchicalModel<MaskEntity> {
     private final ModelPart root;

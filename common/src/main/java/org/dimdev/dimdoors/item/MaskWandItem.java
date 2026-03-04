@@ -10,13 +10,12 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.dimdev.dimdoors.entity.MaskEntity;
+import org.dimdev.dimdoors.entity.mask.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.jetbrains.annotations.Nullable;
 
