@@ -440,6 +440,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         add(BlockTags.MINEABLE_WITH_PICKAXE,
                 ModBlocks.REALITY_SPONGE,
                 ModBlocks.UNRAVELLED_FABRIC,
+                ModBlocks.SOLID_STATIC,
                 ModBlocks.RUST,
                 ModBlocks.UNRAVELED_SPIKE,
                 ModBlocks.GRITTY_STONE

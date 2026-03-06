@@ -1,4 +1,4 @@
-// 1.21.1	2026-02-20T23:12:08.7353081	DimensionalDoors/Block Loot Tables
+// 1.21.1	2026-03-06T06:19:55.0533364	DimensionalDoors/Block Loot Tables
 55dc49e6e27f61eb91946738dc4a0d08e55111fa data\dimdoors\loot_table\blocks\dark_sand.json
 882c96b3abb97cd9b7e9b1e5a5f216b38f2a1c6c data\dimdoors\loot_table\blocks\light_blue_terracotta_button.json
 4582207b56a4968fdf1b1735447e7cf3c4fa50b3 data\dimdoors\loot_table\blocks\lime_terracotta_button.json
@@ -19,8 +19,8 @@ f578720f829f33f354cf28810aefdc42fd52de19 data\dimdoors\loot_table\blocks\white_g
 0f04d1b2a842dd53156ca43dea72f8e1bcf601f0 data\dimdoors\loot_table\blocks\sand_wall.json
 85cfb500b73b76248debcb4e4852c428daaf4b24 data\dimdoors\loot_table\blocks\mud_slab.json
 0f961d4a2577749886708c2434574b7760e18243 data\dimdoors\loot_table\blocks\netherrack_button.json
-32e8f3b154ae9009cd48ba7ac4c3c0283b784bb2 data\dimdoors\loot_table\blocks\light_gray_glazed_terracott_stairs.json
 959a1669c3c5587eaee414544c8f44243a67d47d data\dimdoors\loot_table\blocks\blue_fabric.json
+32e8f3b154ae9009cd48ba7ac4c3c0283b784bb2 data\dimdoors\loot_table\blocks\light_gray_glazed_terracott_stairs.json
 8a1ec5d3c4f45de8abf2abfb1fbc078703056b82 data\dimdoors\loot_table\blocks\blue_glazed_terracotta_stairs.json
 2717a8fcda790c61a463427576fff6e32d9bc514 data\dimdoors\loot_table\blocks\light_gray_terr_button.json
 8a6c0959b3e22b50372b99ad5bbb10230a0492a4 data\dimdoors\loot_table\blocks\black_terracotta_stairs.json

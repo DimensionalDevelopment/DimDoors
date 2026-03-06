@@ -3,12 +3,16 @@ package org.dimdev.dimdoors.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootParams;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecaySource;
+
+import java.util.List;
 
 public class UnravelledFabricBlock extends Block {
 	public static final String ID = "unravelled_fabric";
@@ -23,4 +27,9 @@ public class UnravelledFabricBlock extends Block {
 			Decay.applySpreadDecay(level, pos, random, DecaySource.LIMBO);
 		}
 	}
+
+    @Override
+    public List<ItemStack> getDrops(BlockState blockState, LootParams.Builder builder) {
+        return super.getDrops(blockState, builder);
+    }
 }
