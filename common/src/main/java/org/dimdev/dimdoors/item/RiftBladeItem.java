@@ -66,10 +66,6 @@ public class RiftBladeItem extends SwordItem {
 		if (hit == null) {
 			hit = RaycastHelper.findDetachRift(player, DETACH);
 		}
-//
-//		if (hit == null) {
-//			hit = player.pick(16, 0, false);
-//		}
 
 		if (world.isClientSide) {
 			if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
@@ -139,8 +135,8 @@ public class RiftBladeItem extends SwordItem {
 			RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
 
 			world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
-			((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
-
+            var entranceRift = ((EntranceRiftBlockEntity) world.getBlockEntity(pos));
+            entranceRift.copyFrom(rift);
 			stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}

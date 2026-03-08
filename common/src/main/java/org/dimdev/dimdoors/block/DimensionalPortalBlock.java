@@ -19,7 +19,10 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 // TODO: copy over all the necessary bits from DimensionalDoorBlock
 public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity implements RiftProvider<EntranceRiftBlockEntity> {
@@ -120,7 +123,12 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 		e.setPortalDestination((ServerLevel) world);
 	}
 
-	public static final class Dummy extends BaseEntityBlock {
+    @Override
+    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos) {
+        return Optional.of(getRift(world, pos));
+    }
+
+    public static final class Dummy extends BaseEntityBlock {
 		public static final MapCodec<Dummy> CODEC = simpleCodec(Dummy::new);
 
 		protected Dummy(Properties settings) {

@@ -15,7 +15,7 @@ import java.util.Objects;
 public enum DetachedRiftProvider implements IBlockComponentProvider {
     INSTANCE;
 
-    private static final ResourceLocation ID = DimensionalDoors.id("detached_rift_provider");
+    static final ResourceLocation ID = DimensionalDoors.id("detached_rift_provider");
 
     @Override
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {

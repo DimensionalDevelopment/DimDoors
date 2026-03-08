@@ -6,13 +6,16 @@ import mcp.mobius.waila.api.TooltipPosition;
 
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 // FIXME: is not actually client sided
 public class WthitPlugin implements IWailaPlugin {
 	@Override
 	public void register(IRegistrar registrar) {
-		registrar.addComponent(EntranceRiftProvider.INSTANCE, TooltipPosition.BODY, EntranceRiftBlockEntity.class);
-		registrar.addComponent(DetachedRiftProvider.INSTANCE, TooltipPosition.BODY, DetachedRiftBlockEntity.class);
+        registrar.addConfig(EntranceRiftProvider.ID, true);
+        registrar.addConfig(DetachedRiftProvider.ID, true);
+		registrar.addComponent(EntranceRiftProvider.INSTANCE, TooltipPosition.BODY, RiftBlockEntity.class);
+//		registrar.addComponent(DetachedRiftProvider.INSTANCE, TooltipPosition.BODY, DetachedRiftBlockEntity.class);
 
 	}
 }

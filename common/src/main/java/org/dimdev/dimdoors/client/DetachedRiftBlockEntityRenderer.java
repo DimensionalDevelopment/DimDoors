@@ -5,11 +5,13 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.architectury.utils.GameInstance;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -23,35 +25,32 @@ import org.dimdev.dimdoors.client.tesseract.Tesseract;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
+import java.util.List;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
-public class DetachedRiftBlockEntityRenderer implements BlockEntityRenderer<DetachedRiftBlockEntity> {
+public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<DetachedRiftBlockEntity> {
     public static final ResourceLocation TESSERACT_PATH = DimensionalDoors.id("textures/other/tesseract.png");
     private static final RGBA DEFAULT_COLOR = new RGBA(1, 0.5f, 1, 1);
 
-    private static final Tesseract TESSERACT = new Tesseract();
     private static final RiftCurves.PolygonInfo CURVE = RiftCurves.CURVES.get(1);
+
+    public DetachedRiftBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
+    }
 
     @Override
     public void render(DetachedRiftBlockEntity rift, float tickDelta, PoseStack matrices, MultiBufferSource vcs, int breakProgress, int alpha) {
-		if(GameInstance.getClient().player != null && GameInstance.getClient().player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.RIFT_CONFIGURATION_TOOL.get()) && rift.getData().getDestination() instanceof IdMarker idMarker) {
-			matrices.pushPose();
-			matrices.translate(0.5, 0.5, 0.5);
+        super.render(rift, tickDelta, matrices, vcs, breakProgress, alpha);
 
-            GameInstance.getClient().font.drawInBatch(Component.literal(String.valueOf(idMarker.getId())), 0f,0f, 0xffffffff, false, matrices.last().pose(), vcs, Font.DisplayMode.NORMAL, 0x000000, LightTexture.FULL_BRIGHT);
-
-			matrices.popPose();
-		}
-
-    	if (DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore || RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis() >= 0)
+        if (DimensionalDoors.getConfig().getGraphicsConfig().showRiftCore || RiftBlockEntity.showRiftCoreUntil - System.currentTimeMillis() >= 0)
             this.renderTesseract(vcs.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), rift, matrices, tickDelta);
         this.renderCrack(vcs.getBuffer(RenderType.entityCutoutNoCull(TESSERACT_PATH)), matrices, rift);
     }
 
     private void renderCrack(VertexConsumer vc, PoseStack matrices, DetachedRiftBlockEntity rift) {
         matrices.pushPose();
-        matrices.translate(0.5, 1.5, 0.5);
+        matrices.translate(0.5f, 0.5f, 0.5f);
         RiftCrackRenderer.drawCrack(matrices.last().pose(), vc, 0, RiftCurves.CURVES.get(rift.getCurveID()), DimensionalDoors.getConfig().getGraphicsConfig().riftSize * rift.size / 150, 0);//0xF1234568L * rift.hashCode());
         matrices.popPose();
     }

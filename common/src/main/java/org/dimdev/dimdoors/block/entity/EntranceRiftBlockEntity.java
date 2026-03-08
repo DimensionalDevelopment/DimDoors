@@ -16,9 +16,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +36,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
+import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.registry.Rift;
@@ -46,7 +48,7 @@ import java.util.Optional;
 import static net.minecraft.world.level.block.DoorBlock.*;
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
-public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBlock> {
+public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
 	private static final Logger LOGGER = LogManager.getLogger();
 	private BlockState doorBlockState;
@@ -57,7 +59,9 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBloc
 
 		if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoGenDimensionalDoorBlock) {
 			doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
-		} else {
+		} else if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalTrapdoorBlock autoGenDimensionalTrapdoorBlock) {
+            doorBlockState = autoGenDimensionalTrapdoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(POWERED, state.getValue(POWERED)).setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
+        } else {
 			doorBlockState = state;
 		}
 	}
@@ -68,7 +72,9 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBloc
 
 		if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoGenDimensionalDoorBlock) {
 			doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
-		} else {
+		} else if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalTrapdoorBlock autoGenDimensionalDoorBlock) {
+            doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(POWERED, state.getValue(POWERED)).setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
+        } else {
 			doorBlockState = state;
 		}
 	}
@@ -163,6 +169,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBloc
 
 	public Direction getOrientation() {
 		//noinspection ConstantConditions
+
 		return Optional.of(this.level.getBlockState(this.worldPosition))
 				.filter(state -> state.hasProperty(HorizontalDirectionalBlock.FACING))
 				.map(state -> state.getValue(HorizontalDirectionalBlock.FACING))
@@ -171,6 +178,10 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBloc
 
 	@Environment(EnvType.CLIENT)
 	public Transformer getTransformer() {
+        if(getBlockState().getBlock() instanceof DimensionalTrapDoorBlock) {
+            return getBlockState().getValue(TrapDoorBlock.HALF) == Half.TOP ? DefaultTransformation.TOP_TRAPDOOR : DefaultTransformation.BOTTOMM_TRAPDOOR;
+        }
+
 		return DefaultTransformation.fromDirection(this.getOrientation());
 	}
 
@@ -231,23 +242,31 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity<DimensionalDoorBloc
 						.setValue(OPEN, state.getValue(OPEN))
 						.setValue(HINGE, state.getValue(HINGE))
 						.setValue(POWERED, state.getValue(POWERED))
-						.setValue(HALF, DoubleBlockHalf.UPPER);
+						.setValue(HALF, DoubleBlockHalf.LOWER);
 
 				level.removeBlock(pos, false);
-				level.setBlockAndUpdate(pos.above(), newState);
-				level.setBlockAndUpdate(pos.above(), newState.setValue(HALF, DoubleBlockHalf.LOWER));
+				level.setBlockAndUpdate(pos, newState);
+				level.setBlockAndUpdate(pos.above(), newState.setValue(HALF, DoubleBlockHalf.UPPER));
 			}
-		} else if(block instanceof DimensionalPortalBlock) {
+		} else if(block instanceof DimensionalTrapDoorBlock dimensionalDoorBlock) {
+            var base = dimensionalDoorBlock.baseBlock();
+
+            if (base instanceof TrapDoorBlock doorBlock) {
+                var newState = doorBlock.defaultBlockState()
+                        .setValue(FACING, state.getValue(FACING))
+                        .setValue(OPEN, state.getValue(OPEN))
+                        .setValue(POWERED, state.getValue(POWERED))
+                        .setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
+
+                level.removeBlock(pos, false);
+                level.setBlockAndUpdate(pos, newState);
+            }
+        } else if(block instanceof DimensionalPortalBlock) {
 			level.removeBlock(pos, false);
 		}
 	}
 
-	@Override
-	protected Class<DimensionalDoorBlock> blockClass() {
-		return DimensionalDoorBlock.class;
-	}
-
-	@Override
+    @Override
 	public boolean stablized() {
 		return true;
 	}

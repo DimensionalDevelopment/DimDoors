@@ -139,8 +139,8 @@ public class DimensionalDoorsClient {
 
 	@Environment(EnvType.CLIENT)
 	public static void initBlockEntitiesClient() {
-		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), context -> new EntranceRiftBlockEntityRenderer());
-		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), ctx -> new DetachedRiftBlockEntityRenderer());
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), EntranceRiftBlockEntityRenderer::new);
+		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), DetachedRiftBlockEntityRenderer::new);
 	}
 
     private static Predicate<Field> isResourceKeyListOfType(Class<?> registryType) {

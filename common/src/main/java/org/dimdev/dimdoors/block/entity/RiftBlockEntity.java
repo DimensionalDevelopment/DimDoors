@@ -27,8 +27,6 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.block.PerservesBlockEntity;
-import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.LocationProvider;
@@ -41,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends BlockEntity implements Target, EntityTarget {
+public abstract class RiftBlockEntity extends BlockEntity implements Target, EntityTarget {
 	private static final int UPDATE_PERIOD = 200; //10 seconds
 	private static final RandomSource random = RandomSource.create();
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -62,7 +60,7 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 		this.updateTimer = random.nextInt(UPDATE_PERIOD);
 	}
 
-	@Override
+    @Override
 	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
 		super.loadAdditional(nbt, provider);
 		this.deserialize(nbt);
@@ -129,10 +127,19 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 
 	@Override
 	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+
+
 //		for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) { TODO: Multiplat this.
 //			ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
 //		}
-		return super.getUpdateTag(provider);
+		var nbt = super.getUpdateTag(provider);
+
+        nbt.put("data", RiftData.toNbt(this.data));
+        nbt.putBoolean("closing", this.closing);
+        nbt.putBoolean("stablized", this.stabilized);
+        nbt.putFloat("size", this.size);
+
+        return nbt;
 	}
 
 	public void markStateChanged() {
@@ -256,11 +263,17 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 
 	public abstract boolean isLocked();
 
-	public void copyFrom(RiftBlockEntity<?> rift) {
+	public void copyFrom(RiftBlockEntity rift) {
 		this.data.setDestination(rift.data.getDestination());
 		this.data.setProperties(rift.data.getProperties());
 		this.data.setAlwaysDelete(rift.data.isAlwaysDelete());
 		this.data.setForcedColor(rift.data.isForcedColor());
+        this.stabilized = rift.stabilized;
+
+        if(this.closing) {
+            this.closing = rift.closing;
+            this.size = rift.size;
+        }
 	}
 
 	public VirtualTarget getDestination() {
@@ -324,12 +337,18 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 			onGrowth(level, pos);
 		}
 
-		this.setChanged();
+
+		this.sync();
 	}
 
 	public void onGrowth(Level level, BlockPos pos) {
 
 	}
+
+    public void sync() {
+        setChanged();
+        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
+    }
 
 	public boolean stablized() {
 		return stabilized;
@@ -344,9 +363,7 @@ public abstract class RiftBlockEntity<T extends Block & RiftProvider<?>> extends
 	protected void onUpdate(Level level, BlockPos pos) {
 	}
 
-	protected abstract Class<T> blockClass();
-
-	public boolean updateNearestRift() {
+    public boolean updateNearestRift() {
 		return false;
 	}
 }

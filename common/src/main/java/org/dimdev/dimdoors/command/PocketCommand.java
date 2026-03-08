@@ -63,7 +63,7 @@ public class PocketCommand {
 
                         var location = new Location(level, pos);
 
-                        var rift = RiftSignatureItem.PlacementLogic.getLogic(level, pos).getRift(level, pos);
+                        var rift = RiftSignatureItem.getOrCreateRift(level, pos);
 
                         if(rift.isEmpty()) return 0;
 

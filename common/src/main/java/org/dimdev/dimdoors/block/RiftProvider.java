@@ -11,8 +11,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-public interface RiftProvider<T extends RiftBlockEntity<?>> extends EntityBlock, PerservesBlockEntity {
+public interface RiftProvider<T extends RiftBlockEntity> extends EntityBlock, RiftVariantProvider, PerservesBlockEntity {
 	T getRift(Level world, BlockPos pos, BlockState state);
+
+    default T getRift(Level world, BlockPos pos) {
+        return getRift(world, pos, world.getBlockState(pos));
+    }
 
 	@Environment(EnvType.CLIENT)
 	default boolean isTall(BlockState cachedState) {
@@ -30,8 +34,8 @@ public interface RiftProvider<T extends RiftBlockEntity<?>> extends EntityBlock,
 
     @Override
     default void attemptTransfer(BlockEntity blockEntity, @Nullable BlockEntity blockEntityToBetransfered) {
-        if(blockEntity instanceof RiftBlockEntity<?> rift1 && blockEntityToBetransfered instanceof RiftBlockEntity<?> rift2) {
+        if(blockEntity instanceof RiftBlockEntity rift1 && blockEntityToBetransfered instanceof RiftBlockEntity rift2) {
             rift1.copyFrom(rift2);
         }
-    };
+    }
 }

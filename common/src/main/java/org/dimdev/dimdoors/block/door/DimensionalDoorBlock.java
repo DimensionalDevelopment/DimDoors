@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.block.door;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,7 +30,6 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -49,10 +47,12 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
@@ -170,7 +170,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
         return state.getBlock().getDrops(state, params);
 	}
 
-    public void createDetachedRift(Level world, BlockPos pos) {
+    public static void createDetachedRift(Level world, BlockPos pos) {
 		createDetachedRift(world, pos, world.getBlockState(pos));
 	}
 
@@ -179,7 +179,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	  I fear this method may be called twice otherwise.
 	  ~CreepyCre
 	 */
-	public void createDetachedRift(Level world, BlockPos pos, BlockState state) {
+	public static void createDetachedRift(Level world, BlockPos pos, BlockState state) {
 		DoubleBlockHalf doubleBlockHalf = state.getValue(HALF);
 		BlockPos blockPos = pos;
 		BlockState blockState = world.getBlockState(pos);
@@ -337,4 +337,9 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	protected RenderShape getRenderShape(BlockState blockState) {
 		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
+
+    @Override
+    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos) {
+        return Optional.of(getRift(world, pos));
+    }
 }

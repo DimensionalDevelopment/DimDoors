@@ -7,28 +7,22 @@ import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.utils.Env;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.function.TriFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
-import org.dimdev.dimdoors.block.door.DimensionalTrapdoorBlock;
+import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
 import org.dimdev.dimdoors.item.ItemExtensions;
@@ -36,12 +30,10 @@ import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
-import org.dimdev.dimdoors.tag.ModBlockTags;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -89,7 +81,7 @@ public class DimensionalDoorItemRegistrar {
 				if (originalBlock instanceof DoorBlock) {
 					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalDoorItem::new);
 				} else {
-//					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalTrapdoorItem::new); //TODO: Readd once plan for trapdoors is fully fleshed out.
+					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalTrapdoorItem::new);
 				}
 			}
 		}
@@ -98,7 +90,7 @@ public class DimensionalDoorItemRegistrar {
 	private void handleEntry(Registrar<Item> registrar, ResourceLocation identifier, Item original, Block originalBlock, TriFunction<Block, Item.Properties, Item, ? extends BlockItem> constructor) {
 
 		if (!(originalBlock instanceof DimensionalDoorBlock)
-				&& !(originalBlock instanceof DimensionalTrapdoorBlock)
+				&& !(originalBlock instanceof DimensionalTrapDoorBlock)
 				&& (originalBlock instanceof DoorBlock || originalBlock instanceof TrapDoorBlock)) {
 			Item.Properties settings = ItemExtensions.getSettings(original).arch$tab(ModItems.DIMENSIONAL_DOORS)/*.group(DoorData.PARENT_ITEMS.contains(original) || DoorData.PARENT_BLOCKS.contains(originalBlock) ? null : ModItems.DIMENSIONAL_DOORS)*/; //TODO: Redo with the new way Itemgroups work.
 

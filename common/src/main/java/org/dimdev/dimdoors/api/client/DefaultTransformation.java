@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.minecraft.core.Direction;
 import org.joml.Quaternionf;
 
@@ -59,7 +60,21 @@ public enum DefaultTransformation implements Transformer {
 		public void transform(PoseStack matrices) {
 			matrices.translate(0, 0, 0.5F);
 		}
-	};
+	},
+    BOTTOMM_TRAPDOOR {
+        @Override
+        public void transform(PoseStack matrices) {
+            matrices.mulPose(Axis.XP.rotationDegrees(90f));
+        }
+    },
+    TOP_TRAPDOOR {
+        @Override
+        public void transform(PoseStack matrices) {
+            matrices.translate(0,0.875f, 0);
+            matrices.mulPose(Axis.XP.rotationDegrees(90f));
+
+        }
+    };
 
 	private static final DefaultTransformation[] VALUES = values();
 

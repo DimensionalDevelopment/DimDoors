@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,9 +21,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.particle.client.RiftParticleOptions;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
@@ -112,4 +116,10 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 			}
 		});
 	}
+
+    @Override
+    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos) {
+
+        return Optional.of(getRift(world, pos));
+    }
 }

@@ -6,8 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -22,14 +20,11 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
-import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.client.RiftCurves;
-import org.dimdev.dimdoors.world.decay.Decay;
-import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.List;
 
-public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> {
+public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
 	private static final int UPDATE_PERIOD = 200; //10 seconds
 
@@ -50,12 +45,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity<DetachedRiftBlock> 
 		this.riftYaw = random.nextInt(360);
 	}
 
-	@Override
-	protected Class<DetachedRiftBlock> blockClass() {
-		return DetachedRiftBlock.class;
-	}
-
-	/**
+    /**
 	 * Checks the blocks around the location of the floating rift and applies the decay
 	 */
 	public void applySpreadDecay(ServerLevel world, BlockPos pos) {

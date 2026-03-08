@@ -1,16 +1,10 @@
 package org.dimdev.dimdoors.pockets;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.*;
-import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
@@ -133,10 +127,10 @@ public class TemplateUtils {
 
     public static void linkRifts(Location from, Location to) {
         if (from == null || to == null) return;
-        RiftBlockEntity<?> fromBe = (RiftBlockEntity<?>) from.getBlockEntity();
+        RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
         //This is the freaking potato texture from tf2. Bad things happen if this invocation is removed
 //		to.getWorld(); //TODO: Figure out how ensure world is loaded before .getBlockEntity is called so that this janky line isn't needed.
-        RiftBlockEntity<?> toBe = (RiftBlockEntity<?>) to.getBlockEntity();
+        RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
         fromBe.setDestination(RiftReference.tryMakeLocal(from, to));
         fromBe.setChanged();
         if (toBe != null && toBe.getProperties() != null) {
