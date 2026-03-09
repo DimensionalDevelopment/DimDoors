@@ -335,11 +335,12 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 			}
 		} else if(!stablized()) {
 			onGrowth(level, pos);
+
+
 		}
 
-
-		this.sync();
-	}
+        if(updateTimer % 20 == 0) sync();
+    }
 
 	public void onGrowth(Level level, BlockPos pos) {
 
