@@ -118,8 +118,8 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 	}
 
     @Override
-    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos) {
+    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
 
-        return Optional.of(getRift(world, pos));
+        return Optional.of(getRift(world, pos, state));
     }
 }

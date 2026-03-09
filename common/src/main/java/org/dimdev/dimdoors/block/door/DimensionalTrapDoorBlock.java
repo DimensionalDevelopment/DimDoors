@@ -42,6 +42,7 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.rift.RiftUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,38 +78,10 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
         if (doorState.getBlock() != this || !doorState.getValue(DoorBlock.OPEN)) { // '== this' to check if not half-broken
             return InteractionResult.PASS;
         }
-        Vec3 currentPos = entity.position();
-        Vec3 previousPos = currentPos.subtract(positionChange);
 
-        // TODO: rewrite this to be usable more universally
-        // check whether portal plane was traversed
-        double portalHalfWidth = 0.5;
-        double portalHeight = 2;
-        // check in DefaultTransformation for the correct offset of the portal planes
-        double portalOffsetFromCenter = 0.31;
-        Vec3 portalNormal = Vec3.atLowerCornerOf(state.getValue(FACING).getOpposite().getNormal());
-        Vec3 origin = Vec3.atBottomCenterOf(pos);
-        Vec3 bottomMiddlePortalPoint = origin.add(portalNormal.scale(portalOffsetFromCenter));
+        var rift = this.getRift(world, pos, state);
 
-        double dotCurrent = portalNormal.dot(currentPos.subtract(bottomMiddlePortalPoint));
-        double dotPrevious = portalNormal.dot(previousPos.subtract(bottomMiddlePortalPoint));
-        if (!(dotCurrent <= 0 && dotPrevious >= 0) && !(dotCurrent >= 0 && dotPrevious <= 0) || (dotCurrent == 0 && dotPrevious == 0)) {
-            // start and end point of movement are on same side of the portal plane or both inside the plane
-            return InteractionResult.PASS;
-        }
-
-        Vec3 yVec = new Vec3(0, 1, 0);
-        Vec3 xzVec = portalNormal.cross(yVec);
-
-        Vec3 vecFromPreviousPosToPortalPlane = bottomMiddlePortalPoint.subtract(previousPos);
-        Vec3 normalizedPositionChange = positionChange.normalize();
-        Vec3 pointOfIntersection = previousPos.add(normalizedPositionChange.scale(vecFromPreviousPosToPortalPlane.dot(normalizedPositionChange) / normalizedPositionChange.dot(normalizedPositionChange)));
-
-        // figure out whether the point of Intersection is actually inside the portal plane;
-        Vec3 intersectionRelativeToPortalPlane = pointOfIntersection.subtract(bottomMiddlePortalPoint);
-        double relativeIntersectionHeight = intersectionRelativeToPortalPlane.dot(yVec);
-        double relativeIntersectionWidth = intersectionRelativeToPortalPlane.dot(xzVec);
-        if (relativeIntersectionHeight < 0 || relativeIntersectionHeight > portalHeight || Math.abs(relativeIntersectionWidth) > portalHalfWidth) {
+        if(rift.hasTraversed(entity, positionChange)) {
             // intersection is outside of plane width/ height
             return InteractionResult.PASS;
         }
@@ -121,7 +94,7 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
         entity.setPortalCooldown();
 
 
-        this.getRift(world, pos, state).teleport(entity);
+        rift.teleport(entity);
         if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
             world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue(DoorBlock.OPEN, false));
         }
@@ -225,20 +198,18 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
     @Override
     public TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder(BlockState state, BlockPos pos) {
         return TransformationMatrix3d.builder()
-                .inverseTranslate(Vec3.atCenterOf(pos).add(Vec3.atLowerCornerOf(state.getValue(DoorBlock.FACING).getNormal()).scale(-0.31)))
-                .inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
+                .inverseTranslate(Vec3.atCenterOf(pos.above()));
     }
 
     @Override
     public TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder(BlockState state, BlockPos pos) {
         return TransformationMatrix3d.builder()
-                .inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING).getOpposite()));
+                .inverseRotate(MathUtil.directionEulerAngle(state.getValue(DoorBlock.FACING)));
     }
-
 
     @Override
     public boolean isExitFlipped() {
-        return true;
+        return false;
     }
 
     @Environment(EnvType.CLIENT)
@@ -267,7 +238,7 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
     }
 
     @Override
-    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos) {
-        return Optional.of(getRift(world, pos));
+    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
+        return Optional.of(getRift(world, pos, state));
     }
 }

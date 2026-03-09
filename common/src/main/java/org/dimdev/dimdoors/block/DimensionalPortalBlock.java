@@ -124,8 +124,8 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 	}
 
     @Override
-    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos) {
-        return Optional.of(getRift(world, pos));
+    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
+        return Optional.of(getRift(world, pos, state));
     }
 
     public static final class Dummy extends BaseEntityBlock {

@@ -85,41 +85,13 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		if (doorState.getBlock() != this || !doorState.getValue(DoorBlock.OPEN)) { // '== this' to check if not half-broken
 			return InteractionResult.PASS;
 		}
-		Vec3 currentPos = entity.position();
-		Vec3 previousPos = currentPos.subtract(positionChange);
 
-		// TODO: rewrite this to be usable more universally
-		// check whether portal plane was traversed
-		double portalHalfWidth = 0.5;
-		double portalHeight = 2;
-		// check in DefaultTransformation for the correct offset of the portal planes
-		double portalOffsetFromCenter = 0.31;
-		Vec3 portalNormal = Vec3.atLowerCornerOf(state.getValue(FACING).getOpposite().getNormal());
-		Vec3 origin = Vec3.atBottomCenterOf(bottom);
-		Vec3 bottomMiddlePortalPoint = origin.add(portalNormal.scale(portalOffsetFromCenter));
+        var rift = this.getRift(world, pos, state);
 
-		double dotCurrent = portalNormal.dot(currentPos.subtract(bottomMiddlePortalPoint));
-		double dotPrevious = portalNormal.dot(previousPos.subtract(bottomMiddlePortalPoint));
-		if (!(dotCurrent <= 0 && dotPrevious >= 0) && !(dotCurrent >= 0 && dotPrevious <= 0) || (dotCurrent == 0 && dotPrevious == 0)) {
-			// start and end point of movement are on same side of the portal plane or both inside the plane
-			return InteractionResult.PASS;
-		}
-
-		Vec3 yVec = new Vec3(0, 1, 0);
-		Vec3 xzVec = portalNormal.cross(yVec);
-
-		Vec3 vecFromPreviousPosToPortalPlane = bottomMiddlePortalPoint.subtract(previousPos);
-		Vec3 normalizedPositionChange = positionChange.normalize();
-		Vec3 pointOfIntersection = previousPos.add(normalizedPositionChange.scale(vecFromPreviousPosToPortalPlane.dot(normalizedPositionChange) / normalizedPositionChange.dot(normalizedPositionChange)));
-
-		// figure out whether the point of Intersection is actually inside the portal plane;
-		Vec3 intersectionRelativeToPortalPlane = pointOfIntersection.subtract(bottomMiddlePortalPoint);
-		double relativeIntersectionHeight = intersectionRelativeToPortalPlane.dot(yVec);
-		double relativeIntersectionWidth = intersectionRelativeToPortalPlane.dot(xzVec);
-		if (relativeIntersectionHeight < 0 || relativeIntersectionHeight > portalHeight || Math.abs(relativeIntersectionWidth) > portalHalfWidth) {
-			// intersection is outside of plane width/ height
-			return InteractionResult.PASS;
-		}
+        if(rift.hasTraversed(entity, positionChange)) {
+            // intersection is outside of plane width/ height
+            return InteractionResult.PASS;
+        }
 
 		// TODO: replace with dimdoor cooldown?
 		if (entity.isOnPortalCooldown()) {
@@ -128,9 +100,9 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		entity.setPortalCooldown();
 
+		rift.teleport(entity);
 
-		this.getRift(world, pos, state).teleport(entity);
-		if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
+        if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
 			world.setBlockAndUpdate(top, world.getBlockState(top).setValue(DoorBlock.OPEN, false));
 			world.setBlockAndUpdate(bottom, world.getBlockState(bottom).setValue(DoorBlock.OPEN, false));
 		}
@@ -339,7 +311,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 	}
 
     @Override
-    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos) {
-        return Optional.of(getRift(world, pos));
+    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
+        return Optional.of(getRift(world, pos, state));
     }
 }

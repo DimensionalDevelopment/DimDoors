@@ -28,15 +28,15 @@ import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
 
-public class DimensionalDoorItem extends BlockItem {
+public class DimensionalDoorBlockItem extends BlockItem {
 	private final Consumer<? super EntranceRiftBlockEntity> setupFunction;
 	private boolean hasToolTip = false;
 
-	public DimensionalDoorItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
+	public DimensionalDoorBlockItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction) {
 		this(block, settings, setupFunction, false);
 	}
 
-	public DimensionalDoorItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, boolean hasToolTip) {
+	public DimensionalDoorBlockItem(Block block, Properties settings, Consumer<? super EntranceRiftBlockEntity> setupFunction, boolean hasToolTip) {
 		super(block, settings);
 		this.setupFunction = setupFunction;
 		this.hasToolTip = hasToolTip;

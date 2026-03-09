@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.item.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -24,13 +25,11 @@ import org.dimdev.dimdoors.api.util.function.TriFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.client.UnderlaidChildItemRenderer;
 import org.dimdev.dimdoors.item.ItemExtensions;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
-import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,13 +74,13 @@ public class DimensionalDoorItemRegistrar {
 		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(identifier)) {
 			if (original instanceof DoubleHighBlockItem doubleHighBlockItem) {
 				Block block = doubleHighBlockItem.getBlock();
-				handleEntry(registrar, identifier, original, block, AutoGenDimensionalDoorItem::new);
+				handleEntry(registrar, identifier, original, block, AutoGenDimensionalDoorBlockItem::new);
 			} else if (original instanceof BlockItem) {
 				Block originalBlock = ((BlockItem) original).getBlock();
 				if (originalBlock instanceof DoorBlock) {
-					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalDoorItem::new);
+					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalDoorBlockItem::new);
 				} else {
-					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalTrapdoorItem::new);
+					handleEntry(registrar, identifier, original, originalBlock, AutoGenDimensionalDoorTrapDoorItem::new);
 				}
 			}
 		}
@@ -128,16 +127,10 @@ public class DimensionalDoorItemRegistrar {
 //		BuiltinItemRendererRegistry.INSTANCE.register(dimItem, Renderer.RENDERER); TODO: Enable
 	}
 
-    // extract renderer to inner interface so it can be removed in server environment via annotation
-	@Environment(EnvType.CLIENT)
-	private interface Renderer {
-		UnderlaidChildItemRenderer RENDERER = new UnderlaidChildItemRenderer(Items.ENDER_PEARL);
-	}
-
-	private static class AutoGenDimensionalDoorItem extends DimensionalDoorItem implements ChildItem {
+    private static class AutoGenDimensionalDoorBlockItem extends DimensionalDoorBlockItem implements ChildItem {
 		private final Item originalItem;
 
-		public AutoGenDimensionalDoorItem(Block block, Properties settings, Item originalItem) {
+		public AutoGenDimensionalDoorBlockItem(Block block, Properties settings, Item originalItem) {
 			super(block, settings, null);
 			this.originalItem = originalItem;
 		}
@@ -165,49 +158,40 @@ public class DimensionalDoorItemRegistrar {
 		}
 	}
 
-	private static class AutoGenDimensionalTrapdoorItem extends DimensionalTrapdoorItem implements ChildItem {
-		private final Item originalItem;
+    private static class AutoGenDimensionalDoorTrapDoorItem extends AutoGenDimensionalDoorBlockItem {
 
-		public AutoGenDimensionalTrapdoorItem(Block block, Properties settings, Item originalItem) {
-			super(block, settings, null);
-			this.originalItem = originalItem;
-		}
+        public AutoGenDimensionalDoorTrapDoorItem(Block block, Properties settings, Item originalItem) {
+            super(block, settings, originalItem);
+        }
 
-		@Override
-		protected void setupRift(EntranceRiftBlockEntity entranceRift) {
-			RiftDataList data = DoorRiftDataLoader.getRiftData(originalItem);
-			if (data != null) {
-				RiftDataList.OptRiftData riftData = data.getRiftData(entranceRift);
-				entranceRift.setDestination(riftData.getDestination());
-				riftData.getProperties().ifPresent(entranceRift::setProperties);
-			} else {
-				entranceRift.setDestination(new EscapeTarget(true));
-			}
-		}
+        @Override
+        public void transformOverlay(PoseStack matrices) {
+            matrices.translate(0, 0, 0.5 - (1/16f));
+            matrices.mulPose(Axis.XP.rotationDegrees(90));
+        }
 
-		@Override
-		public MutableComponent getName(ItemStack stack) {
-			return Component.translatable("dimdoors.autogen_item_prefix").append(originalItem.getDescriptionId());
-		}
+        @Override
+        public void setupRift(EntranceRiftBlockEntity entranceRift) {
+            RiftDataList data = DoorRiftDataLoader.getRiftData(getOriginalItem());
+            if (data != null) {
+                RiftDataList.OptRiftData riftData = data.getRiftData(entranceRift);
+                entranceRift.setDestination(riftData.getDestination());
+                riftData.getProperties().ifPresent(entranceRift::setProperties);
+            } else {
+                entranceRift.setDestination(new EscapeTarget(true));
+            }
+        }
 
-		@Override
-		public Item getOriginalItem() {
-			return originalItem;
-		}
+    }
 
-		@Environment(EnvType.CLIENT)
-		@Override
-		public void transform(PoseStack matrices) {
-			matrices.scale(0.55f, 0.55f, 0.6f);
-			matrices.translate(0.05, -0.05, 0.41);
-			matrices.mulPose(new Quaternionf().rotateXYZ(90, 0, 0));
-		}
-	}
-
-	public interface ChildItem {
+    public interface ChildItem {
 		Item getOriginalItem();
 
-		default void transform(PoseStack matrices) {
+		default void transformOverlay(PoseStack matrices) {
 		}
-	}
+
+        default void transformUnderlay(PoseStack matrices) {
+
+        }
+    }
 }

@@ -127,12 +127,12 @@ public class RiftSignatureItem extends Item {
 	}
 
     public static Optional<RiftBlockEntity> getOrCreateRift(ServerLevel world, BlockPos pos) {
-        var state = world.getBlockState(pos);
-
         Optional<RiftBlockEntity> rift;
 
+        var state = world.getBlockState(pos);
+
         if(state.getBlock() instanceof RiftVariantProvider variantProvider)
-            rift = variantProvider.convertToRiftProvider(world, pos).map(RiftUtils::registerFunction);
+            rift = variantProvider.convertToRiftProvider(world, pos, state).map(RiftUtils::registerFunction);
         else if(state.canBeReplaced()) {
             world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
             rift = ModBlockEntityTypes.DETACHED_RIFT.toOptional().flatMap(a -> world.getBlockEntity(pos, a)).map(RiftUtils::registerFunction);

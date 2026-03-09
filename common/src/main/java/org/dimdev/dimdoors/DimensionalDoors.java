@@ -30,7 +30,6 @@ import org.dimdev.dimdoors.api.util.LocationCondition.LocationConditionType;
 import org.dimdev.dimdoors.api.util.LocationValue.LocationValueWithType;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
@@ -242,14 +241,12 @@ public class DimensionalDoors {
 			return;
 		}
 		if (blockEntity instanceof EntranceRiftBlockEntity riftBlockEntity) {
-			if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER) {
+            if (state.getBlock() instanceof DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
+                pos = pos.below();
+            }
 
-				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
-				((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(riftBlockEntity.getData());
-			} else {
-				world.setBlockAndUpdate(pos.below(), ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
-				((DetachedRiftBlockEntity) world.getBlockEntity(pos.below())).setData((riftBlockEntity).getData());
-			}
+            world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
+            world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(rift -> rift.setData((riftBlockEntity).getData()));
 		}
 	}
 }

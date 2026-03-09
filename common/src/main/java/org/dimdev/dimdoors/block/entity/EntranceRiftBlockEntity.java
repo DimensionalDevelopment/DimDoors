@@ -39,6 +39,7 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
+import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -53,20 +54,38 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private BlockState doorBlockState;
 	private boolean locked;
+    private RiftUtils.PortalPlane plane;
 
-	public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
+    public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntityTypes.ENTRANCE_RIFT.get(), pos, state);
 
-		if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoGenDimensionalDoorBlock) {
-			doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
-		} else if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalTrapdoorBlock autoGenDimensionalTrapdoorBlock) {
-            doorBlockState = autoGenDimensionalTrapdoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(POWERED, state.getValue(POWERED)).setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
-        } else {
-			doorBlockState = state;
-		}
+        updateState(pos, state);
 	}
 
-	@Override
+    private void updateState(BlockPos pos, BlockState state) {
+        var block = state.getBlock();
+
+        doorBlockState = state;
+        plane = null;
+
+        switch (block) {
+            case DimensionalDoorBlock dimDoor -> {
+                if (dimDoor instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoDimDoor)
+                    doorBlockState = autoDimDoor.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
+                plane = RiftUtils.PortalPlane.ofDoor(state, pos);
+            }
+            case DimensionalTrapDoorBlock dimTrapDoor -> {
+                if (dimTrapDoor instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalTrapdoorBlock autoDimTrapDoor)
+                    doorBlockState = autoDimTrapDoor.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(POWERED, state.getValue(POWERED)).setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
+                plane = RiftUtils.PortalPlane.ofTrapdoor(state, pos);
+            }
+            case DimensionalPortalBlock dimensionalPortalBlock -> plane = RiftUtils.PortalPlane.ofDoor(state, pos);
+            default -> {
+            }
+        }
+    }
+
+    @Override
 	public void setBlockState(BlockState state) {
 		super.setBlockState(state);
 
@@ -274,4 +293,8 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	public BlockState getRenderBlockState() {
 		return doorBlockState;
 	}
+
+    public boolean hasTraversed(Entity entity, Vec3 positionChanged) {
+        return plane != null && plane.isTraversed(entity, positionChanged);
+    }
 }

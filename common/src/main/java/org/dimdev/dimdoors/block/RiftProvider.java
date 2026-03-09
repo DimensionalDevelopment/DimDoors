@@ -14,11 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public interface RiftProvider<T extends RiftBlockEntity> extends EntityBlock, RiftVariantProvider, PerservesBlockEntity {
 	T getRift(Level world, BlockPos pos, BlockState state);
 
-    default T getRift(Level world, BlockPos pos) {
-        return getRift(world, pos, world.getBlockState(pos));
-    }
-
-	@Environment(EnvType.CLIENT)
+    @Environment(EnvType.CLIENT)
 	default boolean isTall(BlockState cachedState) {
 		return false;
 	}

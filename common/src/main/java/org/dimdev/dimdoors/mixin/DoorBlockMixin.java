@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -39,9 +40,8 @@ public abstract class DoorBlockMixin implements DoorSoundProvider, RiftVariantPr
     }
 
     @Override
-    public Optional<? extends RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos) {
+    public Optional<? extends RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
         if (DimensionalDoors.getDimensionalDoorBlockRegistrar().getDimensionalVariant((Block) (Object) this) instanceof DimensionalDoorBlock dimensionalDoor) {
-            var state = world.getBlockState(pos);
             var baseState = dimensionalDoor.defaultBlockState();
 
             var blockState = state.getProperties().stream()
