@@ -43,7 +43,7 @@ public final class DimensionalPortalRenderer {
     public static void render() {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         var sources = Minecraft.getInstance().renderBuffers().bufferSource();
-        var buffer = sources.getBuffer(PORTAL_MASK);
+        var buffer = sources.getBuffer(RENDER_LAYER);
 
         for (var instance : instances) {
             (switch (instance.getShape()) {
@@ -58,7 +58,7 @@ public final class DimensionalPortalRenderer {
 
         sources.endBatch(PORTAL_MASK);
 
-        DimensionalDoorsRendertargets.renderToScreen();
+//        DimensionalDoorsRendertargets.renderToScreen();
         instances.clear();
     }
 
@@ -95,9 +95,10 @@ public final class DimensionalPortalRenderer {
                 false,
                 false,
                 RenderType.CompositeState.builder()
-                        .setOutputState(new RenderStateShard.OutputStateShard("dimensional_portal_target",
-                                () -> DimensionalDoorsRendertargets.getDimensionalPortalRenderTarget().bindWrite(false), () -> Minecraft.getInstance().getMainRenderTarget().bindWrite(false)))
+//                        .setOutputState(new RenderStateShard.OutputStateShard("dimensional_portal_target",
+//                                () -> DimensionalDoorsRendertargets.getDimensionalPortalRenderTarget().bindWrite(false), () -> Minecraft.getInstance().getMainRenderTarget().bindWrite(false)))
                         .setShaderState(RenderStateShard.RENDERTYPE_END_PORTAL_SHADER)
+                        .setCullState(NO_CULL)
                         .setTextureState(
                                 RenderStateShard.MultiTextureStateShard.builder()
                                         .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
@@ -113,12 +114,12 @@ public final class DimensionalPortalRenderer {
         ModelPart.Cube big = new ModelPart.Cube(0, 0, 0.2f, 0.2f, -0.1f, 15.8f, 31.8f, 0.01F, 0, 0, 0, false, 1024, 1024, directions);
         TALL_MODEL = new ModelPart(Collections.singletonList(big), Collections.emptyMap());
 
-        NORTH_DOOR = new Plane(
+        SOUTH_DOOR = new Plane(
                 0.0f, 0.0f, 0.0625f,
                 1.0f, 0.0f, 0.0625f,
                 1.0f, 2.0f, 0.0625f,
                 0.0f, 2.0f, 0.0625f);
-        SOUTH_DOOR = new Plane(
+        NORTH_DOOR = new Plane(
                 0.0f, 0.0f, 0.9375f,
                 1.0f, 0.0f, 0.9375f,
                 1.0f, 2.0f, 0.9375f,
