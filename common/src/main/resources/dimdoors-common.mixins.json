@@ -39,6 +39,7 @@
     "client.ClientPlayerInteractionManagerMixin",
     "client.InGameHudMixin",
     "client.LevelRendererMixin",
+    "client.MinecraftMixin",
     "client.ParticleEngineMixin",
     "client.PostProcessShaderMixin",
     "client.WorldRendererMixin",

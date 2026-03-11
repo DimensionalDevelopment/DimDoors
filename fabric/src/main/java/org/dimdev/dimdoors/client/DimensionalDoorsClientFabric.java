@@ -6,10 +6,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import org.dimdev.dimdoors.api.client.DimensionalDoorsRendertargets;
+import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.packet.s2c.*;
@@ -17,6 +21,8 @@ import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
+
+import static net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents.BEFORE_ENTITIES;
 
 public class DimensionalDoorsClientFabric implements ClientModInitializer {
 
@@ -26,7 +32,12 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
         ModelLoadingPlugin.register(new DimensionalDoorsModelLoadingPlugin());
 
         MenuScreens.register(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
-
+        BEFORE_ENTITIES.register(new WorldRenderEvents.BeforeEntities() {
+            @Override
+            public void beforeEntities(WorldRenderContext context) {
+                DimensionalPortalRenderer.render();
+            }
+        });
         DimensionRenderering.initClient();
         DimensionalDoorsClient.initParticles(
                 (particleType, particleProvider) -> ParticleFactoryRegistry.getInstance().register((ParticleType) particleType, (ParticleProvider) particleProvider),

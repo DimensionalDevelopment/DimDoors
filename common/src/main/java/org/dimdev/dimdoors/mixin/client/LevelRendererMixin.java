@@ -15,13 +15,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.client.CloudRenderBuffer;
+import org.dimdev.dimdoors.api.client.DimensionalDoorsRendertargets;
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension;
 import org.joml.Matrix4f;
 import org.lwjgl.system.NonnullDefault;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.minecraft.client.renderer.LevelRenderer.getLightColor;
 
@@ -350,5 +353,10 @@ public abstract class LevelRendererMixin implements LevelRendererExtension {
     @Override
     public int getTicks() {
         return ticks;
+    }
+
+    @Inject(method = "resize", at = @At("TAIL"))
+    public void onResize(int i, int j, CallbackInfo ci) {
+        DimensionalDoorsRendertargets.resize(i, j);
     }
 }

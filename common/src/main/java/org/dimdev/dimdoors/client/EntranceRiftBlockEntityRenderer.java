@@ -50,12 +50,11 @@ public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Ent
 
         }
 
-        DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, blockEntity.getTransformer(), tickDelta, light, overlay, blockEntity.isTall());
+        var entrance = blockEntity.getDoorInstance();
+        entrance.getModelMatrix().set(matrixStack.last().pose());
 
-
-
-
-	}
+        DimensionalPortalRenderer.addInstance(blockEntity.getDoorInstance());
+    }
 
 	private void renderBlockState(BlockState renderState, RandomSource random, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
 		var model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(renderState);
