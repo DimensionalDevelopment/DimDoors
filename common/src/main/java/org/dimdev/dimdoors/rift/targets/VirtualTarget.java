@@ -18,6 +18,8 @@ import org.dimdev.dimdoors.api.util.RGBA;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.dimdev.dimdoors.DimensionalDoors.LOGGER;
+
 /**
  * A target that is not an actual object in the game such as a block or a block
  * entity. Only virtual targets can be saved to NBT.
@@ -29,7 +31,7 @@ public abstract class VirtualTarget implements Target {
 	protected Location location;
 
 	public static VirtualTarget fromNbt(CompoundTag nbt) {
-		return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
+		return CODEC.parse(NbtOps.INSTANCE, nbt).resultOrPartial(LOGGER::error).orElse(NoneTarget.INSTANCE);
 
 //		ResourceLocation id = new ResourceLocation(nbt.getString("type"));
 //		return Objects.requireNonNull(REGISTRY.get(id), "Unknown virtual target type " + id).fromNbt(nbt);
