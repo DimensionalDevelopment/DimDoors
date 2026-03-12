@@ -57,7 +57,7 @@ import java.util.Optional;
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
-public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling {
+public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, DimensionalBlock, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling {
 	public DimensionalDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
 		super(settings.pushReaction(BLOCK), blockSetType);
 	}

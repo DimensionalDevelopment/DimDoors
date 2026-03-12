@@ -216,7 +216,7 @@ public class DimensionalDoorBlockRegistrar {
 	}
 
 	private void putCutout(Block original) {
-		RenderTypeRegistry.register(RenderType.cutout(), original);
+//		RenderTypeRegistry.register(RenderType.cutout(), original);
 	}
 
 	public ResourceLocation get(ResourceLocation ResourceLocation) {

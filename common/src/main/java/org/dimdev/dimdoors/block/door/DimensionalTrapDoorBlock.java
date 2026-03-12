@@ -52,7 +52,7 @@ import java.util.Optional;
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
-public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling {
+public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, DimensionalBlock, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling {
     public DimensionalTrapDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
         super(blockSetType, settings.pushReaction(BLOCK));
     }

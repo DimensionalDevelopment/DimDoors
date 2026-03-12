@@ -32,12 +32,7 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
         ModelLoadingPlugin.register(new DimensionalDoorsModelLoadingPlugin());
 
         MenuScreens.register(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
-        BEFORE_ENTITIES.register(new WorldRenderEvents.BeforeEntities() {
-            @Override
-            public void beforeEntities(WorldRenderContext context) {
-                DimensionalPortalRenderer.render();
-            }
-        });
+        BEFORE_ENTITIES.register(context -> DimensionalPortalRenderer.render());
         DimensionRenderering.initClient();
         DimensionalDoorsClient.initParticles(
                 (particleType, particleProvider) -> ParticleFactoryRegistry.getInstance().register((ParticleType) particleType, (ParticleProvider) particleProvider),

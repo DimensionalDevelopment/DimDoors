@@ -58,7 +58,7 @@ public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Ent
 
 	private void renderBlockState(BlockState renderState, RandomSource random, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
 		var model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(renderState);
-		var renderType = ItemBlockRenderTypes.getRenderType(renderState, false);
+		var renderType = ItemBlockRenderTypes.getChunkRenderType(renderState);
 		var vertexConsumer = vertexConsumerProvider.getBuffer(renderType);
 
 		for (var direction : Direction.values()) {
