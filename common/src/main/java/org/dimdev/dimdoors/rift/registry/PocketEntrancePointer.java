@@ -1,29 +1,34 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
+
+import java.util.UUID;
 
 public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftPointer superclass?
-	private int pocketId;
+    public static final MapCodec<PocketEntrancePointer> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance).and(UUIDUtil.CODEC.fieldOf("pocketId").forGetter(a -> a.pocketId)).apply(instance, PocketEntrancePointer::new));
 
-	public PocketEntrancePointer(ResourceKey<Level> pocketDim, int pocketId) {
-		this.setWorld(pocketDim);
+	private final UUID pocketId;
+
+	public PocketEntrancePointer(UUID pocketId) {
+        super();
 		this.pocketId = pocketId;
 	}
 
-	public PocketEntrancePointer() {
-	}
+    public PocketEntrancePointer(UUID id, UUID pocketId) {
+        super(id);
+        this.pocketId = pocketId;
+    }
+
 
 	@Override
 	public RegistryVertexType<? extends RegistryVertex> getType() {
 		return RegistryVertexType.ENTRANCE.get();
-	}
-
-	public String toString() {
-		return "PocketEntrancePointer(pocketDim=" + this.getWorld() + ", pocketId=" + this.pocketId + ")";
 	}
 
 	public static CompoundTag toNbt(PocketEntrancePointer vertex) {
@@ -40,7 +45,7 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 		return pointer;
 	}
 
-	public int getPocketId() {
+	public UUID getPocketId() {
 		return pocketId;
 	}
 }

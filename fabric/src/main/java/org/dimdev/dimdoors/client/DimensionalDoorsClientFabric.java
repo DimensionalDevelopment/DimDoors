@@ -13,6 +13,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.packet.s2c.*;
+import org.dimdev.dimdoors.pockets.dimension.UpdateDimensionsPacket;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,5 +44,6 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(MonolithAggroParticlesPacket.TYPE, (packet, context) -> ClientPacketListener.onMonolithAggroParticles(packet));
         ClientPlayNetworking.registerGlobalReceiver(MonolithTeleportParticlesPacket.TYPE, (packet, context) -> ClientPacketListener.onMonolithTeleportParticles(packet));
         ClientPlayNetworking.registerGlobalReceiver(RenderBreakBlockS2CPacket.TYPE, (packet, context) -> ClientPacketListener.onRenderBreakBlock(packet));
+        ClientPlayNetworking.registerGlobalReceiver(UpdateDimensionsPacket.TYPE, (packet, context) -> ClientPacketListener.onUpdateDimensions(packet));
     }
 }

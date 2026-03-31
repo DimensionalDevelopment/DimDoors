@@ -41,9 +41,9 @@ public class ServerPlayNetworkHandlerMixin {
 						mutable.set(i, j, k);
 						BlockState blockState = player.level().getBlockState(mutable);
 						Block block = blockState.getBlock();
-						if (block instanceof AfterMoveCollidableBlock && ((AfterMoveCollidableBlock) block).onAfterMovePlayerCollision(blockState, player.serverLevel(), mutable, player, player.position().subtract(firstGoodX, firstGoodY, firstGoodZ)).consumesAction()) {
-							done = true;
-						}
+                        if (block instanceof AfterMoveCollidableBlock afterMoveCollidableBlock && afterMoveCollidableBlock.onAfterMovePlayerCollision(blockState, player.serverLevel(), mutable, player, player.position().subtract(firstGoodX, firstGoodY, firstGoodZ)).consumesAction()) {
+                            done = true;
+                        }
 						if (done) {
 							break;
 						}

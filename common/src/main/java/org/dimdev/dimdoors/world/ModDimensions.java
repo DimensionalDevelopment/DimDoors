@@ -1,8 +1,11 @@
 package org.dimdev.dimdoors.world;
 
+import com.mojang.serialization.MapCodec;
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.registry.registries.DeferredRegister;
+import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -12,13 +15,18 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FixedBiomeSource;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
+import org.dimdev.dimdoors.world.pocket.PocketChunkGenerator;
+import org.dimdev.dimdoors.world.structure.PocketPlacement;
 
 import java.util.Objects;
 import java.util.OptionalLong;
+import java.util.function.Supplier;
 
 public final class ModDimensions {
     public static final ResourceKey<Level> LIMBO = ResourceKey.create(Registries.DIMENSION, DimensionalDoors.id("limbo"));
@@ -41,6 +49,8 @@ public final class ModDimensions {
     public static ServerLevel PERSONAL_POCKET_DIMENSION;
     public static ServerLevel PUBLIC_POCKET_DIMENSION;
     public static ServerLevel DUNGEON_POCKET_DIMENSION;
+
+    public static RegistrySupplier<StructurePlacementType<PocketPlacement>> POCKET_PLACMENT_TYPE;
 
     public static boolean isPocketDimension(Level world) {
         return isPocketDimension(world.dimension());
@@ -72,9 +82,26 @@ public final class ModDimensions {
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getLevel(PUBLIC);
             ModDimensions.DUNGEON_POCKET_DIMENSION = server.getLevel(DUNGEON);
         });
-        var deffered = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CHUNK_GENERATOR);
-        deffered.register("blank", () -> BlankChunkGenerator.CODEC);
+
+        POCKET_PLACMENT_TYPE = ModDimensions.registerSingle(Registries.STRUCTURE_PLACEMENT, "pocket", () -> () -> MapCodec.unit(PocketPlacement.INSTANCE));
+        ModDimensions.registerSingle(Registries.CHUNK_GENERATOR, "pocket", new Supplier<MapCodec<? extends ChunkGenerator>>() {
+            @Override
+            public MapCodec<? extends ChunkGenerator> get() {
+                return PocketChunkGenerator.CODEC;
+            }
+        });
+//        deffered.register("blank", () -> BlankChunkGenerator.CODEC);
+//        var deffered = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CHUNK_GENERATOR);
+//        deffered.register("blank", () -> BlankChunkGenerator.CODEC);
+//        deffered.register();
+    }
+
+    private static <U, V extends U> RegistrySupplier<V> registerSingle(ResourceKey<Registry<U>> registry, String name, Supplier<V> supplier) {
+        var deffered = DeferredRegister.create(DimensionalDoors.MOD_ID, registry);
+        var t = deffered.register(name, supplier);
         deffered.register();
+
+        return t;
     }
 
     public static void bootstrap(BootstrapContext<DimensionType> entries) {

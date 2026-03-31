@@ -1,92 +1,68 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import com.bedrockk.molang.Expression;
+import com.bedrockk.molang.runtime.value.MoValue;
 import com.google.common.base.MoreObjects;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.BlockBoxUtil;
-import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.util.MolangUtils;
 import org.dimdev.dimdoors.util.schematic.SchematicBlockPalette;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShellModifier extends AbstractModifier {
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static final String KEY = "shell";
+public record ShellModifier(List<Layer> layers) implements Modifier {
+    public static final MapCodec<ShellModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Layer.CODEC.listOf().optionalFieldOf("layers", List.of()).forGetter(ShellModifier::layers)
+    ).apply(instance, ShellModifier::new));
 
-	private final List<Layer> layers = new ArrayList<>();
-	private BoundingBox boxToDrawAround;
-
-	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		super.toNbtInternal(nbt, provider, allowReference);
-
-		ListTag layersNbt = new ListTag();
-		for (Layer layer : layers) {
-			layersNbt.add(layer.toNbt());
-		}
-		nbt.put("layers", layersNbt);
-		if (boxToDrawAround != null) {
-			nbt.put("box_to_draw_around", BlockBoxUtil.toNbt(boxToDrawAround));
-		}
-
-		return nbt;
-	}
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static final String KEY = "shell";
 
     @Override
-	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		for (Tag layerNbt : nbt.getList("layers", Tag.TAG_COMPOUND)) {
-			CompoundTag nbtCompound = (CompoundTag) layerNbt;
-			try {
-				Layer layer = Layer.fromNbt(nbtCompound);
-				layers.add(layer);
-			} catch (CommandSyntaxException e) {
-                LOGGER.error("could not parse Layer: {}", nbtCompound, e);
-			}
-		}
+    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+        super.toNbtInternal(nbt, provider, allowReference);
 
-		if (nbt.contains("box_to_draw_around", Tag.TAG_INT_ARRAY)) {
-			int[] box = nbt.getIntArray("box_to_draw_around");
-			boxToDrawAround = BoundingBox.fromCorners(new Vec3i(box[0], box[1], box[2]), new Vec3i(box[3], box[4], box[5]));
-		}
+        ListTag layersNbt = new ListTag();
+        for (Layer layer : layers) {
+            layersNbt.add(layer.toNbt());
+        }
+        nbt.put("layers", layersNbt);
+        if (boxToDrawAround != null) {
+            nbt.put("box_to_draw_around", BlockBoxUtil.toNbt(boxToDrawAround));
+        }
 
-		return this;
-	}
+        return nbt;
+    }
 
-	@Override
-	public Modifier.ModifierType<? extends Modifier> getType() {
-		return Modifier.ModifierType.SHELL_MODIFIER_TYPE.get();
-	}
+    @Override
+    public ModifierType<? extends Modifier> getType() {
+        return ModifierType.SHELL_MODIFIER_TYPE.get();
+    }
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
-
-	@Override
-	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
-		for (Layer layer : layers) {
-			int thickness = layer.getThickness(variableMap);
-			builder.expandExpected(new Vec3i(2 * thickness, 2 * thickness, 2 * thickness));
-			builder.offsetOrigin(new Vec3i(thickness, thickness, thickness));
-		}
-	}
+    @Override
+    public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+        Map<String, MoValue> variableMap = parameters.toVariableMap(new HashMap<>());
+        for (Layer layer : layers) {
+            int thickness = layer.getThickness(variableMap);
+            builder.expandExpected(new Vec3i(2 * thickness, 2 * thickness, 2 * thickness));
+            builder.offsetOrigin(new Vec3i(thickness, thickness, thickness));
+        }
+    }
 
     @Override
     public void apply(PocketGenerationContext parameters, RiftManager manager) {
@@ -107,7 +83,7 @@ public class ShellModifier extends AbstractModifier {
     }
 
     private void drawLayer(Layer layer, BoundingBox templateBox, int offset, int thickness, ServerLevel world) {
-        final BlockState state = layer.getBlockState();
+        final BlockState state = layer.blockState();
         final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
         final int innerMinX = templateBox.minX() - offset;
@@ -159,49 +135,21 @@ public class ShellModifier extends AbstractModifier {
 
 
     @Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("layers", layers)
-				.toString();
-	}
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("layers", layers)
+                .toString();
+    }
 
-	public static class Layer {
-		private final String blockStateString;
-		private final String thickness;
-		private Equation thicknessEquation;
-		private final BlockState blockState;
+    public record Layer(BlockState blockState, Expression thickness) {
+        public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                SchematicBlockPalette.Entry.CODEC.fieldOf("block_state").forGetter(Layer::blockState),
+                MolangUtils.CODEC.optionalFieldOf("thickness", MolangUtils.ONE).forGetter(a -> a.thickness)
+        ).apply(instance, Layer::new));
 
-		public Layer(String blockStateString, String thickness) {
-			this.blockStateString = blockStateString;
-			this.thickness = thickness;
-			try {
-				this.thicknessEquation = Equation.parse(thickness);
-			} catch (Equation.EquationParseException e) {
-				LOGGER.error("Could not parse layer thickness equation. Defaulting to 1");
-				// FIXME: do we actually want to have it serialize to the broken String equation we input?
-				this.thicknessEquation = Equation.newEquation(variableMap -> 1d, stringBuilder -> stringBuilder.append(thickness));
-			}
 
-			this.blockState = SchematicBlockPalette.Entry.to(blockStateString).getOrThrow();
-		}
-
-		public BlockState getBlockState() {
-			return blockState;
-		}
-
-		public int getThickness(Map<String, Double> variableMap) {
-			return (int) thicknessEquation.apply(variableMap);
-		}
-
-		public CompoundTag toNbt() {
-			CompoundTag nbt = new CompoundTag();
-			nbt.putString("block_state", blockStateString);
-			nbt.putString("thickness", thickness);
-			return nbt;
-		}
-
-		public static Layer fromNbt(CompoundTag nbt) throws CommandSyntaxException {
-			return new Layer(nbt.getString("block_state"), nbt.getString("thickness"));
-		}
-	}
+        public int getThickness(Map<String, MoValue> variableMap) {
+            return (int) MolangUtils.evaulateDouble(thickness, variableMap);
+        }
+    }
 }

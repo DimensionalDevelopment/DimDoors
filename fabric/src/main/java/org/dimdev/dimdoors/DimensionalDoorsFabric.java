@@ -24,6 +24,7 @@ import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.*;
+import org.dimdev.dimdoors.pockets.dimension.UpdateDimensionsPacket;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
@@ -48,6 +49,7 @@ public class DimensionalDoorsFabric implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(MonolithAggroParticlesPacket.TYPE, MonolithAggroParticlesPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC);
+        PayloadTypeRegistry.playS2C().register(UpdateDimensionsPacket.TYPE, UpdateDimensionsPacket.STREAM_CODEC);
 
         PayloadTypeRegistry.playC2S().register(NetworkHandlerInitializedC2SPacket.TYPE, NetworkHandlerInitializedC2SPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC);

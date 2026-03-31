@@ -16,10 +16,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -36,12 +36,12 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 	}
 
 	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
+	protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
 		return CODEC;
 	}
 
 	@Override
-	public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
+	public EntranceRiftBlockEntity getRift(ServerLevel world, BlockPos pos, BlockState state) {
 		return (EntranceRiftBlockEntity) world.getBlockEntity(pos);
 	}
 
@@ -52,37 +52,27 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
+	public @NotNull RenderShape getRenderShape(BlockState state) {
 		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
 	public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-		if (world.isClientSide) {
-			return;
-		}
+        if (world instanceof ServerLevel level) {
+            this.getRift(level, pos, state).teleport(level.getServer(), entity);
 
-		this.getRift(world, pos, state).teleport(entity);
+            EntranceRiftBlockEntity rift = this.getRift(level, pos, state);
 
-		EntranceRiftBlockEntity rift = this.getRift(world, pos, state);
+            world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
+            world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(newRift -> newRift.setData(rift.getData()));
+        }
+    }
 
-		world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
-		((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
-
-		/*
-		New plan, we use players spawn points as the exit points from limbo, this code will no longer be used.
-		DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUuid(), new Location((ServerWorld) world, pos));
-		LOGGER.log(Level.INFO, "Set overworld rift location");
-
-		 */
-
-	}
-
-	public BlockState rotate(BlockState state, Rotation rotation) {
+	public @NotNull BlockState rotate(BlockState state, Rotation rotation) {
 		return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
 	}
 
-	public BlockState mirror(BlockState state, Mirror mirror) {
+	public @NotNull BlockState mirror(BlockState state, Mirror mirror) {
 		return state.rotate(mirror.getRotation(state.getValue(FACING)));
 	}
 
@@ -91,11 +81,6 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 		super.createBlockStateDefinition(builder);
 		builder.add(FACING);
 	}
-
-//	@Override
-//	public VoxelShape getInteractionShape(BlockState state, BlockGetter world, BlockPos pos) {
-//		return Shapes.block();
-//	}
 
 	@Environment(EnvType.CLIENT)
 	@Override
@@ -106,7 +91,7 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 	@Override
 	public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean notify) {
 		if (world.isClientSide) return;
-		((EntranceRiftBlockEntity) world.getBlockEntity(pos)).setPortalDestination((ServerLevel) world);
+		world.getBlockEntity(pos, ModBlockEntityTypes.ENTRANCE_RIFT.get()).ifPresent(rift -> rift.setPortalDestination((ServerLevel) world));
 	}
 
 	@Nullable
@@ -131,12 +116,12 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
     public static final class Dummy extends BaseEntityBlock {
 		public static final MapCodec<Dummy> CODEC = simpleCodec(Dummy::new);
 
-		protected Dummy(Properties settings) {
+		private Dummy(Properties settings) {
 			super(settings);
 		}
 
 		@Override
-		protected MapCodec<? extends BaseEntityBlock> codec() {
+		protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
 			return CODEC;
 		}
 

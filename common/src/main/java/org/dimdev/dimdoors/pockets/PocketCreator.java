@@ -1,9 +1,9 @@
 package org.dimdev.dimdoors.pockets;
 
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import java.util.UUID;
 
 public interface PocketCreator {
-    Pocket prepareAndPlacePocket(PocketGenerationContext parameters);
+    UUID prepareAndPlacePocket(PocketGenerationContext parameters);
 
-    Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot);
+    UUID prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot);
 }

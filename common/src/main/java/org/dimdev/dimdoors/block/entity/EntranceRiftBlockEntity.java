@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -111,7 +112,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 	}
 
 	@Override
-	public boolean teleport(Entity entity) {
+	public boolean teleport(MinecraftServer server, Entity entity) {
 		//Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the entrance of the rift that took them into dungeons.
 
 		if (this.isLocked()) {
@@ -120,7 +121,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 				Rift rift = this.asRift();
 
 				if (RiftKeyItem.has(stack, rift.getId())) {
-					return innerTeleport(entity);
+					return innerTeleport(server, entity);
 				}
 
 				EntityUtils.chat(entity, Component.translatable("rifts.isLocked"));
@@ -128,11 +129,11 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 			return false;
 		}
 
-		return innerTeleport(entity);
+		return innerTeleport(server, entity);
 	}
 
-	private boolean innerTeleport(Entity entity) {
-		boolean status = super.teleport(entity);
+	private boolean innerTeleport(MinecraftServer server, Entity entity) {
+		boolean status = super.teleport(server, entity);
 
 		if (this.riftStateChanged && !this.data.isAlwaysDelete()) {
 			this.setChanged();

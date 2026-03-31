@@ -2,85 +2,41 @@ package org.dimdev.dimdoors.world.pocket;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.api.util.StreamUtils;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.UUIDUtil;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
-import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 public class PrivateRegistry {
-    protected record PocketInfo(ResourceKey<Level> world, int id) {
+    public static final Codec<PrivateRegistry> CODEC = Codec.unboundedMap(UUIDUtil.STRING_CODEC, UUIDUtil.CODEC)
+            .xmap(HashBiMap::create, Function.identity())
+            .xmap(PrivateRegistry::new, privateRegistry -> (HashBiMap<UUID, UUID>) privateRegistry.privatePocketMap);
 
-        public static CompoundTag toNbt(PocketInfo info) {
-            CompoundTag nbt = new CompoundTag();
-            nbt.putString("world", info.world.location().toString());
-            nbt.putInt("id", info.id);
-            return nbt;
-        }
+	private BiMap<UUID, UUID> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket UUID
 
-        public static PocketInfo fromNbt(CompoundTag nbt) {
-            return new PocketInfo(
-                    ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
-                    nbt.getInt("id")
-            );
-        }
+    public PrivateRegistry() {
+        this(HashBiMap.create());
     }
 
-	private static final String DATA_NAME = "dimdoors_private_pockets";
-
-	protected BiMap<UUID, PocketInfo> privatePocketMap = HashBiMap.create(); // Player UUID -> Pocket Info TODO: fix AnnotatedNBT and use UUID rather than String
-
-	public PrivateRegistry() {
+	public PrivateRegistry(BiMap<UUID, UUID> privatePocketMap) {
+        this.privatePocketMap = privatePocketMap;
 	}
 
-	public void fromNbt(CompoundTag nbt) {
-		privatePocketMap.clear();
-		CompoundTag privatePocketMapNbt = nbt.getCompound("private_pocket_map");
-
-        for (var key : privatePocketMapNbt.getAllKeys()) {
-            CompoundTag pocketInfoNbt = privatePocketMapNbt.getCompound(key);
-            var uuidKey = UUID.fromString(key);
-            var pocketInfo = PocketInfo.fromNbt(pocketInfoNbt);
-
-            this.privatePocketMap.put(uuidKey, pocketInfo);
-        }
-	}
-
-	public CompoundTag toNbt(CompoundTag nbt) {
-        var pocketMapNbt = new CompoundTag();
-
-        for(var pair : this.privatePocketMap.entrySet()) {
-            pocketMapNbt.put(pair.getKey().toString(), PocketInfo.toNbt(pair.getValue()));
-        }
-
-		nbt.put("private_pocket_map", pocketMapNbt);
-
-		return nbt;
-	}
-
-	public PrivatePocket getPrivatePocket(UUID playerUUID) {
-		PocketInfo pocket = this.privatePocketMap.get(playerUUID);
+    public UUID
+    getPrivatePocket(UUID playerUUID) {
+		var pocket = this.privatePocketMap.get(playerUUID);
 		if (pocket == null) return null;
-		return DimensionalRegistry.getPocketDirectory(pocket.world).getPocket(pocket.id, PrivatePocket.class);
+		return DimensionalRegistry.getPocketDirectory().get(pocket);
 	}
 
-	public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {
-		this.privatePocketMap.put(playerUUID, new PocketInfo(pocket.getWorld(), pocket.getId()));
+	public void setPrivatePocketID(UUID playerUUID, UUID pocket) {
+		this.privatePocketMap.put(playerUUID, pocket);
         DimensionalRegistry.setDirty();
     }
 
-	public UUID getPrivatePocketOwner(Pocket pocket) {
-		return this.privatePocketMap.inverse().get(new PocketInfo(pocket.getWorld(), pocket.getId()));
+	public UUID getPrivatePocketOwner(UUID pocket) {
+		return this.privatePocketMap.inverse().get(pocket);
 	}
 }

@@ -1,28 +1,34 @@
 package org.dimdev.dimdoors.pockets;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.ModRegistries;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.UUID;
 
 public final class PocketGenerator {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	public static final ResourceLocation ALL_DUNGEONS = DimensionalDoors.id("dungeon");
-	public static final ResourceLocation NETHER_DUNGEONS = DimensionalDoors.id("nether");
-	public static final ResourceLocation RUINS_DUNGEONS = DimensionalDoors.id("ruins");
-	public static final ResourceLocation ATLANTIS_DUNGEONS = DimensionalDoors.id("atlantis");
-	public static final ResourceLocation JUNGLE_DUNGEONS = DimensionalDoors.id("jungle");
-	public static final ResourceLocation SNOW_DUNGEONS = DimensionalDoors.id("snow");
-	public static final ResourceLocation PYRAMID_DUNGEONS = DimensionalDoors.id("pyramid");
-	public static final ResourceLocation END_DUNGEONS = DimensionalDoors.id("end");
+	public static final ResourceKey<VirtualPocket> ALL_DUNGEONS = ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("dungeon"));
+	public static final ResourceKey<VirtualPocket> NETHER_DUNGEONS = ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("nether"));
+	public static final ResourceKey<VirtualPocket> RUINS_DUNGEONS = ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("ruins"));
+	public static final ResourceKey<VirtualPocket> ATLANTIS_DUNGEONS = ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("atlantis"));
+	public static final ResourceKey<VirtualPocket> JUNGLE_DUNGEONS = ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("jungle"));
+	public static final ResourceKey<VirtualPocket> SNOW_DUNGEONS = ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("snow"));
+	public static final ResourceKey<VirtualPocket> PYRAMID_DUNGEONS = ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("pyramid"));
+	public static final ResourceKey<VirtualPocket> END_DUNGEONS = ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("end"));
 
     /*
     private static Pocket prepareAndPlacePocket(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
@@ -36,35 +42,35 @@ public final class PocketGenerator {
 	*/
 
 
-	public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PERSONAL), DimensionalDoors.id("private"), virtualLocation, null, null);
+	public static UUID generatePrivatePocketV2(VirtualLocation virtualLocation) {
+		return generateFromPocketGroupV2(ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("private")), virtualLocation, null, null);
 	}
 
-	public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DimensionalDoors.id("public"), virtualLocation, linkTo, linkProperties);
+	public static UUID generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		return generateFromPocketGroupV2(ResourceKey.create(ModRegistries.POCKET_GROUP, DimensionalDoors.id("public")), virtualLocation, linkTo, linkProperties);
 	}
 
-	public static Pocket generateFromPocketGroupV2(ServerLevel world, ResourceLocation group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties, world.registryAccess());
-		return generatePocketV2(PocketLoader.getGroup(group).getNextPocketGeneratorReference(context), context);
+	public static UUID generateFromPocketGroupV2(ResourceKey<VirtualPocket> group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		PocketGenerationContext context = new PocketGenerationContext(virtualLocation, linkTo, linkProperties, DimensionalDoors.getServer().registryAccess());
+		return generatePocketV2(context.lookup(group).getNextPocketGeneratorReference(context), context);
 	}
 
-	public static Pocket generateFromVirtualPocket(ServerLevel world, ResourceLocation id, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties, world.registryAccess());
+	public static UUID generateFromVirtualPocket(ResourceKey<VirtualPocket> id, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		PocketGenerationContext context = new PocketGenerationContext(virtualLocation, linkTo, linkProperties, DimensionalDoors.getServer().registryAccess());
 		LOGGER.info("Generating virtual target: " + id);
-		return generatePocketV2(PocketLoader.getVirtual(id).getNextPocketGeneratorReference(context), context);
+		return generatePocketV2(context.lookup(id).getNextPocketGeneratorReference(context), context);
 	}
 
-	public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationContext context) {
+	public static UUID generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationContext context) {
 		return pocketGeneratorReference.prepareAndPlacePocket(context);
 	}
 
-	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), DimensionalDoors.id("dungeon"), virtualLocation, linkTo, linkProperties);
+	public static UUID generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		return generateFromPocketGroupV2(ALL_DUNGEONS, virtualLocation, linkTo, linkProperties);
 	}
 
-	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, ResourceLocation group) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), group, virtualLocation, linkTo, linkProperties);
+	public static UUID generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, ResourceKey<VirtualPocket> group) {
+		return generateFromPocketGroupV2(group, virtualLocation, linkTo, linkProperties);
 	}
 
 	/*

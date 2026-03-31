@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.api.util.math;
 
-import net.minecraft.core.BlockPos;
-
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -15,12 +13,7 @@ public final class GridUtil {
 			this.z = z;
 		}
 
-		public GridPos(BlockPos pos, int gridSize) {
-			this.x = Math.floorDiv(Math.floorDiv(pos.getX(), gridSize), 16);
-			this.z = Math.floorDiv(Math.floorDiv(pos.getZ(), gridSize), 16);
-		}
-
-		@Override
+        @Override
 		public boolean equals(Object o) {
 			if (o == this) return true;
 			if (!(o instanceof GridPos)) return false;

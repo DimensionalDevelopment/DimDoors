@@ -1,74 +1,41 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import net.minecraft.core.HolderLookup;
+import com.bedrockk.molang.Expression;
+import com.bedrockk.molang.runtime.value.MoValue;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.util.MolangUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class OffsetModifier extends AbstractModifier {
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static final String KEY = "offset";
+public record OffsetModifier(Expression offsetX, Expression offsetY, Expression offsetZ) implements Modifier {
+    public static final MapCodec<OffsetModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            MolangUtils.CODEC.optionalFieldOf("offsetX", MolangUtils.ZERO).forGetter(OffsetModifier::offsetX),
+            MolangUtils.CODEC.optionalFieldOf("offsetY", MolangUtils.ZERO).forGetter(OffsetModifier::offsetY),
+            MolangUtils.CODEC.optionalFieldOf("offsetZ", MolangUtils.ZERO).forGetter(OffsetModifier::offsetZ)
+    ).apply(instance, OffsetModifier::new));
 
-	private String offsetX;
-	private Equation offsetXEquation;
-	private String offsetY;
-	private Equation offsetYEquation;
-	private String offsetZ;
-	private Equation offsetZEquation;
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static final String KEY = "offset";
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		try {
-			offsetX = nbt.contains("offset_x") ? nbt.getString("offset_x") : "0";
-			offsetXEquation = Equation.parse(offsetX);
-			offsetY = nbt.contains("offset_y") ? nbt.getString("offset_y") : "0";
-			offsetYEquation = Equation.parse(offsetY);
-			offsetZ = nbt.contains("offset_z") ? nbt.getString("offset_z") : "0";
-			offsetZEquation = Equation.parse(offsetZ);
-		} catch (Equation.EquationParseException e) {
-			LOGGER.error(e);
-		}
+    @Override
+    public ModifierType<? extends Modifier> getType() {
+        return ModifierType.OFFSET_MODIFIER_TYPE.get();
+    }
 
-		return this;
-	}
+    @Override
+    public void apply(PocketGenerationContext parameters, RiftManager manager) {
 
-	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		super.toNbtInternal(nbt, provider, allowReference);
+    }
 
-		if (!offsetX.equals("0")) nbt.putString("offset_x", offsetX);
-		if (!offsetY.equals("0")) nbt.putString("offset_y", offsetY);
-		if (!offsetZ.equals("0")) nbt.putString("offset_z", offsetZ);
-
-		return nbt;
-	}
-
-	@Override
-	public ModifierType<? extends Modifier> getType() {
-		return ModifierType.OFFSET_MODIFIER_TYPE.get();
-	}
-
-	@Override
-	public String getKey() {
-		return KEY;
-	}
-
-	@Override
-	public void apply(PocketGenerationContext parameters, RiftManager manager) {
-
-	}
-
-	@Override
-	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
-		builder.offsetOrigin(new Vec3i((int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap)));
-	}
+    @Override
+    public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+        Map<String, MoValue> variableMap = parameters.toVariableMap(new HashMap<>());
+        builder.offsetOrigin(new Vec3i((int) MolangUtils.evaulateDouble(offsetX, variableMap), (int) MolangUtils.evaulateDouble(offsetY, variableMap), (int) MolangUtils.evaulateDouble(offsetZ, variableMap)));
+    }
 }

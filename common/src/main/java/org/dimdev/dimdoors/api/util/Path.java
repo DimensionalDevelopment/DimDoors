@@ -1,10 +1,13 @@
 package org.dimdev.dimdoors.api.util;
 
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.stream.Collectors;
 
 public class Path<K> {
 	private final ArrayList<K> path;
@@ -54,6 +57,12 @@ public class Path<K> {
 	public static Path<String> stringPath(ResourceLocation id) {
 		return stringPath(id.toString());
 	}
+
+    public static <T> List<T> getFromRegistry(Registry<T> registry, Path<ResourceLocation> path) {
+        return registry.stream()
+                .filter(t -> path.asQueue().contains(registry.getKey(t)))
+                .collect(Collectors.toList());
+    }
 
 	@Override
 	public String toString() {

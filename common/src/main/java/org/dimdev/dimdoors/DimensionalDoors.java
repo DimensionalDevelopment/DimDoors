@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.api.util.LocationCondition.LocationConditionType;
 import org.dimdev.dimdoors.api.util.LocationValue.LocationValueWithType;
+import org.dimdev.dimdoors.block.CanSpreadDecay;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
@@ -49,6 +51,7 @@ import org.dimdev.dimdoors.listener.pocket.PocketListenerUtil;
 import org.dimdev.dimdoors.listener.pocket.UseItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
+import org.dimdev.dimdoors.pockets.dimension.DimensionManager;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
@@ -69,13 +72,13 @@ import org.dimdev.dimdoors.world.decay.conditions.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPatternType;
 import org.dimdev.dimdoors.world.decay.results.DecayResultType;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
@@ -137,6 +140,7 @@ public class DimensionalDoors {
 		ModParticleTypes.init();
 		ModCriteria.init();
 		ModStructureProccessors.init();
+        DimensionManager.init();
 
 //		ModRecipeBookTypes.init();
 
@@ -153,6 +157,27 @@ public class DimensionalDoors {
             @Override
             public void stateChanged(MinecraftServer server) {
                 Decay.DecayLoader.populate(server);
+            }
+        });
+
+        TickEvent.PLAYER_POST.register(new TickEvent.Player() {
+            @Override
+            public void tick(net.minecraft.world.entity.player.Player instance) {
+                if(!instance.level().isClientSide()) {
+                    var player = (ServerPlayer) instance;
+                    var level = (ServerLevel) instance.level();
+
+                    BlockPos.randomInCube(instance.getRandom(), 3, instance.blockPosition(), 8).forEach(new Consumer<BlockPos>() {
+                        @Override
+                        public void accept(BlockPos pos) {
+                            var state = level.getBlockState(pos);
+
+                            if(state.getBlock() instanceof CanSpreadDecay canSpreadDecay) {
+                                canSpreadDecay.spreadDecay(state, level, pos, level.random);
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -181,7 +206,6 @@ public class DimensionalDoors {
 		RegistryVertex.RegistryVertexType.register();
 		Modifier.ModifierType.register();
 		PocketGenerator.PocketGeneratorType.register();
-		AbstractPocket.AbstractPocketType.register();
 		PocketAddon.PocketAddonType.register();
 		Condition.ConditionType.register();
 		DecayConditionType.register();

@@ -1,51 +1,21 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
+
+import java.util.UUID;
 
 public abstract class AbstractVirtualPocketList extends WeightedList<VirtualPocket, PocketGenerationContext> implements ImplementedVirtualPocket {
-	private String resourceKey = null;
-
-	@Override
-	public void setResourceKey(String resourceKey) {
-		this.resourceKey = resourceKey;
-	}
-
-	@Override
-	public String getResourceKey() {
-		return resourceKey;
-	}
-
-	@Override
-	public Tag toNbt(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		if (allowReference && this.getResourceKey() != null) {
-			return StringTag.valueOf(this.getResourceKey());
-		}
-		return toNbtInternal(nbt, provider, allowReference);
-	}
-
-	// utility so the first part of toNbt can be extracted into default method
-	// at this point we know for a fact, that we need to serialize into the CompoundTag
-	// overwrite in subclass
-	protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		return this.getType().toNbt(nbt, provider);
-	}
-
-	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationContext context) {
+    @Override
+	public UUID prepareAndPlacePocket(PocketGenerationContext context) {
 		return getNextPocketGeneratorReference(context).prepareAndPlacePocket(context);
 	}
 
     @Override
-    public Pocket prepareAndPlacePocket(PocketGenerationContext context, Boolean setupLoot) {
+    public UUID prepareAndPlacePocket(PocketGenerationContext context, Boolean setupLoot) {
         return getNextPocketGeneratorReference(context).prepareAndPlacePocket(context, setupLoot);
     }
 
@@ -60,10 +30,5 @@ public abstract class AbstractVirtualPocketList extends WeightedList<VirtualPock
 	@Override
 	public double getWeight(PocketGenerationContext context) {
 		return getTotalWeight(context);
-	}
-
-	@Override
-	public void init() {
-		this.forEach(VirtualPocket::init);
 	}
 }

@@ -15,9 +15,7 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.AncientFabricBlock;
 import org.dimdev.dimdoors.block.FabricBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
-import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 public class DyeableAddon implements PocketAddon {
     public static ResourceLocation ID = DimensionalDoors.id("dyeable");
@@ -102,10 +100,10 @@ public class DyeableAddon implements PocketAddon {
 		return true;
 	}
 
-	@Override
-	public boolean applicable(Pocket pocket) {
-		return pocket instanceof PrivatePocket;
-	}
+//	@Override
+//	public boolean applicable(Pocket pocket) {
+//		return pocket instanceof PrivatePocket;
+//	}
 
     @Override
 	public PocketAddonType<?, ?> getType() {

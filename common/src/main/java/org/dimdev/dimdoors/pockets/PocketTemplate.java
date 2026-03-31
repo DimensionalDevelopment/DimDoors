@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.pockets;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -7,13 +10,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
+import org.dimdev.dimdoors.pockets.generator.SchematicGenerator;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PocketTemplate {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final boolean replacingPlaceholders = false;
+    public static Codec<PocketTemplate> CODEC = PocketLoader.CODEC;
     private final Schematic schematic;
     private final ResourceLocation id;
 

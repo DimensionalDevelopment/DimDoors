@@ -28,7 +28,7 @@ public class DestinationDataModifier extends StructureProcessor {
     }
 
     public static DestinationDataModifier of(Map<Integer, VirtualTarget> destinations) {
-        return new DestinationDataModifier(destinations.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, input -> VirtualTarget.toNbt(input.getValue()))));
+        return new DestinationDataModifier(destinations.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, input -> VirtualTarget.CODEC.encodeStart(NbtOps.INSTANCE, input.getValue()).getOrThrow())));
     }
 
     public static DestinationDataModifier of(int id, VirtualTarget data) {

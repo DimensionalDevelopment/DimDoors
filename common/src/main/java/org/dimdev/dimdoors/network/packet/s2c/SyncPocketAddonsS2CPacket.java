@@ -15,15 +15,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public record SyncPocketAddonsS2CPacket(ResourceKey<Level> world, int gridSize, int pocketId, int pocketRange,
+public record SyncPocketAddonsS2CPacket(ResourceKey<Level> world,
                                         List<PocketAddon> addons) implements CustomPacketPayload {
     public static final ResourceLocation ID = DimensionalDoors.id("sync_pocket_addons");
     public static final Type<SyncPocketAddonsS2CPacket> TYPE = new Type<>(ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncPocketAddonsS2CPacket> STREAM_CODEC = StreamCodec.composite(
       ResourceKey.streamCodec(Registries.DIMENSION), SyncPocketAddonsS2CPacket::world,
-            ByteBufCodecs.VAR_INT, SyncPocketAddonsS2CPacket::gridSize,
-            ByteBufCodecs.VAR_INT, SyncPocketAddonsS2CPacket::pocketId,
-            ByteBufCodecs.VAR_INT, SyncPocketAddonsS2CPacket::pocketRange,
             PocketAddon.LIST_STREAM_CODEC, SyncPocketAddonsS2CPacket::addons,
             SyncPocketAddonsS2CPacket::new
 

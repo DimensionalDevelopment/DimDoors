@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
+import org.dimdev.dimdoors.util.MappedRegistryExtensions;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,11 +25,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Mixin(MappedRegistry.class)
-public class MappedRegistryMixin<T> {
+public class MappedRegistryMixin<T> implements MappedRegistryExtensions {
 
     @Shadow
     @Final
     ResourceKey<? extends Registry<T>> key;
+
+    @Shadow
+    private boolean frozen;
 
     @ModifyVariable(method = "bindTags", at = @At("HEAD"), argsOnly = true)
     public Map<TagKey<T>, List<Holder<T>>> modifyBindTags(Map<TagKey<T>, List<Holder<T>>> map) {
@@ -40,5 +44,10 @@ public class MappedRegistryMixin<T> {
         }
 
         return map;
+    }
+
+    @Override
+    public void unfreeze() {
+        this.frozen = false;
     }
 }

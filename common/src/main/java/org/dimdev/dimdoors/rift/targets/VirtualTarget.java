@@ -6,10 +6,7 @@ import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.Cod;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
@@ -17,8 +14,6 @@ import org.dimdev.dimdoors.api.util.RGBA;
 
 import java.util.Map;
 import java.util.Objects;
-
-import static org.dimdev.dimdoors.DimensionalDoors.LOGGER;
 
 /**
  * A target that is not an actual object in the game such as a block or a block
@@ -30,29 +25,7 @@ public abstract class VirtualTarget implements Target {
 
 	protected Location location;
 
-	public static VirtualTarget fromNbt(CompoundTag nbt) {
-		return CODEC.parse(NbtOps.INSTANCE, nbt).resultOrPartial(LOGGER::error).orElse(NoneTarget.INSTANCE);
-
-//		ResourceLocation id = new ResourceLocation(nbt.getString("type"));
-//		return Objects.requireNonNull(REGISTRY.get(id), "Unknown virtual target type " + id).fromNbt(nbt);
-	}
-
-	public static <T extends VirtualTarget> CompoundTag toNbt(T virtualTarget) {
-		var data = (CompoundTag) virtualTarget.getType().codec().encode(virtualTarget, NbtOps.INSTANCE, new CompoundTag()).getOrThrow();
-		data.putString("type", virtualTarget.getType().getId().toString());
-
-		return data;
-
-//		ResourceLocation id = REGISTRY.getId(virtualTarget.getType());
-//		String type = id.toString();
-//
-//		CompoundTag nbt = virtualTarget.getType().toNbt(virtualTarget);
-//		nbt.putString("type", type);
-//
-//		return nbt;
-	}
-
-	public void register() {
+    public void register() {
 	}
 
 	public void unregister() {
@@ -114,6 +87,7 @@ public abstract class VirtualTarget implements Target {
 		RegistrySupplier<VirtualTargetType<RelativeReference>> RELATIVE = register("dimdoors:relative", RelativeReference.CODEC);
 		RegistrySupplier<VirtualTargetType<IdMarker>> ID_MARKER = register("dimdoors:id_marker", IdMarker.CODEC);
 		RegistrySupplier<VirtualTargetType<UnstableTarget>> UNSTABLE = register("dimdoors:unstable", UnstableTarget.INSTANCE);
+        RegistrySupplier<VirtualTargetType<PocketTarget>> POCKET = register("dimdoors:pocket", PocketTarget.CODEC);
 		RegistrySupplier<VirtualTargetType<NoneTarget>> NONE = register("dimdoors:none", NoneTarget.INSTANCE);
 
 		Map<VirtualTargetType<?>, String> TRANSLATION_KEYS = new Object2ObjectArrayMap<>();

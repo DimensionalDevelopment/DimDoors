@@ -1,5 +1,9 @@
 package org.dimdev.dimdoors.world;
 
+import com.mojang.serialization.MapCodec;
+import dev.architectury.registry.registries.Registrar;
+import dev.architectury.registry.registries.RegistrarManager;
+import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -12,10 +16,13 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.heightproviders.ConstantHeight;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
+import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
+import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.tag.ModBiomeTags;
+import org.dimdev.dimdoors.world.structure.PocketPlacement;
 
 import java.util.Collections;
 
@@ -32,6 +39,7 @@ public class ModStructures {
     public static ResourceKey<Structure> ENCLOSED_QUARTZ_GATEWAY = key("enclosed_quartz_gateway");
     public static ResourceKey<Structure> ENCLOSED_RED_SANDSTONE_GATEWAY = key("enclosed_red_sandstone_gateway");
     public static ResourceKey<Structure> ENCLOSED_SANDSTONE_GATEWAY = key("enclosed_sandstone_gateway");
+
 //    public static ResourceKey<Structure> LIMBO_GATEWAY = key("limbo_gateway");
 
     private final HolderGetter<Biome> biomes;
@@ -65,5 +73,6 @@ public class ModStructures {
     private static ResourceKey<Structure> key(String name) {
         return ResourceKey.create(Registries.STRUCTURE, DimensionalDoors.id(name));
     }
+
 }
 

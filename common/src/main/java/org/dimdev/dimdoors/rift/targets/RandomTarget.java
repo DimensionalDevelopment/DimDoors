@@ -21,12 +21,8 @@ import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
@@ -116,18 +112,18 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 			depth /= depth > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
 			double x = Math.cos(theta) * Math.cos(phi) * distance / this.coordFactor;
 			double z = Math.cos(theta) * Math.sin(phi) * distance / this.coordFactor;
-			VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.getWorld(),
-					virtualLocationHere.getX() + (int) Math.round(x),
-					virtualLocationHere.getZ() + (int) Math.round(z),
-					virtualLocationHere.getDepth() + (int) Math.round(depth));
+			VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.world(),
+					virtualLocationHere.x() + (int) Math.round(x),
+					virtualLocationHere.z() + (int) Math.round(z),
+					virtualLocationHere.depth() + (int) Math.round(depth));
 
-			if (virtualLocation.getDepth() <= 0) {
+			if (virtualLocation.depth() <= 0) {
 				// This will lead to the overworld
-				ServerLevel world = DimensionalDoors.getWorld(virtualLocation.getWorld());
-				BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
+				ServerLevel world = DimensionalDoors.getWorld(virtualLocation.world());
+				BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.x(), 0, virtualLocation.z()));
 				if (pos.getY() == -1) {
 					// No blocks at that XZ (hole in bedrock)
-					pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ());
+					pos = new BlockPos(virtualLocation.x(), 0, virtualLocation.z());
 				}
 				world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
 
@@ -144,7 +140,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 				// Make a new dungeon pocket
 				RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
 				LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
-				Pocket pocket = generatePocket(virtualLocation, new GlobalReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
+				UUID pocket = generatePocket(virtualLocation, new GlobalReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
 
                 if (!this.noLink) TemplateUtils.linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
@@ -176,11 +172,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
             // Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
             if (otherRift.getProperties().getLinksRemaining() == 0) continue;
-            double depthDifference = otherVirtualLocation.getDepth() - virtualLocation.getDepth();
-            double coordDistance = Math.sqrt(this.sq(otherVirtualLocation.getX() - virtualLocation.getX())
-                    + this.sq(otherVirtualLocation.getZ() - virtualLocation.getZ()));
-            double depthFactor = depthDifference > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
-            double distance = Math.sqrt(this.sq(this.coordFactor * coordDistance) + this.sq(depthFactor * depthDifference));
+            double distance = getDistance(virtualLocation, otherVirtualLocation);
 
             // Calculate the weight as 4m/pi w/(m^2/d + d)^2. This is similar to how gravitational/electromagnetic attraction
             // works in physics (G m1 m2/d^2 and k_e m1 m2/d^2). Even though we add a depth dimension to the world, we keep
@@ -197,7 +189,15 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         return weights;
     }
 
-    protected Pocket generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
+    private double getDistance(VirtualLocation virtualLocation, VirtualLocation otherVirtualLocation) {
+        double depthDifference = otherVirtualLocation.depth() - virtualLocation.depth();
+        double coordDistance = /*Math.sqrt(this.sq(otherVirtualLocation.getX() - virtualLocation.getX())
+                + this.sq(otherVirtualLocation.getZ() - virtualLocation.getZ()));*/ 0; //TODO: Rework how this works.
+        double depthFactor = depthDifference > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
+        return Math.sqrt(this.sq(this.coordFactor * coordDistance) + this.sq(depthFactor * depthDifference));
+    }
+
+    protected UUID generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
 		return PocketGenerator.generateDungeonPocketV2(location, linkTo, props);
 	}
 

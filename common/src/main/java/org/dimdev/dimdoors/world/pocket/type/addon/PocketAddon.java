@@ -10,7 +10,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.sky.EnvironmentAddon;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,10 +24,6 @@ public interface PocketAddon {
     StreamCodec<RegistryFriendlyByteBuf, PocketAddon> STREAM_CODEC = PocketAddonType.STREAM_CODEC.dispatch(PocketAddon::getType, PocketAddonType::streamCodec);
     StreamCodec<RegistryFriendlyByteBuf, List<PocketAddon>> LIST_STREAM_CODEC = STREAM_CODEC.apply(ByteBufCodecs.list());
 
-
-    default boolean applicable(Pocket pocket) {
-		return true;
-	}
 
     PocketAddonType<?, ?> getType();
 

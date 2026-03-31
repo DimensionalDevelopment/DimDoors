@@ -65,3 +65,6 @@ accessible method net/minecraft/world/level/levelgen/structure/templatesystem/St
 accessible method net/minecraft/world/level/block/Block getDrops (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/entity/BlockEntity;)Ljava/util/List;
 accessible field net/minecraft/world/level/storage/loot/predicates/ExplosionCondition INSTANCE Lnet/minecraft/world/level/storage/loot/predicates/ExplosionCondition;
 accessible method net/minecraft/world/level/block/state/BlockBehaviour getDrops (Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/storage/loot/LootParams$Builder;)Ljava/util/List;
+
+accessible method net/minecraft/world/level/border/WorldBorder getListeners ()Ljava/util/List;
+accessible field net/minecraft/world/level/border/BorderChangeListener$DelegateBorderChangeListener worldBorder Lnet/minecraft/world/level/border/WorldBorder;

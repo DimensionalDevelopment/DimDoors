@@ -10,12 +10,16 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.api.util.*;
+import org.dimdev.dimdoors.api.util.function.TriFunction;
 import org.dimdev.dimdoors.item.RiftSignatureItem;
 import org.dimdev.dimdoors.pockets.*;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
@@ -23,14 +27,11 @@ import org.dimdev.dimdoors.rift.targets.GlobalReference;
 import org.dimdev.dimdoors.util.schematic.SchematicPlacer;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -41,9 +42,11 @@ public class PocketCommand {
 	// TODO: probably move somewhere else
 	public static final Map<UUID, CommandSourceStack> logSetting = new HashMap<>();
 
-    public static ArgumentBuilder<CommandSourceStack, ?> placeOption(String name, Supplier<SimpleTree<String, ? extends PocketCreator>> mapSupplier, Function<ResourceLocation, PocketCreator> idFunction) {
-        BiFunction<ResourceLocation, PocketGenerationContext, @Nullable Pocket> function = (resourceLocation, context) -> {
-            var t = idFunction.apply(resourceLocation);
+    public static <T extends PocketCreator>  ArgumentBuilder<CommandSourceStack, ?> placeOption(String name, ResourceKey<Registry<T>> mapSupplier) {
+        Function<CommandSourceStack, Registry<T>> registry = ctx -> ctx.getServer().registryAccess().registryOrThrow(mapSupplier);
+
+        TriFunction<CommandSourceStack, ResourceLocation, PocketGenerationContext, @Nullable Pocket> function = (ctx, resourceLocation, context) -> {
+            var t = registry.apply(ctx).get(resourceLocation);
             if(t != null) return t.prepareAndPlacePocket(context);
             return null;
         };
@@ -51,7 +54,7 @@ public class PocketCommand {
         return literal(name).then(
                 argument("id", ResourceLocationArgument.id())
                         .requires(CommandSourceStack::isPlayer)
-                        .suggests((ctx, builder) -> getSuggestions(mapSupplier.get().keySet(), builder))
+                        .suggests((ctx, builder) -> getSuggestions(registry.apply(ctx.getSource()).keySet(), builder))
                         .executes(new Command<CommandSourceStack>() {
                     @Override
                     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
@@ -69,7 +72,7 @@ public class PocketCommand {
 
                         var pocketGenerationContext = new PocketGenerationContext(level, VirtualLocation.fromLocation(location), new GlobalReference(location), LinkProperties.NONE, level.registryAccess());
 
-                        var pocket = function.apply(id, pocketGenerationContext);
+                        var pocket = function.apply(context.getSource(), id, pocketGenerationContext);
 
                         if(pocket == null) return 0;
 
@@ -84,31 +87,9 @@ public class PocketCommand {
 		dispatcher.register(
 				literal("pocket")
 						.requires(source -> source.hasPermission(2))
-                        .then(placeOption("virtual_pocket", PocketLoader::getVirtualPockets, PocketLoader::getVirtual))
-                        .then(placeOption("pocket_group", PocketLoader::getPocketGroups, PocketLoader::getGroup))
-                        .then(placeOption("pocket_generator", PocketLoader::getPocketGenerators, PocketLoader::getGenerator)
-
-//                        .then(
-//                                literal("place")
-//                                        .then(placeOption("virtualPockets", () -> PocketLoader.getVirtualPockets(), (id) -> PocketLoader.getVirtual(id));
-//                                                argument("virtualPockets", ResourceLocationArgument.id())
-//                                                        .suggests((commandContext, suggestionsBuilder) -> {
-//                                                            return
-//                                                        }).then()
-//                                        )
-//                                        .then(
-//                                                argument("pocketGroups", ResourceLocationArgument.id())
-//                                                        .suggests((commandContext, suggestionsBuilder) -> {
-//                                                            return SuggestionsBuilder
-//                                                        }).then()
-//                                        )
-//                                        .then(
-//                                                argument("pocketGenerators", ResourceLocationArgument.id())
-//                                                        .suggests((commandContext, suggestionsBuilder) -> {
-//                                                            return SuggestionsBuilder
-//                                                        }).then()
-//                                        )
-//                        )
+                        .then(placeOption("virtual_pocket", ModRegistries.VIRTUAL_POCKET))
+                        .then(placeOption("pocket_group", ModRegistries.POCKET_GROUP))
+                        .then(placeOption("pocket_generator", ModRegistries.POCKET_GENERATOR))
 						.then(
 								literal("dump")
 										.requires(src -> src.hasPermission(4))
@@ -128,7 +109,7 @@ public class PocketCommand {
 											return Command.SINGLE_SUCCESS;
 										})
 						)
-		));
+		);
 	}
 
     private static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
@@ -139,8 +120,8 @@ public class PocketCommand {
 		}
 	}
 
-    public static CompletableFuture<Suggestions> getSuggestions(Set<Path<String>> paths, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(paths.stream().flatMap(path -> path.reduce(String::concat).stream()), builder);
+    public static CompletableFuture<Suggestions> getSuggestions(Set<ResourceLocation> paths, SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggestResource(paths, builder);
     }
 
 

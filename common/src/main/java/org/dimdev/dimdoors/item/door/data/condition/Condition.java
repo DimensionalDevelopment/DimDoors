@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.item.door.data.condition;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -8,46 +9,27 @@ import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
-import java.util.Objects;
-import java.util.function.Function;
-
 public interface Condition {
-	Registrar<ConditionType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ConditionType<?>>builder(DimensionalDoors.id("rift_data_condition")).build();
+    Codec<Condition> CODEC = Codec.lazyInitialized(() -> ConditionType.CODEC.dispatch(Condition::getType, ConditionType::codec));
 
-	boolean matches(EntranceRiftBlockEntity rift);
+    boolean matches(EntranceRiftBlockEntity rift);
 
-	default JsonObject toJson(JsonObject json) {
-		json.addProperty("type", getType().getId());
-		this.toJsonInner(json);
-		return json;
-	}
+    ConditionType<?> getType();
 
-	void toJsonInner(JsonObject json);
+    public static record ConditionType<T extends Condition>(MapCodec<T> codec) {
+        public static final Registrar<ConditionType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ConditionType<?>>builder(DimensionalDoors.id("rift_data_condition")).build();
+        public static final Codec<ConditionType<?>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 
-	ConditionType<?> getType();
+		public static final RegistrySupplier<ConditionType<?>> ALWAYS_TRUE = register("always_true", MapCodec.unit(AlwaysTrueCondition.INSTANCE));
+		public static final RegistrySupplier<ConditionType<?>> ALL = register("all", AllCondition.CODEC);
+		public static final RegistrySupplier<ConditionType<?>> ANY = register("any", AnyCondition.CODEC);
+		public static final RegistrySupplier<ConditionType<?>> INVERSE = register("inverse", InverseCondition.CODEC);
+		public static final RegistrySupplier<ConditionType<?>> WORLD_MATCH = register("world_match", WorldMatchCondition.CODEC);
 
-	static Condition fromJson(JsonObject json) {
-		ResourceLocation type = ResourceLocation.tryParse(json.getAsJsonPrimitive("type").getAsString());
-		return Objects.requireNonNull(REGISTRY.get(type)).fromJson(json);
-	}
+        public static void register() {}
 
-	interface ConditionType<T extends Condition> {
-		RegistrySupplier<ConditionType<?>> ALWAYS_TRUE = register("always_true", j -> AlwaysTrueCondition.INSTANCE);
-		RegistrySupplier<ConditionType<?>> ALL = register("all", AllCondition::fromJson);
-		RegistrySupplier<ConditionType<?>> ANY = register("any", AnyCondition::fromJson);
-		RegistrySupplier<ConditionType<?>> INVERSE = register("inverse", InverseCondition::fromJson);
-		RegistrySupplier<ConditionType<?>> WORLD_MATCH = register("world_match", WorldMatchCondition::fromJson);
-
-		T fromJson(JsonObject json);
-
-		default String getId() {
-			return String.valueOf(REGISTRY.getId(this));
-		}
-
-		static void register() {}
-
-		static <T extends Condition> RegistrySupplier<ConditionType<?>> register(String name, Function<JsonObject, T> fromJson) {
-			return REGISTRY.register(DimensionalDoors.id(name), () -> fromJson::apply);
+		static <T extends Condition> RegistrySupplier<ConditionType<?>> register(String name, MapCodec<T> codec) {
+			return REGISTRY.register(DimensionalDoors.id(name), () -> new ConditionType<T>(codec));
 		}
 	}
 }

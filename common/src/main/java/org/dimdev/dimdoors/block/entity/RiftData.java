@@ -1,18 +1,48 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.minecraft.nbt.CompoundTag;
+import com.alcatrazescapee.cyanide.codec.Codecs;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryFileCodec;
+import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.util.CodecUtils;
+
+import java.util.Optional;
+import java.util.function.Function;
 
 public class RiftData {
-	private VirtualTarget destination = VirtualTarget.NoneTarget.INSTANCE; // How the rift acts as a source
-	private LinkProperties properties = null;
+    public static final Codec<RiftData> BASE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        VirtualTarget.CODEC.optionalFieldOf("destination", VirtualTarget.NoneTarget.INSTANCE).forGetter(RiftData::getDestination),
+        LinkProperties.CODEC.optionalFieldOf("properties").forGetter(a -> Optional.ofNullable(a.properties)),
+        Codec.BOOL.optionalFieldOf("alwaysDelete", false).forGetter(RiftData::isAlwaysDelete),
+        Codec.BOOL.optionalFieldOf("forcedColor", false).forGetter(RiftData::isForcedColor),
+        RGBA.CODEC.optionalFieldOf("color", RGBA.NONE).forGetter(RiftData::getColor)
+    ).apply(instance, RiftData::new));
+
+    public static final Codec<Holder<RiftData>> CODEC = RegistryFileCodec.create(ModRegistries.RIFT_DATA, BASE_CODEC);
+
+	private VirtualTarget destination; // How the rift acts as a source
+	private LinkProperties properties;
 	private boolean alwaysDelete;
 	private boolean forcedColor;
-	private RGBA color = RGBA.NONE;
+	private RGBA color;
+
+    public RiftData(VirtualTarget destination, Optional<LinkProperties> properties, boolean alwaysDelete, boolean forcedColor, RGBA color) {
+        this.destination = destination;
+        this.properties = properties.orElse(null);
+        this.alwaysDelete = alwaysDelete;
+        this.forcedColor = forcedColor;
+        this.color = color;
+    }
 
 	public RiftData() {
+        this(VirtualTarget.NoneTarget.INSTANCE, Optional.empty(), false, false, RGBA.NONE);
 	}
 
 	public VirtualTarget getDestination() {
@@ -54,25 +84,5 @@ public class RiftData {
 	public void setColor(RGBA color) {
 		this.forcedColor = color != null;
 		this.color = color;
-	}
-
-	public static CompoundTag toNbt(RiftData data) {
-		CompoundTag nbt = new CompoundTag();
-		if (data.destination != VirtualTarget.NoneTarget.INSTANCE) nbt.put("destination", VirtualTarget.toNbt(data.destination));
-		if (data.properties != null) nbt.put("properties", LinkProperties.toNbt(data.properties));
-		if (data.color != null) nbt.put("color", RGBA.toNbt(data.color));
-		nbt.putBoolean("alwaysDelete", data.alwaysDelete);
-		nbt.putBoolean("forcedColor", data.forcedColor);
-		return nbt;
-	}
-
-	public static RiftData fromNbt(CompoundTag nbt) {
-		RiftData data = new RiftData();
-		data.destination = nbt.contains("destination") ? VirtualTarget.fromNbt(nbt.getCompound("destination")) : VirtualTarget.NoneTarget.INSTANCE;
-		data.properties = nbt.contains("properties") ? LinkProperties.fromNbt(nbt.getCompound("properties")) : null;
-		data.alwaysDelete = nbt.getBoolean("alwaysDelete");
-		data.forcedColor = nbt.getBoolean("forcedColor");
-		data.color = nbt.contains("color") ? RGBA.fromNbt(nbt.getCompound("color")) : RGBA.NONE;
-		return data;
 	}
 }

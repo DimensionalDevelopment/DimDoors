@@ -4,6 +4,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -18,9 +19,11 @@ import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
 import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
+import org.dimdev.dimdoors.pockets.dimension.UpdateDimensionsPacket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,9 +36,6 @@ public class ClientPacketListener {
     private static final RandomSource clientRandom = RandomSource.create();
 
 	private static ResourceKey<Level> pocketWorld;
-	private static int gridSize = 1;
-	private static int pocketId = Integer.MIN_VALUE;
-	private static int pocketRange = 1;
 	private static Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon> addons = new HashMap<>();
 
     @ExpectPlatform
@@ -55,18 +55,6 @@ public class ClientPacketListener {
 
     public static ResourceKey<Level> getPocketWorld() {
 		return pocketWorld;
-	}
-
-	public static int getGridSize() {
-		return gridSize;
-	}
-
-	public static int getPocketId() {
-		return pocketId;
-	}
-
-	public static int getPocketRange() {
-		return pocketRange;
 	}
 
 	public static Map<PocketAddon.PocketAddonType<?,?>, PocketAddon> getAddons() {
@@ -124,10 +112,22 @@ public class ClientPacketListener {
     public static <T extends PocketAddon> Optional<T> getAddonClient(PocketAddon.PocketAddonType<T, ?> type, Level world, BlockPos pos) {
         if (!world.dimension().equals(pocketWorld)) return Optional.empty();
 
-        int pocketId = GridUtil.gridPosToID(new GridUtil.GridPos(pos, getGridSize()));
-        if (pocketId < getPocketId() || pocketId >= getPocketId() + getPocketRange()) {
-            return Optional.empty();
-        }
         return Optional.ofNullable((T) addons.get(type));
+    }
+
+    public static void onUpdateDimensions(UpdateDimensionsPacket packet) {
+        final LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null)
+            return;
+
+        final Set<ResourceKey<Level>> dimensionList = player.connection.levels();
+        if (dimensionList == null)
+            return;
+
+        Consumer<ResourceKey<Level>> keyConsumer = packet.add()
+                ? dimensionList::add
+                : dimensionList::remove;
+
+        packet.keys().forEach(keyConsumer);
     }
 }

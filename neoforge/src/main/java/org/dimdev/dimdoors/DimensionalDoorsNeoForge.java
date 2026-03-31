@@ -19,6 +19,7 @@ import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.*;
+import org.dimdev.dimdoors.pockets.dimension.UpdateDimensionsPacket;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +47,7 @@ public class DimensionalDoorsNeoForge {
                     .playToClient(MonolithAggroParticlesPacket.TYPE, MonolithAggroParticlesPacket.STREAM_CODEC, (packet, context) -> ClientPacketListener.onMonolithAggroParticles(packet))
                     .playToClient(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, (packet, context) -> ClientPacketListener.onMonolithTeleportParticles(packet))
                     .playToClient(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, (packet, context) -> ClientPacketListener.onRenderBreakBlock(packet))
+                    .playToClient(UpdateDimensionsPacket.TYPE, UpdateDimensionsPacket.STREAM_CODEC, (packet, context) -> ClientPacketListener.onUpdateDimensions(packet))
                     .playToServer(NetworkHandlerInitializedC2SPacket.TYPE, NetworkHandlerInitializedC2SPacket.STREAM_CODEC, new PlayPayloadHandlerReturnable<>((packet, player) -> ServerPacketHandler.onNetworkHandlerInitialized(player)))
                     .playToServer(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, new PlayPayloadHandlerReturnable<>((packet, player) -> ServerPacketHandler.onAttackBlock(player, packet)));
         });

@@ -1,12 +1,10 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.InteractionEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PreventBlockModificationAddon implements PocketAddon, InteractionEvent.LeftClickBlock, UseItemOnBlockCallback {
 	public static ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");

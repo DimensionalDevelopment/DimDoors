@@ -1,5 +1,8 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,36 +10,58 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class Rift extends RegistryVertex {
+    public static final MapCodec<Rift> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
+            .and(Location.CODEC.fieldOf("location").forGetter(a -> a.location))
+            .and(Codec.BOOL.optionalFieldOf("isDetached", false).forGetter(a -> a.isDetached))
+            .and(LinkProperties.CODEC.optionalFieldOf("properties").forGetter(a -> Optional.ofNullable(a.properties)))
+            .apply(instance, Rift::new)
+    );
+
 	private static final Logger LOGGER = LogManager.getLogger();
 	private Location location;
 	private boolean isDetached;
 	private LinkProperties properties;
 
 	public Rift(Location location) {
+        super();
 		this.location = location;
-		this.setWorld(location.getWorldId());
 	}
 
 	public Rift(Location location, boolean isDetached, LinkProperties properties) {
+        super();
 		this.location = location;
 		this.isDetached = isDetached;
 		this.properties = properties;
 	}
 
 	public Rift(UUID id, Location location, boolean isDetached, LinkProperties properties) {
+        super(id);
 		this.location = location;
 		this.isDetached = isDetached;
 		this.properties = properties;
-		this.id = id;
 	}
 
 	public Rift() {
+        super();
 	}
 
-	@Override
+    public Rift(UUID id) {
+        super(id);
+    }
+
+
+    public Rift(UUID id, Location location, boolean isDetached, Optional<LinkProperties> properties) {
+        super(id);
+        this.location = location;
+        this.isDetached = isDetached;
+        this.properties = properties.orElse(null);
+    }
+
+    @Override
 	public void sourceGone(RegistryVertex source) {
 		super.sourceGone(source);
 		RiftBlockEntity riftTileEntity = (RiftBlockEntity) this.location.getBlockEntity();
@@ -58,7 +83,7 @@ public class Rift extends RegistryVertex {
 	}
 
 	public void targetChanged(RegistryVertex target) {
-		LOGGER.debug("Rift " + this + " notified of target " + target + " having changed. Updating color.");
+        LOGGER.debug("Rift {} notified of target {} having changed. Updating color.", this, target);
 		if(this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) riftBlockEntity.updateColor();
 	}
 

@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.util;
 
 import com.mojang.datafixers.Products;
-import com.mojang.datafixers.types.templates.Product;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.architectury.registry.registries.Registrar;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -185,6 +185,10 @@ public class CodecUtils {
 
     public static <T extends GenericDecayCondition<?>, V> MapCodec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
         return RecordCodecBuilder.mapCodec(instance -> decayConditionFields(instance, key).apply(instance, function));
+    }
+
+    public static <T> Codec<T> registarCodec(Registrar<T> registry) {
+        return ResourceLocation.CODEC.xmap(registry::get, registry::getId);
     }
 
     public static final class TagOrElementLocation<T> {

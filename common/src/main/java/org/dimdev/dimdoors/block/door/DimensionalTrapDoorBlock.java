@@ -42,7 +42,6 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.rift.RiftUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,33 +71,38 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
     }
 
     private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, Vec3 positionChange) {
-        BlockState doorState = world.getBlockState(pos);
+        if (world instanceof ServerLevel level) {
+            BlockState doorState = world.getBlockState(pos);
 
-        // TODO: decide whether door should need to be open for teleportation
-        if (doorState.getBlock() != this || !doorState.getValue(DoorBlock.OPEN)) { // '== this' to check if not half-broken
-            return InteractionResult.PASS;
-        }
+            // TODO: decide whether door should need to be open for teleportation
+            if (doorState.getBlock() != this || !doorState.getValue(DoorBlock.OPEN)) { // '== this' to check if not half-broken
+                return InteractionResult.PASS;
+            }
 
-        var rift = this.getRift(world, pos, state);
+            var rift = this.getRift(level, pos, state);
 
-        if(rift.hasTraversed(entity, positionChange)) {
-            // intersection is outside of plane width/ height
-            return InteractionResult.PASS;
-        }
+            if (rift.hasTraversed(entity, positionChange)) {
+                // intersection is outside of plane width/ height
+                return InteractionResult.PASS;
+            }
 
-        // TODO: replace with dimdoor cooldown?
-        if (entity.isOnPortalCooldown()) {
+            // TODO: replace with dimdoor cooldown?
+            if (entity.isOnPortalCooldown()) {
+                entity.setPortalCooldown();
+                return InteractionResult.PASS;
+            }
             entity.setPortalCooldown();
+
+
+            rift.teleport(level.getServer(), entity);
+            if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
+                world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue(DoorBlock.OPEN, false));
+            }
+
+            return InteractionResult.SUCCESS;
+        } else {
             return InteractionResult.PASS;
         }
-        entity.setPortalCooldown();
-
-
-        rift.teleport(entity);
-        if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
-            world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue(DoorBlock.OPEN, false));
-        }
-        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -162,7 +166,7 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
     }
 
     @Override
-    public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
+    public EntranceRiftBlockEntity getRift(ServerLevel world, BlockPos pos, BlockState state) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
 

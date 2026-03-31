@@ -1,29 +1,29 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class TemplateTarget extends WrappedDestinationTarget {
     public static final MapCodec<TemplateTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", null).forGetter(a -> a.wrappedDestination),
-                ResourceLocation.CODEC.fieldOf("template").forGetter(a -> a.template)).apply(instance, TemplateTarget::new));
+                ResourceKey.codec(ModRegistries.VIRTUAL_POCKET).fieldOf("template").forGetter(a -> a.template)).apply(instance, TemplateTarget::new));
 
-    private final ResourceLocation template;
+    private final ResourceKey<VirtualPocket> template;
 
-    public TemplateTarget(VirtualTarget wrappedDestination, ResourceLocation template) {
+    public TemplateTarget(VirtualTarget wrappedDestination, ResourceKey<VirtualPocket> template) {
         super(wrappedDestination);
         this.template = template;
     }
 
-    public TemplateTarget(ResourceLocation template) {
+    public TemplateTarget(ResourceKey<VirtualPocket> template) {
         this(null, template);
     }
 
@@ -31,8 +31,8 @@ public class TemplateTarget extends WrappedDestinationTarget {
     public Location makeLinkTarget() {
         VirtualLocation riftVirtualLocation = VirtualLocation.fromLocation(this.location);
         VirtualLocation newVirtualLocation;
-        int depth = riftVirtualLocation.getDepth() + 1;
-        newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
+        int depth = riftVirtualLocation.depth() + 1;
+        newVirtualLocation = new VirtualLocation(riftVirtualLocation.world(), riftVirtualLocation.x(), riftVirtualLocation.z(), depth);
         Pocket pocket = PocketGenerator.generateFromVirtualPocket(DimensionalDoors.getWorld(ModDimensions.DUNGEON), template, newVirtualLocation, new GlobalReference(this.location), null);
 
         return DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);

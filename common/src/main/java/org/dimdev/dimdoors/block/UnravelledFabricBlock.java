@@ -14,7 +14,7 @@ import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.List;
 
-public class UnravelledFabricBlock extends Block {
+public class UnravelledFabricBlock extends Block implements CanSpreadDecay {
 	public static final String ID = "unravelled_fabric";
 
 	public UnravelledFabricBlock(BlockBehaviour.Properties settings) {
@@ -22,14 +22,9 @@ public class UnravelledFabricBlock extends Block {
 	}
 
 	@Override
-	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+	public void spreadDecay(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 		if (ModDimensions.isLimboDimension(level)) {
 			Decay.applySpreadDecay(level, pos, random, DecaySource.LIMBO);
 		}
 	}
-
-    @Override
-    public List<ItemStack> getDrops(BlockState blockState, LootParams.Builder builder) {
-        return super.getDrops(blockState, builder);
-    }
 }

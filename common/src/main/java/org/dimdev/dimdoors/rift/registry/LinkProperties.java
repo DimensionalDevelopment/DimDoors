@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -7,6 +9,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class LinkProperties {
+    public static final Codec<LinkProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.FLOAT.optionalFieldOf("floatingWeight", 0.0f).forGetter(a -> a.floatingWeight),
+            Codec.FLOAT.optionalFieldOf("entranceWeight", 0.0f).forGetter(LinkProperties::getEntranceWeight),
+            Codec.INT_STREAM.xmap(intStream -> intStream.boxed().collect(Collectors.toSet()), set -> set.stream().mapToInt(Integer::intValue)).optionalFieldOf("groups", Set.of()).forGetter(LinkProperties::getGroups),
+            Codec.INT.optionalFieldOf("linksRemaining", 0).forGetter(LinkProperties::getLinksRemaining),
+            Codec.BOOL.optionalFieldOf("oneWay", false).forGetter(LinkProperties::isOneWay)
+    ).apply(instance, LinkProperties::new));
+
 	public static final LinkProperties NONE = LinkProperties.builder().build();
 
 	public float floatingWeight; // TODO: depend on rift properties (ex. size, stability, or maybe a getWeightFactor method) rather than rift type
@@ -30,9 +40,8 @@ public class LinkProperties {
 
 	public boolean equals(final Object o) {
 		if (o == this) return true;
-		if (!(o instanceof LinkProperties)) return false;
-		final LinkProperties other = (LinkProperties) o;
-		if (!other.canEqual(this)) return false;
+		if (!(o instanceof LinkProperties other)) return false;
+        if (!other.canEqual(this)) return false;
 		if (Float.compare(this.floatingWeight, other.floatingWeight) != 0) return false;
 		if (Float.compare(this.entranceWeight, other.entranceWeight) != 0) return false;
 		if (!Objects.equals(this.groups, other.groups)) return false;
@@ -154,38 +163,4 @@ public class LinkProperties {
 					.toString();
 		}
 	}
-
-//	public WWidget widget() {
-//		WBox root = new WBox(Axis.VERTICAL);
-//		root.add(new WLabel("Rift Data:"));
-//
-//		WBox tab = new WBox(Axis.HORIZONTAL);
-//		tab.add(new WLabel("  "));
-//
-//		WBox main = new WBox(Axis.VERTICAL);
-//
-//		WBox box = new WBox(Axis.HORIZONTAL);
-//		box.add(new WLabel("Floating Weight:"));
-//
-//		WTextField floatingWeightText = new WTextField().setChangedListener(a -> {
-//			try {
-//				this.floatingWeight = Float.parseFloat(a);
-//			} catch (NumberFormatException ignored) {
-//			}
-//		});
-//		floatingWeightText.setText(String.valueOf(this.floatingWeight));
-//		box.add(floatingWeightText);
-//
-//		WToggleButton oneWayButton = new WToggleButton(Text.of("One Way:")).setOnToggle(oneWay -> this.oneWay = oneWay);
-//		oneWayButton.setToggle(this.oneWay);
-//
-//		main.add(box);
-//		main.add(oneWayButton);
-//
-//		tab.add(main);
-//
-//		root.add(tab);
-//
-//		return root;
-//	}
 }

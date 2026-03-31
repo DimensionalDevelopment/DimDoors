@@ -1,47 +1,40 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.api.util.NbtEquations;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class RiftDataModifier extends AbstractModifier {
+public class RiftDataModifier implements Modifier {
+    public static final MapCodec<RiftDataModifier> CODEC = RecordCodecBuilder.<RiftDataModifier>mapCodec(instance -> instance.group(
+            RiftData.CODEC.optionalFieldOf("rift_data").forGetter(a -> Optional.ofNullable(a.doorData)),
+                    Codec.INT_STREAM.xmap(a -> a.boxed().toList(), integers -> integers.stream().mapToInt(Integer::intValue)).fieldOf("id").forGetter(a -> a.ids))
+            .apply(instance, RiftDataModifier::new));
+
+
 	public static final String KEY = "rift_data";
 
-	private CompoundTag doorData;
-	private String doorDataReference;
+	private RiftData doorData;
 	private List<Integer> ids;
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		// TODO: RiftData via ResourceManager
-		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
-			doorDataReference = nbt.getString("rift_data");
-			doorData = PocketLoader.getDataNbtCompound(doorDataReference);
-		}
-		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
+    public RiftDataModifier(Optional<RiftData> doorData, List<Integer> ids) {
+        this.doorData = doorData.orElse(null);
+        this.ids = ids;
+    }
 
-		ids = stream(nbt.getByteArray("ids")).boxed().collect(Collectors.toList());
-		return this;
-	}
-
-	public static IntStream stream(byte[] bytes) {
+    public static IntStream stream(byte[] bytes) {
 		ByteBuffer buffer = ByteBuffer.wrap(bytes);
 		return IntStream.generate(buffer::get).limit(buffer.remaining());
 	}
@@ -69,12 +62,7 @@ public class RiftDataModifier extends AbstractModifier {
 		return ModifierType.RIFT_DATA_MODIFIER_TYPE.get();
 	}
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
-
-	@Override
+    @Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("doorData", doorData)
@@ -85,14 +73,14 @@ public class RiftDataModifier extends AbstractModifier {
 
 	@Override
 	public void apply(PocketGenerationContext parameters, RiftManager manager) {
-		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
+//		Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>()); //TODO: Molang Expression Support
 
 		Consumer<RiftBlockEntity> riftBlockEntityConsumer;
 
 		if (doorData == null) {
 			riftBlockEntityConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
 		} else {
-			riftBlockEntityConsumer = solveData(doorData, variableMap);
+			riftBlockEntityConsumer = rift -> rift.setData(doorData);
 		}
 
 		manager.foreachConsume((id, rift) -> {
@@ -105,13 +93,7 @@ public class RiftDataModifier extends AbstractModifier {
 		});
 	}
 
-	private Consumer<RiftBlockEntity> solveData(CompoundTag doorData, Map<String, Double> variableMap) {
-		CompoundTag solvedDoorData = NbtEquations.solveNbtCompoundEquations(doorData, variableMap);
-
-		return rift -> rift.setData(RiftData.fromNbt(solvedDoorData));
-	}
-
-	@Override
+    @Override
 	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 	}
 }

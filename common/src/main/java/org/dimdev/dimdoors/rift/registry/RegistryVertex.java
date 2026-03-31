@@ -1,55 +1,50 @@
 package org.dimdev.dimdoors.rift.registry;
 
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.util.CodecUtils;
 
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
 public abstract class RegistryVertex {
-	public static final Registrar<RegistryVertexType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<RegistryVertexType<? extends RegistryVertex>>builder(DimensionalDoors.id("registry_vertex")).build();
+    public static <T extends RegistryVertex> Products.P1<RecordCodecBuilder.Mu<T>, UUID> commonFields(RecordCodecBuilder.Instance<T> instance) {
+        return instance.group(UUIDUtil.CODEC.fieldOf("id").forGetter(RegistryVertex::getId));
+    }
 
-	private ResourceKey<Level> world; // The dimension to store this object in. Links are stored in both registries.
+	public static final Codec<RegistryVertex> CODEC = RegistryVertexType.CODEC.dispatch(RegistryVertex::getType, RegistryVertexType::codec);
 
-	protected UUID id = UUID.randomUUID(); // Used to create pointers to registry vertices. Should not be used for anything other than saving.
+    protected UUID id; // Used to create pointers to registry vertices. Should not be used for anything other than saving.
 
-	public void sourceGone(RegistryVertex source) {
-	}
+    public RegistryVertex() {
+        this(UUID.randomUUID());
+    }
 
-	public void targetGone(RegistryVertex target) {
-	}
+    public RegistryVertex(UUID id) {
+        this.id = id;
+    }
 
-	public void sourceAdded(RegistryVertex source) {
-	}
+    public void sourceGone(RegistryVertex source) {}
 
-	public void targetAdded(RegistryVertex target) {
-	}
+	public void targetGone(RegistryVertex target) {}
+
+	public void sourceAdded(RegistryVertex source) {}
+
+	public void targetAdded(RegistryVertex target) {}
 
 	public abstract RegistryVertexType<? extends RegistryVertex> getType();
-
-	public String toString() {
-		return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";
-	}
-
-	public static RegistryVertex fromNbt(CompoundTag nbt) {
-		return Objects.requireNonNull(REGISTRY.get(ResourceLocation.parse(nbt.getString("type")))).fromNbt(nbt);
-	}
-
-	public static CompoundTag toNbt(RegistryVertex registryVertex) {
-		String type = REGISTRY.getId(registryVertex.getType()).toString();
-
-		CompoundTag nbt = registryVertex.getType().toNbt(registryVertex);
-		nbt.putString("type", type);
-
-		return nbt;
-	}
 
 	public UUID getId() {
 		return id;
@@ -59,39 +54,19 @@ public abstract class RegistryVertex {
 		this.id = id;
 	}
 
-	protected ResourceKey<Level> getWorld() {
-		return world;
-	}
+	public record RegistryVertexType<T extends RegistryVertex>(MapCodec<T> codec) {
+        public static final Registrar<RegistryVertexType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<RegistryVertexType<? extends RegistryVertex>>builder(DimensionalDoors.id("registry_vertex")).build();
+        public static final Codec<RegistryVertexType<?>> CODEC = CodecUtils.registarCodec(REGISTRY);
 
-	protected void setWorld(ResourceKey<Level> world) {
-		this.world = world;
-	}
+		public static final RegistrySupplier<RegistryVertexType<PlayerRiftPointer>> PLAYER = register("player", PlayerRiftPointer.CODEC);
+		public static final RegistrySupplier<RegistryVertexType<Rift>> RIFT = register("rift", Rift.CODEC);
+		public static final RegistrySupplier<RegistryVertexType<PocketEntrancePointer>> ENTRANCE = register("entrance", PocketEntrancePointer.CODEC);
+		public static final RegistrySupplier<RegistryVertexType<RiftPlaceholder>> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder.CODEC);
 
-	public interface RegistryVertexType<T extends RegistryVertex> {
-		RegistrySupplier<RegistryVertexType<PlayerRiftPointer>> PLAYER = register("player", PlayerRiftPointer::fromNbt, PlayerRiftPointer::toNbt);
-		RegistrySupplier<RegistryVertexType<Rift>> RIFT = register("rift", Rift::fromNbt, Rift::toNbt);
-		RegistrySupplier<RegistryVertexType<PocketEntrancePointer>> ENTRANCE = register("entrance", PocketEntrancePointer::fromNbt, PocketEntrancePointer::toNbt);
-		RegistrySupplier<RegistryVertexType<RiftPlaceholder>> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder::fromNbt, RiftPlaceholder::toNbt);
+		public static void register() {}
 
-		static void register() {
-		}
-
-		T fromNbt(CompoundTag nbt);
-
-		CompoundTag toNbt(RegistryVertex virtualType);
-
-		static <T extends RegistryVertex> RegistrySupplier<RegistryVertexType<T>> register(String id, Function<CompoundTag, T> fromNbt, Function<T, CompoundTag> toNbt) {
-			return REGISTRY.register(DimensionalDoors.id(id), () -> new RegistryVertexType<T>() {
-				@Override
-				public T fromNbt(CompoundTag nbt) {
-					return fromNbt.apply(nbt);
-				}
-
-				@Override
-				public CompoundTag toNbt(RegistryVertex registryVertex) {
-					return toNbt.apply((T) registryVertex);
-				}
-			});
+		static <T extends RegistryVertex> RegistrySupplier<RegistryVertexType<T>> register(String id, MapCodec<T> codec) {
+			return REGISTRY.register(DimensionalDoors.id(id), () -> new RegistryVertexType<>(codec));
 		}
 	}
 }

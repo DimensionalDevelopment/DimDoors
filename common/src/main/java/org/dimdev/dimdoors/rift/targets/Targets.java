@@ -12,6 +12,8 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
 
+import java.util.concurrent.CompletableFuture;
+
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {
 	public static final Class<EntityTarget> ENTITY = EntityTarget.class;
@@ -23,15 +25,16 @@ public final class Targets {
 
 		DefaultTargets.registerDefaultTarget(ENTITY, new EntityTarget() {
             @Override
-            public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeRotation, Vec3 relativeVelocity, Location location) {
+            public CompletableFuture<Boolean> receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeRotation, Vec3 relativeVelocity, Location location) {
+
 
 				if(location != null){
 					TeleportUtil.teleport(entity, location.getWorld(), Vec3.upFromBottomCenterOf(location.pos,0.0), relativeRotation, relativeVelocity);
-					return true;
+					return CompletableFuture.completedFuture(true);
 				}
 
                 EntityUtils.chat(entity, Component.translatable("rifts.unlinked2"));
-                return false;
+                return CompletableFuture.completedFuture(false);
             }
         });
 		DefaultTargets.registerDefaultTarget(ITEM, stack -> false);

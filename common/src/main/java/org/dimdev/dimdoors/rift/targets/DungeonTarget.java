@@ -1,30 +1,31 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.dimdev.dimdoors.api.util.Products.and;
 
 public class DungeonTarget extends RandomTarget {
-	public static final MapCodec<DungeonTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> and(common(instance), ResourceLocation.CODEC.fieldOf("dungeonGroup").forGetter(a -> a.dungeonGroup)).apply(instance, DungeonTarget::new));
+	public static final MapCodec<DungeonTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> and(common(instance), ResourceKey.codec(ModRegistries.POCKET_GROUP).fieldOf("dungeonGroup").forGetter(a -> a.dungeonGroup)).apply(instance, DungeonTarget::new));
 
-	private final ResourceLocation dungeonGroup;
+	private final ResourceKey<VirtualPocket> dungeonGroup;
 
-	public DungeonTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack, ResourceLocation dungeonGroup) {
+	public DungeonTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack, ResourceKey<VirtualPocket> dungeonGroup) {
 		super(newRiftWeight, weightMaximum, coordFactor, positiveDepthFactor, negativeDepthFactor, acceptedGroups, noLink, noLinkBack);
 		this.dungeonGroup = dungeonGroup;
 	}
 
 	@Override
-	protected Pocket generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
+	protected UUID generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
 		return PocketGenerator.generateDungeonPocketV2(location, linkTo, props, this.dungeonGroup);
 	}
 
@@ -43,12 +44,12 @@ public class DungeonTarget extends RandomTarget {
 	}
 
 	public static class DungeonTargetBuilder extends RandomTargetBuilder {
-		private ResourceLocation dungeonGroup = PocketGenerator.ALL_DUNGEONS;
+		private ResourceKey<VirtualPocket> dungeonGroup = PocketGenerator.ALL_DUNGEONS;
 
 		DungeonTargetBuilder() {
 		}
 
-		public DungeonTargetBuilder dungeonGroup(ResourceLocation dungeonGroup) {
+		public DungeonTargetBuilder dungeonGroup(ResourceKey<VirtualPocket> dungeonGroup) {
 			this.dungeonGroup = dungeonGroup;
 			return this;
 		}

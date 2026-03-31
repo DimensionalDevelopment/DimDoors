@@ -67,7 +67,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		if (world.isClientSide || entity instanceof ServerPlayer /* DO NOT REMOVE, THIS MAKES SURE onCollision IS CALLED IN onAfterMovePlayerCollision (fixes bug with anti-cheat)*/) {
 			return;
 		}
-		onCollision(state, world, pos, entity, entity.position().subtract(((LastPositionProvider) entity).getLastPos()));
+		onCollision(state, (ServerLevel) world, pos, entity, entity.position().subtract(((LastPositionProvider) entity).getLastPos()));
 	}
 
 
@@ -76,7 +76,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		return onCollision(state, world, pos, player, positionChange);
 	}
 
-	private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, Vec3 positionChange) {
+	private InteractionResult onCollision(BlockState state, ServerLevel world, BlockPos pos, Entity entity, Vec3 positionChange) {
 		BlockPos top = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos : pos.above();
 		BlockPos bottom = top.below();
 		BlockState doorState = world.getBlockState(bottom);
@@ -100,12 +100,12 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		entity.setPortalCooldown();
 
-		rift.teleport(entity);
-
-        if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
-			world.setBlockAndUpdate(top, world.getBlockState(top).setValue(DoorBlock.OPEN, false));
-			world.setBlockAndUpdate(bottom, world.getBlockState(bottom).setValue(DoorBlock.OPEN, false));
-		}
+        if(rift.teleport(world.getServer(), entity)) {
+            if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
+                world.setBlockAndUpdate(top, world.getBlockState(top).setValue(DoorBlock.OPEN, false));
+                world.setBlockAndUpdate(bottom, world.getBlockState(bottom).setValue(DoorBlock.OPEN, false));
+            }
+        }
 		return InteractionResult.SUCCESS;
 	}
 
@@ -180,7 +180,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
     }
 
     @Override
-	public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
+	public EntranceRiftBlockEntity getRift(ServerLevel world, BlockPos pos, BlockState state) {
 		BlockEntity bottomEntity;
 		BlockEntity topEntity;
 

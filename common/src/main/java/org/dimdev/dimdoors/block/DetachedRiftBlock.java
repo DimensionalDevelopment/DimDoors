@@ -45,7 +45,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 	}
 
 	@Override
-	public DetachedRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
+	public DetachedRiftBlockEntity getRift(ServerLevel world, BlockPos pos, BlockState state) {
 		return (DetachedRiftBlockEntity) world.getBlockEntity(pos);
 	}
 

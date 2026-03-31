@@ -4,10 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -67,7 +69,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 	}
 
 	public void deserialize(CompoundTag nbt) {
-		this.data = RiftData.fromNbt(nbt.getCompound("data"));
+		this.data = RiftData.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("data")).getOrThrow();
 		this.closing = nbt.getBoolean("closing");
 		this.stabilized = nbt.getBoolean("stablized");
 		this.size = nbt.getFloat("size");
@@ -81,7 +83,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 	}
 
 	public CompoundTag serialize(CompoundTag nbt) {
-		nbt.put("data", RiftData.toNbt(this.data));
+        RiftData.CODEC.encodeStart(NbtOps.INSTANCE, data).result().ifPresent(a -> nbt.put("data", a));
 		nbt.putBoolean("closing", this.closing);
 		nbt.putBoolean("stablized", this.stabilized);
 		nbt.putFloat("size", this.size);
@@ -134,7 +136,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 //		}
 		var nbt = super.getUpdateTag(provider);
 
-        nbt.put("data", RiftData.toNbt(this.data));
+        RiftData.CODEC.encodeStart(NbtOps.INSTANCE, data).result().ifPresent(a -> nbt.put("data", a));
         nbt.putBoolean("closing", this.closing);
         nbt.putBoolean("stablized", this.stabilized);
         nbt.putFloat("size", this.size);
@@ -199,13 +201,12 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 		if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
 			return new MessageTarget("rifts.unlinked1");
 		} else {
-			//noinspecti on ConstantConditions
 			this.data.getDestination().setLocation(new Location((ServerLevel) this.level, this.worldPosition));
 			return this.data.getDestination();
 		}
 	}
 
-	public boolean teleport(Entity entity) {
+	public boolean teleport(MinecraftServer server, Entity entity) {
 		this.riftStateChanged = false;
 
 		// Attempt a teleport
@@ -229,8 +230,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 			}
 
 		if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
-				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level(), entity.blockPosition()));
-				if(DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages) EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
+//				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level(), entity.blockPosition()));
+//				if(DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages) EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
 				return true;
 			}
 		} catch (Exception e) {

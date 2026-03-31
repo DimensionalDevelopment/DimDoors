@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.rift.targets;
 import net.minecraft.core.Rotations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -16,7 +15,6 @@ import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
-import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
 import java.util.UUID;
@@ -35,13 +33,10 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 		UUID uuid = EntityUtils.getOwner(entity).getUUID();
 		VirtualLocation virtualLocation = VirtualLocation.fromLocation(this.location);
 		if (uuid != null) {
-			PrivatePocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
-			if (pocket == null) { // generate the private pocket and get its entrances
+			var pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
+            if (pocket == null) { // generate the private pocket and get its entrances
 				// set to where the pocket was first created
-				Pocket unknownTypePocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
-				if (! (unknownTypePocket instanceof PrivatePocket)) throw new RuntimeException("Pocket generated for private pocket is not of type PrivatePocket");
-				pocket = (PrivatePocket) unknownTypePocket;
-
+				pocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.world(), virtualLocation.x(), virtualLocation.z(), -1));
 
 				DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
 				BlockEntity be = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).getBlockEntity();
@@ -52,9 +47,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 					destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket); // if there's none, then set the target to the main entrances
 				if (destLoc == null) { // if the pocket entrances is gone, then create a new private pocket
 					LOGGER.info("All entrances are gone, creating a new private pocket!");
-					Pocket unknownTypePocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
-					if (! (unknownTypePocket instanceof PrivatePocket)) throw new RuntimeException("Pocket generated for private pocket is not of type PrivatePocket");
-					pocket = (PrivatePocket) unknownTypePocket;
+					UUID unknownTypePocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.world(), virtualLocation.x(), virtualLocation.z(), -1));
 
 					DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
 					destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
@@ -68,7 +61,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 		}
 	}
 
-	private void processEntity(PrivatePocket pocket, BlockEntity blockEntity, Entity entity, UUID uuid, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+	private void processEntity(UUID pocket, BlockEntity blockEntity, Entity entity, UUID uuid, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
 		if (entity instanceof ItemEntity) {
 			Item item = ((ItemEntity) entity).getItem().getItem();
 //          TODO: Readd dying of personal pcokets.

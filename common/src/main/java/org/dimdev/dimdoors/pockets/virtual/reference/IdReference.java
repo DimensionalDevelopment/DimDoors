@@ -1,54 +1,36 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
+import com.bedrockk.molang.Expression;
 import com.google.common.base.MoreObjects;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.DimensionalDoors;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 
+import java.util.Optional;
+
 public class IdReference extends PocketGeneratorReference {
+    public static final MapCodec<IdReference> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance).and(ResourceKey.codec(ModRegistries.POCKET_GENERATOR).fieldOf("id").forGetter(a -> a.id)).apply(instance, IdReference::new));
     public static final String KEY = "id";
-    private ResourceLocation id;
+    private final ResourceKey<PocketGenerator> id;
 
-    public IdReference() {}
-
-
-    public IdReference(ResourceLocation id) {
+    public IdReference(Optional<Expression> weight, Optional<Boolean> setupLoot, ResourceKey<PocketGenerator> id) {
+        super(weight);
         this.id = id;
     }
 
-	@Override
-	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		super.fromNbt(nbt, provider, manager);
-
-		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
-		id = DimensionalDoors.id(nbt.getString("id"));
-
-		return this;
-	}
-
-	@Override
-	protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		super.toNbtInternal(nbt, provider, allowReference);
-
-		nbt.putString("id", id.getPath());
-
-		return nbt;
-	}
-
-	@Override
-	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters) {
+    @Override
+	public Holder<PocketGenerator> peekReferencedPocketGenerator(PocketGenerationContext parameters) {
 		return getReferencedPocketGenerator(parameters);
 	}
 
 	@Override
-	public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
-		return PocketLoader.getGenerator(id);
+	public Holder<PocketGenerator> getReferencedPocketGenerator(PocketGenerationContext parameters) {
+		return parameters.lookupHolder(id);
 	}
 
 	@Override
@@ -56,19 +38,12 @@ public class IdReference extends PocketGeneratorReference {
 		return VirtualPocketType.ID_REFERENCE.get();
 	}
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
-
-	@Override
+    @Override
 	public String toString() {
 		return MoreObjects.toStringHelper(this)
 				.add("id", id)
-				.add("weight", weight)
-				.add("weightEquation", weightEquation)
+				.add("weight", weight.getOriginalString())
 				.add("setupLoot", setupLoot)
-				.add("modifierList", modifierList)
 				.toString();
 	}
 }

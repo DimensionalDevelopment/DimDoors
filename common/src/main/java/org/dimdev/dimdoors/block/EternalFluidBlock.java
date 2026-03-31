@@ -26,6 +26,8 @@ public class EternalFluidBlock extends ArchitecturyLiquidBlock {
 			return;
 		}
 
+
+
 		try {
 			if (TARGET.receiveEntity(entity, Vec3.ZERO, MathUtil.entityEulerAngle(entity), entity.getDeltaMovement(), null)) {
 				if (entity instanceof Player) {
