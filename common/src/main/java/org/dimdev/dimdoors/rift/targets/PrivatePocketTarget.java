@@ -5,7 +5,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,8 +43,8 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 
 
 				DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
-				BlockEntity be = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket).getBlockEntity();
-				this.processEntity(pocket, be, entity, uuid, relativePos, relativeAngle, relativeVelocity);
+				Location destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+				return this.processEntity(pocket, destLoc, entity, uuid, relativePos, relativeAngle, relativeVelocity);
 			} else {
 				Location destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketEntrance(uuid); // get the last used entrances
 				if (destLoc == null)
@@ -60,15 +59,19 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 					destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
 				}
 
-				this.processEntity(pocket, destLoc.getBlockEntity(), entity, uuid, relativePos, relativeAngle, relativeVelocity);
+				return this.processEntity(pocket, destLoc, entity, uuid, relativePos, relativeAngle, relativeVelocity);
 			}
-			return true;
 		} else {
 			return false;
 		}
 	}
 
-	private void processEntity(PrivatePocket pocket, BlockEntity blockEntity, Entity entity, UUID uuid, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+	private boolean processEntity(PrivatePocket pocket, Location destLoc, Entity entity, UUID uuid, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity) {
+		if (destLoc == null || !(destLoc.getBlockEntity() instanceof EntityTarget target)) {
+			LOGGER.error("Could not enter private pocket {} for {} because no valid entrance is registered.", pocket.getId(), uuid);
+			return false;
+		}
+
 		if (entity instanceof ItemEntity) {
 			Item item = ((ItemEntity) entity).getItem().getItem();
 //          TODO: Readd dying of personal pcokets.
@@ -76,15 +79,16 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 //				if (pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getDyeColor())) {
 //					entity.remove(Entity.RemovalReason.DISCARDED);
 //				} else {
-//					((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
+//					target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
 //				}
 //			} else {
-				((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
+				target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
 //			}
 		} else {
-			((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
+			target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
 			DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, this.location);
 		}
+		return true;
 	}
 
 	@Override

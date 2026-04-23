@@ -31,8 +31,11 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 		if (uuid != null) {
 			destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketExit(uuid);
 			Pocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
-			if (ModDimensions.isPrivatePocketDimension(this.location.getWorld()) && pocket != null && DimensionalRegistry.getPocketDirectory(pocket.getWorld()).getPocketAt(this.location.pos).equals(pocket)) {
-				DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
+			if (ModDimensions.isPrivatePocketDimension(this.location.getWorld()) && pocket != null) {
+				Pocket currentPocket = DimensionalRegistry.getPocketDirectory(pocket.getWorld()).getPocketAt(this.location.pos);
+				if (pocket.equals(currentPocket)) {
+					DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
+				}
 			}
 			if (destLoc == null || !(destLoc.getBlockEntity() instanceof RiftBlockEntity)) {
 				if (destLoc == null) {
@@ -58,7 +61,9 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 		super.register();
 		PocketDirectory privatePocketRegistry = DimensionalRegistry.getPocketDirectory(this.location.world);
 		Pocket pocket = privatePocketRegistry.getPocketAt(this.location.pos);
-		DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, this.location);
+		if (pocket != null) {
+			DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, this.location);
+		}
 	}
 
 	@Override
