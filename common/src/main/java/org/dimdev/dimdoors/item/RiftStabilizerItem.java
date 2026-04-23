@@ -13,7 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -32,7 +32,7 @@ public class RiftStabilizerItem extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		HitResult hit = RaycastHelper.findDetachRift(player, DETACH);
+		BlockHitResult hit = RaycastHelper.findDetachRift(player, DETACH);
 
 		if (world.isClientSide) {
 			if (RaycastHelper.hitsDetachedRift(hit, world)) {
@@ -46,7 +46,7 @@ public class RiftStabilizerItem extends Item {
 		}
 
 		if (RaycastHelper.hitsDetachedRift(hit, world)) {
-			DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(new BlockPos(new Vec3i((int) hit.getLocation().x, (int) hit.getLocation().y, (int) hit.getLocation().z)));
+			DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(hit.getBlockPos());
 			if (!rift.stabilized && !rift.closing) {
 				rift.setStabilized(true);
 				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1); // TODO: different sound
