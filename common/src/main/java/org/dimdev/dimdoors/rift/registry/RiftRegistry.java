@@ -337,6 +337,63 @@ public class RiftRegistry {
         DimensionalRegistry.setDirty();
     }
 
+	public boolean removePocketReferences(Pocket pocket) {
+		return this.removePocketReferences(pocket.getWorld(), pocket.getId());
+	}
+
+	public boolean removePocketReferences(ResourceKey<Level> world, int pocketId) {
+		Set<PocketEntrancePointer> pointers = this.pocketEntranceMap.entrySet().stream()
+				.filter(entry -> referencesPocket(entry.getKey(), world, pocketId))
+				.map(Map.Entry::getValue)
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+
+		boolean removed = this.pocketEntranceMap.entrySet().removeIf(entry -> referencesPocket(entry.getKey(), world, pocketId));
+
+		this.graph.vertexSet().stream()
+				.filter(PocketEntrancePointer.class::isInstance)
+				.map(PocketEntrancePointer.class::cast)
+				.filter(pointer -> referencesPocket(pointer, world, pocketId))
+				.forEach(pointers::add);
+
+		Set<Rift> affectedRifts = new HashSet<>();
+		for (PocketEntrancePointer pointer : pointers) {
+			if (this.graph.containsVertex(pointer)) {
+				for (DefaultEdge edge : this.graph.incomingEdgesOf(pointer)) {
+					RegistryVertex source = this.graph.getEdgeSource(edge);
+					if (source instanceof Rift rift) affectedRifts.add(rift);
+				}
+				for (DefaultEdge edge : this.graph.outgoingEdgesOf(pointer)) {
+					RegistryVertex target = this.graph.getEdgeTarget(edge);
+					if (target instanceof Rift rift) affectedRifts.add(rift);
+				}
+
+				this.graph.removeVertex(pointer);
+				removed = true;
+			}
+
+			if (this.uuidMap.remove(pointer.id) != null) {
+				removed = true;
+			}
+		}
+
+		affectedRifts.stream()
+				.filter(this.graph::containsVertex)
+				.forEach(Rift::markDirty);
+
+		if (removed) {
+			DimensionalRegistry.setDirty();
+		}
+		return removed;
+	}
+
+	private boolean referencesPocket(Pocket pocket, ResourceKey<Level> world, int pocketId) {
+		return pocket.getId() == pocketId && Objects.equals(pocket.getWorld(), world);
+	}
+
+	private boolean referencesPocket(PocketEntrancePointer pointer, ResourceKey<Level> world, int pocketId) {
+		return pointer.getPocketId() == pocketId && Objects.equals(pointer.getWorld(), world);
+	}
+
 	public Location getPrivatePocketEntrance(UUID playerUUID) {
 		// Try to get the last used entrance
 		PlayerRiftPointer entrancePointer = this.lastPrivatePocketEntrances.get(playerUUID);

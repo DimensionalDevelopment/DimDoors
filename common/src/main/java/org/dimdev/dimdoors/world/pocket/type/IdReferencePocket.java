@@ -44,6 +44,10 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 		return directory.getPocket(referencedId);
 	}
 
+	public int getReferencedId() {
+		return referencedId;
+	}
+
 	public static IdReferencePocketBuilder builder() {
 		return new IdReferencePocketBuilder(AbstractPocketType.ID_REFERENCE.get());
 	}

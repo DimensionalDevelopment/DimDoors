@@ -151,6 +151,8 @@ public class PocketDirectory {
 
     private void preloadPocketChunks(Pocket pocket) {
         ServerLevel level = DimensionalDoors.getWorld(pocket.getWorld());
+        if (level == null) return;
+
         BoundingBox box = pocket.getBox();
 
         int minCX = box.minX() >> 4;
@@ -170,10 +172,38 @@ public class PocketDirectory {
         DimensionalRegistry.setDirty();
 	}
 
-	// TODO: rework this method to remove references as well
 	public void removePocket(int id) {
-		this.pockets.remove(id);
-        DimensionalRegistry.setDirty();
+		AbstractPocket<?> storedPocket = this.pockets.get(id);
+		Pocket pocket = this.getPocket(id);
+		ResourceKey<Level> removedPocketWorld = storedPocket != null ? storedPocket.getWorld() : this.worldKey;
+		int removedPocketId = id;
+
+		boolean removed;
+		if (pocket == null) {
+			if (storedPocket instanceof IdReferencePocket referencePocket) {
+				final int referencedId = referencePocket.getReferencedId();
+				removedPocketId = referencedId;
+				removed = this.pockets.entrySet().removeIf(entry -> referencesPocket(entry.getValue(), referencedId));
+			} else {
+				removed = this.pockets.remove(id) != null;
+			}
+		} else {
+			removedPocketWorld = pocket.getWorld();
+			final int pocketId = pocket.getId();
+			removedPocketId = pocketId;
+			removed = this.pockets.entrySet().removeIf(entry -> entry.getValue() == pocket || referencesPocket(entry.getValue(), pocketId));
+		}
+
+		removed |= DimensionalRegistry.getRiftRegistry().removePocketReferences(removedPocketWorld, removedPocketId);
+		removed |= DimensionalRegistry.getPrivateRegistry().removePrivatePocket(removedPocketWorld, removedPocketId);
+
+		if (removed) {
+			DimensionalRegistry.setDirty();
+		}
+	}
+
+	private boolean referencesPocket(AbstractPocket<?> pocket, int id) {
+		return pocket instanceof IdReferencePocket referencePocket && referencePocket.getReferencedId() == id;
 	}
 
 	/**

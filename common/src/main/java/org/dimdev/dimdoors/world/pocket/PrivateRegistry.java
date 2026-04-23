@@ -80,6 +80,19 @@ public class PrivateRegistry {
         DimensionalRegistry.setDirty();
     }
 
+	public boolean removePrivatePocket(Pocket pocket) {
+		return removePrivatePocket(pocket.getWorld(), pocket.getId());
+	}
+
+	public boolean removePrivatePocket(ResourceKey<Level> world, int id) {
+		UUID removedOwner = this.privatePocketMap.inverse().remove(new PocketInfo(world, id));
+		if (removedOwner != null) {
+			DimensionalRegistry.setDirty();
+			return true;
+		}
+		return false;
+	}
+
 	public UUID getPrivatePocketOwner(Pocket pocket) {
 		return this.privatePocketMap.inverse().get(new PocketInfo(pocket.getWorld(), pocket.getId()));
 	}
