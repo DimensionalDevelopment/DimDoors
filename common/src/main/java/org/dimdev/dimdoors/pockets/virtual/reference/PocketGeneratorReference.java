@@ -141,6 +141,10 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 	@Override
 	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot) {
 		PocketGenerator generator = getReferencedPocketGenerator(parameters);
+		if (generator == null) {
+			LOGGER.error("Could not resolve a pocket generator for {} at {}.", this, parameters.sourceVirtualLocation());
+			return null;
+		}
 
 
 		Pocket.PocketBuilder<?, ?> builder = generator.pocketBuilder(parameters)
@@ -149,6 +153,9 @@ public abstract class PocketGeneratorReference extends AbstractVirtualPocket {
 		this.applyModifiers(parameters, builder);
 
 		Pocket pocket = generator.prepareAndPlacePocket(parameters, builder);
+		if (pocket == null) {
+			return null;
+		}
 
 		RiftManager manager = generator.getRiftManager(pocket);
 

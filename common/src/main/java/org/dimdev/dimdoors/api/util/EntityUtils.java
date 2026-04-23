@@ -9,6 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
 
+import java.util.UUID;
+
 public final class EntityUtils {
 	public static Entity getOwner(Entity entity) {
 		if (entity instanceof Player) {
@@ -43,6 +45,16 @@ public final class EntityUtils {
 		}
 
 		return entity;
+	}
+
+	public static Player getOwnerPlayer(Entity entity) {
+		Entity owner = getOwner(entity);
+		return owner instanceof Player player ? player : null;
+	}
+
+	public static UUID getOwnerPlayerUuid(Entity entity) {
+		Player player = getOwnerPlayer(entity);
+		return player != null ? player.getUUID() : null;
 	}
 
 	public static void chat(Entity entity, Component text, boolean actionBar) {

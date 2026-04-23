@@ -62,6 +62,7 @@ public class DimensionalRegistry {
 
 		CompoundTag pocketRegistryNbt = nbt.getCompound("pocket_registry");
 
+		pocketRegistry.clear();
         for(var key : pocketRegistryNbt.getAllKeys()) {
             CompoundTag pocketDirectoryNbt = pocketRegistryNbt.getCompound(key);
             pocketRegistry.put(ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(key)), PocketDirectory.readFromNbt(key, pocketDirectoryNbt, provider));
@@ -102,6 +103,14 @@ public class DimensionalRegistry {
 		}
 
 		return pocketRegistry.computeIfAbsent(key, DimensionalRegistry::createPocketRegistry);
+	}
+
+	public static PocketDirectory peekPocketDirectory(ResourceKey<Level> key) {
+		if (!(ModDimensions.isPocketDimension(key))) {
+			return null;
+		}
+
+		return pocketRegistry.get(key);
 	}
 
     private static PocketDirectory createPocketRegistry(ResourceKey<Level> key) {

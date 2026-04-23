@@ -140,16 +140,27 @@ public class RiftRegistry {
     private ListTag writePlayerRiftPointers(Map<UUID, PlayerRiftPointer> playerRiftPointerMap) {
         ListTag pointers = new ListTag();
         for (Map.Entry<UUID, PlayerRiftPointer> entry : playerRiftPointerMap.entrySet()) {
+			PlayerRiftPointer pointer = entry.getValue();
+			if (!this.graph.containsVertex(pointer)) {
+				LOGGER.warn("Skipping player rift pointer for {} because it is no longer in the graph.", entry.getKey());
+				continue;
+			}
+
+			Set<DefaultEdge> edges = this.graph.outgoingEdgesOf(pointer);
+			if (edges.size() != 1) {
+				LOGGER.warn("Skipping player rift pointer for {} because it points to {} targets.", entry.getKey(), edges.size());
+				continue;
+			}
+
+			RegistryVertex target = this.graph.getEdgeTarget(edges.iterator().next());
+			if (!(target instanceof Rift rift)) {
+				LOGGER.warn("Skipping player rift pointer for {} because it does not target a rift.", entry.getKey());
+				continue;
+			}
+
             CompoundTag entryNBT = new CompoundTag();
             entryNBT.putUUID("player", entry.getKey());
-
-            Set<DefaultEdge> edges = this.graph.outgoingEdgesOf(entry.getValue());
-            if (edges.size() != 1) {
-                throw new RuntimeException("PlayerRiftPointer points to " + edges.size() + " rifts, expected 1");
-            }
-
-            DefaultEdge edge = edges.iterator().next();
-            entryNBT.putUUID("rift", this.graph.getEdgeTarget(edge).id);
+            entryNBT.putUUID("rift", rift.id);
             pointers.add(entryNBT);
         }
         return pointers;
@@ -395,13 +406,15 @@ public class RiftRegistry {
 	}
 
 	public Location getPrivatePocketEntrance(UUID playerUUID) {
-		// Try to get the last used entrance
-		PlayerRiftPointer entrancePointer = this.lastPrivatePocketEntrances.get(playerUUID);
-		Rift entrance = (Rift) GraphUtils.followPointer(this.graph, entrancePointer);
-		if (entrance != null) return entrance.getLocation();
+		Pocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(playerUUID);
+		if (pocket == null) return null;
 
-		// If there was no last used private entrance, get the first player's private pocket entrance
-		return this.getPocketEntrance(DimensionalRegistry.getPrivateRegistry().getPrivatePocket(playerUUID));
+		Rift entrance = this.getPointedRift(this.lastPrivatePocketEntrances.get(playerUUID));
+		if (entrance != null && this.getPocketEntrances(pocket).contains(entrance.getLocation())) {
+			return entrance.getLocation();
+		}
+
+		return this.getPocketEntrance(pocket);
 	}
 
 	private void setPlayerRiftPointer(UUID playerUUID, Location rift, Map<UUID, PlayerRiftPointer> map) {
@@ -412,11 +425,21 @@ public class RiftRegistry {
 			this.uuidMap.remove(pointer.id);
 		}
 		if (rift != null) {
+			RegistryVertex target = this.locationMap.get(rift);
+			if (!(target instanceof Rift)) {
+				LOGGER.warn("Skipping player rift pointer update for {} because {} is not registered.", playerUUID, rift);
+				return;
+			}
+			if (target instanceof RiftPlaceholder) {
+				LOGGER.warn("Skipping player rift pointer update for {} because {} only resolves to a placeholder.", playerUUID, rift);
+				return;
+			}
+
 			pointer = new PlayerRiftPointer(playerUUID);
 			this.graph.addVertex(pointer);
 			map.put(playerUUID, pointer);
 			this.uuidMap.put(pointer.id, pointer);
-			this.addEdge(pointer, this.getRift(rift));
+			this.addEdge(pointer, (Rift) target);
 		}
 	}
 
@@ -427,8 +450,7 @@ public class RiftRegistry {
     }
 
 	public Location getPrivatePocketExit(UUID playerUUID) {
-		PlayerRiftPointer entrancePointer = this.lastPrivatePocketExits.get(playerUUID);
-		Rift entrance = (Rift) GraphUtils.followPointer(this.graph, entrancePointer);
+		Rift entrance = this.getPointedRift(this.lastPrivatePocketExits.get(playerUUID));
 		return entrance != null ? entrance.getLocation() : null;
 	}
 
@@ -439,10 +461,7 @@ public class RiftRegistry {
     }
 
 	public Location getOverworldRift(UUID playerUUID) {
-
-		PlayerRiftPointer entrancePointer = this.overworldRifts.get(playerUUID);
-		Rift rift = (Rift) GraphUtils.followPointer(this.graph, entrancePointer);
-
+		Rift rift = this.getPointedRift(this.overworldRifts.get(playerUUID));
 		return rift != null ? rift.getLocation() : null;
 	}
 
@@ -470,5 +489,10 @@ public class RiftRegistry {
 				.map(Rift.class::cast)
 				.map(Rift::getLocation)
 				.collect(Collectors.toSet());
+	}
+
+	private Rift getPointedRift(PlayerRiftPointer pointer) {
+		RegistryVertex target = GraphUtils.followPointer(this.graph, pointer);
+		return target instanceof Rift rift ? rift : null;
 	}
 }

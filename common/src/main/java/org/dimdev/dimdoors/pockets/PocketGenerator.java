@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
@@ -45,17 +46,48 @@ public final class PocketGenerator {
 	}
 
 	public static Pocket generateFromPocketGroupV2(ServerLevel world, ResourceLocation group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		if (world == null) {
+			LOGGER.error("Cannot generate pocket group {} because the target world is unavailable.", group);
+			return null;
+		}
+
+		VirtualPocket virtualPocket = PocketLoader.getGroup(group);
+		if (virtualPocket == null) {
+			LOGGER.error("Cannot generate pocket group {} because it is not loaded.", group);
+			return null;
+		}
+
 		PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties, world.registryAccess());
-		return generatePocketV2(PocketLoader.getGroup(group).getNextPocketGeneratorReference(context), context);
+		return generatePocketV2(virtualPocket.getNextPocketGeneratorReference(context), context);
 	}
 
 	public static Pocket generateFromVirtualPocket(ServerLevel world, ResourceLocation id, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+		if (world == null) {
+			LOGGER.error("Cannot generate virtual pocket {} because the target world is unavailable.", id);
+			return null;
+		}
+
+		VirtualPocket virtualPocket = PocketLoader.getVirtual(id);
+		if (virtualPocket == null) {
+			LOGGER.error("Cannot generate virtual pocket {} because it is not loaded.", id);
+			return null;
+		}
+
 		PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties, world.registryAccess());
 		LOGGER.info("Generating virtual target: " + id);
-		return generatePocketV2(PocketLoader.getVirtual(id).getNextPocketGeneratorReference(context), context);
+		return generatePocketV2(virtualPocket.getNextPocketGeneratorReference(context), context);
 	}
 
 	public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationContext context) {
+		if (context == null || context.world() == null) {
+			LOGGER.error("Cannot generate pocket because the generation context has no world.");
+			return null;
+		}
+		if (pocketGeneratorReference == null) {
+			LOGGER.error("Cannot generate pocket at {} because no pocket generator reference resolved.", context.sourceVirtualLocation());
+			return null;
+		}
+
 		return pocketGeneratorReference.prepareAndPlacePocket(context);
 	}
 

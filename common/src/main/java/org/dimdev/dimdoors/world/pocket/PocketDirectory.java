@@ -173,33 +173,7 @@ public class PocketDirectory {
 	}
 
 	public void removePocket(int id) {
-		AbstractPocket<?> storedPocket = this.pockets.get(id);
-		Pocket pocket = this.getPocket(id);
-		ResourceKey<Level> removedPocketWorld = storedPocket != null ? storedPocket.getWorld() : this.worldKey;
-		int removedPocketId = id;
-
-		boolean removed;
-		if (pocket == null) {
-			if (storedPocket instanceof IdReferencePocket referencePocket) {
-				final int referencedId = referencePocket.getReferencedId();
-				removedPocketId = referencedId;
-				removed = this.pockets.entrySet().removeIf(entry -> referencesPocket(entry.getValue(), referencedId));
-			} else {
-				removed = this.pockets.remove(id) != null;
-			}
-		} else {
-			removedPocketWorld = pocket.getWorld();
-			final int pocketId = pocket.getId();
-			removedPocketId = pocketId;
-			removed = this.pockets.entrySet().removeIf(entry -> entry.getValue() == pocket || referencesPocket(entry.getValue(), pocketId));
-		}
-
-		removed |= DimensionalRegistry.getRiftRegistry().removePocketReferences(removedPocketWorld, removedPocketId);
-		removed |= DimensionalRegistry.getPrivateRegistry().removePrivatePocket(removedPocketWorld, removedPocketId);
-
-		if (removed) {
-			DimensionalRegistry.setDirty();
-		}
+		DimensionalDoors.LOGGER.warn("Pocket deletion is disabled pending full registry cleanup support. Ignoring removePocket({}, {}).", this.worldKey, id);
 	}
 
 	private boolean referencesPocket(AbstractPocket<?> pocket, int id) {
