@@ -10,7 +10,7 @@ public abstract class RestoringTarget extends VirtualTarget {
 
 	@Override
 	public Target receiveOther() {
-		if (this.getTarget() != null) {
+		if (this.isValid()) {
 			return this.getTarget();
 		}
 
@@ -37,14 +37,14 @@ public abstract class RestoringTarget extends VirtualTarget {
 	@Override
 	public void setLocation(Location location) {
 		super.setLocation(location);
-		if (this.getTarget() != null) {
+		if (this.isValid()) {
 			this.getTarget().setLocation(location);
 		}
 	}
 
 	@Override
 	public void unregister() {
-		if (this.getTarget() != null) this.getTarget().unregister();
+		if (this.isValid()) this.getTarget().unregister();
 	}
 
 	protected abstract VirtualTarget getTarget();
@@ -53,7 +53,7 @@ public abstract class RestoringTarget extends VirtualTarget {
 
 	@Override
 	public RGBA getColor() {
-		if (this.getTarget() != null) {
+		if (this.isValid()) {
 			this.getTarget().location = this.location;
 			return this.getTarget().getColor();
 		} else {
@@ -66,4 +66,8 @@ public abstract class RestoringTarget extends VirtualTarget {
 	}
 
 	public abstract Location makeLinkTarget();
+
+	protected final boolean isValid() {
+		return this.getTarget() != null && this.getTarget() != NoneTarget.INSTANCE;
+	}
 }
