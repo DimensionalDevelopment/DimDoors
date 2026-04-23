@@ -272,7 +272,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 			T instance = super.build();
 
 			instance.setRange(range);
-			instance.setBox(BoundingBox.fromCorners(new Vec3i(origin.getX(), origin.getY(), origin.getZ()), new Vec3i(origin.getX() + size.getX(), origin.getY() + size.getY(), origin.getZ() + size.getZ())));
+			instance.setBox(BoundingBox.fromCorners(new Vec3i(origin.getX(), origin.getY(), origin.getZ()), new Vec3i(origin.getX() + size.getX() - 1, origin.getY() + size.getY() - 1, origin.getZ() + size.getZ() - 1)));
 			instance.virtualLocation = virtualLocation;
 
 			addons.values().forEach(addon -> addon.apply(instance));
