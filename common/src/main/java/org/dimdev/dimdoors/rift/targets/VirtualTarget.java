@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.architectury.registry.registries.Registrar;
@@ -14,6 +15,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
+import org.slf4j.Logger;
 
 import java.util.Map;
 import java.util.Objects;
@@ -169,7 +171,9 @@ public abstract class VirtualTarget implements Target {
 	}
 
 	@SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-	public static class NoneTarget extends VirtualTarget {
+	public static final class NoneTarget extends VirtualTarget {
+		private static final Logger logger = LogUtils.getLogger();
+
 		public static final NoneTarget INSTANCE = new NoneTarget();
 
 		private NoneTarget() {
@@ -178,6 +182,11 @@ public abstract class VirtualTarget implements Target {
 		@Override
 		public VirtualTargetType<? extends VirtualTarget> getType() {
 			return VirtualTargetType.NONE.get();
+		}
+
+		@Override
+		public void setLocation(final Location location) {
+			logger.warn("Attempted to set location of NoneTarget to {}", location, new Throwable());
 		}
 
 		@Override

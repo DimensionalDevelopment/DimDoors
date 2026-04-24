@@ -1,10 +1,12 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import java.util.Objects;
+
 public abstract class WrappedDestinationTarget extends RestoringTarget {
-    protected VirtualTarget wrappedDestination = null;
+    protected VirtualTarget wrappedDestination = NoneTarget.INSTANCE;
 
     public WrappedDestinationTarget(VirtualTarget wrappedDestination) {
-        this.wrappedDestination = wrappedDestination;
+        this.setTarget(wrappedDestination);
     }
 
     public WrappedDestinationTarget() {
@@ -17,6 +19,6 @@ public abstract class WrappedDestinationTarget extends RestoringTarget {
 
     @Override
     protected void setTarget(VirtualTarget target) {
-        this.wrappedDestination = target;
+        this.wrappedDestination = Objects.requireNonNullElse(target, NoneTarget.INSTANCE);
     }
 }
