@@ -6,8 +6,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(SimpleParticleType.class)
 public interface DefaultParticleTypeAccessor {
-	@Invoker("<init>")
-	static SimpleParticleType createDefaultParticleType(boolean alwaysShow) {
-		throw new UnsupportedOperationException();
-	}
+    @Invoker("<init>")
+    static SimpleParticleType createDefaultParticleType(boolean alwaysShow) {
+    throw new UnsupportedOperationException();
+    }
 }

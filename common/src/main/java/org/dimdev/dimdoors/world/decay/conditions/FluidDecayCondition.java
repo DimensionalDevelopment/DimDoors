@@ -19,7 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
-	public static final MapCodec<FluidDecayCondition> CODEC = RecordCodecBuilder
+    public static final MapCodec<FluidDecayCondition> CODEC = RecordCodecBuilder
             .mapCodec(
                     instance -> CodecUtils.decayConditionFields(instance, Registries.FLUID)
                             .and(StringRepresentable.<Type>fromEnum(Type::values)
@@ -29,33 +29,33 @@ public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
                             ).apply(instance, FluidDecayCondition::new)
             );
 
-	public static final String KEY = "fluid";
+    public static final String KEY = "fluid";
     private final Type type;
 
     public FluidDecayCondition(CodecUtils.TagOrElementLocation<Fluid> tagOrElementLocation, boolean invert, Type type) {
-		super(tagOrElementLocation, invert);
+    super(tagOrElementLocation, invert);
         this.type = type;
-	}
+    }
 
-	public static FluidDecayCondition of(TagKey<Fluid> tag, boolean invert, Type type) {
-		return new FluidDecayCondition(CodecUtils.TagOrElementLocation.of(tag, Registries.FLUID), invert, type);
-	}
+    public static FluidDecayCondition of(TagKey<Fluid> tag, boolean invert, Type type) {
+    return new FluidDecayCondition(CodecUtils.TagOrElementLocation.of(tag, Registries.FLUID), invert, type);
+    }
 
     public static FluidDecayCondition of(TagKey<Fluid> tag, boolean invert) {
         return of(tag, invert, Type.BOTH);
     }
 
-	public static FluidDecayCondition of(TagKey<Fluid> tag) {
-		return of(tag, false);
-	}
+    public static FluidDecayCondition of(TagKey<Fluid> tag) {
+    return of(tag, false);
+    }
 
     public static FluidDecayCondition of(TagKey<Fluid> tag, Type type) {
         return of(tag, false, type);
     }
 
     public static FluidDecayCondition of(ResourceKey<Fluid> key, boolean invert) {
-		return of(key, invert, Type.BOTH);
-	}
+    return of(key, invert, Type.BOTH);
+    }
 
     public static FluidDecayCondition of(ResourceKey<? extends Fluid> key, boolean invert, Type type) {
         return new FluidDecayCondition(CodecUtils.TagOrElementLocation.of((ResourceKey<Fluid>) key, Registries.FLUID), invert, type);
@@ -71,8 +71,8 @@ public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
 
 
     public static FluidDecayCondition of(Fluid key) {
-		return of(key, Type.BOTH);
-	}
+    return of(key, Type.BOTH);
+    }
 
     public static FluidDecayCondition of(Fluid key, Type type) {
         return of(key, false, type);
@@ -84,9 +84,9 @@ public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
 
 
     @Override
-	public DecayConditionType<? extends DecayCondition> getType() {
-		return DecayConditionType.FLUID_CONDITION_TYPE.get();
-	}
+    public DecayConditionType<? extends DecayCondition> getType() {
+    return DecayConditionType.FLUID_CONDITION_TYPE.get();
+    }
 
     @Override
     public boolean test(Decay.DecayContext context) {
@@ -94,9 +94,9 @@ public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
     }
 
     @Override
-	public Holder<Fluid> getHolder(Decay.DecayContext context) {
-		return context.targetFluidState().holder();
-	}
+    public Holder<Fluid> getHolder(Decay.DecayContext context) {
+    return context.targetFluidState().holder();
+    }
 
     @Override
     public ResourceKey<Registry<Fluid>> registry() {

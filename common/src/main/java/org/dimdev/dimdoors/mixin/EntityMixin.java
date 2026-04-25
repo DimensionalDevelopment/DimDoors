@@ -11,14 +11,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements LastPositionProvider {
-	private Vec3 lastPos;
+    private Vec3 lastPos;
 
-	@Inject(method = "checkInsideBlocks()V", at = @At("TAIL"))
-	public void checkBlockCollisionSaveLastPos(CallbackInfo ci) {
-		lastPos = ((Entity) (Object) this).position();
-	}
+    @Inject(method = "checkInsideBlocks()V", at = @At("TAIL"))
+    public void checkBlockCollisionSaveLastPos(CallbackInfo ci) {
+    lastPos = ((Entity) (Object) this).position();
+    }
 
-	public Vec3 getLastPos() {
-		return lastPos == null ? ((Entity) (Object) this).position() : lastPos;
-	}
+    public Vec3 getLastPos() {
+    return lastPos == null ? ((Entity) (Object) this).position() : lastPos;
+    }
 }

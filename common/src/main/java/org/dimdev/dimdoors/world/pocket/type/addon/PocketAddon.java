@@ -27,45 +27,45 @@ public interface PocketAddon {
 
 
     default boolean applicable(Pocket pocket) {
-		return true;
-	}
+    return true;
+    }
 
     PocketAddonType<?, ?> getType();
 
     default void addAddon(Map<PocketAddonType<?, ?>, PocketAddon> addons) {
-		addons.put(getType(), this);
-	}
+    addons.put(getType(), this);
+    }
 
-	interface PocketBuilderExtension<T extends Pocket.PocketBuilder<T, ?>> {
-		public <C extends PocketBuilderAddon<?, ?>> C getAddon(PocketAddonType<?, ?> id);
+    interface PocketBuilderExtension<T extends Pocket.PocketBuilder<T, ?>> {
+    public <C extends PocketBuilderAddon<?, ?>> C getAddon(PocketAddonType<?, ?> id);
 
-		T getSelf();
-	}
+    T getSelf();
+    }
 
-	interface PocketBuilderAddon<T extends PocketAddon, U extends PocketBuilderAddon<T, U>> {
-		default boolean applicable(Pocket.PocketBuilder<?, ?> builder) {
-			return true;
-		}
+    interface PocketBuilderAddon<T extends PocketAddon, U extends PocketBuilderAddon<T, U>> {
+    default boolean applicable(Pocket.PocketBuilder<?, ?> builder) {
+        return true;
+    }
 
-		// makes it possible for addons themselves to control how they are added
-		default void addAddon(Map<PocketAddonType<?, ?>, PocketBuilderAddon<?, ?>> addons) {
-			addons.put(getType(), this);
-		}
+    // makes it possible for addons themselves to control how they are added
+    default void addAddon(Map<PocketAddonType<?, ?>, PocketBuilderAddon<?, ?>> addons) {
+        addons.put(getType(), this);
+    }
 
-		void apply(Pocket pocket);
+    void apply(Pocket pocket);
 
         PocketAddonType<T, U> getType();
-	}
+    }
 
-	public record PocketAddonType<T extends PocketAddon, U extends PocketBuilderAddon<T, U>>(MapCodec<T> codec, MapCodec<U> builderCodec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
+    public record PocketAddonType<T extends PocketAddon, U extends PocketBuilderAddon<T, U>>(MapCodec<T> codec, MapCodec<U> builderCodec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
         public static Registrar<PocketAddonType<?, ?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketAddonType<?, ?>>builder(DimensionalDoors.id("pocket_applicable_addon_type")).build();
         public static Codec<PocketAddonType<?, ?>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
         public static StreamCodec<RegistryFriendlyByteBuf, PocketAddonType<?, ?>> STREAM_CODEC = ResourceLocation.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().map(REGISTRY::get, REGISTRY::getId);
 
-		public static final RegistrySupplier<PocketAddonType<DyeableAddon, DyeableAddon.DyeableBuilderAddon>> DYEABLE_ADDON = register(DyeableAddon.ID, DyeableAddon.CODEC, DyeableAddon.DyeableBuilderAddon.CODEC);
-		public static RegistrySupplier<PocketAddonType<PreventBlockModificationAddon, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon>> PREVENT_BLOCK_MODIFICATION_ADDON = register(PreventBlockModificationAddon.ID, PreventBlockModificationAddon.CODEC, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon.CODEC, PreventBlockModificationAddon.STREAM_CODEC);
-//		RegistrySupplier<PocketAddonType<BlockBreakContainer>> BLOCK_BREAK_CONTAINER = register(BlockBreakContainer.ID, BlockBreakContainer::new, null);
-		public static final RegistrySupplier<PocketAddonType<EnvironmentAddon, EnvironmentAddon.EnvironmentBuilderAddon>> ENVIRONMENT_ADDON = register(EnvironmentAddon.ID, EnvironmentAddon.CODEC, EnvironmentAddon.EnvironmentBuilderAddon.CODEC, EnvironmentAddon.STREAM_CODEC);
+    public static final RegistrySupplier<PocketAddonType<DyeableAddon, DyeableAddon.DyeableBuilderAddon>> DYEABLE_ADDON = register(DyeableAddon.ID, DyeableAddon.CODEC, DyeableAddon.DyeableBuilderAddon.CODEC);
+    public static RegistrySupplier<PocketAddonType<PreventBlockModificationAddon, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon>> PREVENT_BLOCK_MODIFICATION_ADDON = register(PreventBlockModificationAddon.ID, PreventBlockModificationAddon.CODEC, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon.CODEC, PreventBlockModificationAddon.STREAM_CODEC);
+//    RegistrySupplier<PocketAddonType<BlockBreakContainer>> BLOCK_BREAK_CONTAINER = register(BlockBreakContainer.ID, BlockBreakContainer::new, null);
+    public static final RegistrySupplier<PocketAddonType<EnvironmentAddon, EnvironmentAddon.EnvironmentBuilderAddon>> ENVIRONMENT_ADDON = register(EnvironmentAddon.ID, EnvironmentAddon.CODEC, EnvironmentAddon.EnvironmentBuilderAddon.CODEC, EnvironmentAddon.STREAM_CODEC);
 
         public static void register() {}
 
@@ -73,9 +73,9 @@ public interface PocketAddon {
             return register(id, codec, builderCodec, null);
         }
 
-		static <V extends PocketAddon, S extends PocketBuilderAddon<V, S>> RegistrySupplier<PocketAddonType<V, S>> register(ResourceLocation id, MapCodec<V> codec, MapCodec<S> builderCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> streamCodec) {
-			return REGISTRY.register(id, () -> new PocketAddonType<>(codec, builderCodec, streamCodec));
-		}
+    static <V extends PocketAddon, S extends PocketBuilderAddon<V, S>> RegistrySupplier<PocketAddonType<V, S>> register(ResourceLocation id, MapCodec<V> codec, MapCodec<S> builderCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> streamCodec) {
+        return REGISTRY.register(id, () -> new PocketAddonType<>(codec, builderCodec, streamCodec));
+    }
 
         public boolean isSyncable() {
             return streamCodec != null;

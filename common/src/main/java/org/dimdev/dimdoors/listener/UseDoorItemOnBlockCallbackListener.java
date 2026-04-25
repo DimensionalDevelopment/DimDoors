@@ -23,34 +23,34 @@ import org.jetbrains.annotations.Nullable;
 import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
 
 public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallback {
-	@Override
-	public InteractionResult useItemOnBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
-		var result = RaycastHelper.findDetachRift(player, DETACH);
+    @Override
+    public InteractionResult useItemOnBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
+    var result = RaycastHelper.findDetachRift(player, DETACH);
 
-		if (!RaycastHelper.hitsDetachedRift(result, world)) return InteractionResult.PASS;
-		ItemStack stack = player.getItemInHand(hand);
-		DimensionalDoorItemRegistrar registrar = DimensionalDoors.getDimensionalDoorItemRegistrar();
-		Item item = stack.getItem();
-		if (registrar.isRegistered(item)) {
-			return registrar.place(item, new DimDoorBlockPlaceContext(player, hand, stack, (BlockHitResult) result));
-		}
+    if (!RaycastHelper.hitsDetachedRift(result, world)) return InteractionResult.PASS;
+    ItemStack stack = player.getItemInHand(hand);
+    DimensionalDoorItemRegistrar registrar = DimensionalDoors.getDimensionalDoorItemRegistrar();
+    Item item = stack.getItem();
+    if (registrar.isRegistered(item)) {
+        return registrar.place(item, new DimDoorBlockPlaceContext(player, hand, stack, (BlockHitResult) result));
+    }
 
-		return InteractionResult.PASS; //item instanceof RiftRemoverItem || (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof DimensionalDoorBlock) ? InteractionResult.PASS : InteractionResult.FAIL;
-	}
+    return InteractionResult.PASS; //item instanceof RiftRemoverItem || (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof DimensionalDoorBlock) ? InteractionResult.PASS : InteractionResult.FAIL;
+    }
 
-	public static class DimDoorBlockPlaceContext extends BlockPlaceContext {
+    public static class DimDoorBlockPlaceContext extends BlockPlaceContext {
 
-		public DimDoorBlockPlaceContext(@Nullable Player player, InteractionHand hand, ItemStack itemStack, BlockHitResult hitResult) {
-			super(player, hand, itemStack, hitResult);
-			this.replaceClicked = true;
-		}
+    public DimDoorBlockPlaceContext(@Nullable Player player, InteractionHand hand, ItemStack itemStack, BlockHitResult hitResult) {
+        super(player, hand, itemStack, hitResult);
+        this.replaceClicked = true;
+    }
 
-		public DimDoorBlockPlaceContext(BlockPlaceContext context, BlockHitResult result) {
-			this(context.getPlayer(), context.getHand(), context.getItemInHand(), result);
-		}
+    public DimDoorBlockPlaceContext(BlockPlaceContext context, BlockHitResult result) {
+        this(context.getPlayer(), context.getHand(), context.getItemInHand(), result);
+    }
 
-		public void setToProperReplaced() {
-			this.replaceClicked = getLevel().getBlockState(getHitResult().getBlockPos()).canBeReplaced(this);
-		}
-	}
+    public void setToProperReplaced() {
+        this.replaceClicked = getLevel().getBlockState(getHitResult().getBlockPos()).canBeReplaced(this);
+    }
+    }
 }

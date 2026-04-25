@@ -20,29 +20,29 @@ import java.util.stream.Collectors;
 
 @Mixin(Explosion.class)
 public abstract class ExplosionMixin {
-//	@Mutable
-//	@Shadow
-//	@Final
-//	private ObjectArrayList<BlockPos> toBlow;
+//    @Mutable
+//    @Shadow
+//    @Final
+//    private ObjectArrayList<BlockPos> toBlow;
 //
-//	@Shadow
-//	@Final
-//	private Level level;
+//    @Shadow
+//    @Final
+//    private Level level;
 //
-//	@Shadow public abstract boolean interactsWithBlocks();
+//    @Shadow public abstract boolean interactsWithBlocks();
 //
-//	@Inject(method = "finalizeExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;shuffle(Ljava/util/List;Lnet/minecraft/util/RandomSource;)V"))
-//	private void handleExplosionConvertibleBlocks(boolean bl, CallbackInfo ci) {
-//		if(interactsWithBlocks()) {
-//			this.toBlow = this.toBlow.stream().filter(blockPos -> {
-//				BlockState state = this.level.getBlockState(blockPos);
-//				Block block = state.getBlock();
-//				if (!(block instanceof ExplosionConvertibleBlock)) {
-//					return true;
-//				}
-//				InteractionResult result = ((ExplosionConvertibleBlock) block).explode(this.level, blockPos, state, state.hasBlockEntity() ? this.level.getBlockEntity(blockPos) : null);
-//				return result == InteractionResult.PASS;
-//			}).collect(Collectors.toCollection(ObjectArrayList::new));
-//		}
-//	}
+//    @Inject(method = "finalizeExplosion", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;shuffle(Ljava/util/List;Lnet/minecraft/util/RandomSource;)V"))
+//    private void handleExplosionConvertibleBlocks(boolean bl, CallbackInfo ci) {
+//    if(interactsWithBlocks()) {
+//        this.toBlow = this.toBlow.stream().filter(blockPos -> {
+//        BlockState state = this.level.getBlockState(blockPos);
+//        Block block = state.getBlock();
+//        if (!(block instanceof ExplosionConvertibleBlock)) {
+//            return true;
+//        }
+//        InteractionResult result = ((ExplosionConvertibleBlock) block).explode(this.level, blockPos, state, state.hasBlockEntity() ? this.level.getBlockEntity(blockPos) : null);
+//        return result == InteractionResult.PASS;
+//        }).collect(Collectors.toCollection(ObjectArrayList::new));
+//    }
+//    }
 }

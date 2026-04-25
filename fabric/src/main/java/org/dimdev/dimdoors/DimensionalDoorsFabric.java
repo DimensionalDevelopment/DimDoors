@@ -30,12 +30,12 @@ import java.util.function.BiFunction;
 
 public class DimensionalDoorsFabric implements ModInitializer {
 
-	@Override
+    @Override
     public void onInitialize() {
-		StreamUtils.setup(this);
+        StreamUtils.setup(this);
         ModAttachmentTypes.register();
         DimensionalDoors.init();
-		PlayerBlockBreakEvents.AFTER.register(DimensionalDoors::afterBlockBreak);
+        PlayerBlockBreakEvents.AFTER.register(DimensionalDoors::afterBlockBreak);
 
         ServerChunkEvents.CHUNK_LOAD.register((serverLevel, levelChunk) -> ChunkServedCallback.EVENT.invoker().onChunkServed(serverLevel, levelChunk));
 

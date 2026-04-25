@@ -32,22 +32,22 @@ import java.util.List;
 import java.util.Optional;
 
 public class RiftSignatureItem extends Item {
-	public static final String ID = "rift_signature";
-	public boolean shouldclear;
+    public static final String ID = "rift_signature";
+    public boolean shouldclear;
 
-	public RiftSignatureItem(Item.Properties settings, boolean clear) {
+    public RiftSignatureItem(Item.Properties settings, boolean clear) {
 
-		super(settings);
-		shouldclear = clear;
-	}
+    super(settings);
+    shouldclear = clear;
+    }
 
-	@Override
-	public boolean isFoil(ItemStack stack) {
-		return stack.has(ModDataComponentTypes.DESTINATION.get());
-	}
+    @Override
+    public boolean isFoil(ItemStack stack) {
+    return stack.has(ModDataComponentTypes.DESTINATION.get());
+    }
 
-	@Override
-	public InteractionResult useOn(UseOnContext itemUsageContext) {
+    @Override
+    public InteractionResult useOn(UseOnContext itemUsageContext) {
         Level world = itemUsageContext.getLevel();
 
         if(world.isClientSide()) return InteractionResult.SUCCESS;
@@ -59,72 +59,72 @@ public class RiftSignatureItem extends Item {
             return InteractionResult.FAIL;
         }
 
-		// get block one block above the clicked block
-		BlockPos pos = itemUsageContext.getClickedPos();
-		BlockState state = world.getBlockState(pos);
-		Direction side = itemUsageContext.getClickedFace();
+    // get block one block above the clicked block
+    BlockPos pos = itemUsageContext.getClickedPos();
+    BlockState state = world.getBlockState(pos);
+    Direction side = itemUsageContext.getClickedFace();
 
 
-		ItemStack stack = itemUsageContext.getItemInHand();
+    ItemStack stack = itemUsageContext.getItemInHand();
 
-		if (!((state.canBeReplaced() || state.getBlock() instanceof RiftVariantProvider) && player.mayUseItemAt(pos, side.getOpposite(), stack))) {
-			pos = pos.relative(side);
+    if (!((state.canBeReplaced() || state.getBlock() instanceof RiftVariantProvider) && player.mayUseItemAt(pos, side.getOpposite(), stack))) {
+        pos = pos.relative(side);
             state = world.getBlockState(pos);
-		}
+    }
 
         if (!(state.canBeReplaced() || state.getBlock() instanceof RiftVariantProvider)) {
             return InteractionResult.FAIL;
         }
 
-		RotatedLocation target = getSource(stack);
+    RotatedLocation target = getSource(stack);
 
-		if (target == null) {
-			// The link signature has not been used. Store its current target as the first location.
-			setSource(stack, new RotatedLocation(world.dimension(), pos, player.getYRot(), 0));
-			player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stored"), true);
-			world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START.get(), SoundSource.BLOCKS, 0.6f, 1);
-		} else {
-			var source = new RotatedLocation(world.dimension(), pos, player.getYRot(), 0);
+    if (target == null) {
+        // The link signature has not been used. Store its current target as the first location.
+        setSource(stack, new RotatedLocation(world.dimension(), pos, player.getYRot(), 0));
+        player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stored"), true);
+        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START.get(), SoundSource.BLOCKS, 0.6f, 1);
+    } else {
+        var source = new RotatedLocation(world.dimension(), pos, player.getYRot(), 0);
 
             getOrCreateRift((ServerLevel) world, pos).ifPresent(a -> a.getData().setDestination(RiftReference.tryMakeRelative(source, target)));
             getOrCreateRift(target.getWorld(), target.pos).ifPresent(a -> a.getData().setDestination(RiftReference.tryMakeRelative(target, source)));
 
-			var serverPlayer = (ServerPlayer) player;
+        var serverPlayer = (ServerPlayer) player;
 
-			stack.hurtAndBreak(1, ((ServerPlayer) player).serverLevel(), serverPlayer, a -> {}); // TODO: calculate damage based on position?
-			if(shouldclear){
-				clearSource(stack);
-			}
-			player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".created"), true);
-			// null = send sound to the player too, we have to do this because this code is not run client-side
-			world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_END.get(), SoundSource.BLOCKS, 0.6f, 1);
-		}
+        stack.hurtAndBreak(1, ((ServerPlayer) player).serverLevel(), serverPlayer, a -> {}); // TODO: calculate damage based on position?
+        if(shouldclear){
+        clearSource(stack);
+        }
+        player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".created"), true);
+        // null = send sound to the player too, we have to do this because this code is not run client-side
+        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_END.get(), SoundSource.BLOCKS, 0.6f, 1);
+    }
 
-		return InteractionResult.SUCCESS;
-	}
+    return InteractionResult.SUCCESS;
+    }
 
-	public static void setSource(ItemStack itemStack, RotatedLocation destination) {
-		itemStack.set(ModDataComponentTypes.DESTINATION.get(), destination);
-	}
+    public static void setSource(ItemStack itemStack, RotatedLocation destination) {
+    itemStack.set(ModDataComponentTypes.DESTINATION.get(), destination);
+    }
 
-	public static void clearSource(ItemStack itemStack) {
-		itemStack.remove(ModDataComponentTypes.DESTINATION.get());
-	}
+    public static void clearSource(ItemStack itemStack) {
+    itemStack.remove(ModDataComponentTypes.DESTINATION.get());
+    }
 
-	public static @Nullable RotatedLocation getSource(ItemStack itemStack) {
-		return itemStack.get(ModDataComponentTypes.DESTINATION.get());
-	}
+    public static @Nullable RotatedLocation getSource(ItemStack itemStack) {
+    return itemStack.get(ModDataComponentTypes.DESTINATION.get());
+    }
 
-	@Override
-	public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> list, TooltipFlag tooltipContext) {
-		RotatedLocation transform = getSource(itemStack);
-		if (transform != null) {
-			list.add(Component.translatable(this.getDescriptionId() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().location()));
-			list.add(Component.translatable(this.getDescriptionId() + ".bound.info1", transform.getWorldId().location()));
-		} else {
-			ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".unbound.info");
-		}
-	}
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext context, List<Component> list, TooltipFlag tooltipContext) {
+    RotatedLocation transform = getSource(itemStack);
+    if (transform != null) {
+        list.add(Component.translatable(this.getDescriptionId() + ".bound.info0", transform.getX(), transform.getY(), transform.getZ(), transform.getWorldId().location()));
+        list.add(Component.translatable(this.getDescriptionId() + ".bound.info1", transform.getWorldId().location()));
+    } else {
+        ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".unbound.info");
+    }
+    }
 
     public static Optional<RiftBlockEntity> getOrCreateRift(ServerLevel world, BlockPos pos) {
         Optional<RiftBlockEntity> rift;

@@ -35,12 +35,12 @@ public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Ent
     }
 
     @Override
-	public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
+    public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
         super.render(blockEntity, tickDelta, matrixStack, vertexConsumerProvider, light, overlay);
 
-		var state = blockEntity.getRenderBlockState();
+    var state = blockEntity.getRenderBlockState();
 
-		renderBlockState(state, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
+    renderBlockState(state, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
         if(state.getBlock() instanceof DoorBlock) {
             matrixStack.pushPose();
 
@@ -55,26 +55,26 @@ public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Ent
 
 
 
-	}
+    }
 
-	private void renderBlockState(BlockState renderState, RandomSource random, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
-		var model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(renderState);
-		var renderType = ItemBlockRenderTypes.getRenderType(renderState, false);
-		var vertexConsumer = vertexConsumerProvider.getBuffer(renderType);
+    private void renderBlockState(BlockState renderState, RandomSource random, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
+    var model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(renderState);
+    var renderType = ItemBlockRenderTypes.getRenderType(renderState, false);
+    var vertexConsumer = vertexConsumerProvider.getBuffer(renderType);
 
-		for (var direction : Direction.values()) {
-			var quads = model.getQuads(renderState, direction, random);
-			renderQuads(matrixStack, vertexConsumer, quads, light, overlay);
-		}
+    for (var direction : Direction.values()) {
+        var quads = model.getQuads(renderState, direction, random);
+        renderQuads(matrixStack, vertexConsumer, quads, light, overlay);
+    }
 
-		var quads = model.getQuads(renderState, null, random);
-		renderQuads(matrixStack, vertexConsumer, quads, light, overlay);
-	}
+    var quads = model.getQuads(renderState, null, random);
+    renderQuads(matrixStack, vertexConsumer, quads, light, overlay);
+    }
 
-	private void renderQuads(PoseStack stack, VertexConsumer consumer, List<BakedQuad> quads, int light, int overlay) {
-		var pose = stack.last();
-		for (var quad : quads) {
-			consumer.putBulkData(pose, quad, 1.0F, 1.0F, 1.0F, 1.0F, light, overlay);
-		}
-	}
+    private void renderQuads(PoseStack stack, VertexConsumer consumer, List<BakedQuad> quads, int light, int overlay) {
+    var pose = stack.last();
+    for (var quad : quads) {
+        consumer.putBulkData(pose, quad, 1.0F, 1.0F, 1.0F, 1.0F, light, overlay);
+    }
+    }
 }

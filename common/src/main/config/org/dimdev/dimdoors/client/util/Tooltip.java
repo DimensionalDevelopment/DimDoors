@@ -10,11 +10,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Repeatable(Tooltips.class)
 public @interface Tooltip {
-	String value();
+    String value();
 
-	/**
-	 * Whether the string should be used as
-	 * is, or first translated.
-	 */
-	boolean absolute() default false;
+    /**
+     * Whether the string should be used as
+     * is, or first translated.
+     */
+    boolean absolute() default false;
 }

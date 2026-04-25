@@ -25,46 +25,46 @@ import java.util.List;
 import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
 
 public class RiftStabilizerItem extends Item {
-	public RiftStabilizerItem(Item.Properties settings) {
-		super(settings);
-	}
+    public RiftStabilizerItem(Item.Properties settings) {
+    super(settings);
+    }
 
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		ItemStack stack = player.getItemInHand(hand);
-		BlockHitResult hit = RaycastHelper.findDetachRift(player, DETACH);
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    ItemStack stack = player.getItemInHand(hand);
+    BlockHitResult hit = RaycastHelper.findDetachRift(player, DETACH);
 
-		if (world.isClientSide) {
-			if (RaycastHelper.hitsDetachedRift(hit, world)) {
-				// TODO: not necessarily success, fix this and all other similar cases to make arm swing correct
-				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-			} else {
-				player.displayClientMessage(Component.translatable("tools.rift_miss"), true);
-				RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
-				return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
-			}
-		}
+    if (world.isClientSide) {
+        if (RaycastHelper.hitsDetachedRift(hit, world)) {
+        // TODO: not necessarily success, fix this and all other similar cases to make arm swing correct
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        } else {
+        player.displayClientMessage(Component.translatable("tools.rift_miss"), true);
+        RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+        }
+    }
 
-		if (RaycastHelper.hitsDetachedRift(hit, world)) {
-			DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(hit.getBlockPos());
-			if (!rift.stabilized && !rift.closing) {
-				rift.setStabilized(true);
-				world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1); // TODO: different sound
+    if (RaycastHelper.hitsDetachedRift(hit, world)) {
+        DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(hit.getBlockPos());
+        if (!rift.stabilized && !rift.closing) {
+        rift.setStabilized(true);
+        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1); // TODO: different sound
 
-				var serverPlayer = (ServerPlayer) player;
+        var serverPlayer = (ServerPlayer) player;
 
-				stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {});
-				player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stabilized"), true);
-				return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-			} else {
-				player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".already_stabilized"), true);
-			}
-		}
-		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
-	}
+        stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {});
+        player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stabilized"), true);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        } else {
+        player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".already_stabilized"), true);
+        }
+    }
+    return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+    }
 
-	@Override
-	public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
-		list.add(Component.translatable(this.getDescriptionId() + ".info"));
-	}
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
+    list.add(Component.translatable(this.getDescriptionId() + ".info"));
+    }
 }

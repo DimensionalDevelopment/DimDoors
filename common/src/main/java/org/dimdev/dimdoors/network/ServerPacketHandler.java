@@ -25,14 +25,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class ServerPacketHandler {
-	private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final Map<UUID, PlayerSyncData> DATA_MAP = new HashMap<>();
 
     @ExpectPlatform
     public static <T extends CustomPacketPayload> void sendPacket(ServerPlayer player, T packet) {
         throw new RuntimeException("Not Implmented");
-	}
+    }
 
     public static void syncPocketAddonsIfNeeded(ServerPlayer player, ServerLevel level, BlockPos pos) {
         var syncPacket = getSyncData(player).syncPocketAddonsIfNeeded(player, level, pos);
@@ -44,26 +44,26 @@ public class ServerPacketHandler {
         return DATA_MAP.computeIfAbsent(player.getUUID(), uuid -> new PlayerSyncData());
     }
 
-	// TODO: attach this to some event to detect other kinds teleportation
+    // TODO: attach this to some event to detect other kinds teleportation
 
-	public static void sync(ServerPlayer player, ItemStack stack, InteractionHand hand) {
-		if (hand == InteractionHand.OFF_HAND) {
-			sendPacket(player, new PlayerInventorySlotUpdateS2CPacket(45, stack));
-		} else {
-			sendPacket(player, new PlayerInventorySlotUpdateS2CPacket(player.getInventory().selected, stack));
-		}
-	}
+    public static void sync(ServerPlayer player, ItemStack stack, InteractionHand hand) {
+    if (hand == InteractionHand.OFF_HAND) {
+        sendPacket(player, new PlayerInventorySlotUpdateS2CPacket(45, stack));
+    } else {
+        sendPacket(player, new PlayerInventorySlotUpdateS2CPacket(player.getInventory().selected, stack));
+    }
+    }
 
-	public static @Nullable CustomPacketPayload onAttackBlock(ServerPlayer player, HitBlockWithItemC2SPacket packet) {
-		player.getServer().execute(() -> {
-			Item item = player.getItemInHand(packet.hand()).getItem();
-			if (item instanceof ExtendedItem) {
-				((ExtendedItem) item).onAttackBlock(player.level(), player, packet.hand(), packet.pos(), packet.direction());
-			}
-		});
+    public static @Nullable CustomPacketPayload onAttackBlock(ServerPlayer player, HitBlockWithItemC2SPacket packet) {
+    player.getServer().execute(() -> {
+        Item item = player.getItemInHand(packet.hand()).getItem();
+        if (item instanceof ExtendedItem) {
+        ((ExtendedItem) item).onAttackBlock(player.level(), player, packet.hand(), packet.pos(), packet.direction());
+        }
+    });
 
         return null;
-	}
+    }
 
     public static SyncPocketAddonsS2CPacket onNetworkHandlerInitialized(ServerPlayer player) {
         return getSyncData(player).onNetworkHandlerInitialized(player);

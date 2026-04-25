@@ -9,8 +9,8 @@
 //        super("sandstone_pillars");
 //    }
 //
-//	@Override
-//	public boolean test(WorldGenLevel structureWorldAccess, BlockPos blockPos) {
-//		return structureWorldAccess.getBlockState(blockPos.above()).getBlock() instanceof SandBlock;
-//	}
+//    @Override
+//    public boolean test(WorldGenLevel structureWorldAccess, BlockPos blockPos) {
+//    return structureWorldAccess.getBlockState(blockPos.above()).getBlock() instanceof SandBlock;
+//    }
 //}

@@ -20,7 +20,7 @@ public record UnderlaidChildItemRenderer(ItemStack underlay) {
         this(new ItemStack(underlay));
     }
 
-    //	@Override
+    //    @Override
     public void render(ItemStack stack, ItemDisplayContext mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
         if (!(stack.getItem() instanceof DimensionalDoorItemRegistrar.ChildItem childItem))
             throw new UnsupportedOperationException("Can only use UnderlaidChildItemRenderer for ChildItems");

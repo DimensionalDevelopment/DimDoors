@@ -14,16 +14,16 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public final class PocketGenerator {
-	private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-	public static final ResourceLocation ALL_DUNGEONS = DimensionalDoors.id("dungeon");
-	public static final ResourceLocation NETHER_DUNGEONS = DimensionalDoors.id("nether");
-	public static final ResourceLocation RUINS_DUNGEONS = DimensionalDoors.id("ruins");
-	public static final ResourceLocation ATLANTIS_DUNGEONS = DimensionalDoors.id("atlantis");
-	public static final ResourceLocation JUNGLE_DUNGEONS = DimensionalDoors.id("jungle");
-	public static final ResourceLocation SNOW_DUNGEONS = DimensionalDoors.id("snow");
-	public static final ResourceLocation PYRAMID_DUNGEONS = DimensionalDoors.id("pyramid");
-	public static final ResourceLocation END_DUNGEONS = DimensionalDoors.id("end");
+    public static final ResourceLocation ALL_DUNGEONS = DimensionalDoors.id("dungeon");
+    public static final ResourceLocation NETHER_DUNGEONS = DimensionalDoors.id("nether");
+    public static final ResourceLocation RUINS_DUNGEONS = DimensionalDoors.id("ruins");
+    public static final ResourceLocation ATLANTIS_DUNGEONS = DimensionalDoors.id("atlantis");
+    public static final ResourceLocation JUNGLE_DUNGEONS = DimensionalDoors.id("jungle");
+    public static final ResourceLocation SNOW_DUNGEONS = DimensionalDoors.id("snow");
+    public static final ResourceLocation PYRAMID_DUNGEONS = DimensionalDoors.id("pyramid");
+    public static final ResourceLocation END_DUNGEONS = DimensionalDoors.id("end");
 
     /*
     private static Pocket prepareAndPlacePocket(ServerWorld world, PocketTemplate pocketTemplate, VirtualLocation virtualLocation, boolean setup) {
@@ -34,72 +34,72 @@ public final class PocketGenerator {
         pocket.virtualLocation = virtualLocation;
         return pocket;
     }
-	*/
+    */
 
 
-	public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PERSONAL), DimensionalDoors.id("private"), virtualLocation, null, null);
-	}
+    public static Pocket generatePrivatePocketV2(VirtualLocation virtualLocation) {
+    return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PERSONAL), DimensionalDoors.id("private"), virtualLocation, null, null);
+    }
 
-	public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DimensionalDoors.id("public"), virtualLocation, linkTo, linkProperties);
-	}
+    public static Pocket generatePublicPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DimensionalDoors.id("public"), virtualLocation, linkTo, linkProperties);
+    }
 
-	public static Pocket generateFromPocketGroupV2(ServerLevel world, ResourceLocation group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		if (world == null) {
-			LOGGER.error("Cannot generate pocket group {} because the target world is unavailable.", group);
-			return null;
-		}
+    public static Pocket generateFromPocketGroupV2(ServerLevel world, ResourceLocation group, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    if (world == null) {
+        LOGGER.error("Cannot generate pocket group {} because the target world is unavailable.", group);
+        return null;
+    }
 
-		VirtualPocket virtualPocket = PocketLoader.getGroup(group);
-		if (virtualPocket == null) {
-			LOGGER.error("Cannot generate pocket group {} because it is not loaded.", group);
-			return null;
-		}
+    VirtualPocket virtualPocket = PocketLoader.getGroup(group);
+    if (virtualPocket == null) {
+        LOGGER.error("Cannot generate pocket group {} because it is not loaded.", group);
+        return null;
+    }
 
-		PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties, world.registryAccess());
-		return generatePocketV2(virtualPocket.getNextPocketGeneratorReference(context), context);
-	}
+    PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties, world.registryAccess());
+    return generatePocketV2(virtualPocket.getNextPocketGeneratorReference(context), context);
+    }
 
-	public static Pocket generateFromVirtualPocket(ServerLevel world, ResourceLocation id, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		if (world == null) {
-			LOGGER.error("Cannot generate virtual pocket {} because the target world is unavailable.", id);
-			return null;
-		}
+    public static Pocket generateFromVirtualPocket(ServerLevel world, ResourceLocation id, VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    if (world == null) {
+        LOGGER.error("Cannot generate virtual pocket {} because the target world is unavailable.", id);
+        return null;
+    }
 
-		VirtualPocket virtualPocket = PocketLoader.getVirtual(id);
-		if (virtualPocket == null) {
-			LOGGER.error("Cannot generate virtual pocket {} because it is not loaded.", id);
-			return null;
-		}
+    VirtualPocket virtualPocket = PocketLoader.getVirtual(id);
+    if (virtualPocket == null) {
+        LOGGER.error("Cannot generate virtual pocket {} because it is not loaded.", id);
+        return null;
+    }
 
-		PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties, world.registryAccess());
-		LOGGER.info("Generating virtual target: " + id);
-		return generatePocketV2(virtualPocket.getNextPocketGeneratorReference(context), context);
-	}
+    PocketGenerationContext context = new PocketGenerationContext(world, virtualLocation, linkTo, linkProperties, world.registryAccess());
+    LOGGER.info("Generating virtual target: " + id);
+    return generatePocketV2(virtualPocket.getNextPocketGeneratorReference(context), context);
+    }
 
-	public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationContext context) {
-		if (context == null || context.world() == null) {
-			LOGGER.error("Cannot generate pocket because the generation context has no world.");
-			return null;
-		}
-		if (pocketGeneratorReference == null) {
-			LOGGER.error("Cannot generate pocket at {} because no pocket generator reference resolved.", context.sourceVirtualLocation());
-			return null;
-		}
+    public static Pocket generatePocketV2(PocketGeneratorReference pocketGeneratorReference, PocketGenerationContext context) {
+    if (context == null || context.world() == null) {
+        LOGGER.error("Cannot generate pocket because the generation context has no world.");
+        return null;
+    }
+    if (pocketGeneratorReference == null) {
+        LOGGER.error("Cannot generate pocket at {} because no pocket generator reference resolved.", context.sourceVirtualLocation());
+        return null;
+    }
 
-		return pocketGeneratorReference.prepareAndPlacePocket(context);
-	}
+    return pocketGeneratorReference.prepareAndPlacePocket(context);
+    }
 
-	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), DimensionalDoors.id("dungeon"), virtualLocation, linkTo, linkProperties);
-	}
+    public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties) {
+    return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), DimensionalDoors.id("dungeon"), virtualLocation, linkTo, linkProperties);
+    }
 
-	public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, ResourceLocation group) {
-		return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), group, virtualLocation, linkTo, linkProperties);
-	}
+    public static Pocket generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget linkTo, LinkProperties linkProperties, ResourceLocation group) {
+    return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.DUNGEON), group, virtualLocation, linkTo, linkProperties);
+    }
 
-	/*
+    /*
     /**
      * Create a dungeon pockets at a certain depth.
      *

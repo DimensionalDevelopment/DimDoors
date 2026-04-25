@@ -15,28 +15,28 @@ import org.dimdev.dimdoors.item.ModItems;
 import java.util.function.Supplier;
 
 public class ModFluids {
-	public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.FLUID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.FLUID);
 
-	public static final ArchitecturyFluidAttributes ETERNAL_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> ModFluids.FLOWING_ETERNAL_FLUID, () -> ModFluids.ETERNAL_FLUID).block(ModBlocks.ETERNAL_FLUID).bucketItem(ModItems.ETERNAL_FLUID_BUCKET).explosionResistance(100000)
-			.sourceTexture(DimensionalDoors.id("block/eternal_fluid_still"))
-			.flowingTexture(DimensionalDoors.id("block/eternal_fluid_flow"))
-			.overlayTexture(DimensionalDoors.id("block/eternal_fluid_flow"));
-	public static final RegistrySupplier<? extends  Fluid> FLOWING_ETERNAL_FLUID = register("flowing_eternal_fluid", () -> new ArchitecturyFlowingFluid.Flowing(ModFluids.ETERNAL_FLUID_ATTRIBUTES));
-	public static final RegistrySupplier<? extends FlowingFluid> ETERNAL_FLUID = register("eternal_fluid", () -> new ArchitecturyFlowingFluid.Source(ModFluids.ETERNAL_FLUID_ATTRIBUTES));
+    public static final ArchitecturyFluidAttributes ETERNAL_FLUID_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> ModFluids.FLOWING_ETERNAL_FLUID, () -> ModFluids.ETERNAL_FLUID).block(ModBlocks.ETERNAL_FLUID).bucketItem(ModItems.ETERNAL_FLUID_BUCKET).explosionResistance(100000)
+        .sourceTexture(DimensionalDoors.id("block/eternal_fluid_still"))
+        .flowingTexture(DimensionalDoors.id("block/eternal_fluid_flow"))
+        .overlayTexture(DimensionalDoors.id("block/eternal_fluid_flow"));
+    public static final RegistrySupplier<? extends  Fluid> FLOWING_ETERNAL_FLUID = register("flowing_eternal_fluid", () -> new ArchitecturyFlowingFluid.Flowing(ModFluids.ETERNAL_FLUID_ATTRIBUTES));
+    public static final RegistrySupplier<? extends FlowingFluid> ETERNAL_FLUID = register("eternal_fluid", () -> new ArchitecturyFlowingFluid.Source(ModFluids.ETERNAL_FLUID_ATTRIBUTES));
 
-	public static final ArchitecturyFluidAttributes LEAK_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> ModFluids.FLOWING_LEAK, () -> ModFluids.LEAK).block(ModBlocks.LEAK).bucketItem(ModItems.LEAK_BUCKET)
-			.sourceTexture(DimensionalDoors.id("block/leak_still"))
-			.flowingTexture(DimensionalDoors.id("block/leak_flow"))
-			.overlayTexture(DimensionalDoors.id("block/leak_flow"));
-	public static final RegistrySupplier<Fluid> FLOWING_LEAK = register("flowing_leak_fluid", () -> new ArchitecturyFlowingFluid.Flowing(ModFluids.LEAK_ATTRIBUTES));
-	public static final RegistrySupplier<FlowingFluid> LEAK = register("leak", () -> new ArchitecturyFlowingFluid.Source(ModFluids.LEAK_ATTRIBUTES));
+    public static final ArchitecturyFluidAttributes LEAK_ATTRIBUTES = SimpleArchitecturyFluidAttributes.ofSupplier(() -> ModFluids.FLOWING_LEAK, () -> ModFluids.LEAK).block(ModBlocks.LEAK).bucketItem(ModItems.LEAK_BUCKET)
+        .sourceTexture(DimensionalDoors.id("block/leak_still"))
+        .flowingTexture(DimensionalDoors.id("block/leak_flow"))
+        .overlayTexture(DimensionalDoors.id("block/leak_flow"));
+    public static final RegistrySupplier<Fluid> FLOWING_LEAK = register("flowing_leak_fluid", () -> new ArchitecturyFlowingFluid.Flowing(ModFluids.LEAK_ATTRIBUTES));
+    public static final RegistrySupplier<FlowingFluid> LEAK = register("leak", () -> new ArchitecturyFlowingFluid.Source(ModFluids.LEAK_ATTRIBUTES));
 
-	private static <T extends Fluid> RegistrySupplier<T> register(String string, Supplier<T> fluid) {
-		return FLUIDS.register(DimensionalDoors.id(string), fluid);
-	}
+    private static <T extends Fluid> RegistrySupplier<T> register(String string, Supplier<T> fluid) {
+    return FLUIDS.register(DimensionalDoors.id(string), fluid);
+    }
 
-	public static void init() {
-		FLUIDS.register();
-	}
+    public static void init() {
+    FLUIDS.register();
+    }
 
 }

@@ -12,7 +12,7 @@
 //    @Override
 //    public boolean place(FeaturePlaceContext<SchematicGatewayFeatureConfig> featureContext) {
 //        if (featureContext.config().getGateway().test(featureContext.level(), featureContext.origin())) {
-//			featureContext.config().getGateway().generate(featureContext.level(), featureContext.origin());
+//        featureContext.config().getGateway().generate(featureContext.level(), featureContext.origin());
 //            return true;
 //        }
 //        return false;

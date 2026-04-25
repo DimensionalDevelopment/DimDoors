@@ -45,11 +45,11 @@ abstract public class LimboDecayProvider implements DataProvider {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
-	private final PackOutput.PathProvider decayPatternPathResolver;
+    private final PackOutput.PathProvider decayPatternPathResolver;
     private final CompletableFuture<HolderLookup.Provider> registries;
 
     public LimboDecayProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
-		this.decayPatternPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, "decay_patterns");
+        this.decayPatternPathResolver = output.createPathProvider(PackOutput.Target.DATA_PACK, "decay_patterns");
         this.registries = registries;
     }
 
@@ -91,19 +91,19 @@ abstract public class LimboDecayProvider implements DataProvider {
         return createPatterData(id, from, to);
     }
 
-	protected DecayCondition getPredicate(Object object) {
-		if (object instanceof TagKey<?> tag) {
-			if (tag.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((TagKey<Block>) tag);
-			else if (tag.isFor(Registries.FLUID)) return FluidDecayCondition.of((TagKey<Fluid>) tag);
-			else if (tag.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((TagKey<DimensionType>) tag);
+    protected DecayCondition getPredicate(Object object) {
+        if (object instanceof TagKey<?> tag) {
+            if (tag.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((TagKey<Block>) tag);
+            else if (tag.isFor(Registries.FLUID)) return FluidDecayCondition.of((TagKey<Fluid>) tag);
+            else if (tag.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((TagKey<DimensionType>) tag);
 
-		} else if(object instanceof ResourceKey<?> key) {
-			if (key.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((ResourceKey<Block>) key);
-			else if (key.isFor(Registries.FLUID)) return FluidDecayCondition.of((ResourceKey<Fluid>) key);
-			else if (key.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((ResourceKey<DimensionType>) key);
+        } else if(object instanceof ResourceKey<?> key) {
+            if (key.isFor(Registries.BLOCK)) return SimpleDecayCondition.of((ResourceKey<Block>) key);
+            else if (key.isFor(Registries.FLUID)) return FluidDecayCondition.of((ResourceKey<Fluid>) key);
+            else if (key.isFor(Registries.DIMENSION_TYPE)) return DimensionDecayCondition.of((ResourceKey<DimensionType>) key);
 
 
-		} else if(object instanceof Supplier<?> supplier) {
+        } else if(object instanceof Supplier<?> supplier) {
             var obj = supplier.get();
 
             if(obj instanceof Block block) {
@@ -119,7 +119,7 @@ abstract public class LimboDecayProvider implements DataProvider {
         }
 
         return DecayCondition.NONE;
-	}
+    }
 
     protected String getId(Object object) {
         if(object instanceof ResourceKey<?> key) {
@@ -135,21 +135,21 @@ abstract public class LimboDecayProvider implements DataProvider {
         return null;
     }
 
-	protected DecayResult getProcessor(Object object) {
-		return getProcessor(object, 1);
-	}
+    protected DecayResult getProcessor(Object object) {
+        return getProcessor(object, 1);
+    }
 
-	protected DecayResult getProcessor(Object object, int entropy) {
-		if (object instanceof Supplier<?> supplier) {
+    protected DecayResult getProcessor(Object object, int entropy) {
+        if (object instanceof Supplier<?> supplier) {
             object = supplier.get();
         }
 
-		if(object instanceof Block block) return new SingleBlockDecayResult(entropy, 0.0f, block);
-		else if(object instanceof Fluid fluid) return new FluidDecayResult(entropy, 0.0f, fluid);
-		else return NoneDecayResult.instance();
-	}
+        if(object instanceof Block block) return new SingleBlockDecayResult(entropy, 0.0f, block);
+        else if(object instanceof Fluid fluid) return new FluidDecayResult(entropy, 0.0f, fluid);
+        else return NoneDecayResult.instance();
+    }
 
-	protected void createOxidizationChain(Consumer<DecayPatternHolder> consumer, HolderLookup.Provider provider, Block... blocks) {
+    protected void createOxidizationChain(Consumer<DecayPatternHolder> consumer, HolderLookup.Provider provider, Block... blocks) {
         for (int i = 0; i < blocks.length - 2; i += 2) {
             var from = blocks[i];
             var fromWaxed = blocks[i+1];
@@ -160,19 +160,19 @@ abstract public class LimboDecayProvider implements DataProvider {
             addPattern(DimensionalDoors.id("dewaxed_" + getId(from)), from, fromWaxed).accept(consumer, provider);
             addPattern(DimensionalDoors.id("dewaxed_" + getId(to)), to, toWaxed).accept(consumer, provider);
         }
-	}
+    }
 
-	protected Block getBlock(ResourceLocation id) {
-		return BuiltInRegistries.BLOCK.get(id);
-	}
+    protected Block getBlock(ResourceLocation id) {
+        return BuiltInRegistries.BLOCK.get(id);
+    }
 
-	protected ResourceLocation getBlockId(Block block) {
-		return BuiltInRegistries.BLOCK.getKey(block);
-	}
+    protected ResourceLocation getBlockId(Block block) {
+        return BuiltInRegistries.BLOCK.getKey(block);
+    }
 
-	protected DecayPatternHolder turnIntoSelf(ResourceLocation ResourceLocation, Object before) {
-		return new DecayPatternHolder(ResourceLocation, new CompoundDecayPattern(List.of(getPredicate(before)), SelfDecayResult.instance()));
-	}
+    protected DecayPatternHolder turnIntoSelf(ResourceLocation ResourceLocation, Object before) {
+        return new DecayPatternHolder(ResourceLocation, new CompoundDecayPattern(List.of(getPredicate(before)), SelfDecayResult.instance()));
+    }
 
     protected static Path getOutput(Path rootOutput, ResourceLocation lootTableId) {
         return rootOutput.resolve("data/" + lootTableId.getNamespace() + "/decay_patterns/" + lootTableId.getPath() + ".json");
@@ -192,7 +192,7 @@ abstract public class LimboDecayProvider implements DataProvider {
         return DecayPatternHolder.builder(id).pattern(CompoundDecayPattern.builder().condition(getPredicate(before)).result(new DoubleBlockDecayResult(1, 0.0f, block)));
     }
 
-	public DecayPatternHolder createDoublePattern(ResourceLocation id, Object before, Block after) {
-		return new DecayPatternHolder(id, new CompoundDecayPattern(List.of(getPredicate(before)), new DoubleBlockDecayResult(1, 0.0f, after)));
-	}
+    public DecayPatternHolder createDoublePattern(ResourceLocation id, Object before, Block after) {
+        return new DecayPatternHolder(id, new CompoundDecayPattern(List.of(getPredicate(before)), new DoubleBlockDecayResult(1, 0.0f, after)));
+    }
 }

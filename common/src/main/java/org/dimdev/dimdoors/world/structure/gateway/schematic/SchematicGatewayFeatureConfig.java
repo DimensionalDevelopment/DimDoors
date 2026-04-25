@@ -6,8 +6,8 @@
 //
 //public class SchematicGatewayFeatureConfig implements FeatureConfiguration {
 //    public static final Codec<SchematicGatewayFeatureConfig> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
-//			Codec.STRING.fieldOf("gatewayId").forGetter(SchematicGatewayFeatureConfig::getGatewayId)
-//	).apply(instance, SchematicGatewayFeatureConfig::new));
+//        Codec.STRING.fieldOf("gatewayId").forGetter(SchematicGatewayFeatureConfig::getGatewayId)
+//    ).apply(instance, SchematicGatewayFeatureConfig::new));
 //
 //    private final SchematicGateway gateway;
 //    private final String gatewayId;

@@ -81,73 +81,73 @@ import java.util.function.Supplier;
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
 public class DimensionalDoors {
-	public static final String MOD_ID = "dimdoors";
-	public static final Logger LOGGER = LogUtils.getLogger();
+    public static final String MOD_ID = "dimdoors";
+    public static final Logger LOGGER = LogUtils.getLogger();
     private static Mod dimDoorsMod;
-	private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
-	private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
+    private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
+    private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
 
-	public static ResourceLocation id(String id) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
-	}
+    public static ResourceLocation id(String id) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+    }
 
-	public static MinecraftServer getServer() {
-		return GameInstance.getServer();
-	}
+    public static MinecraftServer getServer() {
+        return GameInstance.getServer();
+    }
 
-	public static ServerLevel getWorld(ResourceKey<Level> world) {
-		return getServer().getLevel(world);
-	}
+    public static ServerLevel getWorld(ResourceKey<Level> world) {
+        return getServer().getLevel(world);
+    }
 
-	private static Supplier<Path> CONFIG_ROOT = () -> dimDoorsMod.getFilePaths().get(0);
+    private static Supplier<Path> CONFIG_ROOT = () -> dimDoorsMod.getFilePaths().get(0);
 
-	private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootGsonConfigSerializer::new);
+    private static final ConfigHolder<ModConfig> CONFIG_MANAGER = AutoConfig.register(ModConfig.class, ModConfig.SubRootGsonConfigSerializer::new);
 
-	public static ModConfig getConfig() {
-		return CONFIG_MANAGER.get();
-	}
+    public static ModConfig getConfig() {
+        return CONFIG_MANAGER.get();
+    }
 
-	@ExpectPlatform
-	public static Path getConfigRoot() {
-		throw new RuntimeException();
-	}
+    @ExpectPlatform
+    public static Path getConfigRoot() {
+        throw new RuntimeException();
+    }
 
-	public static void init() {
-		dimDoorsMod = Platform.getMod(MOD_ID);
+    public static void init() {
+        dimDoorsMod = Platform.getMod(MOD_ID);
 
-		registerRegistries();
+        registerRegistries();
 
-		ModDataComponentTypes.register();
+        ModDataComponentTypes.register();
 
-		ModDimensions.init();
-		ModRecipeTypes.init();
-		ModRecipeSerializers.init();
-		ModScreenHandlerTypes.init();
-		ModSoundEvents.init();
-		ModFluids.init();
-		ModEntityTypes.init();
-		ModArmorMaterials.init();
-		ModItems.init();
-		ModBlocks.init();
-		ModCarvers.init();
-		ModBiomes.init();
-		ModStats.init();
-		ModBlockEntityTypes.init();
-		ModCommands.init();
-		ModParticleTypes.init();
-		ModCriteria.init();
-		ModStructureProccessors.init();
+        ModDimensions.init();
+        ModRecipeTypes.init();
+        ModRecipeSerializers.init();
+        ModScreenHandlerTypes.init();
+        ModSoundEvents.init();
+        ModFluids.init();
+        ModEntityTypes.init();
+        ModArmorMaterials.init();
+        ModItems.init();
+        ModBlocks.init();
+        ModCarvers.init();
+        ModBiomes.init();
+        ModStats.init();
+        ModBlockEntityTypes.init();
+        ModCommands.init();
+        ModParticleTypes.init();
+        ModCriteria.init();
+        ModStructureProccessors.init();
 
-//		ModRecipeBookTypes.init();
+//        ModRecipeBookTypes.init();
 
-		dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar();
-		dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(dimensionalDoorItemRegistrar);
+        dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar();
+        dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(dimensionalDoorItemRegistrar);
 
-		initBuiltinPacks();
+        initBuiltinPacks();
 
-		registerServerLoader("pocket_loader", PocketLoader::reload);
-		registerServerLoader("decay_loader", Decay.DecayLoader::reload);
-		registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
+        registerServerLoader("pocket_loader", PocketLoader::reload);
+        registerServerLoader("decay_loader", Decay.DecayLoader::reload);
+        registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
 
         LifecycleEvent.SERVER_STARTING.register(new LifecycleEvent.ServerState() {
             @Override
@@ -156,97 +156,97 @@ public class DimensionalDoors {
             }
         });
 
-		registerListeners();
-		SchemFixer.run();
-	}
+        registerListeners();
+        SchemFixer.run();
+    }
 
     @ExpectPlatform
     public static void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer, boolean loadAfterTags) {
 
     }
 
-	public static void registerServerLoader(String pocketLoader, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
+    public static void registerServerLoader(String pocketLoader, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
         registerServerLoader(pocketLoader, consumer, false);
-	}
+    }
 
-	@ExpectPlatform
-	private static void initBuiltinPacks() {
-		throw new RuntimeException();
-	}
+    @ExpectPlatform
+    private static void initBuiltinPacks() {
+        throw new RuntimeException();
+    }
 
-	public static void registerRegistries() {
-		Targets.registerDefaultTargets();
-		VirtualTarget.VirtualTargetType.register();
-		ImplementedVirtualPocket.VirtualPocketType.register();
-		RegistryVertex.RegistryVertexType.register();
-		Modifier.ModifierType.register();
-		PocketGenerator.PocketGeneratorType.register();
-		AbstractPocket.AbstractPocketType.register();
-		PocketAddon.PocketAddonType.register();
-		Condition.ConditionType.register();
-		DecayConditionType.register();
-		DecayResultType.register();
+    public static void registerRegistries() {
+        Targets.registerDefaultTargets();
+        VirtualTarget.VirtualTargetType.register();
+        ImplementedVirtualPocket.VirtualPocketType.register();
+        RegistryVertex.RegistryVertexType.register();
+        Modifier.ModifierType.register();
+        PocketGenerator.PocketGeneratorType.register();
+        AbstractPocket.AbstractPocketType.register();
+        PocketAddon.PocketAddonType.register();
+        Condition.ConditionType.register();
+        DecayConditionType.register();
+        DecayResultType.register();
         DecayPatternType.register();
-		LocationConditionType.register();
-		LocationValueWithType.register();
-	}
+        LocationConditionType.register();
+        LocationValueWithType.register();
+    }
 
-	private static void registerListeners() {
-//		PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
+    private static void registerListeners() {
+//        PlayerEvent.PLAYER_QUIT.register((handler) -> PocketCommand.logSetting.remove(handler.getUUID())); TODO Figure out good spot
 
-		LifecycleEvent.SERVER_STARTED.register(DimensionalRegistry::init);
+        LifecycleEvent.SERVER_STARTED.register(DimensionalRegistry::init);
 
-		InteractionEvent.LEFT_CLICK_BLOCK.register(new AttackBlockCallbackListener());
+        InteractionEvent.LEFT_CLICK_BLOCK.register(new AttackBlockCallbackListener());
 
-		BlockEvent.BREAK.register((level, pos, state, player, xp) -> {
-			if(player.isCreative()) return EventResult.pass();
-
-            else return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get(), level, pos).isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
-		});
-
-		BlockEvent.PLACE.register((level, pos, state, placer) -> {
-			if(placer instanceof Player p && p.isCreative()) return EventResult.pass();
+        BlockEvent.BREAK.register((level, pos, state, player, xp) -> {
+            if(player.isCreative()) return EventResult.pass();
 
             else return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get(), level, pos).isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
+        });
 
-		});
+        BlockEvent.PLACE.register((level, pos, state, placer) -> {
+            if(placer instanceof Player p && p.isCreative()) return EventResult.pass();
+
+            else return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get(), level, pos).isEmpty() ? EventResult.pass() : EventResult.interruptFalse();
+
+        });
 
 
-//		InteractionEvent.LEFT_CLICK_BLOCK.register(new PocketAttackBlockCallbackListener());
-//		PlayerBlockBreakEvents.BEFORE.register(new PlayerBlockBreakEventBeforeListener()); TODO: Fix
-//		InteractionEvent.RIGHT_CLICK_ITEM.register(new UseItemCallbackListener());
-		UseItemOnBlockCallback.EVENT.register(new UseItemOnBlockCallbackListener());
-//		InteractionEvent.RIGHT_CLICK_BLOCK.register(new UseBlockCallbackListener());
+//        InteractionEvent.LEFT_CLICK_BLOCK.register(new PocketAttackBlockCallbackListener());
+//        PlayerBlockBreakEvents.BEFORE.register(new PlayerBlockBreakEventBeforeListener()); TODO: Fix
+//        InteractionEvent.RIGHT_CLICK_ITEM.register(new UseItemCallbackListener());
+        UseItemOnBlockCallback.EVENT.register(new UseItemOnBlockCallbackListener());
+//        InteractionEvent.RIGHT_CLICK_BLOCK.register(new UseBlockCallbackListener());
 
-		// placing doors on rifts
-		UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());
+        // placing doors on rifts
+        UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());
 
-		TickEvent.SERVER_LEVEL_PRE.register(Decay::tick);
-	}
+        TickEvent.SERVER_LEVEL_PRE.register(Decay::tick);
+    }
 
-	public static DimensionalDoorItemRegistrar getDimensionalDoorItemRegistrar() {
-		return dimensionalDoorItemRegistrar;
-	}
+    public static DimensionalDoorItemRegistrar getDimensionalDoorItemRegistrar() {
+        return dimensionalDoorItemRegistrar;
+    }
 
-	public static DimensionalDoorBlockRegistrar getDimensionalDoorBlockRegistrar() {
-		return dimensionalDoorBlockRegistrar;
-	}
+    public static DimensionalDoorBlockRegistrar getDimensionalDoorBlockRegistrar() {
+        return dimensionalDoorBlockRegistrar;
+    }
 
-	public static Mod getDimDoorsMod() {
-		return dimDoorsMod;
-	}
+    public static Mod getDimDoorsMod() {
+        return dimDoorsMod;
+    }
 
-	public static void afterBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
-		if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
-			return;
-		}
-		if (blockEntity instanceof EntranceRiftBlockEntity riftBlockEntity) {
+    public static void afterBlockBreak(Level world, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
+        if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
+            return;
+        }
+        if (blockEntity instanceof EntranceRiftBlockEntity riftBlockEntity) {
             if (state.getBlock() instanceof DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
                 pos = pos.below();
             }
 
             world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
             world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(rift -> rift.setData((riftBlockEntity).getData()));
-		}
-	}
+        }
+    }
 }

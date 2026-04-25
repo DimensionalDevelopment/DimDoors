@@ -13,11 +13,11 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 
 public class ModScreenHandlerTypes {
-	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.MENU);
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.MENU);
 
-	public static final RegistrySupplier<MenuType<TessellatingContainer>> TESSELATING_LOOM = MENU_TYPES.register("tesselating", () -> new MenuType<>(TessellatingContainer::new, FeatureFlagSet.of()));
+    public static final RegistrySupplier<MenuType<TessellatingContainer>> TESSELATING_LOOM = MENU_TYPES.register("tesselating", () -> new MenuType<>(TessellatingContainer::new, FeatureFlagSet.of()));
 
-	public static void init() {
-		MENU_TYPES.register();
-	}
+    public static void init() {
+    MENU_TYPES.register();
+    }
 }

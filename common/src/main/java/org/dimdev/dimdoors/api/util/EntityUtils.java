@@ -12,56 +12,56 @@ import net.minecraft.world.entity.projectile.Projectile;
 import java.util.UUID;
 
 public final class EntityUtils {
-	public static Entity getOwner(Entity entity) {
-		if (entity instanceof Player) {
-			return entity;
-		}
+    public static Entity getOwner(Entity entity) {
+    if (entity instanceof Player) {
+        return entity;
+    }
 
-		Entity topmostEntity = null;
+    Entity topmostEntity = null;
 
-		// Thrower
-		if (entity instanceof Projectile projectile) topmostEntity = projectile.getOwner();
-		if (entity instanceof FishingHook hook) topmostEntity = hook.getOwner();
-		if (entity instanceof ItemEntity item) {
-			if (item.getOwner() != null) {
-				topmostEntity = item.getOwner();
-			}
-		}
+    // Thrower
+    if (entity instanceof Projectile projectile) topmostEntity = projectile.getOwner();
+    if (entity instanceof FishingHook hook) topmostEntity = hook.getOwner();
+    if (entity instanceof ItemEntity item) {
+        if (item.getOwner() != null) {
+        topmostEntity = item.getOwner();
+        }
+    }
 
-		// Passengers
-		if (entity.getControllingPassenger() != null)
-			topmostEntity = entity.getControllingPassenger();
-		if (entity.getPassengers().size() > 0)
-			topmostEntity = entity.getPassengers().get(0);
+    // Passengers
+    if (entity.getControllingPassenger() != null)
+        topmostEntity = entity.getControllingPassenger();
+    if (entity.getPassengers().size() > 0)
+        topmostEntity = entity.getPassengers().get(0);
 
-		// Owned Animals
-		if (entity instanceof Mob mob && mob.isLeashed())
-			topmostEntity = mob.getLeashHolder();
-		if (entity instanceof TamableAnimal tamable && tamable.getOwner() != null)
-			topmostEntity = tamable.getOwner();
+    // Owned Animals
+    if (entity instanceof Mob mob && mob.isLeashed())
+        topmostEntity = mob.getLeashHolder();
+    if (entity instanceof TamableAnimal tamable && tamable.getOwner() != null)
+        topmostEntity = tamable.getOwner();
 
-		if (topmostEntity != null) {
-			return getOwner(topmostEntity);
-		}
+    if (topmostEntity != null) {
+        return getOwner(topmostEntity);
+    }
 
-		return entity;
-	}
+    return entity;
+    }
 
-	public static Player getOwnerPlayer(Entity entity) {
-		Entity owner = getOwner(entity);
-		return owner instanceof Player player ? player : null;
-	}
+    public static Player getOwnerPlayer(Entity entity) {
+    Entity owner = getOwner(entity);
+    return owner instanceof Player player ? player : null;
+    }
 
-	public static UUID getOwnerPlayerUuid(Entity entity) {
-		Player player = getOwnerPlayer(entity);
-		return player != null ? player.getUUID() : null;
-	}
+    public static UUID getOwnerPlayerUuid(Entity entity) {
+    Player player = getOwnerPlayer(entity);
+    return player != null ? player.getUUID() : null;
+    }
 
-	public static void chat(Entity entity, Component text, boolean actionBar) {
-		if (entity instanceof Player player) player.displayClientMessage(text, actionBar);
-	}
+    public static void chat(Entity entity, Component text, boolean actionBar) {
+    if (entity instanceof Player player) player.displayClientMessage(text, actionBar);
+    }
 
-	public static void chat(Entity entity, Component text) {
-		chat(entity, text, false);
-	}
+    public static void chat(Entity entity, Component text) {
+    chat(entity, text, false);
+    }
 }

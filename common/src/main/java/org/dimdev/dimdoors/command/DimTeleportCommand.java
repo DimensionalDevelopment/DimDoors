@@ -21,11 +21,11 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 public class DimTeleportCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("dimteleport")
-				.requires(source -> source.hasPermission(4))
+        .requires(source -> source.hasPermission(4))
                 .then(Commands
                         .argument("dimension", DimensionArgument.dimension())
                         .executes(ctx -> {
-							ServerPlayer player = ctx.getSource().getPlayer();
+                ServerPlayer player = ctx.getSource().getPlayer();
                             return teleport(player, DimensionArgument.getDimension(ctx, "dimension"), player.position(), MathUtil.entityEulerAngle(player));
                         })
                         .then(Commands
@@ -34,20 +34,20 @@ public class DimTeleportCommand {
                                     ServerPlayer player = ctx.getSource().getPlayer();
                                     return teleport(player, DimensionArgument.getDimension(ctx, "dimension"), Vec3Argument.getVec3(ctx, "coordinates"), MathUtil.entityEulerAngle(player));
                                 })
-								.then(Commands
-										.argument("yaw", FloatArgumentType.floatArg())
-										.executes( ctx -> {
-											ServerPlayer player = ctx.getSource().getPlayer();
-											return teleport(player, DimensionArgument.getDimension(ctx, "dimension"), Vec3Argument.getVec3(ctx, "coordinates"), new Rotations(player.getXRot(), FloatArgumentType.getFloat(ctx, "yaw"), 0));
-										})
-										.then(Commands
-												.argument("pitch", FloatArgumentType.floatArg())
-												.executes( ctx -> {
-													ServerPlayer player = ctx.getSource().getPlayer();
-													return teleport(player, DimensionArgument.getDimension(ctx, "dimension"), Vec3Argument.getVec3(ctx, "coordinates"), new Rotations(FloatArgumentType.getFloat(ctx, "pitch"), FloatArgumentType.getFloat(ctx, "yaw"), 0));
-												})
-										)
-								)
+                .then(Commands
+                    .argument("yaw", FloatArgumentType.floatArg())
+                    .executes( ctx -> {
+                        ServerPlayer player = ctx.getSource().getPlayer();
+                        return teleport(player, DimensionArgument.getDimension(ctx, "dimension"), Vec3Argument.getVec3(ctx, "coordinates"), new Rotations(player.getXRot(), FloatArgumentType.getFloat(ctx, "yaw"), 0));
+                    })
+                    .then(Commands
+                        .argument("pitch", FloatArgumentType.floatArg())
+                        .executes( ctx -> {
+                            ServerPlayer player = ctx.getSource().getPlayer();
+                            return teleport(player, DimensionArgument.getDimension(ctx, "dimension"), Vec3Argument.getVec3(ctx, "coordinates"), new Rotations(FloatArgumentType.getFloat(ctx, "pitch"), FloatArgumentType.getFloat(ctx, "yaw"), 0));
+                        })
+                    )
+                )
                         )
                 )
         );
@@ -59,7 +59,7 @@ public class DimTeleportCommand {
 //            DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUUID(), new Location((ServerLevel) entity.level(), entity.blockPosition()));
 //        }
 
-		TeleportUtil.teleport(entity, dimension, pos, angle, entity.getDeltaMovement());
+    TeleportUtil.teleport(entity, dimension, pos, angle, entity.getDeltaMovement());
         return Command.SINGLE_SUCCESS;
     }
 }

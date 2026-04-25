@@ -17,9 +17,9 @@ public class SimpleDecayCondition extends GenericDecayCondition<Block> {
 
     public static final String KEY = "block";
 
-	public SimpleDecayCondition(CodecUtils.TagOrElementLocation<Block> tagOrElementLocation, boolean invert) {
+    public SimpleDecayCondition(CodecUtils.TagOrElementLocation<Block> tagOrElementLocation, boolean invert) {
         super(tagOrElementLocation, invert);
-	}
+    }
 
     public static SimpleDecayCondition of(TagKey<Block> tag, boolean invert) {
         return new SimpleDecayCondition(CodecUtils.TagOrElementLocation.of(tag, Registries.BLOCK), invert);

@@ -47,10 +47,10 @@ import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
 public class PocketCommand {
-	private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-	// TODO: probably move somewhere else
-	public static final Map<UUID, CommandSourceStack> logSetting = new HashMap<>();
+    // TODO: probably move somewhere else
+    public static final Map<UUID, CommandSourceStack> logSetting = new HashMap<>();
 
     public static ArgumentBuilder<CommandSourceStack, ?> placeOption(String name, Supplier<SimpleTree<String, ? extends PocketCreator>> mapSupplier, Function<ResourceLocation, PocketCreator> idFunction) {
         return literal(name).then(
@@ -84,10 +84,10 @@ public class PocketCommand {
                         ));
     }
 
-	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-		dispatcher.register(
-				literal("pocket")
-						.requires(source -> source.hasPermission(2))
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    dispatcher.register(
+        literal("pocket")
+            .requires(source -> source.hasPermission(2))
                         .then(placeOption("virtual_pocket", PocketLoader::getVirtualPockets, PocketLoader::getVirtual))
                         .then(placeOption("pocket_group", PocketLoader::getPocketGroups, PocketLoader::getGroup))
                         .then(placeOption("pocket_generator", PocketLoader::getPocketGenerators, PocketLoader::getGenerator)
@@ -113,27 +113,27 @@ public class PocketCommand {
 //                                                        }).then()
 //                                        )
 //                        )
-						.then(
-								literal("dump")
-										.requires(src -> src.hasPermission(4))
-										.executes(ctx -> {
-											ctx.getSource().sendSuccess(() -> Component.literal("Dumping pocket data"), false);
-											CompletableFuture.runAsync(() -> {
-												try {
-													PocketLoader.dump();
-												} catch (Exception e) {
-													LOGGER.error("Error dumping pocket data", e);
-												}
-											}).thenRun(() -> {
-												ctx.getSource().getServer().execute(() -> {
-													ctx.getSource().sendSuccess(() -> Component.literal("Dumped pocket data"), false);
-												});
-											});
-											return Command.SINGLE_SUCCESS;
-										})
-						)
-		));
-	}
+            .then(
+                literal("dump")
+                    .requires(src -> src.hasPermission(4))
+                    .executes(ctx -> {
+                        ctx.getSource().sendSuccess(() -> Component.literal("Dumping pocket data"), false);
+                        CompletableFuture.runAsync(() -> {
+                        try {
+                            PocketLoader.dump();
+                        } catch (Exception e) {
+                            LOGGER.error("Error dumping pocket data", e);
+                        }
+                        }).thenRun(() -> {
+                        ctx.getSource().getServer().execute(() -> {
+                            ctx.getSource().sendSuccess(() -> Component.literal("Dumped pocket data"), false);
+                        });
+                        });
+                        return Command.SINGLE_SUCCESS;
+                    })
+            )
+    ));
+    }
 
     private static int placePocket(CommandSourceStack source, ResourceLocation id, Function<ResourceLocation, PocketCreator> idFunction, @Nullable Entity locatorEntity, @Nullable BlockPos selectedSourcePos) throws CommandSyntaxException {
         PocketCreator creator = idFunction.apply(id);
@@ -229,12 +229,12 @@ public class PocketCommand {
     }
 
     private static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
-		try {
-			return WorldeditHelper.load(source, template);
-		} catch (NoClassDefFoundError e) {
-			return 0;
-		}
-	}
+    try {
+        return WorldeditHelper.load(source, template);
+    } catch (NoClassDefFoundError e) {
+        return 0;
+    }
+    }
 
     public static CompletableFuture<Suggestions> getSuggestions(Set<Path<String>> paths, SuggestionsBuilder builder) {
         return SharedSuggestionProvider.suggest(paths.stream().flatMap(path -> path.reduce(String::concat).stream()), builder);
@@ -242,14 +242,14 @@ public class PocketCommand {
 
 
     private static int place(ServerPlayer source, PocketTemplate template, BlockPlacementType blockPlacementType) throws CommandSyntaxException {
-		SchematicPlacer.place(
-				template.getSchematic(),
-				source.serverLevel(),
-				source.blockPosition()
+    SchematicPlacer.place(
+        template.getSchematic(),
+        source.serverLevel(),
+        source.blockPosition()
         );
 
-		String id = template.getId().toString();
-		source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level().dimension().location().toString()), true);
-		return Command.SINGLE_SUCCESS;
-	}
+    String id = template.getId().toString();
+    source.displayClientMessage(Component.translatable("commands.pocket.placedSchem", id, "" + source.blockPosition().getX() + ", " + source.blockPosition().getY() + ", " + source.blockPosition().getZ(), source.level().dimension().location().toString()), true);
+    return Command.SINGLE_SUCCESS;
+    }
 }

@@ -13,20 +13,20 @@
 //        super(NoneFeatureConfiguration.CODEC);
 //    }
 //
-//	@Override
-//	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
-//		org.dimdev.dimdoors.world.feature.gateway.LimboGateway.INSTANCE.generate(context.level(), context.origin());
-//		return true;
+//    @Override
+//    public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> context) {
+//    org.dimdev.dimdoors.world.feature.gateway.LimboGateway.INSTANCE.generate(context.level(), context.origin());
+//    return true;
 //
-//	}
+//    }
 //
-//	@Override
-//	protected Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
-//		return Optional.empty();
-//	}
+//    @Override
+//    protected Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
+//    return Optional.empty();
+//    }
 //
-//	@Override
-//	public StructureType<?> type() {
-//		return null;
-//	}
+//    @Override
+//    public StructureType<?> type() {
+//    return null;
+//    }
 //}

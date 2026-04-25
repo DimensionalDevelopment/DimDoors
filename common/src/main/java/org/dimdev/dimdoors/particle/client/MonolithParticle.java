@@ -21,35 +21,35 @@ import org.joml.Quaternionf;
 @Environment(EnvType.CLIENT)
 public class MonolithParticle extends Particle {
 
-	public MonolithParticle(ClientLevel world, double x, double y, double z) {
-		super(world, x, y, z);
-		this.age = 30;
-	}
+    public MonolithParticle(ClientLevel world, double x, double y, double z) {
+    super(world, x, y, z);
+    this.age = 30;
+    }
 
-	@Override
-	public void render(VertexConsumer vertexConsumer, Camera camera, float tickDelta) {
-		float delta = ((float)this.age + tickDelta) / (float) this.age;
-		PoseStack matrices = new PoseStack();
-		matrices.mulPose(camera.rotation());
-		matrices.mulPose(new Quaternionf().rotateX((float) Math.toRadians(150.0F * delta - 60.0F)));
-		matrices.scale(-1.0F, -1.0F, 1.0F);
-		matrices.translate(0.0D, -1.1009999513626099D, 1.5D);
-		MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
-		VertexConsumer vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().renderType(DimensionalDoors.id("textures/mob/monolith/solid/monolith_14.png")));
-		MonolithRenderer.getInstance().renderToBuffer(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.NO_OVERLAY, 0xffffffff);
-		immediate.endBatch();
-	}
+    @Override
+    public void render(VertexConsumer vertexConsumer, Camera camera, float tickDelta) {
+    float delta = ((float)this.age + tickDelta) / (float) this.age;
+    PoseStack matrices = new PoseStack();
+    matrices.mulPose(camera.rotation());
+    matrices.mulPose(new Quaternionf().rotateX((float) Math.toRadians(150.0F * delta - 60.0F)));
+    matrices.scale(-1.0F, -1.0F, 1.0F);
+    matrices.translate(0.0D, -1.1009999513626099D, 1.5D);
+    MultiBufferSource.BufferSource immediate = Minecraft.getInstance().renderBuffers().bufferSource();
+    VertexConsumer vertexConsumer2 = immediate.getBuffer(MonolithRenderer.getInstance().renderType(DimensionalDoors.id("textures/mob/monolith/solid/monolith_14.png")));
+    MonolithRenderer.getInstance().renderToBuffer(matrices, vertexConsumer2, 0xf000f0, OverlayTexture.NO_OVERLAY, 0xffffffff);
+    immediate.endBatch();
+    }
 
-	@Override
-	public ParticleRenderType getRenderType() {
-		return ParticleRenderType.CUSTOM;
-	}
+    @Override
+    public ParticleRenderType getRenderType() {
+    return ParticleRenderType.CUSTOM;
+    }
 
-	public static class Factory implements ParticleProvider<ParticleOptions> {
-		@Nullable
-		@Override
-		public Particle createParticle(ParticleOptions particleOptions, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-			return new MonolithParticle(world, x, y, z);
-		}
-	}
+    public static class Factory implements ParticleProvider<ParticleOptions> {
+    @Nullable
+    @Override
+    public Particle createParticle(ParticleOptions particleOptions, ClientLevel world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+        return new MonolithParticle(world, x, y, z);
+    }
+    }
 }

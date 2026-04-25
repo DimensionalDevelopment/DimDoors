@@ -14,22 +14,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.Optional;
 
 public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakCriteria.TriggerInstance> {
-	public static final String ID = "tag_block_break";
+    public static final String ID = "tag_block_break";
 
-	public void trigger(ServerPlayer player, BlockState block) {
-		this.trigger(player, c -> block.is(c.blockTagKey()));
-	}
+    public void trigger(ServerPlayer player, BlockState block) {
+    this.trigger(player, c -> block.is(c.blockTagKey()));
+    }
 
-	@Override
-	public Codec<TriggerInstance> codec() {
-		return TriggerInstance.CODEC;
-	}
+    @Override
+    public Codec<TriggerInstance> codec() {
+    return TriggerInstance.CODEC;
+    }
 
-	public static record TriggerInstance(Optional<ContextAwarePredicate> player, TagKey<Block> blockTagKey) implements SimpleCriterionTrigger.SimpleInstance {
-		public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance ->
-				instance.group(
-						EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
-						TagKey.codec(Registries.BLOCK).fieldOf("tag").forGetter(TriggerInstance::blockTagKey)
-				).apply(instance, TriggerInstance::new));
-	}
+    public static record TriggerInstance(Optional<ContextAwarePredicate> player, TagKey<Block> blockTagKey) implements SimpleCriterionTrigger.SimpleInstance {
+    public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance ->
+        instance.group(
+            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
+            TagKey.codec(Registries.BLOCK).fieldOf("tag").forGetter(TriggerInstance::blockTagKey)
+        ).apply(instance, TriggerInstance::new));
+    }
 }

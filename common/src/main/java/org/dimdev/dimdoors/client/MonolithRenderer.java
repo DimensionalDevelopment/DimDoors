@@ -36,7 +36,7 @@ public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel>
             DimensionalDoors.id("textures/mob/monolith/transparent/monolith_16.png"),
             DimensionalDoors.id("textures/mob/monolith/transparent/monolith_17.png"),
             DimensionalDoors.id("textures/mob/monolith/transparent/monolith_18.png")
-	).collect(Collectors.toList());
+    ).collect(Collectors.toList());
 
     public static final List<ResourceLocation> SOLID = Stream.of(
             DimensionalDoors.id("textures/mob/monolith/solid/monolith_0.png"),

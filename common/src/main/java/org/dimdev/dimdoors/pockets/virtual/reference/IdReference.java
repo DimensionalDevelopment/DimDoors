@@ -22,53 +22,53 @@ public class IdReference extends PocketGeneratorReference {
         this.id = id;
     }
 
-	@Override
-	public ImplementedVirtualPocket fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		super.fromNbt(nbt, provider, manager);
+    @Override
+    public ImplementedVirtualPocket fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+    super.fromNbt(nbt, provider, manager);
 
-		// TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
-		id = DimensionalDoors.id(nbt.getString("id"));
+    // TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
+    id = DimensionalDoors.id(nbt.getString("id"));
 
-		return this;
-	}
+    return this;
+    }
 
-	@Override
-	protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		super.toNbtInternal(nbt, provider, allowReference);
+    @Override
+    protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+    super.toNbtInternal(nbt, provider, allowReference);
 
-		nbt.putString("id", id.getPath());
+    nbt.putString("id", id.getPath());
 
-		return nbt;
-	}
+    return nbt;
+    }
 
-	@Override
-	public PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters) {
-		return getReferencedPocketGenerator(parameters);
-	}
+    @Override
+    public PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters) {
+    return getReferencedPocketGenerator(parameters);
+    }
 
-	@Override
-	public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
-		return PocketLoader.getGenerator(id);
-	}
+    @Override
+    public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
+    return PocketLoader.getGenerator(id);
+    }
 
-	@Override
-	public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-		return VirtualPocketType.ID_REFERENCE.get();
-	}
+    @Override
+    public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
+    return VirtualPocketType.ID_REFERENCE.get();
+    }
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
+    @Override
+    public String getKey() {
+    return KEY;
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("id", id)
-				.add("weight", weight)
-				.add("weightEquation", weightEquation)
-				.add("setupLoot", setupLoot)
-				.add("modifierList", modifierList)
-				.toString();
-	}
+    @Override
+    public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("id", id)
+        .add("weight", weight)
+        .add("weightEquation", weightEquation)
+        .add("setupLoot", setupLoot)
+        .add("modifierList", modifierList)
+        .toString();
+    }
 }

@@ -17,7 +17,7 @@ public class ModEntityTypes {
     public static final RegistrySupplier<EntityType<MonolithEntity>> MONOLITH = register(
             "monolith",
             MonolithEntity::new,
-			2f, 2.7f, false
+        2f, 2.7f, false
     );
 
     public static final RegistrySupplier<EntityType<MaskEntity>> MASK = register(

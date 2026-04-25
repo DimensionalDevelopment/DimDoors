@@ -70,17 +70,17 @@ public final class SchematicPlacer {
     }
 
     public static int[][] getBiomeData(Schematic schematic) {
-//		int width = schematic.getWidth();
-//		int length = schematic.getLength();
-//		byte[] biomeDataArray = schematic.getBiomeData().array();
-//		if (biomeDataArray.length == 0) return new int[0][0];
-//		int[][] biomeData = new int[width][length];
-//		for (int x = 0; x < width; x++) {
-//			for (int z = 0; z < length; z++) {
-//				biomeData[x][z] = biomeDataArray[x + z * width];
-//			}
-//		}
-//		return biomeData;
+//        int width = schematic.getWidth();
+//        int length = schematic.getLength();
+//        byte[] biomeDataArray = schematic.getBiomeData().array();
+//        if (biomeDataArray.length == 0) return new int[0][0];
+//        int[][] biomeData = new int[width][length];
+//        for (int x = 0; x < width; x++) {
+//            for (int z = 0; z < length; z++) {
+//                biomeData[x][z] = biomeDataArray[x + z * width];
+//            }
+//        }
+//        return biomeData;
         return new int[0][0];
     }
 

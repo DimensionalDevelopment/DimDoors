@@ -11,17 +11,17 @@ import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import java.util.List;
 
 public class UseBlockCallbackListener implements InteractionEvent.RightClickBlock {
-	@Override
-	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face) {
+    @Override
+    public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face) {
 //        TODO: Implment right click addon
 //
-//		var world = player.level();
+//    var world = player.level();
 //        List<InteractionEvent.RightClickBlock> applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.RightClickBlock.class, world, pos);
 //
-//		for (InteractionEvent.RightClickBlock listener : applicableAddons) {
-//			EventResult result = listener.click(player, hand, pos, face);
-//			if (result != EventResult.pass()) return result;
-//		}
-		return EventResult.pass();
-	}
+//    for (InteractionEvent.RightClickBlock listener : applicableAddons) {
+//        EventResult result = listener.click(player, hand, pos, face);
+//        if (result != EventResult.pass()) return result;
+//    }
+    return EventResult.pass();
+    }
 }

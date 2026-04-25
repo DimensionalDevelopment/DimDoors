@@ -12,63 +12,63 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 public enum BlockPlacementType implements StringRepresentable {
-	// TODO: do we need some update fluids only option?
-	SECTION_NO_UPDATE_QUEUE_BLOCK_ENTITY("section_no_update_queue_block_entity", true, false, BlockPlacementType::queueBlockEntity),
-	SECTION_NO_UPDATE("section_no_update", true, false, Level::setBlockEntity),
-	SECTION_UPDATE("section_update", true, true, Level::setBlockEntity),
-	SET_BLOCK_STATE("set_block_state", false, false, Level::setBlockEntity),
-	SET_BLOCK_STATE_QUEUE_BLOCK_ENTITY("set_block_state_queue_block_entity", false, false, BlockPlacementType::queueBlockEntity);
+    // TODO: do we need some update fluids only option?
+    SECTION_NO_UPDATE_QUEUE_BLOCK_ENTITY("section_no_update_queue_block_entity", true, false, BlockPlacementType::queueBlockEntity),
+    SECTION_NO_UPDATE("section_no_update", true, false, Level::setBlockEntity),
+    SECTION_UPDATE("section_update", true, true, Level::setBlockEntity),
+    SET_BLOCK_STATE("set_block_state", false, false, Level::setBlockEntity),
+    SET_BLOCK_STATE_QUEUE_BLOCK_ENTITY("set_block_state_queue_block_entity", false, false, BlockPlacementType::queueBlockEntity);
 
-	private final static Map<String, BlockPlacementType> idMap = new HashMap<>();
+    private final static Map<String, BlockPlacementType> idMap = new HashMap<>();
 
-	public static final Codec<BlockPlacementType> CODEC = StringRepresentable.fromEnum(BlockPlacementType::values);
+    public static final Codec<BlockPlacementType> CODEC = StringRepresentable.fromEnum(BlockPlacementType::values);
 
-	static {
-		for (BlockPlacementType type : BlockPlacementType.values()) {
-			idMap.put(type.getId(), type);
-		}
-	}
+    static {
+    for (BlockPlacementType type : BlockPlacementType.values()) {
+        idMap.put(type.getId(), type);
+    }
+    }
 
-	final String id;
-	final boolean useSection;
-	final boolean markForUpdate;
-	final BiConsumer<Level, BlockEntity> blockEntityPlacer;
+    final String id;
+    final boolean useSection;
+    final boolean markForUpdate;
+    final BiConsumer<Level, BlockEntity> blockEntityPlacer;
 
 
-	BlockPlacementType(String id, boolean useSection, boolean markForUpdate, BiConsumer<Level, BlockEntity> blockEntityPlacer) {
-		this.id = id;
-		this.useSection = useSection;
-		this.markForUpdate = markForUpdate;
-		this.blockEntityPlacer = blockEntityPlacer;
-	}
+    BlockPlacementType(String id, boolean useSection, boolean markForUpdate, BiConsumer<Level, BlockEntity> blockEntityPlacer) {
+    this.id = id;
+    this.useSection = useSection;
+    this.markForUpdate = markForUpdate;
+    this.blockEntityPlacer = blockEntityPlacer;
+    }
 
-	public boolean useSection() {
-		return useSection;
-	}
+    public boolean useSection() {
+    return useSection;
+    }
 
-	public boolean shouldMarkForUpdate() {
-		return markForUpdate;
-	}
+    public boolean shouldMarkForUpdate() {
+    return markForUpdate;
+    }
 
-	public BiConsumer<Level, BlockEntity> getBlockEntityPlacer() {
-		return blockEntityPlacer;
-	}
+    public BiConsumer<Level, BlockEntity> getBlockEntityPlacer() {
+    return blockEntityPlacer;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+    return id;
+    }
 
-	public static BlockPlacementType getFromId(String id) {
-		return idMap.get(id);
-	}
+    public static BlockPlacementType getFromId(String id) {
+    return idMap.get(id);
+    }
 
-	private static void queueBlockEntity(Level world, BlockEntity blockEntity) {
-		MinecraftServer server = world.getServer();
-		server.tell(new TickTask(server.getTickCount(), () -> world.setBlockEntity(blockEntity)));
-	}
+    private static void queueBlockEntity(Level world, BlockEntity blockEntity) {
+    MinecraftServer server = world.getServer();
+    server.tell(new TickTask(server.getTickCount(), () -> world.setBlockEntity(blockEntity)));
+    }
 
-	@Override
-	public String getSerializedName() {
-		return id;
-	}
+    @Override
+    public String getSerializedName() {
+    return id;
+    }
 }

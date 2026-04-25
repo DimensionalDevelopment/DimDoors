@@ -15,51 +15,51 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UnravelUtil {
-	public static final Set<Block> whitelistedBlocksForLimboRemoval = new HashSet<>();
-	public static final Map<Item, Item> unravelItemsMap = new HashMap<>();
-	public static final Map<Block, Block> unravelBlocksMap = new HashMap<>();
-	static {
-		whitelistedBlocksForLimboRemoval.add(Blocks.GRASS_BLOCK);
-		whitelistedBlocksForLimboRemoval.add(Blocks.STONE);
-		whitelistedBlocksForLimboRemoval.add(Blocks.SAND);
-		whitelistedBlocksForLimboRemoval.add(Blocks.SANDSTONE);
-		whitelistedBlocksForLimboRemoval.add(Blocks.ACACIA_LEAVES);
-		whitelistedBlocksForLimboRemoval.add(Blocks.AZALEA_LEAVES);
-		whitelistedBlocksForLimboRemoval.add(Blocks.BIRCH_LEAVES);
-		whitelistedBlocksForLimboRemoval.add(Blocks.DARK_OAK_LEAVES);
-		whitelistedBlocksForLimboRemoval.add(Blocks.JUNGLE_LEAVES);
-		whitelistedBlocksForLimboRemoval.add(Blocks.SPRUCE_LEAVES);
-		whitelistedBlocksForLimboRemoval.add(Blocks.TERRACOTTA);
-		whitelistedBlocksForLimboRemoval.add(Blocks.RED_SAND);
+    public static final Set<Block> whitelistedBlocksForLimboRemoval = new HashSet<>();
+    public static final Map<Item, Item> unravelItemsMap = new HashMap<>();
+    public static final Map<Block, Block> unravelBlocksMap = new HashMap<>();
+    static {
+    whitelistedBlocksForLimboRemoval.add(Blocks.GRASS_BLOCK);
+    whitelistedBlocksForLimboRemoval.add(Blocks.STONE);
+    whitelistedBlocksForLimboRemoval.add(Blocks.SAND);
+    whitelistedBlocksForLimboRemoval.add(Blocks.SANDSTONE);
+    whitelistedBlocksForLimboRemoval.add(Blocks.ACACIA_LEAVES);
+    whitelistedBlocksForLimboRemoval.add(Blocks.AZALEA_LEAVES);
+    whitelistedBlocksForLimboRemoval.add(Blocks.BIRCH_LEAVES);
+    whitelistedBlocksForLimboRemoval.add(Blocks.DARK_OAK_LEAVES);
+    whitelistedBlocksForLimboRemoval.add(Blocks.JUNGLE_LEAVES);
+    whitelistedBlocksForLimboRemoval.add(Blocks.SPRUCE_LEAVES);
+    whitelistedBlocksForLimboRemoval.add(Blocks.TERRACOTTA);
+    whitelistedBlocksForLimboRemoval.add(Blocks.RED_SAND);
 
-		//Add unravled items when we have them, for now, we do this.
-		unravelItemsMap.put(Items.STONE, Items.COBBLESTONE);
-		unravelItemsMap.put(Items.COBBLESTONE, Items.GRAVEL);
-		unravelItemsMap.put(Items.GRAVEL, Items.SANDSTONE);
-		unravelItemsMap.put(Items.SANDSTONE, Items.SAND);
-		unravelItemsMap.put(Items.SAND, ModBlocks.UNRAVELLED_FABRIC.get().asItem());
+    //Add unravled items when we have them, for now, we do this.
+    unravelItemsMap.put(Items.STONE, Items.COBBLESTONE);
+    unravelItemsMap.put(Items.COBBLESTONE, Items.GRAVEL);
+    unravelItemsMap.put(Items.GRAVEL, Items.SANDSTONE);
+    unravelItemsMap.put(Items.SANDSTONE, Items.SAND);
+    unravelItemsMap.put(Items.SAND, ModBlocks.UNRAVELLED_FABRIC.get().asItem());
 
-		for(Item item : unravelItemsMap.keySet()) {
-			Item item2 = unravelItemsMap.get(item);
-			if(item instanceof BlockItem && item2 instanceof BlockItem) {
-				unravelBlocksMap.put(((BlockItem)item).getBlock(), ((BlockItem)item2).getBlock());
-			}
-		}
-		unravelBlocksMap.put(Blocks.WATER, ModBlocks.UNFOLDED_BLOCK.get());
-	}
+    for(Item item : unravelItemsMap.keySet()) {
+        Item item2 = unravelItemsMap.get(item);
+        if(item instanceof BlockItem && item2 instanceof BlockItem) {
+        unravelBlocksMap.put(((BlockItem)item).getBlock(), ((BlockItem)item2).getBlock());
+        }
+    }
+    unravelBlocksMap.put(Blocks.WATER, ModBlocks.UNFOLDED_BLOCK.get());
+    }
 
-	public static BlockState copyState(Block block, BlockState sourceState) {
-		var newState = block.defaultBlockState();
+    public static BlockState copyState(Block block, BlockState sourceState) {
+    var newState = block.defaultBlockState();
 
-		Set<Property<?>> commonProperties = sourceState.getProperties().stream().filter(newState.getProperties()::contains).collect(Collectors.toSet());
-		for(Property<?> property : commonProperties) {
-			newState = transferProperty(sourceState, newState, property);
-		}
+    Set<Property<?>> commonProperties = sourceState.getProperties().stream().filter(newState.getProperties()::contains).collect(Collectors.toSet());
+    for(Property<?> property : commonProperties) {
+        newState = transferProperty(sourceState, newState, property);
+    }
 
-		return newState;
-	}
+    return newState;
+    }
 
-	private static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
-		return to.setValue(property, from.getValue(property));
-	}
+    private static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
+    return to.setValue(property, from.getValue(property));
+    }
 }

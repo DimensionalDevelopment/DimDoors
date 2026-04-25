@@ -27,96 +27,96 @@ import java.util.Set;
 import java.util.UUID;
 
 public class RiftKeyItem extends Item {
-	public RiftKeyItem(Item.Properties settings) {
-		super(settings.component(ModDataComponentTypes.KEY_IDS.get(), new LinkedHashSet<>()));
-	}
+    public RiftKeyItem(Item.Properties settings) {
+    super(settings.component(ModDataComponentTypes.KEY_IDS.get(), new LinkedHashSet<>()));
+    }
 
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable TooltipContext world, List<Component> tooltip, TooltipFlag context) {
-		if (isEmpty(stack)) {
-			tooltip.add(Component.translatable("item.dimdoors.rift_key.no_links"));
-		} else if (context.isAdvanced()) {
-			for (UUID id : getIds(stack)) {
-				tooltip.add(Component.literal(" " + id.toString()));
-			}
-		}
-		super.appendHoverText(stack, world, tooltip, context);
-	}
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable TooltipContext world, List<Component> tooltip, TooltipFlag context) {
+    if (isEmpty(stack)) {
+        tooltip.add(Component.translatable("item.dimdoors.rift_key.no_links"));
+    } else if (context.isAdvanced()) {
+        for (UUID id : getIds(stack)) {
+        tooltip.add(Component.literal(" " + id.toString()));
+        }
+    }
+    super.appendHoverText(stack, world, tooltip, context);
+    }
 
-	@Override
-	public boolean isFoil(ItemStack stack) {
-		return !isEmpty(stack);
-	}
+    @Override
+    public boolean isFoil(ItemStack stack) {
+    return !isEmpty(stack);
+    }
 
-	@Override
-	public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
-		return 30;
-	}
+    @Override
+    public int getUseDuration(ItemStack itemStack, LivingEntity livingEntity) {
+    return 30;
+    }
 
-	@Override
-	public void onCraftedBy(ItemStack stack, Level world, Player player) {
-		stack.applyComponents(this.getDefaultInstance().getComponents());
-	}
+    @Override
+    public void onCraftedBy(ItemStack stack, Level world, Player player) {
+    stack.applyComponents(this.getDefaultInstance().getComponents());
+    }
 
-//	@Override
-//	public ItemStack getDefaultInstance() {
-//		ItemStack stack = super.getDefaultInstance();
-//		stack.addTagElement("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) Tag.TAG_INT_ARRAY));
-//		return stack;
-//	}
+//    @Override
+//    public ItemStack getDefaultInstance() {
+//    ItemStack stack = super.getDefaultInstance();
+//    stack.addTagElement("Ids", ListTagAccessor.createListTag(new ArrayList<>(), (byte) Tag.TAG_INT_ARRAY));
+//    return stack;
+//    }
 
-	@Override
-	public InteractionResult useOn(UseOnContext  context) {
-		if (context.getLevel().isClientSide) {
-			return InteractionResult.CONSUME;
-		}
-		Player player = context.getPlayer();
-		BlockState state = context.getLevel().getBlockState(context.getClickedPos());
-		if (player != null && state.getBlock() instanceof RiftProvider && player.isShiftKeyDown()) {
-			RiftBlockEntity riftBlockEntity = ((RiftProvider<?>) state.getBlock()).getRift(context.getLevel(), context.getClickedPos(), state);
-			if (riftBlockEntity.isDetached()) {
-				return super.useOn(context);
-			}
-			EntranceRiftBlockEntity entranceRiftBlockEntity = ((EntranceRiftBlockEntity) riftBlockEntity);
-			Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location(entranceRiftBlockEntity.getLevel().dimension(), entranceRiftBlockEntity.getBlockPos()));
-			if (entranceRiftBlockEntity.isLocked()) {
-				if (tryRemove(context.getItemInHand(), rift.getId())) {
-					entranceRiftBlockEntity.setLocked(false);
-					entranceRiftBlockEntity.setChanged();
-					EntityUtils.chat(player, Component.translatable("rifts.unlocked"));
-					ServerPacketHandler.sync((ServerPlayer) player, context.getItemInHand(), context.getHand());
-					return InteractionResult.SUCCESS;
-				} else {
-					EntityUtils.chat(player, Component.translatable("rifts.cantUnlock"));
-				}
-			} else {
-				entranceRiftBlockEntity.setLocked(true);
-				add(context.getItemInHand(), rift.getId());
-				entranceRiftBlockEntity.setChanged();
-				EntityUtils.chat(player, Component.translatable("rifts.locked"));
-				ServerPacketHandler.sync((ServerPlayer) player, context.getItemInHand(), context.getHand());
- 				return InteractionResult.SUCCESS;
-			}
-		}
-		return super.useOn(context);
-	}
+    @Override
+    public InteractionResult useOn(UseOnContext  context) {
+    if (context.getLevel().isClientSide) {
+        return InteractionResult.CONSUME;
+    }
+    Player player = context.getPlayer();
+    BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+    if (player != null && state.getBlock() instanceof RiftProvider && player.isShiftKeyDown()) {
+        RiftBlockEntity riftBlockEntity = ((RiftProvider<?>) state.getBlock()).getRift(context.getLevel(), context.getClickedPos(), state);
+        if (riftBlockEntity.isDetached()) {
+        return super.useOn(context);
+        }
+        EntranceRiftBlockEntity entranceRiftBlockEntity = ((EntranceRiftBlockEntity) riftBlockEntity);
+        Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location(entranceRiftBlockEntity.getLevel().dimension(), entranceRiftBlockEntity.getBlockPos()));
+        if (entranceRiftBlockEntity.isLocked()) {
+        if (tryRemove(context.getItemInHand(), rift.getId())) {
+            entranceRiftBlockEntity.setLocked(false);
+            entranceRiftBlockEntity.setChanged();
+            EntityUtils.chat(player, Component.translatable("rifts.unlocked"));
+            ServerPacketHandler.sync((ServerPlayer) player, context.getItemInHand(), context.getHand());
+            return InteractionResult.SUCCESS;
+        } else {
+            EntityUtils.chat(player, Component.translatable("rifts.cantUnlock"));
+        }
+        } else {
+        entranceRiftBlockEntity.setLocked(true);
+        add(context.getItemInHand(), rift.getId());
+        entranceRiftBlockEntity.setChanged();
+        EntityUtils.chat(player, Component.translatable("rifts.locked"));
+        ServerPacketHandler.sync((ServerPlayer) player, context.getItemInHand(), context.getHand());
+         return InteractionResult.SUCCESS;
+        }
+    }
+    return super.useOn(context);
+    }
 
-	public static boolean tryRemove(ItemStack stack, UUID id) {
-		return getIds(stack).remove(id);
-	}
+    public static boolean tryRemove(ItemStack stack, UUID id) {
+    return getIds(stack).remove(id);
+    }
 
-	public static void add(ItemStack stack, UUID id) {
-		getIds(stack).add(id);}
+    public static void add(ItemStack stack, UUID id) {
+    getIds(stack).add(id);}
 
-	public static boolean has(ItemStack stack, UUID id) {
-		return getIds(stack).contains(id);
-	}
+    public static boolean has(ItemStack stack, UUID id) {
+    return getIds(stack).contains(id);
+    }
 
-	public static boolean isEmpty(ItemStack stack) {
-		return getIds(stack).isEmpty();
-	}
+    public static boolean isEmpty(ItemStack stack) {
+    return getIds(stack).isEmpty();
+    }
 
-	public static Set<UUID> getIds(ItemStack stack) {
-		return stack.get(ModDataComponentTypes.KEY_IDS.get());
-	}
+    public static Set<UUID> getIds(ItemStack stack) {
+    return stack.get(ModDataComponentTypes.KEY_IDS.get());
+    }
 }

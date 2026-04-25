@@ -15,18 +15,18 @@ import org.dimdev.dimdoors.world.decay.DecaySource;
 import java.util.List;
 
 public class UnravelledFabricBlock extends Block {
-	public static final String ID = "unravelled_fabric";
+    public static final String ID = "unravelled_fabric";
 
-	public UnravelledFabricBlock(BlockBehaviour.Properties settings) {
-		super(settings);
-	}
+    public UnravelledFabricBlock(BlockBehaviour.Properties settings) {
+    super(settings);
+    }
 
-	@Override
-	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-		if (ModDimensions.isLimboDimension(level)) {
-			Decay.applySpreadDecay(level, pos, random, DecaySource.LIMBO);
-		}
-	}
+    @Override
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    if (ModDimensions.isLimboDimension(level)) {
+        Decay.applySpreadDecay(level, pos, random, DecaySource.LIMBO);
+    }
+    }
 
     @Override
     public List<ItemStack> getDrops(BlockState blockState, LootParams.Builder builder) {

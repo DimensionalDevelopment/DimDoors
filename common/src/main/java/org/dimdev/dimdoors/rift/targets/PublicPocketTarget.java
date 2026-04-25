@@ -10,34 +10,34 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PublicPocketTarget extends WrappedDestinationTarget {
-	public static final MapCodec<PublicPocketTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.INSTANCE).forGetter(a -> a.wrappedDestination)).apply(instance, PublicPocketTarget::new));
+    public static final MapCodec<PublicPocketTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.INSTANCE).forGetter(a -> a.wrappedDestination)).apply(instance, PublicPocketTarget::new));
 
-	private PublicPocketTarget(VirtualTarget wrappedDestination) {
-		super(wrappedDestination);
-	}
+    private PublicPocketTarget(VirtualTarget wrappedDestination) {
+    super(wrappedDestination);
+    }
 
-	public PublicPocketTarget() {
-		super();
-	}
+    public PublicPocketTarget() {
+    super();
+    }
 
-	@Override
-	public Location makeLinkTarget() {
-		VirtualLocation riftVirtualLocation = VirtualLocation.fromLocation(this.location);
-		VirtualLocation newVirtualLocation;
-		int depth = riftVirtualLocation.getDepth() + 1;
-		newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
-		Pocket pocket = PocketGenerator.generatePublicPocketV2(newVirtualLocation, new GlobalReference(this.location), null);
+    @Override
+    public Location makeLinkTarget() {
+    VirtualLocation riftVirtualLocation = VirtualLocation.fromLocation(this.location);
+    VirtualLocation newVirtualLocation;
+    int depth = riftVirtualLocation.getDepth() + 1;
+    newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
+    Pocket pocket = PocketGenerator.generatePublicPocketV2(newVirtualLocation, new GlobalReference(this.location), null);
 
-		return DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
-	}
+    return DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+    }
 
-	@Override
-	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.PUBLIC_POCKET.get();
-	}
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+    return VirtualTargetType.PUBLIC_POCKET.get();
+    }
 
-	@Override
-	public VirtualTarget copy() {
-		return new PublicPocketTarget(wrappedDestination);
-	}
+    @Override
+    public VirtualTarget copy() {
+    return new PublicPocketTarget(wrappedDestination);
+    }
 }

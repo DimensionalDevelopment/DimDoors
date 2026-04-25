@@ -36,7 +36,7 @@ public class MonolithEntity extends Mob {
     public static final int MAX_AGGRO_RANGE = 35;
     private static final EntityDataAccessor<Integer> AGGRO = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.INT);
 //    private static final EntityDataAccessor<Float> SCALE = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
-	private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> PITCH = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> SOLID = SynchedEntityData.defineId(MonolithEntity.class, EntityDataSerializers.BOOLEAN);
 
     private static final float EYE_HEIGHT_PERCENTAGE = 0.55f;
@@ -115,9 +115,9 @@ public class MonolithEntity extends Mob {
         super.defineSynchedData(builder);
         // Add a short for the aggro level
         builder.define(AGGRO, 0);
-		builder.define(PITCH, 1f);
+    builder.define(PITCH, 1f);
         builder.define(SOLID, true);
-//		this.refreshDimensions();
+//    this.refreshDimensions();
     }
 
     @Override
@@ -229,10 +229,10 @@ public class MonolithEntity extends Mob {
 //        return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
 //    }
 //
-//	@Override
-//	protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
-//		return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
-//	}
+//    @Override
+//    protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+//    return getDimensions(pose).height * EYE_HEIGHT_PERCENTAGE;
+//    }
 
     public float getAggroProgress() {
         return ((float) getAggro()) / MAX_AGGRO;
@@ -261,8 +261,8 @@ public class MonolithEntity extends Mob {
         super.readAdditionalSaveData(nbt);
         setAggro(nbt.getInt("Aggro"));
         if (nbt.contains("pitch", Tag.TAG_FLOAT)) {
-			setPitch(nbt.getFloat("pitch"));
-		}
+        setPitch(nbt.getFloat("pitch"));
+    }
 
         if (nbt.contains("solid", Tag.TAG_BYTE)) {
             setSolid(nbt.getBoolean("solid"));
@@ -286,38 +286,38 @@ public class MonolithEntity extends Mob {
     }
 
 //    @Override
-//	public float getScale() {
-//    	return this.entityData.get(SCALE);
-//	}
+//    public float getScale() {
+//        return this.entityData.get(SCALE);
+//    }
 
     public void setScale(float scale) {
-//    	this.entityData.set(SCALE, scale);
+//        this.entityData.set(SCALE, scale);
         getAttribute(Attributes.SCALE).setBaseValue(scale);
         refreshDimensions();
-	}
+    }
 
-	public float getPitch() {
-    	return this.entityData.get(PITCH);
-	}
+    public float getPitch() {
+        return this.entityData.get(PITCH);
+    }
 
-	public void setPitch(float pitch) {
-    	this.entityData.set(PITCH, pitch);
-	}
+    public void setPitch(float pitch) {
+        this.entityData.set(PITCH, pitch);
+    }
 
     @Override
     public AABB getLocalBoundsForPose(Pose pose) {
         float scale = getScale();
-		return super.getLocalBoundsForPose(pose).inflate(scale, scale, scale);
-	}
+    return super.getLocalBoundsForPose(pose).inflate(scale, scale, scale);
+    }
 
-	@Override
-	public void onSyncedDataUpdated(EntityDataAccessor<?> data) {
-//		if (SCALE.equals(data)) {
-//			this.refreshDimensions();
-//		}
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> data) {
+//    if (SCALE.equals(data)) {
+//        this.refreshDimensions();
+//    }
 
-		super.onSyncedDataUpdated(data);
-	}
+    super.onSyncedDataUpdated(data);
+    }
 
     @Override
     public boolean checkSpawnRules(LevelAccessor world, MobSpawnType spawnReason) {

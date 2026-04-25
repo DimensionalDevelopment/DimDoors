@@ -70,16 +70,16 @@ import static org.dimdev.dimdoors.particle.ModParticleTypes.*;
 
 @Environment(EnvType.CLIENT)
 public class DimensionalDoorsClient {
-	private static final ConfigEntryBuilder ENTRY_BUILDER = ConfigEntryBuilder.create();
-	public static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
+    private static final ConfigEntryBuilder ENTRY_BUILDER = ConfigEntryBuilder.create();
+    public static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
 
-	public static ShaderPackDetector detector = () -> false;
+    public static ShaderPackDetector detector = () -> false;
 
-	public static void init() {
-		Platform.getMod(DimensionalDoors.MOD_ID).registerConfigurationScreen(ModMenu::getConfigScreen);
-		ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket()));
+    public static void init() {
+    Platform.getMod(DimensionalDoors.MOD_ID).registerConfigurationScreen(ModMenu::getConfigScreen);
+    ClientPlayerEvent.CLIENT_PLAYER_JOIN.register((handler) -> ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket()));
 
-		ClientGuiEvent.DEBUG_TEXT_LEFT.register(strings -> {
+    ClientGuiEvent.DEBUG_TEXT_LEFT.register(strings -> {
             assert Minecraft.getInstance().player != null;
             HitResult hit = RaycastHelper.findDetachRift(Minecraft.getInstance().player, RaycastHelper.DETACH);
             if(hit.getType() == HitResult.Type.BLOCK) {
@@ -89,11 +89,11 @@ public class DimensionalDoorsClient {
             }
         });
 
-		registerCompats();
+    registerCompats();
 
-//		ModFluids.initClient();
-		initBlockEntitiesClient();
-		ModBlocks.initClient();
+//    ModFluids.initClient();
+    initBlockEntitiesClient();
+    ModBlocks.initClient();
 
         EnvironmentAddonClient.init();
 
@@ -117,31 +117,31 @@ public class DimensionalDoorsClient {
                         .startStrField(Component.translatable(i18n), ((ResourceKey<?>) Utils.getUnsafely(field, config, defaults)).location().toString())
                 .setSaveConsumer(newValue -> Utils.setUnsafely(field, config, ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(newValue)))).build()), isResourceKeyOfType(Level.class));
 
-		registerListeners();
+    registerListeners();
 
-//		ModRecipeBookGroups.init();
+//    ModRecipeBookGroups.init();
     }
 
-	private static void registerCompats() {
-		if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) detector = new IrisCompat();
+    private static void registerCompats() {
+    if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) detector = new IrisCompat();
     }
 
-	@Environment(EnvType.CLIENT)
-	public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer) {
-		consumer.accept(ModEntityTypes.MONOLITH.get(), MonolithRenderer::new);
+    @Environment(EnvType.CLIENT)
+    public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer) {
+    consumer.accept(ModEntityTypes.MONOLITH.get(), MonolithRenderer::new);
         consumer.accept(ModEntityTypes.MASK.get(), context -> new EntityRenderer<MaskEntity>(context) {
-			@Override
-			public ResourceLocation getTextureLocation(MaskEntity entity) {
-				return ResourceLocation.parse("blep");
-			}
-		});
-	}
+        @Override
+        public ResourceLocation getTextureLocation(MaskEntity entity) {
+        return ResourceLocation.parse("blep");
+        }
+    });
+    }
 
-	@Environment(EnvType.CLIENT)
-	public static void initBlockEntitiesClient() {
-		BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), EntranceRiftBlockEntityRenderer::new);
-		BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), DetachedRiftBlockEntityRenderer::new);
-	}
+    @Environment(EnvType.CLIENT)
+    public static void initBlockEntitiesClient() {
+    BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), EntranceRiftBlockEntityRenderer::new);
+    BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), DetachedRiftBlockEntityRenderer::new);
+    }
 
     private static Predicate<Field> isResourceKeyListOfType(Class<?> registryType) {
         return field -> {
@@ -171,29 +171,29 @@ public class DimensionalDoorsClient {
     }
 
     private static Predicate<Field> isSetOfType(Type... types) {
-		return field -> {
-			if (Set.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType) {
-				Type[] args = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-				return args.length == 1 && Stream.of(types).anyMatch(type -> Objects.equals(args[0], type));
-			} else {
-				return false;
-			}
-		};
-	}
+    return field -> {
+        if (Set.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType) {
+        Type[] args = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+        return args.length == 1 && Stream.of(types).anyMatch(type -> Objects.equals(args[0], type));
+        } else {
+        return false;
+        }
+    };
+    }
 
     private static void registerListeners() {
-		ClientReloadShadersEvent.EVENT.register((provider, sink) -> {
-			try {
-				sink.registerShader(new ShaderInstance(provider, "dimensional_portal", DefaultVertexFormat.POSITION), ModShaders::setDimensionalPortal);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
+    ClientReloadShadersEvent.EVENT.register((provider, sink) -> {
+        try {
+        sink.registerShader(new ShaderInstance(provider, "dimensional_portal", DefaultVertexFormat.POSITION), ModShaders::setDimensionalPortal);
+        } catch (IOException e) {
+        throw new RuntimeException(e);
+        }
+    });
+    }
 
-	public static void initParticles(BiConsumer<ParticleType<? extends ParticleOptions>, ParticleProvider<?>> specialProvider, BiConsumer<ParticleType<?>, Function<SpriteSet, ? extends ParticleProvider<? extends ParticleOptions>>> spriteProivder) {
-		specialProvider.accept(MONOLITH.get(), (particleOptions, clientLevel, x, y, z, g, h, i) -> new MonolithParticle(clientLevel, x, y, z));
-		spriteProivder.accept(RIFT.get(), RiftParticle.Factory::new);
-		spriteProivder.accept(LIMBO_ASH.get(), LimboAshParticle.Factory::new);
-	}
+    public static void initParticles(BiConsumer<ParticleType<? extends ParticleOptions>, ParticleProvider<?>> specialProvider, BiConsumer<ParticleType<?>, Function<SpriteSet, ? extends ParticleProvider<? extends ParticleOptions>>> spriteProivder) {
+    specialProvider.accept(MONOLITH.get(), (particleOptions, clientLevel, x, y, z, g, h, i) -> new MonolithParticle(clientLevel, x, y, z));
+    spriteProivder.accept(RIFT.get(), RiftParticle.Factory::new);
+    spriteProivder.accept(LIMBO_ASH.get(), LimboAshParticle.Factory::new);
+    }
 }

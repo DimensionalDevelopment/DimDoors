@@ -13,23 +13,23 @@ import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 
 public class AttackBlockCallbackListener implements InteractionEvent.LeftClickBlock {
-	@Override
-	public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction direction) {
-		var world = player.level();
+    @Override
+    public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction direction) {
+    var world = player.level();
 
-		if (!world.isClientSide) return EventResult.pass();
-		Item item = player.getItemInHand(hand).getItem();
-		if (!(item instanceof ExtendedItem)) {
-			return EventResult.pass();
-		}
+    if (!world.isClientSide) return EventResult.pass();
+    Item item = player.getItemInHand(hand).getItem();
+    if (!(item instanceof ExtendedItem)) {
+        return EventResult.pass();
+    }
 
-		CompoundEventResult<Boolean> result = ((ExtendedItem) item).onAttackBlock(world, player, hand, pos, direction);
-		if (result.object()) {
-			if (!ClientPacketListener.tryToSendPacket(new HitBlockWithItemC2SPacket(hand, pos, direction))) {
-				return EventResult.interruptFalse();
-			}
-		}
+    CompoundEventResult<Boolean> result = ((ExtendedItem) item).onAttackBlock(world, player, hand, pos, direction);
+    if (result.object()) {
+        if (!ClientPacketListener.tryToSendPacket(new HitBlockWithItemC2SPacket(hand, pos, direction))) {
+        return EventResult.interruptFalse();
+        }
+    }
 
-		return result.result();
-	}
+    return result.result();
+    }
 }

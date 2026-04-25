@@ -12,42 +12,42 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public interface Condition {
-	Registrar<ConditionType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ConditionType<?>>builder(DimensionalDoors.id("rift_data_condition")).build();
+    Registrar<ConditionType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<ConditionType<?>>builder(DimensionalDoors.id("rift_data_condition")).build();
 
-	boolean matches(EntranceRiftBlockEntity rift);
+    boolean matches(EntranceRiftBlockEntity rift);
 
-	default JsonObject toJson(JsonObject json) {
-		json.addProperty("type", getType().getId());
-		this.toJsonInner(json);
-		return json;
-	}
+    default JsonObject toJson(JsonObject json) {
+    json.addProperty("type", getType().getId());
+    this.toJsonInner(json);
+    return json;
+    }
 
-	void toJsonInner(JsonObject json);
+    void toJsonInner(JsonObject json);
 
-	ConditionType<?> getType();
+    ConditionType<?> getType();
 
-	static Condition fromJson(JsonObject json) {
-		ResourceLocation type = ResourceLocation.tryParse(json.getAsJsonPrimitive("type").getAsString());
-		return Objects.requireNonNull(REGISTRY.get(type)).fromJson(json);
-	}
+    static Condition fromJson(JsonObject json) {
+    ResourceLocation type = ResourceLocation.tryParse(json.getAsJsonPrimitive("type").getAsString());
+    return Objects.requireNonNull(REGISTRY.get(type)).fromJson(json);
+    }
 
-	interface ConditionType<T extends Condition> {
-		RegistrySupplier<ConditionType<?>> ALWAYS_TRUE = register("always_true", j -> AlwaysTrueCondition.INSTANCE);
-		RegistrySupplier<ConditionType<?>> ALL = register("all", AllCondition::fromJson);
-		RegistrySupplier<ConditionType<?>> ANY = register("any", AnyCondition::fromJson);
-		RegistrySupplier<ConditionType<?>> INVERSE = register("inverse", InverseCondition::fromJson);
-		RegistrySupplier<ConditionType<?>> WORLD_MATCH = register("world_match", WorldMatchCondition::fromJson);
+    interface ConditionType<T extends Condition> {
+    RegistrySupplier<ConditionType<?>> ALWAYS_TRUE = register("always_true", j -> AlwaysTrueCondition.INSTANCE);
+    RegistrySupplier<ConditionType<?>> ALL = register("all", AllCondition::fromJson);
+    RegistrySupplier<ConditionType<?>> ANY = register("any", AnyCondition::fromJson);
+    RegistrySupplier<ConditionType<?>> INVERSE = register("inverse", InverseCondition::fromJson);
+    RegistrySupplier<ConditionType<?>> WORLD_MATCH = register("world_match", WorldMatchCondition::fromJson);
 
-		T fromJson(JsonObject json);
+    T fromJson(JsonObject json);
 
-		default String getId() {
-			return String.valueOf(REGISTRY.getId(this));
-		}
+    default String getId() {
+        return String.valueOf(REGISTRY.getId(this));
+    }
 
-		static void register() {}
+    static void register() {}
 
-		static <T extends Condition> RegistrySupplier<ConditionType<?>> register(String name, Function<JsonObject, T> fromJson) {
-			return REGISTRY.register(DimensionalDoors.id(name), () -> fromJson::apply);
-		}
-	}
+    static <T extends Condition> RegistrySupplier<ConditionType<?>> register(String name, Function<JsonObject, T> fromJson) {
+        return REGISTRY.register(DimensionalDoors.id(name), () -> fromJson::apply);
+    }
+    }
 }

@@ -6,29 +6,29 @@ import net.minecraft.core.Vec3i;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class RelativeReference extends RiftReference {
-	public static final MapCodec<RelativeReference> CODEC = Vec3i.CODEC.xmap(RelativeReference::new, RelativeReference::getOffset).fieldOf("offset");
-	private final Vec3i offset;
+    public static final MapCodec<RelativeReference> CODEC = Vec3i.CODEC.xmap(RelativeReference::new, RelativeReference::getOffset).fieldOf("offset");
+    private final Vec3i offset;
 
-	public RelativeReference(Vec3i offset) {
-		this.offset = offset;
-	}
+    public RelativeReference(Vec3i offset) {
+    this.offset = offset;
+    }
 
-	@Override
-	public Location getReferencedLocation() {
-		return new Location(this.location.world, this.location.pos.offset(this.offset));
-	}
+    @Override
+    public Location getReferencedLocation() {
+    return new Location(this.location.world, this.location.pos.offset(this.offset));
+    }
 
-	public Vec3i getOffset() {
-		return this.offset;
-	}
+    public Vec3i getOffset() {
+    return this.offset;
+    }
 
-	@Override
-	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.RELATIVE.get();
-	}
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+    return VirtualTargetType.RELATIVE.get();
+    }
 
-	@Override
-	public VirtualTarget copy() {
-		return new RelativeReference(offset);
-	}
+    @Override
+    public VirtualTarget copy() {
+    return new RelativeReference(offset);
+    }
 }

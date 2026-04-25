@@ -28,68 +28,68 @@ import java.util.List;
 import java.util.Map;
 
 public class SchematicGenerator extends PocketGenerator {
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static final String KEY = "schematic";
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static final String KEY = "schematic";
 
-	private String id;
-	private ResourceLocation templateID;
-	private BlockPlacementType placementType = BlockPlacementType.SECTION_NO_UPDATE;
+    private String id;
+    private ResourceLocation templateID;
+    private BlockPlacementType placementType = BlockPlacementType.SECTION_NO_UPDATE;
 
-//	private final List<RiftBlockEntity> rifts = new ArrayList<>();
-	private BlockPos origin;
+//    private final List<RiftBlockEntity> rifts = new ArrayList<>();
+    private BlockPos origin;
 
     public SchematicGenerator() {
-	}
+    }
 
-	public SchematicGenerator(String id) {
-		this.id = id;
+    public SchematicGenerator(String id) {
+    this.id = id;
 
-		this.templateID = DimensionalDoors.id(id);
-	}
+    this.templateID = DimensionalDoors.id(id);
+    }
 
-	public String getId() {
-		return this.id;
-	}
+    public String getId() {
+    return this.id;
+    }
 
-	public ResourceLocation getTemplateID() {
-		return templateID;
-	}
+    public ResourceLocation getTemplateID() {
+    return templateID;
+    }
 
-	@Override
-	public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		super.fromNbt(nbt, provider, manager);
+    @Override
+    public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+    super.fromNbt(nbt, provider, manager);
 
-		this.id = nbt.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
-		this.templateID = DimensionalDoors.id(id);
-		if (nbt.contains("origin", Tag.TAG_INT_ARRAY)) {
-			int[] originInts = nbt.getIntArray("origin");
-			this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
-		}
-		if (nbt.contains("placement_type", Tag.TAG_STRING)) placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
+    this.id = nbt.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
+    this.templateID = DimensionalDoors.id(id);
+    if (nbt.contains("origin", Tag.TAG_INT_ARRAY)) {
+        int[] originInts = nbt.getIntArray("origin");
+        this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
+    }
+    if (nbt.contains("placement_type", Tag.TAG_STRING)) placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
 
-		return this;
-	}
+    return this;
+    }
 
-	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		super.toNbtInternal(nbt, provider, allowReference);
+    @Override
+    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+    super.toNbtInternal(nbt, provider, allowReference);
 
-		nbt.putString("id", this.id);
-		if (placementType != BlockPlacementType.SECTION_NO_UPDATE) nbt.putString("placement_type", placementType.getId());
+    nbt.putString("id", this.id);
+    if (placementType != BlockPlacementType.SECTION_NO_UPDATE) nbt.putString("placement_type", placementType.getId());
 
-		if (origin != null) nbt.putIntArray("origin", new int[]{origin.getX(), origin.getY(), origin.getZ()});
+    if (origin != null) nbt.putIntArray("origin", new int[]{origin.getX(), origin.getY(), origin.getZ()});
 
-		return nbt;
-	}
+    return nbt;
+    }
 
-//	@Override
-//	public RiftManager getRiftManager(Pocket pocket) {
-//		RiftManager manager = super.getRiftManager(pocket);
+//    @Override
+//    public RiftManager getRiftManager(Pocket pocket) {
+//    RiftManager manager = super.getRiftManager(pocket);
 //
-//		rifts.forEach(manager::add);
+//    rifts.forEach(manager::add);
 //
-//		return manager;
-//	}
+//    return manager;
+//    }
 
     @Override
     public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
@@ -120,21 +120,21 @@ public class SchematicGenerator extends PocketGenerator {
         return pocket;
     }
 
-	@Override
-	public PocketGeneratorType<? extends PocketGenerator> getType() {
-		return PocketGeneratorType.SCHEMATIC.get();
-	}
+    @Override
+    public PocketGeneratorType<? extends PocketGenerator> getType() {
+    return PocketGeneratorType.SCHEMATIC.get();
+    }
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
+    @Override
+    public String getKey() {
+    return KEY;
+    }
 
-	@Override
-	public Vec3i getSize(PocketGenerationContext parameters) {
-		PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
-		if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
-		Schematic schem = template.getSchematic();
-		return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());
-	}
+    @Override
+    public Vec3i getSize(PocketGenerationContext parameters) {
+    PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
+    if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
+    Schematic schem = template.getSchematic();
+    return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());
+    }
 }

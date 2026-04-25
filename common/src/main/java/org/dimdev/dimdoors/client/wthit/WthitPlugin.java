@@ -10,12 +10,12 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 
 // FIXME: is not actually client sided
 public class WthitPlugin implements IWailaPlugin {
-	@Override
-	public void register(IRegistrar registrar) {
+    @Override
+    public void register(IRegistrar registrar) {
         registrar.addConfig(EntranceRiftProvider.ID, true);
         registrar.addConfig(DetachedRiftProvider.ID, true);
-		registrar.addComponent(EntranceRiftProvider.INSTANCE, TooltipPosition.BODY, RiftBlockEntity.class);
-//		registrar.addComponent(DetachedRiftProvider.INSTANCE, TooltipPosition.BODY, DetachedRiftBlockEntity.class);
+    registrar.addComponent(EntranceRiftProvider.INSTANCE, TooltipPosition.BODY, RiftBlockEntity.class);
+//    registrar.addComponent(DetachedRiftProvider.INSTANCE, TooltipPosition.BODY, DetachedRiftBlockEntity.class);
 
-	}
+    }
 }

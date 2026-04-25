@@ -26,9 +26,9 @@ public class EnvironmentAddon implements PocketAddon {
     }
 
     @Override
-	public PocketAddonType<?, ?> getType() {
-		return PocketAddonType.ENVIRONMENT_ADDON.get();
-	}
+    public PocketAddonType<?, ?> getType() {
+    return PocketAddonType.ENVIRONMENT_ADDON.get();
+    }
 
     public SkyData getSky() {
         return environment.getSky();
@@ -51,16 +51,16 @@ public class EnvironmentAddon implements PocketAddon {
             this.environment = environment;
         }
 
-		@Override
-		public void apply(Pocket pocket) {
-			EnvironmentAddon addon = new EnvironmentAddon(environment);
-			pocket.addAddon(addon);
-		}
+    @Override
+    public void apply(Pocket pocket) {
+        EnvironmentAddon addon = new EnvironmentAddon(environment);
+        pocket.addAddon(addon);
+    }
 
-		@Override
-		public PocketAddonType<EnvironmentAddon, EnvironmentBuilderAddon> getType() {
-			return PocketAddonType.ENVIRONMENT_ADDON.get();
-		}
-	}
+    @Override
+    public PocketAddonType<EnvironmentAddon, EnvironmentBuilderAddon> getType() {
+        return PocketAddonType.ENVIRONMENT_ADDON.get();
+    }
+    }
 
 }

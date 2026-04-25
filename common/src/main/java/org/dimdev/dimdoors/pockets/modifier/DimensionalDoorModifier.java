@@ -32,103 +32,103 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DimensionalDoorModifier extends AbstractModifier {
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static final String KEY = "door";
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static final String KEY = "door";
 
-	private Direction facing;
-	private String doorTypeString;
-	private DimensionalDoorBlock doorType;
-	private CompoundTag doorData;
-	private String doorDataReference;
+    private Direction facing;
+    private String doorTypeString;
+    private DimensionalDoorBlock doorType;
+    private CompoundTag doorData;
+    private String doorDataReference;
 
-	private String x;
-	private String y;
-	private String z;
-	private Equation xEquation;
-	private Equation yEquation;
-	private Equation zEquation;
+    private String x;
+    private String y;
+    private String z;
+    private Equation xEquation;
+    private Equation yEquation;
+    private Equation zEquation;
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		String facingString = nbt.getString("facing");
-		facing = Direction.byName(nbt.getString("facing"));
-		if (facing == null || facing.getAxis().isVertical()) {
-			throw new RuntimeException("Could not interpret facing direction \"" + facingString + "\"");
-		}
+    @Override
+    public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+    String facingString = nbt.getString("facing");
+    facing = Direction.byName(nbt.getString("facing"));
+    if (facing == null || facing.getAxis().isVertical()) {
+        throw new RuntimeException("Could not interpret facing direction \"" + facingString + "\"");
+    }
 
-		doorTypeString = nbt.getString("door_type");
-		Block doorBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(doorTypeString));
-		if (!(doorBlock instanceof DimensionalDoorBlock)) {
-			throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
-		}
-		doorType = (DimensionalDoorBlock) doorBlock;
+    doorTypeString = nbt.getString("door_type");
+    Block doorBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.tryParse(doorTypeString));
+    if (!(doorBlock instanceof DimensionalDoorBlock)) {
+        throw new RuntimeException("Could not interpret door type \"" + doorTypeString + "\"");
+    }
+    doorType = (DimensionalDoorBlock) doorBlock;
 
-		// TODO: rift data via ResourceManager
-		if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
-			doorDataReference = nbt.getString("rift_data");
-			doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
-		}
+    // TODO: rift data via ResourceManager
+    if (nbt.getTagType("rift_data") == Tag.TAG_STRING) {
+        doorDataReference = nbt.getString("rift_data");
+        doorData = PocketLoader.getInstance().getDataNbtCompound(doorDataReference);
+    }
 
-		else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
+    else if (nbt.getTagType("rift_data") == Tag.TAG_COMPOUND) doorData = nbt.getCompound("rift_data");
 
-		try {
-			x = nbt.getString("x");
-			y = nbt.getString("y");
-			z = nbt.getString("z");
+    try {
+        x = nbt.getString("x");
+        y = nbt.getString("y");
+        z = nbt.getString("z");
 
-			xEquation = Equation.parse(x);
-			yEquation = Equation.parse(y);
-			zEquation = Equation.parse(z);
-		} catch (EquationParseException e) {
-			LOGGER.error(e);
-		}
-		return this;
-	}
+        xEquation = Equation.parse(x);
+        yEquation = Equation.parse(y);
+        zEquation = Equation.parse(z);
+    } catch (EquationParseException e) {
+        LOGGER.error(e);
+    }
+    return this;
+    }
 
-	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		super.toNbtInternal(nbt, provider, allowReference);
+    @Override
+    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+    super.toNbtInternal(nbt, provider, allowReference);
 
-		nbt.putString("facing", facing.getSerializedName());
-		nbt.putString("door_type", doorTypeString);
-		if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
-		else if (doorData != null) nbt.put("rift_data", doorData);
-		nbt.putString("x", x);
-		nbt.putString("y", y);
-		nbt.putString("z", z);
+    nbt.putString("facing", facing.getSerializedName());
+    nbt.putString("door_type", doorTypeString);
+    if (doorDataReference != null) nbt.putString("rift_data", doorDataReference);
+    else if (doorData != null) nbt.put("rift_data", doorData);
+    nbt.putString("x", x);
+    nbt.putString("y", y);
+    nbt.putString("z", z);
 
-		return nbt;
-	}
+    return nbt;
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("facing", facing)
-				.add("doorTypeString", doorTypeString)
-				.add("doorType", doorType)
-				.add("doorData", doorData)
-				.add("doorDataReference", doorDataReference)
-				.add("x", x)
-				.add("y", y)
-				.add("z", z)
-				.add("xEquation", xEquation)
-				.add("yEquation", yEquation)
-				.add("zEquation", zEquation)
-				.toString();
-	}
+    @Override
+    public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("facing", facing)
+        .add("doorTypeString", doorTypeString)
+        .add("doorType", doorType)
+        .add("doorData", doorData)
+        .add("doorDataReference", doorDataReference)
+        .add("x", x)
+        .add("y", y)
+        .add("z", z)
+        .add("xEquation", xEquation)
+        .add("yEquation", yEquation)
+        .add("zEquation", zEquation)
+        .toString();
+    }
 
-	@Override
-	public ModifierType<? extends Modifier> getType() {
-		return ModifierType.DIMENSIONAL_DOOR_MODIFIER_TYPE.get();
-	}
+    @Override
+    public ModifierType<? extends Modifier> getType() {
+    return ModifierType.DIMENSIONAL_DOOR_MODIFIER_TYPE.get();
+    }
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
+    @Override
+    public String getKey() {
+    return KEY;
+    }
 
-	@Override
-	public void apply(PocketGenerationContext parameters, RiftManager manager) {
+    @Override
+    public void apply(PocketGenerationContext parameters, RiftManager manager) {
         Map<String, Double> variableMap = manager.getPocket().toVariableMap(new HashMap<>());
         BlockPos pocketOrigin = manager.getPocket().getOrigin();
         BlockPos pos = new BlockPos((int) (xEquation.apply(variableMap) + pocketOrigin.getX()), (int) (yEquation.apply(variableMap) + pocketOrigin.getY()), (int) (zEquation.apply(variableMap) + pocketOrigin.getZ()));
@@ -153,10 +153,10 @@ public class DimensionalDoorModifier extends AbstractModifier {
         world.setBlockAndUpdate(pos.above(), upper);
 
         world.setBlockEntity(rift);
-	}
+    }
 
-	@Override
-	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+    @Override
+    public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 
-	}
+    }
 }

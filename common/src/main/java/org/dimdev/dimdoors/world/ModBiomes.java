@@ -25,9 +25,9 @@ public final class ModBiomes {
     public static void init() {
     }
 
-	private static ResourceKey<Biome> register(String name) {
-		return ResourceKey.create(Registries.BIOME, id(name));
-	}
+    private static ResourceKey<Biome> register(String name) {
+    return ResourceKey.create(Registries.BIOME, id(name));
+    }
 
     public static void bootstrap(BootstrapContext<Biome> entries) {
         entries.register(LIMBO_KEY, new Biome.BiomeBuilder()

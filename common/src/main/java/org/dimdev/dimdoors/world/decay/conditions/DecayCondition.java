@@ -28,7 +28,7 @@ public interface DecayCondition {
         public boolean test(Decay.DecayContext context) {
             return false;
         }
-	};
+    };
 
 
 

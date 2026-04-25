@@ -15,19 +15,19 @@ import org.dimdev.dimdoors.item.ModItems;
 import java.util.Map;
 
 public class ColoredFabricRecipeProvider {
-	public static void generate(RecipeOutput exporter) {
-		for (Map.Entry<DyeColor, RegistrySupplier<Block>> entry : ModBlocks.FABRIC_BLOCKS.entrySet()) {
-			DyeColor dyeColor = entry.getKey();
-			Block block = entry.getValue().get();
-			ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
-					.group("colored_fabric")
-					.unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
-					.pattern(" X ")
-					.pattern("XDX")
-					.pattern(" X ")
-					.define('X', ModItems.WORLD_THREAD.get())
-					.define('D', DyeItem.byColor(dyeColor))
-					.save(exporter, DimensionalDoors.id(dyeColor.getName() + "_fabric"));
-		}
-	}
+    public static void generate(RecipeOutput exporter) {
+        for (Map.Entry<DyeColor, RegistrySupplier<Block>> entry : ModBlocks.FABRIC_BLOCKS.entrySet()) {
+            DyeColor dyeColor = entry.getKey();
+            Block block = entry.getValue().get();
+            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block)
+                    .group("colored_fabric")
+                    .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
+                    .pattern(" X ")
+                    .pattern("XDX")
+                    .pattern(" X ")
+                    .define('X', ModItems.WORLD_THREAD.get())
+                    .define('D', DyeItem.byColor(dyeColor))
+                    .save(exporter, DimensionalDoors.id(dyeColor.getName() + "_fabric"));
+        }
+    }
 }

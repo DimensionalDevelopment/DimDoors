@@ -12,12 +12,12 @@ import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 public interface RiftProvider<T extends RiftBlockEntity> extends EntityBlock, RiftVariantProvider, PerservesBlockEntity {
-	T getRift(Level world, BlockPos pos, BlockState state);
+    T getRift(Level world, BlockPos pos, BlockState state);
 
     @Environment(EnvType.CLIENT)
-	default boolean isTall(BlockState cachedState) {
-		return false;
-	}
+    default boolean isTall(BlockState cachedState) {
+    return false;
+    }
 
     default boolean stateContainsRift(BlockState oldState) {
         return true;

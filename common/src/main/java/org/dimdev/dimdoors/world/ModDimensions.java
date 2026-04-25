@@ -47,7 +47,7 @@ public final class ModDimensions {
     }
 
     public static boolean isPrivatePocketDimension(Level world) {
-		return world != null && world == PERSONAL_POCKET_DIMENSION;
+    return world != null && world == PERSONAL_POCKET_DIMENSION;
     }
 
     public static boolean isPocketDimension(ResourceKey<Level> type) {

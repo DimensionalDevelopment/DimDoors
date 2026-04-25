@@ -40,99 +40,99 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public abstract class RiftBlockEntity extends BlockEntity implements Target, EntityTarget {
-	private static final int UPDATE_PERIOD = 200; //10 seconds
-	private static final RandomSource random = RandomSource.create();
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static long showRiftCoreUntil = 0;
+    private static final int UPDATE_PERIOD = 200; //10 seconds
+    private static final RandomSource random = RandomSource.create();
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static long showRiftCoreUntil = 0;
 
-	@NotNull
-	protected RiftData data = new RiftData();
+    @NotNull
+    protected RiftData data = new RiftData();
 
-	public float size = 0f;
-	private int updateTimer;
-	public boolean closing;
-	public boolean stabilized;
+    public float size = 0f;
+    private int updateTimer;
+    public boolean closing;
+    public boolean stabilized;
 
-	protected boolean riftStateChanged;
+    protected boolean riftStateChanged;
 
-	public RiftBlockEntity(BlockEntityType<? extends RiftBlockEntity> type, BlockPos pos, BlockState state) {
-		super(type, pos, state);
-		this.updateTimer = random.nextInt(UPDATE_PERIOD);
-	}
+    public RiftBlockEntity(BlockEntityType<? extends RiftBlockEntity> type, BlockPos pos, BlockState state) {
+    super(type, pos, state);
+    this.updateTimer = random.nextInt(UPDATE_PERIOD);
+    }
 
     @Override
-	protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-		super.loadAdditional(nbt, provider);
-		this.deserialize(nbt);
-	}
+    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
+    super.loadAdditional(nbt, provider);
+    this.deserialize(nbt);
+    }
 
-	public void deserialize(CompoundTag nbt) {
-		this.data = RiftData.fromNbt(nbt.getCompound("data"));
-		this.closing = nbt.getBoolean("closing");
-		this.stabilized = nbt.getBoolean("stablized");
-		this.size = nbt.getFloat("size");
-		this.updateTimer = nbt.getInt("updateTimer");
-	}
+    public void deserialize(CompoundTag nbt) {
+    this.data = RiftData.fromNbt(nbt.getCompound("data"));
+    this.closing = nbt.getBoolean("closing");
+    this.stabilized = nbt.getBoolean("stablized");
+    this.size = nbt.getFloat("size");
+    this.updateTimer = nbt.getInt("updateTimer");
+    }
 
-	@Override
-	public void saveAdditional(CompoundTag nbt,  HolderLookup.Provider provider) {
-		super.saveAdditional(nbt, provider);
-		this.serialize(nbt);
-	}
+    @Override
+    public void saveAdditional(CompoundTag nbt,  HolderLookup.Provider provider) {
+    super.saveAdditional(nbt, provider);
+    this.serialize(nbt);
+    }
 
-	public CompoundTag serialize(CompoundTag nbt) {
-		nbt.put("data", RiftData.toNbt(this.data));
-		nbt.putBoolean("closing", this.closing);
-		nbt.putBoolean("stablized", this.stabilized);
-		nbt.putFloat("size", this.size);
-		nbt.putInt("updateTimer", this.updateTimer);
-		return nbt;
-	}
+    public CompoundTag serialize(CompoundTag nbt) {
+    nbt.put("data", RiftData.toNbt(this.data));
+    nbt.putBoolean("closing", this.closing);
+    nbt.putBoolean("stablized", this.stabilized);
+    nbt.putFloat("size", this.size);
+    nbt.putInt("updateTimer", this.updateTimer);
+    return nbt;
+    }
 
-	@Override
-	public Packet<ClientGamePacketListener> getUpdatePacket() {
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+    return ClientboundBlockEntityDataPacket.create(this);
+    }
 
-	public void setDestination(VirtualTarget destination) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Setting destination {} for {}", destination, this.worldPosition.toShortString());
-		}
+    public void setDestination(VirtualTarget destination) {
+    if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Setting destination {} for {}", destination, this.worldPosition.toShortString());
+    }
 
-		if (this.getDestination() != null && this.isRegistered()) {
-			this.getDestination().unregister();
-		}
-		this.data.setDestination(destination);
-		if (destination != null) {
-			if (this.level != null && this.worldPosition != null) {
-				destination.setLocation(new Location((ServerLevel) this.level, this.worldPosition));
-			}
-			if (this.isRegistered()) destination.register();
-		}
-		this.riftStateChanged = true;
-		this.setChanged();
-		this.updateColor();
-	}
+    if (this.getDestination() != null && this.isRegistered()) {
+        this.getDestination().unregister();
+    }
+    this.data.setDestination(destination);
+    if (destination != null) {
+        if (this.level != null && this.worldPosition != null) {
+        destination.setLocation(new Location((ServerLevel) this.level, this.worldPosition));
+        }
+        if (this.isRegistered()) destination.register();
+    }
+    this.riftStateChanged = true;
+    this.setChanged();
+    this.updateColor();
+    }
 
-	public void setColor(RGBA color) {
-		this.data.setColor(color);
-		this.setChanged();
-	}
+    public void setColor(RGBA color) {
+    this.data.setColor(color);
+    this.setChanged();
+    }
 
-	public void setProperties(LinkProperties properties) {
-		this.data.setProperties(properties);
-		this.updateProperties();
-		this.setChanged();
-	}
+    public void setProperties(LinkProperties properties) {
+    this.data.setProperties(properties);
+    this.updateProperties();
+    this.setChanged();
+    }
 
-	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
 
 
-//		for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) { TODO: Multiplat this.
-//			ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
-//		}
-		var nbt = super.getUpdateTag(provider);
+//    for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) { TODO: Multiplat this.
+//        ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
+//    }
+    var nbt = super.getUpdateTag(provider);
 
         nbt.put("data", RiftData.toNbt(this.data));
         nbt.putBoolean("closing", this.closing);
@@ -140,231 +140,231 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
         nbt.putFloat("size", this.size);
 
         return nbt;
-	}
+    }
 
-	public void markStateChanged() {
-		this.riftStateChanged = true;
-		this.setChanged();
-	}
+    public void markStateChanged() {
+    this.riftStateChanged = true;
+    this.setChanged();
+    }
 
-	public boolean isRegistered() { // TODO: do we need to implement this for v2?
-		return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.level != null && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerLevel) this.level, this.worldPosition));
-	}
+    public boolean isRegistered() { // TODO: do we need to implement this for v2?
+    return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.level != null && DimensionalRegistry.getRiftRegistry().isRiftAt(new Location((ServerLevel) this.level, this.worldPosition));
+    }
 
-	public void register() {
-		if (this.isRegistered()) {
-			return;
-		}
+    public void register() {
+    if (this.isRegistered()) {
+        return;
+    }
 
-		Location loc = new Location((ServerLevel) this.level, this.worldPosition);
-		DimensionalRegistry.getRiftRegistry().addRift(loc);
-		if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) this.data.getDestination().register();
-		this.updateProperties();
-		this.updateColor();
-	}
+    Location loc = new Location((ServerLevel) this.level, this.worldPosition);
+    DimensionalRegistry.getRiftRegistry().addRift(loc);
+    if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) this.data.getDestination().register();
+    this.updateProperties();
+    this.updateColor();
+    }
 
-	public void updateProperties() {
-		if (this.isRegistered())
-			DimensionalRegistry.getRiftRegistry().setProperties(new Location((ServerLevel) this.level, this.worldPosition), this.data.getProperties());
-		this.setChanged();
-	}
+    public void updateProperties() {
+    if (this.isRegistered())
+        DimensionalRegistry.getRiftRegistry().setProperties(new Location((ServerLevel) this.level, this.worldPosition), this.data.getProperties());
+    this.setChanged();
+    }
 
-	public void unregister() {
-		if (this.isRegistered()) {
-			DimensionalRegistry.getRiftRegistry().removeRift(new Location((ServerLevel) this.level, this.worldPosition));
-		}
-	}
+    public void unregister() {
+    if (this.isRegistered()) {
+        DimensionalRegistry.getRiftRegistry().removeRift(new Location((ServerLevel) this.level, this.worldPosition));
+    }
+    }
 
-	public void updateType() {
-		if (!this.isRegistered()) return;
-		Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location((ServerLevel) this.level, this.worldPosition));
-		rift.setDetached(this.isDetached());
-		rift.markDirty();
-	}
+    public void updateType() {
+    if (!this.isRegistered()) return;
+    Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location((ServerLevel) this.level, this.worldPosition));
+    rift.setDetached(this.isDetached());
+    rift.markDirty();
+    }
 
-	public void handleTargetGone(Location location) {
-		if (this.data.getDestination().shouldInvalidate(location)) {
-			this.data.setDestination(VirtualTarget.NoneTarget.INSTANCE);
-			this.setChanged();
-		}
+    public void handleTargetGone(Location location) {
+    if (this.data.getDestination().shouldInvalidate(location)) {
+        this.data.setDestination(VirtualTarget.NoneTarget.INSTANCE);
+        this.setChanged();
+    }
 
-		this.updateColor();
-	}
+    this.updateColor();
+    }
 
-	public void handleSourceGone(Location location) {
-		this.updateColor();
-	}
+    public void handleSourceGone(Location location) {
+    this.updateColor();
+    }
 
-	public Target getTarget() {
-		if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
-			return new MessageTarget("rifts.unlinked1");
-		} else {
-			//noinspecti on ConstantConditions
-			this.data.getDestination().setLocation(new Location((ServerLevel) this.level, this.worldPosition));
-			return this.data.getDestination();
-		}
-	}
+    public Target getTarget() {
+    if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
+        return new MessageTarget("rifts.unlinked1");
+    } else {
+        //noinspecti on ConstantConditions
+        this.data.getDestination().setLocation(new Location((ServerLevel) this.level, this.worldPosition));
+        return this.data.getDestination();
+    }
+    }
 
-	public boolean teleport(Entity entity) {
-		this.riftStateChanged = false;
+    public boolean teleport(Entity entity) {
+    this.riftStateChanged = false;
 
-		// Attempt a teleport
-		try {
-			Vec3 relativePos = new Vec3(0, 0, 0);
-			Rotations relativeAngle = new Rotations(entity.getXRot(), entity.getYRot(), 0);
-			Vec3 relativeVelocity = entity.getDeltaMovement();
+    // Attempt a teleport
+    try {
+        Vec3 relativePos = new Vec3(0, 0, 0);
+        Rotations relativeAngle = new Rotations(entity.getXRot(), entity.getYRot(), 0);
+        Vec3 relativeVelocity = entity.getDeltaMovement();
 
-			var location = this.getTarget() instanceof LocationProvider provider ? provider.getLocation() : null;
+        var location = this.getTarget() instanceof LocationProvider provider ? provider.getLocation() : null;
 
-			EntityTarget target = this.getTarget().as(Targets.ENTITY);
+        EntityTarget target = this.getTarget().as(Targets.ENTITY);
 
-			BlockState state = this.getLevel().getBlockState(this.getBlockPos());
-			Block block = state.getBlock();
-			if (block instanceof CoordinateTransformerBlock transformer) {
-				TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getBlockPos());
-				TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getBlockPos());
-				relativePos = transformer.transformTo(transformationBuilder, entity.position());
-				relativeAngle = transformer.rotateTo(rotatorBuilder, relativeAngle);
-				relativeVelocity = transformer.rotateTo(rotatorBuilder, relativeVelocity);
-			}
+        BlockState state = this.getLevel().getBlockState(this.getBlockPos());
+        Block block = state.getBlock();
+        if (block instanceof CoordinateTransformerBlock transformer) {
+        TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getBlockPos());
+        TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getBlockPos());
+        relativePos = transformer.transformTo(transformationBuilder, entity.position());
+        relativeAngle = transformer.rotateTo(rotatorBuilder, relativeAngle);
+        relativeVelocity = transformer.rotateTo(rotatorBuilder, relativeVelocity);
+        }
 
-		if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
-				VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level(), entity.blockPosition()));
-				if(DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages) EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
-				return true;
-			}
-		} catch (Exception e) {
-			EntityUtils.chat(entity, Component.literal("Something went wrong while trying to teleport you, please report this bug."));
-			LOGGER.error("Teleporting failed with the following exception: ", e);
-		}
+    if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
+        VirtualLocation vLoc = VirtualLocation.fromLocation(new Location((ServerLevel) entity.level(), entity.blockPosition()));
+        if(DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages) EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
+        return true;
+        }
+    } catch (Exception e) {
+        EntityUtils.chat(entity, Component.literal("Something went wrong while trying to teleport you, please report this bug."));
+        LOGGER.error("Teleporting failed with the following exception: ", e);
+    }
 
-		return false;
-	}
+    return false;
+    }
 
-	public void updateColor() {
-		if (this.data.isForcedColor()) return;
-		if (!this.isRegistered()) {
-			this.data.setColor(new RGBA(0, 0, 0, 1));
-		} else if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
-			this.data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
-		} else {
-			this.data.getDestination().setLocation(new Location((ServerLevel) this.level, this.worldPosition));
-			RGBA newColor = this.data.getDestination().getColor();
-			if (this.data.getColor() == null && newColor != null || !Objects.equals(this.data.getColor(), newColor)) {
-				this.data.setColor(newColor);
-				this.setChanged();
-			}
-		}
-	}
+    public void updateColor() {
+    if (this.data.isForcedColor()) return;
+    if (!this.isRegistered()) {
+        this.data.setColor(new RGBA(0, 0, 0, 1));
+    } else if (this.data.getDestination() == VirtualTarget.NoneTarget.INSTANCE) {
+        this.data.setColor(new RGBA(0.7f, 0.7f, 0.7f, 1));
+    } else {
+        this.data.getDestination().setLocation(new Location((ServerLevel) this.level, this.worldPosition));
+        RGBA newColor = this.data.getDestination().getColor();
+        if (this.data.getColor() == null && newColor != null || !Objects.equals(this.data.getColor(), newColor)) {
+        this.data.setColor(newColor);
+        this.setChanged();
+        }
+    }
+    }
 
-	public abstract boolean isDetached();
+    public abstract boolean isDetached();
 
-	public abstract void setLocked(boolean locked);
+    public abstract void setLocked(boolean locked);
 
-	public abstract boolean isLocked();
+    public abstract boolean isLocked();
 
-	public void copyFrom(RiftBlockEntity rift) {
-		this.data.setDestination(rift.data.getDestination());
-		this.data.setProperties(rift.data.getProperties());
-		this.data.setAlwaysDelete(rift.data.isAlwaysDelete());
-		this.data.setForcedColor(rift.data.isForcedColor());
+    public void copyFrom(RiftBlockEntity rift) {
+    this.data.setDestination(rift.data.getDestination());
+    this.data.setProperties(rift.data.getProperties());
+    this.data.setAlwaysDelete(rift.data.isAlwaysDelete());
+    this.data.setForcedColor(rift.data.isForcedColor());
         this.stabilized = rift.stabilized;
 
         if(this.closing) {
             this.closing = rift.closing;
             this.size = rift.size;
         }
-	}
+    }
 
-	public VirtualTarget getDestination() {
-		return this.data.getDestination();
-	}
+    public VirtualTarget getDestination() {
+    return this.data.getDestination();
+    }
 
-	public LinkProperties getProperties() {
-		return this.data.getProperties();
-	}
+    public LinkProperties getProperties() {
+    return this.data.getProperties();
+    }
 
-	public boolean isAlwaysDelete() {
-		return this.data.isAlwaysDelete();
-	}
+    public boolean isAlwaysDelete() {
+    return this.data.isAlwaysDelete();
+    }
 
-	public boolean isForcedColor() {
-		return this.data.isForcedColor();
-	}
+    public boolean isForcedColor() {
+    return this.data.isForcedColor();
+    }
 
-	public RGBA getColor() {
-		return this.data.getColor();
-	}
+    public RGBA getColor() {
+    return this.data.getColor();
+    }
 
-	public void setData(RiftData data) {
-		this.data = data;
-	}
+    public void setData(RiftData data) {
+    this.data = data;
+    }
 
-	public RiftData getData() {
-		return this.data;
-	}
+    public RiftData getData() {
+    return this.data;
+    }
 
-	public void setWorld(Level level) {
-		this.level = level;
-	}
+    public void setWorld(Level level) {
+    this.level = level;
+    }
 
-	public Rift asRift() {
-		return DimensionalRegistry.getRiftRegistry().getRift(new Location(this.level.dimension(), this.worldPosition));
-	}
+    public Rift asRift() {
+    return DimensionalRegistry.getRiftRegistry().getRift(new Location(this.level.dimension(), this.worldPosition));
+    }
 
-	public void tick(Level level, BlockPos pos, BlockState blockState) {
-		if(level.isClientSide) return;
+    public void tick(Level level, BlockPos pos, BlockState blockState) {
+    if(level.isClientSide) return;
 
-//		if(!blockClass().isInstance(level.getBlockState(pos).getBlock())) {
-//			setRemoved();
-//			return;
-//		}
+//    if(!blockClass().isInstance(level.getBlockState(pos).getBlock())) {
+//        setRemoved();
+//        return;
+//    }
 
-		if(updateTimer >= UPDATE_PERIOD) {
-			onUpdate(level, pos);
-			updateTimer = 0;
-		}
+    if(updateTimer >= UPDATE_PERIOD) {
+        onUpdate(level, pos);
+        updateTimer = 0;
+    }
 
-		updateTimer++;
+    updateTimer++;
 
-		if(closing) {
-			if(size > 0) {
-				size -= DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
-			} else {
-				onClose(level, pos);
-			}
-		} else if(!stablized()) {
-			onGrowth(level, pos);
+    if(closing) {
+        if(size > 0) {
+        size -= DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
+        } else {
+        onClose(level, pos);
+        }
+    } else if(!stablized()) {
+        onGrowth(level, pos);
 
 
-		}
+    }
 
         if(updateTimer % 20 == 0) sync();
     }
 
-	public void onGrowth(Level level, BlockPos pos) {
+    public void onGrowth(Level level, BlockPos pos) {
 
-	}
+    }
 
     public void sync() {
         setChanged();
         level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
     }
 
-	public boolean stablized() {
-		return stabilized;
-	}
+    public boolean stablized() {
+    return stabilized;
+    }
 
-	protected void onClose(Level level, BlockPos pos) {
-	}
+    protected void onClose(Level level, BlockPos pos) {
+    }
 
-	protected void onUpdateHalfway(Level level, BlockPos pos) {
-	}
+    protected void onUpdateHalfway(Level level, BlockPos pos) {
+    }
 
-	protected void onUpdate(Level level, BlockPos pos) {
-	}
+    protected void onUpdate(Level level, BlockPos pos) {
+    }
 
     public boolean updateNearestRift() {
-		return false;
-	}
+    return false;
+    }
 }

@@ -9,11 +9,11 @@ import net.minecraft.world.level.Level;
 
 public interface ExtendedItem {
 
-	// TODO: add javadocs
-	// true -> send packet to server
-	// false -> don't send packet to server
-	// boolean value currently does nothing server-side
-	default CompoundEventResult<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
-		return CompoundEventResult.interruptFalse(false);
-	}
+    // TODO: add javadocs
+    // true -> send packet to server
+    // false -> don't send packet to server
+    // boolean value currently does nothing server-side
+    default CompoundEventResult<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
+    return CompoundEventResult.interruptFalse(false);
+    }
 }

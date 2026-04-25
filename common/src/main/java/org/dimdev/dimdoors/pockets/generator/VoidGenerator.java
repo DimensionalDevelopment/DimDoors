@@ -16,67 +16,67 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VoidGenerator extends PocketGenerator {
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static final String KEY = "void";
-	private String width;
-	private Equation heightEquation;
-	private String height;
-	private Equation widthEquation;
-	private String length;
-	private Equation lengthEquation;
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static final String KEY = "void";
+    private String width;
+    private Equation heightEquation;
+    private String height;
+    private Equation widthEquation;
+    private String length;
+    private Equation lengthEquation;
 
-	@Override
-	public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-		Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.world().dimension()).newPocket(builder);
-		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
-		pocket.setSize((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
+    @Override
+    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+    Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.world().dimension()).newPocket(builder);
+    Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
+    pocket.setSize((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
 
-		return pocket;
-	}
+    return pocket;
+    }
 
-	@Override
-	public PocketGeneratorType<? extends PocketGenerator> getType() {
-		return PocketGeneratorType.VOID.get();
-	}
+    @Override
+    public PocketGeneratorType<? extends PocketGenerator> getType() {
+    return PocketGeneratorType.VOID.get();
+    }
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
+    @Override
+    public String getKey() {
+    return KEY;
+    }
 
-	@Override
-	public Vec3i getSize(PocketGenerationContext parameters) {
-		Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
-		return new Vec3i((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
-	}
+    @Override
+    public Vec3i getSize(PocketGenerationContext parameters) {
+    Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
+    return new Vec3i((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
+    }
 
-	@Override
-	public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		super.fromNbt(nbt, provider, manager);
+    @Override
+    public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+    super.fromNbt(nbt, provider, manager);
 
-		try {
-			width = nbt.getString("width");
-			widthEquation = Equation.parse(width);
-			height = nbt.getString("height");
-			heightEquation = Equation.parse(height);
-			length = nbt.getString("length");
-			lengthEquation = Equation.parse(length);
+    try {
+        width = nbt.getString("width");
+        widthEquation = Equation.parse(width);
+        height = nbt.getString("height");
+        heightEquation = Equation.parse(height);
+        length = nbt.getString("length");
+        lengthEquation = Equation.parse(length);
 
-		} catch (EquationParseException e) {
-			LOGGER.error(e);
-		}
+    } catch (EquationParseException e) {
+        LOGGER.error(e);
+    }
 
-		return this;
-	}
+    return this;
+    }
 
-	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		super.toNbtInternal(nbt, provider, allowReference);
+    @Override
+    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+    super.toNbtInternal(nbt, provider, allowReference);
 
-		nbt.putString("width", width);
-		nbt.putString("height", height);
-		nbt.putString("length", length);
+    nbt.putString("width", width);
+    nbt.putString("height", height);
+    nbt.putString("length", length);
 
-		return nbt;
-	}
+    return nbt;
+    }
 }

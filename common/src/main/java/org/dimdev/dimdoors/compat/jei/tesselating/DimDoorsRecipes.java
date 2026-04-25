@@ -25,57 +25,57 @@ import java.util.Map;
 import java.util.Optional;
 
 public final class DimDoorsRecipes {
-	private final RecipeManager recipeManager;
-	private final IIngredientManager ingredientManager;
+    private final RecipeManager recipeManager;
+    private final IIngredientManager ingredientManager;
 
-	public DimDoorsRecipes(IIngredientManager ingredientManager) {
-		Minecraft minecraft = Minecraft.getInstance();
-		ClientLevel world = minecraft.level;
-		this.recipeManager = world != null ? world.getRecipeManager() : null;
-		this.ingredientManager = ingredientManager;
-	}
+    public DimDoorsRecipes(IIngredientManager ingredientManager) {
+    Minecraft minecraft = Minecraft.getInstance();
+    ClientLevel world = minecraft.level;
+    this.recipeManager = world != null ? world.getRecipeManager() : null;
+    this.ingredientManager = ingredientManager;
+    }
 
-	public Map<Boolean, List<RecipeHolder<TesselatingRecipe>>> getTesselating(IRecipeCategory<RecipeHolder<TesselatingRecipe>> craftingCategory) {
-		if (recipeManager == null) {
-			return Map.of(true, List.of(), false, List.of());
-		}
+    public Map<Boolean, List<RecipeHolder<TesselatingRecipe>>> getTesselating(IRecipeCategory<RecipeHolder<TesselatingRecipe>> craftingCategory) {
+    if (recipeManager == null) {
+        return Map.of(true, List.of(), false, List.of());
+    }
 
-		var validator = new CategoryRecipeValidator<>(craftingCategory, ingredientManager, 9);
+    var validator = new CategoryRecipeValidator<>(craftingCategory, ingredientManager, 9);
 
-		List<RecipeHolder<TesselatingRecipe>> handled = new ArrayList<>();
-		List<RecipeHolder<TesselatingRecipe>> unhandled = new ArrayList<>();
+    List<RecipeHolder<TesselatingRecipe>> handled = new ArrayList<>();
+    List<RecipeHolder<TesselatingRecipe>> unhandled = new ArrayList<>();
 
-		List<RecipeHolder<TesselatingRecipe>> allRecipes = recipeManager.getAllRecipesFor(ModRecipeTypes.TESSELATING.get());
-		for (RecipeHolder<TesselatingRecipe> recipe : allRecipes) {
-			if (validator.isRecipeValid(recipe)) {
-				if (validator.isRecipeHandled(recipe)) {
-					handled.add(recipe);
-				} else {
-					unhandled.add(recipe);
-				}
-			}
-		}
-		return Map.of(
-			true, handled,
-			false, unhandled
-		);
-	}
+    List<RecipeHolder<TesselatingRecipe>> allRecipes = recipeManager.getAllRecipesFor(ModRecipeTypes.TESSELATING.get());
+    for (RecipeHolder<TesselatingRecipe> recipe : allRecipes) {
+        if (validator.isRecipeValid(recipe)) {
+        if (validator.isRecipeHandled(recipe)) {
+            handled.add(recipe);
+        } else {
+            unhandled.add(recipe);
+        }
+        }
+    }
+    return Map.of(
+        true, handled,
+        false, unhandled
+    );
+    }
 
-//	public List<RecipeHolder<StonecutterRecipe>> getStonecuttingRecipes(IRecipeCategory<RecipeHolder<StonecutterRecipe>> stonecuttingCategory) {
-//		var validator = new CategoryRecipeValidator<>(stonecuttingCategory, ingredientManager, 1);
-//		return getValidHandledRecipes(recipeManager, RecipeType.STONECUTTING, validator);
-//	}
+//    public List<RecipeHolder<StonecutterRecipe>> getStonecuttingRecipes(IRecipeCategory<RecipeHolder<StonecutterRecipe>> stonecuttingCategory) {
+//    var validator = new CategoryRecipeValidator<>(stonecuttingCategory, ingredientManager, 1);
+//    return getValidHandledRecipes(recipeManager, RecipeType.STONECUTTING, validator);
+//    }
 
-	private static <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> getValidHandledRecipes(
-		RecipeManager recipeManager,
-		RecipeType<T> recipeType,
-		CategoryRecipeValidator<T> validator
-	) {
-		return recipeManager.getAllRecipesFor(recipeType)
-			.stream()
-			.filter(r -> validator.isRecipeValid(r) && validator.isRecipeHandled(r))
-			.toList();
-	}
+    private static <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> getValidHandledRecipes(
+    RecipeManager recipeManager,
+    RecipeType<T> recipeType,
+    CategoryRecipeValidator<T> validator
+    ) {
+    return recipeManager.getAllRecipesFor(recipeType)
+        .stream()
+        .filter(r -> validator.isRecipeValid(r) && validator.isRecipeHandled(r))
+        .toList();
+    }
 
     static class TesselatingRecipeExtension<T extends TesselatingRecipe> implements ITesselatingCategoryExtension<T> {
         @Override

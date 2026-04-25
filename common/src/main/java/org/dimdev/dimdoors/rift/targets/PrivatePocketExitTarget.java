@@ -17,62 +17,62 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.UUID;
 
 public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarget {
-	public static final PrivatePocketExitTarget INSTANCE = new PrivatePocketExitTarget();
-	public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
+    public static final PrivatePocketExitTarget INSTANCE = new PrivatePocketExitTarget();
+    public static final RGBA COLOR = new RGBA(0, 1, 0, 1);
 
-	private PrivatePocketExitTarget() {
-	}
+    private PrivatePocketExitTarget() {
+    }
 
-	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-		// TODO: make this recursive
-		UUID uuid = EntityUtils.getOwnerPlayerUuid(entity);
-		if (uuid == null) {
-			return false; // Non-player/owned entity tried to escape/leave private pocket
-		}
+    @Override
+    public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+    // TODO: make this recursive
+    UUID uuid = EntityUtils.getOwnerPlayerUuid(entity);
+    if (uuid == null) {
+        return false; // Non-player/owned entity tried to escape/leave private pocket
+    }
 
-		Location destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketExit(uuid);
-		Pocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
-		if (ModDimensions.isPrivatePocketDimension(this.location.getWorld()) && pocket != null) {
-			Pocket currentPocket = DimensionalRegistry.getPocketDirectory(pocket.getWorld()).getPocketAt(this.location.pos);
-			if (pocket.equals(currentPocket)) {
-				DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
-			}
-		}
+    Location destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketExit(uuid);
+    Pocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
+    if (ModDimensions.isPrivatePocketDimension(this.location.getWorld()) && pocket != null) {
+        Pocket currentPocket = DimensionalRegistry.getPocketDirectory(pocket.getWorld()).getPocketAt(this.location.pos);
+        if (pocket.equals(currentPocket)) {
+        DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
+        }
+    }
 
-		Object blockEntity = destLoc != null ? destLoc.getBlockEntity() : null;
-		if (!(blockEntity instanceof RiftBlockEntity)) {
-			if (destLoc == null) {
-				EntityUtils.chat(entity, Component.translatable("rifts.destinations.private_pocket_exit.did_not_use_rift"));
-			} else {
-				EntityUtils.chat(entity, Component.translatable("rifts.destinations.private_pocket_exit.rift_has_closed"));
-			}
+    Object blockEntity = destLoc != null ? destLoc.getBlockEntity() : null;
+    if (!(blockEntity instanceof RiftBlockEntity)) {
+        if (destLoc == null) {
+        EntityUtils.chat(entity, Component.translatable("rifts.destinations.private_pocket_exit.did_not_use_rift"));
+        } else {
+        EntityUtils.chat(entity, Component.translatable("rifts.destinations.private_pocket_exit.rift_has_closed"));
+        }
 
-			LimboTarget.INSTANCE.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
+        LimboTarget.INSTANCE.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
 
-			return false;
-		}
+        return false;
+    }
 
-		return ((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
-	}
+    return ((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
+    }
 
-	@Override
-	public void register() {
-		super.register();
-		PocketDirectory privatePocketRegistry = DimensionalRegistry.getPocketDirectory(this.location.world);
-		Pocket pocket = privatePocketRegistry.getPocketAt(this.location.pos);
-		if (pocket != null) {
-			DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, this.location);
-		}
-	}
+    @Override
+    public void register() {
+    super.register();
+    PocketDirectory privatePocketRegistry = DimensionalRegistry.getPocketDirectory(this.location.world);
+    Pocket pocket = privatePocketRegistry.getPocketAt(this.location.pos);
+    if (pocket != null) {
+        DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, this.location);
+    }
+    }
 
-	@Override
-	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.PRIVATE_POCKET_EXIT.get();
-	}
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+    return VirtualTargetType.PRIVATE_POCKET_EXIT.get();
+    }
 
-	@Override
-	public VirtualTarget copy() {
-		return this;
-	}
+    @Override
+    public VirtualTarget copy() {
+    return this;
+    }
 }

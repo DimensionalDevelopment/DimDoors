@@ -14,11 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(BlockEntityWithoutLevelRenderer.class)
 public abstract class BuiltinModelItemRendererMixin {
-	@Inject(method = "renderByItem", at = @At("HEAD"), cancellable = true)
-	private void dimdoors_renderByItem(ItemStack stack, ItemDisplayContext mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, CallbackInfo info) {
-		if (stack.getItem() instanceof DimensionalDoorItemRegistrar.ChildItem) {
-			UnderlaidChildItemRenderer.INSTANCE.render(stack, mode, matrices, vertexConsumers, light, overlay);
-			info.cancel();
-		}
-	}
+    @Inject(method = "renderByItem", at = @At("HEAD"), cancellable = true)
+    private void dimdoors_renderByItem(ItemStack stack, ItemDisplayContext mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, CallbackInfo info) {
+    if (stack.getItem() instanceof DimensionalDoorItemRegistrar.ChildItem) {
+        UnderlaidChildItemRenderer.INSTANCE.render(stack, mode, matrices, vertexConsumers, light, overlay);
+        info.cancel();
+    }
+    }
 }

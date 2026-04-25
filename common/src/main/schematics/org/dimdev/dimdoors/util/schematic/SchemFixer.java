@@ -10,25 +10,25 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 public class SchemFixer {
-	public static void run() {
-	}
+    public static void run() {
+    }
 
-	public static void fixInPath(String thing) {
-		try {
-			Path lolPath = Paths.get(thing);
-			try (Stream<Path> pathStream = Files.walk(lolPath, 6)) {
-				pathStream.filter(path -> path.toString().endsWith(".schem")).forEach(path -> {
-					try {
-						Schematic loadedSchem = Schematic.fromNbt(NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap()));
-						NbtIo.writeCompressed(Schematic.toNbt(loadedSchem), path);
-						System.out.println("Fixed " + path);
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				});
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+    public static void fixInPath(String thing) {
+        try {
+            Path lolPath = Paths.get(thing);
+            try (Stream<Path> pathStream = Files.walk(lolPath, 6)) {
+                pathStream.filter(path -> path.toString().endsWith(".schem")).forEach(path -> {
+                    try {
+                        Schematic loadedSchem = Schematic.fromNbt(NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap()));
+                        NbtIo.writeCompressed(Schematic.toNbt(loadedSchem), path);
+                        System.out.println("Fixed " + path);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

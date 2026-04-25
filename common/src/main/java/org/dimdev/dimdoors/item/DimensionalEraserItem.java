@@ -21,30 +21,30 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import static org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle;
 
 public class DimensionalEraserItem extends Item {
-	public DimensionalEraserItem(Item.Properties settings) {
-		super(settings);
-	}
+    public DimensionalEraserItem(Item.Properties settings) {
+    super(settings);
+    }
 
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		ItemStack stack = player.getItemInHand(hand);
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    ItemStack stack = player.getItemInHand(hand);
 
-		HitResult hit = RaycastHelper.raycast(player, 1.0F, a -> !(a instanceof Player));
+    HitResult hit = RaycastHelper.raycast(player, 1.0F, a -> !(a instanceof Player));
 
-		if (!world.isClientSide() && hit != null && hit.getType() == HitResult.Type.ENTITY) {
-			if(((EntityHitResult) hit).getEntity() instanceof ServerPlayer) {
-				BlockPos teleportPos = ((EntityHitResult) hit).getEntity().blockPosition();
-				while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
-					teleportPos = teleportPos.offset(1, 0, 1);
-				}
-				TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getDeltaMovement());
-			} else {
-				((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);
-				player.playSound(ModSoundEvents.BLOOP.get(), 1.0f, 1.0f);
-			}
-			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-		}
+    if (!world.isClientSide() && hit != null && hit.getType() == HitResult.Type.ENTITY) {
+        if(((EntityHitResult) hit).getEntity() instanceof ServerPlayer) {
+        BlockPos teleportPos = ((EntityHitResult) hit).getEntity().blockPosition();
+        while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
+            teleportPos = teleportPos.offset(1, 0, 1);
+        }
+        TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getDeltaMovement());
+        } else {
+        ((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);
+        player.playSound(ModSoundEvents.BLOOP.get(), 1.0f, 1.0f);
+        }
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+    }
 
-		return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
-	}
+    return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+    }
 }

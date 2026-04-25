@@ -11,25 +11,25 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class PocketExitMarker extends VirtualTarget implements EntityTarget {
-	public static final MapCodec<PocketExitMarker> CODEC = MapCodec.unit(PocketExitMarker::new);
+    public static final MapCodec<PocketExitMarker> CODEC = MapCodec.unit(PocketExitMarker::new);
     public static final PocketExitMarker INSTANCE = new PocketExitMarker();
 
     private PocketExitMarker() {
-	}
+    }
 
-	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-		EntityUtils.chat(entity, Component.literal("The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug."));
-		return false;
-	}
+    @Override
+    public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+    EntityUtils.chat(entity, Component.literal("The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug."));
+    return false;
+    }
 
-	@Override
-	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.POCKET_EXIT.get();
-	}
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+    return VirtualTargetType.POCKET_EXIT.get();
+    }
 
-	@Override
-	public VirtualTarget copy() {
-		return this;
-	}
+    @Override
+    public VirtualTarget copy() {
+    return this;
+    }
 }

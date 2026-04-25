@@ -4,26 +4,26 @@ import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.item.ModDataComponentTypes;
 
 public class IdCounter {
-	public static int get(ItemStack provider) {
-		return provider.getOrDefault(ModDataComponentTypes.COUNT.get(), 0);
-	}
+    public static int get(ItemStack provider) {
+    return provider.getOrDefault(ModDataComponentTypes.COUNT.get(), 0);
+    }
 
-	public static void set(ItemStack provider, Integer value) {
-		provider.set(ModDataComponentTypes.COUNT.get(), value);
-	}
+    public static void set(ItemStack provider, Integer value) {
+    provider.set(ModDataComponentTypes.COUNT.get(), value);
+    }
 
 
-	public static int increment(ItemStack provider) {
-		var value = get(provider) + 1;
+    public static int increment(ItemStack provider) {
+    var value = get(provider) + 1;
 
-		set(provider, value);
+    set(provider, value);
 
-		return value;
-	}
+    return value;
+    }
 
-	public static int count(ItemStack stack) {
-		return get(stack);
-	}
+    public static int count(ItemStack stack) {
+    return get(stack);
+    }
 
     public static int getAndIncrement(ItemStack provider) {
         var value = get(provider);

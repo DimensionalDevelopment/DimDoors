@@ -19,78 +19,78 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AbsoluteRiftBlockEntityModifier extends AbstractModifier {
-	private static final Logger LOGGER = LogManager.getLogger();
-	public static final String KEY = "block_entity";
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static final String KEY = "block_entity";
 
-	private Map<BlockPos, RiftBlockEntity> rifts;
-	private Map<BlockPos, CompoundTag> serializedRifts;
+    private Map<BlockPos, RiftBlockEntity> rifts;
+    private Map<BlockPos, CompoundTag> serializedRifts;
 
-	public AbsoluteRiftBlockEntityModifier() {
-	}
+    public AbsoluteRiftBlockEntityModifier() {
+    }
 
-	public AbsoluteRiftBlockEntityModifier(Map<BlockPos, RiftBlockEntity> rifts) {
-		this.rifts = rifts;
+    public AbsoluteRiftBlockEntityModifier(Map<BlockPos, RiftBlockEntity> rifts) {
+    this.rifts = rifts;
 
-	}
+    }
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		// TODO: rifts from resource
-		serializedRifts = StreamUtils.execute(() -> nbt.getList("rifts", Tag.TAG_COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
-				.filter(compound -> {
-					if (compound.contains("Pos")) {
-						return true;
-					}
-					LOGGER.error("Discarding rift on deserialization since \"Pos\" tag was not set.");
-					return false;
-				})
-				.collect(Collectors.toConcurrentMap(compound -> {
-					int[] ints = compound.getIntArray("Pos");
-					return new BlockPos(ints[0], ints[1], ints[2]);
-				}, compound -> compound)));
+    @Override
+    public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+    // TODO: rifts from resource
+    serializedRifts = StreamUtils.execute(() -> nbt.getList("rifts", Tag.TAG_COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
+        .filter(compound -> {
+            if (compound.contains("Pos")) {
+            return true;
+            }
+            LOGGER.error("Discarding rift on deserialization since \"Pos\" tag was not set.");
+            return false;
+        })
+        .collect(Collectors.toConcurrentMap(compound -> {
+            int[] ints = compound.getIntArray("Pos");
+            return new BlockPos(ints[0], ints[1], ints[2]);
+        }, compound -> compound)));
 
-		return this;
-	}
+    return this;
+    }
 
-	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowResource) {
-		super.toNbtInternal(nbt, provider, allowResource);
+    @Override
+    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowResource) {
+    super.toNbtInternal(nbt, provider, allowResource);
 
-		ListTag riftsNbt;
-		if (rifts != null) {
-			riftsNbt = StreamUtils.execute(() -> rifts.values().parallelStream().unordered().map(rift -> {
-				CompoundTag e = new CompoundTag();
-				rift.saveAdditional(e, provider);
-				return e;
-			}).collect(Collectors.toCollection(ListTag::new)));
-		} else {
-			riftsNbt = new ListTag();
-			riftsNbt.addAll(serializedRifts.values());
-		}
-		nbt.put("rifts", riftsNbt);
+    ListTag riftsNbt;
+    if (rifts != null) {
+        riftsNbt = StreamUtils.execute(() -> rifts.values().parallelStream().unordered().map(rift -> {
+        CompoundTag e = new CompoundTag();
+        rift.saveAdditional(e, provider);
+        return e;
+        }).collect(Collectors.toCollection(ListTag::new)));
+    } else {
+        riftsNbt = new ListTag();
+        riftsNbt.addAll(serializedRifts.values());
+    }
+    nbt.put("rifts", riftsNbt);
 
-		return nbt;
-	}
+    return nbt;
+    }
 
-	@Override
-	public ModifierType<? extends Modifier> getType() {
-		return ModifierType.ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE.get();
-	}
+    @Override
+    public ModifierType<? extends Modifier> getType() {
+    return ModifierType.ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE.get();
+    }
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
+    @Override
+    public String getKey() {
+    return KEY;
+    }
 
-	@Override
-	public void apply(PocketGenerationContext parameters, RiftManager manager) {
+    @Override
+    public void apply(PocketGenerationContext parameters, RiftManager manager) {
         ServerLevel world = DimensionalDoors.getWorld(manager.getPocket().getWorld());
         rifts.values().forEach(world::setBlockEntity);
     }
 
-	@Override
-	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+    @Override
+    public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 
-	}
+    }
 
 }

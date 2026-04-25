@@ -10,22 +10,22 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class AllCondition extends MultipleCondition {
-	public AllCondition(List<Condition> conditions) {
-		super(conditions);
-	}
+    public AllCondition(List<Condition> conditions) {
+    super(conditions);
+    }
 
-	public static AllCondition fromJson(JsonObject json) {
-		JsonArray conditions = json.getAsJsonArray("conditions");
-		return new AllCondition(StreamSupport.stream(conditions.spliterator(), false).map(JsonElement::getAsJsonObject).map(Condition::fromJson).collect(Collectors.toList()));
-	}
+    public static AllCondition fromJson(JsonObject json) {
+    JsonArray conditions = json.getAsJsonArray("conditions");
+    return new AllCondition(StreamSupport.stream(conditions.spliterator(), false).map(JsonElement::getAsJsonObject).map(Condition::fromJson).collect(Collectors.toList()));
+    }
 
-	@Override
-	public ConditionType<?> getType() {
-		return ConditionType.ALL.get();
-	}
+    @Override
+    public ConditionType<?> getType() {
+    return ConditionType.ALL.get();
+    }
 
-	@Override
-	public boolean matches(EntranceRiftBlockEntity rift) {
-		return this.conditions.stream().allMatch(c -> c.matches(rift));
-	}
+    @Override
+    public boolean matches(EntranceRiftBlockEntity rift) {
+    return this.conditions.stream().allMatch(c -> c.matches(rift));
+    }
 }

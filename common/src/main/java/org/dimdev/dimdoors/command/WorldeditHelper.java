@@ -25,39 +25,39 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class WorldeditHelper {
-	static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
-		ServerPlayer player = source.getPlayerOrException();
-		boolean async = DimensionalDoors.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
-		Consumer<Runnable> taskAcceptor = async ? r -> source.getServer().execute(r) : Runnable::run;
-		Runnable task = () -> {
-			CompoundTag nbt = Schematic.toNbt(template.getSchematic());
-			ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			try {
-				NbtIo.writeCompressed(nbt, stream);
-			} catch (IOException e) {
-				throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayOutputStream
-			}
-			Clipboard clipboard;
-			try {
-				clipboard = new SpongeSchematicReader(new NBTInputStream(new ByteArrayInputStream(stream.toByteArray()))).read();
-			} catch (IOException e) {
-				throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayInputStream
-			}
-			taskAcceptor.accept(() -> {
-				WorldEdit.getInstance().getSessionManager().get(getSessionOwner(player)).setClipboard(new ClipboardHolder(clipboard));
-				source.sendSuccess(() -> Component.translatable("commands.pocket.loadedSchem", template.getId()), true);
-			});
-		};
-		if (async) {
-			CompletableFuture.runAsync(task);
-		} else {
-			task.run();
-		}
-		return Command.SINGLE_SUCCESS;
-	}
+    static int load(CommandSourceStack source, PocketTemplate template) throws CommandSyntaxException {
+    ServerPlayer player = source.getPlayerOrException();
+    boolean async = DimensionalDoors.getConfig().getPocketsConfig().asyncWorldEditPocketLoading;
+    Consumer<Runnable> taskAcceptor = async ? r -> source.getServer().execute(r) : Runnable::run;
+    Runnable task = () -> {
+        CompoundTag nbt = Schematic.toNbt(template.getSchematic());
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        try {
+        NbtIo.writeCompressed(nbt, stream);
+        } catch (IOException e) {
+        throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayOutputStream
+        }
+        Clipboard clipboard;
+        try {
+        clipboard = new SpongeSchematicReader(new NBTInputStream(new ByteArrayInputStream(stream.toByteArray()))).read();
+        } catch (IOException e) {
+        throw new RuntimeException(e); // Can't happen, the stream is a ByteArrayInputStream
+        }
+        taskAcceptor.accept(() -> {
+        WorldEdit.getInstance().getSessionManager().get(getSessionOwner(player)).setClipboard(new ClipboardHolder(clipboard));
+        source.sendSuccess(() -> Component.translatable("commands.pocket.loadedSchem", template.getId()), true);
+        });
+    };
+    if (async) {
+        CompletableFuture.runAsync(task);
+    } else {
+        task.run();
+    }
+    return Command.SINGLE_SUCCESS;
+    }
 
-	@ExpectPlatform
-	public static SessionOwner getSessionOwner(ServerPlayer player) {
-		throw new RuntimeException();
-	}
+    @ExpectPlatform
+    public static SessionOwner getSessionOwner(ServerPlayer player) {
+    throw new RuntimeException();
+    }
 }

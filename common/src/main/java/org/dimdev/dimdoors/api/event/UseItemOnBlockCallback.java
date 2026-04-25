@@ -9,19 +9,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
 public interface UseItemOnBlockCallback {
-	Event<UseItemOnBlockCallback> EVENT = EventFactory.of(
-			listeners -> (player, world, hand, hitresult) -> {
-				for (UseItemOnBlockCallback event : listeners) {
-					InteractionResult result = event.useItemOnBlock(player, world, hand, hitresult);
+    Event<UseItemOnBlockCallback> EVENT = EventFactory.of(
+        listeners -> (player, world, hand, hitresult) -> {
+        for (UseItemOnBlockCallback event : listeners) {
+            InteractionResult result = event.useItemOnBlock(player, world, hand, hitresult);
 
-					if (result != InteractionResult.PASS) {
-						return result;
-					}
-				}
+            if (result != InteractionResult.PASS) {
+            return result;
+            }
+        }
 
-				return InteractionResult.PASS;
-			}
-	);
+        return InteractionResult.PASS;
+        }
+    );
 
-	InteractionResult useItemOnBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult);
+    InteractionResult useItemOnBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult);
 }

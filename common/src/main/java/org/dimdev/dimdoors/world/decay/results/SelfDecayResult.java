@@ -26,7 +26,7 @@ public class SelfDecayResult implements DecayResult {
     }
 
     @Override
-	public int process(Decay.DecayContext context) {
+    public int process(Decay.DecayContext context) {
         return 0;
     }
 

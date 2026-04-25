@@ -26,13 +26,13 @@ import java.util.concurrent.CompletableFuture;
 import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
 
 public class DimdoorsRecipeProvider extends RecipeProvider {
-	public DimdoorsRecipeProvider(PackOutput dataGenerator, CompletableFuture<HolderLookup.Provider> completableFuture) {
-		super(dataGenerator, completableFuture);
-	}
+    public DimdoorsRecipeProvider(PackOutput dataGenerator, CompletableFuture<HolderLookup.Provider> completableFuture) {
+        super(dataGenerator, completableFuture);
+    }
 
-	@Override
-	public void buildRecipes(RecipeOutput exporter) {
-		//TODO: Find out proper RecipeCategory for these? I just random added this to make it work.
+    @Override
+    public void buildRecipes(RecipeOutput exporter) {
+        //TODO: Find out proper RecipeCategory for these? I just random added this to make it work.
 
         doorBuilder(ModBlocks.STONE_DOOR.get(), Ingredient.of(ConventionalItemTags.STONES)).unlockedBy("inventory_changed", has(ConventionalItemTags.STONES)).save(exporter);
         doorBuilder(ModBlocks.GOLD_DOOR.get(), Ingredient.of(ConventionalItemTags.GOLD_INGOTS)).unlockedBy("inventory_changed", has(ConventionalItemTags.GOLD_INGOTS)).save(exporter);
@@ -85,7 +85,7 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
                 .define('X', ConventionalItemTags.ENDER_PEARLS)
                 .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE.get()))
                 .save(exporter, DimensionalDoors.id("rift_remover"));
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_SIGNATURE.get())
                 .pattern(" # ")
                 .pattern("#X#")
                 .pattern(" # ")
@@ -93,14 +93,14 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
                 .define('X', ConventionalItemTags.ENDER_PEARLS)
                 .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE.get()))
                 .save(exporter, DimensionalDoors.id("rift_signature"));
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.RIFT_STABILIZER.get())
                 .pattern(" # ")
                 .pattern("#X#")
                 .pattern(" # ")
                 .define('#', ConventionalItemTags.DIAMOND_GEMS)
                 .define('X', ConventionalItemTags.ENDER_PEARLS)
                 .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_BLADE.get())).save(exporter, DimensionalDoors.id("rift_stabilizer"));
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STABILIZED_RIFT_SIGNATURE.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.STABILIZED_RIFT_SIGNATURE.get())
                 .pattern("# #")
                 .pattern(" X ")
                 .pattern("# #")
@@ -108,19 +108,19 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
                 .define('X', ModItems.RIFT_SIGNATURE.get())
                 .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.RIFT_SIGNATURE.get())).save(exporter, DimensionalDoors.id("stabilized_rift_signature"));
 
-		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TESSELATING_LOOM.get())
-				.pattern("XOX")
-				.pattern("ALA")
-				.pattern("XAX")
-				.define('A', ModItems.WORLD_THREAD.get())
-				.define('L', Blocks.LOOM)
-				.define('X', Blocks.SCAFFOLDING)
-				.define('O', ModBlocks.fabricFromDye(DyeColor.BLACK).get())
-				.unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.LOOM))
-				.save(exporter, DimensionalDoors.id("tesselating_loom"));
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.TESSELATING_LOOM.get())
+                .pattern("XOX")
+                .pattern("ALA")
+                .pattern("XAX")
+                .define('A', ModItems.WORLD_THREAD.get())
+                .define('L', Blocks.LOOM)
+                .define('X', Blocks.SCAFFOLDING)
+                .define('O', ModBlocks.fabricFromDye(DyeColor.BLACK).get())
+                .unlockedBy("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Blocks.LOOM))
+                .save(exporter, DimensionalDoors.id("tesselating_loom"));
 
-		ColoredFabricRecipeProvider.generate(exporter);
-		TesselatingRecipeProvider.generate(exporter);
+        ColoredFabricRecipeProvider.generate(exporter);
+        TesselatingRecipeProvider.generate(exporter);
 
 
 
@@ -185,7 +185,7 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
         terraCottaRecipes(ModBlocks.GREEN_TERRACOTTA_SET, Blocks.GREEN_TERRACOTTA, ModBlocks.GREEN_GLAZED_TERRACOTTA_SET, Blocks.GREEN_GLAZED_TERRACOTTA, DyeColor.GREEN, exporter);
         terraCottaRecipes(ModBlocks.RED_TERRACOTTA_SET, Blocks.RED_TERRACOTTA, ModBlocks.RED_GLAZED_TERRACOTTA_SET, Blocks.RED_GLAZED_TERRACOTTA, DyeColor.RED, exporter);
         terraCottaRecipes(ModBlocks.BLACK_TERRACOTTA_SET, Blocks.BLACK_TERRACOTTA, ModBlocks.BLACK_GLAZED_TERRACOTTA_SET, Blocks.BLACK_GLAZED_TERRACOTTA, DyeColor.BLACK, exporter);
-	}
+    }
 
     private void dimDoorRecipe(Block block, RecipeOutput exporter) {
         var id = block.builtInRegistryHolder().key().location();

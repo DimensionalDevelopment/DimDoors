@@ -48,15 +48,15 @@ import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
 public class DimensionalDoorBlockRegistrar {
-	public static final String PREFIX = "block_ag_dim_";
+    public static final String PREFIX = "block_ag_dim_";
 
-	private final Registrar<Block> registry;
-	private final DimensionalDoorItemRegistrar itemRegistrar;
+    private final Registrar<Block> registry;
+    private final DimensionalDoorItemRegistrar itemRegistrar;
 
     //The key is the id of the generated dimensional door and value is the key of the original block.
-	private final BiMap<ResourceLocation, ResourceLocation> mappedDoorBlocks = HashBiMap.create();
+    private final BiMap<ResourceLocation, ResourceLocation> mappedDoorBlocks = HashBiMap.create();
 
-	private final Map<ResourceLocation, AutoGenLogic<? extends RiftBlockEntity>> customDoorFunction = new HashMap<>();
+    private final Map<ResourceLocation, AutoGenLogic<? extends RiftBlockEntity>> customDoorFunction = new HashMap<>();
 
     public Map<TagKey<Block>, List<Holder<Block>>> populateBlockTags(Map<TagKey<Block>, List<Holder<Block>>> map) {
         var registry = BuiltInRegistries.BLOCK;
@@ -153,138 +153,138 @@ public class DimensionalDoorBlockRegistrar {
             BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> doorFunction,
             BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> trapdoorFunction
     ) {
-		public void register(Block block) {
-			blockEntityType.get().addBlock(block);
-		}
-	}
+    public void register(Block block) {
+        blockEntityType.get().addBlock(block);
+    }
+    }
 
-	private static final AutoGenLogic<EntranceRiftBlockEntity> defaultLogic = new AutoGenLogic<>(ModBlockEntityTypes.ENTRANCE_RIFT,
+    private static final AutoGenLogic<EntranceRiftBlockEntity> defaultLogic = new AutoGenLogic<>(ModBlockEntityTypes.ENTRANCE_RIFT,
             DimensionalDoorBlockRegistrar::createAutoGenDimensionalDoorBlock,
             DimensionalDoorBlockRegistrar::createAutoGenDimensionalTrapdoorBlock
     );
 
-	public DimensionalDoorBlockRegistrar(DimensionalDoorItemRegistrar itemRegistrar) {
-		this.registry = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.BLOCK);
-		this.itemRegistrar = itemRegistrar;
+    public DimensionalDoorBlockRegistrar(DimensionalDoorItemRegistrar itemRegistrar) {
+    this.registry = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.BLOCK);
+    this.itemRegistrar = itemRegistrar;
 
-		if(Platform.isNeoForge()) {
-			RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
-				new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
-			});
-		}
+    if(Platform.isNeoForge()) {
+        RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
+        new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
+        });
+    }
 
-		LifecycleEvent.SETUP.register(() -> {
-			if(Platform.isFabric()) {
-				RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
-					new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
-				});
+    LifecycleEvent.SETUP.register(() -> {
+        if(Platform.isFabric()) {
+        RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.BLOCK, registrar -> {
+            new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
+        });
             }
 
             //This is registers the blockentity
-			mappedDoorBlocks.keySet().forEach(location -> {
-				var block = BuiltInRegistries.BLOCK.get(location);
-				var logic = customDoorFunction.getOrDefault(location, defaultLogic);
-				logic.register(block);
-			});
-		});
-	}
+        mappedDoorBlocks.keySet().forEach(location -> {
+        var block = BuiltInRegistries.BLOCK.get(location);
+        var logic = customDoorFunction.getOrDefault(location, defaultLogic);
+        logic.register(block);
+        });
+    });
+    }
 
 
     //TODO Figure out support for custom modded blocks.
-	public void handleEntry(Registrar<Block> registrar, ResourceLocation location, Block original) {
-		if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(location)) {
-			if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock doorBlock) {
-				register(registrar, location, doorBlock, customDoorFunction.getOrDefault(location, defaultLogic).doorFunction());
-			} else if (!(original instanceof DimensionalTrapDoorBlock) && original instanceof TrapDoorBlock trapdoorBlock) {
-				register(registrar, location, trapdoorBlock, customDoorFunction.getOrDefault(location, defaultLogic).trapdoorFunction());
-			}
-		}
-	}
+    public void handleEntry(Registrar<Block> registrar, ResourceLocation location, Block original) {
+    if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(location)) {
+        if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock doorBlock) {
+        register(registrar, location, doorBlock, customDoorFunction.getOrDefault(location, defaultLogic).doorFunction());
+        } else if (!(original instanceof DimensionalTrapDoorBlock) && original instanceof TrapDoorBlock trapdoorBlock) {
+        register(registrar, location, trapdoorBlock, customDoorFunction.getOrDefault(location, defaultLogic).trapdoorFunction());
+        }
+    }
+    }
 
-	private void register(Registrar<Block> registrar, ResourceLocation location, DoorSoundProvider original, BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> constructor) {
-		ResourceLocation gennedId = DimensionalDoors.id(PREFIX + location.getNamespace() + "_" + location.getPath());
+    private void register(Registrar<Block> registrar, ResourceLocation location, DoorSoundProvider original, BiFunction<BlockBehaviour.Properties, DoorSoundProvider, Block> constructor) {
+    ResourceLocation gennedId = DimensionalDoors.id(PREFIX + location.getNamespace() + "_" + location.getPath());
 
-		if(mappedDoorBlocks.containsKey(gennedId)) return;
+    if(mappedDoorBlocks.containsKey(gennedId)) return;
 
-		Block dimBlock = registrar.register(gennedId, () -> constructor.apply(BlockBehaviour.Properties.ofFullCopy((BlockBehaviour) original).requiresCorrectToolForDrops(), original)).get();
-		mappedDoorBlocks.put(gennedId, location);
-		itemRegistrar.notifyBlockMapped((Block) original, dimBlock);
+    Block dimBlock = registrar.register(gennedId, () -> constructor.apply(BlockBehaviour.Properties.ofFullCopy((BlockBehaviour) original).requiresCorrectToolForDrops(), original)).get();
+    mappedDoorBlocks.put(gennedId, location);
+    itemRegistrar.notifyBlockMapped((Block) original, dimBlock);
 
-		if (Platform.getEnvironment() == Env.CLIENT) {
-			putCutout(dimBlock);
-		}
-	}
+    if (Platform.getEnvironment() == Env.CLIENT) {
+        putCutout(dimBlock);
+    }
+    }
 
-	private void putCutout(Block original) {
-		RenderTypeRegistry.register(RenderType.cutout(), original);
-	}
+    private void putCutout(Block original) {
+    RenderTypeRegistry.register(RenderType.cutout(), original);
+    }
 
-	public ResourceLocation get(ResourceLocation ResourceLocation) {
-		return mappedDoorBlocks.get(ResourceLocation);
-	}
+    public ResourceLocation get(ResourceLocation ResourceLocation) {
+    return mappedDoorBlocks.get(ResourceLocation);
+    }
 
-	public <T extends DoorBlock, K extends RiftBlockEntity> void registerCustomDoorLogic(ResourceLocation id, AutoGenLogic<K> logic) {
-		customDoorFunction.putIfAbsent(id, logic);
-	}
+    public <T extends DoorBlock, K extends RiftBlockEntity> void registerCustomDoorLogic(ResourceLocation id, AutoGenLogic<K> logic) {
+    customDoorFunction.putIfAbsent(id, logic);
+    }
 
-	public boolean isMapped(ResourceLocation ResourceLocation) {
-		return mappedDoorBlocks.containsKey(ResourceLocation);
-	}
+    public boolean isMapped(ResourceLocation ResourceLocation) {
+    return mappedDoorBlocks.containsKey(ResourceLocation);
+    }
 
-	public static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
-		return to.setValue(property, from.getValue(property));
-	}
+    public static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
+    return to.setValue(property, from.getValue(property));
+    }
 
-	private static AutoGenDimensionalDoorBlock createAutoGenDimensionalDoorBlock(BlockBehaviour.Properties settings, DoorSoundProvider originalBlock) {
-		return new AutoGenDimensionalDoorBlock(settings, originalBlock) {
-			@Override
-			protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-				appendPropertiesOverride(builder, (Block) originalBlock, WATERLOGGED);
-			}
-		};
-	}
+    private static AutoGenDimensionalDoorBlock createAutoGenDimensionalDoorBlock(BlockBehaviour.Properties settings, DoorSoundProvider originalBlock) {
+    return new AutoGenDimensionalDoorBlock(settings, originalBlock) {
+        @Override
+        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        appendPropertiesOverride(builder, (Block) originalBlock, WATERLOGGED);
+        }
+    };
+    }
 
-	private static AutoGenDimensionalTrapdoorBlock createAutoGenDimensionalTrapdoorBlock(BlockBehaviour.Properties settings, DoorSoundProvider originalBlock) {
-		return new AutoGenDimensionalTrapdoorBlock(settings, originalBlock) {
-			@Override
-			protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-				appendPropertiesOverride(builder, (Block) originalBlock, WATERLOGGED);
-			}
-		};
-	}
+    private static AutoGenDimensionalTrapdoorBlock createAutoGenDimensionalTrapdoorBlock(BlockBehaviour.Properties settings, DoorSoundProvider originalBlock) {
+    return new AutoGenDimensionalTrapdoorBlock(settings, originalBlock) {
+        @Override
+        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        appendPropertiesOverride(builder, (Block) originalBlock, WATERLOGGED);
+        }
+    };
+    }
 
-	private static void appendPropertiesOverride(StateDefinition.Builder<Block, BlockState> builder, Block originalBlock, Property<?>... requiredProperties) {
-		HashSet<Property<?>> properties = new HashSet<>(originalBlock.getStateDefinition().getProperties());
-		properties.addAll(List.of(requiredProperties));
-		builder.add(properties.toArray(new Property[0]));
-	}
+    private static void appendPropertiesOverride(StateDefinition.Builder<Block, BlockState> builder, Block originalBlock, Property<?>... requiredProperties) {
+    HashSet<Property<?>> properties = new HashSet<>(originalBlock.getStateDefinition().getProperties());
+    properties.addAll(List.of(requiredProperties));
+    builder.add(properties.toArray(new Property[0]));
+    }
 
 
-	public Set<ResourceLocation> getGennedIds() {
-		return mappedDoorBlocks.keySet();
-	}
+    public Set<ResourceLocation> getGennedIds() {
+    return mappedDoorBlocks.keySet();
+    }
 
-	public static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {
-		private final Block originalBlock;
+    public static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {
+    private final Block originalBlock;
 
-		public AutoGenDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
-			super(settings, originalBlock.getSetType());
-			this.originalBlock = (Block) originalBlock;
+    public AutoGenDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
+        super(settings, originalBlock.getSetType());
+        this.originalBlock = (Block) originalBlock;
 
-			BlockState state = this.getStateDefinition().any();
-			BlockState originalState = this.originalBlock.defaultBlockState();
-			for (Property<?> property : this.originalBlock.defaultBlockState().getProperties()) {
-				state = transferProperty(originalState, state, property);
-			}
-			registerDefaultState(state.setValue(WATERLOGGED, false));
-		}
+        BlockState state = this.getStateDefinition().any();
+        BlockState originalState = this.originalBlock.defaultBlockState();
+        for (Property<?> property : this.originalBlock.defaultBlockState().getProperties()) {
+        state = transferProperty(originalState, state, property);
+        }
+        registerDefaultState(state.setValue(WATERLOGGED, false));
+    }
 
-		@Override
-		protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-			// This method has to be defined in an anonymous inner class,
-			// 		since Block#appendProperties is run before originalBlock can be set.
-			throw new RuntimeException("AutoGenDimensionalDoorBlock should be instantiated as anonymous inner class overriding appendProperties!");
-		}
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        // This method has to be defined in an anonymous inner class,
+        //     since Block#appendProperties is run before originalBlock can be set.
+        throw new RuntimeException("AutoGenDimensionalDoorBlock should be instantiated as anonymous inner class overriding appendProperties!");
+    }
 
         @Override
         public BlockState getEffectiveBlockState(BlockState state) {
@@ -300,42 +300,42 @@ public class DimensionalDoorBlockRegistrar {
         }
 
         @Override
-		public MutableComponent getName() {
-			return Component.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
-		}
+    public MutableComponent getName() {
+        return Component.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
+    }
 
-		public Block getOriginalBlock() {
-			return originalBlock;
-		}
+    public Block getOriginalBlock() {
+        return originalBlock;
+    }
 
-		@Nullable
-		@Override
-		public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-			return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
-		}
-	}
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
+    }
+    }
 
-	public static class AutoGenDimensionalTrapdoorBlock extends DimensionalTrapDoorBlock {
-		private final Block originalBlock;
+    public static class AutoGenDimensionalTrapdoorBlock extends DimensionalTrapDoorBlock {
+    private final Block originalBlock;
 
-		public AutoGenDimensionalTrapdoorBlock(Properties settings, DoorSoundProvider originalBlock) {
-			super(settings, originalBlock.getSetType());
-			this.originalBlock = (Block) originalBlock;
+    public AutoGenDimensionalTrapdoorBlock(Properties settings, DoorSoundProvider originalBlock) {
+        super(settings, originalBlock.getSetType());
+        this.originalBlock = (Block) originalBlock;
 
-			BlockState state = this.getStateDefinition().any();
-			BlockState originalState = this.originalBlock.defaultBlockState();
-			for (Property<?> property : this.originalBlock.defaultBlockState().getProperties()) {
-				state = transferProperty(originalState, state, property);
-			}
-			registerDefaultState(state.setValue(WATERLOGGED, false));
-		}
+        BlockState state = this.getStateDefinition().any();
+        BlockState originalState = this.originalBlock.defaultBlockState();
+        for (Property<?> property : this.originalBlock.defaultBlockState().getProperties()) {
+        state = transferProperty(originalState, state, property);
+        }
+        registerDefaultState(state.setValue(WATERLOGGED, false));
+    }
 
-		@Override
-		protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-			// This method has to be defined in an anonymous inner class,
-			// 		since Block#appendProperties is run before originalBlock can be set.
-			throw new RuntimeException("AutoGenDimensionalTrapdoorBlock should be instantiated as anonymous inner class overriding appendProperties!");
-		}
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        // This method has to be defined in an anonymous inner class,
+        //     since Block#appendProperties is run before originalBlock can be set.
+        throw new RuntimeException("AutoGenDimensionalTrapdoorBlock should be instantiated as anonymous inner class overriding appendProperties!");
+    }
 
         @Override
         public BlockState getEffectiveBlockState(BlockState state) {
@@ -358,10 +358,10 @@ public class DimensionalDoorBlockRegistrar {
         public Block getOriginalBlock() {
             return originalBlock;
         }
-		@Nullable
-		@Override
-		public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-			return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
-		}
-	}
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+        return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
+    }
+    }
 }

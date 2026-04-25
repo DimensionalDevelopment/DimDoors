@@ -13,15 +13,15 @@ import static net.minecraft.world.level.block.Blocks.STONE;
 
 public class FabricBlock extends Block {
 
-	FabricBlock(DyeColor color) {
-		super(Properties.ofFullCopy(STONE).mapColor(color).strength(1.2F).lightLevel(state -> 15));
-	}
+    FabricBlock(DyeColor color) {
+    super(Properties.ofFullCopy(STONE).mapColor(color).strength(1.2F).lightLevel(state -> 15));
+    }
 
-	@Override
-	public boolean canBeReplaced(BlockState blockState, BlockPlaceContext context) {
-		if (context.getPlayer().isShiftKeyDown()) return false;
-		Block heldBlock = Block.byItem(context.getPlayer().getItemInHand(context.getHand()).getItem());
-		if (!heldBlock.defaultBlockState().isCollisionShapeFullBlock(context.getLevel(), context.getClickedPos())) return false;
-		return !(heldBlock instanceof EntityBlock) && !(heldBlock instanceof FabricBlock);
-	}
+    @Override
+    public boolean canBeReplaced(BlockState blockState, BlockPlaceContext context) {
+    if (context.getPlayer().isShiftKeyDown()) return false;
+    Block heldBlock = Block.byItem(context.getPlayer().getItemInHand(context.getHand()).getItem());
+    if (!heldBlock.defaultBlockState().isCollisionShapeFullBlock(context.getLevel(), context.getClickedPos())) return false;
+    return !(heldBlock instanceof EntityBlock) && !(heldBlock instanceof FabricBlock);
+    }
 }

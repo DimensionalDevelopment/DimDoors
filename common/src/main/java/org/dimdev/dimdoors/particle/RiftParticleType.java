@@ -18,17 +18,17 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class RiftParticleType extends ParticleType<RiftParticleOptions> {
-	protected RiftParticleType() {
-		super(true);
-	}
+    protected RiftParticleType() {
+    super(true);
+    }
 
-	@Override
-	public MapCodec<RiftParticleOptions> codec() {
-		return RiftParticleOptions.CODEC;
-	}
+    @Override
+    public MapCodec<RiftParticleOptions> codec() {
+    return RiftParticleOptions.CODEC;
+    }
 
-	@Override
-	public StreamCodec<? super RegistryFriendlyByteBuf, RiftParticleOptions> streamCodec() {
-		return RiftParticleOptions.STREAM_CODEC;
-	}
+    @Override
+    public StreamCodec<? super RegistryFriendlyByteBuf, RiftParticleOptions> streamCodec() {
+    return RiftParticleOptions.STREAM_CODEC;
+    }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 @Mixin(BiomeGenerationSettings.class)
 public interface GenerationSettingsAccessor {
-	@Mutable
-	@Accessor
-	void setFeatures(List<HolderSet<PlacedFeature>> features);
+    @Mutable
+    @Accessor
+    void setFeatures(List<HolderSet<PlacedFeature>> features);
 }

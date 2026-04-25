@@ -37,157 +37,157 @@ import java.util.UUID;
 import static org.dimdev.dimdoors.api.util.EntityUtils.chat;
 
 public class EscapeTarget extends VirtualTarget implements EntityTarget { // TODO: createRift option
-	private static final Logger LOGGER = LogManager.getLogger();
-	private static ResourceKey<net.minecraft.world.level.Level> targetWorldResourceKey;
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static ResourceKey<net.minecraft.world.level.Level> targetWorldResourceKey;
 
-	public static final MapCodec<EscapeTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-			Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
-	).apply(instance, EscapeTarget::new));
+    public static final MapCodec<EscapeTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Codec.BOOL.fieldOf("canEscapeLimbo").forGetter(target -> target.canEscapeLimbo)
+    ).apply(instance, EscapeTarget::new));
 
-	protected final boolean canEscapeLimbo;
+    protected final boolean canEscapeLimbo;
 
-	public EscapeTarget(boolean canEscapeLimbo) {
-		this.canEscapeLimbo = canEscapeLimbo;
-	}
+    public EscapeTarget(boolean canEscapeLimbo) {
+    this.canEscapeLimbo = canEscapeLimbo;
+    }
 
-	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location2) {
-		if (!ModDimensions.isPocketDimension(entity.level()) && !(ModDimensions.isLimboDimension(entity.level()))) {
-//			chat(entity, Component.translatable("rifts.destinations.escape.not_in_pocket_dim")); TODO: Decide a proper alternate to spam
-			return false;
-		}
-		if (ModDimensions.isLimboDimension(entity.level()) && !this.canEscapeLimbo) {
-//			chat(entity, Component.translatable("rifts.destinations.escape.cannot_escape_limbo")); TODO: Decide a proper alternate to spam
-			return false;
-		}
-
-
-		if (entity.level().isClientSide)
-			return false;
-		if (entity instanceof ServerPlayer player) { //TODO: Determine what other entity types should do when escaping.
-//			Location destLoc = DimensionalRegistry.getRiftRegistry().get.getOverworldRift(uuid);
-
-			ServerLevel destLevel = null;
-			BlockPos destPos = null;
-
-			if (DimensionalDoors.getConfig().getLimboConfig().tryPlayerBedSpawn) {
-				var level = DimensionalDoors.getWorld(player.getRespawnDimension());
-
-				if(level != null) {
-					destLevel = level;
-					destPos = player.getRespawnPosition();
-				}
-			}
+    @Override
+    public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location2) {
+    if (!ModDimensions.isPocketDimension(entity.level()) && !(ModDimensions.isLimboDimension(entity.level()))) {
+//        chat(entity, Component.translatable("rifts.destinations.escape.not_in_pocket_dim")); TODO: Decide a proper alternate to spam
+        return false;
+    }
+    if (ModDimensions.isLimboDimension(entity.level()) && !this.canEscapeLimbo) {
+//        chat(entity, Component.translatable("rifts.destinations.escape.cannot_escape_limbo")); TODO: Decide a proper alternate to spam
+        return false;
+    }
 
 
-			if(destLevel == null) {
-				var targetWorld = DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld;
-				destLevel = DimensionalDoors.getServer().overworld();
+    if (entity.level().isClientSide)
+        return false;
+    if (entity instanceof ServerPlayer player) { //TODO: Determine what other entity types should do when escaping.
+//        Location destLoc = DimensionalRegistry.getRiftRegistry().get.getOverworldRift(uuid);
 
-				if(targetWorld != null) {
-					var level = DimensionalDoors.getWorld(targetWorld);
+        ServerLevel destLevel = null;
+        BlockPos destPos = null;
 
-					if(level != null) {
-						destLevel = level;
-					}
-				}
+        if (DimensionalDoors.getConfig().getLimboConfig().tryPlayerBedSpawn) {
+        var level = DimensionalDoors.getWorld(player.getRespawnDimension());
 
-				if(DimensionalDoors.getConfig().getLimboConfig().defaultToWorldSpawn) {
-					destPos = destLevel.getSharedSpawnPos();
-				} else {
-					destPos = player.blockPosition();
-				}
-			}
+        if(level != null) {
+            destLevel = level;
+            destPos = player.getRespawnPosition();
+        }
+        }
 
-			/*
-			if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || this.canEscapeLimbo) {
-				//Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
-				TeleportUtil.teleport(entity, destLoc.getWorld(), destLoc.getBlockPos(), relativeAngle, relativeVelocity);
-			} else {
-				if (destLoc == null) {
-					chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.did_not_use_rift"));
-				} else {
-					chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.rift_has_closed"));
-				}
-				if (ModDimensions.LIMBO_DIMENSION != null) {
-					TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
-				}
-			}
-			 */
 
-			var destLoc = randomizeLimboReturn(destLevel, destPos, DimensionalDoors.getConfig().getLimboConfig().limboReturnDistanceMin, DimensionalDoors.getConfig().getLimboConfig().limboReturnDistanceMax); //todo add minimum radius
+        if(destLevel == null) {
+        var targetWorld = DimensionalDoors.getConfig().getLimboConfig().escapeTargetWorld;
+        destLevel = DimensionalDoors.getServer().overworld();
 
-			if (destLoc != null && this.canEscapeLimbo) {
-				Location location = destLoc; //VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false); //TODO Fix world projection.
+        if(targetWorld != null) {
+            var level = DimensionalDoors.getWorld(targetWorld);
 
-				var level = location.getWorld();
-				entity = TeleportUtil.teleport(entity, level, location.getBlockPos(), relativeAngle, relativeVelocity);
-				entity.fallDistance = -500;
-				level.setBlockAndUpdate(location.getBlockPos(), Blocks.AIR.defaultBlockState());
-				level.setBlockAndUpdate(location.getBlockPos().offset(0, 1, 0), Blocks.AIR.defaultBlockState());
+            if(level != null) {
+            destLevel = level;
+            }
+        }
 
-				if(DimensionalDoors.getConfig().getLimboConfig().decaySurroundings) {
-					RandomSource random = RandomSource.create();
-					BlockPos.withinManhattan(location.pos.offset(0, -3, 0), 3, 2, 3).forEach((pos1 -> {
-						if (random.nextFloat() < (1 / ((float) location.pos.distSqr(pos1))) * DimensionalDoors.getConfig().getLimboConfig().limboBlocksCorruptingExitWorldAmount) {
-							Block block = level.getBlockState(pos1).getBlock();
-							if (UnravelUtil.unravelBlocksMap.containsKey(block))
-								level.setBlockAndUpdate(pos1, UnravelUtil.unravelBlocksMap.get(block).defaultBlockState());
-							else if (UnravelUtil.whitelistedBlocksForLimboRemoval.contains(block)) {
-								level.setBlockAndUpdate(pos1, ModBlocks.UNRAVELLED_FABRIC.get().defaultBlockState());
-							}
-						}
-					}));
-				}
-			} else {
-				if (destLoc == null) {
-					chat(entity, Component.translatable("rifts.destinations.escape.did_not_use_rift"));
-				} else {
-					chat(entity, Component.translatable("rifts.destinations.escape.rift_has_closed"));
-				}
-				if (ModDimensions.LIMBO_DIMENSION != null) {
-					entity = TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
-					entity.fallDistance = -500;
-				}
-			}
-			return true;
+        if(DimensionalDoors.getConfig().getLimboConfig().defaultToWorldSpawn) {
+            destPos = destLevel.getSharedSpawnPos();
+        } else {
+            destPos = player.blockPosition();
+        }
+        }
 
-		} else {
-			return false; // No escape info for that entity
-		}
-	}
+        /*
+        if (destLoc != null && destLoc.getBlockEntity() instanceof RiftBlockEntity || this.canEscapeLimbo) {
+        //Location location = VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, entity.getBlockPos())).projectToWorld(false);
+        TeleportUtil.teleport(entity, destLoc.getWorld(), destLoc.getBlockPos(), relativeAngle, relativeVelocity);
+        } else {
+        if (destLoc == null) {
+            chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.did_not_use_rift"));
+        } else {
+            chat(entity, MutableText.of(new TranslatableTextContent("rifts.destinations.escape.rift_has_closed"));
+        }
+        if (ModDimensions.LIMBO_DIMENSION != null) {
+            TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
+        }
+        }
+         */
 
-	@Override
-	public VirtualTargetType getType() {
-		return VirtualTargetType.ESCAPE.get();
-	}
+        var destLoc = randomizeLimboReturn(destLevel, destPos, DimensionalDoors.getConfig().getLimboConfig().limboReturnDistanceMin, DimensionalDoors.getConfig().getLimboConfig().limboReturnDistanceMax); //todo add minimum radius
 
-	@Override
-	public VirtualTarget copy() {
-		return new EscapeTarget(canEscapeLimbo);
-	}
+        if (destLoc != null && this.canEscapeLimbo) {
+        Location location = destLoc; //VirtualLocation.fromLocation(new Location((ServerWorld) entity.world, destLoc.pos)).projectToWorld(false); //TODO Fix world projection.
 
-	public static Location randomizeLimboReturn(ServerLevel level, BlockPos pos, int minRange, int maxRange) {
-		if(level == null || pos == null) return null;
+        var level = location.getWorld();
+        entity = TeleportUtil.teleport(entity, level, location.getBlockPos(), relativeAngle, relativeVelocity);
+        entity.fallDistance = -500;
+        level.setBlockAndUpdate(location.getBlockPos(), Blocks.AIR.defaultBlockState());
+        level.setBlockAndUpdate(location.getBlockPos().offset(0, 1, 0), Blocks.AIR.defaultBlockState());
 
-		if(minRange == 0 && maxRange == 0) return new Location(level, pos);
+        if(DimensionalDoors.getConfig().getLimboConfig().decaySurroundings) {
+            RandomSource random = RandomSource.create();
+            BlockPos.withinManhattan(location.pos.offset(0, -3, 0), 3, 2, 3).forEach((pos1 -> {
+            if (random.nextFloat() < (1 / ((float) location.pos.distSqr(pos1))) * DimensionalDoors.getConfig().getLimboConfig().limboBlocksCorruptingExitWorldAmount) {
+                Block block = level.getBlockState(pos1).getBlock();
+                if (UnravelUtil.unravelBlocksMap.containsKey(block))
+                level.setBlockAndUpdate(pos1, UnravelUtil.unravelBlocksMap.get(block).defaultBlockState());
+                else if (UnravelUtil.whitelistedBlocksForLimboRemoval.contains(block)) {
+                level.setBlockAndUpdate(pos1, ModBlocks.UNRAVELLED_FABRIC.get().defaultBlockState());
+                }
+            }
+            }));
+        }
+        } else {
+        if (destLoc == null) {
+            chat(entity, Component.translatable("rifts.destinations.escape.did_not_use_rift"));
+        } else {
+            chat(entity, Component.translatable("rifts.destinations.escape.rift_has_closed"));
+        }
+        if (ModDimensions.LIMBO_DIMENSION != null) {
+            entity = TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
+            entity.fallDistance = -500;
+        }
+        }
+        return true;
 
-		return new Location(
-				level,
-				Location.getHeightmapPosSafe(level, randomizeCoord(pos.getX(), minRange, maxRange), randomizeCoord(pos.getZ(), minRange, maxRange))
-		);
-	}
+    } else {
+        return false; // No escape info for that entity
+    }
+    }
 
-	public static int randomizeCoord(int coord, int minRange, int maxRange) {
-		Random random = new Random();
+    @Override
+    public VirtualTargetType getType() {
+    return VirtualTargetType.ESCAPE.get();
+    }
 
-		if (minRange > maxRange) {
-			throw new IllegalArgumentException("minRange cannot be greater than maxRange");
-		}
+    @Override
+    public VirtualTarget copy() {
+    return new EscapeTarget(canEscapeLimbo);
+    }
 
-		int offset = minRange + random.nextInt((maxRange - minRange) + 1);
-		boolean isPositive = random.nextBoolean();
+    public static Location randomizeLimboReturn(ServerLevel level, BlockPos pos, int minRange, int maxRange) {
+    if(level == null || pos == null) return null;
 
-		return isPositive ? coord + offset : coord - offset;
-	}
+    if(minRange == 0 && maxRange == 0) return new Location(level, pos);
+
+    return new Location(
+        level,
+        Location.getHeightmapPosSafe(level, randomizeCoord(pos.getX(), minRange, maxRange), randomizeCoord(pos.getZ(), minRange, maxRange))
+    );
+    }
+
+    public static int randomizeCoord(int coord, int minRange, int maxRange) {
+    Random random = new Random();
+
+    if (minRange > maxRange) {
+        throw new IllegalArgumentException("minRange cannot be greater than maxRange");
+    }
+
+    int offset = minRange + random.nextInt((maxRange - minRange) + 1);
+    boolean isPositive = random.nextBoolean();
+
+    return isPositive ? coord + offset : coord - offset;
+    }
 }

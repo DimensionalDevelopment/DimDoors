@@ -32,11 +32,11 @@ import java.util.concurrent.CompletableFuture;
 
 public class BlockLootTableProvider extends FabricBlockLootTableProvider {
 
-	public BlockLootTableProvider(FabricDataOutput dataGenerator, CompletableFuture<HolderLookup.Provider> completableFuture) {
-		super(dataGenerator, completableFuture);
-	}
-	@Override
-	public void generate() {
+    public BlockLootTableProvider(FabricDataOutput dataGenerator, CompletableFuture<HolderLookup.Provider> completableFuture) {
+        super(dataGenerator, completableFuture);
+    }
+    @Override
+    public void generate() {
         for (RegistrySupplier<Block> block : ModBlocks.FABRIC_BLOCKS.values()) {
             this.dropWhenSilkTouch(block.get());
         }

@@ -9,8 +9,8 @@ import java.util.List;
 
 @Mixin(ListTag.class)
 public interface ListTagAccessor {
-	@Invoker("<init>")
-	static ListTag createListTag(List<Tag> list, byte type) {
-		throw new UnsupportedOperationException();
-	}
+    @Invoker("<init>")
+    static ListTag createListTag(List<Tag> list, byte type) {
+    throw new UnsupportedOperationException();
+    }
 }

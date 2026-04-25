@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
 public class MonolithAggroGoal extends Goal {
-	protected final MonolithEntity mob;
+    protected final MonolithEntity mob;
     protected Player target;
     protected final float range;
     protected final TargetingConditions targetPredicate;
@@ -106,7 +106,7 @@ public class MonolithAggroGoal extends Goal {
                 // of the sounds that would usually play for a moment would
                 // keep playing constantly and would get very annoying.
                 this.mob.playSounds(this.target.position());
-				ServerPacketHandler.sendPacket((ServerPlayer) this.target, new MonolithAggroParticlesPacket(this.mob.getAggro()));
+        ServerPacketHandler.sendPacket((ServerPlayer) this.target, new MonolithAggroParticlesPacket(this.mob.getAggro()));
             }
 
             // Teleport the target player if various conditions are met
@@ -116,7 +116,7 @@ public class MonolithAggroGoal extends Goal {
                 this.target.level().playSound(null, new BlockPos(new Vec3i((int) this.target.position().x, (int) this.target.position().y, (int) this.target.position().z)), ModSoundEvents.CRACK.get(), SoundSource.HOSTILE, 13, 1);
                 this.target.awardStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
                 ServerPacketHandler.sendPacket((ServerPlayer) this.target, MonolithTeleportParticlesPacket.INSTANCE);
-			}
+        }
         }
     }
 }

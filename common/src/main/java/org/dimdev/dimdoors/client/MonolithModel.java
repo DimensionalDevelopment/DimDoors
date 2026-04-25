@@ -27,14 +27,14 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
     }
 
     public static LayerDefinition getTexturedModelData() {
-		MeshDefinition modelData = new MeshDefinition();
+    MeshDefinition modelData = new MeshDefinition();
         PartDefinition modelPartData = modelData.getRoot();
         modelPartData.addOrReplaceChild("body", CubeListBuilder.create().texOffs(1, 0).addBox(-23.5F, -54, -6, 47, 108, 12, false), PartPose.ZERO);
         return LayerDefinition.create(modelData, 128, 128);
     }
 
     @Override
-	public void renderToBuffer(PoseStack matrixStack, VertexConsumer consumer, int packedLight, int packedOverlay, int color) {
+    public void renderToBuffer(PoseStack matrixStack, VertexConsumer consumer, int packedLight, int packedOverlay, int color) {
 
         final float minScaling = 0;
         final float maxScaling = 0.001f;
@@ -56,7 +56,7 @@ public class MonolithModel extends EntityModel<MonolithEntity> {
     }
 
     @Override
-	public void setupAnim(MonolithEntity monolith, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(MonolithEntity monolith, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.body.yRot = netHeadYaw * 0.017453292F;
         this.body.xRot = headPitch * 0.017453292F;
 

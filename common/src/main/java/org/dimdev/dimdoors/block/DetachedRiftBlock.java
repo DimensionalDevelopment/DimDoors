@@ -31,91 +31,91 @@ import java.util.Optional;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
 public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements RiftProvider<DetachedRiftBlockEntity>, SimpleWaterloggedBlock {
-	public static final MapCodec<DetachedRiftBlock> CODEC = simpleCodec(DetachedRiftBlock::new);
+    public static final MapCodec<DetachedRiftBlock> CODEC = simpleCodec(DetachedRiftBlock::new);
 
-	public static final String ID = "rift";
+    public static final String ID = "rift";
 
-	public DetachedRiftBlock(BlockBehaviour.Properties settings) {
-		super(settings);
-	}
+    public DetachedRiftBlock(BlockBehaviour.Properties settings) {
+    super(settings);
+    }
 
-	@Override
-	protected MapCodec<? extends BaseEntityBlock> codec() {
-		return CODEC;
-	}
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+    return CODEC;
+    }
 
-	@Override
-	public DetachedRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
-		return (DetachedRiftBlockEntity) world.getBlockEntity(pos);
-	}
+    @Override
+    public DetachedRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
+    return (DetachedRiftBlockEntity) world.getBlockEntity(pos);
+    }
 
-	@Override
-	@Environment(EnvType.CLIENT)
-	public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		// randomDisplayTick can be called before the tile entity is created in multiplayer
-		if (!(blockEntity instanceof DetachedRiftBlockEntity rift)) return;
+    @Override
+    @Environment(EnvType.CLIENT)
+    public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
+    BlockEntity blockEntity = world.getBlockEntity(pos);
+    // randomDisplayTick can be called before the tile entity is created in multiplayer
+    if (!(blockEntity instanceof DetachedRiftBlockEntity rift)) return;
 
-		boolean outsidePocket = !ModDimensions.isPocketDimension(world);
-		double speed = 0.1;
+    boolean outsidePocket = !ModDimensions.isPocketDimension(world);
+    double speed = 0.1;
 
-		if (rift.closing) {
-			world.addParticle(RiftParticleOptions.of(outsidePocket),
-					pos.getX() + .5,
-					pos.getY() + .5,
-					pos.getZ() + .5,
-					rand.nextGaussian() * speed,
-					rand.nextGaussian() * speed,
-					rand.nextGaussian() * speed
-			);
-		}
+    if (rift.closing) {
+        world.addParticle(RiftParticleOptions.of(outsidePocket),
+            pos.getX() + .5,
+            pos.getY() + .5,
+            pos.getZ() + .5,
+            rand.nextGaussian() * speed,
+            rand.nextGaussian() * speed,
+            rand.nextGaussian() * speed
+        );
+    }
 
-		world.addParticle(RiftParticleOptions.of(outsidePocket, rift.stabilized),
-				pos.getX() + .5,
-				pos.getY() + .5,
-				pos.getZ() + .5,
-				rand.nextGaussian() * speed,
-				rand.nextGaussian() * speed,
-				rand.nextGaussian() * speed
-		);
-	}
+    world.addParticle(RiftParticleOptions.of(outsidePocket, rift.stabilized),
+        pos.getX() + .5,
+        pos.getY() + .5,
+        pos.getZ() + .5,
+        rand.nextGaussian() * speed,
+        rand.nextGaussian() * speed,
+        rand.nextGaussian() * speed
+    );
+    }
 
-	@Override
-	public RenderShape getRenderShape(BlockState blockState) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
-	}
+    @Override
+    public RenderShape getRenderShape(BlockState blockState) {
+    return RenderShape.ENTITYBLOCK_ANIMATED;
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return Shapes.empty();
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    return Shapes.empty();
+    }
 
-	@Override
-	public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
-		return Shapes.empty();
-	}
+    @Override
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter level, BlockPos pos) {
+    return Shapes.empty();
+    }
 
-	@Override
-	public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return Shapes.empty();
-	}
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    return Shapes.empty();
+    }
 
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new DetachedRiftBlockEntity(pos, state);
-	}
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    return new DetachedRiftBlockEntity(pos, state);
+    }
 
-	@Nullable
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-		return checkType(type, ModBlockEntityTypes.DETACHED_RIFT.get(), new BlockEntityTicker<DetachedRiftBlockEntity>() {
-			@Override
-			public void tick(Level level, BlockPos blockPos, BlockState blockState, DetachedRiftBlockEntity blockEntity) {
-				blockEntity.tick(world, blockPos, blockState);
-			}
-		});
-	}
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
+    return checkType(type, ModBlockEntityTypes.DETACHED_RIFT.get(), new BlockEntityTicker<DetachedRiftBlockEntity>() {
+        @Override
+        public void tick(Level level, BlockPos blockPos, BlockState blockState, DetachedRiftBlockEntity blockEntity) {
+        blockEntity.tick(world, blockPos, blockState);
+        }
+    });
+    }
 
     @Override
     public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {

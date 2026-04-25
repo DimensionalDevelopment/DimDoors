@@ -10,29 +10,29 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class MessageTarget implements EntityTarget {
-	private final Target forwardTo;
-	private final String message;
-	private final Object[] messageParams;
+    private final Target forwardTo;
+    private final String message;
+    private final Object[] messageParams;
 
-	public MessageTarget(Target forwardTo, String message, Object... messageParams) {
-		this.forwardTo = forwardTo;
-		this.message = message;
-		this.messageParams = messageParams;
-	}
+    public MessageTarget(Target forwardTo, String message, Object... messageParams) {
+    this.forwardTo = forwardTo;
+    this.message = message;
+    this.messageParams = messageParams;
+    }
 
-	public MessageTarget(String message, Object... messageParams) {
-		this(null, message, messageParams);
-	}
+    public MessageTarget(String message, Object... messageParams) {
+    this(null, message, messageParams);
+    }
 
-	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-		EntityUtils.chat(entity, Component.translatable(this.message, this.messageParams));
+    @Override
+    public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+    EntityUtils.chat(entity, Component.translatable(this.message, this.messageParams));
 
-		if (this.forwardTo != null) {
-			this.forwardTo.as(Targets.ENTITY).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
-			return true;
-		} else {
-			return false;
-		}
-	}
+    if (this.forwardTo != null) {
+        this.forwardTo.as(Targets.ENTITY).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
+        return true;
+    } else {
+        return false;
+    }
+    }
 }

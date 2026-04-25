@@ -10,59 +10,59 @@ import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PocketEntranceModifier extends AbstractModifier {
-	public static final String KEY = "pocket_entrance";
+    public static final String KEY = "pocket_entrance";
 
-	private int id;
+    private int id;
 
-	public PocketEntranceModifier(int id) {
-		this.id = id;
-	}
+    public PocketEntranceModifier(int id) {
+    this.id = id;
+    }
 
-	public PocketEntranceModifier() {
+    public PocketEntranceModifier() {
 
-	}
+    }
 
-	@Override
-	public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-		return new PocketEntranceModifier(nbt.getInt("id"));
-	}
+    @Override
+    public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
+    return new PocketEntranceModifier(nbt.getInt("id"));
+    }
 
-	@Override
-	public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-		super.toNbtInternal(nbt, provider, allowReference);
+    @Override
+    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
+    super.toNbtInternal(nbt, provider, allowReference);
 
-		nbt.putInt("id", id);
+    nbt.putInt("id", id);
 
-		return nbt;
-	}
+    return nbt;
+    }
 
-	@Override
-	public String toString() {
-		return MoreObjects.toStringHelper(this)
-				.add("id", id)
-				.toString();
-	}
+    @Override
+    public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("id", id)
+        .toString();
+    }
 
-	@Override
-	public ModifierType<? extends Modifier> getType() {
-		return ModifierType.PUBLIC_MODIFIER_TYPE.get();
-	}
+    @Override
+    public ModifierType<? extends Modifier> getType() {
+    return ModifierType.PUBLIC_MODIFIER_TYPE.get();
+    }
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
+    @Override
+    public String getKey() {
+    return KEY;
+    }
 
-	@Override
-	public void apply(PocketGenerationContext parameters, RiftManager manager) {
-		manager.consume(id, rift -> {
-			rift.setDestination(PocketEntranceMarker.builder().ifDestination(PocketExitMarker.INSTANCE).weight(1.0f).build());
-			return true;
-		});
-	}
+    @Override
+    public void apply(PocketGenerationContext parameters, RiftManager manager) {
+    manager.consume(id, rift -> {
+        rift.setDestination(PocketEntranceMarker.builder().ifDestination(PocketExitMarker.INSTANCE).weight(1.0f).build());
+        return true;
+    });
+    }
 
-	@Override
-	public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+    @Override
+    public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
 
-	}
+    }
 }

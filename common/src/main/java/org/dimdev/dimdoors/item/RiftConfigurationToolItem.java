@@ -32,86 +32,86 @@ import java.util.List;
 import static net.fabricmc.api.EnvType.CLIENT;
 
 public class RiftConfigurationToolItem extends Item implements ExtendedItem {
-	private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-	public static final String ID = "rift_configuration_tool";
+    public static final String ID = "rift_configuration_tool";
 
-	RiftConfigurationToolItem(Item.Properties properties) {
-		super(properties.stacksTo(1).durability(16));
-	}
+    RiftConfigurationToolItem(Item.Properties properties) {
+    super(properties.stacksTo(1).durability(16));
+    }
 
-	@Override
-	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-		ItemStack stack = player.getItemInHand(hand);
-		HitResult hit = RaycastHelper.findDetachRift(player, RaycastHelper.RIFT);
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    ItemStack stack = player.getItemInHand(hand);
+    HitResult hit = RaycastHelper.findDetachRift(player, RaycastHelper.RIFT);
 
-		if (world.isClientSide) {
-			return InteractionResultHolder.fail(stack);
-		} else {
-			if (RaycastHelper.hitsRift(hit, world)) {
-				RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
+    if (world.isClientSide) {
+        return InteractionResultHolder.fail(stack);
+    } else {
+        if (RaycastHelper.hitsRift(hit, world)) {
+        RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
 
-				if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() < IdCounter.get(stack)) {
-					EntityUtils.chat(player, Component.literal("Id: " + ((IdMarker) rift.getDestination()).getId()));
-				} else {
-					int id = IdCounter.getAndIncrement(stack);
+        if (rift.getDestination() instanceof IdMarker && ((IdMarker) rift.getDestination()).getId() < IdCounter.get(stack)) {
+            EntityUtils.chat(player, Component.literal("Id: " + ((IdMarker) rift.getDestination()).getId()));
+        } else {
+            int id = IdCounter.getAndIncrement(stack);
 
-					ServerPacketHandler.sync((ServerPlayer) player, stack, hand);
+            ServerPacketHandler.sync((ServerPlayer) player, stack, hand);
 
-					EntityUtils.chat(player, Component.literal("Rift stripped of data and set to target id: " + id));
+            EntityUtils.chat(player, Component.literal("Rift stripped of data and set to target id: " + id));
 
-					rift.setDestination(new IdMarker(id));
-				}
+            rift.setDestination(new IdMarker(id));
+        }
 
-				return InteractionResultHolder.success(stack);
-			} else {
-				EntityUtils.chat(player, Component.literal("Current Count: " + IdCounter.count(stack)));
-			}
-		}
+        return InteractionResultHolder.success(stack);
+        } else {
+        EntityUtils.chat(player, Component.literal("Current Count: " + IdCounter.count(stack)));
+        }
+    }
 
-		return InteractionResultHolder.success(stack);
-	}
+    return InteractionResultHolder.success(stack);
+    }
 
-	@Override
-	public CompoundEventResult<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
-		var stack = player.getItemInHand(hand);
+    @Override
+    public CompoundEventResult<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
+    var stack = player.getItemInHand(hand);
 
-		if (world.isClientSide) {
-			if (player.isShiftKeyDown()) {
-				if (IdCounter.get(stack) != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
-					return CompoundEventResult.interruptTrue(true);
-				}
+    if (world.isClientSide) {
+        if (player.isShiftKeyDown()) {
+        if (IdCounter.get(stack) != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
+            return CompoundEventResult.interruptTrue(true);
+        }
 
-				return CompoundEventResult.interruptFalse(false);
-			}
-		} else {
-			if (player.isShiftKeyDown()) {
-				BlockEntity blockEntity = world.getBlockEntity(pos);
-				if (blockEntity instanceof RiftBlockEntity) {
-					RiftBlockEntity rift = (RiftBlockEntity) blockEntity;
-					if (!(rift.getDestination() instanceof IdMarker) || ((IdMarker) rift.getDestination()).getId() != -1) {
-						rift.setDestination(new IdMarker(-1));
-						EntityUtils.chat(player, Component.literal("Rift stripped of data and set to invalid id: -1"));
-						return CompoundEventResult.interruptTrue(false);
-					}
-				} else if (IdCounter.get(stack) != 0) {
-					IdCounter.set(stack, 0);
+        return CompoundEventResult.interruptFalse(false);
+        }
+    } else {
+        if (player.isShiftKeyDown()) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof RiftBlockEntity) {
+            RiftBlockEntity rift = (RiftBlockEntity) blockEntity;
+            if (!(rift.getDestination() instanceof IdMarker) || ((IdMarker) rift.getDestination()).getId() != -1) {
+            rift.setDestination(new IdMarker(-1));
+            EntityUtils.chat(player, Component.literal("Rift stripped of data and set to invalid id: -1"));
+            return CompoundEventResult.interruptTrue(false);
+            }
+        } else if (IdCounter.get(stack) != 0) {
+            IdCounter.set(stack, 0);
 
-					ServerPacketHandler.sync((ServerPlayer) player, stack, hand);
+            ServerPacketHandler.sync((ServerPlayer) player, stack, hand);
 
-					EntityUtils.chat(player, Component.literal("Counter has been reset."));
-					return CompoundEventResult.interruptTrue(false);
-				}
-			}
-		}
-		return CompoundEventResult.interruptTrue(false);
-	}
+            EntityUtils.chat(player, Component.literal("Counter has been reset."));
+            return CompoundEventResult.interruptTrue(false);
+        }
+        }
+    }
+    return CompoundEventResult.interruptTrue(false);
+    }
 
-	@Override
-	@Environment(CLIENT)
-	public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
-		if (I18n.exists(this.getDescriptionId() + ".info")) {
-			list.add(Component.translatable(this.getDescriptionId() + ".info"));
-		}
-	}
+    @Override
+    @Environment(CLIENT)
+    public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
+    if (I18n.exists(this.getDescriptionId() + ".info")) {
+        list.add(Component.translatable(this.getDescriptionId() + ".info"));
+    }
+    }
 }

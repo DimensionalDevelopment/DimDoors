@@ -18,55 +18,55 @@
 //import java.util.function.BiPredicate;
 //
 //public abstract class SchematicGateway implements Gateway, BiPredicate<WorldGenLevel, BlockPos> {
-//	private Schematic schematic;
-//	private final String id;
-//	public static final BiMap<String, SchematicGateway> ID_SCHEMATIC_MAP = HashBiMap.create();
-//	private boolean replaced;
+//    private Schematic schematic;
+//    private final String id;
+//    public static final BiMap<String, SchematicGateway> ID_SCHEMATIC_MAP = HashBiMap.create();
+//    private boolean replaced;
 //
-//	public SchematicGateway(String id) {
-//		ID_SCHEMATIC_MAP.putIfAbsent(id, this);
-//		this.id = id;
-//	}
+//    public SchematicGateway(String id) {
+//    ID_SCHEMATIC_MAP.putIfAbsent(id, this);
+//    this.id = id;
+//    }
 //
-//	public void init() {
-//		String schematicJarDirectory = "/data/dimdoors/gateways/";
+//    public void init() {
+//    String schematicJarDirectory = "/data/dimdoors/gateways/";
 //
-//		try (InputStream stream = DimensionalDoors.class.getResourceAsStream(schematicJarDirectory + this.id + ".schem")) {
-//			if (stream == null) {
-//				throw new RuntimeException("Schematic '" + this.id + "' was not found in the jar.");
-//			}
-//			try {
-//				this.schematic = Schematic.fromNbt(NbtIo.readCompressed(stream));
-//			} catch (IOException ex) {
-//				throw new RuntimeException("Schematic file for " + this.id + " could not be read as a valid schematic NBT file.", ex);
-//			}
-//		} catch (IOException e) {
-//			throw new UncheckedIOException(e);
-//		}
-//	}
+//    try (InputStream stream = DimensionalDoors.class.getResourceAsStream(schematicJarDirectory + this.id + ".schem")) {
+//        if (stream == null) {
+//        throw new RuntimeException("Schematic '" + this.id + "' was not found in the jar.");
+//        }
+//        try {
+//        this.schematic = Schematic.fromNbt(NbtIo.readCompressed(stream));
+//        } catch (IOException ex) {
+//        throw new RuntimeException("Schematic file for " + this.id + " could not be read as a valid schematic NBT file.", ex);
+//        }
+//    } catch (IOException e) {
+//        throw new UncheckedIOException(e);
+//    }
+//    }
 //
-//	public final void generate(WorldGenLevel world, BlockPos pos) {
-//		if (DimensionalDoors.getConfig()
-//				.getWorldConfig()
-//				.gatewayDimBlacklist
-//				.contains(world.getLevel().dimension().location().toString())
-//		) {
-//			return;
-//		}
-//		if (!this.replaced) {
-//			TemplateUtils.replacePlaceholders(this.schematic, world);
-//			this.replaced = true;
-//		}
-//		SchematicPlacer.place(this.schematic, world, pos, BlockPlacementType.SECTION_NO_UPDATE_QUEUE_BLOCK_ENTITY);
-//		this.generateRandomBits(world, pos);
-//	}
+//    public final void generate(WorldGenLevel world, BlockPos pos) {
+//    if (DimensionalDoors.getConfig()
+//        .getWorldConfig()
+//        .gatewayDimBlacklist
+//        .contains(world.getLevel().dimension().location().toString())
+//    ) {
+//        return;
+//    }
+//    if (!this.replaced) {
+//        TemplateUtils.replacePlaceholders(this.schematic, world);
+//        this.replaced = true;
+//    }
+//    SchematicPlacer.place(this.schematic, world, pos, BlockPlacementType.SECTION_NO_UPDATE_QUEUE_BLOCK_ENTITY);
+//    this.generateRandomBits(world, pos);
+//    }
 //
-//	/**
-//	 * Generates randomized portions of the gateway structure (e.g. rubble, foliage)
-//	 *
-//	 * @param world - the world in which to generate the gateway
-//	 * @param pos   - the position at which the schematic is placed
-//	 */
-//	protected void generateRandomBits(WorldGenLevel world, BlockPos pos) {
-//	}
+//    /**
+//     * Generates randomized portions of the gateway structure (e.g. rubble, foliage)
+//     *
+//     * @param world - the world in which to generate the gateway
+//     * @param pos   - the position at which the schematic is placed
+//     */
+//    protected void generateRandomBits(WorldGenLevel world, BlockPos pos) {
+//    }
 //}

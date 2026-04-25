@@ -25,14 +25,14 @@ import static org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar.trans
 @Mixin(TrapDoorBlock.class)
 public class TrapDoorMixin implements DoorSoundProvider, RiftVariantProvider {
 
-	@Shadow
-	@Final
-	private BlockSetType type;
+    @Shadow
+    @Final
+    private BlockSetType type;
 
     @Override
-	public BlockSetType getSetType() {
-		return this.type;
-	}
+    public BlockSetType getSetType() {
+    return this.type;
+    }
 
     @Override
     public Optional<EntranceRiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {

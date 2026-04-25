@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(RedStoneWireBlock.class)
 public interface RedstoneWireBlockAccessor {
-	@Invoker
-	RedstoneSide invokeGetConnectingSide(BlockGetter blockGetter, BlockPos blockPos, Direction direction);
+    @Invoker
+    RedstoneSide invokeGetConnectingSide(BlockGetter blockGetter, BlockPos blockPos, Direction direction);
 }

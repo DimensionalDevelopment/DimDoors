@@ -9,11 +9,11 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 
 public record NetworkHandlerInitializedC2SPacket() implements CustomPacketPayload {
-	public static final StreamCodec<FriendlyByteBuf, NetworkHandlerInitializedC2SPacket> STREAM_CODEC = StreamCodec.unit(new NetworkHandlerInitializedC2SPacket());
-	public static final Type<NetworkHandlerInitializedC2SPacket> TYPE = new Type<NetworkHandlerInitializedC2SPacket>(DimensionalDoors.id("network_handler_initialized"));
+    public static final StreamCodec<FriendlyByteBuf, NetworkHandlerInitializedC2SPacket> STREAM_CODEC = StreamCodec.unit(new NetworkHandlerInitializedC2SPacket());
+    public static final Type<NetworkHandlerInitializedC2SPacket> TYPE = new Type<NetworkHandlerInitializedC2SPacket>(DimensionalDoors.id("network_handler_initialized"));
 
-	@Override
-	public Type<NetworkHandlerInitializedC2SPacket> type() {
-		return TYPE;
-	}
+    @Override
+    public Type<NetworkHandlerInitializedC2SPacket> type() {
+    return TYPE;
+    }
 }

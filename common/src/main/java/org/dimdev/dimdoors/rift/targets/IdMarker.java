@@ -11,31 +11,31 @@ import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class IdMarker extends VirtualTarget implements EntityTarget {
-	public static final MapCodec<IdMarker> CODEC = Codec.INT.xmap(IdMarker::new, IdMarker::getId).fieldOf("id");
+    public static final MapCodec<IdMarker> CODEC = Codec.INT.xmap(IdMarker::new, IdMarker::getId).fieldOf("id");
 
-	private final int id;
+    private final int id;
 
-	public IdMarker(int id) {
-		this.id = id;
-	}
+    public IdMarker(int id) {
+    this.id = id;
+    }
 
-	@Override
-	public VirtualTargetType<? extends VirtualTarget> getType() {
-		return VirtualTargetType.ID_MARKER.get();
-	}
+    @Override
+    public VirtualTargetType<? extends VirtualTarget> getType() {
+    return VirtualTargetType.ID_MARKER.get();
+    }
 
-	@Override
-	public VirtualTarget copy() {
-		return new IdMarker(id);
-	}
+    @Override
+    public VirtualTarget copy() {
+    return new IdMarker(id);
+    }
 
-	public int getId() {
-		return this.id;
-	}
+    public int getId() {
+    return this.id;
+    }
 
-	@Override
-	public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-		EntityUtils.chat(entity, Component.literal("This rift is configured for pocket dungeons. Its id is " + this.id));
-		return false;
-	}
+    @Override
+    public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+    EntityUtils.chat(entity, Component.literal("This rift is configured for pocket dungeons. Its id is " + this.id));
+    return false;
+    }
 }
