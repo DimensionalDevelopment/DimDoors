@@ -20,33 +20,27 @@ public class DungeonDimensionEffect implements DimensionSpecialEffectsExtensions
     public static DungeonDimensionEffect INSTANCE = new DungeonDimensionEffect();
 
     @Override
-    public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
-        return getEnvironmentAddon(level, camera.getBlockPosition()).map(EnvironmentAddon::getSky).map(data -> processSky(data, level, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog)).orElse(false);
+    public void renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+        getEnvironmentAddon(level, camera.getBlockPosition()).map(EnvironmentAddon::getSky).ifPresent(data -> processSky(data, level, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog));
     }
 
 
 
     @Override
-    public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
-        return getEnvironmentAddon(level, BlockPos.containing(camX, camY, camZ)).map(EnvironmentAddon::getCloud).map(data -> {
-            EnvironmentAddonClient.renderCloud(data, level, ticks, partialTick, poseStack, camX, camY, camZ, modelViewMatrix, projectionMatrix);
-            return true;
-        }).orElse(false);
+    public void renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
+        getEnvironmentAddon(level, BlockPos.containing(camX, camY, camZ)).map(EnvironmentAddon::getCloud).ifPresent(data -> EnvironmentAddonClient.renderCloud(data, level, ticks, partialTick, poseStack, camX, camY, camZ, modelViewMatrix, projectionMatrix));
     }
 
     @Override
-    public boolean renderWeather(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {
-        return getEnvironmentAddon(level, BlockPos.containing(camX, camY, camZ)).map(EnvironmentAddon::getWeather).map(data -> {
-            EnvironmentAddonClient.renderWeather(data, level, ticks, partialTick, lightTexture, camX, camY, camZ);
-            return true;
-        }).orElse(false);
+    public void renderWeather(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {
+        getEnvironmentAddon(level, BlockPos.containing(camX, camY, camZ)).map(EnvironmentAddon::getWeather).ifPresent(data -> EnvironmentAddonClient.renderWeather(data, level, ticks, partialTick, lightTexture, camX, camY, camZ));
     }
 
     private Optional<EnvironmentAddon> getEnvironmentAddon(ClientLevel level, BlockPos pos) {
         return ClientPacketListener.getAddonClient(PocketAddon.PocketAddonType.ENVIRONMENT_ADDON.get(), level, pos);
     }
 
-    private boolean processSky(SkyData data, ClientLevel level, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+    private void processSky(SkyData data, ClientLevel level, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
 //        setupFog.run();
         if (!isFoggy) {
             FogType fogtype = camera.getFluidInCamera();
@@ -58,7 +52,5 @@ public class DungeonDimensionEffect implements DimensionSpecialEffectsExtensions
             }
 
         }
-
-        return true;
     }
 }

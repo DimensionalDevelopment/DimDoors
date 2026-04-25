@@ -43,14 +43,12 @@ public class EnvironmentAddonClient {
         if(renderer != null) renderer.render(data, level, ticks, partialTick, poseStack, camX, camY, camZ, modelViewMatrix, projectionMatrix);
     }
 
-    public static <T extends SkyData> boolean renderSky(T data, ClientLevel level, PoseStack poseStack, Matrix4f projectionMatrix, float partialTick, boolean isFoggy, Runnable fogSetup, Camera camera) {
+    public static <T extends SkyData> void renderSky(T data, ClientLevel level, PoseStack poseStack, Matrix4f projectionMatrix, float partialTick, boolean isFoggy, Runnable fogSetup, Camera camera) {
         var renderer = (SkyRenderer<T>) SKY_RENDERERS.get(data.type());
 
         if(renderer != null) {
             renderer.render(data, level, poseStack, projectionMatrix, partialTick, isFoggy, fogSetup, camera);
-            return true;
         }
-        else return false;
     }
 
     interface CloudRenderer<T extends CloudData> {

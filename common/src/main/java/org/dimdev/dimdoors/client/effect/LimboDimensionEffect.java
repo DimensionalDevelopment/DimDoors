@@ -18,7 +18,7 @@ public class LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
     private static final ResourceLocation SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
 
     @Override
-    public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+    public void renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
         Matrix4f matrix4f = modelViewMatrix;
         Tesselator tessellator = Tesselator.getInstance();
         RenderSystem.enableBlend();
@@ -48,7 +48,5 @@ public class LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
         RenderSystem.depthMask(true);
 //        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
-
-        return true;
     }
 }

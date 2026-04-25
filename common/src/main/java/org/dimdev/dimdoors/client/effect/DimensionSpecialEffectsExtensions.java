@@ -13,25 +13,17 @@ public interface DimensionSpecialEffectsExtensions {
      *
      * @return true to prevent vanilla cloud rendering
      */
-    default boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
-    return true;
-    }
+    default void renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {}
 
     /**
      * Renders the sky of this dimension.
      *
      * @return true to prevent vanilla sky rendering
      */
-    default boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
-    return true;
-    }
+    default void renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {}
 
     /**
      * Renders the snow and rain effects of this dimension.
-     *
-     * @return true to prevent vanilla snow and rain rendering
      */
-    default boolean renderWeather(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {
-    return true;
-    }
+    default void renderWeather(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {;}
 }
