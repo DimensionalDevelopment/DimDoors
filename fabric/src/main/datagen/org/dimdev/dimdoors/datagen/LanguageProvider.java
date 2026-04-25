@@ -104,6 +104,13 @@ public class LanguageProvider extends FabricLanguageProvider {
         add(builder, ModBlocks.CLOD_BLOCK);
         add(builder, ModBlocks.CLOD_ORE);
         add(builder, ModBlocks.UNRAVELED_SPIKE);
+        add(builder, ModBlocks.PALE_SAND);
+        add(builder, ModBlocks.DARK_SAND_LAYER);
+        add(builder, ModBlocks.DARK_SAND);
+        add(builder, ModBlocks.LINT_LAYER);
+        add(builder, ModBlocks.STONE_SLAB);
+        add(builder, ModBlocks.STONE_STAIRS);
+        add(builder, ModBlocks.STONE_WALL);
 
         ModBlocks.DecayGroupSet.SETS.forEach(set -> addBlockSet(builder, set));
 

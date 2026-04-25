@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:weathered_cut_copper"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:oxidized_cut_copper",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#minecraft:shulker_boxes"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:trapped_chest",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

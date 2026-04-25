@@ -19,7 +19,7 @@ public class PostProcessShaderMixin {
 
 	@Inject(method = "process(F)V", at = @At("HEAD"), cancellable = true)
 	public void render(float time, CallbackInfo cir) {
-		effect.safeGetUniform("GameTime").set(RenderSystem.getShaderGameTime());
+//		effect.safeGetUniform("GameTime").set(RenderSystem.getShaderGameTime());
 	}
 
 	private Player getCameraPlayer() {

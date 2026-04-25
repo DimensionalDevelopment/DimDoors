@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:fluid",
+    "entry": "minecraft:lava"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:magma_block",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

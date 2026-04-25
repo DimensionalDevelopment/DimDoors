@@ -65,6 +65,9 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
 		generator.createTrivialCube(ModBlocks.CLOD_ORE.get());
 		generator.createTrivialCube(ModBlocks.CLOD_BLOCK.get());
+        registerSingleTextureCube(generator, ModBlocks.PALE_SAND.get(), ResourceLocation.parse("minecraft:block/white_concrete_powder"));
+        registerCarpetLikeBlock(generator, ModBlocks.DARK_SAND_LAYER.get(), TextureMapping.getBlockTexture(ModBlocks.DARK_SAND.get()));
+        registerCarpetLikeBlock(generator, ModBlocks.LINT_LAYER.get(), TextureMapping.getBlockTexture(ModBlocks.UNRAVELLED_FABRIC.get()));
 
         generateDecaySet(generator, Blocks.RED_SAND, ModBlocks.RED_SAND_SET);
         generateDecaySet(generator, Blocks.GRAVEL, ModBlocks.GRAVEL_SET);
@@ -111,6 +114,10 @@ public class DimDoorsModelProvider extends FabricModelProvider {
         generateDecaySet(generator, Blocks.SAND, ModBlocks.SAND_SET);
         generateDecaySet(generator, Blocks.END_STONE, ModBlocks.END_STONE_SET);
         generateDecaySet(generator, Blocks.NETHERRACK, ModBlocks.NETHERRACK_SET);
+        generator.family(Blocks.STONE)
+                .slab(ModBlocks.STONE_SLAB.get())
+                .stairs(ModBlocks.STONE_STAIRS.get())
+                .wall(ModBlocks.STONE_WALL.get());
 
 		generator.createTrivialCube(ModBlocks.DRIFTWOOD_LEAVES.get());
 		generator.createCrossBlockWithDefaultItem(ModBlocks.DRIFTWOOD_SAPLING.get(), BlockModelGenerators.TintState.NOT_TINTED); //TODO: Decide if we need potted version
@@ -132,22 +139,36 @@ public class DimDoorsModelProvider extends FabricModelProvider {
                 .fenceGate(set.gate().get());
     }
 
-    private void registerUnraveledSpike(BlockModelGenerators generator) {
-		PropertyDispatch.C2<Direction, DripstoneThickness> doubleProperty = PropertyDispatch.properties(BlockStateProperties.VERTICAL_DIRECTION, BlockStateProperties.DRIPSTONE_THICKNESS);
-		for (DripstoneThickness thickness : DripstoneThickness.values()) {
-			doubleProperty.select(Direction.UP, thickness, createPointedUnraveledspikeVariant(generator, Direction.UP, thickness));
+    private void registerSingleTextureCube(BlockModelGenerators generator, Block block, ResourceLocation texture) {
+        ResourceLocation model = ModelTemplates.CUBE_ALL.create(block, TextureMapping.cube(texture), generator.modelOutput);
+        generator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, model)));
+    }
+
+    private void registerCarpetLikeBlock(BlockModelGenerators generator, Block block, ResourceLocation texture) {
+        ResourceLocation model = ModelTemplates.CARPET.create(block, TextureMapping.wool(texture), generator.modelOutput);
+        generator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(block, Variant.variant().with(VariantProperties.MODEL, model)));
+    }
+
+	private void registerUnraveledSpike(BlockModelGenerators generators) {
+		generators.skipAutoItemBlock(ModBlocks.UNRAVELED_SPIKE.get());
+		PropertyDispatch.C2<Direction, DripstoneThickness> c2 = PropertyDispatch.properties(BlockStateProperties.VERTICAL_DIRECTION, BlockStateProperties.DRIPSTONE_THICKNESS);
+
+		for(DripstoneThickness dripstoneThickness : DripstoneThickness.values()) {
+			c2.select(Direction.UP, dripstoneThickness, createPointedDripstoneVariant(generators, Direction.UP, dripstoneThickness));
 		}
-		for (DripstoneThickness thickness : DripstoneThickness.values()) {
-			doubleProperty.select(Direction.DOWN, thickness, createPointedUnraveledspikeVariant(generator, Direction.DOWN, thickness));
+
+		for(DripstoneThickness dripstoneThickness : DripstoneThickness.values()) {
+			c2.select(Direction.DOWN, dripstoneThickness, createPointedDripstoneVariant(generators, Direction.DOWN, dripstoneThickness));
 		}
-		generator.blockStateOutput.accept(MultiVariantGenerator.multiVariant(ModBlocks.UNRAVELED_SPIKE.get()).with(doubleProperty));
+
+		generators.blockStateOutput.accept(MultiVariantGenerator.multiVariant(ModBlocks.UNRAVELED_SPIKE.get()).with(c2));
 	}
 
-	public final Variant createPointedUnraveledspikeVariant(BlockModelGenerators generators, Direction direction, DripstoneThickness dripstoneThickness) {
-		generators.skipAutoItemBlock(ModBlocks.UNRAVELED_SPIKE.get());
-		String string = "_" + direction.getSerializedName() + "_" + dripstoneThickness.getSerializedName();
+	final Variant createPointedDripstoneVariant(BlockModelGenerators generators, Direction direction, DripstoneThickness dripstoneThickness) {
+		String var10000 = direction.getSerializedName();
+		String string = "_" + var10000 + "_" + dripstoneThickness.getSerializedName();
 		TextureMapping textureMapping = TextureMapping.cross(TextureMapping.getBlockTexture(ModBlocks.UNRAVELED_SPIKE.get(), string));
-		return Variant.variant().with(VariantProperties.MODEL, ModelTemplates.CROSS.createWithSuffix(ModBlocks.UNRAVELED_SPIKE.get(), string, textureMapping, generators.modelOutput));
+		return Variant.variant().with(VariantProperties.MODEL, ModelTemplates.POINTED_DRIPSTONE.createWithSuffix(ModBlocks.UNRAVELLED_BLOCK.get(), string, textureMapping, generators.modelOutput));
 	}
 
 	public void registerDoor(BlockModelGenerators generator, Block doorBlock, Block textureSource) {

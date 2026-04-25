@@ -1,0 +1,16 @@
+{
+  "values": [
+    "minecraft:fern",
+    "minecraft:dead_bush",
+    "minecraft:hanging_roots",
+    "minecraft:seagrass",
+    "minecraft:tall_seagrass",
+    "minecraft:tall_grass",
+    "minecraft:large_fern",
+    "minecraft:nether_sprouts",
+    {
+      "id": "minecraft:short_grass",
+      "required": false
+    }
+  ]
+}

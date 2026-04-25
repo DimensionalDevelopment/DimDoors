@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/pointed_dripstone",
+  "textures": {
+    "cross": "dimdoors:block/unraveled_spike_up_base"
+  }
+}

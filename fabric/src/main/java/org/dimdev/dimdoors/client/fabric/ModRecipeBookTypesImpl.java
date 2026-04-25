@@ -8,8 +8,9 @@ import org.dimdev.dimdoors.fabric.mixin.RecipeBookSettingsAccessor;
 
 public class ModRecipeBookTypesImpl {
     public static RecipeBookType getRecipeBookType(String name) {
-        var type = ClassTinkerers.getEnum(RecipeBookType.class, "TESSELLATING");
-        ImmutableCollectionUtils.getAsMutableMap(RecipeBookSettingsAccessor::getTagFields, RecipeBookSettingsAccessor::setTagFields).put(type, Pair.of("isTessellatingGui", "isTessellatingFilteringCraftable"));
+        var type = ClassTinkerers.getEnum(RecipeBookType.class, name);
+        ImmutableCollectionUtils.getAsMutableMap(RecipeBookSettingsAccessor::getTagFields, RecipeBookSettingsAccessor::setTagFields)
+                .putIfAbsent(type, Pair.of("isTessellatingGui", "isTessellatingFilteringCraftable"));
         return type;
     }
 }

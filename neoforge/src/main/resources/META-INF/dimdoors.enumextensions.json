@@ -1,0 +1,31 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/world/inventory/RecipeBookType",
+      "name": "dimdoors_tessellating",
+      "constructor": "()V",
+      "parameters": {
+        "class": "org/dimdev/dimdoors/client/neoforge/ModRecipeBookTypesImpl",
+        "field": "TESSELLATING"
+      }
+    },
+    {
+      "enum": "net/minecraft/client/RecipeBookCategories",
+      "name": "dimdoors_tessellating_general",
+      "constructor": "(Ljava/util/function/Supplier;)V",
+      "parameters": {
+        "class": "org/dimdev/dimdoors/client/neoforge/ModRecipeBookGroupsImpl",
+        "field": "TESSELLATING_GENERAL"
+      }
+    },
+    {
+      "enum": "net/minecraft/client/RecipeBookCategories",
+      "name": "dimdoors_tessellating_search",
+      "constructor": "(Ljava/util/function/Supplier;)V",
+      "parameters": {
+        "class": "org/dimdev/dimdoors/client/neoforge/ModRecipeBookGroupsImpl",
+        "field": "TESSELLATING_SEARCH"
+      }
+    }
+  ]
+}

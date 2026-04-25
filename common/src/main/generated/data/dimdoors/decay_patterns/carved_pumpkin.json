@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:jack_o_lantern"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:carved_pumpkin",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

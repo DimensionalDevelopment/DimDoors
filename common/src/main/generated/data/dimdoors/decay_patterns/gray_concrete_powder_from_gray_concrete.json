@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:gray_concrete"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:gray_concrete_powder",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

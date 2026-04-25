@@ -14,8 +14,6 @@ import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
-import org.dimdev.dimdoors.client.CustomBreakBlockHandler;
-import org.dimdev.dimdoors.mixin.client.accessor.WorldRendererAccessor;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -117,7 +115,13 @@ public class ClientPacketListener {
 	}
 
 	public static void onRenderBreakBlock(RenderBreakBlockS2CPacket packet) {
-		CustomBreakBlockHandler.customBreakBlock(packet.pos(), packet.stage(), ((WorldRendererAccessor) Minecraft.getInstance().levelRenderer).getTicks());
+        Minecraft client = Minecraft.getInstance();
+        client.execute(() -> {
+            if (client.level == null) {
+                return;
+            }
+            client.levelRenderer.destroyBlockProgress(Long.hashCode(packet.pos().asLong()), packet.pos(), packet.stage());
+        });
 	}
 
     @Environment(EnvType.CLIENT)

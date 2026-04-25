@@ -25,30 +25,37 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAYS_TO_RUST = decaysTo("rust");
 	public static final TagKey<Block> DECAYS_TO_UNRAVELED_SPIKE = decaysTo("unraveled_spike");
 	public static final TagKey<Block> DECAYS_TO_WITHER_ROSE = decaysTo("wither_rose");
+	public static final TagKey<Block> DECAYS_TO_LINT_LAYER = decaysTo("lint_layer");
+	public static final TagKey<Block> DECAYS_TO_DARK_SAND_LAYER = decaysTo("dark_sand_layer");
+	public static final TagKey<Block> DECAYS_TO_PALE_SAND = decaysTo("pale_sand");
 	public static final TagKey<Block> DECAYS_TO_CLAY = decaysTo("clay");
 	public static final TagKey<Block> DECAYS_TO_CLAY_FENCE = decaysTo("clay_fence");
 	public static final TagKey<Block> DECAYS_TO_CLAY_GATE = decaysTo("clay_gate");
 	public static final TagKey<Block> DECAYS_TO_CLAY_BUTTON = decaysTo("clay_button");
 	public static final TagKey<Block> DECAYS_TO_CLAY_SLAB = decaysTo("clay_slab");
 	public static final TagKey<Block> DECAYS_TO_CLAY_STAIRS = decaysTo("clay_stairs");
-    public static final TagKey<Block> DECAYS_TO_CLAY_WALL = decaysTo("clay_stairs");
+    public static final TagKey<Block> DECAYS_TO_CLAY_WALL = decaysTo("clay_wall");
 
 	public static final TagKey<Block> DECAYS_TO_DARK_SAND = decaysTo("dark_sand");
-	public static final TagKey<Block> DECAYS_TO_DARK_SAND_FENCE = decaysTo("decay_dark_sand_fence");
-	public static final TagKey<Block> DECAYS_TO_DARK_SAND_BUTTON = decaysTo("decay_dark_sand_button");
-	public static final TagKey<Block> DECAYS_TO_DARK_SAND_SLAB = decaysTo("decay_dark_sand_slab");
-	public static final TagKey<Block> DECAYS_TO_DARK_SAND_STAIRS = decaysTo("decay_dark_sand_stairs");
-	public static final TagKey<Block> DECAYS_TO_DARK_SAND_WALL = decaysTo("decay_dark_sand_wall");
+	public static final TagKey<Block> DECAYS_TO_DARK_SAND_FENCE = decaysTo("dark_sand_fence");
+	public static final TagKey<Block> DECAYS_TO_DARK_SAND_GATE = decaysTo("dark_sand_gate");
+	public static final TagKey<Block> DECAYS_TO_DARK_SAND_BUTTON = decaysTo("dark_sand_button");
+	public static final TagKey<Block> DECAYS_TO_DARK_SAND_SLAB = decaysTo("dark_sand_slab");
+	public static final TagKey<Block> DECAYS_TO_DARK_SAND_STAIRS = decaysTo("dark_sand_stairs");
+	public static final TagKey<Block> DECAYS_TO_DARK_SAND_WALL = decaysTo("dark_sand_wall");
 
 	public static final TagKey<Block> DECAYS_TO_AMALGAM = decaysTo("amalgam");
     public static final TagKey<Block> DECAYS_TO_AMALGAM_DOOR = decaysTo("amalgam_door");
 	public static final TagKey<Block> DECAYS_TO_DIRT = decaysTo("dirt");
+	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_LEAVES = decaysTo("driftwood_leaves");
+	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_SAPLING = decaysTo("driftwood_sapling");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_PLANK = decaysTo("driftwood_plank");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_FENCE = decaysTo("driftwood_fence");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_GATE = decaysTo("driftwood_gate");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_BUTTON = decaysTo("driftwood_button");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_SLAB = decaysTo("driftwood_slab");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_STAIRS = decaysTo("driftwood_stairs");
+	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_TRAPDOOR = decaysTo("driftwood_trapdoor");
 	public static final TagKey<Block> DECAYS_TO_CHEST = decaysTo("chest");
 	public static final TagKey<Block> DECAYS_TO_SKELETON_SKULL = decaysTo("skeleton_skull");
 	public static final TagKey<Block> DECAYS_TO_SKELETON_WALL_SKULL = decaysTo("skeleton_wall_skull");
@@ -63,6 +70,7 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAYS_TO_MUD_BUTTON = decaysTo("mud_button");
 	public static final TagKey<Block> DECAYS_TO_MUD_SLAB = decaysTo("mud_slab");
 	public static final TagKey<Block> DECAYS_TO_MUD_STAIRS = decaysTo("mud_stairs");
+	public static final TagKey<Block> DECAYS_TO_MUD_WALL = decaysTo("mud_wall");
 	public static final TagKey<Block> DECAYS_TO_COBBLESTONE_SLAB = decaysTo("cobblestone_slab");
 	public static final TagKey<Block> DECAYS_TO_COBBLESTONE_STAIRS = decaysTo("cobblestone_stairs");
 	public static final TagKey<Block> DECAYS_TO_COBBLESTONE_WALL = decaysTo("cobblestone_wall");
@@ -99,6 +107,9 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAYS_TO_PRISMARINE_STAIRS = decaysTo("prismarine_stairs");
 	public static final TagKey<Block> DECAYS_TO_PRISMARINE_WALL = decaysTo("prismarine_wall");
 	public static final TagKey<Block> DECAYS_TO_STONE = decaysTo("stone");
+	public static final TagKey<Block> DECAYS_TO_STONE_SLAB = decaysTo("stone_slab");
+	public static final TagKey<Block> DECAYS_TO_STONE_STAIRS = decaysTo("stone_stairs");
+	public static final TagKey<Block> DECAYS_TO_STONE_WALL = decaysTo("stone_wall");
     public static final TagKey<Block> DECAYS_TO_GLASS = decaysTo("glass");
     public static final TagKey<Block> DECAYS_TO_GRAVEL = decaysTo("grave");
     public static final TagKey<Block> DECAYS_TO_GRAVEL_FENCE = decaysTo("gravel_fence");
@@ -127,6 +138,7 @@ public class ModBlockTags {
 	public static final TagKey<Block> DECAYS_TO_STONE_BRICK_WALL = decaysTo("stone_brick_wall");
 	public static final TagKey<Block> DECAYS_TO_DRIFTWOOD_LOG = decaysTo("driftwood_log");
 	public static final TagKey<Block> DECAYS_TO_UNRAVELED_FABRIC = decaysTo("unraveled_fabric");
+    public static final TagKey<Block> DECAYS_TO_UNRAVELED_WALL = decaysTo("unraveled_wall");
     public static final TagKey<Block> DECAYS_TO_MOSS_CARPET = decaysTo("moss_carpet");
 
     private static TagKey<Block> decaysTo(String id) {

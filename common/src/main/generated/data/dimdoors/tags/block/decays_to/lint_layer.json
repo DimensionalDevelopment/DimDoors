@@ -1,0 +1,15 @@
+{
+  "values": [
+    "minecraft:moss_carpet",
+    "minecraft:rail",
+    "dimdoors:dark_sand_layer",
+    "dimdoors:amalgam_trapdoor",
+    "dimdoors:driftwood_trapdoor",
+    "minecraft:snow",
+    "minecraft:redstone_wire",
+    "minecraft:redstone_torch",
+    "minecraft:redstone_wall_torch",
+    "minecraft:repeater",
+    "minecraft:comparator"
+  ]
+}

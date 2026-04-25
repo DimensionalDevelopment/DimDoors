@@ -1,0 +1,19 @@
+{
+  "values": [
+    "minecraft:lightning_rod",
+    "minecraft:lantern",
+    "minecraft:iron_bars",
+    "minecraft:chain",
+    "minecraft:end_rod",
+    "minecraft:pointed_dripstone",
+    "minecraft:torch",
+    {
+      "id": "#minecraft:flower_pots",
+      "required": false
+    },
+    {
+      "id": "#minecraft:candles",
+      "required": false
+    }
+  ]
+}

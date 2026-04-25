@@ -1,0 +1,13 @@
+{
+  "values": [
+    "minecraft:glow_lichen",
+    "minecraft:vine",
+    "minecraft:cave_vines",
+    "minecraft:cave_vines_plant",
+    "dimdoors:driftwood_trapdoor",
+    {
+      "id": "#minecraft:wool_carpets",
+      "required": false
+    }
+  ]
+}

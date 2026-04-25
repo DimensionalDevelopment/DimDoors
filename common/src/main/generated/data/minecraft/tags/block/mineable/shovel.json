@@ -1,6 +1,8 @@
 {
   "values": [
     "dimdoors:dark_sand",
+    "dimdoors:pale_sand",
+    "dimdoors:dark_sand_layer",
     "dimdoors:gravel_button",
     "dimdoors:gravel_wall",
     "dimdoors:gravel_fence",

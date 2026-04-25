@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "dimdoors:yellow_glazed_terracotta_wall"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "dimdoors:yellow_terracotta_wall",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

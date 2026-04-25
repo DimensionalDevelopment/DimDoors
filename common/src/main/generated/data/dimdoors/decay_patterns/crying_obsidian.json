@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:respawn_anchor"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:crying_obsidian",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

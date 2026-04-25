@@ -4,10 +4,14 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "client.RecipeBookCategoriesAccessor",
+    "client.RecipeBookCategoriesMixin",
+    "client.RecipeBookManagerMixin"
   ],
   "mixins": [
     "BlockBehaviourMixin",
-    "ItemStackMixin"
+    "ItemStackMixin",
+    "RecipeBookSettingsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

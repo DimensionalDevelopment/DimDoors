@@ -31,11 +31,15 @@ public final class DimDoorsRecipes {
 	public DimDoorsRecipes(IIngredientManager ingredientManager) {
 		Minecraft minecraft = Minecraft.getInstance();
 		ClientLevel world = minecraft.level;
-		this.recipeManager = world.getRecipeManager();
+		this.recipeManager = world != null ? world.getRecipeManager() : null;
 		this.ingredientManager = ingredientManager;
 	}
 
 	public Map<Boolean, List<RecipeHolder<TesselatingRecipe>>> getTesselating(IRecipeCategory<RecipeHolder<TesselatingRecipe>> craftingCategory) {
+		if (recipeManager == null) {
+			return Map.of(true, List.of(), false, List.of());
+		}
+
 		var validator = new CategoryRecipeValidator<>(craftingCategory, ingredientManager, 9);
 
 		List<RecipeHolder<TesselatingRecipe>> handled = new ArrayList<>();

@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/mud_fence"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "dimdoors:mud_fence",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

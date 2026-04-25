@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/air"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:air",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

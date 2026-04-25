@@ -199,6 +199,16 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 		}
 	}
 
+	public void addOpenContainer(TessellatingContainer container) {
+		if (!this.openContainers.contains(container)) {
+			this.openContainers.add(container);
+		}
+	}
+
+	public void removeOpenContainer(TessellatingContainer container) {
+		this.openContainers.remove(container);
+	}
+
 	@Override
 	public boolean stillValid(Player player) {
 		return player.getOnPos().distSqr(this.worldPosition) <= 64.0D;

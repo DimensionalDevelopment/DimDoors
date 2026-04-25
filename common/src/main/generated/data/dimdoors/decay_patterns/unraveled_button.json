@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/unraveled_button"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "dimdoors:unraveled_button",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

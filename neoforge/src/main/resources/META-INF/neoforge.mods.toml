@@ -8,6 +8,7 @@ modId = "dimdoors"
 version = "${version}"
 displayName = "DimensionalDoors"
 authors = "StevenRS11, SenseiKiwi, Zixiken, Waterpicker, Robijnvogel, ZombieHDGaming, Runemoro"
+enumExtensions = "META-INF/dimdoors.enumextensions.json"
 description = '''
 Bend and twist reality, creating rifts, pocket dimensions, and much more
 '''

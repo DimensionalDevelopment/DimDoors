@@ -21,14 +21,17 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class PreventBlockModificationAddon implements PocketAddon, InteractionEvent.LeftClickBlock, UseItemOnBlockCallback {
-	public static ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");
-    public static MapCodec<PreventBlockModificationAddon> CODEC = MapCodec.unit(PreventBlockModificationAddon::new);
-    public static StreamCodec<RegistryFriendlyByteBuf, PreventBlockModificationAddon> STREAM_CODEC = StreamCodec.unit(PreventBlockModificationAddon.instance());
+public final class PreventBlockModificationAddon implements PocketAddon, InteractionEvent.LeftClickBlock, UseItemOnBlockCallback {
+	public static final ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");
     private static final PreventBlockModificationAddon INSTANCE = new PreventBlockModificationAddon();
+    public static final MapCodec<PreventBlockModificationAddon> CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, PreventBlockModificationAddon> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     public static PreventBlockModificationAddon instance() {
         return INSTANCE;
+    }
+
+    private PreventBlockModificationAddon() {
     }
 
 
@@ -62,7 +65,7 @@ public class PreventBlockModificationAddon implements PocketAddon, InteractionEv
 
 		@Override
 		public void apply(Pocket pocket) {
-			pocket.addAddon(new PreventBlockModificationAddon());
+			pocket.addAddon(PreventBlockModificationAddon.instance());
 		}
 
 		@Override

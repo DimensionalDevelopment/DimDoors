@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/driftwood_trapdoor"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "dimdoors:driftwood_trapdoor",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

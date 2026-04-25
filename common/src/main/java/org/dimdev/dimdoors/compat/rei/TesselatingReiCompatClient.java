@@ -11,9 +11,9 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.Display;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.compat.rei.decay.DecayDisplayGenerator;
 import org.dimdev.dimdoors.compat.rei.decay.DecayPatternDisplay;
 import org.dimdev.dimdoors.compat.rei.decay.DefaultDecaysIntoCategory;
 import org.dimdev.dimdoors.compat.rei.tesselating.DefaultTesselatingCategory;
@@ -24,16 +24,14 @@ import org.dimdev.dimdoors.recipe.ModRecipeTypes;
 import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
 import org.dimdev.dimdoors.recipe.TesselatingShapelessRecipe;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
-import org.dimdev.dimdoors.world.decay.Decay;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 public class TesselatingReiCompatClient implements REIClientPlugin {
     public static final CategoryIdentifier<? extends DefaultTesselatingDisplay<?>> TESSELATING = CategoryIdentifier.of("dimdoors", "tesselating");
     public static final CategoryIdentifier<DecayPatternDisplay> DECAYS_INTO = CategoryIdentifier.of("dimdoors", "decays_into");
+    private static final DecayDisplayGenerator DECAY_DISPLAY_GENERATOR = new DecayDisplayGenerator();
+
     @Override
     public void registerCategories(CategoryRegistry registry) {
         registry.add(new DefaultTesselatingCategory(), configuration -> configuration.addWorkstations(EntryStacks.of(ModBlocks.TESSELATING_LOOM.get())));
@@ -44,16 +42,7 @@ public class TesselatingReiCompatClient implements REIClientPlugin {
     public void registerDisplays(DisplayRegistry registry) {
         registry.registerRecipeFiller(ShapedTesselatingRecipe.class, ModRecipeTypes.TESSELATING.get(), (Function<RecipeHolder<ShapedTesselatingRecipe>, Display>) DefaultTesselatingShapedDisplay::new);
         registry.registerRecipeFiller(TesselatingShapelessRecipe.class, ModRecipeTypes.TESSELATING.get(), (Function<RecipeHolder<TesselatingShapelessRecipe>, Display>) DefaultTesselatingShapelessDisplay::new);
-
-        var registryAccess = DimensionalDoors.getServer().registryAccess();
-
-        var list = Decay.DecayLoader.getPatterns()
-                .entrySet().stream()
-                .map(Map.Entry::getValue)
-                .flatMap(Collection::stream)
-                .flatMap(a -> DecayPatternDisplay.list(a, registryAccess).stream())
-                .toList();
-        list.forEach(registry::add);
+        registry.registerDisplayGenerator(DECAYS_INTO, DECAY_DISPLAY_GENERATOR);
     }
 
     @Override

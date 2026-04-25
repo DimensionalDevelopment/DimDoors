@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "dimdoors:driftwood_door"
+  },
+  "result": {
+    "type": "dimdoors:double_block",
+    "block": "dimdoors:driftwood_trapdoor",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

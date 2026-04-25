@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:green_terracotta"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:terracotta",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

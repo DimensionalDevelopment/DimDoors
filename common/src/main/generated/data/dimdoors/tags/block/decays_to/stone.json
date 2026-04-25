@@ -1,0 +1,20 @@
+{
+  "values": [
+    "dimdoors:amalgam_block",
+    "dimdoors:amalgam_ore",
+    "minecraft:basalt",
+    "minecraft:blackstone",
+    "minecraft:calcite",
+    "dimdoors:clod_ore",
+    "minecraft:cobblestone",
+    "minecraft:deepslate",
+    "minecraft:end_stone",
+    "minecraft:glowstone",
+    "minecraft:netherrack",
+    "minecraft:obsidian",
+    "minecraft:prismarine",
+    "minecraft:smooth_stone",
+    "minecraft:stone_bricks",
+    "minecraft:tuff"
+  ]
+}

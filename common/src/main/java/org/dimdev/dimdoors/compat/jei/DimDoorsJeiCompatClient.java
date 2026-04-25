@@ -8,17 +8,20 @@ import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.compat.jei.decay.DecayCategory;
+import org.dimdev.dimdoors.compat.jei.decay.DecayRecipes;
 import org.dimdev.dimdoors.compat.jei.tesselating.DimDoorsRecipes;
 import org.dimdev.dimdoors.compat.jei.tesselating.TesselatingRecipeCategory;
 import org.jetbrains.annotations.Nullable;
 
+import static org.dimdev.dimdoors.compat.jei.ModRecipeTypes.DECAY;
 import static org.dimdev.dimdoors.compat.jei.ModRecipeTypes.TESSELATING;
 
 @JeiPlugin
 public class DimDoorsJeiCompatClient implements IModPlugin {
-    private static final ResourceLocation id = DimensionalDoors.id("tesselating");
+    private static final ResourceLocation id = DimensionalDoors.id("jei");
     @Nullable private TesselatingRecipeCategory tesselatingCategory;
-//    @Nullable private DecayCategory decayCategory;
+    @Nullable private DecayCategory decayCategory;
 
 
     @Override
@@ -29,7 +32,7 @@ public class DimDoorsJeiCompatClient implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(this.tesselatingCategory = new TesselatingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-//        registration.addRecipeCategories(this.decayCategory = new DecayCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(this.decayCategory = new DecayCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -46,6 +49,7 @@ public class DimDoorsJeiCompatClient implements IModPlugin {
         var handledTesselatingRecipes = tesselatingRecipes.get(true);
 
         registration.addRecipes(TESSELATING, handledTesselatingRecipes);
+        registration.addRecipes(DECAY, DecayRecipes.getDecays());
     }
 
     @Override
@@ -56,5 +60,6 @@ public class DimDoorsJeiCompatClient implements IModPlugin {
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(ModBlocks.TESSELATING_LOOM.get(), TESSELATING);
+        registration.addRecipeCatalyst(ModBlocks.UNRAVELLED_FABRIC.get(), DECAY);
     }
 }

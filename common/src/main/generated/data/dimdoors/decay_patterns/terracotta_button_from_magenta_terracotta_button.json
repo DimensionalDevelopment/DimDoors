@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "dimdoors:magenta_terracotta_button"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "dimdoors:terracotta_button",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

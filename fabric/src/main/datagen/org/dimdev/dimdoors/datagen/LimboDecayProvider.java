@@ -140,6 +140,10 @@ abstract public class LimboDecayProvider implements DataProvider {
 	}
 
 	protected DecayResult getProcessor(Object object, int entropy) {
+		if (object instanceof Supplier<?> supplier) {
+            object = supplier.get();
+        }
+
 		if(object instanceof Block block) return new SingleBlockDecayResult(entropy, 0.0f, block);
 		else if(object instanceof Fluid fluid) return new FluidDecayResult(entropy, 0.0f, fluid);
 		else return NoneDecayResult.instance();

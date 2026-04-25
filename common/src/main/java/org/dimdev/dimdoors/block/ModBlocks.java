@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -177,6 +178,12 @@ public final class ModBlocks {
     public static final RegistrySupplier<Block> DRIFTWOOD_TRAPDOOR = registerDecay("driftwood_trapdoor", () -> new TrapDoorBlock(BlockSetType.OAK, ofFullCopy(OAK_WOOD).mapColor(COLOR_GRAY).strength(3.0F).sound(SoundType.WOOD).noOcclusion().isValidSpawn((state, world, pos, type) -> false)));
 
     public static final RegistrySupplier<Block> DARK_SAND = registerDecay("dark_sand", () -> new Block(ofFullCopy(SAND).mapColor(COLOR_BLACK).strength(0.5F).sound(SoundType.SAND)));
+    public static final RegistrySupplier<Block> PALE_SAND = registerDecay("pale_sand", () -> new ColoredFallingBlock(new ColorRGBA(0xFFF2E9D1), ofFullCopy(SAND).mapColor(COLOR_LIGHT_GRAY).strength(0.5F).sound(SoundType.SAND)));
+    public static final RegistrySupplier<Block> DARK_SAND_LAYER = registerDecay("dark_sand_layer", () -> new CarpetBlock(ofFullCopy(MOSS_CARPET).mapColor(COLOR_BLACK).sound(SoundType.SAND)));
+    public static final RegistrySupplier<Block> LINT_LAYER = registerDecay("lint_layer", () -> new CarpetBlock(ofFullCopy(MOSS_CARPET).mapColor(COLOR_LIGHT_GRAY)));
+    public static final RegistrySupplier<Block> STONE_SLAB = registerDecay("stone_slab", () -> new SlabBlock(of(STONE)));
+    public static final RegistrySupplier<Block> STONE_STAIRS = registerDecay("stone_stairs", () -> new StairBlock(STONE.defaultBlockState(), of(STONE)));
+    public static final RegistrySupplier<Block> STONE_WALL = registerDecay("stone_wall", () -> new WallBlock(of(STONE)));
 
     public record DecayGroupSet(
             RegistrySupplier<Block> fence,
@@ -264,8 +271,6 @@ public final class ModBlocks {
 
     public static final RegistrySupplier<Block> UNRAVELED_SPIKE = registerDecay("unraveled_spike", () -> new PointedDripstoneBlock(of(UNRAVELLED_FABRIC.get()).lightLevel(state -> 0))); //TODO: make this proper class later
 	public static final RegistrySupplier<Block> GRITTY_STONE = registerDecay("gritty_stone", () -> new Block(of(STONE)));
-//    public static final RegistrySupplier<Block> DARK_SAND_LAYER = register("dark_sand_layer", () -> new CarpetBlock(BlockBehaviour.Properties.ofFullCopy(SAND)));
-//    public static final RegistrySupplier<Block> LINT_LAYER = register("dark_sand_layer", () -> new CarpetBlock(BlockBehaviour.Properties.ofFullCopy(UNRAVELLED_FABRIC.get())));
 
 
     public static void init() {

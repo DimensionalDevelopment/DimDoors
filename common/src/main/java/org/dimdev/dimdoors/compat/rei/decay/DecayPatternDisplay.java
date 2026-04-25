@@ -15,13 +15,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import org.dimdev.dimdoors.compat.decay.DecayDisplayData;
 import org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient;
-import org.dimdev.dimdoors.world.decay.*;
-import org.dimdev.dimdoors.world.decay.conditions.Applicator;
+import org.dimdev.dimdoors.world.decay.DecayPatternHolder;
 import org.dimdev.dimdoors.world.decay.results.DecayResult;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class DecayPatternDisplay extends BasicDisplay {
     public DecayPatternDisplay(List<EntryIngredient> input, List<EntryIngredient> output, Optional<ResourceLocation> id) {
@@ -33,21 +34,10 @@ public class DecayPatternDisplay extends BasicDisplay {
     }
 
     public static List<DecayPatternDisplay> list(DecayPatternHolder patternHolder, RegistryAccess registryAccess) {
-        //TODO: Redo
-        return Collections.emptyList();
-
-//        var pattern = patternHolder.value();
-//        var output = List.of(pattern.result().produces().stream().map(DecayPatternDisplay::toEntryStack).collect(EntryIngredient.collector()));
-//        return pattern.conditions().stream()
-//                .flatMap(a -> {
-//                    return a instanceof Applicator<?> applicator ? applicator.constructApplicable(registryAccess) : Stream.<ResourceKey<?>>empty();
-//                })
-//                .map(a -> DecayPatternDisplay.toEntryStack(a))
-//                .filter(a -> !a.isEmpty())
-//                .map(stack -> EntryIngredient.of(stack))
-//                .map(o -> Collections.singletonList(o))
-//                .map(input ->  new DecayPatternDisplay(input, output))
-//                .toList();
+        return DecayDisplayData.list(patternHolder, registryAccess)
+                .map(DecayPatternDisplay::create)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
 //    public static DecayPatternDisplay of(DecayPatternHolder patternHolder) {
@@ -61,7 +51,7 @@ public class DecayPatternDisplay extends BasicDisplay {
         if(result.obj() instanceof Block block) {
             return EntryStack.of(VanillaEntryTypes.ITEM, new ItemStack(block, result.amount()));
         } else if(result.obj() instanceof Fluid fluid){
-            return EntryStack.of(VanillaEntryTypes.FLUID, FluidStack.create(fluid, result.amount()));
+            return EntryStack.of(VanillaEntryTypes.FLUID, FluidStack.create(fluid, FluidStack.bucketAmount() * result.amount()));
         } else {
             return EntryStack.empty();
         }
@@ -81,5 +71,28 @@ public class DecayPatternDisplay extends BasicDisplay {
     @Override
     public CategoryIdentifier<?> getCategoryIdentifier() {
         return TesselatingReiCompatClient.DECAYS_INTO;
+    }
+
+    private static DecayPatternDisplay create(DecayDisplayData data) {
+        EntryStack<?> inputStack = toEntryStack(data.input());
+
+        if (inputStack.isEmpty()) {
+            return null;
+        }
+
+        EntryIngredient output = data.outputs().stream()
+                .map(DecayPatternDisplay::toEntryStack)
+                .filter(stack -> !stack.isEmpty())
+                .collect(EntryIngredient.collector());
+
+        if (output.isEmpty()) {
+            return null;
+        }
+
+        return new DecayPatternDisplay(
+                List.of(EntryIngredient.of(inputStack)),
+                List.of(output),
+                Optional.of(data.id())
+        );
     }
 }

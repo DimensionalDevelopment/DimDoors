@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:crimson_nylium"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:mycelium",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

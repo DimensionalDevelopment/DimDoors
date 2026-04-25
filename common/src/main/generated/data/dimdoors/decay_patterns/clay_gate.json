@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/clay_gate"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "dimdoors:clay_gate",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

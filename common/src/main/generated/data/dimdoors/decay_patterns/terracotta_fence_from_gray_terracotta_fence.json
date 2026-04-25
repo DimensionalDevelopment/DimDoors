@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "dimdoors:gray_terracotta_fence"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "dimdoors:terracotta_fence",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

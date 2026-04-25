@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:beacon"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:redstone_lamp",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

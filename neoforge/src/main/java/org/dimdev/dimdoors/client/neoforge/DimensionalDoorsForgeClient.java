@@ -27,6 +27,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
+import org.dimdev.dimdoors.client.ModRecipeBookGroups;
 import org.dimdev.dimdoors.client.ModEntityModelLayers;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
@@ -38,7 +39,6 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
@@ -48,8 +48,19 @@ public class DimensionalDoorsForgeClient {
 
     @net.neoforged.bus.api.SubscribeEvent
     public static void setupClient(FMLClientSetupEvent event) {
-//        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterRecipeBookCategoriesEvent>) event1 -> org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent.EVENT.invoker().accept(new org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent(event1::registerAggregateCategory, event1::registerBookCategories, event1::registerRecipeCategoryFinder)));
         DimensionalDoorsClient.init();
+    }
+
+    @SubscribeEvent
+    public static void registerRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
+        ModRecipeBookGroups.init();
+        org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent.EVENT.invoker().accept(
+                new org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent(
+                        event::registerAggregateCategory,
+                        event::registerBookCategories,
+                        event::registerRecipeCategoryFinder
+                )
+        );
     }
 
     @SubscribeEvent

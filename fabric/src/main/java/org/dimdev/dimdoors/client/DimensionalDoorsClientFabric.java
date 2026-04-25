@@ -23,6 +23,7 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         DimensionalDoorsClient.init();
+        RecipeBookManager.init();
         ModelLoadingPlugin.register(new DimensionalDoorsModelLoadingPlugin());
 
         MenuScreens.register(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);

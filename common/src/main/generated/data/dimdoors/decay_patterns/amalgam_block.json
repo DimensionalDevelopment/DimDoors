@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/amalgam"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "dimdoors:amalgam_block",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

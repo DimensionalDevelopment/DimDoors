@@ -1,0 +1,11 @@
+{
+  "values": [
+    "minecraft:trapped_chest",
+    "minecraft:jukebox",
+    "minecraft:hopper",
+    {
+      "id": "#minecraft:shulker_boxes",
+      "required": false
+    }
+  ]
+}

@@ -12,6 +12,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -24,6 +25,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +42,8 @@ import java.util.stream.Collectors;
 public final class Decay {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Map<ResourceKey<Level>, Set<DecayTask>> DECAY_QUEUE = new HashMap<>();
+    private static final int BREAK_BLOCK_STAGE = 5;
+    private static final double BREAK_BLOCK_RENDER_DISTANCE = 100.0D;
 
 	/**
 	 * Checks the blocks orthogonally around a given location (presumably the location of an Unraveled Fabric block)
@@ -70,9 +75,7 @@ public final class Decay {
 
 		for(DecayPatternHolder pattern : patterns) {
             if (pattern.value().test(context)) {
-//                world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
-//                    ExtendedServerPlayNetworkHandler.get(player.connection).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, 5));
-//                });
+                sendBreakBlockProgress(world, context.targetBlockPos, BREAK_BLOCK_STAGE);
                 world.playSound(null, context.targetBlockPos, ModSoundEvents.TEARING.get(), SoundSource.BLOCKS, 0.5f, 1f);
                 queueDecay(context, pattern, DimensionalDoors.getConfig().getDecayConfig().decayDelay);
                 break;
@@ -98,6 +101,12 @@ public final class Decay {
 			tasksToRun.forEach(task -> task.process());
 		}
 	}
+
+    private static void sendBreakBlockProgress(ServerLevel world, BlockPos pos, int stage) {
+        var packet = new RenderBreakBlockS2CPacket(pos, stage);
+        world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), BREAK_BLOCK_RENDER_DISTANCE))
+                .forEach(player -> ServerPacketHandler.sendPacket(player, packet));
+    }
 
     public static class DecayLoader {
 		private static final Logger LOGGER = LogManager.getLogger();
@@ -176,16 +185,15 @@ public final class Decay {
 //			BlockState targetBlock = world.getBlockState(pos);
 //			FluidState targetFluid = world.getFluidState(pos);
 //
-//			world.getPlayers(EntitySelector.withinDistance(pos.getX(), pos.getY(), pos.getZ(), 100)).forEach(player -> {
-//				ExtendedServerPlayNetworkHandler.get(player.connection).getDimDoorsPacketHandler().sendPacket(new RenderBreakBlockS2CPacket(pos, -1));
-//			});
-//
 //			world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), targetBlock.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.5f, 1f);
+            sendBreakBlockProgress(context.world(), context.targetBlockPos(), -1);
 
 			if (context.source().decayIntoWorldThread()) {
-				if (DimensionalDoors.getConfig().getDecayConfig().decaysIntoAir)
+				if (DimensionalDoors.getConfig().getDecayConfig().decaysIntoAir) {
+                    var contents = DecayInventoryHelper.takeContents(context.world(), context.targetBlockPos());
 					context.world().setBlockAndUpdate(context.targetBlockPos, Blocks.AIR.defaultBlockState());
-				else processor.value().applyPattern(context);
+                    DecayInventoryHelper.drop(context.world(), context.targetBlockPos(), contents);
+                } else processor.value().applyPattern(context);
 			} else {
 				processor.value().applyPattern(context);
 			}

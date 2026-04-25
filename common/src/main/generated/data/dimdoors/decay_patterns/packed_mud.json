@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "minecraft:mud_bricks"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:packed_mud",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}

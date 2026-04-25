@@ -1,0 +1,29 @@
+{
+  "values": [
+    "minecraft:bone_block",
+    "minecraft:cactus",
+    "minecraft:cake",
+    "minecraft:chest",
+    "minecraft:coal_block",
+    "minecraft:cocoa",
+    "minecraft:composter",
+    "minecraft:dirt",
+    "minecraft:dried_kelp_block",
+    "dimdoors:driftwood_log",
+    "dimdoors:driftwood_planks",
+    "dimdoors:driftwood_wood",
+    "minecraft:hay_block",
+    "minecraft:honeycomb_block",
+    "minecraft:lectern",
+    "minecraft:melon",
+    "minecraft:moss_block",
+    "minecraft:nether_wart_block",
+    "minecraft:packed_mud",
+    "minecraft:piston",
+    "minecraft:pumpkin",
+    "minecraft:purpur_block",
+    "minecraft:skeleton_skull",
+    "minecraft:skeleton_wall_skull",
+    "minecraft:slime_block"
+  ]
+}

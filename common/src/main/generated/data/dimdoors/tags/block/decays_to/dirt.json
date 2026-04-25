@@ -1,0 +1,12 @@
+{
+  "values": [
+    "minecraft:grass_block",
+    "minecraft:rooted_dirt",
+    "minecraft:mycelium",
+    "minecraft:podzol",
+    {
+      "id": "minecraft:short_grass",
+      "required": false
+    }
+  ]
+}

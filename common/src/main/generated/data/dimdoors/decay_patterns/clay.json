@@ -1,0 +1,13 @@
+{
+  "type": "dimdoors:compound",
+  "conditions": {
+    "type": "dimdoors:block",
+    "entry": "#dimdoors:decays_to/clay"
+  },
+  "result": {
+    "type": "dimdoors:single_block",
+    "block": "minecraft:clay",
+    "entropy": 1,
+    "world_thread_chance": 0.0
+  }
+}
