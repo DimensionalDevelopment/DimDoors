@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/kawas_overworld_box",
+  "id": "dimdoors:dungeon/kawas_overworld_box",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

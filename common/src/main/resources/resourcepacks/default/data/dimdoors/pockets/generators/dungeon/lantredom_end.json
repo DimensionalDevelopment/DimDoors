@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/lantredom_end",
+  "id": "dimdoors:dungeon/lantredom_end",
   "builder": {
     "type": "dimdoors:pocket",
     "addons": [

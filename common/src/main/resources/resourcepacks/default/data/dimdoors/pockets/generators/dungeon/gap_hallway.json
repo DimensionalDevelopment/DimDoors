@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/gap_hallway",
+  "id": "dimdoors:dungeon/gap_hallway",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

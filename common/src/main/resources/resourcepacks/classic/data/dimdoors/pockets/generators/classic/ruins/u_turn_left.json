@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "classic/ruins/u_turn_left",
+      "id": "dimdoors:classic/ruins/u_turn_left",
   "builder": {
     "type": "dimdoors:pocket"
   },

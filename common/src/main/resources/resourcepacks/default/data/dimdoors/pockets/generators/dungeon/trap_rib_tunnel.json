@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dungeon/trap_rib_tunnel",
+  "id": "dimdoors:dungeon/trap_rib_tunnel",
   "builder": {
     "type": "dimdoors:pocket"
   },

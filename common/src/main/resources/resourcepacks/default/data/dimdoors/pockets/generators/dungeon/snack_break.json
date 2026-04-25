@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/snack_break",
+  "id": "dimdoors:dungeon/snack_break",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

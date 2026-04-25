@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/upwards_pillars",
+  "id": "dimdoors:dungeon/upwards_pillars",
   "builder": {
     "type": "dimdoors:pocket"
   },

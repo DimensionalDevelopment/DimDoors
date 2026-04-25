@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/missingno",
+  "id": "dimdoors:dungeon/missingno",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

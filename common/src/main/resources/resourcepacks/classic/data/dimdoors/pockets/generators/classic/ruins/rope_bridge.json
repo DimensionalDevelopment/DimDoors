@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "classic/ruins/rope_bridge",
+      "id": "dimdoors:classic/ruins/rope_bridge",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "myth/jungle_boss",
+  "id": "dimdoors:myth/jungle_boss",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "classic/ruins/small_exit_prison",
+      "id": "dimdoors:classic/ruins/small_exit_prison",
   "builder": {
     "type": "dimdoors:pocket"
   },

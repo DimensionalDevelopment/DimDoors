@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/freeroam_empty_street",
+  "id": "dimdoors:dungeon/freeroam_empty_street",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -95,17 +95,17 @@ public class PocketLoader {
     }
 
     private static BiFunction<Tag, Path<String>, PocketGenerator> pocketGeneratorLoader(ResourceManager manager, HolderLookup.Provider provider) {
-    return (nbt, ignore) -> {
-        return PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an CompoundTag!"), provider, manager);
-    };
+        return (nbt, ignore) -> {
+            return PocketGenerator.deserialize(NbtUtil.asNbtCompound(nbt, "Could not load PocketGenerator since its json does not represent an CompoundTag!"), provider, manager);
+        };
     }
 
     private static PocketTemplate loadPocketTemplate(CompoundTag nbt, Path<String> id) {
-    try {
-        return new PocketTemplate(Schematic.fromNbt(nbt), ResourceLocation.parse(id.reduce(String::concat).orElseThrow()));
-    } catch (Exception e) {
-        throw new RuntimeException("Error loading " + id.toString(), e);
-    }
+        try {
+            return new PocketTemplate(Schematic.fromNbt(nbt), ResourceLocation.parse(id.reduce(String::concat).orElseThrow()));
+        } catch (Exception e) {
+            throw new RuntimeException("Error loading " + id.toString(), e);
+        }
     }
 
     public static WeightedList<PocketGenerator, PocketGenerationContext> getPocketsMatchingTags(List<String> required, List<String> blackList, boolean exact) {

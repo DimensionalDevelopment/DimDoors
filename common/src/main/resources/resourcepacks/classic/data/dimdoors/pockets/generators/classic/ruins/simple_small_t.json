@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "classic/ruins/heart_of_disorder",
+      "id": "dimdoors:classic/ruins/heart_of_disorder",
   "builder": {
     "type": "dimdoors:pocket"
   },

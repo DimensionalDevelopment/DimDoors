@@ -15,10 +15,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +30,6 @@ import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -50,19 +47,19 @@ public final class Decay {
      * and applies Limbo decay to them. This gives the impression that decay spreads outward from Unraveled Fabric.
      */
     public static void applySpreadDecay(ServerLevel world, BlockPos pos, RandomSource random, DecaySource source) {
-    //Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
-    //full spread decay checks, which can also shift its performance impact on the game.
-    if (random.nextDouble() < DimensionalDoors.getConfig().getDecayConfig().decaySpreadChance) {
-        BlockState origin = world.getBlockState(pos);
+        //Check if we randomly apply decay spread or not. This can be used to moderate the frequency of
+        //full spread decay checks, which can also shift its performance impact on the game.
+        if (random.nextDouble() < DimensionalDoors.getConfig().getDecayConfig().decaySpreadChance) {
+            BlockState origin = world.getBlockState(pos);
 
-        //Apply decay to the blocks above, below, and on all four sides.
-        // TODO: make max amount configurable
-        int decayAmount = random.nextInt(5) + 1;
-        List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
-        for (int i = 0; i < decayAmount; i++) {
-         decayBlock(world, pos, origin, directions.remove(random.nextInt(5 - i)), source);
+            //Apply decay to the blocks above, below, and on all four sides.
+            // TODO: make max amount configurable
+            int decayAmount = random.nextInt(5) + 1;
+            List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
+            for (int i = 0; i < decayAmount; i++) {
+                decayBlock(world, pos, origin, directions.remove(random.nextInt(5 - i)), source);
+            }
         }
-    }
     }
 
     /**
@@ -84,22 +81,22 @@ public final class Decay {
     }
 
     public static void queueDecay(Decay.DecayContext context, DecayPatternHolder pattern, int delay) {
-    DecayTask task = new DecayTask(context, pattern, delay);
-    if (delay <= 0) {
-        task.process();
-    } else {
-        DECAY_QUEUE.computeIfAbsent(context.world().dimension(), k -> new HashSet<>()).add(task);
-    }
+        DecayTask task = new DecayTask(context, pattern, delay);
+        if (delay <= 0) {
+            task.process();
+        } else {
+            DECAY_QUEUE.computeIfAbsent(context.world().dimension(), k -> new HashSet<>()).add(task);
+        }
     }
 
     public static void tick(ServerLevel world) {
-    ResourceKey<Level> key = world.dimension();
-    if (DECAY_QUEUE.containsKey(key)) {
-        Set<DecayTask> tasks = DECAY_QUEUE.get(key);
-        Set<DecayTask> tasksToRun = tasks.stream().filter(DecayTask::reduceDelayIsDone).collect(Collectors.toSet());
-        tasks.removeAll(tasksToRun);
-        tasksToRun.forEach(task -> task.process());
-    }
+        ResourceKey<Level> key = world.dimension();
+        if (DECAY_QUEUE.containsKey(key)) {
+            Set<DecayTask> tasks = DECAY_QUEUE.get(key);
+            Set<DecayTask> tasksToRun = tasks.stream().filter(DecayTask::reduceDelayIsDone).collect(Collectors.toSet());
+            tasks.removeAll(tasksToRun);
+            tasksToRun.forEach(task -> task.process());
+        }
     }
 
     private static void sendBreakBlockProgress(ServerLevel world, BlockPos pos, int stage) {
@@ -112,7 +109,6 @@ public final class Decay {
     private static final Logger LOGGER = LogManager.getLogger();
 
         private static final Map<ResourceKey<?>, List<DecayPatternHolder>> patterns = new HashMap<>();
-        private static final List<ResourceKey<? extends Registry<?>>> SUPPORTED_REGISTRIES = List.of(Registries.BLOCK, Registries.FLUID, Registries.PAINTING_VARIANT);
 
         private static List<DecayPatternHolder> undiffernitatedPatterns = new ArrayList<>();
 
@@ -167,40 +163,36 @@ public final class Decay {
     private static class DecayTask {
         private final Decay.DecayContext context;
 
-    private final DecayPatternHolder processor;
-    private int delay;
+        private final DecayPatternHolder processor;
+        private int delay;
 
 
-    public DecayTask(Decay.DecayContext context, DecayPatternHolder pattern, int delay) {
+        public DecayTask(Decay.DecayContext context, DecayPatternHolder pattern, int delay) {
             this.context = context;
             this.processor = pattern;
-        this.delay = delay;
-    }
+            this.delay = delay;
+        }
 
-    public boolean reduceDelayIsDone() {
-        return --delay <= 0;
-    }
+        public boolean reduceDelayIsDone() {
+            return --delay <= 0;
+        }
 
-    public void process() {
-//        BlockState targetBlock = world.getBlockState(pos);
-//        FluidState targetFluid = world.getFluidState(pos);
-//
-//        world.playSound(null, pos.getX(), pos.getY(), pos.getZ(), targetBlock.getSoundType().getBreakSound(), SoundSource.BLOCKS, 0.5f, 1f);
+        public void process() {
             sendBreakBlockProgress(context.world(), context.targetBlockPos(), -1);
 
-        if (context.source().decayIntoWorldThread()) {
-        if (DimensionalDoors.getConfig().getDecayConfig().decaysIntoAir) {
+            if (context.source().decayIntoWorldThread()) {
+                if (DimensionalDoors.getConfig().getDecayConfig().decaysIntoAir) {
                     var contents = DecayInventoryHelper.takeContents(context.world(), context.targetBlockPos());
-            context.world().setBlockAndUpdate(context.targetBlockPos, Blocks.AIR.defaultBlockState());
+                    context.world().setBlockAndUpdate(context.targetBlockPos, Blocks.AIR.defaultBlockState());
                     DecayInventoryHelper.drop(context.world(), context.targetBlockPos(), contents);
                 } else processor.value().applyPattern(context);
-        } else {
-        processor.value().applyPattern(context);
+            } else {
+                processor.value().applyPattern(context);
+            }
         }
     }
-    }
 
-    public static record DecayContext(ServerLevel world, BlockPos originBlockPos, BlockState originBlockState, BlockPos targetBlockPos, BlockState targetBlockState, FluidState targetFluidState, @Nullable Entity targetEntity, DecaySource source) {
+    public record DecayContext(ServerLevel world, BlockPos originBlockPos, BlockState originBlockState, BlockPos targetBlockPos, BlockState targetBlockState, FluidState targetFluidState, @Nullable Entity targetEntity, DecaySource source) {
 
         public static DecayContext create(ServerLevel world, BlockPos originBlockPos, BlockState originBlockState, Direction direction, DecaySource source) {
             var targetPos = originBlockPos.relative(direction);

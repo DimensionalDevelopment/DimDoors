@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dungeon/ruins_stairwell_up",
+  "id": "dimdoors:dungeon/ruins_stairwell_up",
   "builder": {
     "type": "dimdoors:pocket"
   },

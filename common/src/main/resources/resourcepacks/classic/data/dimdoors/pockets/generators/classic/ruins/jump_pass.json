@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "classic/ruins/jump_pass",
+      "id": "dimdoors:classic/ruins/jump_pass",
   "builder": {
     "type": "dimdoors:pocket"
   },

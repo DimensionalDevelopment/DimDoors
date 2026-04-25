@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/river_road_twin_bridges",
+  "id": "dimdoors:dungeon/river_road_twin_bridges",
   "builder": {
     "type": "dimdoors:pocket"
   },

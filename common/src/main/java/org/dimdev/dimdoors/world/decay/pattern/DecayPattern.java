@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface DecayPattern {
-    Codec<DecayPattern> CODEC = DecayPatternType.CODEC.dispatch("type", DecayPattern::getType, DecayPatternType::codec);
+    Codec<DecayPattern> CODEC = DecayPatternType.CODEC.dispatch(DecayPattern::getType, DecayPatternType::codec);
 
     DecayPatternType<? extends DecayPattern> getType();
 

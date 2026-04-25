@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/loutro",
+  "id": "dimdoors:dungeon/loutro",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/mob_prison",
+  "id": "dimdoors:dungeon/mob_prison",
   "builder": {
     "type": "dimdoors:pocket"
   },

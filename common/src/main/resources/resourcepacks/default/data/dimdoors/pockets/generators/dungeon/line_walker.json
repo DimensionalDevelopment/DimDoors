@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/line_walker",
+  "id": "dimdoors:dungeon/line_walker",
   "builder": {
     "type": "dimdoors:pocket"
   },

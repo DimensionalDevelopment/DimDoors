@@ -27,18 +27,18 @@ public class IdReference extends PocketGeneratorReference {
     super.fromNbt(nbt, provider, manager);
 
     // TODO: make the json need the "dimdoors:" as well and load id via Identifier#tryParse instead
-    id = DimensionalDoors.id(nbt.getString("id"));
+    id = ResourceLocation.tryParse(nbt.getString("id"));
 
     return this;
     }
 
     @Override
     protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    super.toNbtInternal(nbt, provider, allowReference);
+        super.toNbtInternal(nbt, provider, allowReference);
 
-    nbt.putString("id", id.getPath());
+        nbt.putString("id", id.toString());
 
-    return nbt;
+        return nbt;
     }
 
     @Override

@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dungeon/freeroam_graveyard",
+  "id": "dimdoors:dungeon/freeroam_graveyard",
   "builder": {
     "type": "dimdoors:pocket"
   },

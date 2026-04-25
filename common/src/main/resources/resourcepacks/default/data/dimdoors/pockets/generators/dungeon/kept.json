@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/kept",
+  "id": "dimdoors:dungeon/kept",
   "modifiers": [
     {
       "type": "dimdoors:rift_data",

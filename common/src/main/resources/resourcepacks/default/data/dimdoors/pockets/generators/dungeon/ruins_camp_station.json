@@ -1,7 +1,7 @@
 {
   "type": "dimdoors:schematic",
   "setup_loot": true,
-  "id": "dungeon/ruins_camp_station",
+  "id": "dimdoors:dungeon/ruins_camp_station",
   "builder": {
     "type": "dimdoors:pocket"
   },

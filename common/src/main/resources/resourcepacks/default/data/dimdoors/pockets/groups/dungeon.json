@@ -5,6 +5,6 @@
     },
     {
       "type": "dimdoors:id",
-      "id": "lab/lab_hallway"
+      "id": "dimdoors:lab/lab_hallway"
     }
 ]

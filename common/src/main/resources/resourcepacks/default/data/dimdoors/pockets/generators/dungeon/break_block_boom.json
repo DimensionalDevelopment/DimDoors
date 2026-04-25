@@ -19,5 +19,5 @@
       "rift_data": "dimdoors:default_dungeon"
     }
   ],
-  "id": "dungeon/break_block_boom"
+  "id": "dimdoors:dungeon/break_block_boom"
 }

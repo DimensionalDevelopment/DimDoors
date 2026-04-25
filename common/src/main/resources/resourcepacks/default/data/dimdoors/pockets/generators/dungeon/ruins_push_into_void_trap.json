@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/ruins_push_into_void_trap",
+  "id": "dimdoors:dungeon/ruins_push_into_void_trap",
   "builder": {
     "type": "dimdoors:pocket"
   },

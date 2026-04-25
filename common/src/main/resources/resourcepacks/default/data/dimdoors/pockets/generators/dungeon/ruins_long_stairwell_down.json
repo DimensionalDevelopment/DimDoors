@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/ruins_long_stairwell_down",
+  "id": "dimdoors:dungeon/ruins_long_stairwell_down",
   "builder": {
     "type": "dimdoors:pocket"
   },

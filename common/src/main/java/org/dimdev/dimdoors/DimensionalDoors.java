@@ -146,7 +146,7 @@ public class DimensionalDoors {
         initBuiltinPacks();
 
         registerServerLoader("pocket_loader", PocketLoader::reload);
-        registerServerLoader("decay_loader", Decay.DecayLoader::reload);
+        registerServerLoader("decay_loader", Decay.DecayLoader::reload, true);
         registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
 
         LifecycleEvent.SERVER_STARTING.register(new LifecycleEvent.ServerState() {

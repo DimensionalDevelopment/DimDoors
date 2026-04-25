@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/lantredom_red",
+  "id": "dimdoors:dungeon/lantredom_red",
   "builder": {
     "type": "dimdoors:pocket"
   },

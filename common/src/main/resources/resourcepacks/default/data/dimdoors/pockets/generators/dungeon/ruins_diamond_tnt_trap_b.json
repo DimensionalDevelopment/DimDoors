@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/ruins_diamond_tnt_trap_b",
+  "id": "dimdoors:dungeon/ruins_diamond_tnt_trap_b",
   "builder": {
     "type": "dimdoors:pocket"
   },

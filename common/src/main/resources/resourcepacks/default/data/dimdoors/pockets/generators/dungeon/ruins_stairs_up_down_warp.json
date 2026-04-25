@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/ruins_stairs_up_down_warp",
+  "id": "dimdoors:dungeon/ruins_stairs_up_down_warp",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "lab/telecommunications",
+  "id": "dimdoors:lab/telecommunications",
   "builder": {
     "type": "dimdoors:pocket"
   },

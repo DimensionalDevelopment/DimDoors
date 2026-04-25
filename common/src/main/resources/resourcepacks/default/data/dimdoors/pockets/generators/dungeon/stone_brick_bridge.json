@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/stone_brick_bridge",
+  "id": "dimdoors:dungeon/stone_brick_bridge",
   "builder": {
     "type": "dimdoors:pocket"
   },

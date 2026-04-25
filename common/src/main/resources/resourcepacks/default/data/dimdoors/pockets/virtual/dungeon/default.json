@@ -1,303 +1,303 @@
 [
   {
-    "id": "dungeon/waiting_room",
+    "id": "dimdoors:dungeon/waiting_room",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/mob_prison",
+    "id": "dimdoors:dungeon/mob_prison",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/rising_hand",
+    "id": "dimdoors:dungeon/rising_hand",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/honey_parkour",
+    "id": "dimdoors:dungeon/honey_parkour",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/stone_brick_bridge",
+    "id": "dimdoors:dungeon/stone_brick_bridge",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/upwards_pillars",
+    "id": "dimdoors:dungeon/upwards_pillars",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/party",
+    "id": "dimdoors:dungeon/party",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/monolith_cage",
+    "id": "dimdoors:dungeon/monolith_cage",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/returning_eye",
+    "id": "dimdoors:dungeon/returning_eye",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/silverfish_bridge",
+    "id": "dimdoors:dungeon/silverfish_bridge",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/upwards_t_treasure",
+    "id": "dimdoors:dungeon/upwards_t_treasure",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/trap_rib_tunnel",
+    "id": "dimdoors:dungeon/trap_rib_tunnel",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/river_road_twin_bridges",
+    "id": "dimdoors:dungeon/river_road_twin_bridges",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/white_fabric_maze",
+    "id": "dimdoors:dungeon/white_fabric_maze",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/decaying_chain_tunnel",
+    "id": "dimdoors:dungeon/decaying_chain_tunnel",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/cage_monolithless",
+    "id": "dimdoors:dungeon/cage_monolithless",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/chain_t",
+    "id": "dimdoors:dungeon/chain_t",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/line_walker",
+    "id": "dimdoors:dungeon/line_walker",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/chain_crossing",
+    "id": "dimdoors:dungeon/chain_crossing",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/smile_6",
+    "id": "dimdoors:dungeon/smile_6",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/lantredom",
+    "id": "dimdoors:dungeon/lantredom",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/lantredom_end",
+    "id": "dimdoors:dungeon/lantredom_end",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/lantredom_red",
+    "id": "dimdoors:dungeon/lantredom_red",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/void_path_of_fear",
+    "id": "dimdoors:dungeon/void_path_of_fear",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_diamond_tnt_trap_b",
+    "id": "dimdoors:dungeon/ruins_diamond_tnt_trap_b",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_multiple_warppoints",
+    "id": "dimdoors:dungeon/ruins_multiple_warppoints",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_lava_trap",
+    "id": "dimdoors:dungeon/ruins_lava_trap",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/freeroam_graveyard",
+    "id": "dimdoors:dungeon/freeroam_graveyard",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_small_pressure_plate_maze",
+    "id": "dimdoors:dungeon/ruins_small_pressure_plate_maze",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_diamond_tnt_trap_a",
+    "id": "dimdoors:dungeon/ruins_diamond_tnt_trap_a",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_elevator_tnt_trap",
+    "id": "dimdoors:dungeon/ruins_elevator_tnt_trap",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_stairs_up_down_warp",
+    "id": "dimdoors:dungeon/ruins_stairs_up_down_warp",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_corrupted_endportal",
+    "id": "dimdoors:dungeon/ruins_corrupted_endportal",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_mansion_combination_puzzle",
+    "id": "dimdoors:dungeon/ruins_mansion_combination_puzzle",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/lava_trap",
+    "id": "dimdoors:dungeon/lava_trap",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/long_corridor",
+    "id": "dimdoors:dungeon/long_corridor",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_long_stairwell_down",
+    "id": "dimdoors:dungeon/ruins_long_stairwell_down",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_stairwell_up",
+    "id": "dimdoors:dungeon/ruins_stairwell_up",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_push_into_void_trap",
+    "id": "dimdoors:dungeon/ruins_push_into_void_trap",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_sprike_traps",
+    "id": "dimdoors:dungeon/ruins_sprike_traps",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_camp_station",
+    "id": "dimdoors:dungeon/ruins_camp_station",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/freeroam_empty_street",
+    "id": "dimdoors:dungeon/freeroam_empty_street",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_caged_warps",
+    "id": "dimdoors:dungeon/ruins_caged_warps",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_deepslatebricks_hallway",
+    "id": "dimdoors:dungeon/small_deepslatebricks_hallway",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_river",
+    "id": "dimdoors:dungeon/small_river",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_ice_hallway",
+    "id": "dimdoors:dungeon/small_ice_hallway",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/void_whyless",
+    "id": "dimdoors:dungeon/void_whyless",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_items4life",
+    "id": "dimdoors:dungeon/ruins_items4life",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_simple_door",
+    "id": "dimdoors:dungeon/ruins_simple_door",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_fire_charge_timing",
+    "id": "dimdoors:dungeon/ruins_fire_charge_timing",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/schopophobia",
+    "id": "dimdoors:dungeon/schopophobia",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/random_arrow_chance",
+    "id": "dimdoors:dungeon/random_arrow_chance",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_simple_door_troll",
+    "id": "dimdoors:dungeon/ruins_simple_door_troll",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_prismarine_hallway",
+    "id": "dimdoors:dungeon/small_prismarine_hallway",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_endbrick_hallway",
+    "id": "dimdoors:dungeon/small_endbrick_hallway",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_deepslate_hub",
+    "id": "dimdoors:dungeon/ruins_deepslate_hub",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_sandstone_hallway",
+    "id": "dimdoors:dungeon/small_sandstone_hallway",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_purpurbricks_hallway",
+    "id": "dimdoors:dungeon/small_purpurbricks_hallway",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/void_railroad_b",
+    "id": "dimdoors:dungeon/void_railroad_b",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_pressure_plate_riddle",
+    "id": "dimdoors:dungeon/ruins_pressure_plate_riddle",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/break_block_boom",
+    "id": "dimdoors:dungeon/break_block_boom",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/void_why",
+    "id": "dimdoors:dungeon/void_why",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/ruins_simple_door_trap",
+    "id": "dimdoors:dungeon/ruins_simple_door_trap",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/string_field",
+    "id": "dimdoors:dungeon/string_field",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_netherbricks_hallway",
+    "id": "dimdoors:dungeon/small_netherbricks_hallway",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/void_railroad_a",
+    "id": "dimdoors:dungeon/void_railroad_a",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/beach",
+    "id": "dimdoors:dungeon/beach",
     "type": "dimdoors:id"
   },
   {
-    "id": "dungeon/small_red_sandstone_hallway",
+    "id": "dimdoors:dungeon/small_red_sandstone_hallway",
     "type": "dimdoors:id"
   },
   {
-    "id": "lab/lab_hallway",
+    "id": "dimdoors:lab/lab_hallway",
     "type": "dimdoors:id"
   },
-  { "id": "dungeon/theatro",
+  { "id": "dimdoors:dungeon/theatro",
     "type": "dimdoors:id"
   },
-  { "id": "dungeon/snack_break",
+  { "id": "dimdoors:dungeon/snack_break",
     "type":  "dimdoors:id"
   },
-  { "id": "dungeon/mystery_egg",
+  { "id": "dimdoors:dungeon/mystery_egg",
     "type":  "dimdoors:id"
   },
-  { "id": "dungeon/missingno",
+  { "id": "dimdoors:dungeon/missingno",
     "type":  "dimdoors:id"
   },
-  { "id": "dungeon/loutro",
+  { "id": "dimdoors:dungeon/loutro",
     "type":  "dimdoors:id"
   },
-  { "id": "dungeon/kept",
+  { "id": "dimdoors:dungeon/kept",
     "type":  "dimdoors:id"
   },
-  { "id": "dungeon/kawas_overworld_box",
+  { "id": "dimdoors:dungeon/kawas_overworld_box",
     "type":  "dimdoors:id"
   },
   {
-    "id": "dungeon/gap_hallway",
+    "id": "dimdoors:dungeon/gap_hallway",
     "type": "dimdoors:id"
   }
 ]

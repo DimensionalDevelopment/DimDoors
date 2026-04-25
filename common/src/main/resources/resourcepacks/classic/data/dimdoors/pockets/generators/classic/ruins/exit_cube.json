@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "classic/ruins/exit_cube",
+      "id": "dimdoors:classic/ruins/exit_cube",
   "builder": {
     "type": "dimdoors:pocket"
   },

@@ -1,6 +1,6 @@
 {
   "type": "dimdoors:schematic",
-  "id": "dungeon/chain_crossing",
+  "id": "dimdoors:dungeon/chain_crossing",
   "builder": {
     "type": "dimdoors:pocket"
   },

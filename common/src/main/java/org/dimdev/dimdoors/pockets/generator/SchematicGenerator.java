@@ -31,7 +31,6 @@ public class SchematicGenerator extends PocketGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String KEY = "schematic";
 
-    private String id;
     private ResourceLocation templateID;
     private BlockPlacementType placementType = BlockPlacementType.SECTION_NO_UPDATE;
 
@@ -41,14 +40,8 @@ public class SchematicGenerator extends PocketGenerator {
     public SchematicGenerator() {
     }
 
-    public SchematicGenerator(String id) {
-    this.id = id;
-
-    this.templateID = DimensionalDoors.id(id);
-    }
-
-    public String getId() {
-    return this.id;
+    public SchematicGenerator(ResourceLocation id) {
+        this.templateID = id;
     }
 
     public ResourceLocation getTemplateID() {
@@ -57,24 +50,24 @@ public class SchematicGenerator extends PocketGenerator {
 
     @Override
     public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    super.fromNbt(nbt, provider, manager);
+        super.fromNbt(nbt, provider, manager);
 
-    this.id = nbt.getString("id"); // TODO: should we force having the "dimdoors:" in the json?
-    this.templateID = DimensionalDoors.id(id);
-    if (nbt.contains("origin", Tag.TAG_INT_ARRAY)) {
-        int[] originInts = nbt.getIntArray("origin");
-        this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
-    }
-    if (nbt.contains("placement_type", Tag.TAG_STRING)) placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
+        this.templateID = ResourceLocation.tryParse(nbt.getString("id"));
+        if (nbt.contains("origin", Tag.TAG_INT_ARRAY)) {
+            int[] originInts = nbt.getIntArray("origin");
+            this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
+        }
+        if (nbt.contains("placement_type", Tag.TAG_STRING))
+            placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
 
-    return this;
+        return this;
     }
 
     @Override
     public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
     super.toNbtInternal(nbt, provider, allowReference);
 
-    nbt.putString("id", this.id);
+    nbt.putString("id", this.templateID.toString());
     if (placementType != BlockPlacementType.SECTION_NO_UPDATE) nbt.putString("placement_type", placementType.getId());
 
     if (origin != null) nbt.putIntArray("origin", new int[]{origin.getX(), origin.getY(), origin.getZ()});

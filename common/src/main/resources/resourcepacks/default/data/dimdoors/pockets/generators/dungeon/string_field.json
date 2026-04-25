@@ -19,5 +19,5 @@
       "rift_data": "dimdoors:default_dungeon"
     }
   ],
-  "id": "dungeon/string_field"
+  "id": "dimdoors:dungeon/string_field"
 }
