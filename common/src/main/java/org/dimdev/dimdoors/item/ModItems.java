@@ -61,15 +61,15 @@ public final class ModItems {
 
     public static final RegistrySupplier<Item> MONOLITH_SPAWNER = registerRegular("monolith_spawner", properties -> new ArchitecturySpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, properties));
 
-    public static final RegistrySupplier<Item> WORLD_THREAD_HELMET = registerRegular("world_thread_helmet", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.HELMET, properties));
+    public static final RegistrySupplier<Item> WORLD_THREAD_HELMET = registerRegular("world_thread_helmet", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.HELMET, properties.stacksTo(1)));
 
-    public static final RegistrySupplier<Item> WORLD_THREAD_CHESTPLATE = registerRegular("world_thread_chestplate", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.CHESTPLATE, properties));
+    public static final RegistrySupplier<Item> WORLD_THREAD_CHESTPLATE = registerRegular("world_thread_chestplate", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.CHESTPLATE, properties.stacksTo(1)));
 
-    public static final RegistrySupplier<Item> WORLD_THREAD_LEGGINGS = registerRegular("world_thread_leggings", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.LEGGINGS, properties));
+    public static final RegistrySupplier<Item> WORLD_THREAD_LEGGINGS = registerRegular("world_thread_leggings", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.LEGGINGS, properties.stacksTo(1)));
 
-    public static final RegistrySupplier<Item> WORLD_THREAD_BOOTS = registerRegular("world_thread_boots", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.BOOTS, properties));
+    public static final RegistrySupplier<Item> WORLD_THREAD_BOOTS = registerRegular("world_thread_boots", properties -> new ArmorItem(ModArmorMaterials.WORLD_THREAD, ArmorItem.Type.BOOTS, properties.stacksTo(1)));
 
-    public static final RegistrySupplier<Item> MASK_WAND = registerRegular("mask_wand", properties -> new MaskWandItem(properties.stacksTo(100)));
+    public static final RegistrySupplier<Item> MASK_WAND = registerRegular("mask_wand", properties -> new MaskWandItem(properties.stacksTo(1)));
 
     public static final RegistrySupplier<Item> STABLE_FABRIC = registerRegular("stable_fabric", Item::new);
 
@@ -97,11 +97,11 @@ public final class ModItems {
 
     public static final RegistrySupplier<Item> CLOD = registerDecay("clod", Item::new);
 
-    public static final RegistrySupplier<Item> GARMENT_OF_REALITY_HELMET = registerRegular("garment_of_reality_helmet", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.HELMET, properties));
+    public static final RegistrySupplier<Item> GARMENT_OF_REALITY_HELMET = registerRegular("garment_of_reality_helmet", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.HELMET, properties.stacksTo(1)));
 
-    public static final RegistrySupplier<Item> GARMENT_OF_REALITY_CHESTPLATE = registerRegular("garment_of_reality_chestplate", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.CHESTPLATE, properties));
+    public static final RegistrySupplier<Item> GARMENT_OF_REALITY_CHESTPLATE = registerRegular("garment_of_reality_chestplate", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.CHESTPLATE, properties.stacksTo(1)));
 
-    public static final RegistrySupplier<Item> GARMENT_OF_REALITY_LEGGINGS = registerRegular("garment_of_reality_leggings", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.LEGGINGS, properties));
+    public static final RegistrySupplier<Item> GARMENT_OF_REALITY_LEGGINGS = registerRegular("garment_of_reality_leggings", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.LEGGINGS, properties.stacksTo(1)));
 
     public static final RegistrySupplier<Item> GARMENT_OF_REALITY_BOOTS = registerRegular("garment_of_reality_boots", properties -> new ArmorItem(ModArmorMaterials.GARMENT_OF_REALITY, ArmorItem.Type.BOOTS, properties));
     
