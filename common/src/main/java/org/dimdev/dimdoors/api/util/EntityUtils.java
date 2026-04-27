@@ -31,7 +31,7 @@ public final class EntityUtils {
     // Passengers
     if (entity.getControllingPassenger() != null)
         topmostEntity = entity.getControllingPassenger();
-    if (entity.getPassengers().size() > 0)
+    if (!entity.getPassengers().isEmpty())
         topmostEntity = entity.getPassengers().get(0);
 
     // Owned Animals

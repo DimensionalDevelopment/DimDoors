@@ -40,17 +40,17 @@ public class UseDoorItemOnBlockCallbackListener implements UseItemOnBlockCallbac
 
     public static class DimDoorBlockPlaceContext extends BlockPlaceContext {
 
-    public DimDoorBlockPlaceContext(@Nullable Player player, InteractionHand hand, ItemStack itemStack, BlockHitResult hitResult) {
-        super(player, hand, itemStack, hitResult);
-        this.replaceClicked = true;
-    }
+        public DimDoorBlockPlaceContext(@Nullable Player player, InteractionHand hand, ItemStack itemStack, BlockHitResult hitResult) {
+            super(player, hand, itemStack, hitResult);
+            this.replaceClicked = true;
+        }
 
-    public DimDoorBlockPlaceContext(BlockPlaceContext context, BlockHitResult result) {
-        this(context.getPlayer(), context.getHand(), context.getItemInHand(), result);
-    }
+        public DimDoorBlockPlaceContext(BlockPlaceContext context, BlockHitResult result) {
+            this(context.getPlayer(), context.getHand(), context.getItemInHand(), result);
+        }
 
-    public void setToProperReplaced() {
-        this.replaceClicked = getLevel().getBlockState(getHitResult().getBlockPos()).canBeReplaced(this);
-    }
+        public void setToProperReplaced() {
+            this.replaceClicked = getLevel().getBlockState(getHitResult().getBlockPos()).canBeReplaced(this);
+        }
     }
 }
