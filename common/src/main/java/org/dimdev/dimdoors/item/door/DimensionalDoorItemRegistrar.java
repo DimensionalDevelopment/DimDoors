@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.item.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.RegistrarManager;
@@ -53,10 +54,20 @@ public class DimensionalDoorItemRegistrar {
         init();
     }
 
-    RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.ITEM, registrar -> {
-        new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
-    });
-    }
+    if (Platform.isNeoForge()) {
+			RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.ITEM, registrar -> {
+				new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
+			});
+		}
+
+		LifecycleEvent.SETUP.register(() -> {
+			if(Platform.isFabric()) {
+				RegistrarManager.get(DimensionalDoors.MOD_ID).forRegistry(Registries.ITEM, registrar -> {
+					new ArrayList<>(registrar.entrySet()).forEach(entry -> handleEntry(registrar, entry.getKey().location(), entry.getValue()));
+				});
+			}
+		});
+	}
 
     public boolean isRegistered(Item item) {
     return placementFunctions.containsKey(item);
