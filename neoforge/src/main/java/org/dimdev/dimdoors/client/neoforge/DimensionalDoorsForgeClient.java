@@ -78,13 +78,13 @@ public class DimensionalDoorsForgeClient {
 
     @SubscribeEvent
     private static void initializeClient(RegisterClientExtensionsEvent event) throws Exception {
-        event.registerFluidType(new FluidExtension(ModFluids.ETERNAL_FLUID_ATTRIBUTES), ModFluids.ETERNAL_FLUID_ATTRIBUTES.getFlowingFluid().getFluidType());
-        event.registerFluidType(new FluidExtension(ModFluids.LEAK_ATTRIBUTES), ModFluids.LEAK_ATTRIBUTES.getFlowingFluid().getFluidType());
+        event.registerFluidType(new FluidExtension(ModFluids.ETERNAL_FLUID_DETAILS), ModFluids.ETERNAL_FLUID.getFluidType());
+        event.registerFluidType(new FluidExtension(ModFluids.LEAK_DETAILS), ModFluids.LEAK.getFluidType());
     }
 
     public record FluidExtension(ResourceLocation flowing, ResourceLocation still, ResourceLocation overlay) implements IClientFluidTypeExtensions {
-        public FluidExtension(ArchitecturyFluidAttributes attributes) {
-            this(attributes.getFlowingTexture(), attributes.getSourceTexture(), attributes.getOverlayTexture());
+        public FluidExtension(ModFluids.FluidDetails attributes) {
+            this(attributes.flowing(), attributes.still(), attributes.overlay());
         }
 
         @Override

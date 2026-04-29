@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.block;
 
 import dev.architectury.core.block.ArchitecturyLiquidBlock;
+import dev.architectury.platform.Mod;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import net.fabricmc.api.EnvType;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 
 import java.util.ArrayList;
@@ -121,7 +123,7 @@ public final class ModBlocks {
 
     public static final LiquidBlock ETERNAL_FLUID = registerWithoutTabOrItem("eternal_fluid", new EternalFluidBlock(ofFullCopy(LAVA).mapColor(COLOR_RED).lightLevel(state -> 15)));
 
-    public static final LiquidBlock LEAK = registerWithoutTabOrItem("leak", new ArchitecturyLiquidBlock(() -> ModFluids.LEAK, ofFullCopy(WATER)));
+    public static final LiquidBlock LEAK = registerWithoutTabOrItem("leak", new LiquidBlock(ModFluids.LEAK, ofFullCopy(WATER)));
 
     public static final Block DECAYED_BLOCK = registerWithoutTabOrItem("decayed_block", new UnravelledFabricBlock(UNRAVELLED_FABRIC_BLOCK_SETTINGS));
 
@@ -261,6 +263,9 @@ public final class ModBlocks {
 
 
     public static void init() {
+        ModBlockEntityTypes.DETACHED_RIFT.addBlock(DETACHED_RIFT);
+        ModBlockEntityTypes.TESSELATING_LOOM.addBlock(TESSELATING_LOOM);
+        ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(ModBlocks.DIMENSIONAL_PORTAL);
     }
 
     private static <T extends Block> T registerWithoutTabOrItem(String name, T block) {

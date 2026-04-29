@@ -131,4 +131,6 @@ public interface IRegister {
             }
         });
     }
+
+    void registerRunnable(ResourceKey<? extends Registry<?>> key, Runnable runnable);
 }

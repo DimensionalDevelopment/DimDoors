@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
@@ -17,24 +16,23 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
 
-public abstract class EternalFluid extends FlowingFluid {
+public abstract class LeakFluid extends FlowingFluid {
     @Override
     public Fluid getFlowing() {
-        return ModFluids.FLOWING_ETERNAL_FLUID;
+        return ModFluids.FLOWING_LEAK;
     }
 
     @Override
     public FluidState getSource(boolean falling) {
-        return ModFluids.ETERNAL_FLUID.defaultFluidState().setValue(FALLING, falling);
+        return ModFluids.LEAK.defaultFluidState().setValue(FALLING, falling);
     }
 
     @Override
     public Item getBucket() {
-        return ModItems.ETERNAL_FLUID_BUCKET;
+        return ModItems.LEAK_BUCKET;
     }
 
     @Override
@@ -60,12 +58,12 @@ public abstract class EternalFluid extends FlowingFluid {
 
     @Override
     protected BlockState createLegacyBlock(FluidState fluidState) {
-        return ModBlocks.ETERNAL_FLUID.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(fluidState));
+        return ModBlocks.LEAK.defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(fluidState));
     }
 
     @Override
     public boolean isSame(Fluid fluid) {
-        return fluid == ModFluids.ETERNAL_FLUID || fluid == ModFluids.FLOWING_ETERNAL_FLUID;
+        return fluid == ModFluids.LEAK || fluid == ModFluids.FLOWING_LEAK;
     }
 
     @Override
@@ -75,7 +73,7 @@ public abstract class EternalFluid extends FlowingFluid {
 
     @Override
     protected boolean canBeReplacedWith(FluidState fluidState, BlockGetter blockGetter, BlockPos blockPos, Fluid fluid, Direction direction) {
-        return fluidState.getHeight(blockGetter, blockPos) >= 0.44444445F && fluid.isSame(Fluids.WATER);
+        return fluidState.getHeight(blockGetter, blockPos) >= 0.44444445F && fluid.isSame(ModFluids.LEAK);
     }
 
     @Override
@@ -100,21 +98,6 @@ public abstract class EternalFluid extends FlowingFluid {
     }
 
     @Override
-    protected void spreadTo(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState, Direction direction, FluidState fluidState) {
-        if (direction == Direction.DOWN) {
-            if (levelAccessor.getFluidState(blockPos).is(FluidTags.WATER)) {
-                if (blockState.getBlock() instanceof LiquidBlock) {
-                    levelAccessor.setBlock(blockPos, ModBlocks.BLACK_ANCIENT_FABRIC.defaultBlockState(), 3);
-                }
-
-                return;
-            }
-        }
-
-        super.spreadTo(levelAccessor, blockPos, blockState, direction, fluidState);
-    }
-
-    @Override
     protected boolean isRandomlyTicking() {
         return true;
     }
@@ -125,7 +108,7 @@ public abstract class EternalFluid extends FlowingFluid {
         return 100000;
     }
 
-    public static class Flowing extends EternalFluid {
+    public static class Flowing extends LeakFluid {
 
         @Override
         protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
@@ -135,7 +118,7 @@ public abstract class EternalFluid extends FlowingFluid {
 
         @Override
         public Fluid getSource() {
-            return ModFluids.ETERNAL_FLUID;
+            return ModFluids.LEAK;
         }
 
         @Override
@@ -149,10 +132,10 @@ public abstract class EternalFluid extends FlowingFluid {
         }
     }
 
-    public static class Still extends EternalFluid {
+    public static class Still extends LeakFluid {
         @Override
         public Fluid getSource() {
-            return ModFluids.ETERNAL_FLUID.defaultFluidState().getType();
+            return ModFluids.LEAK.defaultFluidState().getType();
         }
 
         @Override

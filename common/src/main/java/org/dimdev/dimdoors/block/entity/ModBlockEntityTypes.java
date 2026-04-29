@@ -17,18 +17,16 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ModBlockEntityTypes {
-    public static final BlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = register(
+    public static final MutableBlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = registerMutable(
             "detached_rift",
-            DetachedRiftBlockEntity::new,
-            ModBlocks.DETACHED_RIFT
+            DetachedRiftBlockEntity::new
     );
 
     public static final MutableBlockEntityType<EntranceRiftBlockEntity> ENTRANCE_RIFT = registerMutable(
             "entrance_rift",
-            EntranceRiftBlockEntity::new,
-            ModBlocks.DIMENSIONAL_PORTAL);
+            EntranceRiftBlockEntity::new);
 
-    public static final BlockEntityType<TesselatingLoomBlockEntity> TESSELATING_LOOM = register("tesselating_loom", TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM);
+    public static final MutableBlockEntityType<TesselatingLoomBlockEntity> TESSELATING_LOOM = registerMutable("tesselating_loom", TesselatingLoomBlockEntity::new);
 
 
     private static <E extends BlockEntity> BlockEntityType<E> register(String id, BiFunction<BlockPos, BlockState, E> factory, Block... blocks) {

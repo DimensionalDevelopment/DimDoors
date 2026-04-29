@@ -11,6 +11,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -22,11 +24,16 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.callback.AddCallback;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.util.StreamUtils;
+import org.dimdev.dimdoors.fluid.EternalFluid;
+import org.dimdev.dimdoors.fluid.LeakFluid;
+import org.dimdev.dimdoors.fluid.neoforge.ModFluidTypes;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
@@ -48,30 +55,40 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     private final Map<ResourceKey<?>, AddCallback<?>> callbacks = new HashMap<>();
     private final IEventBus bus;
     private ResourceKey<? extends Registry<?>> activeKey;
+    private final Map<ResourceKey<?>, List<Runnable>> registerRunnables = new HashMap<>();
 
     public DimensionalDoorsNeoForge(IEventBus bus) {
         StreamUtils.setup(this);
         ModAttachmentTypes.register(bus);
         this.bus = bus;
+        registerRunnable(NeoForgeRegistries.Keys.FLUID_TYPES, ModFluidTypes::init);
         DimensionalDoors.init(this);
 
         bus.addListener(this::buildCreateTabContents);
 
         bus.<RegisterEvent>addListener(event -> {
             var key = event.getRegistryKey();
-            var map = toRegister.get(key);
             DimensionalDoorsNeoForge.this.activeKey = key;
 
+            try {
+                var runnables = registerRunnables.remove(key);
+                if (runnables != null) {
+                    runnables.forEach(Runnable::run);
+                }
 
-            if (map == null || map.isEmpty()) return;
+                var map = toRegister.get(key);
+                var registry = event.getRegistry();
 
-            var registry = event.getRegistry();
+                if (map != null && !map.isEmpty()) {
+                    populate(registry, map);
+                }
 
-            populate(registry, map);
+                AddCallback<?> callback = callbacks.get(key);
 
-            AddCallback<?> callback = callbacks.get(key);
-
-            if(callback != null) ((Registry) registry).addCallback(callback);
+                if(callback != null) ((Registry) registry).addCallback(callback);
+            } finally {
+                DimensionalDoorsNeoForge.this.activeKey = null;
+            }
         });
 
         ModBiomeModifiers.init(bus);
@@ -107,6 +124,10 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     }
 
     private void buildCreateTabContents(BuildCreativeModeTabContentsEvent event) {
+        if (APPENDS.containsKey(event.getTab())) {
+            APPENDS.get(event.getTab()).forEach(event::accept);
+        }
+
         for (Consumer<BuildCreativeModeTabContentsEvent> listener : BUILD_CONTENTS_LISTENERS) {
             listener.accept(event);
         }
@@ -140,7 +161,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
     @Override
     public <T, V extends T> V register(ResourceKey<Registry<T>> key, ResourceLocation id, V obj) {
-        if (activeKey != null && key.isFor(activeKey)) {
+        if (key.equals(activeKey)) {
             return Registry.register((Registry<T>) BuiltInRegistries.REGISTRY.get(key.location()), id, obj);
         } else {
             Map<ResourceLocation, Object> map = this.toRegister.computeIfAbsent(key, a -> new HashMap<>());
@@ -158,7 +179,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
     @Override
     public CreativeModeTab createTab(Function<CreativeModeTab.Builder, CreativeModeTab.Builder> consumer) {
-        return consumer.apply(CreativeModeTab.builder().withSearchBar()).build();
+        return consumer.apply(CreativeModeTab.builder()).build();
     }
 
     @Override
@@ -166,12 +187,67 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
         NeoForge.EVENT_BUS.<ServerStartedEvent>addListener(event -> consumer.accept(event.getServer()));
     }
 
-    record Callback<T>(TriConsumer<Registry<T>, ResourceLocation, T> consumer) implements AddCallback<T> {
+    class Callback<T> implements AddCallback<T> {
+        private final TriConsumer<Registry<T>, ResourceLocation, T> consumer;
+
+        Callback(TriConsumer<Registry<T>, ResourceLocation, T> consumer) {
+            this.consumer = consumer;
+        }
+
         @Override
         public void onAdd(Registry<T> registry, int id, ResourceKey<T> key, T obj) {
-            consumer.accept(registry, key.location(), obj);
+            ResourceKey<? extends Registry<?>> previousKey = activeKey;
+            activeKey = registry.key();
+            try {
+                consumer.accept(registry, key.location(), obj);
+            } finally {
+                activeKey = previousKey;
+            }
         }
     }
 
+    @Override
+    public void registerRunnable(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
+        registerRunnables.computeIfAbsent(key, ignored -> new ArrayList<>()).add(runnable);
+    }
 
+    @Override
+    public Fluid createFlowingEternalFluid() {
+        return new EternalFluid.Flowing() {
+            @Override
+            public FluidType getFluidType() {
+                return ModFluidTypes.ETERNAL;
+            }
+        };
+    }
+
+    @Override
+    public FlowingFluid createEternalFluid() {
+        return new EternalFluid.Still() {
+            @Override
+            public FluidType getFluidType() {
+                return ModFluidTypes.ETERNAL;
+            }
+        };
+    }
+
+    @Override
+    public Fluid createFlowingLeakFluid() {
+        return new LeakFluid.Flowing() {
+            @Override
+            public FluidType getFluidType() {
+                return ModFluidTypes.LEAK;
+            }
+        };
+    }
+
+    @Override
+    public FlowingFluid createLeakFluid() {
+        return new LeakFluid.Still() {
+            @Override
+            public FluidType getFluidType() {
+                return ModFluidTypes.LEAK;
+            }
+        };
+    }
 }

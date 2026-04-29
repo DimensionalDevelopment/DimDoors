@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -27,9 +28,27 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.function.TriConsumer;
+import org.dimdev.dimdoors.fluid.EternalFluid;
+import org.dimdev.dimdoors.fluid.LeakFluid;
 
 import java.util.function.Consumer;
 
 public interface ISided extends IRegister, ICreativeTabHandler {
+    default Fluid createFlowingEternalFluid() {
+        return new EternalFluid.Flowing();
+    }
+
+    default FlowingFluid createEternalFluid() {
+        return new EternalFluid.Still();
+    }
+
+    default Fluid createFlowingLeakFluid() {
+        return new LeakFluid.Flowing();
+    }
+
+    default FlowingFluid createLeakFluid() {
+        return new LeakFluid.Still();
+    }
+
     void onServerStarted(Consumer<MinecraftServer> consumer);
 }

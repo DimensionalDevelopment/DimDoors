@@ -73,8 +73,8 @@ public final class ModItems {
     public static final Item THEY_STARE_BACK_RECORD = registerRegular("they_stare_back_record", properties -> new Item(properties.jukeboxPlayable(ModJukeboxSongs.THEY_STARE_BACK).stacksTo(1)));
     public static final Item WHITE_VOID_RECORD = registerRegular("white_void_record", properties -> new Item(properties.jukeboxPlayable(ModJukeboxSongs.WHITE_VOID).stacksTo(1)));
 
-    public static final Item ETERNAL_FLUID_BUCKET = registerRegular("eternal_fluid_bucket", properties -> new ArchitecturyBucketItem(() -> ModFluids.ETERNAL_FLUID, properties.craftRemainder(Items.BUCKET).stacksTo(1)));
-    public static final Item LEAK_BUCKET = registerDecay("leak_bucket", properties -> new ArchitecturyBucketItem(() -> ModFluids.LEAK, properties.craftRemainder(Items.BUCKET).stacksTo(1)));
+    public static final Item ETERNAL_FLUID_BUCKET = registerRegular("eternal_fluid_bucket", properties -> new BucketItem(ModFluids.ETERNAL_FLUID, properties.craftRemainder(Items.BUCKET).stacksTo(1)));
+    public static final Item LEAK_BUCKET = registerDecay("leak_bucket", properties -> new BucketItem(ModFluids.LEAK, properties.craftRemainder(Items.BUCKET).stacksTo(1)));
 
     public static final Item MASK_SHARD = registerRegular("mask_shard", Item::new);
 

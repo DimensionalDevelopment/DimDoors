@@ -140,4 +140,9 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
             }
         });
     }
+
+    @Override
+    public void registerRunnable(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
+        runnable.run();
+    }
 }

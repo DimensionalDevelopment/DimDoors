@@ -73,7 +73,6 @@ public final class ModDimensions {
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getLevel(PUBLIC);
             ModDimensions.DUNGEON_POCKET_DIMENSION = server.getLevel(DUNGEON);
         });
-        sided.register(Registries.CHUNK_GENERATOR, "blank", BlankChunkGenerator.CODEC);
     }
 
     public static void bootstrap(BootstrapContext<DimensionType> entries) {
