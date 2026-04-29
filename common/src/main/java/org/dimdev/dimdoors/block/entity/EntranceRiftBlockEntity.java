@@ -57,7 +57,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     private RiftUtils.PortalPlane plane;
 
     public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
-    super(ModBlockEntityTypes.ENTRANCE_RIFT.get(), pos, state);
+    super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
 
         updateState(pos, state);
     }
@@ -243,7 +243,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     public void generateDetached(Level world) {
     var blockState = getBlockState();
     var pos = getBlockPos();
-    world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
+    world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
     ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(getData());
     }
 

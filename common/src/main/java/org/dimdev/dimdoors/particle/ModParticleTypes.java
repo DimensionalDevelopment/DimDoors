@@ -14,12 +14,9 @@ import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
 
 public class ModParticleTypes {
-    public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.PARTICLE_TYPE);
-    public static final RegistrySupplier<SimpleParticleType> MONOLITH = REGISTRY.register("monolith", () -> new SimpleParticleType(true) {});
-    public static final RegistrySupplier<RiftParticleType> RIFT = REGISTRY.register("rift", RiftParticleType::new);
-    public static final RegistrySupplier<SimpleParticleType> LIMBO_ASH = REGISTRY.register("limbo_ash", () -> new SimpleParticleType(false) {});
+    public static final SimpleParticleType MONOLITH = DimensionalDoors.getSided().registerParticleType("monolith", new SimpleParticleType(true) {});
+    public static final RiftParticleType RIFT = DimensionalDoors.getSided().registerParticleType("rift", new RiftParticleType());
+    public static final SimpleParticleType LIMBO_ASH = DimensionalDoors.getSided().registerParticleType("limbo_ash", new SimpleParticleType(false) {});
 
-    public static void init() {
-    REGISTRY.register();
-    }
+    public static void init() {}
 }

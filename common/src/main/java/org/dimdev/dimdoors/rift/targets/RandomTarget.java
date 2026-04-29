@@ -129,7 +129,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
             // No blocks at that XZ (hole in bedrock)
             pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ());
         }
-        world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
+        world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
 
         RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
         DetachedRiftBlockEntity riftEntity = (DetachedRiftBlockEntity) world.getBlockEntity(pos);

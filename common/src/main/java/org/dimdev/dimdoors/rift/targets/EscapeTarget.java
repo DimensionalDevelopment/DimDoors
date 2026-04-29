@@ -134,7 +134,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
                 if (UnravelUtil.unravelBlocksMap.containsKey(block))
                 level.setBlockAndUpdate(pos1, UnravelUtil.unravelBlocksMap.get(block).defaultBlockState());
                 else if (UnravelUtil.whitelistedBlocksForLimboRemoval.contains(block)) {
-                level.setBlockAndUpdate(pos1, ModBlocks.UNRAVELLED_FABRIC.get().defaultBlockState());
+                level.setBlockAndUpdate(pos1, ModBlocks.UNRAVELLED_FABRIC.defaultBlockState());
                 }
             }
             }));

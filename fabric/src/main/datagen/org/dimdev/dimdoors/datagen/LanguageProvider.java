@@ -4,6 +4,8 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -562,8 +564,8 @@ public class LanguageProvider extends FabricLanguageProvider {
         builder.add(baseLang + ".author", author);
     }
 
-    private void add(TranslationBuilder builder, RegistrySupplier<? extends Fluid> supplier, String contents) {
-        builder.add(supplier.getId().toLanguageKey("fluid"), contents);
+    private void add(TranslationBuilder builder, Fluid supplier, String contents) {
+        builder.add(BuiltInRegistries.FLUID.getKey(supplier).toLanguageKey("fluid"), contents);
     }
 
     private void addBlockSet(TranslationBuilder builder, ModBlocks.DecayGroupSet set) {
@@ -575,15 +577,12 @@ public class LanguageProvider extends FabricLanguageProvider {
         add(builder, set.wall());
     }
 
-    private void add(TranslationBuilder builder, RegistrySupplier<?> supplier) {
-        var object = supplier.get();
-        var string = capitialize(supplier.getId().getPath());
-
-
-
+    private void add(TranslationBuilder builder, Object object) {
         if(object instanceof Block block) {
+            var string = capitialize(BuiltInRegistries.BLOCK.getKey(block).getPath());
             builder.add(block, string);
         } else if(object instanceof CreativeModeTab tab) {
+            var string = capitialize(BuiltInRegistries.CREATIVE_MODE_TAB.getKey(tab).getPath());
             add(builder, tab.getDisplayName(), string);
         }
     }

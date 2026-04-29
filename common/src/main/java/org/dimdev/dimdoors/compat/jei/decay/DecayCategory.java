@@ -22,7 +22,7 @@ public class DecayCategory extends AbstractRecipeCategory<DecayDisplayData> {
         super(
                 DECAY,
                 Component.translatable("category.dimdoors.decays_into"),
-                guiHelper.createDrawableItemLike(ModBlocks.UNRAVELLED_FABRIC.get()),
+                guiHelper.createDrawableItemLike(ModBlocks.UNRAVELLED_FABRIC),
                 WIDTH,
                 HEIGHT
         );

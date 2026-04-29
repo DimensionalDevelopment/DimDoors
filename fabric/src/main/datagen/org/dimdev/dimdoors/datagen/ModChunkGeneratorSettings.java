@@ -20,8 +20,8 @@ public class ModChunkGeneratorSettings {
     public static void bootstrap(BootstrapContext<NoiseGeneratorSettings> context) {
         context.register(LIMBO, new NoiseGeneratorSettings(
                 new NoiseSettings(0, 256, 1, 1),
-                ModBlocks.UNRAVELLED_FABRIC.get().defaultBlockState(),
-                ModBlocks.ETERNAL_FLUID.get().defaultBlockState(),
+                ModBlocks.UNRAVELLED_FABRIC.defaultBlockState(),
+                ModBlocks.ETERNAL_FLUID.defaultBlockState(),
                 new NoiseRouter(
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),
@@ -43,7 +43,7 @@ public class ModChunkGeneratorSettings {
                         SurfaceRules.ifTrue(
                                 SurfaceRules.verticalGradient("dimdoors:floor",
                                 VerticalAnchor.aboveBottom(0), VerticalAnchor.aboveBottom(5)),
-                                SurfaceRules.state(ModBlocks.BLACK_ANCIENT_FABRIC.get().defaultBlockState())
+                                SurfaceRules.state(ModBlocks.BLACK_ANCIENT_FABRIC.defaultBlockState())
                         )
                 ),
                 List.of(Climate.parameters(

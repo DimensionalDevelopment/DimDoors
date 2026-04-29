@@ -39,7 +39,7 @@ public interface LocationValue {
 
         @Override
         public LocationValueType<? extends LocationValueWithType> type() {
-            return LocationValueType.COMPLEX.get();
+            return LocationValueType.COMPLEX.value();
         }
     }
 
@@ -52,7 +52,7 @@ public interface LocationValue {
 
         @Override
         public LocationValueType<? extends LocationValueWithType> type() {
-            return LocationValueType.SIMPLE.get();
+            return LocationValueType.SIMPLE.value();
         }
     }
 

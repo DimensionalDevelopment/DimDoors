@@ -37,7 +37,7 @@ public class UnravelUtil {
     unravelItemsMap.put(Items.COBBLESTONE, Items.GRAVEL);
     unravelItemsMap.put(Items.GRAVEL, Items.SANDSTONE);
     unravelItemsMap.put(Items.SANDSTONE, Items.SAND);
-    unravelItemsMap.put(Items.SAND, ModBlocks.UNRAVELLED_FABRIC.get().asItem());
+    unravelItemsMap.put(Items.SAND, ModBlocks.UNRAVELLED_FABRIC.asItem());
 
     for(Item item : unravelItemsMap.keySet()) {
         Item item2 = unravelItemsMap.get(item);
@@ -45,7 +45,7 @@ public class UnravelUtil {
         unravelBlocksMap.put(((BlockItem)item).getBlock(), ((BlockItem)item2).getBlock());
         }
     }
-    unravelBlocksMap.put(Blocks.WATER, ModBlocks.UNFOLDED_BLOCK.get());
+    unravelBlocksMap.put(Blocks.WATER, ModBlocks.UNFOLDED_BLOCK);
     }
 
     public static BlockState copyState(Block block, BlockState sourceState) {

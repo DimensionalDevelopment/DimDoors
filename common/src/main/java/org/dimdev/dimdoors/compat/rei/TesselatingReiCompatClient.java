@@ -34,14 +34,14 @@ public class TesselatingReiCompatClient implements REIClientPlugin {
 
     @Override
     public void registerCategories(CategoryRegistry registry) {
-        registry.add(new DefaultTesselatingCategory(), configuration -> configuration.addWorkstations(EntryStacks.of(ModBlocks.TESSELATING_LOOM.get())));
-        registry.add(new DefaultDecaysIntoCategory(), configuration -> configuration.addWorkstations(EntryStacks.of(ModBlocks.UNRAVELLED_FABRIC.get())));
+        registry.add(new DefaultTesselatingCategory(), configuration -> configuration.addWorkstations(EntryStacks.of(ModBlocks.TESSELATING_LOOM)));
+        registry.add(new DefaultDecaysIntoCategory(), configuration -> configuration.addWorkstations(EntryStacks.of(ModBlocks.UNRAVELLED_FABRIC)));
     }
 
     @Override
     public void registerDisplays(DisplayRegistry registry) {
-        registry.registerRecipeFiller(ShapedTesselatingRecipe.class, ModRecipeTypes.TESSELATING.get(), (Function<RecipeHolder<ShapedTesselatingRecipe>, Display>) DefaultTesselatingShapedDisplay::new);
-        registry.registerRecipeFiller(TesselatingShapelessRecipe.class, ModRecipeTypes.TESSELATING.get(), (Function<RecipeHolder<TesselatingShapelessRecipe>, Display>) DefaultTesselatingShapelessDisplay::new);
+        registry.registerRecipeFiller(ShapedTesselatingRecipe.class, ModRecipeTypes.TESSELATING, (Function<RecipeHolder<ShapedTesselatingRecipe>, Display>) DefaultTesselatingShapedDisplay::new);
+        registry.registerRecipeFiller(TesselatingShapelessRecipe.class, ModRecipeTypes.TESSELATING, (Function<RecipeHolder<TesselatingShapelessRecipe>, Display>) DefaultTesselatingShapelessDisplay::new);
         registry.registerDisplayGenerator(DECAYS_INTO, DECAY_DISPLAY_GENERATOR);
     }
 

@@ -20,26 +20,6 @@ public class DefaultTesselatingShapelessDisplay extends DefaultTesselatingDispla
     }
 
     @Override
-    public int getInputWidth() {
-        return Math.min(getInputEntries().size(), 3);
-    }
-
-    @Override
-    public int getInputWidth(int craftingWidth, int craftingHeight) {
-        return craftingWidth * craftingHeight <= getInputEntries().size() ? craftingWidth : Math.min(getInputEntries().size(), 3);
-    }
-
-    @Override
-    public int getInputHeight() {
-        return (int) Math.ceil(getInputEntries().size() / (double) getInputWidth());
-    }
-
-    @Override
-    public int getInputHeight(int craftingWidth, int craftingHeight) {
-        return (int) Math.ceil(getInputEntries().size() / (double) getInputWidth(craftingWidth, craftingHeight));
-    }
-
-    @Override
     public boolean isShapeless() {
         return true;
     }

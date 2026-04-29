@@ -45,7 +45,7 @@ public final class DimDoorsRecipes {
     List<RecipeHolder<TesselatingRecipe>> handled = new ArrayList<>();
     List<RecipeHolder<TesselatingRecipe>> unhandled = new ArrayList<>();
 
-    List<RecipeHolder<TesselatingRecipe>> allRecipes = recipeManager.getAllRecipesFor(ModRecipeTypes.TESSELATING.get());
+    List<RecipeHolder<TesselatingRecipe>> allRecipes = recipeManager.getAllRecipesFor(ModRecipeTypes.TESSELATING);
     for (RecipeHolder<TesselatingRecipe> recipe : allRecipes) {
         if (validator.isRecipeValid(recipe)) {
         if (validator.isRecipeHandled(recipe)) {

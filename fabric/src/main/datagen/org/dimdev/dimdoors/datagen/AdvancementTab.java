@@ -52,17 +52,17 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
     @Override
     public void accept(Consumer<AdvancementHolder> advancementConsumer) {
         AdvancementHolder root = Advancement.Builder.advancement()
-                .display(makeDisplay(ModItems.RIFT_BLADE.get(), "root"))
+                .display(makeDisplay(ModItems.RIFT_BLADE, "root"))
                 .addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.ENDER_PEARL))
                 .save(advancementConsumer, "dimdoors:dimdoors/root");
         Advancement.Builder.advancement()
-                .display(makeDisplay(ModItems.WORLD_THREAD.get(), "string_theory"))
-                .addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WORLD_THREAD.get()))
+                .display(makeDisplay(ModItems.WORLD_THREAD, "string_theory"))
+                .addCriterion("inventory_changed", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.WORLD_THREAD))
                 .parent(root)
                 .save(advancementConsumer, "dimdoors:dimdoors/string_theory");
         AdvancementHolder holeInTheSky = Advancement.Builder.advancement()
-                .display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL.get(), "hole_in_the_sky"))
-                .addCriterion("encounter_rift", ModCriteria.RIFT_TRACKED.get().createCriterion(new RiftTrackedCriterion.TriggerInstance(Optional.empty())))
+                .display(makeDisplay(ModItems.RIFT_CONFIGURATION_TOOL, "hole_in_the_sky"))
+                .addCriterion("encounter_rift", ModCriteria.RIFT_TRACKED.createCriterion(new RiftTrackedCriterion.TriggerInstance(Optional.empty())))
                 .parent(root)
                 .save(advancementConsumer, "dimdoors:dimdoors/hole_in_the_sky");
         AdvancementHolder darkOstiology = Advancement.Builder.advancement()
@@ -82,7 +82,7 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
                 .save(advancementConsumer, "dimdoors:dimdoors/home_away_from_home");
         Advancement.Builder.advancement()
                 .display(makeDisplay(Blocks.RESPAWN_ANCHOR, "out_of_time"))
-                .addCriterion("spawn", ModCriteria.POCKET_SPAWN_POINT_SET.get().createCriterion(new PocketSpawnPointSetCondition.TriggerInstance(Optional.empty())))
+                .addCriterion("spawn", ModCriteria.POCKET_SPAWN_POINT_SET.createCriterion(new PocketSpawnPointSetCondition.TriggerInstance(Optional.empty())))
                 .parent(darkOstiology)
                 .save(advancementConsumer, "dimdoors:dimdoors/out_of_time");
         AdvancementHolder doorToAdventure = Advancement.Builder.advancement()
@@ -122,31 +122,31 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
 //                )
 //                .save(advancementConsumer, "dimdoors:dimdoors/lost_and_found");
         Advancement.Builder.advancement()
-                .display(makeDisplay(ModBlocks.BLACK_FABRIC.get(), "darklight"))
+                .display(makeDisplay(ModBlocks.BLACK_FABRIC, "darklight"))
                 .parent(doorToAdventure)
                 .addCriterion("get_fabric", InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(TagKey.create(Registries.ITEM, DimensionalDoors.id("fabric"))).build()))
                 .save(advancementConsumer, "dimdoors:dimdoors/darklight");
         AdvancementHolder enterLimbo = Advancement.Builder.advancement()
-                .display(makeDisplay(ModItems.MONOLITH_SPAWNER.get(), "enter_limbo"))
+                .display(makeDisplay(ModItems.MONOLITH_SPAWNER, "enter_limbo"))
                 .parent(doorToAdventure)
                 .addCriterion("enter_limbo", ChangeDimensionTrigger.TriggerInstance.changedDimensionTo(ModDimensions.LIMBO))
                 .save(advancementConsumer, "dimdoors:dimdoors/enter_limbo");
         Advancement.Builder.advancement()
-                .display(makeDisplay(ModBlocks.UNRAVELLED_FABRIC.get(), "world_unfurled"))
+                .display(makeDisplay(ModBlocks.UNRAVELLED_FABRIC, "world_unfurled"))
                 .parent(enterLimbo)
-                .addCriterion("get_the_unravelled", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.UNRAVELLED_FABRIC.get()))
+                .addCriterion("get_the_unravelled", InventoryChangeTrigger.TriggerInstance.hasItems(ModBlocks.UNRAVELLED_FABRIC))
                 .save(advancementConsumer, "dimdoors:dimdoors/world_unfurled");
 
         Advancement.Builder.advancement()
-                .display(makeDisplay(ModItems.INFRANGIBLE_FIBER.get(), "unravelled_but_immutable"))
+                .display(makeDisplay(ModItems.INFRANGIBLE_FIBER, "unravelled_but_immutable"))
                 .parent(enterLimbo)
-                .addCriterion("get_the_immutable", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER.get()))
+                .addCriterion("get_the_immutable", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.INFRANGIBLE_FIBER))
                 .save(advancementConsumer, "dimdoors:dimdoors/unravelled_but_immutable");
 
         Advancement.Builder.advancement()
-                .display(makeDisplay(ModItems.FRAYED_FILAMENTS.get(), "fuzzy_unreality"))
+                .display(makeDisplay(ModItems.FRAYED_FILAMENTS, "fuzzy_unreality"))
                 .parent(enterLimbo)
-                .addCriterion("get_the_immutable", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.FRAYED_FILAMENTS.get()))
+                .addCriterion("get_the_immutable", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.FRAYED_FILAMENTS))
                 .save(advancementConsumer, "dimdoors:dimdoors/fuzzy_unreality");
 
 //        Advancement.Task.create()

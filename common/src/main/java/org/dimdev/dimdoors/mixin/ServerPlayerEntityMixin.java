@@ -152,7 +152,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     @Inject(method = "setRespawnPosition", at = @At("TAIL"))
     public void onSpawnPointSet(ResourceKey<Level> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean bl, CallbackInfo ci) {
     if (ModDimensions.isPocketDimension(dimension)) {
-        ModCriteria.POCKET_SPAWN_POINT_SET.get().trigger((ServerPlayer) (Object) this);
+        ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayer) (Object) this);
     }
     }
 }

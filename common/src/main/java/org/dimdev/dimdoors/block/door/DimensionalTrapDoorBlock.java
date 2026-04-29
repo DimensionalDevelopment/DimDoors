@@ -115,7 +115,7 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
 
     @Override
     public boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockPlaceContext) {
-        return super.canBeReplaced(blockState, blockPlaceContext) || blockState.getBlock() == ModBlocks.DETACHED_RIFT.get();
+        return super.canBeReplaced(blockState, blockPlaceContext) || blockState.getBlock() == ModBlocks.DETACHED_RIFT;
     }
 
     @Nullable
@@ -145,8 +145,8 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
         BlockEntity blockEntity = world.getBlockEntity(pos);
 
         if (blockEntity instanceof EntranceRiftBlockEntity riftBlockEntity) {
-            world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
-            world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(be -> be.copyFrom(riftBlockEntity));
+            world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
+            world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent(be -> be.copyFrom(riftBlockEntity));
         }
     }
 
@@ -155,9 +155,9 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
         BlockEntity entity = level.getBlockEntity(pos);
 
         if(entity instanceof EntranceRiftBlockEntity riftBlockEntity) {
-            level.setBlock(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState(), 3);
+            level.setBlock(pos, ModBlocks.DETACHED_RIFT.defaultBlockState(), 3);
 
-            level.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(detachedRiftBlockEntity -> detachedRiftBlockEntity.copyFrom(riftBlockEntity));
+            level.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent(detachedRiftBlockEntity -> detachedRiftBlockEntity.copyFrom(riftBlockEntity));
         }
     }
 
@@ -225,7 +225,7 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
+        return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT, (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
     }
 
     public Block baseBlock() {

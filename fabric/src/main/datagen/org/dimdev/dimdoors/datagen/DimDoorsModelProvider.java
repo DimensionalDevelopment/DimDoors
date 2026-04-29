@@ -32,46 +32,46 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators generator) {
-        generator.createDoor(ModBlocks.GOLD_DOOR.get());
-        generator.createDoor(ModBlocks.STONE_DOOR.get());
-        generator.createDoor(ModBlocks.QUARTZ_DOOR.get());
+        generator.createDoor(ModBlocks.GOLD_DOOR);
+        generator.createDoor(ModBlocks.STONE_DOOR);
+        generator.createDoor(ModBlocks.QUARTZ_DOOR);
 
 //        BuiltInRegistries.BLOCK.stream().filter(a -> a instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock).map(a -> (DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock) a).forEach(a -> registerAutoGenDoor(generator, a));
 
 //        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_iron_door")), Blocks.IRON_DOOR);
-//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_gold_door")), ModBlocks.GOLD_DOOR.get());
-//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_quartz_door")), ModBlocks.QUARTZ_DOOR.get());
+//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_gold_door")), ModBlocks.GOLD_DOOR);
+//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_quartz_door")), ModBlocks.QUARTZ_DOOR);
 //        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_minecraft_oak_door")), Blocks.OAK_DOOR);
-//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_stone_door")), ModBlocks.STONE_DOOR.get());
+//        registerAutoGenDoor(generator, BuiltInRegistries.BLOCK.get(DimensionalDoors.id("block_ag_dim_dimdoors_stone_door")), ModBlocks.STONE_DOOR);
 
 
-        generator.woodProvider(ModBlocks.DRIFTWOOD_LOG.get()).log(ModBlocks.DRIFTWOOD_LOG.get()).wood(ModBlocks.DRIFTWOOD_WOOD.get());
-        generator.family(ModBlocks.DRIFTWOOD_PLANKS.get())
-                .fence(ModBlocks.DRIFTWOOD_FENCE.get())
-                .fenceGate(ModBlocks.DRIFTWOOD_GATE.get())
-                .button(ModBlocks.DRIFTWOOD_BUTTON.get())
-                .slab(ModBlocks.DRIFTWOOD_SLAB.get())
-                .stairs(ModBlocks.DRIFTWOOD_STAIRS.get());
-        generator.createDoor(ModBlocks.DRIFTWOOD_DOOR.get());
-        generator.createTrapdoor(ModBlocks.DRIFTWOOD_TRAPDOOR.get());
+        generator.woodProvider(ModBlocks.DRIFTWOOD_LOG).log(ModBlocks.DRIFTWOOD_LOG).wood(ModBlocks.DRIFTWOOD_WOOD);
+        generator.family(ModBlocks.DRIFTWOOD_PLANKS)
+                .fence(ModBlocks.DRIFTWOOD_FENCE)
+                .fenceGate(ModBlocks.DRIFTWOOD_GATE)
+                .button(ModBlocks.DRIFTWOOD_BUTTON)
+                .slab(ModBlocks.DRIFTWOOD_SLAB)
+                .stairs(ModBlocks.DRIFTWOOD_STAIRS);
+        generator.createDoor(ModBlocks.DRIFTWOOD_DOOR);
+        generator.createTrapdoor(ModBlocks.DRIFTWOOD_TRAPDOOR);
 
-        generator.family(ModBlocks.AMALGAM_BLOCK.get())
-                .slab(ModBlocks.AMALGAM_SLAB.get())
-                .stairs(ModBlocks.AMALGAM_STAIRS.get());
-        generator.createDoor(ModBlocks.AMALGAM_DOOR.get());
-        generator.createTrapdoor(ModBlocks.AMALGAM_TRAPDOOR.get());
-        generator.createTrivialCube(ModBlocks.AMALGAM_ORE.get());
-        generator.createTrivialCube(ModBlocks.RUST.get());
+        generator.family(ModBlocks.AMALGAM_BLOCK)
+                .slab(ModBlocks.AMALGAM_SLAB)
+                .stairs(ModBlocks.AMALGAM_STAIRS);
+        generator.createDoor(ModBlocks.AMALGAM_DOOR);
+        generator.createTrapdoor(ModBlocks.AMALGAM_TRAPDOOR);
+        generator.createTrivialCube(ModBlocks.AMALGAM_ORE);
+        generator.createTrivialCube(ModBlocks.RUST);
 
-        generator.createTrivialCube(ModBlocks.CLOD_ORE.get());
-        generator.createTrivialCube(ModBlocks.CLOD_BLOCK.get());
-        registerSingleTextureCube(generator, ModBlocks.PALE_SAND.get(), ResourceLocation.parse("minecraft:block/white_concrete_powder"));
-        registerCarpetLikeBlock(generator, ModBlocks.DARK_SAND_LAYER.get(), TextureMapping.getBlockTexture(ModBlocks.DARK_SAND.get()));
-        registerCarpetLikeBlock(generator, ModBlocks.LINT_LAYER.get(), TextureMapping.getBlockTexture(ModBlocks.UNRAVELLED_FABRIC.get()));
+        generator.createTrivialCube(ModBlocks.CLOD_ORE);
+        generator.createTrivialCube(ModBlocks.CLOD_BLOCK);
+        registerSingleTextureCube(generator, ModBlocks.PALE_SAND, ResourceLocation.parse("minecraft:block/white_concrete_powder"));
+        registerCarpetLikeBlock(generator, ModBlocks.DARK_SAND_LAYER, TextureMapping.getBlockTexture(ModBlocks.DARK_SAND));
+        registerCarpetLikeBlock(generator, ModBlocks.LINT_LAYER, TextureMapping.getBlockTexture(ModBlocks.UNRAVELLED_FABRIC));
 
         generateDecaySet(generator, Blocks.RED_SAND, ModBlocks.RED_SAND_SET);
         generateDecaySet(generator, Blocks.GRAVEL, ModBlocks.GRAVEL_SET);
-        generateDecaySet(generator, ModBlocks.DARK_SAND.get(), ModBlocks.DARK_SAND_SET);
+        generateDecaySet(generator, ModBlocks.DARK_SAND, ModBlocks.DARK_SAND_SET);
         generateDecaySet(generator, Blocks.CLAY, ModBlocks.CLAY_SET);
         generateDecaySet(generator, Blocks.TERRACOTTA, ModBlocks.TERRACOTTA_SET);
         generateDecaySet(generator, Blocks.WHITE_TERRACOTTA, ModBlocks.WHITE_TERRACOTTA_SET);
@@ -109,34 +109,34 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
 
         generateDecaySet(generator, Blocks.MUD, ModBlocks.MUD_SET);
-        generateDecaySet(generator, ModBlocks.UNRAVELLED_FABRIC.get(), ModBlocks.UNRAVELED_SET);
+        generateDecaySet(generator, ModBlocks.UNRAVELLED_FABRIC, ModBlocks.UNRAVELED_SET);
         generateDecaySet(generator, Blocks.DEEPSLATE, ModBlocks.DEEPSLATE_SET);
         generateDecaySet(generator, Blocks.SAND, ModBlocks.SAND_SET);
         generateDecaySet(generator, Blocks.END_STONE, ModBlocks.END_STONE_SET);
         generateDecaySet(generator, Blocks.NETHERRACK, ModBlocks.NETHERRACK_SET);
         generator.family(Blocks.STONE)
-                .slab(ModBlocks.STONE_SLAB.get())
-                .stairs(ModBlocks.STONE_STAIRS.get())
-                .wall(ModBlocks.STONE_WALL.get());
+                .slab(ModBlocks.STONE_SLAB)
+                .stairs(ModBlocks.STONE_STAIRS)
+                .wall(ModBlocks.STONE_WALL);
 
-        generator.createTrivialCube(ModBlocks.DRIFTWOOD_LEAVES.get());
-        generator.createCrossBlockWithDefaultItem(ModBlocks.DRIFTWOOD_SAPLING.get(), BlockModelGenerators.TintState.NOT_TINTED); //TODO: Decide if we need potted version
-        generator.createTrivialCube(ModBlocks.GRITTY_STONE.get());
-        generator.family(ModBlocks.REALITY_SPONGE.get());
+        generator.createTrivialCube(ModBlocks.DRIFTWOOD_LEAVES);
+        generator.createCrossBlockWithDefaultItem(ModBlocks.DRIFTWOOD_SAPLING, BlockModelGenerators.TintState.NOT_TINTED); //TODO: Decide if we need potted version
+        generator.createTrivialCube(ModBlocks.GRITTY_STONE);
+        generator.family(ModBlocks.REALITY_SPONGE);
 
         registerUnraveledSpike(generator);
 
 
-        generator.createAirLikeBlock(ModBlocks.LIMBO_AIR.get(), Blocks.BARRIER.asItem());
+        generator.createAirLikeBlock(ModBlocks.LIMBO_AIR, Blocks.BARRIER.asItem());
     }
     private void generateDecaySet(BlockModelGenerators generator, Block block, ModBlocks.DecayGroupSet set) {
         generator.family(block)
-                .button(set.button().get())
-                .slab(set.slab().get())
-                .stairs(set.stairs().get())
-                .wall(set.wall().get())
-                .fence(set.fence().get())
-                .fenceGate(set.gate().get());
+                .button(set.button())
+                .slab(set.slab())
+                .stairs(set.stairs())
+                .wall(set.wall())
+                .fence(set.fence())
+                .fenceGate(set.gate());
     }
 
     private void registerSingleTextureCube(BlockModelGenerators generator, Block block, ResourceLocation texture) {
@@ -150,7 +150,7 @@ public class DimDoorsModelProvider extends FabricModelProvider {
     }
 
     private void registerUnraveledSpike(BlockModelGenerators generators) {
-        generators.skipAutoItemBlock(ModBlocks.UNRAVELED_SPIKE.get());
+        generators.skipAutoItemBlock(ModBlocks.UNRAVELED_SPIKE);
         PropertyDispatch.C2<Direction, DripstoneThickness> c2 = PropertyDispatch.properties(BlockStateProperties.VERTICAL_DIRECTION, BlockStateProperties.DRIPSTONE_THICKNESS);
 
         for(DripstoneThickness dripstoneThickness : DripstoneThickness.values()) {
@@ -161,14 +161,14 @@ public class DimDoorsModelProvider extends FabricModelProvider {
             c2.select(Direction.DOWN, dripstoneThickness, createPointedDripstoneVariant(generators, Direction.DOWN, dripstoneThickness));
         }
 
-        generators.blockStateOutput.accept(MultiVariantGenerator.multiVariant(ModBlocks.UNRAVELED_SPIKE.get()).with(c2));
+        generators.blockStateOutput.accept(MultiVariantGenerator.multiVariant(ModBlocks.UNRAVELED_SPIKE).with(c2));
     }
 
     final Variant createPointedDripstoneVariant(BlockModelGenerators generators, Direction direction, DripstoneThickness dripstoneThickness) {
         String var10000 = direction.getSerializedName();
         String string = "_" + var10000 + "_" + dripstoneThickness.getSerializedName();
-        TextureMapping textureMapping = TextureMapping.cross(TextureMapping.getBlockTexture(ModBlocks.UNRAVELED_SPIKE.get(), string));
-        return Variant.variant().with(VariantProperties.MODEL, ModelTemplates.POINTED_DRIPSTONE.createWithSuffix(ModBlocks.UNRAVELLED_BLOCK.get(), string, textureMapping, generators.modelOutput));
+        TextureMapping textureMapping = TextureMapping.cross(TextureMapping.getBlockTexture(ModBlocks.UNRAVELED_SPIKE, string));
+        return Variant.variant().with(VariantProperties.MODEL, ModelTemplates.POINTED_DRIPSTONE.createWithSuffix(ModBlocks.UNRAVELLED_BLOCK, string, textureMapping, generators.modelOutput));
     }
 
     public void registerDoor(BlockModelGenerators generator, Block doorBlock, Block textureSource) {
@@ -202,17 +202,17 @@ public class DimDoorsModelProvider extends FabricModelProvider {
 
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-        itemModelGenerator.generateFlatItem(ModItems.FUZZY_FIREBALL.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.FABRIC_OF_FINALITY.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.LIMINAL_LINT.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.ENDURING_FIBERS.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.RIFT_PEARL.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.AMALGAM_LUMP.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.CLOD.get(), ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.FUZZY_FIREBALL, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.FABRIC_OF_FINALITY, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.LIMINAL_LINT, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.ENDURING_FIBERS, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.RIFT_PEARL, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.AMALGAM_LUMP, ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.CLOD, ModelTemplates.FLAT_ITEM);
 
-        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_BOOTS.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_CHESTPLATE.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_HELMET.get(), ModelTemplates.FLAT_ITEM);
-        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_LEGGINGS.get(), ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.boots(), ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.chestplate(), ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.helmet(), ModelTemplates.FLAT_ITEM);
+        itemModelGenerator.generateFlatItem(ModItems.GARMENT_OF_REALITY_ARMOR.leggings(), ModelTemplates.FLAT_ITEM);
     }
 }

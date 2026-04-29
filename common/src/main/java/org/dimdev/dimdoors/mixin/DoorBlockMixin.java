@@ -55,7 +55,7 @@ public abstract class DoorBlockMixin implements DoorSoundProvider, RiftVariantPr
             world.setBlockAndUpdate(pos, blockState);
             world.setBlockAndUpdate(pos.above(), blockState.setValue(HALF, DoubleBlockHalf.UPPER));
 
-            return world.getBlockEntity(pos, ModBlockEntityTypes.ENTRANCE_RIFT.get()).map(RiftUtils::registerFunction);
+            return world.getBlockEntity(pos, ModBlockEntityTypes.ENTRANCE_RIFT).map(RiftUtils::registerFunction);
         }
         return Optional.empty();
     }

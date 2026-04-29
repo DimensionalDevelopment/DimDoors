@@ -51,7 +51,7 @@ public class RiftBladeItem extends SwordItem {
 
     @Override
     public boolean isValidRepairItem(ItemStack item, ItemStack repairingItem) {
-    return Objects.equals(ModItems.STABLE_FABRIC.get(), repairingItem.getItem());
+    return Objects.equals(ModItems.STABLE_FABRIC, repairingItem.getItem());
     }
 
     @Override
@@ -134,7 +134,7 @@ public class RiftBladeItem extends SwordItem {
         BlockPos pos = blockHitResult.getBlockPos();
         RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
 
-        world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
+        world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
             var entranceRift = ((EntranceRiftBlockEntity) world.getBlockEntity(pos));
             entranceRift.copyFrom(rift);
         stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});

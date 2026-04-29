@@ -23,7 +23,7 @@ public class BlockUseLootTableProvider extends SimpleFabricLootTableProvider {
     @Override
     public void generate(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> biConsumer) {
         biConsumer.accept(ModLootTables.REMOVED_RIFT, LootTable.lootTable().withPool(
-                LootPool.lootPool().add(LootItem.lootTableItem(ModItems.WORLD_THREAD.get()))
+                LootPool.lootPool().add(LootItem.lootTableItem(ModItems.WORLD_THREAD))
         ));
     }
 }

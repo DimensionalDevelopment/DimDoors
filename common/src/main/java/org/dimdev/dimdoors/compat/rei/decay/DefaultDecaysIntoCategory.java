@@ -28,7 +28,7 @@ public class DefaultDecaysIntoCategory implements DisplayCategory<DecayPatternDi
 
     @Override
     public Renderer getIcon() {
-        return EntryStacks.of(ModBlocks.DRIFTWOOD_FENCE.get());
+        return EntryStacks.of(ModBlocks.DRIFTWOOD_FENCE);
     }
 
     @Override

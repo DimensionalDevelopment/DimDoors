@@ -28,7 +28,7 @@ import java.util.UUID;
 
 public class RiftKeyItem extends Item {
     public RiftKeyItem(Item.Properties settings) {
-    super(settings.component(ModDataComponentTypes.KEY_IDS.get(), new LinkedHashSet<>()));
+    super(settings.component(ModDataComponentTypes.KEY_IDS, new LinkedHashSet<>()));
     }
 
     @Override
@@ -117,6 +117,6 @@ public class RiftKeyItem extends Item {
     }
 
     public static Set<UUID> getIds(ItemStack stack) {
-    return stack.get(ModDataComponentTypes.KEY_IDS.get());
+    return stack.get(ModDataComponentTypes.KEY_IDS);
     }
 }

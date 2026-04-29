@@ -1165,8 +1165,9 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         add(set.stairs(), BlockTags.STAIRS, tag);
     }
 
-    private void add(RegistrySupplier<Block> block, TagKey<Block>... objects) {
-        var key = block.getKey();
+    @SafeVarargs
+    private void add(Block block, TagKey<Block>... objects) {
+        var key = block.builtInRegistryHolder().key();
         for (TagKey<Block> object : objects)
             tag(object).add(key);
     }
@@ -1194,12 +1195,12 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                     }
                 }
             } else if (object instanceof ModBlocks.DecayGroupSet set) {
-                set.fence().unwrapKey().ifPresent(appender::add);
-                set.gate().unwrapKey().ifPresent(appender::add);
-                set.button().unwrapKey().ifPresent(appender::add);
-                set.slab().unwrapKey().ifPresent(appender::add);
-                set.stairs().unwrapKey().ifPresent(appender::add);
-                set.wall().unwrapKey().ifPresent(appender::add);
+                appender.add(set.fence().builtInRegistryHolder().key());
+                appender.add(set.gate().builtInRegistryHolder().key());
+                appender.add(set.button().builtInRegistryHolder().key());
+                appender.add(set.slab().builtInRegistryHolder().key());
+                appender.add(set.stairs().builtInRegistryHolder().key());
+                appender.add(set.wall().builtInRegistryHolder().key());
             }
         }
 

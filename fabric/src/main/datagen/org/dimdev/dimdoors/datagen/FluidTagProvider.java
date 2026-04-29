@@ -19,8 +19,8 @@ public class FluidTagProvider extends FabricTagProvider.FluidTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         this.tag(FluidTags.WATER).add(
-                ModFluids.LEAK.get().builtInRegistryHolder().key(),
-                ModFluids.FLOWING_LEAK.get().builtInRegistryHolder().key()
+                ModFluids.LEAK.builtInRegistryHolder().key(),
+                ModFluids.FLOWING_LEAK.builtInRegistryHolder().key()
         );
     }
 }

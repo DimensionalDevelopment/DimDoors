@@ -147,7 +147,7 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
         addPattern(Blocks.BASALT, Fluids.LAVA).accept(consumer, provider);
         addPattern(ModBlocks.AMALGAM_TRAPDOOR, Blocks.IRON_TRAPDOOR).accept(consumer, provider);
         addPattern(ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlockTags.DECAYS_TO_DRIFTWOOD_TRAPDOOR).accept(consumer, provider);
-        addDoublePattern(DimensionalDoors.id("driftwood_trapdoor_from_driftwood_door"), ModBlocks.DRIFTWOOD_TRAPDOOR.get(), ModBlocks.DRIFTWOOD_DOOR).accept(consumer, provider);
+        addDoublePattern(DimensionalDoors.id("driftwood_trapdoor_from_driftwood_door"), ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlocks.DRIFTWOOD_DOOR).accept(consumer, provider);
         addPattern(ModBlocks.PALE_SAND, ModBlockTags.DECAYS_TO_PALE_SAND).accept(consumer, provider);
         addPattern(ModBlocks.LEAK, Fluids.WATER).accept(consumer, provider);
         addPattern(Blocks.SNOW_BLOCK, ModFluids.LEAK).accept(consumer, provider);

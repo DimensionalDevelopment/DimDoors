@@ -45,7 +45,7 @@ public class MonolithEntity extends Mob {
     private final int aggroCap;
 
     MonolithEntity(Level world) {
-        this(ModEntityTypes.MONOLITH.get(), world);
+        this(ModEntityTypes.MONOLITH, world);
     }
 
     public MonolithEntity(EntityType<? extends MonolithEntity> type, Level world) {
@@ -209,15 +209,15 @@ public class MonolithEntity extends Mob {
         float aggroPercent = this.getAggroProgress();
         float pitch = getPitch();
         if (this.soundTime <= 0) {
-            this.playSound(ModSoundEvents.MONK.get(), 1F, pitch);
+            this.playSound(ModSoundEvents.MONK, 1F, pitch);
             this.soundTime = 100;
         }
         if (aggroPercent > 0.70 && this.soundTime < 100) {
-            this.level().playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING.get(), SoundSource.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
+            this.level().playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING, SoundSource.HOSTILE, 1F, (float) (1 + this.getRandom().nextGaussian()));
             this.soundTime = 100 + this.getRandom().nextInt(75);
         }
         if (aggroPercent > 0.80 && this.soundTime < MAX_SOUND_COOLDOWN) {
-            this.level().playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING.get(), SoundSource.HOSTILE, 7, 1);
+            this.level().playSound(null, new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z)), ModSoundEvents.TEARING, SoundSource.HOSTILE, 7, 1);
             this.soundTime = 250;
         }
         this.soundTime--;

@@ -18,7 +18,7 @@ public class EarlyRiser implements Runnable {
             String recipeBookGroup = remapper.mapClassName("intermediary", "net.minecraft.class_314");
             String itemStackArray = "[L" + remapper.mapClassName("intermediary", "net.minecraft.class_1799") + ";";
             ClassTinkerers.enumBuilder(recipeBookGroup, itemStackArray)
-                    .addEnum("TESSELATING_GENERAL", () -> new Object[]{new ItemStack[]{ModItems.WORLD_THREAD.get().getDefaultInstance()}})
+                    .addEnum("TESSELATING_GENERAL", () -> new Object[]{new ItemStack[]{ModItems.WORLD_THREAD.getDefaultInstance()}})
                     .addEnum("TESSELATING_SEARCH", () -> new Object[]{new ItemStack[]{Items.COMPASS.getDefaultInstance()}})
                     .build();
         }

@@ -59,7 +59,7 @@ public class DimDoorsJeiCompatClient implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(ModBlocks.TESSELATING_LOOM.get(), TESSELATING);
-        registration.addRecipeCatalyst(ModBlocks.UNRAVELLED_FABRIC.get(), DECAY);
+        registration.addRecipeCatalyst(ModBlocks.TESSELATING_LOOM, TESSELATING);
+        registration.addRecipeCatalyst(ModBlocks.UNRAVELLED_FABRIC, DECAY);
     }
 }

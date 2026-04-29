@@ -22,7 +22,7 @@ public class ModCarvers {
 
     public static final DeferredRegister<WorldCarver<?>> CARVERS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CARVER);
 
-    public static final RegistrySupplier<LimboCarver> LIMBO_CARVER = CARVERS.register("limbo", () -> new LimboCarver(CaveCarverConfiguration.CODEC));
+    public static final LimboCarver LIMBO_CARVER = DimensionalDoors.getSided().registerCarver("limbo", new LimboCarver(CaveCarverConfiguration.CODEC));
 
     public static final ResourceKey<ConfiguredWorldCarver<?>> LIMBO = register("limbo");
 
@@ -35,13 +35,13 @@ public class ModCarvers {
     }
 
     public static void bootstrap(BootstrapContext<ConfiguredWorldCarver<?>> bootstapContext) {
-        bootstapContext.register(LIMBO, new ConfiguredWorldCarver<>(LIMBO_CARVER.get(), new CaveCarverConfiguration(
+        bootstapContext.register(LIMBO, new ConfiguredWorldCarver<>(LIMBO_CARVER, new CaveCarverConfiguration(
                 0.2f,
                 UniformHeight.of(VerticalAnchor.absolute(0), VerticalAnchor.absolute(1)),
                 ConstantFloat.of(0.5f),
                 VerticalAnchor.aboveBottom(10),
                 CarverDebugSettings.DEFAULT,
-                HolderSet.direct(ModBlocks.UNRAVELLED_FABRIC.get().arch$holder()),
+                HolderSet.direct(ModBlocks.UNRAVELLED_FABRIC.builtInRegistryHolder()),
                 ConstantFloat.of(1),
                 ConstantFloat.of(1),
                 ConstantFloat.of(-0.7f)

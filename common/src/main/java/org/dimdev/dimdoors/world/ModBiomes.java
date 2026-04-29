@@ -42,19 +42,19 @@ public final class ModBiomes {
                         .skyColor(0x404040)
                         .grassColorOverride(0x404040)
                         .ambientMoodSound(new AmbientMoodSettings(
-                                BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(ModSoundEvents.CRACK.getKey()),
+                                BuiltInRegistries.SOUND_EVENT.wrapAsHolder(ModSoundEvents.CRACK),
                                 6000,
                                 8,
                                 2
                         ))
                         .backgroundMusic(new Music(
-                                BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(ModSoundEvents.CREEPY.getKey()),
+                                BuiltInRegistries.SOUND_EVENT.wrapAsHolder(ModSoundEvents.CREEPY),
                                 0,
                                 120000,
                                 true
                         ))
                         .ambientParticle(new AmbientParticleSettings(
-                                ModParticleTypes.LIMBO_ASH.get(),
+                                ModParticleTypes.LIMBO_ASH,
                                 0.118093334f
                         )).build())
                         .generationSettings(new BiomeGenerationSettings.PlainBuilder()
@@ -63,7 +63,7 @@ public final class ModBiomes {
                                 .build())
                         .mobSpawnSettings(new MobSpawnSettings.Builder()
                                 .addSpawn(MobCategory.MONSTER, new MobSpawnSettings.SpawnerData(
-                                        ModEntityTypes.MONOLITH.get(),
+                                        ModEntityTypes.MONOLITH,
                                         100,
                                         1,
                                         10
@@ -100,7 +100,7 @@ public final class ModBiomes {
                         .grassColorModifier(BiomeSpecialEffects.GrassColorModifier.NONE)
                         .backgroundMusic(
                                 new Music(
-                                BuiltInRegistries.SOUND_EVENT.getHolderOrThrow(ModSoundEvents.WHITE_VOID.getKey()),
+                                BuiltInRegistries.SOUND_EVENT.wrapAsHolder(ModSoundEvents.WHITE_VOID),
                                 0,
                                 0,
                                 true

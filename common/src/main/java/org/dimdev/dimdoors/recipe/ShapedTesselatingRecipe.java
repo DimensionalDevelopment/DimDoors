@@ -29,7 +29,7 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return ModRecipeSerializers.SHAPED_TESSELATING.get();
+        return ModRecipeSerializers.SHAPED_TESSELATING;
     }
 
     @Override

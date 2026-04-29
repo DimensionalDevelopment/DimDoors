@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public final class ModRecipeBookGroups {
-    public static final Supplier<RecipeBookCategories> TESSELATING_GENERAL = Suppliers.memoize(() -> getRecipBookCategories("TESSELATING_GENERAL", () -> ModItems.WORLD_THREAD.get().getDefaultInstance()).get());
+    public static final Supplier<RecipeBookCategories> TESSELATING_GENERAL = Suppliers.memoize(() -> getRecipBookCategories("TESSELATING_GENERAL", () -> ModItems.WORLD_THREAD.getDefaultInstance()).get());
     public static final Supplier<RecipeBookCategories> TESSELATING_SEARCH = Suppliers.memoize(() -> getRecipBookCategories("TESSELATING_SEARCH", Items.COMPASS::getDefaultInstance).get());
 
     private static boolean initialized;
@@ -35,7 +35,7 @@ public final class ModRecipeBookGroups {
     RegisterRecipeBookCategoriesEvent.EVENT.register(event -> {
         event.registerBookCategories(ModRecipeBookTypes.TESSELLATING, List.of(TESSELATING_GENERAL.get(), TESSELATING_SEARCH.get()));
         event.registerAggregateCategory(TESSELATING_SEARCH.get(), List.of(TESSELATING_GENERAL.get()));
-        event.registerRecipeCategoryFinder(ModRecipeTypes.TESSELATING.get(), recipeHolder -> TESSELATING_GENERAL.get());
+        event.registerRecipeCategoryFinder(ModRecipeTypes.TESSELATING, recipeHolder -> TESSELATING_GENERAL.get());
     });
     }
 }

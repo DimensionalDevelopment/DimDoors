@@ -49,7 +49,7 @@ public class RiftStabilizerItem extends Item {
         DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(hit.getBlockPos());
         if (!rift.stabilized && !rift.closing) {
         rift.setStabilized(true);
-        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1); // TODO: different sound
+        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE, SoundSource.BLOCKS, 0.6f, 1); // TODO: different sound
 
         var serverPlayer = (ServerPlayer) player;
 

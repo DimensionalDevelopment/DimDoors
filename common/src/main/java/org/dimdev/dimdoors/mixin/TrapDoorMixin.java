@@ -49,7 +49,7 @@ public class TrapDoorMixin implements DoorSoundProvider, RiftVariantProvider {
 
             world.setBlockAndUpdate(pos, blockState);
 
-            return world.getBlockEntity(pos, ModBlockEntityTypes.ENTRANCE_RIFT.get()).map(RiftUtils::registerFunction);
+            return world.getBlockEntity(pos, ModBlockEntityTypes.ENTRANCE_RIFT).map(RiftUtils::registerFunction);
         }
         return Optional.empty();
     }

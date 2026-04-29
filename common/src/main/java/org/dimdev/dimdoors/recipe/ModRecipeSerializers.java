@@ -6,20 +6,18 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.util.Utils;
 
 import java.util.function.Supplier;
 
 public class ModRecipeSerializers {
-    public static DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.RECIPE_SERIALIZER);
-    public static RegistrySupplier<RecipeSerializer<ShapedTesselatingRecipe>> SHAPED_TESSELATING = register("shaped_tesselating", ShapedTesselatingRecipe.Serializer::new);
-    public static RegistrySupplier<RecipeSerializer<TesselatingShapelessRecipe>> SHAPELESS_TESSELATING = register("shapeless_tesselating", TesselatingShapelessRecipe.Serializer::new);
+    public static RecipeSerializer<ShapedTesselatingRecipe> SHAPED_TESSELATING = register("shaped_tesselating", new ShapedTesselatingRecipe.Serializer());
+    public static RecipeSerializer<TesselatingShapelessRecipe> SHAPELESS_TESSELATING = register("shapeless_tesselating", new TesselatingShapelessRecipe.Serializer());
 
     public static void init() {
-    RECIPE_SERIALIZERS.register();
     }
 
-    public static <T extends Recipe<?>> RegistrySupplier<RecipeSerializer<T>> register(String name, Supplier<RecipeSerializer<T>> supplier) {
-    return RECIPE_SERIALIZERS.register(name, supplier);
+    public static <T extends Recipe<?>> RecipeSerializer<T> register(String name, RecipeSerializer<T> supplier) {
+        return DimensionalDoors.getSided().register(Registries.RECIPE_SERIALIZER, name, supplier);
     }
-
 }

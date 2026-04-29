@@ -60,8 +60,8 @@ public class DyeableAddon implements PocketAddon {
 
     private void repaint(Pocket pocket, DyeColor dyeColor) {
     Level serverWorld = DimensionalDoors.getWorld(pocket.getWorld());
-    BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).getOrNull().defaultBlockState();;
-    BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).getOrNull().defaultBlockState();;
+    BlockState innerWall = ModBlocks.fabricFromDye(dyeColor).defaultBlockState();;
+    BlockState outerWall = ModBlocks.ancientFabricFromDye(dyeColor).defaultBlockState();;
 
     BlockPos.betweenClosedStream(pocket.getBox()).forEach(pos -> {
             System.out.println(pos + ": " + serverWorld.getBlockState(pos).toString());

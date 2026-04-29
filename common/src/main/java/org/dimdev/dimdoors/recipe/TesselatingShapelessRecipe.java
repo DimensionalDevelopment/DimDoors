@@ -32,7 +32,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return ModRecipeSerializers.SHAPELESS_TESSELATING.get();
+        return ModRecipeSerializers.SHAPELESS_TESSELATING;
     }
 
     @Override

@@ -73,7 +73,7 @@ public class DimensionalDoorsForgeClient {
 
     @SubscribeEvent
     private static void initalizeMenuScreens(RegisterMenuScreensEvent event) {
-        event.register(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
+        event.register(ModScreenHandlerTypes.TESSELATING_LOOM, TesselatingLoomScreen::new);
     }
 
     @SubscribeEvent

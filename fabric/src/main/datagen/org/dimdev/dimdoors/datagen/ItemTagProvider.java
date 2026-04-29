@@ -29,7 +29,7 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        this.tag(ModItemTags.DRIFTWOOD_LOGS).add(ModBlocks.DRIFTWOOD_LOG.get().asItem().builtInRegistryHolder().key(), ModBlocks.DRIFTWOOD_WOOD.get().asItem().builtInRegistryHolder().key());
+        this.tag(ModItemTags.DRIFTWOOD_LOGS).add(ModBlocks.DRIFTWOOD_LOG.asItem().builtInRegistryHolder().key(), ModBlocks.DRIFTWOOD_WOOD.asItem().builtInRegistryHolder().key());
 
         add(ModItems.RIFT_BLADE, ConventionalItemTags.MELEE_WEAPON_TOOLS,
                 ItemTags.FIRE_ASPECT_ENCHANTABLE,
@@ -43,18 +43,18 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
                 ItemTags.SHARP_WEAPON_ENCHANTABLE,
                 ItemTags.SWORDS);
 
-        addHead(ModItems.WORLD_THREAD_BOOTS.getKey(), ModItems.GARMENT_OF_REALITY_CHESTPLATE.getKey());
-        addChest(ModItems.WORLD_THREAD_CHESTPLATE.getKey(), ModItems.GARMENT_OF_REALITY_BOOTS.getKey());
-        addLegs(ModItems.WORLD_THREAD_HELMET.getKey(), ModItems.GARMENT_OF_REALITY_HELMET.getKey());
-        addFeet(ModItems.WORLD_THREAD_LEGGINGS.getKey(), ModItems.GARMENT_OF_REALITY_LEGGINGS.getKey());
+        addHead(ModItems.WORLD_THREAD_ARMOR.boots().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.boots().builtInRegistryHolder().key());
+        addChest(ModItems.WORLD_THREAD_ARMOR.chestplate().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.chestplate().builtInRegistryHolder().key());
+        addLegs(ModItems.WORLD_THREAD_ARMOR.helmet().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.helmet().builtInRegistryHolder().key());
+        addFeet(ModItems.WORLD_THREAD_ARMOR.leggings().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.leggings().builtInRegistryHolder().key());
 
         tag(ConventionalItemTags.MUSIC_DISCS).add(
-                ModItems.THEY_STARE_BACK_RECORD.getKey(),
-                ModItems.WHITE_VOID_RECORD.getKey(),
-                ModItems.CREEPY_RECORD.getKey()
+                ModItems.THEY_STARE_BACK_RECORD.builtInRegistryHolder().key(),
+                ModItems.WHITE_VOID_RECORD.builtInRegistryHolder().key(),
+                ModItems.CREEPY_RECORD.builtInRegistryHolder().key()
         );
 
-        tag(ConventionalItemTags.BUCKETS).add(ModItems.LEAK_BUCKET.getKey(), ModItems.ETERNAL_FLUID_BUCKET.getKey());
+        tag(ConventionalItemTags.BUCKETS).add(ModItems.LEAK_BUCKET.builtInRegistryHolder().key(), ModItems.ETERNAL_FLUID_BUCKET.builtInRegistryHolder().key());
 
         add(ItemTags.DOORS,
                 ModBlocks.GOLD_DOOR,
@@ -147,9 +147,8 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         add(ModBlocks.BLACK_ANCIENT_FABRIC, ConventionalItemTags.BLACK_DYED, ModItemTags.ANCIENT_FABRIC);
     }
 
-    private void add(TagKey<Item> tag, RegistrySupplier<? extends ItemLike>... suppliers) {
+    private void add(TagKey<Item> tag, ItemLike... suppliers) {
         tag(tag).addAll(Stream.of(suppliers)
-                .map(Supplier::get)
                 .map(ItemLike::asItem)
                 .map(Item::builtInRegistryHolder)
                 .map(Holder.Reference::key)
@@ -165,24 +164,28 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         add(set.stairs(), ItemTags.STAIRS);
     }
 
+    @SafeVarargs
     private void addHead(ResourceKey<Item>... items) {
         addDefaultArmor(items);
         tag(ItemTags.HEAD_ARMOR).add(items);
         tag(ItemTags.HEAD_ARMOR_ENCHANTABLE).add(items);
     }
 
+    @SafeVarargs
     private void addChest(ResourceKey<Item>... items) {
         addDefaultArmor(items);
         tag(ItemTags.CHEST_ARMOR).add(items);
         tag(ItemTags.CHEST_ARMOR_ENCHANTABLE).add(items);
     }
 
+    @SafeVarargs
     private void addLegs(ResourceKey<Item>... items) {
         addDefaultArmor(items);
         tag(ItemTags.LEG_ARMOR).add(items);
         tag(ItemTags.LEG_ARMOR_ENCHANTABLE).add(items);
     }
 
+    @SafeVarargs
     private void addFeet(ResourceKey<Item>... items) {
         addDefaultArmor(items);
         tag(ItemTags.FOOT_ARMOR).add(items);
@@ -199,7 +202,8 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
         tag(ModItemTags.LIMBO_GAZE_DEFYING).add(items);
     }
 
-    private void add(RegistrySupplier<? extends ItemLike> supplier, TagKey<Item>... tags) {
-        for(var tag : tags) this.tag(tag).add(supplier.get().asItem().builtInRegistryHolder().key());
+    @SafeVarargs
+    private void add(ItemLike supplier, TagKey<Item>... tags) {
+        for(var tag : tags) this.tag(tag).add(supplier.asItem().builtInRegistryHolder().key());
     }
 }

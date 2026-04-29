@@ -66,7 +66,7 @@ public class RiftRemoverItem extends Item {
         DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(((BlockHitResult) hit).getBlockPos());
         if (!Objects.requireNonNull(rift).closing) {
         rift.setClosing(true);
-        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE.get(), SoundSource.BLOCKS, 0.6f, 1);
+        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_CLOSE, SoundSource.BLOCKS, 0.6f, 1);
 
         var serverPlayer = (ServerPlayer) player;
 

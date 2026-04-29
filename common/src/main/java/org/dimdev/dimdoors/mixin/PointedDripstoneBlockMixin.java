@@ -16,7 +16,7 @@ public abstract class PointedDripstoneBlockMixin {
     @Unique
     private static boolean unraveled$isPointedDripstoneOrSpike(BlockState state) {
         return state.is(Blocks.POINTED_DRIPSTONE)
-                || state.is(ModBlocks.UNRAVELED_SPIKE.get());
+                || state.is(ModBlocks.UNRAVELED_SPIKE);
     }
 
     @Redirect(

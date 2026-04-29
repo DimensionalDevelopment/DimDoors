@@ -32,7 +32,7 @@ public class TessellatingContainer extends RecipeBookMenu<CraftingInput, Tessela
     }
 
     public TessellatingContainer(int id, Container inventory, Inventory playerInventory, ContainerData propertyDelegate) {
-    super(ModScreenHandlerTypes.TESSELATING_LOOM.get(), id);
+    super(ModScreenHandlerTypes.TESSELATING_LOOM, id);
     checkContainerSize(inventory, 10);
     checkContainerDataCount(propertyDelegate, 2);
     this.playerInventory = playerInventory;

@@ -14,11 +14,11 @@ public interface TesselatingRecipe extends Recipe<CraftingInput> {
 
     @Override
     default @NotNull RecipeType<TesselatingRecipe> getType() {
-        return ModRecipeTypes.TESSELATING.get();
+        return ModRecipeTypes.TESSELATING;
     }
 
     @Override
     default @NotNull ItemStack getToastSymbol() {
-        return new ItemStack(ModBlocks.TESSELATING_LOOM.get());
+        return new ItemStack(ModBlocks.TESSELATING_LOOM);
     }
 }

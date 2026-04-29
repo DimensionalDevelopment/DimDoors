@@ -48,7 +48,7 @@ public record RiftParticleOptions(float color, int averageAge) implements Partic
    public static final StreamCodec<RegistryFriendlyByteBuf, RiftParticleOptions> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.FLOAT,  RiftParticleOptions::color, ByteBufCodecs.VAR_INT, RiftParticleOptions::averageAge, RiftParticleOptions::new);
 
    public ParticleType<?> getType() {
-      return ModParticleTypes.RIFT.get();
+      return ModParticleTypes.RIFT;
    }
 
    @Override

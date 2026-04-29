@@ -113,7 +113,7 @@ public class MonolithAggroGoal extends Goal {
             if (this.mob.getAggro() >= MAX_AGGRO && DimensionalDoors.getConfig().getMonolithsConfig().monolithTeleportation && !this.target.isCreative() && this.mob.isDangerous()) {
                 this.mob.setAggro(0);
                 TeleportUtil.teleport(this.target, DimensionalDoors.getWorld(ModDimensions.LIMBO), this.target.position().add(0, 256, 0f), this.target.getVisualRotationYInDegrees());
-                this.target.level().playSound(null, new BlockPos(new Vec3i((int) this.target.position().x, (int) this.target.position().y, (int) this.target.position().z)), ModSoundEvents.CRACK.get(), SoundSource.HOSTILE, 13, 1);
+                this.target.level().playSound(null, new BlockPos(new Vec3i((int) this.target.position().x, (int) this.target.position().y, (int) this.target.position().z)), ModSoundEvents.CRACK, SoundSource.HOSTILE, 13, 1);
                 this.target.awardStat(ModStats.TIMES_TELEPORTED_BY_MONOLITH);
                 ServerPacketHandler.sendPacket((ServerPlayer) this.target, MonolithTeleportParticlesPacket.INSTANCE);
         }

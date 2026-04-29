@@ -17,31 +17,29 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ModBlockEntityTypes {
-    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.BLOCK_ENTITY_TYPE);
-
-    public static final RegistrySupplier<BlockEntityType<DetachedRiftBlockEntity>> DETACHED_RIFT = register(
-        "detached_rift",
-        DetachedRiftBlockEntity::new,
-        ModBlocks.DETACHED_RIFT
+    public static final BlockEntityType<DetachedRiftBlockEntity> DETACHED_RIFT = register(
+            "detached_rift",
+            DetachedRiftBlockEntity::new,
+            ModBlocks.DETACHED_RIFT
     );
 
-    public static final RegistrySupplier<MutableBlockEntityType<EntranceRiftBlockEntity>> ENTRANCE_RIFT = registerMutable(
-        "entrance_rift",
-        EntranceRiftBlockEntity::new,
-        ModBlocks.DIMENSIONAL_PORTAL);
+    public static final MutableBlockEntityType<EntranceRiftBlockEntity> ENTRANCE_RIFT = registerMutable(
+            "entrance_rift",
+            EntranceRiftBlockEntity::new,
+            ModBlocks.DIMENSIONAL_PORTAL);
 
-    public static final RegistrySupplier<BlockEntityType<TesselatingLoomBlockEntity>> TESSELATING_LOOM = register("tesselating_loom", TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM);
+    public static final BlockEntityType<TesselatingLoomBlockEntity> TESSELATING_LOOM = register("tesselating_loom", TesselatingLoomBlockEntity::new, ModBlocks.TESSELATING_LOOM);
 
 
-    private static <E extends BlockEntity> RegistrySupplier<BlockEntityType<E>> register(String id, BiFunction<BlockPos, BlockState, E> factory, RegistrySupplier<Block>... blocks) {
-    return BLOCK_ENTITY_TYPES.register(id, () -> BlockEntityType.Builder.of(factory::apply, Stream.of(blocks).map(Supplier::get).toArray(Block[]::new)).build(null));
+    private static <E extends BlockEntity> BlockEntityType<E> register(String id, BiFunction<BlockPos, BlockState, E> factory, Block... blocks) {
+        return DimensionalDoors.getSided().registerBlockEntityType(id, BlockEntityType.Builder.of(factory::apply, Stream.of(blocks).toArray(Block[]::new)).build(null));
     }
 
-    private static <E extends BlockEntity> RegistrySupplier<MutableBlockEntityType<E>> registerMutable(String id, MutableBlockEntityType.BlockEntityFactory<E> factory, RegistrySupplier<Block>... blocks) {
-    return BLOCK_ENTITY_TYPES.register(id, () -> MutableBlockEntityType.Builder.create(factory, Stream.of(blocks).map(Supplier::get).toArray(Block[]::new)).build());
+
+    private static <E extends BlockEntity> MutableBlockEntityType<E> registerMutable(String id, MutableBlockEntityType.BlockEntityFactory<E> factory, Block... blocks) {
+        return DimensionalDoors.getSided().registerBlockEntityType(id, MutableBlockEntityType.Builder.create(factory, Stream.of(blocks).toArray(Block[]::new)).build());
     }
 
     public static void init() {
-    BLOCK_ENTITY_TYPES.register();
     }
 }

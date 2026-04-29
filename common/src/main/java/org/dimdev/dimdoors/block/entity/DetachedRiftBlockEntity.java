@@ -40,7 +40,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
     public double renderAngle;
 
     public DetachedRiftBlockEntity(BlockPos pos, BlockState state) {
-    super(ModBlockEntityTypes.DETACHED_RIFT.get(), pos, state);
+    super(ModBlockEntityTypes.DETACHED_RIFT, pos, state);
     this.curveID = (int) (Math.random()* RiftCurves.CURVES.size());
     this.riftYaw = random.nextInt(360);
     }

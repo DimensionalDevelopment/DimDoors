@@ -26,7 +26,7 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer {
         RecipeBookManager.init();
         ModelLoadingPlugin.register(new DimensionalDoorsModelLoadingPlugin());
 
-        MenuScreens.register(ModScreenHandlerTypes.TESSELATING_LOOM.get(), TesselatingLoomScreen::new);
+        MenuScreens.register(ModScreenHandlerTypes.TESSELATING_LOOM, TesselatingLoomScreen::new);
 
         DimensionRenderering.initClient();
         DimensionalDoorsClient.initParticles(

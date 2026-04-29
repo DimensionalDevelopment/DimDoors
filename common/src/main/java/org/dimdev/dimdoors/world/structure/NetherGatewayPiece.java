@@ -116,8 +116,8 @@ public class NetherGatewayPiece extends NetherFortressPieces.NetherBridgePiece {
             placeBlock(level, netherBrickFenceState, 4, 6, 4, box);
 
             // Place the transient door
-            placeBlock(level, ModBlocks.DIMENSIONAL_PORTAL.get().defaultBlockState(), 3, 3, 3, box);
-            level.getBlockEntity(getWorldPos(3,3,3), ModBlockEntityTypes.ENTRANCE_RIFT.get()).ifPresent(rift -> {
+            placeBlock(level, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState(), 3, 3, 3, box);
+            level.getBlockEntity(getWorldPos(3,3,3), ModBlockEntityTypes.ENTRANCE_RIFT).ifPresent(rift -> {
                 rift.setProperties(DefaultDungeonDestinations.OVERWORLD_LINK_PROPERTIES);
                 rift.setDestination(DefaultDungeonDestinations.getGateway(PocketGenerator.NETHER_DUNGEONS));
             });

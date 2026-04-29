@@ -135,7 +135,7 @@ public class DimensionalDoorModifier extends AbstractModifier {
 
         BlockState lower = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.LOWER).setValue(DimensionalDoorBlock.FACING, facing);
         BlockState upper = doorType.defaultBlockState().setValue(DimensionalDoorBlock.HALF, DoubleBlockHalf.UPPER).setValue(DimensionalDoorBlock.FACING, facing);
-        EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.get().create(pos, lower);
+        EntranceRiftBlockEntity rift = ModBlockEntityTypes.ENTRANCE_RIFT.create(pos, lower);
         rift.setLevel(parameters.world());
 
         if (doorData == null) {

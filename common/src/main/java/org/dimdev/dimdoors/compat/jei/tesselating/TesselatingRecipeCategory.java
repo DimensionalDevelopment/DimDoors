@@ -40,7 +40,7 @@ public class TesselatingRecipeCategory extends AbstractRecipeCategory<RecipeHold
 
         super(TESSELATING,
                 Component.translatable("category.dimdoors.tesselating"),
-                guiHelper.createDrawableItemLike(ModBlocks.TESSELATING_LOOM.get()),
+                guiHelper.createDrawableItemLike(ModBlocks.TESSELATING_LOOM),
                 width,
                 height);
         this.guiHelper = guiHelper;

@@ -73,7 +73,7 @@ public class DestinationDataModifier extends StructureProcessor {
 
     @Override
     public StructureProcessorType<?> getType() {
-        return ModStructureProccessors.DESTINATION_DATA.get();
+        return ModStructureProccessors.DESTINATION_DATA;
     }
 
     private int getMarkerId(CompoundTag data) {

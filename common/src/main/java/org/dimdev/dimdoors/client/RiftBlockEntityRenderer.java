@@ -25,7 +25,7 @@ public abstract class RiftBlockEntityRenderer<T extends RiftBlockEntity> impleme
 
     @Override
     public void render(T rift, float f, PoseStack matrices, MultiBufferSource multiBufferSource, int i, int j) {
-        if(GameInstance.getClient().player != null && GameInstance.getClient().player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.RIFT_CONFIGURATION_TOOL.get())) {
+        if(GameInstance.getClient().player != null && GameInstance.getClient().player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.RIFT_CONFIGURATION_TOOL)) {
             matrices.pushPose();
 
             matrices.translate(0.5D, 1.25D, 0.5D);

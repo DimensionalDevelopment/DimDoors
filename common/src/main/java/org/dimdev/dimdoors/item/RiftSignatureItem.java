@@ -43,7 +43,7 @@ public class RiftSignatureItem extends Item {
 
     @Override
     public boolean isFoil(ItemStack stack) {
-    return stack.has(ModDataComponentTypes.DESTINATION.get());
+    return stack.has(ModDataComponentTypes.DESTINATION);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class RiftSignatureItem extends Item {
         // The link signature has not been used. Store its current target as the first location.
         setSource(stack, new RotatedLocation(world.dimension(), pos, player.getYRot(), 0));
         player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".stored"), true);
-        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START.get(), SoundSource.BLOCKS, 0.6f, 1);
+        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_START, SoundSource.BLOCKS, 0.6f, 1);
     } else {
         var source = new RotatedLocation(world.dimension(), pos, player.getYRot(), 0);
 
@@ -97,22 +97,22 @@ public class RiftSignatureItem extends Item {
         }
         player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".created"), true);
         // null = send sound to the player too, we have to do this because this code is not run client-side
-        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_END.get(), SoundSource.BLOCKS, 0.6f, 1);
+        world.playSound(null, player.blockPosition(), ModSoundEvents.RIFT_END, SoundSource.BLOCKS, 0.6f, 1);
     }
 
     return InteractionResult.SUCCESS;
     }
 
     public static void setSource(ItemStack itemStack, RotatedLocation destination) {
-    itemStack.set(ModDataComponentTypes.DESTINATION.get(), destination);
+    itemStack.set(ModDataComponentTypes.DESTINATION, destination);
     }
 
     public static void clearSource(ItemStack itemStack) {
-    itemStack.remove(ModDataComponentTypes.DESTINATION.get());
+    itemStack.remove(ModDataComponentTypes.DESTINATION);
     }
 
     public static @Nullable RotatedLocation getSource(ItemStack itemStack) {
-    return itemStack.get(ModDataComponentTypes.DESTINATION.get());
+    return itemStack.get(ModDataComponentTypes.DESTINATION);
     }
 
     @Override
@@ -134,8 +134,8 @@ public class RiftSignatureItem extends Item {
         if(state.getBlock() instanceof RiftVariantProvider variantProvider)
             rift = variantProvider.convertToRiftProvider(world, pos, state).map(RiftUtils::registerFunction);
         else if(state.canBeReplaced()) {
-            world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
-            rift = ModBlockEntityTypes.DETACHED_RIFT.toOptional().flatMap(a -> world.getBlockEntity(pos, a)).map(RiftUtils::registerFunction);
+            world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
+            rift = world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).map(RiftUtils::registerFunction);
         } else rift = Optional.empty();
 
         return rift;

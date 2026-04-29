@@ -73,7 +73,7 @@ public final class Decay {
     for(DecayPatternHolder pattern : patterns) {
             if (pattern.value().test(context)) {
                 sendBreakBlockProgress(world, context.targetBlockPos, BREAK_BLOCK_STAGE);
-                world.playSound(null, context.targetBlockPos, ModSoundEvents.TEARING.get(), SoundSource.BLOCKS, 0.5f, 1f);
+                world.playSound(null, context.targetBlockPos, ModSoundEvents.TEARING, SoundSource.BLOCKS, 0.5f, 1f);
                 queueDecay(context, pattern, DimensionalDoors.getConfig().getDecayConfig().decayDelay);
                 break;
             }

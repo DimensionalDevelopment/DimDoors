@@ -85,7 +85,7 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 
         EntranceRiftBlockEntity rift = this.getRift(world, pos, state);
 
-        world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState());
+        world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
         ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());
 
     /*
@@ -131,7 +131,7 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return Dummy.checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), DimensionalPortalBlock::portalTick);
+        return Dummy.checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT, DimensionalPortalBlock::portalTick);
     }
 
     private static void portalTick(Level world, BlockPos pos, BlockState state, EntranceRiftBlockEntity e) {

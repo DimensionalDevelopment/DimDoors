@@ -128,8 +128,8 @@ public class DimensionalDoorsClient {
 
     @Environment(EnvType.CLIENT)
     public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer) {
-    consumer.accept(ModEntityTypes.MONOLITH.get(), MonolithRenderer::new);
-        consumer.accept(ModEntityTypes.MASK.get(), context -> new EntityRenderer<MaskEntity>(context) {
+    consumer.accept(ModEntityTypes.MONOLITH, MonolithRenderer::new);
+        consumer.accept(ModEntityTypes.MASK, context -> new EntityRenderer<MaskEntity>(context) {
         @Override
         public ResourceLocation getTextureLocation(MaskEntity entity) {
         return ResourceLocation.parse("blep");
@@ -139,8 +139,8 @@ public class DimensionalDoorsClient {
 
     @Environment(EnvType.CLIENT)
     public static void initBlockEntitiesClient() {
-    BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT.get(), EntranceRiftBlockEntityRenderer::new);
-    BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT.get(), DetachedRiftBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(ModBlockEntityTypes.ENTRANCE_RIFT, EntranceRiftBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.register(ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntityRenderer::new);
     }
 
     private static Predicate<Field> isResourceKeyListOfType(Class<?> registryType) {
@@ -192,8 +192,8 @@ public class DimensionalDoorsClient {
     }
 
     public static void initParticles(BiConsumer<ParticleType<? extends ParticleOptions>, ParticleProvider<?>> specialProvider, BiConsumer<ParticleType<?>, Function<SpriteSet, ? extends ParticleProvider<? extends ParticleOptions>>> spriteProivder) {
-    specialProvider.accept(MONOLITH.get(), (particleOptions, clientLevel, x, y, z, g, h, i) -> new MonolithParticle(clientLevel, x, y, z));
-    spriteProivder.accept(RIFT.get(), RiftParticle.Factory::new);
-    spriteProivder.accept(LIMBO_ASH.get(), LimboAshParticle.Factory::new);
+    specialProvider.accept(MONOLITH, (particleOptions, clientLevel, x, y, z, g, h, i) -> new MonolithParticle(clientLevel, x, y, z));
+    spriteProivder.accept(RIFT, RiftParticle.Factory::new);
+    spriteProivder.accept(LIMBO_ASH, LimboAshParticle.Factory::new);
     }
 }

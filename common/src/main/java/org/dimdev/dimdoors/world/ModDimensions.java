@@ -15,6 +15,7 @@ import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.ISided;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 
 import java.util.Objects;
@@ -63,8 +64,8 @@ public final class ModDimensions {
         return world != null && world.dimension().equals(LIMBO);
     }
 
-    public static void init() {
-        LifecycleEvent.SERVER_STARTED.register(server -> {
+    public static void init(ISided sided) {
+        sided.onServerStarted(server -> {
             ModDimensions.LIMBO_TYPE = server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(LIMBO_TYPE_KEY);
             ModDimensions.POCKET_TYPE = server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(POCKET_TYPE_KEY);
             ModDimensions.LIMBO_DIMENSION = server.getLevel(LIMBO);
@@ -72,9 +73,7 @@ public final class ModDimensions {
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getLevel(PUBLIC);
             ModDimensions.DUNGEON_POCKET_DIMENSION = server.getLevel(DUNGEON);
         });
-        var deffered = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CHUNK_GENERATOR);
-        deffered.register("blank", () -> BlankChunkGenerator.CODEC);
-        deffered.register();
+        sided.register(Registries.CHUNK_GENERATOR, "blank", BlankChunkGenerator.CODEC);
     }
 
     public static void bootstrap(BootstrapContext<DimensionType> entries) {

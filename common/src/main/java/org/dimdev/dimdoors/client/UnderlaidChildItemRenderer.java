@@ -14,7 +14,7 @@ import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
 @Environment(EnvType.CLIENT)
 public record UnderlaidChildItemRenderer(ItemStack underlay) {
-    public static final UnderlaidChildItemRenderer INSTANCE = new UnderlaidChildItemRenderer(ModBlocks.DIMENSIONAL_PORTAL.get().asItem());
+    public static final UnderlaidChildItemRenderer INSTANCE = new UnderlaidChildItemRenderer(ModBlocks.DIMENSIONAL_PORTAL.asItem());
 
     public UnderlaidChildItemRenderer(Item underlay) {
         this(new ItemStack(underlay));

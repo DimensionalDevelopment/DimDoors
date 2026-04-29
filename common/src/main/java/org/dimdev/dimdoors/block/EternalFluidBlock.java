@@ -16,7 +16,7 @@ public class EternalFluidBlock extends ArchitecturyLiquidBlock {
     private static final EntityTarget TARGET = new EscapeTarget(true);
 
     public EternalFluidBlock(Properties settings) {
-     super(ModFluids.ETERNAL_FLUID, settings);
+        super(() -> ModFluids.ETERNAL_FLUID, settings);
     }
 
 

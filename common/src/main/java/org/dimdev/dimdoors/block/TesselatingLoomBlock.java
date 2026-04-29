@@ -61,7 +61,7 @@ public class TesselatingLoomBlock extends BaseEntityBlock {
 
     @Nullable
     public BlockEntityTicker<TesselatingLoomBlockEntity> getTicker(Level level, BlockState blockState, BlockEntityType entityType) {
-    return createFurnaceTicker(level, entityType, ModBlockEntityTypes.TESSELATING_LOOM.get());
+    return createFurnaceTicker(level, entityType, ModBlockEntityTypes.TESSELATING_LOOM);
     }
 
     @Nullable

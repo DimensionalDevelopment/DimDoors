@@ -5,11 +5,11 @@ import org.dimdev.dimdoors.item.ModDataComponentTypes;
 
 public class IdCounter {
     public static int get(ItemStack provider) {
-    return provider.getOrDefault(ModDataComponentTypes.COUNT.get(), 0);
+    return provider.getOrDefault(ModDataComponentTypes.COUNT, 0);
     }
 
     public static void set(ItemStack provider, Integer value) {
-    provider.set(ModDataComponentTypes.COUNT.get(), value);
+    provider.set(ModDataComponentTypes.COUNT, value);
     }
 
 

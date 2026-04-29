@@ -56,7 +56,7 @@ public class DimensionalDoorBlockItem extends BlockItem {
 
     BlockPos pos = context.getClickedPos();
 
-    boolean placedOnRift = context.getLevel().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT.get();
+    boolean placedOnRift = context.getLevel().getBlockState(pos).getBlock() == ModBlocks.DETACHED_RIFT;
 
     if(!placedOnRift) {
         context.setToProperReplaced();
@@ -122,7 +122,7 @@ public class DimensionalDoorBlockItem extends BlockItem {
         for (int y = pos.getY() - 5; y < pos.getY() + 5; y++) {
         for (int z = pos.getZ() - 5; z < pos.getZ() + 5; z++) {
             BlockPos searchPos = new BlockPos(x, y, z);
-            if (world.getBlockState(searchPos).getBlock() == ModBlocks.DETACHED_RIFT.get()) {
+            if (world.getBlockState(searchPos).getBlock() == ModBlocks.DETACHED_RIFT) {
             DetachedRiftBlockEntity rift = (DetachedRiftBlockEntity) world.getBlockEntity(searchPos);
             if (Math.sqrt(pos.distSqr(searchPos)) < rift.size) {
                 return true;

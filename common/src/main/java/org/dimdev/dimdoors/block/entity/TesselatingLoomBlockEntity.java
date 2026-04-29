@@ -86,7 +86,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 
 
     public TesselatingLoomBlockEntity(BlockPos pos, BlockState state) {
-    super(ModBlockEntityTypes.TESSELATING_LOOM.get(), pos, state);
+    super(ModBlockEntityTypes.TESSELATING_LOOM, pos, state);
     this.inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     }
 
@@ -233,11 +233,11 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
     }
 
     public Optional<RecipeHolder<TesselatingRecipe>> getRecipe(ResourceLocation location) {
-    return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING.get(), this.asCraftInput(), level, location);
+    return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING, this.asCraftInput(), level, location);
     }
 
     public Optional<RecipeHolder<TesselatingRecipe>> getRecipe() {
-    return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING.get(), this.asCraftInput(), level);
+    return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING, this.asCraftInput(), level);
     }
 
     private int getWeavingTotalTime() {
@@ -280,7 +280,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
         takeInputs();
         insertOutput(output);
         } else if(weaveTime % 60 == 0) {
-                level.playSound(null, this.getBlockPos(), ModSoundEvents.TESSELATING_WEAVE.get(), SoundSource.BLOCKS);
+                level.playSound(null, this.getBlockPos(), ModSoundEvents.TESSELATING_WEAVE, SoundSource.BLOCKS);
             }
 
         setChanged();

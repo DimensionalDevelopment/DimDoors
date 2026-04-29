@@ -30,7 +30,7 @@ public class DefaultTesselatingCategory implements DisplayCategory<DefaultTessel
     
     @Override
     public Renderer getIcon() {
-        return EntryStacks.of(ModBlocks.TESSELATING_LOOM.get());
+        return EntryStacks.of(ModBlocks.TESSELATING_LOOM);
     }
     
     @Override

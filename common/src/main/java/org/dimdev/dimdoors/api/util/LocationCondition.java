@@ -24,7 +24,7 @@ public interface LocationCondition {
     public enum AlwaysTrue implements LocationCondition {
         INSTANCE;
 
-        public static final MapCodec<LocationCondition> CODEC = MapCodec.unit(INSTANCE);
+        public static final MapCodec<AlwaysTrue> CODEC = MapCodec.unit(INSTANCE).stable();
 
         @Override
         public boolean test(Location location) {
@@ -32,7 +32,7 @@ public interface LocationCondition {
         }
 
         @Override
-        public LocationConditionType<LocationCondition> type() {
+        public LocationConditionType<AlwaysTrue> type() {
             return LocationConditionType.ALWAYS_TRUE.get();
         }
     }
@@ -43,7 +43,7 @@ public interface LocationCondition {
 
         public static final Codec<LocationConditionType<? extends LocationCondition>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
 
-        public static final RegistrySupplier<LocationConditionType<LocationCondition>> ALWAYS_TRUE = register(DimensionalDoors.id("always_true"), AlwaysTrue.CODEC);
+        public static final RegistrySupplier<LocationConditionType<AlwaysTrue>> ALWAYS_TRUE = register(DimensionalDoors.id("always_true"), AlwaysTrue.CODEC);
 
         public static void register() {
         }

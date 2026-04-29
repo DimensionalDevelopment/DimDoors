@@ -37,22 +37,22 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
     }
     @Override
     public void generate() {
-        for (RegistrySupplier<Block> block : ModBlocks.FABRIC_BLOCKS.values()) {
-            this.dropWhenSilkTouch(block.get());
+        for (Block block : ModBlocks.FABRIC_BLOCKS.values()) {
+            this.dropWhenSilkTouch(block);
         }
-        this.add(ModBlocks.GOLD_DOOR.get(), this::createDoorTable);
-        this.add(ModBlocks.QUARTZ_DOOR.get(), this::createDoorTable);
-        this.add(ModBlocks.STONE_DOOR.get(), this::createDoorTable);
+        this.add(ModBlocks.GOLD_DOOR, this::createDoorTable);
+        this.add(ModBlocks.QUARTZ_DOOR, this::createDoorTable);
+        this.add(ModBlocks.STONE_DOOR, this::createDoorTable);
 
-//        this.dropWhenSilkTouch(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR.get());
-        this.dropWhenSilkTouch(ModBlocks.MARKING_PLATE.get());
+//        this.dropWhenSilkTouch(ModBlocks.OAK_DIMENSIONAL_TRAPDOOR);
+        this.dropWhenSilkTouch(ModBlocks.MARKING_PLATE);
 
-        this.add(ModBlocks.SOLID_STATIC.get(), (blockx) -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER.get()));
+        this.add(ModBlocks.SOLID_STATIC, (blockx) -> createOreDrop(blockx, ModItems.INFRANGIBLE_FIBER));
 
-        this.add(ModBlocks.UNRAVELLED_FABRIC.get(), block ->
+        this.add(ModBlocks.UNRAVELLED_FABRIC, block ->
                 this.createSilkTouchDispatchTable(
                         block,
-                        LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get())
+                        LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS)
                                 .when(BonusLevelTableCondition.bonusLevelFlatChance(
                                         registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE),
                                         0.1F, 0.14285715F, 0.25F, 1.0F
@@ -64,45 +64,45 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
                                 )
                 )
         );
-        this.dropSelf(ModBlocks.TESSELATING_LOOM.get());
-        this.dropSelf(ModBlocks.REALITY_SPONGE.get());
+        this.dropSelf(ModBlocks.TESSELATING_LOOM);
+        this.dropSelf(ModBlocks.REALITY_SPONGE);
 
-        this.dropSelf(ModBlocks.DRIFTWOOD_WOOD.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_LOG.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_PLANKS.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_LEAVES.get());
-        add(ModBlocks.DRIFTWOOD_LEAVES.get(), block -> {
+        this.dropSelf(ModBlocks.DRIFTWOOD_WOOD);
+        this.dropSelf(ModBlocks.DRIFTWOOD_LOG);
+        this.dropSelf(ModBlocks.DRIFTWOOD_PLANKS);
+        this.dropSelf(ModBlocks.DRIFTWOOD_LEAVES);
+        add(ModBlocks.DRIFTWOOD_LEAVES, block -> {
             HolderLookup.RegistryLookup<Enchantment> registryLookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
-            return createLeavesDrops(block, ModBlocks.DRIFTWOOD_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).when(this.doesNotHaveShearsOrSilkTouch()).add((this.applyExplosionCondition(block, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS.get()))).when(BonusLevelTableCondition.bonusLevelFlatChance(registryLookup.getOrThrow(Enchantments.FORTUNE), 0.005F, 0.0055555557F, 0.00625F, 0.008333334F, 0.025F))));
+            return createLeavesDrops(block, ModBlocks.DRIFTWOOD_SAPLING, NORMAL_LEAVES_SAPLING_CHANCES).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).when(this.doesNotHaveShearsOrSilkTouch()).add((this.applyExplosionCondition(block, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS))).when(BonusLevelTableCondition.bonusLevelFlatChance(registryLookup.getOrThrow(Enchantments.FORTUNE), 0.005F, 0.0055555557F, 0.00625F, 0.008333334F, 0.025F))));
         });
 
 
-        this.dropSelf(ModBlocks.DRIFTWOOD_SAPLING.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_FENCE.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_GATE.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_BUTTON.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_SLAB.get());
-        this.dropSelf(ModBlocks.DRIFTWOOD_STAIRS.get());
-        this.add(ModBlocks.DRIFTWOOD_DOOR.get(), this::createDoorTable);
-        this.dropSelf(ModBlocks.DRIFTWOOD_TRAPDOOR.get());
-        this.dropSelf(ModBlocks.AMALGAM_BLOCK.get());
-        this.add(ModBlocks.AMALGAM_DOOR.get(), this::createDoorTable);
-        this.dropSelf(ModBlocks.AMALGAM_TRAPDOOR.get());
-        this.dropSelf(ModBlocks.RUST.get());
-        this.dropSelf(ModBlocks.AMALGAM_SLAB.get());
-        this.dropSelf(ModBlocks.AMALGAM_STAIRS.get());
-        this.add(ModBlocks.AMALGAM_ORE.get(), (blockx) -> createOreDrop(blockx, ModItems.AMALGAM_LUMP.get()));
-        this.add(ModBlocks.CLOD_ORE.get(), (blockx) -> createOreDrop(blockx, ModItems.CLOD.get()));
-        this.dropSelf(ModBlocks.CLOD_BLOCK.get());
+        this.dropSelf(ModBlocks.DRIFTWOOD_SAPLING);
+        this.dropSelf(ModBlocks.DRIFTWOOD_FENCE);
+        this.dropSelf(ModBlocks.DRIFTWOOD_GATE);
+        this.dropSelf(ModBlocks.DRIFTWOOD_BUTTON);
+        this.dropSelf(ModBlocks.DRIFTWOOD_SLAB);
+        this.dropSelf(ModBlocks.DRIFTWOOD_STAIRS);
+        this.add(ModBlocks.DRIFTWOOD_DOOR, this::createDoorTable);
+        this.dropSelf(ModBlocks.DRIFTWOOD_TRAPDOOR);
+        this.dropSelf(ModBlocks.AMALGAM_BLOCK);
+        this.add(ModBlocks.AMALGAM_DOOR, this::createDoorTable);
+        this.dropSelf(ModBlocks.AMALGAM_TRAPDOOR);
+        this.dropSelf(ModBlocks.RUST);
+        this.dropSelf(ModBlocks.AMALGAM_SLAB);
+        this.dropSelf(ModBlocks.AMALGAM_STAIRS);
+        this.add(ModBlocks.AMALGAM_ORE, (blockx) -> createOreDrop(blockx, ModItems.AMALGAM_LUMP));
+        this.add(ModBlocks.CLOD_ORE, (blockx) -> createOreDrop(blockx, ModItems.CLOD));
+        this.dropSelf(ModBlocks.CLOD_BLOCK);
 
 
-        this.dropSelf(ModBlocks.DARK_SAND.get());
-        this.dropSelf(ModBlocks.PALE_SAND.get());
-        this.dropSelf(ModBlocks.DARK_SAND_LAYER.get());
-        this.dropSelf(ModBlocks.LINT_LAYER.get());
-        this.dropSelf(ModBlocks.STONE_SLAB.get());
-        this.dropSelf(ModBlocks.STONE_STAIRS.get());
-        this.dropSelf(ModBlocks.STONE_WALL.get());
+        this.dropSelf(ModBlocks.DARK_SAND);
+        this.dropSelf(ModBlocks.PALE_SAND);
+        this.dropSelf(ModBlocks.DARK_SAND_LAYER);
+        this.dropSelf(ModBlocks.LINT_LAYER);
+        this.dropSelf(ModBlocks.STONE_SLAB);
+        this.dropSelf(ModBlocks.STONE_STAIRS);
+        this.dropSelf(ModBlocks.STONE_WALL);
 
         this.dropSelf(ModBlocks.GRAVEL_SET);
         this.dropSelf(ModBlocks.DARK_SAND_SET);
@@ -147,17 +147,17 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         this.dropSelf(ModBlocks.SAND_SET);
         this.dropSelf(ModBlocks.END_STONE_SET);
         this.dropSelf(ModBlocks.NETHERRACK_SET);
-        this.dropSelf(ModBlocks.UNRAVELED_SPIKE.get());
-        this.dropSelf(ModBlocks.GRITTY_STONE.get());
+        this.dropSelf(ModBlocks.UNRAVELED_SPIKE);
+        this.dropSelf(ModBlocks.GRITTY_STONE);
     }
 
 
     private void dropSelf(ModBlocks.DecayGroupSet set) {
-        dropSelf(set.fence().get());
-        dropSelf(set.gate().get());
-        dropSelf(set.button().get());
-        dropSelf(set.slab().get());
-        dropSelf(set.stairs().get());
-        dropSelf(set.wall().get());
+        dropSelf(set.fence());
+        dropSelf(set.gate());
+        dropSelf(set.button());
+        dropSelf(set.slab());
+        dropSelf(set.stairs());
+        dropSelf(set.wall());
     }
 }

@@ -53,7 +53,7 @@ public class ChestLootTableProvider extends SimpleFabricLootTableProvider {
                                 .add(item(Items.COAL, 1, 3, 12))
                                 .add(item(Items.QUARTZ, 1, 3, 12))
                                 .add(item(Items.DIAMOND, 2, 8, 8))
-                                .add(item(ModBlocks.LIME_FABRIC.get(), 16, 64, 2))
+                                .add(item(ModBlocks.LIME_FABRIC, 16, 64, 2))
                                 .add(item(Items.BOOK, 10))
                                 .add(item(Items.GOLDEN_APPLE, 1))
                 )

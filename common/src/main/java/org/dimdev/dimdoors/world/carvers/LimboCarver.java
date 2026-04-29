@@ -23,7 +23,7 @@ public class LimboCarver
 extends CaveWorldCarver {
     public LimboCarver(Codec<CaveCarverConfiguration> codec) {
         super(codec);
-        this.liquids = ImmutableSet.of(ModFluids.ETERNAL_FLUID.get());
+        this.liquids = ImmutableSet.of(ModFluids.ETERNAL_FLUID);
     }
 
     @Override
@@ -44,7 +44,7 @@ extends CaveWorldCarver {
     @Override
     protected boolean carveBlock(CarvingContext carvingContext, CaveCarverConfiguration caveCarverConfiguration, ChunkAccess chunkAccess, Function<BlockPos, Holder<Biome>> function, CarvingMask carvingMask, BlockPos.MutableBlockPos mutableBlockPos, BlockPos.MutableBlockPos mutableBlockPos2, Aquifer aquifer, MutableBoolean mutableBoolean) {
         if (this.canReplaceBlock(caveCarverConfiguration, chunkAccess.getBlockState(mutableBlockPos))) {
-            BlockState blockState = mutableBlockPos.getY() <= carvingContext.getMinGenY() + 31 ? ModBlocks.ETERNAL_FLUID.get().defaultBlockState() : ModBlocks.LIMBO_AIR.get().defaultBlockState();
+            BlockState blockState = mutableBlockPos.getY() <= carvingContext.getMinGenY() + 31 ? ModBlocks.ETERNAL_FLUID.defaultBlockState() : ModBlocks.LIMBO_AIR.defaultBlockState();
             chunkAccess.setBlockState(mutableBlockPos, blockState, false);
             return true;
         }

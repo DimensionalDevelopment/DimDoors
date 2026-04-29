@@ -38,7 +38,7 @@ public class TemplateUtils {
 
             CompoundTag newTag;
             if ("monolith".equals(entityTag.getString("placeholder"))) {
-                MonolithEntity monolith = Objects.requireNonNull(ModEntityTypes.MONOLITH.get().create(null));
+                MonolithEntity monolith = Objects.requireNonNull(ModEntityTypes.MONOLITH.create(null));
                 monolith.setPos(x, y, z);
                 monolith.setYRot(yaw);
                 monolith.setPitch(pitch);

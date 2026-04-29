@@ -123,7 +123,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
     @Override
     public boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockPlaceContext) {
-    return super.canBeReplaced(blockState, blockPlaceContext) || blockState.getBlock() == ModBlocks.DETACHED_RIFT.get();
+    return super.canBeReplaced(blockState, blockPlaceContext) || blockState.getBlock() == ModBlocks.DETACHED_RIFT;
     }
 
     @Nullable
@@ -163,7 +163,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
     }
     if (blockEntity instanceof EntranceRiftBlockEntity
         && blockState.getValue(HALF) == DoubleBlockHalf.LOWER) {
-        world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
+        world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
         ((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
     }
     }
@@ -173,9 +173,9 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
         BlockEntity entity = level.getBlockEntity(pos);
 
         if(entity instanceof EntranceRiftBlockEntity riftBlockEntity) {
-            level.setBlock(pos, ModBlocks.DETACHED_RIFT.get().defaultBlockState(), 3);
+            level.setBlock(pos, ModBlocks.DETACHED_RIFT.defaultBlockState(), 3);
 
-            level.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT.get()).ifPresent(detachedRiftBlockEntity -> detachedRiftBlockEntity.copyFrom(riftBlockEntity));
+            level.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent(detachedRiftBlockEntity -> detachedRiftBlockEntity.copyFrom(riftBlockEntity));
         }
     }
 
@@ -215,7 +215,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
         if (direction.getAxis() == Direction.Axis.Y && doubleBlockHalf == DoubleBlockHalf.LOWER == (direction == Direction.UP)) {
             return neighborState.getBlock() instanceof DoorBlock && neighborState.getValue(HALF) != doubleBlockHalf ? (BlockState)neighborState.setValue(HALF, doubleBlockHalf) : Blocks.AIR.defaultBlockState();
         } else {
-            return doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(world, pos) ? ModBlocks.DETACHED_RIFT.get().defaultBlockState(): state;
+            return doubleBlockHalf == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(world, pos) ? ModBlocks.DETACHED_RIFT.defaultBlockState(): state;
         }
     }
 
@@ -233,7 +233,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 //            && !(player.isCreative()
 //            && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode)
 //        ) {
-//        world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.get().defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
+//        world.setBlockAndUpdate(blockPos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
 //        ((DetachedRiftBlockEntity) world.getBlockEntity(blockPos)).setData(((EntranceRiftBlockEntity) blockEntity).getData());
 //        }
 //    }
@@ -298,7 +298,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-    return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT.get(), (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
+    return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT, (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
     }
 
     public Block baseBlock() {

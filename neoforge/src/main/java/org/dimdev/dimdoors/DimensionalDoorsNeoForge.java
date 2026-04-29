@@ -1,17 +1,30 @@
 package org.dimdev.dimdoors;
 
-import dev.architectury.platform.hooks.EventBusesHooks;
+import dev.architectury.registry.CreativeTabOutput;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.CreativeModeTabRegistry;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.callback.AddCallback;
+import org.apache.commons.lang3.function.TriConsumer;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
@@ -20,22 +33,51 @@ import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Mod(DimensionalDoors.MOD_ID)
-public class DimensionalDoorsNeoForge {
+public class DimensionalDoorsNeoForge extends SidedImpl {
+    private final List<Consumer<BuildCreativeModeTabContentsEvent>> BUILD_CONTENTS_LISTENERS = new ArrayList<>();
+    private final Map<ResourceKey<?>, Map<ResourceLocation, Object>> toRegister = new HashMap<>();
+    private final Map<ResourceKey<?>, Map<ResourceLocation, Object>> toRegisterHolder = new HashMap<>();
+    private final Map<ResourceKey<?>, AddCallback<?>> callbacks = new HashMap<>();
+    private final IEventBus bus;
+    private ResourceKey<? extends Registry<?>> activeKey;
+
     public DimensionalDoorsNeoForge(IEventBus bus) {
         StreamUtils.setup(this);
         ModAttachmentTypes.register(bus);
-        DimensionalDoors.init();
+        this.bus = bus;
+        DimensionalDoors.init(this);
+
+        bus.addListener(this::buildCreateTabContents);
+
+        bus.<RegisterEvent>addListener(event -> {
+            var key = event.getRegistryKey();
+            var map = toRegister.get(key);
+            DimensionalDoorsNeoForge.this.activeKey = key;
+
+
+            if (map == null || map.isEmpty()) return;
+
+            var registry = event.getRegistry();
+
+            populate(registry, map);
+
+            AddCallback<?> callback = callbacks.get(key);
+
+            if(callback != null) ((Registry) registry).addCallback(callback);
+        });
 
         ModBiomeModifiers.init(bus);
 
         NeoForge.EVENT_BUS.<ChunkEvent.Load>addListener(load -> {
-            if(!load.isNewChunk() && load.getLevel() instanceof ServerLevel level && load.getChunk() instanceof LevelChunk chunk)
+            if (!load.isNewChunk() && load.getLevel() instanceof ServerLevel level && load.getChunk() instanceof LevelChunk chunk)
                 ChunkServedCallback.EVENT.invoker().onChunkServed(level, chunk);
         });
 
@@ -51,6 +93,39 @@ public class DimensionalDoorsNeoForge {
         });
     }
 
+    public <T> void populate(Registry<T> registry, Map<ResourceLocation, Object> map) {
+        map.forEach((resourceLocation, obj) -> Registry.register(registry, resourceLocation, (T) obj));
+    }
+
+    @Override
+    public void modify(CreativeModeTab tab, ModifyTabCallback filler) {
+        BUILD_CONTENTS_LISTENERS.add(event -> {
+            if (event.getTab().equals(tab)) {
+                filler.accept(event.getFlags(), wrapTabOutput(event), event.hasPermissions());
+            }
+        });
+    }
+
+    private void buildCreateTabContents(BuildCreativeModeTabContentsEvent event) {
+        for (Consumer<BuildCreativeModeTabContentsEvent> listener : BUILD_CONTENTS_LISTENERS) {
+            listener.accept(event);
+        }
+    }
+
+    private CreativeTabOutput wrapTabOutput(BuildCreativeModeTabContentsEvent event) {
+        return new CreativeTabOutput() {
+            @Override
+            public void acceptAfter(ItemStack after, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
+                event.insertAfter(after, stack, visibility);
+            }
+
+            @Override
+            public void acceptBefore(ItemStack before, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
+                event.insertBefore(before, stack, visibility);
+            }
+        };
+    }
+
     private record PlayPayloadHandlerReturnable<T extends CustomPacketPayload>(
             BiFunction<T, ServerPlayer, ? extends @Nullable CustomPacketPayload> packetFunction) implements IPayloadHandler<T> {
 
@@ -62,4 +137,41 @@ public class DimensionalDoorsNeoForge {
             if(returnPayload != null) context.handle(returnPayload);
         }
     }
+
+    @Override
+    public <T, V extends T> V register(ResourceKey<Registry<T>> key, ResourceLocation id, V obj) {
+        if (activeKey != null && key.isFor(activeKey)) {
+            return Registry.register((Registry<T>) BuiltInRegistries.REGISTRY.get(key.location()), id, obj);
+        } else {
+            Map<ResourceLocation, Object> map = this.toRegister.computeIfAbsent(key, a -> new HashMap<>());
+
+            map.putIfAbsent(id, obj);
+
+            return obj;
+        }
+    }
+
+    @Override
+    public <T> void registerCallback(Registry<T> registry, TriConsumer<Registry<T>, ResourceLocation, T> consumer) {
+        callbacks.put(registry.key(), new Callback<>(consumer));
+    }
+
+    @Override
+    public CreativeModeTab createTab(Function<CreativeModeTab.Builder, CreativeModeTab.Builder> consumer) {
+        return consumer.apply(CreativeModeTab.builder().withSearchBar()).build();
+    }
+
+    @Override
+    public void onServerStarted(Consumer<MinecraftServer> consumer) {
+        NeoForge.EVENT_BUS.<ServerStartedEvent>addListener(event -> consumer.accept(event.getServer()));
+    }
+
+    record Callback<T>(TriConsumer<Registry<T>, ResourceLocation, T> consumer) implements AddCallback<T> {
+        @Override
+        public void onAdd(Registry<T> registry, int id, ResourceKey<T> key, T obj) {
+            consumer.accept(registry, key.location(), obj);
+        }
+    }
+
+
 }

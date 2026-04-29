@@ -22,6 +22,6 @@ public class DoublePlantBlockMixin {
     )
     private static BlockState tweakThingy(BlockState arg2, @Local(argsOnly = true) BlockState blockState
     ) {
-        return blockState.getBlock() instanceof DimensionalDoorBlock ? ModBlocks.DETACHED_RIFT.get().defaultBlockState() : arg2;
+        return blockState.getBlock() instanceof DimensionalDoorBlock ? ModBlocks.DETACHED_RIFT.defaultBlockState() : arg2;
     }
 }
