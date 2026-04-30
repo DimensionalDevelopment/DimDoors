@@ -2,12 +2,7 @@ package org.dimdev.dimdoors.world.decay.conditions;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.world.decay.Decay;
-import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.List;
 import java.util.function.Function;
@@ -21,7 +16,7 @@ public interface DecayCondition {
 
         @Override
         public DecayConditionType<? extends DecayCondition> getType() {
-            return DecayConditionType.NONE_CONDITION_TYPE.get();
+            return DecayConditionType.NONE_CONDITION_TYPE;
         }
 
         @Override

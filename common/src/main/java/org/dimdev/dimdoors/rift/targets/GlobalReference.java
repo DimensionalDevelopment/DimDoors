@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import org.dimdev.dimdoors.api.util.Location;
 
@@ -20,7 +19,7 @@ public class GlobalReference extends RiftReference {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.GLOBAL.get();
+    return VirtualTargetType.GLOBAL;
     }
 
     @Override

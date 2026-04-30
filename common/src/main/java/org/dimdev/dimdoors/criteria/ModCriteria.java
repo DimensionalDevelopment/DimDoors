@@ -1,10 +1,5 @@
 package org.dimdev.dimdoors.criteria;
 
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.core.registries.Registries;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModCriteria {

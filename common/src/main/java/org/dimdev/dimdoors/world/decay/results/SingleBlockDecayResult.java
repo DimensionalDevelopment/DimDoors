@@ -26,7 +26,7 @@ public class SingleBlockDecayResult extends BlockDecayResult<SingleBlockDecayRes
 
     @Override
     public DecayResultType<SingleBlockDecayResult> getType() {
-        return DecayResultType.BLOCK_RESULT_TYPE.get();
+        return DecayResultType.BLOCK_RESULT_TYPE;
     }
 
     @Override

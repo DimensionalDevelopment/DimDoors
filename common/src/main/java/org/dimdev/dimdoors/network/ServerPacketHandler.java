@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.network;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
@@ -12,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
@@ -22,16 +22,17 @@ import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class ServerPacketHandler {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final Map<UUID, PlayerSyncData> DATA_MAP = new HashMap<>();
 
-    @ExpectPlatform
     public static <T extends CustomPacketPayload> void sendPacket(ServerPlayer player, T packet) {
-        throw new RuntimeException("Not Implmented");
+        DimensionalDoors.getSided().sendPacket(player, packet);
     }
 
     public static void syncPocketAddonsIfNeeded(ServerPlayer player, ServerLevel level, BlockPos pos) {

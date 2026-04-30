@@ -33,7 +33,7 @@ public class PublicPocketTarget extends WrappedDestinationTarget {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.PUBLIC_POCKET.get();
+    return VirtualTargetType.PUBLIC_POCKET;
     }
 
     @Override

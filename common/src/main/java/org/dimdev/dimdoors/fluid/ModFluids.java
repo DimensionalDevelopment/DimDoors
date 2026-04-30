@@ -5,7 +5,6 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.DimensionalDoors;
 
-//TODO: Figure how the <meep> I'm gonna decouple this from architectury
 public class ModFluids {
     public record FluidDetails(ResourceLocation still, ResourceLocation flowing, ResourceLocation overlay) {
         public static FluidDetails of(ResourceLocation id) {

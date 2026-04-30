@@ -24,7 +24,7 @@ public class RelativeReference extends RiftReference {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.RELATIVE.get();
+    return VirtualTargetType.RELATIVE;
     }
 
     @Override

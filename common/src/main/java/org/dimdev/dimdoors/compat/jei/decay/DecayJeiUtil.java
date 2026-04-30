@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.compat.jei.decay;
 
-import dev.architectury.fluid.FluidStack;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -9,6 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.compat.decay.DecayDisplayData;
 import org.dimdev.dimdoors.world.decay.results.DecayResult;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,7 @@ public final class DecayJeiUtil {
 
         Fluid fluid = asFluid(object);
         if (fluid != null) {
-            builder.addFluidStack(fluid, FluidStack.bucketAmount());
+            builder.addFluidStack(fluid, DimensionalDoors.getSided().bucketAmount());
         }
     }
 
@@ -51,7 +51,7 @@ public final class DecayJeiUtil {
 
         Fluid fluid = asFluid(result);
         if (fluid != null) {
-            builder.addFluidStack(fluid, FluidStack.bucketAmount() * result.amount());
+            builder.addFluidStack(fluid, DimensionalDoors.getSided().bucketAmount() * result.amount());
         }
     }
 

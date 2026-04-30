@@ -31,7 +31,7 @@ public class PathSelector extends AbstractVirtualPocketList {
 
     @Override
     public ImplementedVirtualPocket.VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-    return ImplementedVirtualPocket.VirtualPocketType.PATH_SELECTOR.get();
+    return ImplementedVirtualPocket.VirtualPocketType.PATH_SELECTOR;
     }
 
     @Override

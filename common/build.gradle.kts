@@ -12,7 +12,6 @@ dependencies {
     modImplementation("curse.maven:cyanide-541676:4824162")
     // Remove the next line if you don't want to depend on the API
     modApi("dev.architectury:architectury:${project.properties["architectury_version"]}")
-    modApi("me.shedaniel.cloth:cloth-config:${rootProject.properties["cloth_config"]}")
     modCompileOnlyApi("mcp.mobius.waila:wthit-api:fabric-${project.properties["wthitVersion"]}")
 
     modApi("org.jgrapht:jgrapht-core:1.1.0")
@@ -33,7 +32,6 @@ dependencies {
 sourceSets.main {
     java {
         srcDir("src/main/schematics")
-        srcDir("src/main/config")
     }
     resources.srcDirs("common/src/main/resources")
 }

@@ -26,6 +26,6 @@ public record WorldMatchCondition(ResourceKey<Level> world) implements Condition
 
     @Override
     public ConditionType<?> getType() {
-    return ConditionType.WORLD_MATCH.get();
+    return ConditionType.WORLD_MATCH;
     }
 }

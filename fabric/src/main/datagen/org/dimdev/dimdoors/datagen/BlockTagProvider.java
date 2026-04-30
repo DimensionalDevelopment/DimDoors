@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.datagen;
 
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
@@ -1176,21 +1175,13 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var appender = tag(tag);
 
         for(var object : objects) {
-            if(object instanceof RegistrySupplier<?> supplier) {
-                if(supplier.get() instanceof Block block) {
-                    appender.add(block.builtInRegistryHolder().key());
-                }
-            } else if (object instanceof Block block) {
+            if (object instanceof Block block) {
                 appender.add(block.builtInRegistryHolder().key());
             } else if (object instanceof TagKey<?> key && key.isFor(Registries.BLOCK)) {
                 appender.addTag((TagKey<Block>) key);
             } else if (object instanceof Collection<?> list) {
                 for(var element : list) {
-                    if (element instanceof RegistrySupplier<?> supplier) {
-                        if (supplier.get() instanceof Block block) {
-                            appender.add(block.builtInRegistryHolder().key());
-                        }
-                    } else if (element instanceof Block block) {
+                    if (element instanceof Block block) {
                         appender.add(block.builtInRegistryHolder().key());
                     }
                 }

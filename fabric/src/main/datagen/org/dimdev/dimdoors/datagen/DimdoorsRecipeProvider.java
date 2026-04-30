@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.datagen;
 
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;

@@ -46,7 +46,7 @@ public record CompoundDecayPattern(List<DecayCondition> conditions, DecayResult 
 
     @Override
     public DecayPatternType<? extends DecayPattern> getType() {
-        return DecayPatternType.COMPOUND.get();
+        return DecayPatternType.COMPOUND;
     }
 
     public static Builder builder() {

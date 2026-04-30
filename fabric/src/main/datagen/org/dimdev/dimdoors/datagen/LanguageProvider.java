@@ -1,21 +1,15 @@
 package org.dimdev.dimdoors.datagen;
 
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.StringUtils;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -63,6 +57,7 @@ public class LanguageProvider extends FabricLanguageProvider {
         add(builder, ModBlocks.ORANGE_ANCIENT_FABRIC);
         add(builder, ModBlocks.MAGENTA_ANCIENT_FABRIC);
         add(builder, ModBlocks.LIGHT_BLUE_ANCIENT_FABRIC);
+        add(builder, ModBlocks.LIGHT_GRAY_ANCIENT_FABRIC);
         add(builder, ModBlocks.YELLOW_ANCIENT_FABRIC);
         add(builder, ModBlocks.LIME_ANCIENT_FABRIC);
         add(builder, ModBlocks.PINK_ANCIENT_FABRIC);
@@ -399,6 +394,8 @@ public class LanguageProvider extends FabricLanguageProvider {
         builder.add("text.autoconfig.dimdoors.option.decay.decaySpreadChance.@Tooltip", "To be filled out.");
         builder.add("text.autoconfig.dimdoors.option.decay.decayDelay", "Decay Delay");
         builder.add("text.autoconfig.dimdoors.option.decay.decayDelay.@Tooltip", "In minecraft ticks (20 per second on a healthy server or game), the delay between when a queued decay is scheduled and it fired.");
+        builder.add("text.autoconfig.dimdoors.option.decay.decaysIntoAir", "Decays Into Air");
+        builder.add("text.autoconfig.dimdoors.option.decay.decaysIntoAir.@Tooltip", "To be filled out.");
 
         builder.add("argument.dimdoors.schematic.invalidNamespace", "Invalid schematic namespace. Expected one of %s, found %s.");
         builder.add("command.dimdoors.schematicv2.unknownSchematic", "Unknown schematic \"%s\" in namespace \"%s\" ");

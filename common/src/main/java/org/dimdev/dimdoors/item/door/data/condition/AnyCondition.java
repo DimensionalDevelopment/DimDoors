@@ -21,7 +21,7 @@ public class AnyCondition extends MultipleCondition {
 
     @Override
     public ConditionType<?> getType() {
-    return ConditionType.ANY.get();
+    return ConditionType.ANY;
     }
 
     @Override

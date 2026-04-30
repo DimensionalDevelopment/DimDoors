@@ -37,7 +37,7 @@ public class DungeonDimensionEffect implements DimensionSpecialEffectsExtensions
     }
 
     private Optional<EnvironmentAddon> getEnvironmentAddon(ClientLevel level, BlockPos pos) {
-        return ClientPacketListener.getAddonClient(PocketAddon.PocketAddonType.ENVIRONMENT_ADDON.get(), level, pos);
+        return ClientPacketListener.getAddonClient(PocketAddon.PocketAddonType.ENVIRONMENT_ADDON, level, pos);
     }
 
     private void processSky(SkyData data, ClientLevel level, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {

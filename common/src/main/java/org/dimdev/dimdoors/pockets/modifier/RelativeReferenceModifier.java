@@ -40,7 +40,7 @@ public class RelativeReferenceModifier extends AbstractModifier {
 
     @Override
     public ModifierType<? extends Modifier> getType() {
-    return ModifierType.RELATIVE_REFERENCE_MODIFIER_TYPE.get();
+    return ModifierType.RELATIVE_REFERENCE_MODIFIER_TYPE;
     }
 
     @Override

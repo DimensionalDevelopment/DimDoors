@@ -93,7 +93,7 @@ public class PrivatePocketTarget extends VirtualTarget implements EntityTarget {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.PRIVATE.get();
+    return VirtualTargetType.PRIVATE;
     }
 
     @Override

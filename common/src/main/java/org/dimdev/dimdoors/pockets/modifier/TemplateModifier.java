@@ -47,7 +47,7 @@ public class TemplateModifier extends AbstractModifier {
 
     @Override
     public ModifierType<? extends Modifier> getType() {
-        return ModifierType.TEMPLATE_MODIFIER_TYPE.get();
+    return ModifierType.TEMPLATE_MODIFIER_TYPE;
     }
 
     @Override

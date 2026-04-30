@@ -2,16 +2,13 @@ package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.MapCodec;
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
-import dev.architectury.registry.registries.RegistrySupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.Cod;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
@@ -97,25 +94,26 @@ public abstract class VirtualTarget implements Target {
     public abstract VirtualTarget copy();
 
     public interface VirtualTargetType<T extends VirtualTarget> {
-        Registrar<VirtualTargetType<?>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<VirtualTargetType<?>>builder(DimensionalDoors.id("virtual_type")).build();
-        Codec<VirtualTargetType<?>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
+        ResourceKey<Registry<VirtualTargetType<? extends VirtualTarget>>> KEY = ResourceKey.createRegistryKey(DimensionalDoors.id("virtual_type"));
+        Registry<VirtualTargetType<?>> REGISTRY = DimensionalDoors.getSided().createRegistry(KEY);
+        Codec<VirtualTargetType<?>> CODEC = REGISTRY.byNameCodec();
 
-        RegistrySupplier<VirtualTargetType<RandomTarget>> AVAILABLE_LINK = register("dimdoors:available_link", RandomTarget.CODEC);
-        RegistrySupplier<VirtualTargetType<DungeonTarget>> DUNGEON = register("dimdoors:dungeon", DungeonTarget.CODEC);
-        RegistrySupplier<VirtualTargetType<TemplateTarget>> TEMPLATE = register("dimdoors:template", TemplateTarget.CODEC);
-        RegistrySupplier<VirtualTargetType<EscapeTarget>> ESCAPE = register("dimdoors:escape", EscapeTarget.CODEC);
-        RegistrySupplier<VirtualTargetType<GlobalReference>> GLOBAL = register("dimdoors:global", GlobalReference.CODEC);
-        RegistrySupplier<VirtualTargetType<LimboTarget>> LIMBO = register("dimdoors:limbo", LimboTarget.INSTANCE);
-        RegistrySupplier<VirtualTargetType<LocalReference>> LOCAL = register("dimdoors:local", LocalReference.CODEC);
-        RegistrySupplier<VirtualTargetType<PublicPocketTarget>> PUBLIC_POCKET = register("dimdoors:public_pocket", PublicPocketTarget.CODEC);
-        RegistrySupplier<VirtualTargetType<PocketEntranceMarker>> POCKET_ENTRANCE = register("dimdoors:pocket_entrance", PocketEntranceMarker.CODEC);
-        RegistrySupplier<VirtualTargetType<PocketExitMarker>> POCKET_EXIT = register("dimdoors:pocket_exit", VirtualTarget.COLOR, PocketExitMarker.INSTANCE);
-        RegistrySupplier<VirtualTargetType<PrivatePocketTarget>> PRIVATE = register("dimdoors:private", PrivatePocketExitTarget.COLOR, PrivatePocketTarget.INSTANCE);
-        RegistrySupplier<VirtualTargetType<PrivatePocketExitTarget>> PRIVATE_POCKET_EXIT = register("dimdoors:private_pocket_exit", PrivatePocketExitTarget.COLOR, PrivatePocketExitTarget.INSTANCE);
-        RegistrySupplier<VirtualTargetType<RelativeReference>> RELATIVE = register("dimdoors:relative", RelativeReference.CODEC);
-        RegistrySupplier<VirtualTargetType<IdMarker>> ID_MARKER = register("dimdoors:id_marker", IdMarker.CODEC);
-        RegistrySupplier<VirtualTargetType<UnstableTarget>> UNSTABLE = register("dimdoors:unstable", UnstableTarget.INSTANCE);
-        RegistrySupplier<VirtualTargetType<NoneTarget>> NONE = register("dimdoors:none", NoneTarget.INSTANCE);
+        VirtualTargetType<RandomTarget> AVAILABLE_LINK = register("available_link", RandomTarget.CODEC);
+        VirtualTargetType<DungeonTarget> DUNGEON = register("dungeon", DungeonTarget.CODEC);
+        VirtualTargetType<TemplateTarget> TEMPLATE = register("template", TemplateTarget.CODEC);
+        VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC);
+        VirtualTargetType<GlobalReference> GLOBAL = register("global", GlobalReference.CODEC);
+        VirtualTargetType<LimboTarget> LIMBO = register("limbo", LimboTarget.INSTANCE);
+        VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC);
+        VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("public_pocket", PublicPocketTarget.CODEC);
+        VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("pocket_entrance", PocketEntranceMarker.CODEC);
+        VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("pocket_exit", VirtualTarget.COLOR, PocketExitMarker.INSTANCE);
+        VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketExitTarget.COLOR, PrivatePocketTarget.INSTANCE);
+        VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.COLOR, PrivatePocketExitTarget.INSTANCE);
+        VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC);
+        VirtualTargetType<IdMarker> ID_MARKER = register("id_marker", IdMarker.CODEC);
+        VirtualTargetType<UnstableTarget> UNSTABLE = register("unstable", UnstableTarget.INSTANCE);
+        VirtualTargetType<NoneTarget> NONE = register("none", NoneTarget.INSTANCE);
 
         Map<VirtualTargetType<?>, String> TRANSLATION_KEYS = new Object2ObjectArrayMap<>();
 
@@ -126,7 +124,7 @@ public abstract class VirtualTarget implements Target {
         RGBA getColor();
 
         default ResourceLocation getId() {
-            return REGISTRY.getId(this);
+            return REGISTRY.getKey(this);
         }
 
         default String getTranslationKey() {
@@ -139,20 +137,20 @@ public abstract class VirtualTarget implements Target {
         static void register() {
         }
 
-        static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, T instance) {
+        static <T extends VirtualTarget> VirtualTargetType<T> register(String id, T instance) {
             return register(id, COLOR, instance);
         }
 
-        static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, RGBA color, T instance) {
+        static <T extends VirtualTarget> VirtualTargetType<T> register(String id, RGBA color, T instance) {
             return register(id, MapCodec.unit(instance), color);
         }
 
-        static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, MapCodec<T> codec) {
+        static <T extends VirtualTarget> VirtualTargetType<T> register(String id, MapCodec<T> codec) {
             return register(id, codec, COLOR);
         }
 
-        static <T extends VirtualTarget> RegistrySupplier<VirtualTargetType<T>> register(String id, MapCodec<T> codec, RGBA color) {
-            return REGISTRY.register(ResourceLocation.parse(id), () -> new VirtualTargetType<T>() {
+        static <T extends VirtualTarget> VirtualTargetType<T> register(String id, MapCodec<T> codec, RGBA color) {
+            return DimensionalDoors.getSided().register(KEY, id, new VirtualTargetType<T>() {
                 private Codec<T> cached = codec.codec(); //TODO: REvert codecs to mapCodec vs caching when motive is there.
 
                 @Override
@@ -184,7 +182,7 @@ public abstract class VirtualTarget implements Target {
 
         @Override
         public VirtualTargetType<? extends VirtualTarget> getType() {
-            return VirtualTargetType.NONE.get();
+            return VirtualTargetType.NONE;
         }
 
         @Override

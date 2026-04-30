@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.mixin.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.Nullable;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CloudStatus;
 import net.minecraft.client.Minecraft;
@@ -18,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.client.CloudRenderBuffer;
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension;
 import org.joml.Matrix4f;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.NonnullDefault;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

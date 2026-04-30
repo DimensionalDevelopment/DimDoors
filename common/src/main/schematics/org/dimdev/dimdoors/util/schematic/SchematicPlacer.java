@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.util.schematic;
 
-import dev.architectury.platform.Platform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.WorldGenLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +27,7 @@ public final class SchematicPlacer {
     public static void place(Schematic schematic, ServerLevel world, BlockPos origin) {
         LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
         for (String id : schematic.getMetadata().requiredMods()) {
-            if (!Platform.isModLoaded(id)) {
+            if (!DimensionalDoors.getSided().isModLoaded(id)) {
                 LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
             }
         }

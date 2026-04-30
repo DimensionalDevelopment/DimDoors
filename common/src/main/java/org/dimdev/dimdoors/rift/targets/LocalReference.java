@@ -27,7 +27,7 @@ public class LocalReference extends RiftReference {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.LOCAL.get();
+    return VirtualTargetType.LOCAL;
     }
 
     @Override

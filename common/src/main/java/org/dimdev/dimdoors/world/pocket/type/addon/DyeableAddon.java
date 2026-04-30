@@ -109,13 +109,13 @@ public class DyeableAddon implements PocketAddon {
 
     @Override
     public PocketAddonType<?, ?> getType() {
-    return PocketAddonType.DYEABLE_ADDON.get();
+    return PocketAddonType.DYEABLE_ADDON;
     }
 
     public interface DyeablePocketBuilder<T extends Pocket.PocketBuilder<T, ?>> extends PocketBuilderExtension<T> {
     default T dyeColor(PocketColor dyeColor) {
 
-        this.<DyeableBuilderAddon>getAddon(PocketAddonType.DYEABLE_ADDON.get()).dyeColor = dyeColor;
+        this.<DyeableBuilderAddon>getAddon(PocketAddonType.DYEABLE_ADDON).dyeColor = dyeColor;
 
         return getSelf();
     }
@@ -146,7 +146,7 @@ public class DyeableAddon implements PocketAddon {
 
         @Override
     public PocketAddonType<DyeableAddon, DyeableBuilderAddon> getType() {
-        return PocketAddonType.DYEABLE_ADDON.get();
+        return PocketAddonType.DYEABLE_ADDON;
     }
     }
 

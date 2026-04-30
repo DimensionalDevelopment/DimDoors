@@ -21,7 +21,7 @@ public class NoneDecayResult implements DecayResult {
 
     @Override
     public DecayResultType<NoneDecayResult> getType() {
-        return DecayResultType.NONE_PROCESSOR_TYPE.get();
+        return DecayResultType.NONE_PROCESSOR_TYPE;
     }
 
     @Override

@@ -41,7 +41,7 @@ public class RiftRegistry {
         RiftRegistry riftRegistry = new RiftRegistry();
 
         ListTag riftsNBT = nbt.getList("rifts", Tag.TAG_COMPOUND);
-        String riftTypeId = RegistryVertex.REGISTRY.getId(RegistryVertex.RegistryVertexType.RIFT.get()).toString();
+        String riftTypeId = RegistryVertex.REGISTRY.getKey(RegistryVertex.RegistryVertexType.RIFT).toString();
 
         for (Tag tag : riftsNBT) {
             CompoundTag compound = (CompoundTag) tag;

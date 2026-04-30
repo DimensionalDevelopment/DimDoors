@@ -29,7 +29,7 @@ public class LimboTarget extends VirtualTarget implements EntityTarget {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.LIMBO.get();
+    return VirtualTargetType.LIMBO;
     }
 
     @Override

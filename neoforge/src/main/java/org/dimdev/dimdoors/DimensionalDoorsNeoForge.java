@@ -1,34 +1,70 @@
 package org.dimdev.dimdoors;
 
-import dev.architectury.registry.CreativeTabOutput;
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackLocationInfo;
+import net.minecraft.server.packs.PackSelectionConfig;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.CreativeModeTabRegistry;
+import net.neoforged.fml.common.asm.enumextension.EnumProxy;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.neoforged.neoforge.registries.callback.AddCallback;
+import net.neoforged.neoforge.resource.ContextAwareReloadListener;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.function.TriConsumer;
+import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.fluid.EternalFluid;
@@ -42,13 +78,14 @@ import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.*;
 
 @Mod(DimensionalDoors.MOD_ID)
 public class DimensionalDoorsNeoForge extends SidedImpl {
+    public static final EnumProxy<RecipeBookType> TESSELLATING = new EnumProxy<>(RecipeBookType.class);
+
     private final List<Consumer<BuildCreativeModeTabContentsEvent>> BUILD_CONTENTS_LISTENERS = new ArrayList<>();
     private final Map<ResourceKey<?>, Map<ResourceLocation, Object>> toRegister = new HashMap<>();
     private final Map<ResourceKey<?>, Map<ResourceLocation, Object>> toRegisterHolder = new HashMap<>();
@@ -56,15 +93,21 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     private final IEventBus bus;
     private ResourceKey<? extends Registry<?>> activeKey;
     private final Map<ResourceKey<?>, List<Runnable>> registerRunnables = new HashMap<>();
+    private List<Registry<?>> registriesToRegister = new ArrayList<>();
+    private final List<EntityAttributeRegistration> entityAttributeRegistrations = new ArrayList<>();
 
     public DimensionalDoorsNeoForge(IEventBus bus) {
         StreamUtils.setup(this);
         ModAttachmentTypes.register(bus);
         this.bus = bus;
+
         registerRunnable(NeoForgeRegistries.Keys.FLUID_TYPES, ModFluidTypes::init);
         DimensionalDoors.init(this);
 
         bus.addListener(this::buildCreateTabContents);
+        bus.addListener(this::onEntityAttributeRegister);
+
+        bus.<NewRegistryEvent>addListener(event -> registriesToRegister.forEach(event::register));
 
         bus.<RegisterEvent>addListener(event -> {
             var key = event.getRegistryKey();
@@ -108,6 +151,9 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
                     .playToServer(NetworkHandlerInitializedC2SPacket.TYPE, NetworkHandlerInitializedC2SPacket.STREAM_CODEC, new PlayPayloadHandlerReturnable<>((packet, player) -> ServerPacketHandler.onNetworkHandlerInitialized(player)))
                     .playToServer(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, new PlayPayloadHandlerReturnable<>((packet, player) -> ServerPacketHandler.onAttackBlock(player, packet)));
         });
+
+        NeoForge.EVENT_BUS.addListener(DimensionalDoorsNeoForge::addReloaders);
+        bus.addListener(DimensionalDoorsNeoForge::addPackFinders);
     }
 
     public <T> void populate(Registry<T> registry, Map<ResourceLocation, Object> map) {
@@ -183,9 +229,97 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     }
 
     @Override
+    public void onServerStarting(Consumer<MinecraftServer> consumer) {
+        NeoForge.EVENT_BUS.<ServerStartingEvent>addListener(event -> consumer.accept(event.getServer()));
+    }
+
+    @Override
     public void onServerStarted(Consumer<MinecraftServer> consumer) {
         NeoForge.EVENT_BUS.<ServerStartedEvent>addListener(event -> consumer.accept(event.getServer()));
     }
+
+    @Override
+    public void onPlayerQuit(Consumer<ServerPlayer> consumer) {
+        NeoForge.EVENT_BUS.<PlayerEvent.PlayerLoggedOutEvent>addListener(event -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                consumer.accept(player);
+            }
+        });
+    }
+
+    @Override
+    public void onServerLevelTick(Consumer<ServerLevel> consumer) {
+        NeoForge.EVENT_BUS.<LevelTickEvent.Pre>addListener(event -> {
+            if (event.getLevel() instanceof ServerLevel level) {
+                consumer.accept(level);
+            }
+        });
+    }
+
+    @Override
+    public void onAttackBlock(AttackBlockCallback callback) {
+        NeoForge.EVENT_BUS.<PlayerInteractEvent.LeftClickBlock>addListener(event -> {
+            if (event.getAction() != PlayerInteractEvent.LeftClickBlock.Action.START || event.getFace() == null) {
+                return;
+            }
+
+            InteractionResult result = callback.attack(event.getEntity(), event.getHand(), event.getPos(), event.getFace());
+            if (result != InteractionResult.PASS) {
+                event.setCanceled(true);
+            }
+        });
+    }
+
+    @Override
+    public void onUseItem(ISided.UseItemCallback callback) {
+        NeoForge.EVENT_BUS.<PlayerInteractEvent.RightClickItem>addListener(event -> {
+            InteractionResult result = callback.use(event.getEntity(), event.getHand());
+            if (result != InteractionResult.PASS) {
+                event.setCanceled(true);
+                event.setCancellationResult(result);
+            }
+        });
+    }
+
+    @Override
+    public void onUseBlock(ISided.UseBlockCallback callback) {
+        NeoForge.EVENT_BUS.<PlayerInteractEvent.RightClickBlock>addListener(event -> {
+            InteractionResult result = callback.use(event.getEntity(), event.getHand(), event.getHitVec());
+            if (result != InteractionResult.PASS) {
+                event.setCanceled(true);
+                event.setCancellationResult(result);
+            }
+        });
+    }
+
+    @Override
+    public void onBeforeBlockBreak(BlockBreakCallback callback) {
+        NeoForge.EVENT_BUS.<BlockEvent.BreakEvent>addListener(event -> {
+            if (event.getLevel() instanceof Level level && callback.shouldCancel(level, event.getPos(), event.getState(), event.getPlayer())) {
+                event.setCanceled(true);
+            }
+        });
+    }
+
+    @Override
+    public void onBeforeBlockPlace(BlockPlaceCallback callback) {
+        NeoForge.EVENT_BUS.<BlockEvent.EntityPlaceEvent>addListener(event -> {
+            if (event.getLevel() instanceof Level level && callback.shouldCancel(level, event.getPos(), event.getPlacedBlock(), event.getEntity())) {
+                event.setCanceled(true);
+            }
+        });
+    }
+
+    @Override
+    public void registerEntityAttributes(EntityType<? extends LivingEntity> type, Supplier<AttributeSupplier.Builder> attributes) {
+        entityAttributeRegistrations.add(new EntityAttributeRegistration(type, attributes));
+    }
+
+    private void onEntityAttributeRegister(EntityAttributeCreationEvent event) {
+        entityAttributeRegistrations.forEach(registration -> event.put(registration.type(), registration.attributes().get().build()));
+    }
+
+    private record EntityAttributeRegistration(EntityType<? extends LivingEntity> type, Supplier<AttributeSupplier.Builder> attributes) { }
 
     class Callback<T> implements AddCallback<T> {
         private final TriConsumer<Registry<T>, ResourceLocation, T> consumer;
@@ -209,6 +343,16 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     @Override
     public void registerRunnable(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
         registerRunnables.computeIfAbsent(key, ignored -> new ArrayList<>()).add(runnable);
+    }
+
+    @Override
+    public <T> Registry<T> createRegistry(ResourceKey<Registry<T>> key) {
+
+
+        var registry = new RegistryBuilder<>(key).create();
+        registriesToRegister.add(registry);
+
+        return registry;
     }
 
     @Override
@@ -249,5 +393,95 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
                 return ModFluidTypes.LEAK;
             }
         };
+    }
+
+    @Override
+    public <T extends CustomPacketPayload> void sendPacket(ServerPlayer player, T packet) {
+        PacketDistributor.sendToPlayer(player, packet);
+    }
+
+    @Override
+    public <T extends CustomPacketPayload> void sendPacket(T packet) {
+        PacketDistributor.sendToServer(packet);
+    }
+
+    private static List<Triple<ResourceLocation, BiConsumer<HolderLookup.Provider, ResourceManager>, Boolean>> loaders = new ArrayList<>();
+
+    public Path getConfigRoot() {
+        return FMLPaths.CONFIGDIR.get();
+    }
+
+    public void initBuiltinPacks() {
+        NeoForge.EVENT_BUS.addListener(DimensionalDoorsNeoForge::addReloaders);
+//        FMLJavaModLoadingContext.get().getModEventBus().addListener(DimensionalDoorsImpl::addPackFinders);
+    }
+
+    public static void addPackFinders(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.SERVER_DATA) {
+            var classicPack = createPack("classic", "Classic");
+            var defaultPack = createPack("default", "Default");
+            event.addRepositorySource((packConsumer) -> {
+                packConsumer.accept(classicPack);
+                packConsumer.accept(defaultPack);
+            });
+        }
+    }
+
+    public static void addReloaders(AddReloadListenerEvent event) {
+        loaders.forEach(pair -> event.addListener(new NeoforgeResourceLoader(pair.getMiddle())));
+    }
+
+    public static Pack createPack(String id, String name) {
+
+        var resourcePath = ModList.get().getModFileById(DimensionalDoors.MOD_ID).getFile().findResource("resourcepacks", id);
+        return Pack.readMetaAndCreate(new PackLocationInfo(id, Component.literal(name), PackSource.BUILT_IN, Optional.empty()),
+                new PathPackResources.PathResourcesSupplier(resourcePath), PackType.SERVER_DATA, new PackSelectionConfig(false, Pack.Position.BOTTOM, false));
+    }
+
+    public void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer, boolean loadAfterTags) {
+        loaders.add(Triple.of(DimensionalDoors.id(name), consumer, loadAfterTags));
+    }
+
+    private static class NeoforgeResourceLoader extends ContextAwareReloadListener implements ResourceManagerReloadListener {
+        private final BiConsumer<HolderLookup.Provider, ResourceManager> consumer;
+
+        public NeoforgeResourceLoader(BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
+            this.consumer = consumer;
+        }
+
+        @Override
+        public void onResourceManagerReload(ResourceManager resourceManager) {
+            consumer.accept(this.getRegistryLookup(), resourceManager);
+        }
+    }
+
+    @Override
+    public RecipeBookType getTesselatingRecipeBookType() {
+        return TESSELLATING.getValue();
+    }
+
+    @Override
+    public MinecraftServer getServer() {
+        return ServerLifecycleHooks.getCurrentServer();
+    }
+
+    @Override
+    public boolean isModLoaded(String id) {
+        return ModList.get().isLoaded(id);
+    }
+
+    @Override
+    public boolean isClient() {
+        return FMLEnvironment.dist == Dist.CLIENT;
+    }
+
+    @Override
+    public long bucketAmount() {
+        return 1000;
+    }
+
+    @Override
+    public void registerCommands(Consumer<CommandDispatcher<CommandSourceStack>> consumer) {
+        NeoForge.EVENT_BUS.<RegisterCommandsEvent>addListener(event -> consumer.accept(event.getDispatcher()));
     }
 }

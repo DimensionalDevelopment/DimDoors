@@ -53,7 +53,7 @@ public class OffsetModifier extends AbstractModifier {
 
     @Override
     public ModifierType<? extends Modifier> getType() {
-    return ModifierType.OFFSET_MODIFIER_TYPE.get();
+    return ModifierType.OFFSET_MODIFIER_TYPE;
     }
 
     @Override

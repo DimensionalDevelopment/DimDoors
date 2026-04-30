@@ -36,7 +36,7 @@ public class VoidGenerator extends PocketGenerator {
 
     @Override
     public PocketGeneratorType<? extends PocketGenerator> getType() {
-    return PocketGeneratorType.VOID.get();
+    return PocketGeneratorType.VOID;
     }
 
     @Override

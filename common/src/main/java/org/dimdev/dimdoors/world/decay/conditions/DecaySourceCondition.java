@@ -17,7 +17,7 @@ public record DecaySourceCondition(DecaySource source) implements DecayCondition
 
     @Override
     public DecayConditionType<? extends DecayCondition> getType() {
-        return DecayConditionType.DECAY_SOURCE_CONDITION_TYPE.get();
+        return DecayConditionType.DECAY_SOURCE_CONDITION_TYPE;
     }
 
     @Override

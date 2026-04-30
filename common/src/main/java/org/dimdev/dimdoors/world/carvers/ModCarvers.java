@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.world.carvers;
 
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -11,7 +9,6 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.carver.CarverDebugSettings;
 import net.minecraft.world.level.levelgen.carver.CaveCarverConfiguration;
 import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
-import net.minecraft.world.level.levelgen.carver.WorldCarver;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
@@ -19,9 +16,6 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import static org.dimdev.dimdoors.DimensionalDoors.id;
 
 public class ModCarvers {
-
-    public static final DeferredRegister<WorldCarver<?>> CARVERS = DeferredRegister.create(DimensionalDoors.MOD_ID, Registries.CARVER);
-
     public static final LimboCarver LIMBO_CARVER = DimensionalDoors.getSided().registerCarver("limbo", new LimboCarver(CaveCarverConfiguration.CODEC));
 
     public static final ResourceKey<ConfiguredWorldCarver<?>> LIMBO = register("limbo");
@@ -31,7 +25,6 @@ public class ModCarvers {
     }
 
     public static void init() {
-        CARVERS.register();
     }
 
     public static void bootstrap(BootstrapContext<ConfiguredWorldCarver<?>> bootstapContext) {

@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.network.client;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -13,12 +12,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,9 +38,8 @@ public class ClientPacketListener {
     private static int pocketRange = 1;
     private static Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon> addons = new HashMap<>();
 
-    @ExpectPlatform
     public static <T extends CustomPacketPayload> void sendPacket(T packet) {
-        throw new RuntimeException("Not implemented");
+        DimensionalDoors.getSided().sendPacket(packet);
     }
 
     public static <T extends CustomPacketPayload> boolean tryToSendPacket(T packet) {

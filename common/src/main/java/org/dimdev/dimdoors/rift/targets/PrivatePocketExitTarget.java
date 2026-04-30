@@ -68,7 +68,7 @@ public class PrivatePocketExitTarget extends VirtualTarget implements EntityTarg
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.PRIVATE_POCKET_EXIT.get();
+    return VirtualTargetType.PRIVATE_POCKET_EXIT;
     }
 
     @Override

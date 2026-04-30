@@ -21,7 +21,7 @@ public class IdMarker extends VirtualTarget implements EntityTarget {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.ID_MARKER.get();
+    return VirtualTargetType.ID_MARKER;
     }
 
     @Override

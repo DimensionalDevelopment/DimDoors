@@ -5,7 +5,7 @@
       "name": "dimdoors_tessellating",
       "constructor": "()V",
       "parameters": {
-        "class": "org/dimdev/dimdoors/client/neoforge/ModRecipeBookTypesImpl",
+        "class": "org/dimdev/dimdoors/DimensionalDoorsNeoForge",
         "field": "TESSELLATING"
       }
     },
@@ -14,7 +14,7 @@
       "name": "dimdoors_tessellating_general",
       "constructor": "(Ljava/util/function/Supplier;)V",
       "parameters": {
-        "class": "org/dimdev/dimdoors/client/neoforge/ModRecipeBookGroupsImpl",
+        "class": "org/dimdev/dimdoors/client/neoforge/DimensionalDoorsForgeClient",
         "field": "TESSELLATING_GENERAL"
       }
     },
@@ -23,7 +23,7 @@
       "name": "dimdoors_tessellating_search",
       "constructor": "(Ljava/util/function/Supplier;)V",
       "parameters": {
-        "class": "org/dimdev/dimdoors/client/neoforge/ModRecipeBookGroupsImpl",
+        "class": "org/dimdev/dimdoors/client/neoforge/DimensionalDoorsForgeClient",
         "field": "TESSELLATING_SEARCH"
       }
     }

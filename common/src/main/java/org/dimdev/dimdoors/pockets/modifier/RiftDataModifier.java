@@ -66,7 +66,7 @@ public class RiftDataModifier extends AbstractModifier {
 
     @Override
     public ModifierType<? extends Modifier> getType() {
-    return ModifierType.RIFT_DATA_MODIFIER_TYPE.get();
+    return ModifierType.RIFT_DATA_MODIFIER_TYPE;
     }
 
     @Override

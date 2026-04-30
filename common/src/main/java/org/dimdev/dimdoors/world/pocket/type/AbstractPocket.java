@@ -1,10 +1,8 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +17,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public abstract class AbstractPocket<V extends AbstractPocket<?>> {
-    public static final Registrar<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<AbstractPocketType<? extends AbstractPocket<?>>>builder(DimensionalDoors.id("abstract_pocket_type")).build();
+    public static final ResourceKey<Registry<AbstractPocketType<? extends AbstractPocket<?>>>> KEY = ResourceKey.createRegistryKey(DimensionalDoors.id("abstract_pocket_type"));
+    public static final Registry<AbstractPocketType<? extends AbstractPocket<?>>> REGISTRY = DimensionalDoors.getSided().createRegistry(KEY);
 
     protected Integer id;
     protected ResourceKey<Level> world;
@@ -85,10 +84,10 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
     }
 
     public interface AbstractPocketType<T extends AbstractPocket<?>> {
-    RegistrySupplier<AbstractPocketType<IdReferencePocket>> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder);
+    AbstractPocketType<IdReferencePocket> ID_REFERENCE = register(DimensionalDoors.id(IdReferencePocket.KEY), IdReferencePocket::new, IdReferencePocket::builder);
 
-    RegistrySupplier<AbstractPocketType<Pocket>> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket::new, Pocket::builder);
-    RegistrySupplier<AbstractPocketType<PrivatePocket>> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
+    AbstractPocketType<Pocket> POCKET = register(DimensionalDoors.id(Pocket.KEY), Pocket::new, Pocket::builder);
+    AbstractPocketType<PrivatePocket> PRIVATE_POCKET = register(DimensionalDoors.id(PrivatePocket.KEY), PrivatePocket::new, PrivatePocket::builderPrivatePocket);
 
     T fromNbt(CompoundTag nbt, HolderLookup.Provider provider);
 
@@ -101,8 +100,8 @@ public abstract class AbstractPocket<V extends AbstractPocket<?>> {
     static void register() {
     }
 
-    static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> RegistrySupplier<AbstractPocketType<U>> register(ResourceLocation id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
-        return REGISTRY.register(id, () -> new AbstractPocketType<U>() {
+    static <U extends AbstractPocket<P>, P extends AbstractPocket<P>> AbstractPocketType<U> register(ResourceLocation id, Supplier<U> supplier, Supplier<? extends AbstractPocketBuilder<?, U>> factorySupplier) {
+        return DimensionalDoors.getSided().register(KEY, id, new AbstractPocketType<U>() {
         @Override
         public U fromNbt(CompoundTag nbt, HolderLookup.Provider provider) {
             return (U) supplier.get().fromNbt(nbt, provider);

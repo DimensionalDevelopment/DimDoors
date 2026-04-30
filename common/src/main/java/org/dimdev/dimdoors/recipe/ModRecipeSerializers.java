@@ -1,14 +1,9 @@
 package org.dimdev.dimdoors.recipe;
 
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.util.Utils;
-
-import java.util.function.Supplier;
 
 public class ModRecipeSerializers {
     public static RecipeSerializer<ShapedTesselatingRecipe> SHAPED_TESSELATING = register("shaped_tesselating", new ShapedTesselatingRecipe.Serializer());

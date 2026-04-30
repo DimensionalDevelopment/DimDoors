@@ -60,7 +60,6 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-    modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config}"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
@@ -72,11 +71,11 @@ dependencies {
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
 //    modApi "lol.bai:badpackets:fabric-4.2.0"
 
-    modApi("me.shedaniel.cloth:cloth-config:${rootProject.properties["cloth_config"]}")
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
 //    modApi "com.sk89q.worldedit:worldedit-fabric-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     modImplementation("curse.maven:selene-499980:7522322")
+    modImplementation "curse.maven:modmenu-308702:7808443"
 
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-api-fabric:${project.properties["rei"]}")
 
@@ -93,20 +92,18 @@ dependencies {
         }
     }
 
-    modRuntimeOnly "curse.maven:modmenu-308702:5810603"
+    modImplementation "curse.maven:modmenu-308702:5810603"
 }
 
 processResources {
 //    inputs.property "version", project.version
 //    inputs.property "minecraft_version", minecraft_version
 //    inputs.property "architectury_version", architectury_version
-//    inputs.property "cloth_config_version", cloth_config
 
     def props = [
             "version": mod_version,
             "minecraft_version": minecraft_version,
-            "architectury_version": architectury_version,
-            "cloth_config_version": cloth_config
+            "architectury_version": architectury_version
     ]
 
     filesMatching("fabric.mod.json") {

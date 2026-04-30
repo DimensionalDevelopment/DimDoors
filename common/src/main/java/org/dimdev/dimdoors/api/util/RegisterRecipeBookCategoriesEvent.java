@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.api.util;
 
-import dev.architectury.event.Event;
-import dev.architectury.event.EventFactory;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -17,17 +15,17 @@ public record RegisterRecipeBookCategoriesEvent(
     BiConsumer<RecipeBookType, List<RecipeBookCategories>> bookCategories,
     BiConsumer<RecipeType<?>, Function<RecipeHolder<?>, RecipeBookCategories>> recipeCategoryFinder
 ) {
-    public static final Event<Consumer<RegisterRecipeBookCategoriesEvent>> EVENT = EventFactory.createConsumerLoop();
+    public static final SimpleEvent<Consumer<RegisterRecipeBookCategoriesEvent>> EVENT = SimpleEvent.consumerLoop();
 
     public void registerAggregateCategory(RecipeBookCategories category, List<RecipeBookCategories> other) {
-    categoryAggregateCategory.accept(category, other);
+        categoryAggregateCategory.accept(category, other);
     }
 
     public void registerBookCategories(RecipeBookType type, List<RecipeBookCategories> categories) {
-    bookCategories.accept(type, categories);
+        bookCategories.accept(type, categories);
     }
 
     public void registerRecipeCategoryFinder(RecipeType<?> type, Function<RecipeHolder<?>, RecipeBookCategories> categoriesFunction) {
-    recipeCategoryFinder.accept(type, categoriesFunction);
+        recipeCategoryFinder.accept(type, categoriesFunction);
     }
 }

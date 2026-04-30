@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -22,15 +21,14 @@ import net.minecraft.world.level.material.Fluid;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.decay.conditions.DecayCondition;
-import org.dimdev.dimdoors.world.decay.pattern.CompoundDecayPattern;
-import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
 import org.dimdev.dimdoors.world.decay.DecayPatternHolder;
-import org.dimdev.dimdoors.world.decay.pattern.PaintingDecayPattern;
-import org.dimdev.dimdoors.world.decay.results.DecayResult;
+import org.dimdev.dimdoors.world.decay.conditions.DecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.DimensionDecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.FluidDecayCondition;
 import org.dimdev.dimdoors.world.decay.conditions.SimpleDecayCondition;
+import org.dimdev.dimdoors.world.decay.pattern.CompoundDecayPattern;
+import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
+import org.dimdev.dimdoors.world.decay.pattern.PaintingDecayPattern;
 import org.dimdev.dimdoors.world.decay.results.*;
 
 import java.nio.file.Path;
@@ -128,8 +126,6 @@ abstract public class LimboDecayProvider implements DataProvider {
             return block.builtInRegistryHolder().key().location().getPath();
         } else if (object instanceof Fluid fluid) {
             return fluid.builtInRegistryHolder().key().location().getPath();
-        } else if (object instanceof RegistrySupplier<?> registrySupplier) {
-            return registrySupplier.getId().getPath();
         }
 
         return null;
@@ -187,7 +183,7 @@ abstract public class LimboDecayProvider implements DataProvider {
     }
 
     public DecayPatternHolder.Builder addDoublePattern(ResourceLocation id, Object after, Object before) {
-        Block block = after instanceof RegistrySupplier<?> supplier ? (Block) supplier.get() : (Block) after;
+        Block block = (Block) after;
 
         return DecayPatternHolder.builder(id).pattern(CompoundDecayPattern.builder().condition(getPredicate(before)).result(new DoubleBlockDecayResult(1, 0.0f, block)));
     }

@@ -53,7 +53,7 @@ public class IdReference extends PocketGeneratorReference {
 
     @Override
     public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-    return VirtualPocketType.ID_REFERENCE.get();
+    return VirtualPocketType.ID_REFERENCE;
     }
 
     @Override

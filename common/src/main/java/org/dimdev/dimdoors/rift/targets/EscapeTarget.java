@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.rift.targets;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.sk89q.worldedit.math.convolution.HeightMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
@@ -11,13 +10,10 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -27,12 +23,8 @@ import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.UnravelUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-import org.jetbrains.annotations.Nullable;
-import oshi.util.tuples.Pair;
 
 import java.util.Random;
-import java.util.UUID;
 
 import static org.dimdev.dimdoors.api.util.EntityUtils.chat;
 
@@ -159,7 +151,7 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
 
     @Override
     public VirtualTargetType getType() {
-    return VirtualTargetType.ESCAPE.get();
+    return VirtualTargetType.ESCAPE;
     }
 
     @Override

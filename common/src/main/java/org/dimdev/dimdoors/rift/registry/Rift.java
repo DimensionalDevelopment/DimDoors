@@ -76,7 +76,7 @@ public class Rift extends RegistryVertex {
 
     @Override
     public RegistryVertexType<? extends RegistryVertex> getType() {
-    return RegistryVertexType.RIFT.get();
+    return RegistryVertexType.RIFT;
     }
 
     public static CompoundTag toNbt(Rift rift) {

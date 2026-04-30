@@ -6,7 +6,7 @@ public class PrivatePocket extends Pocket implements DyeableAddon.DyeablePocket 
     public static String KEY = "private_pocket";
 
     public static PrivatePocketBuilder<?, PrivatePocket> builderPrivatePocket() {
-    return new PrivatePocketBuilder<>(AbstractPocketType.PRIVATE_POCKET.get());
+    return new PrivatePocketBuilder<>(AbstractPocketType.PRIVATE_POCKET);
     }
 
     public static class PrivatePocketBuilder<P extends PrivatePocketBuilder<P, T>, T extends PrivatePocket> extends PocketBuilder<P, T> implements DyeableAddon.DyeablePocketBuilder<P> {
@@ -24,7 +24,7 @@ public class PrivatePocket extends Pocket implements DyeableAddon.DyeablePocket 
 
     @Override
     public AbstractPocketType<?> getType() {
-    return AbstractPocketType.PRIVATE_POCKET.get();
+    return AbstractPocketType.PRIVATE_POCKET;
     }
 
     public static String getKEY() {

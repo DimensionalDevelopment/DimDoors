@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.world;
 
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
@@ -13,17 +10,14 @@ import org.dimdev.dimdoors.world.structure.NetherGatewayPiece;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.function.Supplier;
 
 public class ModStructuresPieces {
-    public static Registrar<StructurePieceType> STRUCTURE_PIECE_TYPES = RegistrarManager.get(DimensionalDoors.MOD_ID).get(Registries.STRUCTURE_PIECE);
+    public static final StructurePieceType NETHER_GATEWAY = registerNetherBridge("nether_fortress_gateway", NetherGatewayPiece.class, 5, 1);
 
-    public static final RegistrySupplier<StructurePieceType> NETHER_GATEWAY = registerNetherBridge("nether_fortress_gateway", NetherGatewayPiece.class, 5, 1);
-
-    private static RegistrySupplier<StructurePieceType> registerNetherBridge(String name, Class<NetherGatewayPiece> netherGatewayPieceClass, int weight, int count) {
+    private static StructurePieceType registerNetherBridge(String name, Class<NetherGatewayPiece> netherGatewayPieceClass, int weight, int count) {
         addNetherBridgeWeight(netherGatewayPieceClass, weight, count);
 
-        return registerContextless(name, () -> (StructurePieceType.ContextlessType) compoundTag -> {
+        return registerContextless(name, (StructurePieceType.ContextlessType) compoundTag -> {
             try {
                 return netherGatewayPieceClass.getConstructor(CompoundTag.class).newInstance(compoundTag);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -38,8 +32,8 @@ public class ModStructuresPieces {
         NetherFortressPiecesAccessor.setBridgePieceWeights(array);
     }
 
-    private static RegistrySupplier<StructurePieceType> registerContextless(String name, Supplier<StructurePieceType> supplier) {
-        return STRUCTURE_PIECE_TYPES.register(DimensionalDoors.id(name), supplier);
+    private static StructurePieceType registerContextless(String name, StructurePieceType supplier) {
+        return DimensionalDoors.getSided().register(Registries.STRUCTURE_PIECE, name, supplier);
     }
 
     public static void init() {

@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +38,7 @@ public class DungeonTarget extends RandomTarget {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.DUNGEON.get();
+    return VirtualTargetType.DUNGEON;
     }
 
     public static class DungeonTargetBuilder extends RandomTargetBuilder {

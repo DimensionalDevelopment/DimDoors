@@ -1,16 +1,15 @@
 package org.dimdev.dimdoors.pockets.generator;
 
 import com.google.common.collect.Multimap;
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -46,7 +45,8 @@ import java.util.function.Supplier;
 
 public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable, PocketCreator {
     private static final Logger LOGGER = LogManager.getLogger();
-    public static final Registrar<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<PocketGeneratorType<? extends PocketGenerator>>builder(DimensionalDoors.id("pocket_generator_type")).build();
+    public static final ResourceKey<Registry<PocketGeneratorType<? extends PocketGenerator>>> KEY = ResourceKey.createRegistryKey(DimensionalDoors.id("pocket_generator_type"));
+    public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = DimensionalDoors.getSided().createRegistry(KEY);
     public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
 
     private static final String defaultWeightEquation = "5"; // TODO: make config
@@ -315,9 +315,9 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
     public abstract Vec3i getSize(PocketGenerationContext parameters);
 
     public interface PocketGeneratorType<T extends PocketGenerator> {
-    RegistrySupplier<PocketGeneratorType<PocketGenerator>> SCHEMATIC = register(DimensionalDoors.id(SchematicGenerator.KEY), SchematicGenerator::new);
-//    RegistrySupplier<PocketGeneratorType<ChunkGenerator>> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
-    RegistrySupplier<PocketGeneratorType<VoidGenerator>> VOID = register(DimensionalDoors.id(VoidGenerator.KEY), VoidGenerator::new);
+    PocketGeneratorType<PocketGenerator> SCHEMATIC = register(DimensionalDoors.id(SchematicGenerator.KEY), SchematicGenerator::new);
+//    PocketGeneratorType<ChunkGenerator> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
+    PocketGeneratorType<VoidGenerator> VOID = register(DimensionalDoors.id(VoidGenerator.KEY), VoidGenerator::new);
 
     PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager);
 
@@ -325,8 +325,8 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
 
     static void register() {}
 
-    static <U extends PocketGenerator> RegistrySupplier<PocketGeneratorType<U>> register(ResourceLocation id, Supplier<U> constructor) {
-        return REGISTRY.register(id, () -> new PocketGeneratorType<U>() {
+    static <U extends PocketGenerator> PocketGeneratorType<U> register(ResourceLocation id, Supplier<U> constructor) {
+        return DimensionalDoors.getSided().register(KEY, id, new PocketGeneratorType<U>() {
         @Override
         public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
             return constructor.get().fromNbt(nbt, provider, manager);

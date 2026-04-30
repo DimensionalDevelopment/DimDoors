@@ -25,7 +25,7 @@ public class PocketExitMarker extends VirtualTarget implements EntityTarget {
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.POCKET_EXIT.get();
+    return VirtualTargetType.POCKET_EXIT;
     }
 
     @Override

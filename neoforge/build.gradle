@@ -39,7 +39,6 @@ dependencies {
     neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
-    modApi "me.shedaniel.cloth:cloth-config-neoforge:${rootProject.cloth_config}"
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle(project(path: ":common", configuration: "transformProductionNeoForge"))
 
@@ -68,8 +67,7 @@ processResources {
     def props = [
             "version": mod_version,
             "minecraft_version": minecraft_version,
-            "architectury_version": architectury_version,
-            "cloth_config_version": cloth_config
+            "architectury_version": architectury_version
     ]
 
     // Inject trace logging for all matched files

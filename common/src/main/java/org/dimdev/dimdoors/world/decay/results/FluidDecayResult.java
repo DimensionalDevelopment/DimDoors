@@ -31,7 +31,7 @@ public class FluidDecayResult implements DecayResult {
 
     @Override
     public DecayResultType<FluidDecayResult> getType() {
-    return DecayResultType.FLUID_RESULT_TYPE.get();
+    return DecayResultType.FLUID_RESULT_TYPE;
     }
 
     @Override

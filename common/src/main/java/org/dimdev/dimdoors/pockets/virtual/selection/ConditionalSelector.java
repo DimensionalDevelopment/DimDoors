@@ -97,7 +97,7 @@ public class ConditionalSelector extends AbstractVirtualPocket {
 
     @Override
     public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-    return VirtualPocketType.CONDITIONAL_SELECTOR.get();
+    return VirtualPocketType.CONDITIONAL_SELECTOR;
     }
 
     @Override

@@ -13,7 +13,7 @@ public record InverseCondition(Condition condition) implements Condition {
 
     @Override
     public ConditionType<?> getType() {
-    return ConditionType.INVERSE.get();
+    return ConditionType.INVERSE;
     }
 
     public static InverseCondition fromJson(JsonObject json) {

@@ -239,7 +239,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.AVAILABLE_LINK.get();
+    return VirtualTargetType.AVAILABLE_LINK;
     }
 
     @Override

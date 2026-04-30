@@ -1,27 +1,19 @@
 package org.dimdev.dimdoors.listener.pocket;
 
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.InteractionEvent;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import org.dimdev.dimdoors.network.client.ClientPacketListener;
+import net.minecraft.world.phys.BlockHitResult;
+import org.dimdev.dimdoors.ISided;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.util.List;
-
-public class UseBlockCallbackListener implements InteractionEvent.RightClickBlock {
+public class UseBlockCallbackListener implements ISided.UseBlockCallback {
     @Override
-    public EventResult click(Player player, InteractionHand hand, BlockPos pos, Direction face) {
-//        TODO: Implment right click addon
-//
-//    var world = player.level();
-//        List<InteractionEvent.RightClickBlock> applicableAddons = PocketListenerUtil.applicableAddons(InteractionEvent.RightClickBlock.class, world, pos);
-//
-//    for (InteractionEvent.RightClickBlock listener : applicableAddons) {
-//        EventResult result = listener.click(player, hand, pos, face);
-//        if (result != EventResult.pass()) return result;
-//    }
-    return EventResult.pass();
+    public InteractionResult use(Player player, InteractionHand hand, BlockHitResult hitResult) {
+        var world = player.level();
+        return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON, world, hitResult.getBlockPos())
+                .map(addon -> addon.useBlock(player, world, hand, hitResult))
+                .filter(result -> result != InteractionResult.PASS)
+                .orElse(InteractionResult.PASS);
     }
 }

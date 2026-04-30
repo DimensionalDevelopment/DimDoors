@@ -27,7 +27,7 @@ public class EnvironmentAddon implements PocketAddon {
 
     @Override
     public PocketAddonType<?, ?> getType() {
-    return PocketAddonType.ENVIRONMENT_ADDON.get();
+    return PocketAddonType.ENVIRONMENT_ADDON;
     }
 
     public SkyData getSky() {
@@ -59,7 +59,7 @@ public class EnvironmentAddon implements PocketAddon {
 
     @Override
     public PocketAddonType<EnvironmentAddon, EnvironmentBuilderAddon> getType() {
-        return PocketAddonType.ENVIRONMENT_ADDON.get();
+        return PocketAddonType.ENVIRONMENT_ADDON;
     }
     }
 

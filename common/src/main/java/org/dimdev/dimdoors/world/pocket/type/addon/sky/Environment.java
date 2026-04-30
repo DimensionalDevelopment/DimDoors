@@ -10,7 +10,6 @@ import org.dimdev.dimdoors.world.pocket.type.addon.cloud.CloudData;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 public interface Environment {
     Codec<Environment> CODEC = EnvironmentType.CODEC.dispatch(Environment::getType, EnvironmentType::codec);
@@ -24,8 +23,8 @@ public interface Environment {
 
     public EnvironmentType<?> getType();
 
+    //TODO: convert to a registry later
     public record EnvironmentType<T extends Environment>(MapCodec<T> codec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
-
         private static final Map<ResourceLocation, EnvironmentType<?>> ID_TO_TYPE = new HashMap<>();
         private static final Map<EnvironmentType<?>, ResourceLocation> TYPE_TO_ID = new HashMap<>();
 

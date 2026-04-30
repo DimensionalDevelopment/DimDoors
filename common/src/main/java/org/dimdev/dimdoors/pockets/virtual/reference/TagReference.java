@@ -78,7 +78,7 @@ public class TagReference extends PocketGeneratorReference {
 
     @Override
     public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-    return VirtualPocketType.TAG_REFERENCE.get();
+    return VirtualPocketType.TAG_REFERENCE;
     }
 
     @Override

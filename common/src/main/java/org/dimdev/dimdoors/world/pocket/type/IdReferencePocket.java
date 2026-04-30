@@ -31,7 +31,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 
     @Override
     public AbstractPocketType<IdReferencePocket> getType() {
-    return AbstractPocketType.ID_REFERENCE.get();
+    return AbstractPocketType.ID_REFERENCE;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
     }
 
     public static IdReferencePocketBuilder builder() {
-    return new IdReferencePocketBuilder(AbstractPocketType.ID_REFERENCE.get());
+    return new IdReferencePocketBuilder(AbstractPocketType.ID_REFERENCE);
     }
 
     public static class IdReferencePocketBuilder extends AbstractPocketBuilder<IdReferencePocketBuilder, IdReferencePocket> {
@@ -82,7 +82,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket> {
 
         @Override
         public AbstractPocketType<?> getType() {
-            return AbstractPocketType.ID_REFERENCE.get();
+            return AbstractPocketType.ID_REFERENCE;
         }
 
         public IdReferencePocketBuilder referencedId(int referencedId) {

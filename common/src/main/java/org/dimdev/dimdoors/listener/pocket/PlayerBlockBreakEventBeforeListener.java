@@ -1,15 +1,17 @@
 package org.dimdev.dimdoors.listener.pocket;
 
-//public class PlayerBlockBreakEventBeforeListener implements PlayerBlockBreakEvents.Before { TODO: Fix
-//    @Override
-//    public boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-//    List<PlayerBlockBreakEvents.Before> applicableAddons;
-//    if (world.isClient) applicableAddons = PocketListenerUtil.applicableAddonsClient(PlayerBlockBreakEvents.Before.class, world, player.getBlockPos());
-//    else applicableAddons = PocketListenerUtil.applicableAddons(PlayerBlockBreakEvents.Before.class, world, player.getBlockPos());
-//
-//    for (PlayerBlockBreakEvents.Before listener : applicableAddons) {
-//        if (!listener.beforeBlockBreak(world, player, pos, state, blockEntity)) return false;
-//    }
-//    return true;
-//    }
-//}
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.ISided;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+
+public class PlayerBlockBreakEventBeforeListener implements ISided.BlockBreakCallback {
+    @Override
+    public boolean shouldCancel(Level level, BlockPos pos, BlockState state, Player player) {
+        return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON, level, pos)
+                .map(addon -> addon.preventsBlockModification(player))
+                .orElse(false);
+    }
+}

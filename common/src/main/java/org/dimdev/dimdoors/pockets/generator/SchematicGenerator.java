@@ -5,17 +5,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.command.PocketCommand;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
@@ -24,7 +20,6 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SchematicGenerator extends PocketGenerator {
@@ -95,12 +90,12 @@ public class SchematicGenerator extends PocketGenerator {
         Pocket pocket = DimensionalRegistry.getPocketDirectory(world.dimension()).newPocket(builder);
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Generating pocket from template {} at location {}", templateID, origin);
-        PocketCommand.logSetting.values().forEach(commandSource ->
-                commandSource.sendSuccess(() -> Component.translatable(
-                        "commands.pocket.log.creation.generating",
-                        templateID, origin.getX(), origin.getY(), origin.getZ()
-                ), false)
-        );
+//        PocketCommand.logSetting.values().forEach(commandSource ->
+//                commandSource.sendSuccess(() -> Component.translatable(
+//                        "commands.pocket.log.creation.generating",
+//                        templateID, origin.getX(), origin.getY(), origin.getZ()
+//                ), false)
+//        );
 
         // Get block entities directly from placement
         template.place(pocket, placementType);
@@ -115,7 +110,7 @@ public class SchematicGenerator extends PocketGenerator {
 
     @Override
     public PocketGeneratorType<? extends PocketGenerator> getType() {
-    return PocketGeneratorType.SCHEMATIC.get();
+    return PocketGeneratorType.SCHEMATIC;
     }
 
     @Override

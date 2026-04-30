@@ -45,7 +45,7 @@ public class PocketEntranceModifier extends AbstractModifier {
 
     @Override
     public ModifierType<? extends Modifier> getType() {
-    return ModifierType.PUBLIC_MODIFIER_TYPE.get();
+    return ModifierType.PUBLIC_MODIFIER_TYPE;
     }
 
     @Override

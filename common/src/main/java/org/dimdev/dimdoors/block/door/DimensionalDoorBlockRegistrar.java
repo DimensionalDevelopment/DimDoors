@@ -2,13 +2,6 @@ package org.dimdev.dimdoors.block.door;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.platform.Platform;
-import dev.architectury.registry.client.rendering.RenderTypeRegistry;
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
-import dev.architectury.utils.Env;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -44,7 +37,7 @@ import org.dimdev.dimdoors.tag.ModItemTags;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiFunction;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
@@ -195,14 +188,6 @@ public class DimensionalDoorBlockRegistrar {
 
         var logic = customDoorFunction.getOrDefault(gennedId, defaultLogic);
         logic.register(dimBlock);
-
-        if (Platform.getEnvironment() == Env.CLIENT) {
-            putCutout(dimBlock);
-        }
-    }
-
-    private void putCutout(Block original) {
-        RenderTypeRegistry.register(RenderType.cutout(), original);
     }
 
     public ResourceLocation get(ResourceLocation ResourceLocation) {

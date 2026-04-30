@@ -36,7 +36,7 @@ public class DimensionDecayCondition extends GenericDecayCondition<DimensionType
 
     @Override
     public DecayConditionType<? extends DecayCondition> getType() {
-        return DecayConditionType.DIMENSION_CONDITION_TYPE.get();
+        return DecayConditionType.DIMENSION_CONDITION_TYPE;
     }
 
     @Override

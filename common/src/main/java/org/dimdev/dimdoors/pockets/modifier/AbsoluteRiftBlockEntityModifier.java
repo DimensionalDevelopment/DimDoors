@@ -74,7 +74,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractModifier {
 
     @Override
     public ModifierType<? extends Modifier> getType() {
-    return ModifierType.ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE.get();
+    return ModifierType.ABSOLUTE_RIFT_BLOCK_ENTITY_MODIFIER_TYPE;
     }
 
     @Override

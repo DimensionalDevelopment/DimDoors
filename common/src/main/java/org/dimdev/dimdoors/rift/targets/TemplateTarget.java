@@ -44,6 +44,6 @@ public class TemplateTarget extends WrappedDestinationTarget {
     }
     @Override
     public VirtualTargetType<TemplateTarget> getType() {
-        return VirtualTargetType.TEMPLATE.get();
+        return VirtualTargetType.TEMPLATE;
     }
 }

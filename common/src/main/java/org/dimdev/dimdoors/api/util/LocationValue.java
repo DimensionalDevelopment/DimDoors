@@ -4,10 +4,8 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.architectury.registry.registries.Registrar;
-import dev.architectury.registry.registries.RegistrarManager;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -39,7 +37,7 @@ public interface LocationValue {
 
         @Override
         public LocationValueType<? extends LocationValueWithType> type() {
-            return LocationValueType.COMPLEX.value();
+            return LocationValueType.COMPLEX;
         }
     }
 
@@ -52,7 +50,7 @@ public interface LocationValue {
 
         @Override
         public LocationValueType<? extends LocationValueWithType> type() {
-            return LocationValueType.SIMPLE.value();
+            return LocationValueType.SIMPLE;
         }
     }
 
@@ -67,18 +65,20 @@ public interface LocationValue {
     }
 
     record LocationValueType<T extends LocationValueWithType>(MapCodec<T> codec) {
-        public static final Registrar<LocationValueType<? extends LocationValue>> REGISTRY = RegistrarManager.get(DimensionalDoors.MOD_ID).<LocationValueType<? extends LocationValue>>builder(DimensionalDoors.id("location_value_type")).build();
+        public static final ResourceKey<Registry<LocationValueType<? extends LocationValue>>> KEY = ResourceKey.<LocationValueType<? extends LocationValue>>createRegistryKey(DimensionalDoors.id("location_value_type"));
 
-        public static final Codec<LocationValueType<? extends LocationValue>> CODEC = ResourceLocation.CODEC.xmap(REGISTRY::get, REGISTRY::getId);
+        public static final Registry<LocationValueType<? extends LocationValue>> REGISTRY = DimensionalDoors.getSided().createRegistry(KEY);
 
-        public static final RegistrySupplier<LocationValueType<Simple>> SIMPLE = register(DimensionalDoors.id("simple"), Simple.CODEC);
-        public static final RegistrySupplier<LocationValueType<Complex>> COMPLEX = register(DimensionalDoors.id("complex"), Complex.CODEC);
+        public static final Codec<LocationValueType<? extends LocationValue>> CODEC = REGISTRY.byNameCodec();
+
+        public static final LocationValueType<Simple> SIMPLE = register("simple", Simple.CODEC);
+        public static final LocationValueType<Complex> COMPLEX = register("complex", Complex.CODEC);
 
         public static void register() {
         }
 
-        static <T, V, U extends LocationValueWithType> RegistrySupplier<LocationValueType<U>> register(ResourceLocation id, MapCodec<U> codec) {
-            return REGISTRY.register(id, () -> new LocationValueType<>(codec));
+        static <T, V, U extends LocationValueWithType> LocationValueType<U> register(String id, MapCodec<U> codec) {
+            return DimensionalDoors.getSided().register(KEY, id, new LocationValueType<>(codec));
         }
     }
 }

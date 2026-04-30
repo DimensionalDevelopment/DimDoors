@@ -119,7 +119,7 @@ public class DimensionalDoorModifier extends AbstractModifier {
 
     @Override
     public ModifierType<? extends Modifier> getType() {
-    return ModifierType.DIMENSIONAL_DOOR_MODIFIER_TYPE.get();
+    return ModifierType.DIMENSIONAL_DOOR_MODIFIER_TYPE;
     }
 
     @Override

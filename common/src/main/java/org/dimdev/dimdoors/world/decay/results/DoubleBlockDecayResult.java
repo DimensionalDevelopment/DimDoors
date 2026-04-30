@@ -29,7 +29,7 @@ public class DoubleBlockDecayResult extends BlockDecayResult<DoubleBlockDecayRes
 
     @Override
     public DecayResultType<DoubleBlockDecayResult> getType() {
-    return DecayResultType.DOUBLE_BLOCK_RESULT_TYPE.get();
+    return DecayResultType.DOUBLE_BLOCK_RESULT_TYPE;
     }
 
     @Override

@@ -120,7 +120,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
 
     @Override
     public AbstractPocketType<?> getType() {
-    return AbstractPocketType.POCKET.get();
+    return AbstractPocketType.POCKET;
     }
 
     public Pocket fromNbt(CompoundTag nbt, HolderLookup.Provider provider) {
@@ -196,7 +196,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
     }
 
     public static PocketBuilder<?, Pocket> builder() {
-    return new PocketBuilder(AbstractPocketType.POCKET.get());
+    return new PocketBuilder<>(AbstractPocketType.POCKET);
     }
 
     protected void setBox(BoundingBox box) {
@@ -242,7 +242,7 @@ public class Pocket extends AbstractPocket<Pocket> implements AddonProvider {
     }
 
         public AbstractPocketType<?> getType() {
-            return AbstractPocketType.POCKET.get();
+            return AbstractPocketType.POCKET;
         }
 
         public boolean hasAddon(ResourceLocation id) {

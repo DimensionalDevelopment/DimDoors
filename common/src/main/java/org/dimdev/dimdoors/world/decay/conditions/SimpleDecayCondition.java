@@ -58,7 +58,7 @@ public class SimpleDecayCondition extends GenericDecayCondition<Block> {
 
     @Override
     public DecayConditionType<? extends DecayCondition> getType() {
-        return DecayConditionType.SIMPLE_CONDITION_TYPE.get();
+        return DecayConditionType.SIMPLE_CONDITION_TYPE;
     }
 
     @Override

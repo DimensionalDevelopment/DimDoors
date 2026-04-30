@@ -2,7 +2,8 @@ package org.dimdev.dimdoors.world.decay.pattern;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.*;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -12,7 +13,6 @@ import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.decay.Decay;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public record PaintingDecayPattern(CodecUtils.TagOrElementLocation<PaintingVariant> from, ResourceKey<PaintingVariant> to) implements DecayPattern {
@@ -25,7 +25,7 @@ public record PaintingDecayPattern(CodecUtils.TagOrElementLocation<PaintingVaria
 
     @Override
     public DecayPatternType<? extends DecayPattern> getType() {
-        return DecayPatternType.PAINTING.getOrNull();
+        return DecayPatternType.PAINTING;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.item;
 
-import dev.architectury.event.CompoundEventResult;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
@@ -19,6 +18,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.item.AttackBlockResult;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -73,16 +73,16 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
     }
 
     @Override
-    public CompoundEventResult<Boolean> onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
+    public AttackBlockResult onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
     var stack = player.getItemInHand(hand);
 
     if (world.isClientSide) {
         if (player.isShiftKeyDown()) {
         if (IdCounter.get(stack) != 0 || world.getBlockEntity(pos) instanceof RiftBlockEntity) {
-            return CompoundEventResult.interruptTrue(true);
+            return AttackBlockResult.success(true);
         }
 
-        return CompoundEventResult.interruptFalse(false);
+        return AttackBlockResult.fail(false);
         }
     } else {
         if (player.isShiftKeyDown()) {
@@ -92,7 +92,7 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
             if (!(rift.getDestination() instanceof IdMarker) || ((IdMarker) rift.getDestination()).getId() != -1) {
             rift.setDestination(new IdMarker(-1));
             EntityUtils.chat(player, Component.literal("Rift stripped of data and set to invalid id: -1"));
-            return CompoundEventResult.interruptTrue(false);
+            return AttackBlockResult.success(false);
             }
         } else if (IdCounter.get(stack) != 0) {
             IdCounter.set(stack, 0);
@@ -100,11 +100,11 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
             ServerPacketHandler.sync((ServerPlayer) player, stack, hand);
 
             EntityUtils.chat(player, Component.literal("Counter has been reset."));
-            return CompoundEventResult.interruptTrue(false);
+            return AttackBlockResult.success(false);
         }
         }
     }
-    return CompoundEventResult.interruptTrue(false);
+    return AttackBlockResult.success(false);
     }
 
     @Override

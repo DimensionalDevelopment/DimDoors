@@ -82,7 +82,7 @@ public class FluidDecayCondition extends GenericDecayCondition<Fluid> {
 
     @Override
     public DecayConditionType<? extends DecayCondition> getType() {
-        return DecayConditionType.FLUID_CONDITION_TYPE.get();
+        return DecayConditionType.FLUID_CONDITION_TYPE;
     }
 
     @Override

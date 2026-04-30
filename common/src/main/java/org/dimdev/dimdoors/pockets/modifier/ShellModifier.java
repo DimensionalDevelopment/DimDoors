@@ -70,7 +70,7 @@ public class ShellModifier extends AbstractModifier {
 
     @Override
     public Modifier.ModifierType<? extends Modifier> getType() {
-    return Modifier.ModifierType.SHELL_MODIFIER_TYPE.get();
+    return Modifier.ModifierType.SHELL_MODIFIER_TYPE;
     }
 
     @Override

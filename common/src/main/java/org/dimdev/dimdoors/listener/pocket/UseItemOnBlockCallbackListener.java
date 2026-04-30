@@ -11,6 +11,6 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 public class UseItemOnBlockCallbackListener implements UseItemOnBlockCallback {
     @Override
     public InteractionResult useItemOnBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
-    return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON.get(), world, player.blockPosition()).map(addon -> addon.useItemOnBlock(player, world, hand, hitResult)).filter(result -> result != InteractionResult.PASS).orElse(InteractionResult.PASS);
+        return PocketListenerUtil.getAddon(PocketAddon.PocketAddonType.PREVENT_BLOCK_MODIFICATION_ADDON, world, player.blockPosition()).map(addon -> addon.useItemOnBlock(player, world, hand, hitResult)).filter(result -> result != InteractionResult.PASS).orElse(InteractionResult.PASS);
     }
 }

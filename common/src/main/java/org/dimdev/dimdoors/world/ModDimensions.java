@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.world;
 
-import dev.architectury.event.events.common.LifecycleEvent;
-import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;

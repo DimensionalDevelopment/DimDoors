@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.item;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,23 +58,18 @@ public final class RaycastHelper {
     }
 
     static class SignClipContext<T extends BlockEntity> extends ClipContext {
-    private final Predicate<BlockEntity> predicate;
+        private final Predicate<BlockEntity> predicate;
 
-    public SignClipContext(Vec3 eye, Vec3 dest, Entity entity, Predicate<BlockEntity> predicate) {
-        super(eye, dest, Block.VISUAL, Fluid.NONE, entity);
-        this.predicate = predicate;
-    }
+        public SignClipContext(Vec3 eye, Vec3 dest, Entity entity, Predicate<BlockEntity> predicate) {
+            super(eye, dest, Block.VISUAL, Fluid.NONE, entity);
+            this.predicate = predicate;
+        }
 
-    @Override
-    public VoxelShape getBlockShape(BlockState pBlockState, BlockGetter pLevel, BlockPos pPos) {
-        if (predicate.test(pLevel.getBlockEntity(pPos)))
-        return Shapes.block();
-        return super.getBlockShape(pBlockState, pLevel, pPos);
-    }
-    }
-
-    @ExpectPlatform
-    public static double reach(Player player) {
-    throw new RuntimeException();
+        @Override
+        public VoxelShape getBlockShape(BlockState pBlockState, BlockGetter pLevel, BlockPos pPos) {
+            if (predicate.test(pLevel.getBlockEntity(pPos)))
+                return Shapes.block();
+            return super.getBlockShape(pBlockState, pLevel, pPos);
+        }
     }
 }

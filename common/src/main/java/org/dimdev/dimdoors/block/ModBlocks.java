@@ -1,9 +1,5 @@
 package org.dimdev.dimdoors.block;
 
-import dev.architectury.core.block.ArchitecturyLiquidBlock;
-import dev.architectury.platform.Mod;
-import dev.architectury.registry.client.rendering.RenderTypeRegistry;
-import dev.architectury.registry.registries.DeferredRegister;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.RenderType;
@@ -19,6 +15,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.fluid.ModFluids;
 
 import java.util.ArrayList;
@@ -26,11 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static net.minecraft.world.level.block.Blocks.*;
 import static net.minecraft.world.level.block.Blocks.CLAY;
 import static net.minecraft.world.level.block.Blocks.SAND;
 import static net.minecraft.world.level.block.Blocks.STONE;
 import static net.minecraft.world.level.block.Blocks.WATER;
-import static net.minecraft.world.level.block.Blocks.*;
 import static net.minecraft.world.level.block.state.BlockBehaviour.Properties.ofFullCopy;
 import static net.minecraft.world.level.material.MapColor.*;
 import static org.dimdev.dimdoors.item.ModItems.DECAY;
@@ -48,8 +45,6 @@ public final class ModBlocks {
     public static final Block STONE_DOOR = register("stone_door", new DoorBlock(BlockSetType.IRON, ofFullCopy(STONE).mapColor(WOOD).strength(5.0F).requiresCorrectToolForDrops()));
 
     public static final Block QUARTZ_DOOR = register("quartz_door", new DoorBlock(BlockSetType.IRON, ofFullCopy(QUARTZ_BLOCK).strength(5.0F).requiresCorrectToolForDrops()));
-
-//    public static RegistrySupplierBlock> OAK_DIMENSIONAL_TRAPDOOR = registerWithoutTabOrItem("wood_dimensional_trapdoor", () -> new DimensionalTrapdoorBlock(of(Blocks.OAK_TRAPDOOR).lightLevel(state -> 10), BlockSetType.OAK));
 
     public static final Block DIMENSIONAL_PORTAL = registerWithoutTab("dimensional_portal", new DimensionalPortalBlock(BlockBehaviour.Properties.of().noLootTable().strength(-1.0F, 3600000.0F).noOcclusion().dropsLike(AIR).lightLevel(blockState -> 10)));
 
@@ -286,7 +281,7 @@ public final class ModBlocks {
 
     @Environment(EnvType.CLIENT)
     public static void initClient() {
-        RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR, ModBlocks.DRIFTWOOD_LEAVES, ModBlocks.DRIFTWOOD_SAPLING, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlocks.UNRAVELED_SPIKE, ModBlocks.DRIFTWOOD_DOOR);
+        DimensionalDoorsClient.getClientSided().register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR, ModBlocks.DRIFTWOOD_LEAVES, ModBlocks.DRIFTWOOD_SAPLING, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlocks.UNRAVELED_SPIKE, ModBlocks.DRIFTWOOD_DOOR);
     }
 
     public static Block ancientFabricFromDye(DyeColor color) {

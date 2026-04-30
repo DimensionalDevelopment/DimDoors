@@ -65,7 +65,7 @@ public class PocketEntranceMarker extends VirtualTarget implements EntityTarget 
 
     @Override
     public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.POCKET_ENTRANCE.get();
+    return VirtualTargetType.POCKET_ENTRANCE;
     }
 
     @Override

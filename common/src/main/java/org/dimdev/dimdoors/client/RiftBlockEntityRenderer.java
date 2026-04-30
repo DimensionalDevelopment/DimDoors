@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.architectury.utils.GameInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
@@ -25,11 +24,13 @@ public abstract class RiftBlockEntityRenderer<T extends RiftBlockEntity> impleme
 
     @Override
     public void render(T rift, float f, PoseStack matrices, MultiBufferSource multiBufferSource, int i, int j) {
-        if(GameInstance.getClient().player != null && GameInstance.getClient().player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.RIFT_CONFIGURATION_TOOL)) {
+        var minecraft = Minecraft.getInstance();
+
+        if(minecraft.player != null && minecraft.player.getItemInHand(InteractionHand.MAIN_HAND).is(ModItems.RIFT_CONFIGURATION_TOOL)) {
             matrices.pushPose();
 
             matrices.translate(0.5D, 1.25D, 0.5D);
-            matrices.mulPose(Minecraft.getInstance().getBlockEntityRenderDispatcher().camera.rotation());
+            matrices.mulPose(minecraft.getBlockEntityRenderDispatcher().camera.rotation());
             matrices.scale(0.025F, -0.025F, 0.025F);
 
             renderTextLines(List.of(Component.literal("Closing: " + rift.closing), Component.literal("Size: " + rift.size)), matrices, multiBufferSource, LightTexture.FULL_BRIGHT);

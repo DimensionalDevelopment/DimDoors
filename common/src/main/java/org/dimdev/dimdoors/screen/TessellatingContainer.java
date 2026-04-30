@@ -5,16 +5,12 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.inventory.RecipeBookMenu;
-import net.minecraft.world.inventory.RecipeBookType;
-import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
-import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 
 import java.util.List;
@@ -105,7 +101,7 @@ public class TessellatingContainer extends RecipeBookMenu<CraftingInput, Tessela
 
     @Override
     public RecipeBookType getRecipeBookType() {
-    return ModRecipeBookTypes.TESSELLATING;
+    return DimensionalDoors.getSided().getTesselatingRecipeBookType();
     }
 
     @Override
