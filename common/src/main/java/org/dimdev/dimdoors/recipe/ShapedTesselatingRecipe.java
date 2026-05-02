@@ -104,7 +104,7 @@ public class ShapedTesselatingRecipe implements TesselatingRecipe {
             ).apply(instance, ShapedTesselatingRecipe::new);
         });
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, ShapedTesselatingRecipe> STREAM_CODEC = StreamCodec.of(ShapedTesselatingRecipe.Serializer::toNetwork, ShapedTesselatingRecipe.Serializer::fromNetwork);
+        public static final StreamCodec<RegistryFriendlyByteBuf, ShapedTesselatingRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
         @Override
         public MapCodec<ShapedTesselatingRecipe> codec() {

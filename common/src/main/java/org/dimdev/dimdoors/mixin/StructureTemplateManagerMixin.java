@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.mixin;
+package org.dimdev.dimdoors.mixin;//package org.dimdev.dimdoors.mixin;
 //
 //import com.google.common.collect.ImmutableList;
 //import com.mojang.datafixers.DataFixer;

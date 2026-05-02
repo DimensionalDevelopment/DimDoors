@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.block.door;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -15,11 +13,13 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DoorBlock;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -42,7 +42,6 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.rift.RiftUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +52,7 @@ import static net.minecraft.world.level.material.PushReaction.BLOCK;
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
 
 public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling {
-    public DimensionalTrapDoorBlock(BlockBehaviour.Properties settings, BlockSetType blockSetType) {
+    public DimensionalTrapDoorBlock(Properties settings, BlockSetType blockSetType) {
         super(blockSetType, settings.pushReaction(BLOCK));
     }
 
@@ -128,7 +127,7 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
     public @NotNull List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         state = getEffectiveBlockState(state);
 
-        return state.getBlock().getDrops(state, params);
+        return state.getDrops(params);
     }
 
     public static void createDetachedRift(Level world, BlockPos pos) {
@@ -212,7 +211,6 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
         return false;
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public boolean isTall(BlockState cachedState) {
         return false;

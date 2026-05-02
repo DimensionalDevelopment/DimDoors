@@ -67,7 +67,7 @@ public final class PreventBlockModificationAddon implements PocketAddon, UseItem
     }
 
     public static class PreventBlockModificationBuilderAddon implements PocketBuilderAddon<PreventBlockModificationAddon, PreventBlockModificationBuilderAddon> {
-        public static MapCodec<PreventBlockModificationAddon.PreventBlockModificationBuilderAddon> CODEC = MapCodec.unit(PreventBlockModificationAddon.PreventBlockModificationBuilderAddon::new);
+        public static MapCodec<PreventBlockModificationBuilderAddon> CODEC = MapCodec.unit(PreventBlockModificationBuilderAddon::new);
 
         @Override
         public void apply(Pocket pocket) {

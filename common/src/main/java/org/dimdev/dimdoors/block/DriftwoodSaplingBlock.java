@@ -13,7 +13,7 @@ import org.dimdev.dimdoors.world.feature.ModFeatures;
 import java.util.Optional;
 
 public class DriftwoodSaplingBlock extends SaplingBlock {
-    public DriftwoodSaplingBlock(BlockBehaviour.Properties properties) {
+    public DriftwoodSaplingBlock(Properties properties) {
         super(new TreeGrower(
                 "driftwood",
                 0.0f,

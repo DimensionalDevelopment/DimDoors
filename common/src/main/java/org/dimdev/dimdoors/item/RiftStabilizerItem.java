@@ -25,7 +25,7 @@ import java.util.List;
 import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
 
 public class RiftStabilizerItem extends Item {
-    public RiftStabilizerItem(Item.Properties settings) {
+    public RiftStabilizerItem(Properties settings) {
     super(settings);
     }
 

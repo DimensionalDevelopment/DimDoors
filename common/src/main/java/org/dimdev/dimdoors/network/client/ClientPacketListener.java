@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.network.client;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static org.dimdev.dimdoors.entity.MonolithEntity.MAX_AGGRO;
 
-@Environment(EnvType.CLIENT)
 public class ClientPacketListener {
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -53,66 +50,65 @@ public class ClientPacketListener {
     }
 
     public static ResourceKey<Level> getPocketWorld() {
-    return pocketWorld;
+        return pocketWorld;
     }
 
     public static int getGridSize() {
-    return gridSize;
+        return gridSize;
     }
 
     public static int getPocketId() {
-    return pocketId;
+        return pocketId;
     }
 
     public static int getPocketRange() {
-    return pocketRange;
+        return pocketRange;
     }
 
-    public static Map<PocketAddon.PocketAddonType<?,?>, PocketAddon> getAddons() {
-    return addons;
+    public static Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon> getAddons() {
+        return addons;
     }
 
     public static void onPlayerInventorySlotUpdate(PlayerInventorySlotUpdateS2CPacket packet) {
-    Minecraft.getInstance().execute(() -> {
-        if (Minecraft.getInstance().player != null) {
-        Minecraft.getInstance().player.getInventory().setItem(packet.slot(), packet.stack());
-        }
-    });
+        Minecraft.getInstance().execute(() -> {
+            if (Minecraft.getInstance().player != null) {
+                Minecraft.getInstance().player.getInventory().setItem(packet.slot(), packet.stack());
+            }
+        });
     }
 
     public static void onSyncPocketAddons(SyncPocketAddonsS2CPacket packet) {
-    pocketWorld = packet.world();
-    gridSize = packet.gridSize();
-    pocketId = packet.pocketId();
-    pocketRange = packet.pocketRange();
-    addons = packet.addons().stream().collect(Collectors.toMap(PocketAddon::getType, Function.identity()));
+        pocketWorld = packet.world();
+        gridSize = packet.gridSize();
+        pocketId = packet.pocketId();
+        pocketRange = packet.pocketRange();
+        addons = packet.addons().stream().collect(Collectors.toMap(PocketAddon::getType, Function.identity()));
     }
 
     public static void onMonolithAggroParticles(MonolithAggroParticlesPacket packet) {
-    Minecraft.getInstance().execute(() -> spawnParticles(packet.aggro()));
+        Minecraft.getInstance().execute(() -> spawnParticles(packet.aggro()));
     }
 
-    @Environment(EnvType.CLIENT)
     public static void spawnParticles(int aggro) {
-    Player player = Minecraft.getInstance().player;
-    if (aggro < 120) {
-        return;
-    }
-    int count = 10 * aggro / MAX_AGGRO;
-    for (int i = 1; i < count; ++i) {
-        //noinspection ConstantConditions
-        player.level().addParticle(ParticleTypes.PORTAL, player.getX() + (clientRandom.nextDouble() - 0.5D) * 3.0,
-            player.getY() + clientRandom.nextDouble() * player.getBbHeight() - 0.75D,
-            player.getZ() + (clientRandom.nextDouble() - 0.5D) * player.getBbWidth(),
-            (clientRandom.nextDouble() - 0.5D) * 2.0D, -clientRandom.nextDouble(),
-            (clientRandom.nextDouble() - 0.5D) * 2.0D);
-    }
+        Player player = Minecraft.getInstance().player;
+        if (aggro < 120) {
+            return;
+        }
+        int count = 10 * aggro / MAX_AGGRO;
+        for (int i = 1; i < count; ++i) {
+            //noinspection ConstantConditions
+            player.level().addParticle(ParticleTypes.PORTAL, player.getX() + (clientRandom.nextDouble() - 0.5D) * 3.0,
+                    player.getY() + clientRandom.nextDouble() * player.getBbHeight() - 0.75D,
+                    player.getZ() + (clientRandom.nextDouble() - 0.5D) * player.getBbWidth(),
+                    (clientRandom.nextDouble() - 0.5D) * 2.0D, -clientRandom.nextDouble(),
+                    (clientRandom.nextDouble() - 0.5D) * 2.0D);
+        }
     }
 
     public static void onMonolithTeleportParticles(MonolithTeleportParticlesPacket packet) {
-    Minecraft client = Minecraft.getInstance();
-    //noinspection ConstantConditions
-    client.execute(() -> client.particleEngine.add(new MonolithParticle(client.level, client.player.getX(), client.player.getY(), client.player.getZ())));
+        Minecraft client = Minecraft.getInstance();
+        //noinspection ConstantConditions
+        client.execute(() -> client.particleEngine.add(new MonolithParticle(client.level, client.player.getX(), client.player.getY(), client.player.getZ())));
     }
 
     public static void onRenderBreakBlock(RenderBreakBlockS2CPacket packet) {
@@ -125,7 +121,6 @@ public class ClientPacketListener {
         });
     }
 
-    @Environment(EnvType.CLIENT)
     public static <T extends PocketAddon> Optional<T> getAddonClient(PocketAddon.PocketAddonType<T, ?> type, Level world, BlockPos pos) {
         if (!world.dimension().equals(pocketWorld)) return Optional.empty();
 

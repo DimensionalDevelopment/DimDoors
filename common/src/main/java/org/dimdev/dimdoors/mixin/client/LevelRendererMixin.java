@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import static net.minecraft.client.renderer.LevelRenderer.getLightColor;
 
-@Mixin(net.minecraft.client.renderer.LevelRenderer.class)
+@Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin implements LevelRendererExtension {
     @Shadow
     private int prevCloudX;

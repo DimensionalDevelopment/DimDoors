@@ -2,8 +2,6 @@ package org.dimdev.dimdoors.particle.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -18,7 +16,6 @@ import org.dimdev.dimdoors.client.MonolithRenderer;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
-@Environment(EnvType.CLIENT)
 public class MonolithParticle extends Particle {
 
     public MonolithParticle(ClientLevel world, double x, double y, double z) {

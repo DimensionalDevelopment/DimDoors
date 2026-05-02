@@ -10,7 +10,7 @@ import java.util.Map;
 
 public final class MathUtil {
     public static <T> T weightedRandom(Map<T, Float> weights) {
-    if (weights.size() == 0) return null;
+    if (weights.isEmpty()) return null;
     int totalWeight = 0;
     for (float weight : weights.values()) {
         totalWeight += weight;

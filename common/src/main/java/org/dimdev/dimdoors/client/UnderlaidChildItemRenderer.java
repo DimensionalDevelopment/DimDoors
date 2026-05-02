@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -12,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 
-@Environment(EnvType.CLIENT)
 public record UnderlaidChildItemRenderer(ItemStack underlay) {
     public static final UnderlaidChildItemRenderer INSTANCE = new UnderlaidChildItemRenderer(ModBlocks.DIMENSIONAL_PORTAL.asItem());
 

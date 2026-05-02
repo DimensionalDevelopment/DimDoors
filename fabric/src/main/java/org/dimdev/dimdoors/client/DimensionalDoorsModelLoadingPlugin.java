@@ -3,16 +3,13 @@ package org.dimdev.dimdoors.client;
 import net.fabricmc.fabric.api.client.model.loading.v1.BlockStateResolver;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelResolver;
-import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock;
 import org.jetbrains.annotations.Nullable;
 
-import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
 
 public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
@@ -21,7 +18,7 @@ public class DimensionalDoorsModelLoadingPlugin implements ModelLoadingPlugin {
         var resolver = new BlockStateResolver() {
             @Override
             public void resolveBlockStates(Context context) {
-                if (DimensionalDoors.getDimensionalDoorBlockRegistrar().isMapped(context.block().arch$registryName())) {
+                if (DimensionalDoors.getDimensionalDoorBlockRegistrar().isMapped(BuiltInRegistries.BLOCK.getKey(context.block()))) {
                     var model = context.getOrLoadModel(DimensionalDoorsClient.childItem);
 
                     for (var state : context.block().getStateDefinition().getPossibleStates()) {

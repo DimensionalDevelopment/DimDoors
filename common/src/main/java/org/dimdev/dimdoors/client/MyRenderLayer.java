@@ -2,8 +2,6 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -11,10 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import org.dimdev.dimdoors.DimensionalDoors;
 
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_DST_COLOR;
-import static org.lwjgl.opengl.GL11.GL_ZERO;
-
-@Environment(EnvType.CLIENT)
 public class MyRenderLayer extends RenderType {
     public static final ResourceLocation WARP_PATH = DimensionalDoors.id("textures/other/warp.png");
     private static final ResourceLocation KEY_PATH = DimensionalDoors.id("textures/other/keyhole.png");
@@ -67,7 +61,7 @@ public class MyRenderLayer extends RenderType {
 //    );
 
     public static RenderType getMonolith(ResourceLocation texture) {
-    RenderType.CompositeState multiPhaseParameters = RenderType.CompositeState.builder().setTextureState(new TextureStateShard(texture, false, false))
+    CompositeState multiPhaseParameters = CompositeState.builder().setTextureState(new TextureStateShard(texture, false, false))
         .setShaderState(new ShaderStateShard(GameRenderer::getRendertypeEntitySolidShader))
         .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
 //        .setCullState(RenderStateShard.NO_CULL)

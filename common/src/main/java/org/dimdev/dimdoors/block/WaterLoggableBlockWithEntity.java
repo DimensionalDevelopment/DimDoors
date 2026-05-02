@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class WaterLoggableBlockWithEntity extends BaseEntityBlock implements SimpleWaterloggedBlock {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    protected WaterLoggableBlockWithEntity(BlockBehaviour.Properties settings) {
+    protected WaterLoggableBlockWithEntity(Properties settings) {
     super(settings);
     registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
     }

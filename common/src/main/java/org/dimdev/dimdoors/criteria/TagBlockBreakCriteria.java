@@ -25,7 +25,7 @@ public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakC
     return TriggerInstance.CODEC;
     }
 
-    public static record TriggerInstance(Optional<ContextAwarePredicate> player, TagKey<Block> blockTagKey) implements SimpleCriterionTrigger.SimpleInstance {
+    public static record TriggerInstance(Optional<ContextAwarePredicate> player, TagKey<Block> blockTagKey) implements SimpleInstance {
     public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance ->
         instance.group(
             EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),

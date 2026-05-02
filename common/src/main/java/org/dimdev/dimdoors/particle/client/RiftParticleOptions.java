@@ -3,8 +3,6 @@ package org.dimdev.dimdoors.particle.client;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -52,13 +50,11 @@ public record RiftParticleOptions(float color, int averageAge) implements Partic
    }
 
    @Override
-   @Environment(EnvType.CLIENT)
    public float color() {
       return color;
    }
 
    @Override
-   @Environment(EnvType.CLIENT)
    public int averageAge() {
       return averageAge;
    }

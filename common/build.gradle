@@ -1,0 +1,65 @@
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    neoFormVersion = neo_form_version
+    // Automatically enable AccessTransformers if the file exists
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+
+    def interfaces = file('src/main/resources/interfaces.json')
+    if (interfaces.exists()) {
+        interfaceInjectionData.from(interfaces.absolutePath)
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+}
+
+dependencies {
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
+    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+
+    implementation "curse.maven:cyanide-541676:4824162"
+
+    // Remove the next line if you don't want to depend on the API
+//    api "dev.architectury:architectury:${architectury_version}"
+    compileOnlyApi "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
+
+    api "org.jgrapht:jgrapht-core:1.1.0"
+    api "curse.maven:iris-${iris}:${iris_version}"
+    api "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
+    implementation "curse.maven:selene-499980:7522322"
+    // api "com.sk89q.worldedit:worldedit-core:${worldedit}"
+
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${rei}"
+
+    compileOnlyApi "mezz.jei:jei-${minecraft_version}-lib:${jei}"
+    compileOnlyApi "mezz.jei:jei-${minecraft_version}-common-api:${jei}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-common:${jei}"
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}
+

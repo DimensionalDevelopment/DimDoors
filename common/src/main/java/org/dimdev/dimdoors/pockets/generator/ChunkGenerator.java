@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.pockets.generator;
+package org.dimdev.dimdoors.pockets.generator;//package org.dimdev.dimdoors.pockets.generator;
 //
 //import net.minecraft.Util;
 //import net.minecraft.core.BlockPos;

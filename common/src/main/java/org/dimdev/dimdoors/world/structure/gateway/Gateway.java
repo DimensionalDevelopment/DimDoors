@@ -1,4 +1,4 @@
-package org.dimdev.dimdoors.world.feature.gateway;
+package org.dimdev.dimdoors.world.structure.gateway;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.WorldGenLevel;

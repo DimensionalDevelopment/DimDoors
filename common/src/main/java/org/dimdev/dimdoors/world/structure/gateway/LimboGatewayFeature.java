@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.world.structure.gateway;
+package org.dimdev.dimdoors.world.structure.gateway;//package org.dimdev.dimdoors.world.structure.gateway;
 //
 //import net.minecraft.world.level.levelgen.feature.Feature;
 //import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;

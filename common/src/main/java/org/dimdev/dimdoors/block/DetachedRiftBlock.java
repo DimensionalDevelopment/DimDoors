@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.block;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -35,7 +33,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 
     public static final String ID = "rift";
 
-    public DetachedRiftBlock(BlockBehaviour.Properties settings) {
+    public DetachedRiftBlock(Properties settings) {
         super(settings);
     }
 
@@ -50,7 +48,6 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void animateTick(BlockState state, Level world, BlockPos pos, RandomSource rand) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         // randomDisplayTick can be called before the tile entity is created in multiplayer

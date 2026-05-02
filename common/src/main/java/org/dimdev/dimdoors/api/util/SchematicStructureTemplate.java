@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.api.util;
+package org.dimdev.dimdoors.api.util;//package org.dimdev.dimdoors.api.util;
 //
 //import com.google.common.collect.Lists;
 //import net.minecraft.core.BlockPos;

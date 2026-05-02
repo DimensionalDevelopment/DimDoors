@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.recipe;
+package org.dimdev.dimdoors.recipe;//package org.dimdev.dimdoors.recipe;
 //
 //import com.google.common.annotations.VisibleForTesting;
 //import com.mojang.serialization.Codec;

@@ -1,8 +1,5 @@
 package org.dimdev.dimdoors.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Environment(EnvType.CLIENT)
 public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel> {
     public static final List<ResourceLocation> TRANSPARENT = Stream.of(
             DimensionalDoors.id("textures/mob/monolith/transparent/monolith_0.png"),

@@ -4,8 +4,8 @@ import net.minecraft.world.level.biome.Biome;
 
 public interface OverworldWeatherData extends WeatherData {
     @Override
-    default WeatherData.WeatherDataType<?> type() {
-        return WeatherData.WeatherDataType.OVERWORLD;
+    default WeatherDataType<?> type() {
+        return WeatherDataType.OVERWORLD;
     }
 
     Biome.Precipitation getPrecepitation();

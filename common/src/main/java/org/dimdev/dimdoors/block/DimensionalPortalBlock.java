@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.block;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -34,7 +32,7 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 
     public static DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-    public DimensionalPortalBlock(BlockBehaviour.Properties settings) {
+    public DimensionalPortalBlock(Properties settings) {
         super(settings);
         this.registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
@@ -116,7 +114,6 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 //    return Shapes.block();
 //    }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public boolean isTall(BlockState cachedState) {
         return true;

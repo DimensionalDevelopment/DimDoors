@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.world.pocket.type.addon;
+package org.dimdev.dimdoors.world.pocket.type.addon;//package org.dimdev.dimdoors.world.pocket.type.addon;
 //
 //import net.minecraft.nbt.CompoundTag;
 //import net.minecraft.nbt.ListTag;

@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.world.feature.gateway.schematic;
+package org.dimdev.dimdoors.world.structure.gateway.schematic;//package org.dimdev.dimdoors.world.feature.gateway.schematic;
 //
 //import com.google.common.collect.BiMap;
 //import com.google.common.collect.HashBiMap;

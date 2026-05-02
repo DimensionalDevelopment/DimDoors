@@ -89,7 +89,7 @@ public class TesselatingShapelessRecipe implements TesselatingRecipe {
                 ExtraCodecs.NON_NEGATIVE_INT.fieldOf("weaving_time").forGetter(TesselatingShapelessRecipe::weavingTime))
                 .apply(instance, TesselatingShapelessRecipe::new));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, TesselatingShapelessRecipe> STREAM_CODEC = StreamCodec.of(TesselatingShapelessRecipe.Serializer::toNetwork, TesselatingShapelessRecipe.Serializer::fromNetwork);
+        public static final StreamCodec<RegistryFriendlyByteBuf, TesselatingShapelessRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
         @Override
         public MapCodec<TesselatingShapelessRecipe> codec() {

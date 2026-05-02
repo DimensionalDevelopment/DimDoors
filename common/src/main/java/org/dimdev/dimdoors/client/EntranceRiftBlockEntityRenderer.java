@@ -2,9 +2,6 @@ package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -21,14 +18,17 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.Half;
+import org.dimdev.dimdoors.api.client.DefaultTransformation;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
+import org.dimdev.dimdoors.api.client.Transformer;
+import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
 import java.util.List;
 
-@Environment(EnvType.CLIENT)
 public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<EntranceRiftBlockEntity> {
     public EntranceRiftBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -38,10 +38,10 @@ public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Ent
     public void render(EntranceRiftBlockEntity blockEntity, float tickDelta, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
         super.render(blockEntity, tickDelta, matrixStack, vertexConsumerProvider, light, overlay);
 
-    var state = blockEntity.getRenderBlockState();
+        var state = blockEntity.getRenderBlockState();
 
-    renderBlockState(state, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
-        if(state.getBlock() instanceof DoorBlock) {
+        renderBlockState(state, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumerProvider, light, overlay);
+        if (state.getBlock() instanceof DoorBlock) {
             matrixStack.pushPose();
 
             matrixStack.translate(0, 1, 0);
@@ -50,31 +50,35 @@ public class EntranceRiftBlockEntityRenderer extends RiftBlockEntityRenderer<Ent
 
         }
 
-        DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, blockEntity.getTransformer(), tickDelta, light, overlay, blockEntity.isTall());
+        DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, getTransformer(blockEntity), tickDelta, light, overlay, blockEntity.isTall());
+    }
 
+    public Transformer getTransformer(EntranceRiftBlockEntity blockEntity) {
+        if (blockEntity.getBlockState().getBlock() instanceof DimensionalTrapDoorBlock) {
+            return blockEntity.getBlockState().getValue(TrapDoorBlock.HALF) == Half.TOP ? DefaultTransformation.TOP_TRAPDOOR : DefaultTransformation.BOTTOMM_TRAPDOOR;
+        }
 
-
-
+        return DefaultTransformation.fromDirection(blockEntity.getOrientation());
     }
 
     private void renderBlockState(BlockState renderState, RandomSource random, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, int light, int overlay) {
-    var model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(renderState);
-    var renderType = ItemBlockRenderTypes.getRenderType(renderState, false);
-    var vertexConsumer = vertexConsumerProvider.getBuffer(renderType);
+        var model = Minecraft.getInstance().getModelManager().getBlockModelShaper().getBlockModel(renderState);
+        var renderType = ItemBlockRenderTypes.getRenderType(renderState, false);
+        var vertexConsumer = vertexConsumerProvider.getBuffer(renderType);
 
-    for (var direction : Direction.values()) {
-        var quads = model.getQuads(renderState, direction, random);
+        for (var direction : Direction.values()) {
+            var quads = model.getQuads(renderState, direction, random);
+            renderQuads(matrixStack, vertexConsumer, quads, light, overlay);
+        }
+
+        var quads = model.getQuads(renderState, null, random);
         renderQuads(matrixStack, vertexConsumer, quads, light, overlay);
     }
 
-    var quads = model.getQuads(renderState, null, random);
-    renderQuads(matrixStack, vertexConsumer, quads, light, overlay);
-    }
-
     private void renderQuads(PoseStack stack, VertexConsumer consumer, List<BakedQuad> quads, int light, int overlay) {
-    var pose = stack.last();
-    for (var quad : quads) {
-        consumer.putBulkData(pose, quad, 1.0F, 1.0F, 1.0F, 1.0F, light, overlay);
-    }
+        var pose = stack.last();
+        for (var quad : quads) {
+            consumer.putBulkData(pose, quad, 1.0F, 1.0F, 1.0F, 1.0F, light, overlay);
+        }
     }
 }

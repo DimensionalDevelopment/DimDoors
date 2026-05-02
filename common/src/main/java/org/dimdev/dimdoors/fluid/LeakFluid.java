@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.fluid;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -41,7 +39,6 @@ public abstract class LeakFluid extends FlowingFluid {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     protected void animateTick(Level level, BlockPos blockPos, FluidState fluidState, RandomSource randomSource) {
 
     }

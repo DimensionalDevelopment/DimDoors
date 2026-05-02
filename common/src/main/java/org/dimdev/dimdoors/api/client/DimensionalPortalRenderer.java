@@ -3,8 +3,6 @@ package org.dimdev.dimdoors.api.client;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -21,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Environment(EnvType.CLIENT)
 public final class DimensionalPortalRenderer {
     public static final ResourceLocation WARP_PATH;
     private static final RenderStateShard.ShaderStateShard DIMENSIONAL_PORTAL_SHADER;

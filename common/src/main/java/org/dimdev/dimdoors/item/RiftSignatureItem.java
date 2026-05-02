@@ -35,7 +35,7 @@ public class RiftSignatureItem extends Item {
     public static final String ID = "rift_signature";
     public boolean shouldclear;
 
-    public RiftSignatureItem(Item.Properties settings, boolean clear) {
+    public RiftSignatureItem(Properties settings, boolean clear) {
 
     super(settings);
     shouldclear = clear;

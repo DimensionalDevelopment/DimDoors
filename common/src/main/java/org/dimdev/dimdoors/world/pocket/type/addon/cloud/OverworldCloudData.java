@@ -6,8 +6,8 @@ public interface OverworldCloudData extends CloudData {
     float getCloudHeight();
     Vec3 getCloudColor();
 
-    default CloudData.CloudDataType<?> type() {
-        return CloudData.CloudDataType.OVERWORLD;
+    default CloudDataType<?> type() {
+        return CloudDataType.OVERWORLD;
     }
 
 }

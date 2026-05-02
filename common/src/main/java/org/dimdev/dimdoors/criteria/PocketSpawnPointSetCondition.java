@@ -21,7 +21,7 @@ public class PocketSpawnPointSetCondition extends SimpleCriterionTrigger<PocketS
     this.trigger(player, t -> true);
     }
 
-    public static record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleCriterionTrigger.SimpleInstance {
+    public static record TriggerInstance(Optional<ContextAwarePredicate> player) implements SimpleInstance {
     public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player)).apply(instance, TriggerInstance::new));
     }
 }

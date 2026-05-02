@@ -1,0 +1,10 @@
+{
+  "net/minecraft/world/level/block/DoorBlock": [
+    "org/dimdev/dimdoors/block/DoorSoundProvider",
+    "org/dimdev/dimdoors/block/RiftVariantProvider"
+  ],
+  "net/minecraft/world/level/block/TrapDoorBlock": [
+    "org/dimdev/dimdoors/block/DoorSoundProvider",
+    "org/dimdev/dimdoors/block/RiftVariantProvider"
+  ]
+}

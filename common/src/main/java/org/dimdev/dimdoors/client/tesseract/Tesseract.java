@@ -1,10 +1,6 @@
 package org.dimdev.dimdoors.client.tesseract;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
@@ -12,7 +8,6 @@ import org.joml.Vector4f;
 import static org.joml.Math.cos;
 import static org.joml.Math.sin;
 
-@Environment(EnvType.CLIENT)
 public class Tesseract {
     private static final Plane[] planes = new Plane[24];
 
@@ -188,8 +183,7 @@ public class Tesseract {
 
     private static  final Matrix4f scratchMatrix = new Matrix4f();
     
-    @Environment(EnvType.CLIENT)
-    public static void draw(org.joml.Matrix4f model, VertexConsumer vc, RGBA color, float radian) {
+    public static void draw(Matrix4f model, VertexConsumer vc, RGBA color, float radian) {
         rotYW(radian);
 
         for (Plane plane : planes) {

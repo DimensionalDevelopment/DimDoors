@@ -31,7 +31,6 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.common.NeoForge;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.IClientSided;
 import org.dimdev.dimdoors.client.ModEntityModelLayers;
@@ -84,8 +83,8 @@ public class DimensionalDoorsForgeClient implements IClientSided {
         bus.addListener(DimensionalDoorsForgeClient::onModifyBakingResult);
         bus.addListener(DimensionalDoorsForgeClient::registerDimensionEffect);
         bus.<FMLClientSetupEvent>addListener(event -> event.enqueueWork(() -> {
-            ModBlocks.initClient();
             DimensionalDoorsClient.initGeneratedDoorCutouts();
+            DimensionalDoorsClient.initClient();
         }));
     }
 

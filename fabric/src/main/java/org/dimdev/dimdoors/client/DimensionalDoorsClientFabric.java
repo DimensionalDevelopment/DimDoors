@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
@@ -42,8 +41,7 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer, IClie
     @Override
     public void onInitializeClient() {
         DimensionalDoorsClient.init(this);
-
-        ModBlocks.initClient();
+        DimensionalDoorsClient.initClient();
         initGeneratedDoorCutouts();
 
         RecipeBookManager.init();

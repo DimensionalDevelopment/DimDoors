@@ -1,13 +1,10 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.dimdev.dimdoors.DimensionalDoors;
 
 import static net.minecraft.world.level.block.Blocks.STONE;
 

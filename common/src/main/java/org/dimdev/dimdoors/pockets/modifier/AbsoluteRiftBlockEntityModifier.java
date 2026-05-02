@@ -10,7 +10,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -36,7 +35,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractModifier {
     @Override
     public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
     // TODO: rifts from resource
-    serializedRifts = StreamUtils.execute(() -> nbt.getList("rifts", Tag.TAG_COMPOUND).parallelStream().unordered().map(CompoundTag.class::cast)
+    serializedRifts = nbt.getList("rifts", Tag.TAG_COMPOUND).stream().unordered().map(CompoundTag.class::cast)
         .filter(compound -> {
             if (compound.contains("Pos")) {
             return true;
@@ -47,7 +46,7 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractModifier {
         .collect(Collectors.toConcurrentMap(compound -> {
             int[] ints = compound.getIntArray("Pos");
             return new BlockPos(ints[0], ints[1], ints[2]);
-        }, compound -> compound)));
+        }, compound -> compound));
 
     return this;
     }
@@ -58,11 +57,11 @@ public class AbsoluteRiftBlockEntityModifier extends AbstractModifier {
 
     ListTag riftsNbt;
     if (rifts != null) {
-        riftsNbt = StreamUtils.execute(() -> rifts.values().parallelStream().unordered().map(rift -> {
+        riftsNbt = rifts.values().stream().unordered().map(rift -> {
         CompoundTag e = new CompoundTag();
         rift.saveAdditional(e, provider);
         return e;
-        }).collect(Collectors.toCollection(ListTag::new)));
+        }).collect(Collectors.toCollection(ListTag::new));
     } else {
         riftsNbt = new ListTag();
         riftsNbt.addAll(serializedRifts.values());

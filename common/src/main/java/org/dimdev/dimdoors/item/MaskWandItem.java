@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.item;
 
-import net.fabricmc.api.Environment;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -17,9 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-import static net.fabricmc.api.EnvType.CLIENT;
-
-    public class MaskWandItem extends Item {
+public class MaskWandItem extends Item {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static final String ID = "rift_configuration_tool";
@@ -45,7 +42,6 @@ import static net.fabricmc.api.EnvType.CLIENT;
     return InteractionResultHolder.success(stack);
     }
 
-    @Environment(CLIENT)
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
     if (I18n.exists(this.getDescriptionId() + ".info")) {

@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.item.door;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -42,7 +40,6 @@ public class DimensionalDoorBlockItem extends BlockItem {
     this.hasToolTip = hasToolTip;
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(ItemStack itemStack,  @Nullable TooltipContext world, List<Component> list, TooltipFlag tooltipContext) {
     if(hasToolTip) {

@@ -14,7 +14,7 @@ import java.util.Map;
 
 public interface WeatherData {
     Codec<WeatherData> CODEC = WeatherDataType.CODEC.dispatch(WeatherData::type, WeatherDataType::codec);
-    StreamCodec<RegistryFriendlyByteBuf, WeatherData> STREAM_CODEC = WeatherData.WeatherDataType.STREAM_CODEC.dispatch(WeatherData::type, WeatherDataType::streamCodec);
+    StreamCodec<RegistryFriendlyByteBuf, WeatherData> STREAM_CODEC = WeatherDataType.STREAM_CODEC.dispatch(WeatherData::type, WeatherDataType::streamCodec);
 
 
     static WeatherData empty() {

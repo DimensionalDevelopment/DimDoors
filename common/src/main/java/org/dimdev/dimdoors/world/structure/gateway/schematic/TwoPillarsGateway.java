@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.world.feature.gateway.schematic;
+package org.dimdev.dimdoors.world.structure.gateway.schematic;//package org.dimdev.dimdoors.world.feature.gateway.schematic;
 //
 //import net.minecraft.core.BlockPos;
 //import net.minecraft.world.level.WorldGenLevel;

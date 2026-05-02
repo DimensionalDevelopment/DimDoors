@@ -17,7 +17,7 @@ import java.util.List;
 public class UnravelledFabricBlock extends Block {
     public static final String ID = "unravelled_fabric";
 
-    public UnravelledFabricBlock(BlockBehaviour.Properties settings) {
+    public UnravelledFabricBlock(Properties settings) {
     super(settings);
     }
 

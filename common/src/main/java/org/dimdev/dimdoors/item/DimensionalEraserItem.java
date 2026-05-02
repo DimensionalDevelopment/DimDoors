@@ -21,7 +21,7 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import static org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle;
 
 public class DimensionalEraserItem extends Item {
-    public DimensionalEraserItem(Item.Properties settings) {
+    public DimensionalEraserItem(Properties settings) {
     super(settings);
     }
 

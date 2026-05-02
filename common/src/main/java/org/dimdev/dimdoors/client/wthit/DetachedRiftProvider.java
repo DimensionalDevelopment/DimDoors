@@ -22,7 +22,7 @@ public enum DetachedRiftProvider implements IBlockComponentProvider {
 //        if (!config.getBoolean(ID)) {
 //            return;
 //        }
-        DetachedRiftBlockEntity blockEntity = (DetachedRiftBlockEntity) accessor.getBlockEntity();
+        DetachedRiftBlockEntity blockEntity = accessor.getBlockEntity();
         VirtualTarget destination = Objects.requireNonNull(blockEntity).getDestination();
         if (destination != null) {
             Component tKey = Component.translatable(destination.getType().getTranslationKey());

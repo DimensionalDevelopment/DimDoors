@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.block.entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -19,13 +17,10 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.client.DefaultTransformation;
-import org.dimdev.dimdoors.api.client.Transformer;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
@@ -195,15 +190,6 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
         .orElse(Direction.NORTH);
     }
 
-    @Environment(EnvType.CLIENT)
-    public Transformer getTransformer() {
-        if(getBlockState().getBlock() instanceof DimensionalTrapDoorBlock) {
-            return getBlockState().getValue(TrapDoorBlock.HALF) == Half.TOP ? DefaultTransformation.TOP_TRAPDOOR : DefaultTransformation.BOTTOMM_TRAPDOOR;
-        }
-
-    return DefaultTransformation.fromDirection(this.getOrientation());
-    }
-
     public boolean hasOrientation() {
     return this.level != null && this.level.getBlockState(this.worldPosition).hasProperty(HorizontalDirectionalBlock.FACING);
     }
@@ -211,7 +197,6 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     /**
      * Specifies if the portal should be rendered two blocks tall
      */
-    @Environment(EnvType.CLIENT)
     public boolean isTall() {
     return ((RiftProvider<?>) this.getBlockState().getBlock()).isTall(this.getBlockState());
     }

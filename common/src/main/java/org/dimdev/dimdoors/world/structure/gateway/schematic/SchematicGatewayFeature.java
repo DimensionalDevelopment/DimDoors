@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.world.feature.gateway.schematic;
+package org.dimdev.dimdoors.world.structure.gateway.schematic;//package org.dimdev.dimdoors.world.feature.gateway.schematic;
 //
 //import com.mojang.serialization.Codec;
 //import net.minecraft.world.level.levelgen.feature.Feature;

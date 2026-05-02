@@ -1,38 +1,39 @@
 modLoader = "javafml"
-loaderVersion = "[2,)"
-#issueTrackerURL = ""
-license = "MIT"
+loaderVersion = "${neoforge_loader_version_range}"
+# issueTrackerURL = ""
+license = "${license}"
 
 [[mods]]
-modId = "dimdoors"
+modId = "${mod_id}"
 version = "${version}"
-displayName = "DimensionalDoors"
-authors = "StevenRS11, SenseiKiwi, Zixiken, Waterpicker, Robijnvogel, ZombieHDGaming, Runemoro"
-enumExtensions = "META-INF/dimdoors.enumextensions.json"
-description = '''
-Bend and twist reality, creating rifts, pocket dimensions, and much more
-'''
-#logoFile = ""
+displayName = "${mod_name}"
+# updateJSONURL = "https://change.me.example.invalid/updates.json"
+# displayURL = "https://change.me.to.your.mods.homepage.example.invalid/"
+credits = "${credits}"
+authors = "${neoforge_mod_authors}"
+enumExtensions = "META-INF/${mod_id}.enumextensions.json"
+description = '''${description}'''
+logoFile = "${mod_id}.png"
 
 [[mixins]]
-config="dimdoors.mixins.json"
+config = "${mod_id}.mixins.json"
 
 [[mixins]]
-config="dimdoors-common.mixins.json"
+config = "${mod_id}.neoforge.mixins.json"
 
-[[accessTransformers]]
-file="dimdoors.cfg"
-
-[[dependencies.dimdoors]]
+[[dependencies.${mod_id}]]
 modId = "neoforge"
-type="required"
-versionRange = "[20.+,)"
+type = "required"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.dimdoors]]
+[[dependencies.${mod_id}]]
 modId = "minecraft"
-type="required"
-versionRange = "[${minecraft_version},)"
+type = "required"
+versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+# [features.${mod_id}]
+# openGLVersion = "[3.2,)"

@@ -1,61 +1,61 @@
 {
-  "schemaVersion": 1,
-  "id": "dimdoors",
-  "version": "${version}",
-  "name": "DimensionalDoors",
-  "description": "Bend and twist reality, creating rifts, pocket dimensions, and much more",
-  "authors": [
-    "StevenRS11",
-    "SenseiKiwi",
-    "Zixiken",
-    "Waterpicker",
-    "Robijnvogel",
-    "ZombieHDGaming",
-    "Runemoro"
-  ],
-  "contact": {
-    "homepage": "https://dimdev.org/",
-    "sources": "https://github.com/DimensionalDevelopment/DimDoors",
-    "issues": "https://github.com/DimensionalDevelopment/DimDoors/issues"
-  },
-  "license": "MIT",
-  "icon": "assets/dimdoors/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "org.dimdev.dimdoors.DimensionalDoorsFabric"
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "${description}",
+    "authors": [
+        "${fabric_mod_authors}"
     ],
-    "client": [
-      "org.dimdev.dimdoors.client.DimensionalDoorsClientFabric"
-    ],
-    "fabric-datagen": [
-      "org.dimdev.dimdoors.datagen.DatagenInitializer"
-    ],
-    "mm:early_risers": [
-      "org.dimdev.dimdoors.EarlyRiser"
-    ],
-    "rei_client": [
-      "org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient"
-    ],
+    "contact": {
+        "homepage": "https://dimdev.org/",
+        "sources": "https://github.com/DimensionalDevelopment/DimDoors",
+        "issues": "https://github.com/DimensionalDevelopment/DimDoors/issues"
+    },
+    "license": "${license}",
+    "icon": "${mod_id}.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "org.dimdev.dimdoors.DimensionalDoorsFabric"
+        ],
+        "client": [
+            "org.dimdev.dimdoors.client.DimensionalDoorsClientFabric"
+        ],
+        "fabric-datagen": [
+            "org.dimdev.dimdoors.datagen.DatagenInitializer"
+        ],
+        "mm:early_risers": [
+            "org.dimdev.dimdoors.EarlyRiser"
+        ],
+        "rei_client": [
+            "org.dimdev.dimdoors.compat.rei.TesselatingReiCompatClient"
+        ],
 
-    "jei_mod_plugin": [
-      "org.dimdev.dimdoors.compat.jei.DimDoorsJeiCompatClient"
+        "jei_mod_plugin": [
+            "org.dimdev.dimdoors.compat.jei.DimDoorsJeiCompatClient"
+        ],
+        "modmenu": [ "org.dimdev.dimdoors.compat.modmenu.ModMenuCompat" ]
+    },
+    "mixins": [
+        "${mod_id}.mixins.json",
+        "${mod_id}.fabric.mixins.json"
     ],
-    "modmenu": [ "org.dimdev.dimdoors.compat.modmenu.ModMenuCompat" ]
-  },
-  "mixins": [
-    "dimdoors.mixins.json",
-    "dimdoors-common.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.4.0",
-    "fabric": "*",
-    "minecraft": ">=${minecraft_version}"
-  },
-  "custom": {
-    "loom:injected_interfaces": {
-      "net/minecraft/class_2323": ["org/dimdev/dimdoors/block/DoorSoundProvider"],
-      "net/minecraft/class_2533": ["org/dimdev/dimdoors/block/DoorSoundProvider"]
+    "depends": {
+        "fabricloader": ">=${fabric_loader_version}",
+        "fabric-api": "*",
+        "minecraft": "${minecraft_version}",
+        "java": ">=${java_version}"
+    },
+    "custom": {
+        "loom:injected_interfaces": {
+            "net/minecraft/class_2323": [
+                "org/dimdev/dimdoors/block/DoorSoundProvider"
+            ],
+            "net/minecraft/class_2533": [
+                "org/dimdev/dimdoors/block/DoorSoundProvider"
+            ]
+        }
     }
-  }
 }
+  

@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.api.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;

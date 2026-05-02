@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.pockets.modifier;
+package org.dimdev.dimdoors.pockets.modifier;//package org.dimdev.dimdoors.pockets.modifier;
 //
 //import com.mojang.serialization.MapCodec;
 //import org.dimdev.dimdoors.pockets.PocketGenerationContext;

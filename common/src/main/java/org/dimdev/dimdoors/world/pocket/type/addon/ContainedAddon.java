@@ -1,4 +1,4 @@
-//package org.dimdev.dimdoors.world.pocket.type.addon;
+package org.dimdev.dimdoors.world.pocket.type.addon;//package org.dimdev.dimdoors.world.pocket.type.addon;
 //
 //
 //import net.minecraft.resources.ResourceLocation;

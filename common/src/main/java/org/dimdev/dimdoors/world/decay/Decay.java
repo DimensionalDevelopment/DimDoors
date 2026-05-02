@@ -80,7 +80,7 @@ public final class Decay {
         }
     }
 
-    public static void queueDecay(Decay.DecayContext context, DecayPatternHolder pattern, int delay) {
+    public static void queueDecay(DecayContext context, DecayPatternHolder pattern, int delay) {
         DecayTask task = new DecayTask(context, pattern, delay);
         if (delay <= 0) {
             task.process();
@@ -113,7 +113,7 @@ public final class Decay {
         private static List<DecayPatternHolder> undiffernitatedPatterns = new ArrayList<>();
 
     public static void reload(HolderLookup.Provider provider, ResourceManager manager) {
-            undiffernitatedPatterns = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(DecayLoader::loadPattern)).join();
+            undiffernitatedPatterns = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(DecayLoader::loadPattern));
         }
 
     private static DecayPatternHolder loadPattern(JsonElement json, ResourceLocation id) {
@@ -161,13 +161,13 @@ public final class Decay {
     }
 
     private static class DecayTask {
-        private final Decay.DecayContext context;
+        private final DecayContext context;
 
         private final DecayPatternHolder processor;
         private int delay;
 
 
-        public DecayTask(Decay.DecayContext context, DecayPatternHolder pattern, int delay) {
+        public DecayTask(DecayContext context, DecayPatternHolder pattern, int delay) {
             this.context = context;
             this.processor = pattern;
             this.delay = delay;

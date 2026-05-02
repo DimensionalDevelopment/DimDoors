@@ -66,7 +66,6 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
-import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.dimdoors.fluid.neoforge.ModFluidTypes;
@@ -97,7 +96,6 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     private final List<EntityAttributeRegistration> entityAttributeRegistrations = new ArrayList<>();
 
     public DimensionalDoorsNeoForge(IEventBus bus) {
-        StreamUtils.setup(this);
         ModAttachmentTypes.register(bus);
         this.bus = bus;
 

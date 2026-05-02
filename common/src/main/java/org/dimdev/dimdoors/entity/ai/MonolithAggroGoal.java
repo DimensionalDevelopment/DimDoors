@@ -35,7 +35,7 @@ public class MonolithAggroGoal extends Goal {
     public MonolithAggroGoal(MonolithEntity mobEntity, float f) {
         this.mob = mobEntity;
         this.range = f;
-        this.setFlags(EnumSet.of(Goal.Flag.LOOK));
+        this.setFlags(EnumSet.of(Flag.LOOK));
         this.targetPredicate = (TargetingConditions.forCombat()).range(this.range).selector(EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
     }
 

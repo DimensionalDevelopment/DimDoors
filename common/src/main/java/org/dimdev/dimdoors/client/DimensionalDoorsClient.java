@@ -1,8 +1,6 @@
 package org.dimdev.dimdoors.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.renderer.RenderType;
@@ -18,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
+import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient;
@@ -35,7 +34,6 @@ import java.util.function.Function;
 
 import static org.dimdev.dimdoors.particle.ModParticleTypes.*;
 
-@Environment(EnvType.CLIENT)
 public class DimensionalDoorsClient {
     public static final ResourceLocation childItem = DimensionalDoors.id("item/child_item");
 
@@ -45,7 +43,6 @@ public class DimensionalDoorsClient {
     public static void init(IClientSided sided) {
         DimensionalDoorsClient.sided = sided;
         sided.onClientPlayerJoin(() -> ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket()));
-
         registerCompats();
 
 //    ModFluids.initClient();
@@ -61,7 +58,6 @@ public class DimensionalDoorsClient {
         if (DimensionalDoors.getSided().isModLoaded("iris") || DimensionalDoors.getSided().isModLoaded("oculus")) detector = new IrisCompat();
     }
 
-    @Environment(EnvType.CLIENT)
     public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer, BiConsumer<BlockEntityType, BlockEntityRendererProvider> blockConsumer) {
         consumer.accept(ModEntityTypes.MONOLITH, MonolithRenderer::new);
         consumer.accept(ModEntityTypes.MASK, context -> new EntityRenderer<MaskEntity>(context) {
@@ -75,7 +71,6 @@ public class DimensionalDoorsClient {
         blockConsumer.accept(ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntityRenderer::new);
     }
 
-    @Environment(EnvType.CLIENT)
     public static void initGeneratedDoorCutouts() {
         DimensionalDoorBlockRegistrar registrar = DimensionalDoors.getDimensionalDoorBlockRegistrar();
         if (registrar == null) {
@@ -89,6 +84,10 @@ public class DimensionalDoorsClient {
         if (generatedBlocks.length > 0) {
             getClientSided().register(RenderType.cutout(), generatedBlocks);
         }
+    }
+
+    public static void initClient() {
+        DimensionalDoorsClient.getClientSided().register(RenderType.cutout(), ModBlocks.QUARTZ_DOOR, ModBlocks.GOLD_DOOR, ModBlocks.DRIFTWOOD_LEAVES, ModBlocks.DRIFTWOOD_SAPLING, ModBlocks.DRIFTWOOD_DOOR, ModBlocks.DRIFTWOOD_TRAPDOOR, ModBlocks.UNRAVELED_SPIKE, ModBlocks.DRIFTWOOD_DOOR);
     }
 
     private static void registerListeners() {

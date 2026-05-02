@@ -51,7 +51,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
-import org.dimdev.dimdoors.api.util.StreamUtils;
 import org.dimdev.dimdoors.fabric.mixin.RecipeBookSettingsAccessor;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
@@ -60,6 +59,7 @@ import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -70,6 +70,7 @@ import static org.dimdev.dimdoors.DimensionalDoors.id;
 
 public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer {
     private MinecraftServer server;
+    private final List<BiConsumer<CreativeModeTab, FabricItemGroupEntries>> creativeTabListeners = new ArrayList<>();
 
     private final Supplier<RecipeBookType> TESSELLATING = Suppliers.memoize(() -> {
         var type = ClassTinkerers.getEnum(RecipeBookType.class, "TESSELLATING");
@@ -81,7 +82,6 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
 
     @Override
     public void onInitialize() {
-        StreamUtils.setup(this);
         ModAttachmentTypes.register();
         ServerLifecycleEvents.SERVER_STARTING.register(this::setServer);
         DimensionalDoors.init(this);
@@ -91,6 +91,7 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
             if(APPENDS.containsKey(group)) {
                 DimensionalDoorsFabric.this.APPENDS.get(group).forEach(entries::accept);
             }
+            creativeTabListeners.forEach(listener -> listener.accept(group, entries));
         });
 
         ServerChunkEvents.CHUNK_LOAD.register((serverLevel, levelChunk) -> ChunkServedCallback.EVENT.invoker().onChunkServed(serverLevel, levelChunk));
@@ -167,7 +168,7 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
     }
 
     @Override
-    public void onUseItem(ISided.UseItemCallback callback) {
+    public void onUseItem(UseItemCallback callback) {
         net.fabricmc.fabric.api.event.player.UseItemCallback.EVENT.register((player, world, hand) -> {
             InteractionResult result = callback.use(player, hand);
             return new InteractionResultHolder<>(result, player.getItemInHand(hand));
@@ -175,7 +176,7 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
     }
 
     @Override
-    public void onUseBlock(ISided.UseBlockCallback callback) {
+    public void onUseBlock(UseBlockCallback callback) {
         net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> callback.use(player, hand, hitResult));
     }
 
@@ -211,29 +212,30 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
 
     @Override
     public void modify(CreativeModeTab tab, ModifyTabCallback filler) {
-        ItemGroupEvents.modifyEntriesEvent(BuiltInRegistries.CREATIVE_MODE_TAB.wrapAsHolder(tab).unwrapKey().get()).register(new ItemGroupEvents.ModifyEntries() {
-            @Override
-            public void modifyEntries(FabricItemGroupEntries entries) {
-                filler.accept(entries.getEnabledFeatures(), new CreativeTabOutput() {
-                    @Override
-                    public void acceptAfter(ItemStack after, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
-                        if (after.isEmpty()) {
-                            entries.accept(stack, visibility);
-                        } else {
-                            entries.addAfter(after, List.of(stack), visibility);
-                        }
-                    }
-
-                    @Override
-                    public void acceptBefore(ItemStack before, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
-                        if (before.isEmpty()) {
-                            entries.accept(stack, visibility);
-                        } else {
-                            entries.addBefore(before, List.of(stack), visibility);
-                        }
-                    }
-                }, entries.shouldShowOpRestrictedItems());
+        creativeTabListeners.add((group, entries) -> {
+            if (!group.equals(tab)) {
+                return;
             }
+
+            filler.accept(entries.getEnabledFeatures(), new CreativeTabOutput() {
+                @Override
+                public void acceptAfter(ItemStack after, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
+                    if (after.isEmpty()) {
+                        entries.accept(stack, visibility);
+                    } else {
+                        entries.addAfter(after, List.of(stack), visibility);
+                    }
+                }
+
+                @Override
+                public void acceptBefore(ItemStack before, ItemStack stack, CreativeModeTab.TabVisibility visibility) {
+                    if (before.isEmpty()) {
+                        entries.accept(stack, visibility);
+                    } else {
+                        entries.addBefore(before, List.of(stack), visibility);
+                    }
+                }
+            }, entries.shouldShowOpRestrictedItems());
         });
     }
 
