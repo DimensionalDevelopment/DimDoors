@@ -15,6 +15,18 @@ java {
 
 repositories {
     mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'RyanHCode Maven'
+                url = 'https://maven.ryanhcode.dev/releases'
+            }
+        }
+        filter {
+            includeGroup('dev.ryanhcode.sable')
+            includeGroup('dev.ryanhcode.sable-companion')
+        }
+    }
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {
@@ -109,6 +121,7 @@ processResources {
             'version'                      : version,
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : minecraft_version,
+            'sable_companion_version'      : sable_companion_version,
             'minecraft_version_range'      : minecraft_version_range,
             'fabric_version'               : fabric_version,
             'fabric_loader_version'        : fabric_loader_version,

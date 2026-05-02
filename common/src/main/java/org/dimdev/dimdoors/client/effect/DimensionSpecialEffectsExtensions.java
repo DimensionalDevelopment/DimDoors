@@ -10,15 +10,11 @@ import org.joml.Matrix4f;
 public interface DimensionSpecialEffectsExtensions {
     /**
      * Renders the clouds of this dimension.
-     *
-     * @return true to prevent vanilla cloud rendering
      */
     default void renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {}
 
     /**
      * Renders the sky of this dimension.
-     *
-     * @return true to prevent vanilla sky rendering
      */
     default void renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {}
 
