@@ -29,4 +29,9 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
             blockEntity.setDeleteRift(false);
         });
     }
+
+    @Override
+    public void afterMove(ServerLevel originLevel, ServerLevel resultingLevel, BlockState newState, BlockPos oldPos, BlockPos newPos) {
+
+    }
 }

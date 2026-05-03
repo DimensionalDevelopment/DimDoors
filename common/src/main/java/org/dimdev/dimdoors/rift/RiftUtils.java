@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift;
 
-import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.TrapDoorBlock;
@@ -18,7 +17,7 @@ public class RiftUtils {
         return riftBlockEntity;
     }
 
-    public record PortalPlane(Vec3 normal, Vec3 tangentX, Vec3 tangentY, Vec3 origin, double halfWidth, double height) {
+    public static record PortalPlane(Vec3 normal, Vec3 tangentX, Vec3 tangentY, Vec3 origin, double halfWidth, double height) {
 
         public static PortalPlane ofDoor(BlockState state, BlockPos pos) {
             Vec3 normal = Vec3.atLowerCornerOf(state.getValue(FACING).getOpposite().getNormal());
@@ -38,14 +37,6 @@ public class RiftUtils {
         }
 
         public boolean isTraversed(Level level, Vec3 previousPos, Vec3 currentPos) {
-
-            var subLevel = SableCompanion.INSTANCE.getContaining(level, origin);
-
-            if (subLevel != null) {
-                previousPos = subLevel.lastPose().transformPositionInverse(previousPos);
-                currentPos = subLevel.logicalPose().transformPositionInverse(currentPos);
-            }
-
             double dotCurrent = normal.dot(currentPos.subtract(origin));
             double dotPrevious = normal.dot(previousPos.subtract(origin));
 
