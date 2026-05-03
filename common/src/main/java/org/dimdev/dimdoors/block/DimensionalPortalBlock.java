@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.block;
 
 import com.mojang.serialization.MapCodec;
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -11,13 +12,13 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.dimdev.dimdoors.api.entity.LastPositionProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -79,9 +80,21 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
             return;
         }
 
-        this.getRift(world, pos, state).teleport(entity);
+        var rift = this.getRift(world, pos, state);
 
-        EntranceRiftBlockEntity rift = this.getRift(world, pos, state);
+        if (rift.hasTraversed(world, ((LastPositionProvider) entity).getLastPos(), entity.position())) {
+            // intersection is outside of plane width/ height
+            return;
+        }
+
+        // TODO: replace with dimdoor cooldown?
+        if (entity.isOnPortalCooldown()) {
+            entity.setPortalCooldown();
+            return;
+        }
+        entity.setPortalCooldown();
+
+        rift.teleport(entity);
 
         world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
         ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(rift.getData());

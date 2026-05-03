@@ -104,7 +104,7 @@ public class TemplateUtils {
                     // FIX: Use 'world' instead of rift.getLevel()
                     Location entranceLocation = new Location(world, rift.getBlockPos());
                     DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, entranceLocation);
-                    LOGGER.info("Registered pocket entrance at {}", entranceLocation);
+                    LOGGER.info("Registered pocket entrance at {} {}", entranceLocation.getWorldId().location(), entranceLocation.getBlockPos());
                 } else {
                     rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());
                 }

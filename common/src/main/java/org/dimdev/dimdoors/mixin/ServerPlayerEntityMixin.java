@@ -38,7 +38,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     @Shadow
     public abstract void readAdditionalSaveData(CompoundTag nbt);
 
-    @Shadow public abstract void awardStat(Stat<?> arg, int i);
+    @Shadow
+    public abstract void awardStat(Stat<?> arg, int i);
 
     @Shadow
     @Final
@@ -52,21 +53,24 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     RandomSource dimdoors_random = RandomSource.create();
 
     public ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
-    super(entityType, world);
+        super(entityType, world);
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void playerTickMixin(CallbackInfo ci) {
-    if (dimdoors_random.nextFloat() <= RANDOM_ACTION_CHANCE) {
-        if(ModDimensions.isLimboDimension(((Player)(Object)(this)).level())) {
-        tryMakingLimboLikeOtherDimensions((Player)(Object)this);
+        if (dimdoors_random.nextFloat() <= RANDOM_ACTION_CHANCE) {
+            if (ModDimensions.isLimboDimension(((Player) (Object) (this)).level())) {
+                tryMakingLimboLikeOtherDimensions((Player) (Object) this);
+            }
+
         }
-    }
 
     }
+
     private boolean isValidBlockToReplace(Level world, BlockPos pos) {
-    return world.getBlockState(pos.above()).isAir() && world.getBlockState(pos).getBlock() instanceof UnravelledFabricBlock;
+        return world.getBlockState(pos.above()).isAir() && world.getBlockState(pos).getBlock() instanceof UnravelledFabricBlock;
     }
+
     private void makeLimboLikeOverworld(Player player) {
     /*
     World world = player.getEntityWorld();
@@ -84,6 +88,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
      */
 
     }
+
     private void makeLimboLikeEnd(Player player) {
     /*
     World world = player.getEntityWorld();
@@ -100,11 +105,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 
     private void makeSpotOfLiquid(Level world, BlockPos pos, BlockState state, int range) {
 
-    BlockPos.withinManhattan(pos, dimdoors_random.nextInt(range), dimdoors_random.nextInt(range), dimdoors_random.nextInt(range)).forEach( (blockPos -> {
-        if(isValidBlockToReplace(world, blockPos)) {
-        world.setBlockAndUpdate(blockPos, state);
-        }
-    }));
+        BlockPos.withinManhattan(pos, dimdoors_random.nextInt(range), dimdoors_random.nextInt(range), dimdoors_random.nextInt(range)).forEach((blockPos -> {
+            if (isValidBlockToReplace(world, blockPos)) {
+                world.setBlockAndUpdate(blockPos, state);
+            }
+        }));
 
     }
 
@@ -124,35 +129,36 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
 
      */
     }
+
     private void tryMakingLimboLikeOtherDimensions(Player player) {
-    if(dimdoors_random.nextFloat() > CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS) {
-        return;
-    }
-    switch (dimdoors_random.nextInt(3)) {
-        case 0 -> makeLimboLikeOverworld(player);
-        case 1 -> makeLimboLikeNether(player);
-        case 2 -> makeLimboLikeEnd(player);
-    }
+        if (dimdoors_random.nextFloat() > CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS) {
+            return;
+        }
+        switch (dimdoors_random.nextInt(3)) {
+            case 0 -> makeLimboLikeOverworld(player);
+            case 1 -> makeLimboLikeNether(player);
+            case 2 -> makeLimboLikeEnd(player);
+        }
     }
 
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)
     public void checkDeathServer(DamageSource source, CallbackInfo ci) {
-    this.doOnDeathStuff(source, ci);
-    if (ci.isCancelled()) {
-        if (ModDimensions.isPocketDimension(this.level())) {
-        this.awardStat(ModStats.DEATHS_IN_POCKETS);
+        this.doOnDeathStuff(source, ci);
+        if (ci.isCancelled()) {
+            if (ModDimensions.isPocketDimension(this.level())) {
+                this.awardStat(ModStats.DEATHS_IN_POCKETS);
+            }
+            this.awardStat(ModStats.TIMES_SENT_TO_LIMBO);
+            TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 512);
+            //noinspection ConstantConditions
+            LimboEntranceSource.ofDamageSource(source).broadcast((Player) (Object) this, this.getServer());
         }
-        this.awardStat(ModStats.TIMES_SENT_TO_LIMBO);
-        TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 512);
-        //noinspection ConstantConditions
-        LimboEntranceSource.ofDamageSource(source).broadcast((Player) (Object) this, this.getServer());
-    }
     }
 
     @Inject(method = "setRespawnPosition", at = @At("TAIL"))
     public void onSpawnPointSet(ResourceKey<Level> dimension, BlockPos pos, float angle, boolean spawnPointSet, boolean bl, CallbackInfo ci) {
-    if (ModDimensions.isPocketDimension(dimension)) {
-        ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayer) (Object) this);
-    }
+        if (ModDimensions.isPocketDimension(dimension)) {
+            ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayer) (Object) this);
+        }
     }
 }

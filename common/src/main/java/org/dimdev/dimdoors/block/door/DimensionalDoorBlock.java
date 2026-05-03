@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block.door;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -62,19 +62,20 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
     @Override
     public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-        if (world.isClientSide || entity instanceof ServerPlayer /* DO NOT REMOVE, THIS MAKES SURE onCollision IS CALLED IN onAfterMovePlayerCollision (fixes bug with anti-cheat)*/) {
+        if (world.isClientSide || entity instanceof ServerPlayer) {
             return;
         }
-        onCollision(state, world, pos, entity, entity.position().subtract(((LastPositionProvider) entity).getLastPos()));
+
+        onCollision(state, world, pos, entity, ((LastPositionProvider) entity).getLastPos(), entity.position());
     }
 
 
-    //    @Override
-    public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, Vec3 positionChange) {
-        return onCollision(state, world, pos, player, positionChange);
+    @Override
+    public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, Vec3 previousPos, Vec3 currentPos) {
+        return onCollision(state, world, pos, player, previousPos, currentPos);
     }
 
-    private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, Vec3 positionChange) {
+    private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, Vec3 previousPos, Vec3 currentPos) {
         BlockPos top = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos : pos.above();
         BlockPos bottom = top.below();
         BlockState doorState = world.getBlockState(bottom);
@@ -86,7 +87,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
         var rift = this.getRift(world, pos, state);
 
-        if (rift.hasTraversed(entity, positionChange)) {
+        if (rift.hasTraversed(world, previousPos, currentPos)) {
             // intersection is outside of plane width/ height
             return InteractionResult.PASS;
         }

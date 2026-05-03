@@ -15,18 +15,35 @@ java {
 
 repositories {
     mavenCentral()
+    maven {
+        name = "RyanHCode Maven"
+        url = "https://maven.ryanhcode.dev/releases"
+    }
+
+    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+    maven { url = "https://mvn.devos.one/snapshots" } // Registrate
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
+
+    // sable/csim requirements
+    maven { url = "https://maven.theillusivec4.top/" } // Curios API
+    maven {
+        url "https://maven.squiddev.cc"
+        content {
+            includeGroup("cc.tweaked")
+        }
+    }
     exclusiveContent {
         forRepository {
             maven {
-                name = 'RyanHCode Maven'
-                url = 'https://maven.ryanhcode.dev/releases'
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
             }
         }
         filter {
-            includeGroup('dev.ryanhcode.sable')
-            includeGroup('dev.ryanhcode.sable-companion')
+            includeGroup "maven.modrinth"
         }
     }
+
     // https://docs.gradle.org/current/userguide/declaring_repositories.html#declaring_content_exclusively_found_in_one_repository
     exclusiveContent {
         forRepository {
@@ -121,7 +138,7 @@ processResources {
             'version'                      : version,
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : minecraft_version,
-            'sable_companion_version'      : sable_companion_version,
+            'sable_version'                : sable_version,
             'minecraft_version_range'      : minecraft_version_range,
             'fabric_version'               : fabric_version,
             'fabric_loader_version'        : fabric_loader_version,

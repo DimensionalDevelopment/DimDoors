@@ -1,7 +1,8 @@
 package org.dimdev.dimdoors.rift;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -36,9 +37,14 @@ public class RiftUtils {
             return new PortalPlane(normal, tangentX, tangentY, origin, 0.5, 0.5);
         }
 
-        public boolean isTraversed(Entity entity, Vec3 positionChange) {
-            Vec3 currentPos = entity.position();
-            Vec3 previousPos = currentPos.subtract(positionChange);
+        public boolean isTraversed(Level level, Vec3 previousPos, Vec3 currentPos) {
+
+            var subLevel = SableCompanion.INSTANCE.getContaining(level, origin);
+
+            if (subLevel != null) {
+                previousPos = subLevel.lastPose().transformPositionInverse(previousPos);
+                currentPos = subLevel.logicalPose().transformPositionInverse(currentPos);
+            }
 
             double dotCurrent = normal.dot(currentPos.subtract(origin));
             double dotPrevious = normal.dot(previousPos.subtract(origin));
@@ -47,12 +53,17 @@ public class RiftUtils {
                 return false;
             }
 
+            Vec3 positionChange = currentPos.subtract(previousPos);
+
+            if (positionChange.lengthSqr() == 0) {
+                return false;
+            }
+
             Vec3 vecFromPreviousPosToPortalPlane = origin.subtract(previousPos);
-            Vec3 normalizedPositionChange = positionChange.normalize();
             Vec3 pointOfIntersection = previousPos.add(
-                    normalizedPositionChange.scale(
-                            vecFromPreviousPosToPortalPlane.dot(normalizedPositionChange) /
-                                    normalizedPositionChange.dot(normalizedPositionChange)
+                    positionChange.scale(
+                            vecFromPreviousPosToPortalPlane.dot(positionChange) /
+                                    positionChange.dot(positionChange)
                     )
             );
 

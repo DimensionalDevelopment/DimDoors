@@ -1,0 +1,15 @@
+{
+  "required": false,
+  "package": "org.dimdev.dimdoors.compat.sable.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "org.dimdev.dimdoors.compat.sable.mixins.SableCompatMixinPlugin",
+  "minVersion": "0.8",
+  "mixins": [
+    "BlockAssemblyMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

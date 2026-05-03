@@ -14,11 +14,7 @@ def includeCompile(entry) {
 }
 
 dependencies {
-    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:[${sable_companion_version},)")) {
-        version {
-            prefer sable_companion_version
-        }
-    }
+    api("dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}")
 
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
@@ -61,6 +57,7 @@ neoForge {
         configureEach {
             systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
             ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
+            logLevel = org.slf4j.event.Level.INFO
         }
         client {
             client()

@@ -21,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.entity.LastPositionProvider;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
@@ -52,7 +53,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     private RiftUtils.PortalPlane plane;
 
     public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
-    super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
+        super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
 
         updateState(pos, state);
     }
@@ -82,65 +83,65 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     public void setBlockState(BlockState state) {
-    super.setBlockState(state);
+        super.setBlockState(state);
 
-    if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoGenDimensionalDoorBlock) {
-        doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
-    } else if(state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalTrapdoorBlock autoGenDimensionalDoorBlock) {
+        if (state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoGenDimensionalDoorBlock) {
+            doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
+        } else if (state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalTrapdoorBlock autoGenDimensionalDoorBlock) {
             doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(POWERED, state.getValue(POWERED)).setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
         } else {
-        doorBlockState = state;
-    }
+            doorBlockState = state;
+        }
     }
 
     @Override
     protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-    super.loadAdditional(nbt, provider);
-    locked = nbt.getBoolean("locked");
+        super.loadAdditional(nbt, provider);
+        locked = nbt.getBoolean("locked");
     }
 
     @Override
     public void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-    nbt.putBoolean("locked", locked);
-    super.saveAdditional(nbt, provider);
+        nbt.putBoolean("locked", locked);
+        super.saveAdditional(nbt, provider);
     }
 
     @Override
     public boolean teleport(Entity entity) {
-    //Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the entrance of the rift that took them into dungeons.
+        //Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the entrance of the rift that took them into dungeons.
 
-    if (this.isLocked()) {
-        if (entity instanceof LivingEntity) {
-        ItemStack stack = ((LivingEntity) entity).getItemInHand(((LivingEntity) entity).getUsedItemHand());
-        Rift rift = this.asRift();
+        if (this.isLocked()) {
+            if (entity instanceof LivingEntity) {
+                ItemStack stack = ((LivingEntity) entity).getItemInHand(((LivingEntity) entity).getUsedItemHand());
+                Rift rift = this.asRift();
 
-        if (RiftKeyItem.has(stack, rift.getId())) {
-            return innerTeleport(entity);
+                if (RiftKeyItem.has(stack, rift.getId())) {
+                    return innerTeleport(entity);
+                }
+
+                EntityUtils.chat(entity, Component.translatable("rifts.isLocked"));
+            }
+            return false;
         }
 
-        EntityUtils.chat(entity, Component.translatable("rifts.isLocked"));
-        }
-        return false;
-    }
-
-    return innerTeleport(entity);
+        return innerTeleport(entity);
     }
 
     private boolean innerTeleport(Entity entity) {
-    boolean status = super.teleport(entity);
+        boolean status = super.teleport(entity);
 
-    if (this.riftStateChanged && !this.data.isAlwaysDelete()) {
-        this.setChanged();
-    }
+        if (this.riftStateChanged && !this.data.isAlwaysDelete()) {
+            this.setChanged();
+        }
 
-    return status;
+        return status;
     }
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-    BlockState state = this.getLevel().getBlockState(this.getBlockPos());
-    Block block = state.getBlock();
-    Vec3 targetPos = Vec3.atCenterOf(this.getBlockPos()).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).scale(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
+        BlockState state = this.getLevel().getBlockState(this.getBlockPos());
+        Block block = state.getBlock();
+        Vec3 targetPos = Vec3.atCenterOf(this.getBlockPos()).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).scale(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
     /*
     Unused code that needs to be edited if there are other ways to get to limbo
     But if it is only dimteleport and going through rifts then this code isn't nessecary
@@ -148,111 +149,110 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
         DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUuid(), new Location(World.OVERWORLD, ((ServerPlayerEntity)entity).getSpawnPointPosition()));
     }
      */
-    if (block instanceof CoordinateTransformerBlock) {
-        CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
+        if (block instanceof CoordinateTransformerBlock) {
+            CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
 
-        if (transformer.isExitFlipped()) {
-        TransformationMatrix3d flipper = TransformationMatrix3d.builder().rotateY(Math.PI).build();
+            if (transformer.isExitFlipped()) {
+                TransformationMatrix3d flipper = TransformationMatrix3d.builder().rotateY(Math.PI).build();
 
-        relativePos = flipper.transform(relativePos);
-        relativeAngle = flipper.transform(relativeAngle);
-        relativeVelocity = flipper.transform(relativeVelocity);
+                relativePos = flipper.transform(relativePos);
+                relativeAngle = flipper.transform(relativeAngle);
+                relativeVelocity = flipper.transform(relativeVelocity);
+            }
+
+            TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getBlockPos());
+            TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getBlockPos());
+            targetPos = transformer.transformOut(transformationBuilder, relativePos);
+
+            //TODO:offset entity one block infront of door
+
+            relativeAngle = transformer.rotateOut(rotatorBuilder, relativeAngle);
+            relativeVelocity = transformer.rotateOut(rotatorBuilder, relativeVelocity);
         }
 
-        TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getBlockPos());
-        TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getBlockPos());
-        targetPos = transformer.transformOut(transformationBuilder, relativePos);
-
-        //TODO:offset entity one block infront of door
-
-        relativeAngle = transformer.rotateOut(rotatorBuilder, relativeAngle);
-        relativeVelocity = transformer.rotateOut(rotatorBuilder, relativeVelocity);
-    }
-
-    // TODO: open door
-    Direction direction = getOrientation().getOpposite();
+        // TODO: open door
+        Direction direction = getOrientation().getOpposite();
 
 
+        targetPos = targetPos.add((double) direction.getNormal().getX() / 2, (double) direction.getNormal().getY() / 2, (double) direction.getNormal().getZ() / 2);
 
-    targetPos= targetPos.add((double) direction.getNormal().getX() /2, (double) direction.getNormal().getY() /2, (double) direction.getNormal().getZ() /2);
+        TeleportUtil.teleport(entity, this.level, targetPos, relativeAngle, relativeVelocity);
 
-    TeleportUtil.teleport(entity, this.level, targetPos, relativeAngle, relativeVelocity);
-
-    return true;
+        return true;
     }
 
     public Direction getOrientation() {
-    //noinspection ConstantConditions
+        //noinspection ConstantConditions
 
-    return Optional.of(this.level.getBlockState(this.worldPosition))
-        .filter(state -> state.hasProperty(HorizontalDirectionalBlock.FACING))
-        .map(state -> state.getValue(HorizontalDirectionalBlock.FACING))
-        .orElse(Direction.NORTH);
+        return Optional.of(this.level.getBlockState(this.worldPosition))
+                .filter(state -> state.hasProperty(HorizontalDirectionalBlock.FACING))
+                .map(state -> state.getValue(HorizontalDirectionalBlock.FACING))
+                .orElse(Direction.NORTH);
     }
 
     public boolean hasOrientation() {
-    return this.level != null && this.level.getBlockState(this.worldPosition).hasProperty(HorizontalDirectionalBlock.FACING);
+        return this.level != null && this.level.getBlockState(this.worldPosition).hasProperty(HorizontalDirectionalBlock.FACING);
     }
 
     /**
      * Specifies if the portal should be rendered two blocks tall
      */
     public boolean isTall() {
-    return ((RiftProvider<?>) this.getBlockState().getBlock()).isTall(this.getBlockState());
+        return ((RiftProvider<?>) this.getBlockState().getBlock()).isTall(this.getBlockState());
     }
 
     @Override
     public boolean isDetached() {
-    return false;
+        return false;
     }
 
     @Override
     public boolean isLocked() {
-    return locked;
+        return locked;
     }
 
     @Override
     public void setLocked(boolean locked) {
-    this.locked = locked;
+        this.locked = locked;
     }
 
     public void setPortalDestination(ServerLevel world) {
-    if (ModDimensions.isLimboDimension(world)) {
-        this.setDestination(ESCAPE_TARGET);
-    } else {
-        this.setDestination(DefaultDungeonDestinations.getGateway());
-        this.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
-    }
+        if (ModDimensions.isLimboDimension(world)) {
+            this.setDestination(ESCAPE_TARGET);
+        } else {
+            this.setDestination(DefaultDungeonDestinations.getGateway());
+            this.setProperties(DefaultDungeonDestinations.POCKET_LINK_PROPERTIES);
+        }
     }
 
     public void generateDetached(Level world) {
-    var blockState = getBlockState();
-    var pos = getBlockPos();
-    world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
-    ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(getData());
+        var blockState = getBlockState();
+        var pos = getBlockPos();
+        world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
+        ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(getData());
     }
 
     @Override
     protected void onClose(Level level, BlockPos pos) {
-    var state = level.getBlockState(pos);
-    var block = state.getBlock();
+        var state = level.getBlockState(pos);
+        var block = state.getBlock();
 
-    if(block instanceof DimensionalDoorBlock dimensionalDoorBlock) {
-        var base = dimensionalDoorBlock.baseBlock();
+        if (block instanceof DimensionalDoorBlock dimensionalDoorBlock) {
+            var base = dimensionalDoorBlock.baseBlock();
 
-        if (base instanceof DoorBlock doorBlock) {
-        var newState = doorBlock.defaultBlockState()
-            .setValue(FACING, state.getValue(FACING))
-            .setValue(OPEN, state.getValue(OPEN))
-            .setValue(HINGE, state.getValue(HINGE))
-            .setValue(POWERED, state.getValue(POWERED))
-            .setValue(HALF, DoubleBlockHalf.LOWER);
+            if (base instanceof DoorBlock doorBlock) {
+                var newState = doorBlock.defaultBlockState()
+                        .setValue(FACING, state.getValue(FACING))
+                        .setValue(OPEN, state.getValue(OPEN))
+                        .setValue(HINGE, state.getValue(HINGE))
+                        .setValue(POWERED, state.getValue(POWERED))
+                        .setValue(HALF, DoubleBlockHalf.LOWER);
 
-        level.removeBlock(pos, false);
-        level.setBlockAndUpdate(pos, newState);
-        level.setBlockAndUpdate(pos.above(), newState.setValue(HALF, DoubleBlockHalf.UPPER));
-        }
-    } else if(block instanceof DimensionalTrapDoorBlock dimensionalDoorBlock) {
+                level.removeBlock(pos, false);
+                level.setBlockAndUpdate(pos, newState);
+                level.setBlockAndUpdate(pos.above(), newState.setValue(HALF, DoubleBlockHalf.UPPER));
+            }
+        } else if (block instanceof DimensionalTrapDoorBlock dimensionalDoorBlock) {
             var base = dimensionalDoorBlock.baseBlock();
 
             if (base instanceof TrapDoorBlock doorBlock) {
@@ -265,21 +265,21 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
                 level.removeBlock(pos, false);
                 level.setBlockAndUpdate(pos, newState);
             }
-        } else if(block instanceof DimensionalPortalBlock) {
-        level.removeBlock(pos, false);
-    }
+        } else if (block instanceof DimensionalPortalBlock) {
+            level.removeBlock(pos, false);
+        }
     }
 
     @Override
     public boolean stablized() {
-    return true;
+        return true;
     }
 
     public BlockState getRenderBlockState() {
-    return doorBlockState;
+        return doorBlockState;
     }
 
-    public boolean hasTraversed(Entity entity, Vec3 positionChanged) {
-        return plane != null && plane.isTraversed(entity, positionChanged);
+    public boolean hasTraversed(Level level, Vec3 previousPosition, Vec3 currentPosition) {
+        return plane != null && plane.isTraversed(level, previousPosition, currentPosition);
     }
 }

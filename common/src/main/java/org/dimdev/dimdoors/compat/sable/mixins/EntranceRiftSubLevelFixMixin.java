@@ -1,0 +1,32 @@
+package org.dimdev.dimdoors.compat.sable.mixins;
+
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import dev.ryanhcode.sable.companion.SableCompanion;
+import net.minecraft.core.Rotations;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+
+@Mixin(EntranceRiftBlockEntity.class)
+public class EntranceRiftSubLevelFixMixin {
+    
+    @WrapOperation(
+        method = "receiveEntity",
+        at = @At(
+            value = "INVOKE",
+            target = "Lorg/dimdev/dimdoors/api/util/TeleportUtil;teleport(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/core/Rotations;Lnet/minecraft/world/phys/Vec3;)Lnet/minecraft/world/entity/Entity;"
+        )
+    )
+    private static Entity fixTeleport(Entity entity, Level level, Vec3 targetPos,
+                                       Rotations relativeAngle, Vec3 relativeVelocity,
+                                       Operation<Entity> original) {
+
+        var correctedTarget = SableCompanion.INSTANCE.projectOutOfSubLevel(level, targetPos);
+
+        return original.call(entity, level, correctedTarget, relativeAngle, relativeVelocity);
+    }
+}

@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.block.door;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -58,19 +59,18 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
 
     @Override
     public void entityInside(BlockState state, Level world, BlockPos pos, Entity entity) {
-        if (world.isClientSide || entity instanceof ServerPlayer /* DO NOT REMOVE, THIS MAKES SURE onCollision IS CALLED IN onAfterMovePlayerCollision (fixes bug with anti-cheat)*/) {
+        if (world.isClientSide || entity instanceof ServerPlayer) {
             return;
         }
-        onCollision(state, world, pos, entity, entity.position().subtract(((LastPositionProvider) entity).getLastPos()));
+        onCollision(state, world, pos, entity, ((LastPositionProvider) entity).getLastPos(), entity.position());
     }
-
 
     @Override
-    public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, Vec3 positionChange) {
-        return onCollision(state, world, pos, player, positionChange);
+    public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, Vec3 previousPos, Vec3 currentPos) {
+        return onCollision(state, world, pos, player, previousPos, currentPos);
     }
 
-    private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, Vec3 positionChange) {
+    private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, Vec3 previousPos, Vec3 currentPos) {
         BlockState doorState = world.getBlockState(pos);
 
         // TODO: decide whether door should need to be open for teleportation
@@ -80,7 +80,7 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
 
         var rift = this.getRift(world, pos, state);
 
-        if(rift.hasTraversed(entity, positionChange)) {
+        if (rift.hasTraversed(world, previousPos, currentPos)) {
             // intersection is outside of plane width/ height
             return InteractionResult.PASS;
         }
@@ -91,7 +91,6 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
             return InteractionResult.PASS;
         }
         entity.setPortalCooldown();
-
 
         rift.teleport(entity);
         if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
