@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.util;
 
 import com.mojang.datafixers.Products;
-import com.mojang.datafixers.types.templates.Product;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -185,6 +184,10 @@ public class CodecUtils {
 
     public static <T extends GenericDecayCondition<?>, V> MapCodec<T> createCodec(BiFunction<TagOrElementLocation<V>, Boolean, T> function, ResourceKey<Registry<V>> key) {
         return RecordCodecBuilder.mapCodec(instance -> decayConditionFields(instance, key).apply(instance, function));
+    }
+
+    public static <T> Codec<T> mapResult(Codec<T> baseCodec, Function<Dynamic<?>, Dynamic<?>> function) {
+        return Codec.PASSTHROUGH.<Dynamic<?>>xmap(function, Function.identity()).flatXmap(baseCodec::parse, t -> baseCodec.encodeStart(JsonOps.INSTANCE, t).map(a -> new Dynamic<>(JsonOps.INSTANCE, a)));
     }
 
     public static final class TagOrElementLocation<T> {

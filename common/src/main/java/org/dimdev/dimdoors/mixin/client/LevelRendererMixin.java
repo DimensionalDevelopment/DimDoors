@@ -10,11 +10,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.client.CloudRenderBuffer;
+import org.dimdev.dimdoors.block.DetachedRiftBlock;
 import org.dimdev.dimdoors.client.effect.LevelRendererExtension;
 import org.joml.Matrix4f;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +24,9 @@ import org.lwjgl.system.NonnullDefault;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.minecraft.client.renderer.LevelRenderer.getLightColor;
 
@@ -350,5 +355,13 @@ public abstract class LevelRendererMixin implements LevelRendererExtension {
     @Override
     public int getTicks() {
         return ticks;
+    }
+
+    @Inject(method = "renderHitOutline", at = @At("HEAD"), cancellable = true)
+    public void preventRiftOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity,
+                                   double camX, double camY, double camZ, BlockPos pos, BlockState state, CallbackInfo ci) {
+        if (state.getBlock() instanceof DetachedRiftBlock) {
+            ci.cancel();
+        }
     }
 }

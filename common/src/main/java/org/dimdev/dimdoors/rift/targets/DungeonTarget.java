@@ -23,7 +23,7 @@ public class DungeonTarget extends RandomTarget {
     }
 
     @Override
-    protected Pocket generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
+    protected Pocket generatePocket(VirtualLocation location, RiftReference linkTo, LinkProperties props) {
     return PocketGenerator.generateDungeonPocketV2(location, linkTo, props, this.dungeonGroup);
     }
 

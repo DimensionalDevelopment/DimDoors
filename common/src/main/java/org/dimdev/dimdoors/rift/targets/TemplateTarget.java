@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +32,7 @@ public class TemplateTarget extends WrappedDestinationTarget {
         VirtualLocation newVirtualLocation;
         int depth = riftVirtualLocation.getDepth() + 1;
         newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
-        Pocket pocket = PocketGenerator.generateFromVirtualPocket(DimensionalDoors.getWorld(ModDimensions.DUNGEON), template, newVirtualLocation, new GlobalReference(this.location), null);
+        Pocket pocket = PocketGenerator.generateFromVirtualPocket(DimensionalDoors.getWorld(ModDimensions.DUNGEON), template, newVirtualLocation, this.location.asTarget(), null);
 
         return DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
     }

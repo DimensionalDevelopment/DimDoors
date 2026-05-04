@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.compat.sable;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
+import org.dimdev.dimdoors.item.RaycastHelper;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -11,11 +13,11 @@ public class SableCompatMixinPlugin implements IMixinConfigPlugin {
     private final boolean sableLoaded;
 
     public SableCompatMixinPlugin() {
-        boolean sableLoaded1;
         boolean loaded = false;
         try {
             Class.forName("dev.ryanhcode.sable.Sable"); // or any Sable class that always exists
             loaded = true;
+            RaycastHelper.transformFunction = SableCompanion.INSTANCE::projectOutOfSubLevel;
         } catch (ClassNotFoundException ignored) {
         }
 

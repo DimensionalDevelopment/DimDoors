@@ -183,6 +183,13 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
         rift.markDirty();
     }
 
+    public void handleSourceMoved(Location location) {
+        LOGGER.info("AVACADO");
+        this.data.setDestination(location.asTarget());
+        this.setChanged();
+        this.updateColor();
+    }
+
     public void handleTargetGone(Location location) {
         if (this.data.getDestination().shouldInvalidate(location)) {
             this.data.setDestination(VirtualTarget.NoneTarget.INSTANCE);

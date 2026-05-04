@@ -36,52 +36,52 @@ public class RiftBladeItem extends SwordItem {
     public static final String ID = "rift_blade";
 
     public RiftBladeItem(Properties settings) {
-    super(Tiers.IRON, settings);
+        super(Tiers.IRON, settings);
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
-    ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
+        ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
     }
 
     @Override
     public boolean isFoil(ItemStack itemStack) {
-    return true;
+        return true;
     }
 
     @Override
     public boolean isValidRepairItem(ItemStack item, ItemStack repairingItem) {
-    return Objects.equals(ModItems.STABLE_FABRIC, repairingItem.getItem());
+        return Objects.equals(ModItems.STABLE_FABRIC, repairingItem.getItem());
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-    ItemStack stack = player.getItemInHand(hand);
-    HitResult hit = RaycastHelper.raycast(player, 0.0F, LivingEntity.class::isInstance);
+        ItemStack stack = player.getItemInHand(hand);
+        HitResult hit = RaycastHelper.raycast(player, 0.0F, LivingEntity.class::isInstance);
 
-    if (hit == null || hit.getType() == HitResult.Type.MISS) {
-        hit = RaycastHelper.raycast(player, 1.0F, LivingEntity.class::isInstance);
-    }
-
-    if (hit == null) {
-        hit = RaycastHelper.findDetachRift(player, DETACH);
-    }
-
-    if (world.isClientSide) {
-        if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-        } else {
-        player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".rift_miss"), true);
-        RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
-        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+        if (hit == null || hit.getType() == HitResult.Type.MISS) {
+            hit = RaycastHelper.raycast(player, 1.0F, LivingEntity.class::isInstance);
         }
-    }
 
-    var equipmentSlot = hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+        if (hit == null) {
+            hit = RaycastHelper.findDetachRift(player, DETACH);
+        }
 
-    var serverPlayer = (ServerPlayer) player;
+        if (world.isClientSide) {
+            if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
+                return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            } else {
+                player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".rift_miss"), true);
+                RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
+                return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+            }
+        }
 
-    if (RaycastHelper.hitsLivingEntity(hit)) {
+        var equipmentSlot = hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
+
+        var serverPlayer = (ServerPlayer) player;
+
+        if (RaycastHelper.hitsLivingEntity(hit)) {
 //        double damageMultiplier = (double) stack.getDamageValue() / (double) stack.getMaxDamage(); //TODO: Decide if to remove old code or still use.
 //        // TODO: gaussian, instead or random
 //        double offsetDistance = Math.random() * damageMultiplier * 7 + 2; //TODO: make these offset distances configurable
@@ -102,44 +102,42 @@ public class RiftBladeItem extends SwordItem {
 //        stack.hurtAndBreak(1, player, a -> a.broadcastBreakEvent(hand));
 
 
+            // Determine target position directly from the hit location
+            Vec3 targetVec = hit.getLocation();
 
-        // Determine target position directly from the hit location
-        Vec3 targetVec = hit.getLocation();
+            BlockPos teleportPosition = new BlockPos((int) targetVec.x(), (int) targetVec.y(), (int) targetVec.z());
 
-        BlockPos teleportPosition = new BlockPos((int) targetVec.x(), (int) targetVec.y(), (int) targetVec.z());
+            // Ensure the target position is not inside a block
+            while (world.getBlockState(teleportPosition).blocksMotion()) {
+                teleportPosition = teleportPosition.above();
+            }
 
-        // Ensure the target position is not inside a block
-        while (world.getBlockState(teleportPosition).blocksMotion()) {
-        teleportPosition = teleportPosition.above();
-        }
+            world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
 
-        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 1.0f, 1.0f);
+            // Teleport the player to the target position
+            player.teleportTo(teleportPosition.getX() + 0.5, teleportPosition.getY(), teleportPosition.getZ() + 0.5);
 
-        // Teleport the player to the target position
-        player.teleportTo(teleportPosition.getX() + 0.5, teleportPosition.getY(), teleportPosition.getZ() + 0.5);
-
-        // Calculate and set the yaw rotation to face the target entity
-        Vec3 direction = targetVec.subtract(player.position()).normalize();
-        float yaw = (float) (Math.atan2(direction.z, direction.x) * (180 / Math.PI)) - 90;
-        player.setYRot(yaw);
-
+            // Calculate and set the yaw rotation to face the target entity
+            Vec3 direction = targetVec.subtract(player.position()).normalize();
+            float yaw = (float) (Math.atan2(direction.z, direction.x) * (180 / Math.PI)) - 90;
+            player.setYRot(yaw);
 
 
-        // Apply damage to the item stack
-        stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
+            // Apply damage to the item stack
+            stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
 
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-    } else if (RaycastHelper.hitsDetachedRift(hit, world)) {
-        BlockHitResult blockHitResult = (BlockHitResult) hit;
-        BlockPos pos = blockHitResult.getBlockPos();
-        RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        } else if (RaycastHelper.hitsDetachedRift(hit, world)) {
+            BlockHitResult blockHitResult = (BlockHitResult) hit;
+            BlockPos pos = blockHitResult.getBlockPos();
+            RiftBlockEntity rift = (RiftBlockEntity) world.getBlockEntity(blockHitResult.getBlockPos());
 
-        world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
+            world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
             var entranceRift = ((EntranceRiftBlockEntity) world.getBlockEntity(pos));
             entranceRift.copyFrom(rift);
-        stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
-    }
-    return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+            stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        }
+        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
     }
 }

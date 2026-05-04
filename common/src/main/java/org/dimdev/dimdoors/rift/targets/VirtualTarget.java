@@ -7,12 +7,14 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 import java.util.Map;
@@ -24,30 +26,54 @@ import java.util.Objects;
  */
 public abstract class VirtualTarget implements Target {
     public static final Codec<VirtualTarget> CODEC = VirtualTargetType.CODEC.dispatch("type", VirtualTarget::getType, VirtualTargetType::mapCodec);
+
     public static final RGBA COLOR = new RGBA(1, 0, 0, 1);
 
     protected Location location;
 
     public static VirtualTarget fromNbt(CompoundTag nbt) {
-        return CODEC.decode(NbtOps.INSTANCE, nbt).getOrThrow().getFirst();
-
-//    ResourceLocation id = new ResourceLocation(nbt.getString("type"));
-//    return Objects.requireNonNull(REGISTRY.get(id), "Unknown virtual target type " + id).fromNbt(nbt);
+        return fromNbt(nbt, null);
     }
 
-    public static <T extends VirtualTarget> CompoundTag toNbt(T virtualTarget) {
-        var data = (CompoundTag) virtualTarget.getType().codec().encode(virtualTarget, NbtOps.INSTANCE, new CompoundTag()).getOrThrow();
-        data.putString("type", virtualTarget.getType().getId().toString());
-
-        return data;
-
-//    ResourceLocation id = REGISTRY.getId(virtualTarget.getType());
-//    String type = id.toString();
+    public static VirtualTarget fromNbt(CompoundTag nbt, @Nullable Location location) {
+//        if(location != null) {
+//            var type = nbt.getString("type");
 //
-//    CompoundTag nbt = virtualTarget.getType().toNbt(virtualTarget);
-//    nbt.putString("type", type);
+//            var isConvertedToRiftReference = false;
 //
-//    return nbt;
+//            switch (type) {
+//                case "global" -> isConvertedToRiftReference = true;
+//                case "local" -> {
+//                    var targetTag = new CompoundTag();
+//                    targetTag.putIntArray("pos", nbt.getIntArray("target"));
+//                    targetTag.putString("world", location.getWorldId().location().toString());
+//                    nbt.put("target", targetTag);
+//                    isConvertedToRiftReference = true;
+//                }
+//                case "relative" -> {
+//                    var targetTag = new CompoundTag();
+//                    var offset = nbt.getIntArray("offset");
+//                    targetTag.putIntArray("pos", new int[] { location.getX() + offset[0], location.getY() + offset[1], location.getZ() + offset[2] });
+//                    targetTag.putString("world", location.getWorldId().location().toString());
+//                    isConvertedToRiftReference = true;
+//                }
+//            }
+//
+//            if(isConvertedToRiftReference) nbt.putString("type", "rift_reference");
+//        }
+
+        var type = nbt.getString("type");
+
+        switch (type) {
+            case "dimdoors:global" -> nbt.putString("type", "dimdoors:rift_reference");
+            case "dimdoors:local", "dimdoors:relative" -> nbt.putString("type", "dimdoors:none");
+        }
+
+        return CODEC.parse(NbtOps.INSTANCE, nbt).result().orElse(NoneTarget.INSTANCE);
+    }
+
+    public static <T extends VirtualTarget> Tag toNbt(T virtualTarget) {
+        return CODEC.encodeStart(NbtOps.INSTANCE, virtualTarget).result().orElseThrow();
     }
 
     public void register() {
@@ -102,15 +128,16 @@ public abstract class VirtualTarget implements Target {
         VirtualTargetType<DungeonTarget> DUNGEON = register("dungeon", DungeonTarget.CODEC);
         VirtualTargetType<TemplateTarget> TEMPLATE = register("template", TemplateTarget.CODEC);
         VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC);
-        VirtualTargetType<GlobalReference> GLOBAL = register("global", GlobalReference.CODEC);
+        VirtualTargetType<RiftReference> RIFT_REFENCE = register("rift_refence", RiftReference.CODEC);
+//        VirtualTargetType<GlobalReference> GLOBAL = register("global", GlobalReference.CODEC);
         VirtualTargetType<LimboTarget> LIMBO = register("limbo", LimboTarget.INSTANCE);
-        VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC);
+//        VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC);
         VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("public_pocket", PublicPocketTarget.CODEC);
         VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("pocket_entrance", PocketEntranceMarker.CODEC);
         VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("pocket_exit", VirtualTarget.COLOR, PocketExitMarker.INSTANCE);
         VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketExitTarget.COLOR, PrivatePocketTarget.INSTANCE);
         VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.COLOR, PrivatePocketExitTarget.INSTANCE);
-        VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC);
+//        VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC);
         VirtualTargetType<IdMarker> ID_MARKER = register("id_marker", IdMarker.CODEC);
         VirtualTargetType<UnstableTarget> UNSTABLE = register("unstable", UnstableTarget.INSTANCE);
         VirtualTargetType<NoneTarget> NONE = register("none", NoneTarget.INSTANCE);

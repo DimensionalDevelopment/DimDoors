@@ -144,7 +144,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         // Make a new dungeon pocket
         RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
         LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
-        Pocket pocket = generatePocket(virtualLocation, new GlobalReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
+        Pocket pocket = generatePocket(virtualLocation, new RiftReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
 
                 if (!this.noLink) TemplateUtils.linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
@@ -197,7 +197,7 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         return weights;
     }
 
-    protected Pocket generatePocket(VirtualLocation location, GlobalReference linkTo, LinkProperties props) {
+    protected Pocket generatePocket(VirtualLocation location, RiftReference linkTo, LinkProperties props) {
     return PocketGenerator.generateDungeonPocketV2(location, linkTo, props);
     }
 

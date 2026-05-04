@@ -3,7 +3,8 @@ package org.dimdev.dimdoors.pockets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.*;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -15,7 +16,6 @@ import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
-import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModLootTables;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -115,7 +115,8 @@ public class TemplateUtils {
             VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
-                rift.setDestination(rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : null);
+                rift.setDestination(rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : VirtualTarget.NoneTarget.INSTANCE);
+                rift.getDestination().setLocation(new Location(world, rift.getBlockPos()));
             }
         }
 
@@ -131,7 +132,7 @@ public class TemplateUtils {
         //This is the freaking potato texture from tf2. Bad things happen if this invocation is removed
 //    to.getWorld(); //TODO: Figure out how ensure world is loaded before .getBlockEntity is called so that this janky line isn't needed.
         RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
-        fromBe.setDestination(RiftReference.tryMakeLocal(from, to));
+        fromBe.setDestination(to.asTarget());
         fromBe.setChanged();
         if (toBe != null && toBe.getProperties() != null) {
             toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().getLinksRemaining() - 1));

@@ -9,8 +9,7 @@ import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.stats.Stat;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,6 +43,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     @Shadow
     @Final
     public ServerPlayerGameMode gameMode;
+    
     private static final float RANDOM_ACTION_CHANCE = 0.1F;
     private static final float CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS = 0.1F;
     private static final int CHUNK_SIZES = 25;
@@ -51,10 +51,6 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     private static final float RANDOM_LIQUID_CHANCE = 0.7F;
     @Unique
     RandomSource dimdoors_random = RandomSource.create();
-
-    public ServerPlayerEntityMixin(EntityType<? extends LivingEntity> entityType, Level world) {
-        super(entityType, world);
-    }
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void playerTickMixin(CallbackInfo ci) {
@@ -104,13 +100,11 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     }
 
     private void makeSpotOfLiquid(Level world, BlockPos pos, BlockState state, int range) {
-
         BlockPos.withinManhattan(pos, dimdoors_random.nextInt(range), dimdoors_random.nextInt(range), dimdoors_random.nextInt(range)).forEach((blockPos -> {
             if (isValidBlockToReplace(world, blockPos)) {
                 world.setBlockAndUpdate(blockPos, state);
             }
         }));
-
     }
 
     private void makeLimboLikeNether(Player player) {
@@ -149,8 +143,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
                 this.awardStat(ModStats.DEATHS_IN_POCKETS);
             }
             this.awardStat(ModStats.TIMES_SENT_TO_LIMBO);
-            TeleportUtil.teleportRandom(this, ModDimensions.LIMBO_DIMENSION, 512);
-            //noinspection ConstantConditions
+            TeleportUtil.teleportRandom((Entity) (Object) this, ModDimensions.LIMBO_DIMENSION, 512);
             LimboEntranceSource.ofDamageSource(source).broadcast((Player) (Object) this, this.getServer());
         }
     }

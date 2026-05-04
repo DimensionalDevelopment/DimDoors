@@ -31,6 +31,13 @@ public abstract class RegistryVertex {
     public void targetAdded(RegistryVertex target) {
     }
 
+    public void sourceMoved(RegistryVertex source) {
+    }
+
+    public void targetMoved(RegistryVertex target) {
+    }
+
+
     public abstract RegistryVertexType<? extends RegistryVertex> getType();
 
     public String toString() {

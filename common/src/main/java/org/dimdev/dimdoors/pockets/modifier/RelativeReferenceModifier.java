@@ -9,8 +9,7 @@ import net.minecraft.util.StringRepresentable;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.rift.targets.LocalReference;
-import org.dimdev.dimdoors.rift.targets.RiftReference;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Optional;
@@ -54,8 +53,8 @@ public class RelativeReferenceModifier extends AbstractModifier {
     Optional<Location> riftB = manager.get(point_b).map(rift -> new Location((ServerLevel) rift.getLevel(), rift.getBlockPos()));
 
     if(riftA.isPresent() && riftB.isPresent()) {
-        RiftReference link1 = LocalReference.tryMakeRelative(riftA.get(), riftB.get());
-        RiftReference link2 = LocalReference.tryMakeRelative(riftB.get(), riftA.get());
+        VirtualTarget link1 = riftB.get().asTarget();
+        VirtualTarget link2 = riftA.get().asTarget();
 
         manager.consume(point_a, rift -> addLink(rift, link1));
 
@@ -77,7 +76,7 @@ public class RelativeReferenceModifier extends AbstractModifier {
         .toString();
     }
 
-    private boolean addLink(RiftBlockEntity rift, RiftReference link) {
+    private boolean addLink(RiftBlockEntity rift, VirtualTarget link) {
     rift.setDestination(link);
     return true;
     }

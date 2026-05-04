@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import net.minecraft.core.Vec3i;
+import com.mojang.serialization.MapCodec;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
@@ -17,70 +17,65 @@ import java.util.Set;
  * such that when the target rift is gone, the destination is notified and invalidated
  * (see shouldInvalidate)
  */
-public abstract class RiftReference extends VirtualTarget implements LocationProvider {
-    public RiftReference() {
+public class RiftReference extends VirtualTarget implements LocationProvider {
+    public static MapCodec<RiftReference> CODEC = Location.CODEC.fieldOf("target").xmap(RiftReference::new, RiftReference::getTarget);
+
+    private Location getTarget() {
+        return target;
     }
 
-    // Helper methods to create a certain type of reference, defaulting to
-    // a global destination if not possible
-    public static RiftReference tryMakeLocal(Location from, Location to) {
-    if (from.world != to.world) {
-        return new GlobalReference(to);
-    } else {
-        return new LocalReference(to.pos);
+    private final Location target;
+
+    public RiftReference(Location target) {
+        this.target = target;
     }
-    }
+
 
     @Override
     public Location getLocation() {
-    return getReferencedLocation();
+        return target;
     }
-
-    public static RiftReference tryMakeRelative(Location from, Location to) {
-    if (from.world != to.world) {
-        return new GlobalReference(to);
-    } else {
-        return new RelativeReference(new Vec3i(to.getX() - from.getX(), to.getY() - from.getY(), to.getZ() - from.getZ()));
-    }
-    }
-
-    public abstract Location getReferencedLocation();
 
     @Override
     public Target receiveOther() {
-    return this.getReferencedLocation().getBlockEntity() instanceof Target target ? target : null;
+        return this.target.getBlockEntity() instanceof Target beTarget ? beTarget : null;
     }
 
     @Override
     public void register() {
-    DimensionalRegistry.getRiftRegistry().addLink(this.location, this.getReferencedLocation());
+        DimensionalRegistry.getRiftRegistry().addLink(this.location, this.target);
     }
 
     @Override
     public void unregister() {
-    if(this.location != null) DimensionalRegistry.getRiftRegistry().removeLink(this.location, this.getReferencedLocation());
+        if (this.location != null)
+            DimensionalRegistry.getRiftRegistry().removeLink(this.location, this.target);
     }
 
     @Override
     public boolean shouldInvalidate(Location deletedRift) {
-    // A rift we may have asked the registry to notify us about was deleted
-    return deletedRift.equals(this.getReferencedLocation());
-    }
-
-    @Override
-    public void setLocation(Location location) {
-    this.location = location;
+        // A rift we may have asked the registry to notify us about was deleted
+        return deletedRift.equals(this.target);
     }
 
     @Override
     public RGBA getColor() {
-    Location target = this.getReferencedLocation();
-    if (target != null && DimensionalRegistry.getRiftRegistry().isRiftAt(target)) {
-        Set<Location> otherRiftTargets = DimensionalRegistry.getRiftRegistry().getTargets(target);
-        if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(this.location)) {
-        return new RGBA(0, 1, 0, 1);
+        if (target != null && DimensionalRegistry.getRiftRegistry().isRiftAt(target)) {
+            Set<Location> otherRiftTargets = DimensionalRegistry.getRiftRegistry().getTargets(target);
+            if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(this.location)) {
+                return new RGBA(0, 1, 0, 1);
+            }
         }
+        return new RGBA(1, 0, 0, 1);
     }
-    return new RGBA(1, 0, 0, 1);
+
+    @Override
+    public VirtualTargetType<?> getType() {
+        return VirtualTargetType.RIFT_REFENCE;
+    }
+
+    @Override
+    public VirtualTarget copy() {
+        return new RiftReference(target);
     }
 }

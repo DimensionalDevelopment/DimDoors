@@ -16,9 +16,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.rift.targets.RiftReference;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 public class Location {
     public static final Codec<Location> CODEC = RecordCodecBuilder.create(instance -> instance.group(Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(location -> location.world), BlockPos.CODEC.fieldOf("pos").forGetter(location -> location.pos)).apply(instance, Location::new));
@@ -28,112 +29,115 @@ public class Location {
     public final BlockPos pos;
 
     public Location(ResourceKey<Level> world, BlockPos pos) {
-    this.world = world;
-    this.pos = pos;
+        this.world = world;
+        this.pos = pos;
     }
 
     public Location(ResourceKey<Level> world, int x, int y, int z) {
-    this(world, new BlockPos(x, y, z));
+        this(world, new BlockPos(x, y, z));
     }
 
     public Location(ServerLevel world, int x, int y, int z) {
-    this(world, new BlockPos(x, y, z));
+        this(world, new BlockPos(x, y, z));
     }
 
     public Location(ServerLevel world, BlockPos pos) {
-    this(world.dimension(), pos);
+        this(world.dimension(), pos);
     }
 
     public int getX() {
-    return this.pos.getX();
+        return this.pos.getX();
     }
 
     public Location setX(int x) {
-    return new Location(world, x, getY(), getZ());
+        return new Location(world, x, getY(), getZ());
     }
 
     public int getY() {
-    return this.pos.getY();
+        return this.pos.getY();
     }
 
     public Location setY(int y) {
-    return new Location(world, getX(), y, getZ());
+        return new Location(world, getX(), y, getZ());
     }
 
     public int getZ() {
-    return this.pos.getZ();
+        return this.pos.getZ();
     }
 
     public Location setZ(int z) {
-    return new Location(world, getX(), getY(), z);
+        return new Location(world, getX(), getY(), z);
     }
 
     public BlockState getBlockState() {
-    return this.getWorld().getBlockState(this.pos);
+        return this.getWorld().getBlockState(this.pos);
     }
 
     public FluidState getFluidState() {
-    return this.getWorld().getFluidState(this.pos);
+        return this.getWorld().getFluidState(this.pos);
     }
 
     public BlockEntity getBlockEntity() {
-    return this.getWorld().getBlockEntity(this.pos);
+        return this.getWorld().getBlockEntity(this.pos);
     }
 
     public Holder<Biome> getBiome() {
-    return this.getWorld().getBiome(pos);
+        return this.getWorld().getBiome(pos);
     }
 
     public BlockPos getBlockPos() {
-    return this.pos;
+        return this.pos;
     }
 
     @Override
     public boolean equals(Object obj) {
-    return obj instanceof Location &&
-        ((Location) obj).world.equals(this.world) &&
-        ((Location) obj).pos.equals(this.pos);
+        return obj instanceof Location &&
+                ((Location) obj).world.equals(this.world) &&
+                ((Location) obj).pos.equals(this.pos);
     }
 
     @Override
     public int hashCode() {
-    return this.world.hashCode() * 31 + this.pos.hashCode();
+        return this.world.hashCode() * 31 + this.pos.hashCode();
     }
 
     public ResourceKey<Level> getWorldId() {
-    return this.world;
+        return this.world;
     }
 
     public Location setWorldId(ResourceKey<Level> world) {
-    return new Location(world, pos);
+        return new Location(world, pos);
     }
 
     public ServerLevel getWorld() {
-    return DimensionalDoors.getServer().getLevel(this.world);
+        return DimensionalDoors.getServer().getLevel(this.world);
     }
 
     public static CompoundTag toNbt(Location location) {
-    CompoundTag nbt = new CompoundTag();
-    nbt.putString("world", location.world.location().toString());
-    nbt.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
-    return nbt;
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString("world", location.world.location().toString());
+        nbt.putIntArray("pos", new int[]{location.getX(), location.getY(), location.getZ()});
+        return nbt;
     }
 
     public static Location fromNbt(CompoundTag nbt) {
-    int[] pos = nbt.getIntArray("pos");
-    return new Location(
-        ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
-        new BlockPos(pos[0], pos[1], pos[2])
-    );
+        int[] pos = nbt.getIntArray("pos");
+        return new Location(
+                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
+                new BlockPos(pos[0], pos[1], pos[2])
+        );
     }
 
     public static BlockPos getHeightmapPosSafe(ServerLevel level, int x, int z) {
-    var mutablePos = new BlockPos.MutableBlockPos(x, level.getMaxBuildHeight(), z);
+        var mutablePos = new BlockPos.MutableBlockPos(x, level.getMaxBuildHeight(), z);
 
-    while (mutablePos.getY() > level.getMinBuildHeight() && (!level.getBlockState(mutablePos).isSolid() && level.getFluidState(mutablePos).isEmpty())) mutablePos.move(Direction.DOWN);
+        while (mutablePos.getY() > level.getMinBuildHeight() && (!level.getBlockState(mutablePos).isSolid() && level.getFluidState(mutablePos).isEmpty()))
+            mutablePos.move(Direction.DOWN);
 
-    return mutablePos.move(Direction.UP);
+        return mutablePos.move(Direction.UP);
     }
 
-
+    public VirtualTarget asTarget() {
+        return new RiftReference(this);
+    }
 }

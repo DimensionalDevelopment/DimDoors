@@ -1,6 +1,5 @@
 package org.dimdev.dimdoors.rift.registry;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -229,15 +228,13 @@ public class RiftRegistry {
         for (DefaultEdge edge : this.graph.incomingEdgesOf(rift)) {
             RegistryVertex source = this.graph.getEdgeSource(edge);
             if (source instanceof Rift r) {
-                r.targetGone(rift);
-                r.targetAdded(rift);
+                r.targetMoved(rift);
             }
         }
         for (DefaultEdge edge : this.graph.outgoingEdgesOf(rift)) {
             RegistryVertex target = this.graph.getEdgeTarget(edge);
             if (target instanceof Rift r) {
-                r.sourceGone(rift);
-                r.sourceAdded(rift);
+                r.sourceMoved(rift);
             }
         }
 
