@@ -14,10 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
@@ -33,16 +35,27 @@ public class Location {
         this.pos = pos;
     }
 
-    public Location(ResourceKey<Level> world, int x, int y, int z) {
+    private Location(ResourceKey<Level> world, int x, int y, int z) {
         this(world, new BlockPos(x, y, z));
     }
 
-    public Location(ServerLevel world, int x, int y, int z) {
-        this(world, new BlockPos(x, y, z));
+
+    public static Location ofWorld(ServerLevel level, int x, int y, int z) {
+        return ofWorld(level, x, y, z, true);
     }
 
-    public Location(ServerLevel world, BlockPos pos) {
-        this(world.dimension(), pos);
+    public static Location ofWorld(ServerLevel level, int x, int y, int z, boolean adjust) {
+        return ofWorld(level, new BlockPos(x, y, z), true);
+    }
+
+    public static Location ofWorld(ServerLevel level, BlockPos pos) {
+        return ofWorld(level, pos, true);
+    }
+
+    public static Location ofWorld(ServerLevel level, BlockPos pos, boolean adjust) {
+        if(adjust) pos = SableHelper.INSTANCE.projectFrom(level, pos);
+
+        return new Location(level.dimension(), pos);
     }
 
     public int getX() {

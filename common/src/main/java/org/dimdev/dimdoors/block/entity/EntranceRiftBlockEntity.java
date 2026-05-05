@@ -32,6 +32,7 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.rift.RiftUtils;
@@ -138,9 +139,11 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+        var blockPos = SableHelper.INSTANCE.projectFrom(level, this.getBlockPos());
+
         BlockState state = this.getLevel().getBlockState(this.getBlockPos());
         Block block = state.getBlock();
-        Vec3 targetPos = Vec3.atCenterOf(this.getBlockPos()).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).scale(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
+        Vec3 targetPos = Vec3.atCenterOf(blockPos).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).scale(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
     /*
     Unused code that needs to be edited if there are other ways to get to limbo
     But if it is only dimteleport and going through rifts then this code isn't nessecary
@@ -159,8 +162,8 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
                 relativeVelocity = flipper.transform(relativeVelocity);
             }
 
-            TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, this.getBlockPos());
-            TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, this.getBlockPos());
+            TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, blockPos);
+            TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, blockPos);
             targetPos = transformer.transformOut(transformationBuilder, relativePos);
 
             //TODO:offset entity one block infront of door

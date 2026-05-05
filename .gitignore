@@ -32,5 +32,6 @@ logs
 *.hprof
 .vscode
 /test
+.libs/
 
 fabric/runs/

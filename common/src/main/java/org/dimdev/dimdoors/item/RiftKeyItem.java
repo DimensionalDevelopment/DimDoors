@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.item;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -78,7 +79,7 @@ public class RiftKeyItem extends Item {
         return super.useOn(context);
         }
         EntranceRiftBlockEntity entranceRiftBlockEntity = ((EntranceRiftBlockEntity) riftBlockEntity);
-        Rift rift = DimensionalRegistry.getRiftRegistry().getRift(new Location(entranceRiftBlockEntity.getLevel().dimension(), entranceRiftBlockEntity.getBlockPos()));
+        Rift rift = DimensionalRegistry.getRiftRegistry().getRift(Location.ofWorld((ServerLevel) entranceRiftBlockEntity.getLevel(), entranceRiftBlockEntity.getBlockPos()));
         if (entranceRiftBlockEntity.isLocked()) {
         if (tryRemove(context.getItemInHand(), rift.getId())) {
             entranceRiftBlockEntity.setLocked(false);

@@ -160,14 +160,14 @@ public class EscapeTarget extends VirtualTarget implements EntityTarget { // TOD
     }
 
     public static Location randomizeLimboReturn(ServerLevel level, BlockPos pos, int minRange, int maxRange) {
-    if(level == null || pos == null) return null;
+        if (level == null || pos == null) return null;
 
-    if(minRange == 0 && maxRange == 0) return new Location(level, pos);
+        if (minRange == 0 && maxRange == 0) return Location.ofWorld(level, pos);
 
-    return new Location(
-        level,
-        Location.getHeightmapPosSafe(level, randomizeCoord(pos.getX(), minRange, maxRange), randomizeCoord(pos.getZ(), minRange, maxRange))
-    );
+        return Location.ofWorld(
+                level,
+                Location.getHeightmapPosSafe(level, randomizeCoord(pos.getX(), minRange, maxRange), randomizeCoord(pos.getZ(), minRange, maxRange))
+        );
     }
 
     public static int randomizeCoord(int coord, int minRange, int maxRange) {

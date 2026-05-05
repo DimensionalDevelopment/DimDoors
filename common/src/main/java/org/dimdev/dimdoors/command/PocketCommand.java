@@ -150,7 +150,7 @@ public class PocketCommand {
             return 0;
         }
 
-        Location contextLocation = new Location(sourceLevel, sourcePos);
+        Location contextLocation = Location.ofWorld(sourceLevel, sourcePos);
         PocketGenerationContext pocketGenerationContext = new PocketGenerationContext(
                 pocketLevel,
                 VirtualLocation.fromLocation(contextLocation),

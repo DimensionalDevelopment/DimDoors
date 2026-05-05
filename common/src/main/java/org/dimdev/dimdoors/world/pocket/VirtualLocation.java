@@ -94,7 +94,7 @@ public class VirtualLocation {
     int newZ = (int) (this.z + spread * 2 * (Math.random() - 0.5));
     //BlockPos pos = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, new BlockPos(newX, 1, newZ));
     BlockPos pos = getTopPos(world, newX, newZ).above();
-    return new Location(world, pos);
+    return Location.ofWorld(world, pos);
     }
 
     public static BlockPos getTopPos(Level world, int x, int z) {

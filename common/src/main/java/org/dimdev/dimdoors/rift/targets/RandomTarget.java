@@ -137,8 +137,8 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
         riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
         if (!this.noLinkBack && !riftEntity.getProperties().isOneWay())
-            TemplateUtils.linkRifts(new Location(world, pos), this.location);
-        if (!this.noLink) TemplateUtils.linkRifts(this.location, new Location(world, pos));
+            TemplateUtils.linkRifts(Location.ofWorld(world, pos), this.location);
+        if (!this.noLink) TemplateUtils.linkRifts(this.location, Location.ofWorld(world, pos));
         return riftEntity.as(Targets.ENTITY);
         } else {
         // Make a new dungeon pocket

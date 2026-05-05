@@ -13,8 +13,16 @@ def includeCompile(entry) {
     }
 }
 
+repositories {
+    flatDir {
+        dirs "${rootProject.projectDir}/.libs"
+    }
+}
+
 dependencies {
-    api("dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}")
+    // Automatically include all JARs from .libs folder in runtime classpath
+    runtimeOnly fileTree(dir: "${rootProject.projectDir}/.libs", includes: ["*.jar"])
+    runtimeOnly("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
 
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
@@ -36,6 +44,9 @@ dependencies {
             runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei}"
 //            break
 //    }
+
+
+    implementation "curse.maven:create-328085:7963363"
 }
 
 configurations.all {

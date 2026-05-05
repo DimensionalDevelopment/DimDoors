@@ -1,7 +1,6 @@
 package org.dimdev.dimdoors.block;
 
 import com.mojang.serialization.MapCodec;
-import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;

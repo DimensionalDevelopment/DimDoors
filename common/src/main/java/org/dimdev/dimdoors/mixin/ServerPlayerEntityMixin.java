@@ -15,7 +15,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
+import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.dimdoors.block.AfterBlockRecord;
 import org.dimdev.dimdoors.block.UnravelledFabricBlock;
+import org.dimdev.dimdoors.block.door.ServerPlayerExt;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
 import org.dimdev.dimdoors.entity.stat.ModStats;
@@ -28,8 +31,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Mixin(value = ServerPlayer.class)
-public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
+public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ServerPlayerExt {
     @Shadow
     @Final
     private ServerRecipeBook recipeBook;
@@ -43,6 +49,8 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     @Shadow
     @Final
     public ServerPlayerGameMode gameMode;
+
+    @Unique private List<AfterBlockRecord> afterBlockMoves = new ArrayList<>();
     
     private static final float RANDOM_ACTION_CHANCE = 0.1F;
     private static final float CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS = 0.1F;
@@ -153,5 +161,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
         if (ModDimensions.isPocketDimension(dimension)) {
             ModCriteria.POCKET_SPAWN_POINT_SET.trigger((ServerPlayer) (Object) this);
         }
+    }
+
+    @Override
+    public void recordAfterBlockMove(BlockState state, Level world, BlockPos pos) {
+        afterBlockMoves.add(new AfterBlockRecord(state, world, pos));
+    }
+
+    @Override
+    public void playerBackAfterBlockMove() {
+
     }
 }

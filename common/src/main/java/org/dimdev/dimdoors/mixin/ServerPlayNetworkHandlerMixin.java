@@ -10,7 +10,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.block.AfterMoveCollidableBlock;
-import org.dimdev.dimdoors.item.RaycastHelper;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.joml.Vector3d;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,25 +39,22 @@ public class ServerPlayNetworkHandlerMixin {
         this.dimdoors$positionBeforeMove = this.player.position();
     }
 
+
     @Inject(method = "handleMovePlayer", at = @At("TAIL"))
     protected void checkBlockCollision(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
-        AABB box = this.player.getBoundingBox();
-        Vec3 previousPos = RaycastHelper.transformFunction.apply(player.level(), this.dimdoors$positionBeforeMove);
-        Vec3 currentPos = RaycastHelper.transformFunction.apply(player.level(), this.player.position());
+        var data = SableHelper.INSTANCE.getAfterBlockData(this.player, this.player.getBoundingBox(), this.dimdoors$positionBeforeMove, this.player.position());
 
-        this.dimdoors$checkAfterMoveCollision(box, previousPos, currentPos);
+        this.dimdoors$checkAfterMoveCollision(data.box(), data.previousPos(), data.currentPos());
     }
 
     @Unique
+    Vector3d scratch = new Vector3d();
+
+    @Unique
     private void dimdoors$checkAfterMoveCollision(AABB box, Vec3 previousPos, Vec3 currentPos) {
+        ServerLevel level = this.player.serverLevel();
         BlockPos min = BlockPos.containing(box.minX + 1.0E-7D, box.minY + 1.0E-7D, box.minZ + 1.0E-7D);
         BlockPos max = BlockPos.containing(box.maxX - 1.0E-7D, box.maxY - 1.0E-7D, box.maxZ - 1.0E-7D);
-
-        if (!this.player.level().hasChunksAt(min, max)) {
-            return;
-        }
-
-        ServerLevel level = this.player.serverLevel();
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
         for (int x = min.getX(); x <= max.getX(); x++) {

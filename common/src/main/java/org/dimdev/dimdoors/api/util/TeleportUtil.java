@@ -13,6 +13,7 @@ import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -62,6 +63,8 @@ public final class TeleportUtil {
         if (world.isClientSide()) {
             throw new UnsupportedOperationException("Only supported on ServerWorld");
         }
+
+//        pos = SableHelper.INSTANCE.projectFrom(world, pos);
 
         // Force cast; we already asserted server side
         ServerLevel serverWorld = (ServerLevel) world;

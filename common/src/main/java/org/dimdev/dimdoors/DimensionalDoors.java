@@ -24,6 +24,7 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
+import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
@@ -109,6 +110,8 @@ public class DimensionalDoors {
 
         reloadConfig();
 
+        checkCompat();
+
         registerRegistries();
 
         registerRun(Registries.DATA_COMPONENT_TYPE, () -> ModDataComponentTypes.register());
@@ -159,6 +162,12 @@ public class DimensionalDoors {
 
         registerListeners();
         SchemFixer.run();
+    }
+
+    private static void checkCompat() {
+        if(getSided().isModLoaded("sable")) {
+            SableCompat.init();
+        }
     }
 
     private static void registerRun(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
