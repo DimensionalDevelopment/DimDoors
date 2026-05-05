@@ -39,6 +39,7 @@ dependencies {
     api "org.jgrapht:jgrapht-core:1.1.0"
     api "curse.maven:iris-${iris}:${iris_version}"
     api "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
+    api "com.moulberry:mixinconstraints:1.0.9"
     implementation "curse.maven:selene-499980:7522322"
     // api "com.sk89q.worldedit:worldedit-core:${worldedit}"
 

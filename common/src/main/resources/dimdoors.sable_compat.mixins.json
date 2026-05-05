@@ -2,7 +2,7 @@
   "required": false,
   "package": "org.dimdev.dimdoors.compat.sable.mixins",
   "compatibilityLevel": "JAVA_21",
-  "plugin": "org.dimdev.dimdoors.compat.sable.SableCompatMixinPlugin",
+  "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin",
   "minVersion": "0.8",
   "mixins": [
     "BlockAssemblyMixin",

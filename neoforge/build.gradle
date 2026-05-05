@@ -18,6 +18,7 @@ dependencies {
 
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
+    includeCompile "com.moulberry:mixinconstraints:1.0.9"
 
     compileOnly "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
     compileOnly "mcp.mobius.waila:wthit:neo-${wthitVersion}"
@@ -35,6 +36,12 @@ dependencies {
             runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei}"
 //            break
 //    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'org.slf4j:slf4j-api:2.0.9'
+    }
 }
 
 neoForge {

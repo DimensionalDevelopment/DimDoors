@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(value = ServerPlayer.class, priority = 900)
+@Mixin(value = ServerPlayer.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin {
     @Shadow
     @Final
