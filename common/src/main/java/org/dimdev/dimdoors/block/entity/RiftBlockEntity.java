@@ -160,7 +160,10 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
         Location loc = Location.ofWorld((ServerLevel) this.level, this.worldPosition);
         DimensionalRegistry.getRiftRegistry().addRift(loc);
-        if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) this.data.getDestination().register();
+        if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) {
+            this.data.getDestination().setLocation(loc);
+            this.data.getDestination().register();
+        }
         this.updateProperties();
         this.updateColor();
     }
@@ -185,7 +188,6 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     public void handleSourceMoved(Location location) {
-        LOGGER.info("AVACADO");
         this.data.setDestination(location.asTarget());
         this.setChanged();
         this.updateColor();
@@ -230,12 +232,20 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
             BlockState state = this.getLevel().getBlockState(this.getBlockPos());
             Block block = state.getBlock();
             if (block instanceof CoordinateTransformerBlock transformer) {
-                var blockPos = SableHelper.INSTANCE.projectFrom(level, getBlockPos());
+                var blockPos = getBlockPos();
+                var sourceFrame = SableHelper.INSTANCE.sourceTeleportFrame(
+                        (ServerLevel) this.level,
+                        blockPos,
+                        entity,
+                        entity.position(),
+                        relativeAngle,
+                        relativeVelocity
+                );
                 TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, blockPos);
                 TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, blockPos);
-                relativePos = transformer.transformTo(transformationBuilder, entity.position());
-                relativeAngle = transformer.rotateTo(rotatorBuilder, relativeAngle);
-                relativeVelocity = transformer.rotateTo(rotatorBuilder, relativeVelocity);
+                relativePos = transformer.transformTo(transformationBuilder, sourceFrame.pos());
+                relativeAngle = transformer.rotateTo(rotatorBuilder, sourceFrame.angle());
+                relativeVelocity = transformer.rotateTo(rotatorBuilder, sourceFrame.velocity());
             }
 
             if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
@@ -359,7 +369,11 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
     public void sync() {
         setChanged();
-        level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
+        try {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 2);
+        } catch (UnsupportedOperationException e) {
+            LOGGER.warn("Failed to sync rift block entity: {}", e.getMessage());
+        }
     }
 
     public boolean stablized() {

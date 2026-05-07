@@ -139,7 +139,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-        var blockPos = SableHelper.INSTANCE.projectFrom(level, this.getBlockPos());
+        var blockPos = this.getBlockPos();
 
         BlockState state = this.getLevel().getBlockState(this.getBlockPos());
         Block block = state.getBlock();
@@ -178,7 +178,19 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
         targetPos = targetPos.add((double) direction.getNormal().getX() / 2, (double) direction.getNormal().getY() / 2, (double) direction.getNormal().getZ() / 2);
 
-        TeleportUtil.teleport(entity, this.level, targetPos, relativeAngle, relativeVelocity);
+        Vec3 localTargetPos = targetPos;
+        Rotations localAngle = relativeAngle;
+        Vec3 localVelocity = relativeVelocity;
+
+        SableHelper.TeleportFrame frame = SableHelper.INSTANCE.projectTeleportFrame(
+                (ServerLevel) this.level,
+                localTargetPos,
+                localAngle,
+                localVelocity
+        );
+
+
+        TeleportUtil.teleport(entity, this.level, frame.pos(), frame.angle(), frame.velocity());
 
         return true;
     }

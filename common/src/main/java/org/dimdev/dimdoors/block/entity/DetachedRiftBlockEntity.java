@@ -19,6 +19,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.client.RiftCurves;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -98,9 +99,14 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 velocity, Location location) {
-        if (this.level instanceof ServerLevel)
-            TeleportUtil.teleport(entity, this.level, this.worldPosition, relativeAngle, velocity);
-        return true;
+        if (this.level instanceof ServerLevel serverLevel) {
+            Vec3 localTargetPos = Vec3.atBottomCenterOf(this.worldPosition);
+
+            var frame = SableHelper.INSTANCE.projectTeleportFrame(serverLevel, localTargetPos, relativeAngle, velocity);
+
+            TeleportUtil.teleport(entity, this.level, frame.pos(), frame.angle(), frame.velocity());
+        }
+            return true;
     }
 
     public void setUnregisterDisabled(boolean unregisterDisabled) {

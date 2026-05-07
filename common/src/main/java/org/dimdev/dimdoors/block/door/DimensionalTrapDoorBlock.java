@@ -80,8 +80,8 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
 
         var rift = this.getRift(world, pos, state);
 
-        if (rift.hasTraversed(world, previousPos, currentPos)) {
-            // intersection is outside of plane width/ height
+        if (!rift.hasTraversed(world, previousPos, currentPos)) {
+            // The movement did not cross the active portal plane.
             return InteractionResult.PASS;
         }
 

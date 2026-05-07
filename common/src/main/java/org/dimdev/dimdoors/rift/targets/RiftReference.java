@@ -32,7 +32,7 @@ public class RiftReference extends VirtualTarget implements LocationProvider {
 
 
     @Override
-    public Location getLocation() {
+    public Location   getLocation() {
         return target;
     }
 

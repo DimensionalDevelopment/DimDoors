@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListener {
     @Override
     public void beforeMove(ServerLevel originLevel, ServerLevel resultingLevel, BlockState newState, BlockPos oldPos, BlockPos newPos) {
-        var oldLocation = Location.ofWorld(originLevel, oldPos, false);
-        var newLocation = Location.ofWorld(resultingLevel, newPos, false);
+        var oldLocation = Location.ofWorld(originLevel, oldPos);
+        var newLocation = Location.ofWorld(resultingLevel, newPos);
 
         var blockEntity = originLevel.getBlockEntity(oldPos);
 

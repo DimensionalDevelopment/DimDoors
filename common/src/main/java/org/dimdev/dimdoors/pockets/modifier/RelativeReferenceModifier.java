@@ -49,8 +49,8 @@ public class RelativeReferenceModifier extends AbstractModifier {
 
     @Override
     public void apply(PocketGenerationContext parameters, RiftManager manager) {
-    Optional<Location> riftA = manager.get(point_a).map(rift -> Location.ofWorld((ServerLevel) rift.getLevel(), rift.getBlockPos(), false));
-    Optional<Location> riftB = manager.get(point_b).map(rift -> Location.ofWorld((ServerLevel) rift.getLevel(), rift.getBlockPos(), false));
+    Optional<Location> riftA = manager.get(point_a).map(rift -> Location.ofWorld((ServerLevel) rift.getLevel(), rift.getBlockPos()));
+    Optional<Location> riftB = manager.get(point_b).map(rift -> Location.ofWorld((ServerLevel) rift.getLevel(), rift.getBlockPos()));
 
     if(riftA.isPresent() && riftB.isPresent()) {
         VirtualTarget link1 = riftB.get().asTarget();

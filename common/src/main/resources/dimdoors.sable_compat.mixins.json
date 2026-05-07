@@ -6,7 +6,11 @@
   "minVersion": "0.8",
   "mixins": [
     "BlockAssemblyMixin",
-    "EntranceRiftSubLevelFixMixin"
+    "EntranceRiftSubLevelFixMixin",
+    "RiftRegistrySableTrackingMixin",
+    "RiftSableTrackingMixin",
+    "ServerChunkCachePlotGuardMixin",
+    "ServerPlayerPlotRescueMixin"
   ],
   "client": [
   ],

@@ -39,22 +39,11 @@ public class Location {
         this(world, new BlockPos(x, y, z));
     }
 
-
     public static Location ofWorld(ServerLevel level, int x, int y, int z) {
-        return ofWorld(level, x, y, z, true);
-    }
-
-    public static Location ofWorld(ServerLevel level, int x, int y, int z, boolean adjust) {
-        return ofWorld(level, new BlockPos(x, y, z), true);
+        return ofWorld(level, new BlockPos(x, y, z));
     }
 
     public static Location ofWorld(ServerLevel level, BlockPos pos) {
-        return ofWorld(level, pos, true);
-    }
-
-    public static Location ofWorld(ServerLevel level, BlockPos pos, boolean adjust) {
-        if(adjust) pos = SableHelper.INSTANCE.projectFrom(level, pos);
-
         return new Location(level.dimension(), pos);
     }
 

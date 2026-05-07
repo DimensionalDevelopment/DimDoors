@@ -85,8 +85,8 @@ public class RiftSignatureItem extends Item {
         } else {
             var source = new RotatedLocation(world.dimension(), pos, player.getYRot(), 0);
 
-            getOrCreateRift((ServerLevel) world, pos).ifPresent(a -> a.getData().setDestination(target.asTarget()));
-            getOrCreateRift(target.getWorld(), target.pos).ifPresent(a -> a.getData().setDestination(source.asTarget()));
+            getOrCreateRift((ServerLevel) world, pos).ifPresent(a -> a.setDestination(target.asTarget()));
+            getOrCreateRift(target.getWorld(), target.pos).ifPresent(a -> a.setDestination(source.asTarget()));
 
             var serverPlayer = (ServerPlayer) player;
 

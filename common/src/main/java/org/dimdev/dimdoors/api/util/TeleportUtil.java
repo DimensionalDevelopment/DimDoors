@@ -6,7 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.border.WorldBorder;
@@ -18,9 +20,8 @@ import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Set;
 
-@SuppressWarnings("deprecation")
 public final class TeleportUtil {
 
     private TeleportUtil() {
@@ -64,13 +65,12 @@ public final class TeleportUtil {
             throw new UnsupportedOperationException("Only supported on ServerWorld");
         }
 
-//        pos = SableHelper.INSTANCE.projectFrom(world, pos);
-
         // Force cast; we already asserted server side
         ServerLevel serverWorld = (ServerLevel) world;
 
         // Clamp inside world border
         pos = clampToWorldBorder(pos, serverWorld.getWorldBorder());
+        SableHelper.INSTANCE.validateTeleportDestination(serverWorld, pos);
         float yaw = Mth.wrapDegrees(angle.getY());
         float pitch = Mth.clamp(Mth.wrapDegrees(angle.getX()), -90.0F, 90.0F);
 
@@ -88,8 +88,7 @@ public final class TeleportUtil {
             entity.stopRiding();
 
             if (entity.level().dimension().equals(serverWorld.dimension())) {
-                // Intra-dimension; this method also does safety checks
-                serverPlayer.connection.teleport(pos.x(), pos.y(), pos.z(), yaw, pitch);
+                serverPlayer.teleportTo(serverWorld, pos.x(), pos.y(), pos.z(), Set.<RelativeMovement>of(), yaw, pitch);
             } else {
                 // Cross-dimension
                 entity = teleport(entity, serverWorld, pos, velocity, yaw, pitch);
@@ -132,7 +131,8 @@ public final class TeleportUtil {
     }
 
     public static Entity teleportRandom(Entity entity, Level world, double y) {
-        double scale = ThreadLocalRandom.current().nextGaussian() * ThreadLocalRandom.current().nextInt(90);
+        var random = RandomSource.create();
+        double scale = random.nextGaussian() * random.nextInt(90);
         return teleport(
                 entity,
                 world,

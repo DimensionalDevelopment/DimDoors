@@ -102,7 +102,7 @@ public class TemplateUtils {
                     rift.register();
 
                     // FIX: Use 'world' instead of rift.getLevel()
-                    Location entranceLocation = Location.ofWorld(world, rift.getBlockPos(), false);
+                    Location entranceLocation = Location.ofWorld(world, rift.getBlockPos());
                     DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, entranceLocation);
                     LOGGER.info("Registered pocket entrance at {} {}", entranceLocation.getWorldId().location(), entranceLocation.getBlockPos());
                 } else {
@@ -116,7 +116,7 @@ public class TemplateUtils {
             if (dest instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
                 rift.setDestination(rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : VirtualTarget.NoneTarget.INSTANCE);
-                rift.getDestination().setLocation(Location.ofWorld(world, rift.getBlockPos(), false));
+                rift.getDestination().setLocation(Location.ofWorld(world, rift.getBlockPos()));
             }
         }
 

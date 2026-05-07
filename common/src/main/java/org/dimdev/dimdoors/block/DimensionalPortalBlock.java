@@ -81,8 +81,8 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 
         var rift = this.getRift(world, pos, state);
 
-        if (rift.hasTraversed(world, ((LastPositionProvider) entity).getLastPos(), entity.position())) {
-            // intersection is outside of plane width/ height
+        if (!rift.hasTraversed(world, ((LastPositionProvider) entity).getLastPos(), entity.position())) {
+            // The movement did not cross the active portal plane.
             return;
         }
 
