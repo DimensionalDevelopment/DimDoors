@@ -18,11 +18,7 @@ import java.util.Set;
  * (see shouldInvalidate)
  */
 public class RiftReference extends VirtualTarget implements LocationProvider {
-    public static MapCodec<RiftReference> CODEC = Location.CODEC.fieldOf("target").xmap(RiftReference::new, RiftReference::getTarget);
-
-    private Location getTarget() {
-        return target;
-    }
+    public static MapCodec<RiftReference> CODEC = Location.CODEC.fieldOf("target").xmap(RiftReference::new, RiftReference::getLocation);
 
     private final Location target;
 

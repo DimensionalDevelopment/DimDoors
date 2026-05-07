@@ -83,7 +83,13 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     public CompoundTag serialize(CompoundTag nbt) {
+        //      TODO: Eventually removal when RelativeReference and LocalReference are purged
+        if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE && this.level instanceof ServerLevel serverLevel) {
+            this.data.getDestination().setLocation(Location.ofWorld(serverLevel, this.worldPosition));
+        }
+
         nbt.put("data", RiftData.toNbt(this.data));
+
         nbt.putBoolean("closing", this.closing);
         nbt.putBoolean("stablized", this.stabilized);
         nbt.putFloat("size", this.size);
@@ -135,6 +141,10 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 //        ModCriteria.RIFT_TRACKED.trigger(serverPlayerEntity);
 //    }
         var nbt = super.getUpdateTag(provider);
+//      TODO: Eventually removal when RelativeReference and LocalReference are purged
+        if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE && this.level instanceof ServerLevel serverLevel) {
+            this.data.getDestination().setLocation(Location.ofWorld(serverLevel, this.worldPosition));
+        }
 
         nbt.put("data", RiftData.toNbt(this.data));
         nbt.putBoolean("closing", this.closing);

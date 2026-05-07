@@ -32,42 +32,6 @@ public abstract class VirtualTarget implements Target {
     protected Location location;
 
     public static VirtualTarget fromNbt(CompoundTag nbt) {
-        return fromNbt(nbt, null);
-    }
-
-    public static VirtualTarget fromNbt(CompoundTag nbt, @Nullable Location location) {
-//        if(location != null) {
-//            var type = nbt.getString("type");
-//
-//            var isConvertedToRiftReference = false;
-//
-//            switch (type) {
-//                case "global" -> isConvertedToRiftReference = true;
-//                case "local" -> {
-//                    var targetTag = new CompoundTag();
-//                    targetTag.putIntArray("pos", nbt.getIntArray("target"));
-//                    targetTag.putString("world", location.getWorldId().location().toString());
-//                    nbt.put("target", targetTag);
-//                    isConvertedToRiftReference = true;
-//                }
-//                case "relative" -> {
-//                    var targetTag = new CompoundTag();
-//                    var offset = nbt.getIntArray("offset");
-//                    targetTag.putIntArray("pos", new int[] { location.getX() + offset[0], location.getY() + offset[1], location.getZ() + offset[2] });
-//                    targetTag.putString("world", location.getWorldId().location().toString());
-//                    isConvertedToRiftReference = true;
-//                }
-//            }
-//
-//            if(isConvertedToRiftReference) nbt.putString("type", "rift_reference");
-//        }
-
-        var type = nbt.getString("type");
-
-        switch (type) {
-            case "dimdoors:global" -> nbt.putString("type", "dimdoors:rift_reference");
-            case "dimdoors:local", "dimdoors:relative" -> nbt.putString("type", "dimdoors:none");
-        }
 
         return CODEC.parse(NbtOps.INSTANCE, nbt).result().orElse(NoneTarget.INSTANCE);
     }
@@ -128,19 +92,21 @@ public abstract class VirtualTarget implements Target {
         VirtualTargetType<DungeonTarget> DUNGEON = register("dungeon", DungeonTarget.CODEC);
         VirtualTargetType<TemplateTarget> TEMPLATE = register("template", TemplateTarget.CODEC);
         VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC);
-        VirtualTargetType<RiftReference> RIFT_REFENCE = register("rift_refence", RiftReference.CODEC);
-//        VirtualTargetType<GlobalReference> GLOBAL = register("global", GlobalReference.CODEC);
+        VirtualTargetType<RiftReference> RIFT_REFENCE = register("rift_reference", RiftReference.CODEC);
         VirtualTargetType<LimboTarget> LIMBO = register("limbo", LimboTarget.INSTANCE);
-//        VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC);
         VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("public_pocket", PublicPocketTarget.CODEC);
         VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("pocket_entrance", PocketEntranceMarker.CODEC);
         VirtualTargetType<PocketExitMarker> POCKET_EXIT = register("pocket_exit", VirtualTarget.COLOR, PocketExitMarker.INSTANCE);
         VirtualTargetType<PrivatePocketTarget> PRIVATE = register("private", PrivatePocketExitTarget.COLOR, PrivatePocketTarget.INSTANCE);
         VirtualTargetType<PrivatePocketExitTarget> PRIVATE_POCKET_EXIT = register("private_pocket_exit", PrivatePocketExitTarget.COLOR, PrivatePocketExitTarget.INSTANCE);
-//        VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC);
-        VirtualTargetType<IdMarker> ID_MARKER = register("id_marker", IdMarker.CODEC);
         VirtualTargetType<UnstableTarget> UNSTABLE = register("unstable", UnstableTarget.INSTANCE);
+        VirtualTargetType<IdMarker> ID_MARKER = register("id_marker", IdMarker.CODEC);
         VirtualTargetType<NoneTarget> NONE = register("none", NoneTarget.INSTANCE);
+
+        //Deperecated. Kept to migrate older world. To be removed at a later date.
+        VirtualTargetType<LocalReference> LOCAL = register("local", LocalReference.CODEC);
+        VirtualTargetType<RelativeReference> RELATIVE = register("relative", RelativeReference.CODEC);
+        VirtualTargetType<RiftReference> GLOBAL = register("global", RiftReference.CODEC);
 
         Map<VirtualTargetType<?>, String> TRANSLATION_KEYS = new Object2ObjectArrayMap<>();
 
