@@ -83,7 +83,7 @@ public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements R
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return Shapes.block();
+        return Shapes.empty();
     }
 
     @Override

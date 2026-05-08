@@ -52,11 +52,16 @@ public final class RaycastHelper {
         return ProjectileUtil.getEntityHitResult(entity, vec3d, vec3d3, box, predicate, maxDistance);
     }
 
-    public static BlockHitResult findDetachRift(Entity entity, Predicate<BlockEntity> clazz) {
+    public static BlockHitResult findDetachRift(Entity entity, Predicate<BlockEntity> predicate) {
         Vec3 eye = entity.getEyePosition(0);
         Vec3 viewVec = entity.getViewVector(0);
         Vec3 dest = eye.add(viewVec.x * RaycastHelper.REACH_DISTANCE, viewVec.y * RaycastHelper.REACH_DISTANCE, viewVec.z * RaycastHelper.REACH_DISTANCE);
-        return entity.level().clip(new ClipContext(eye, dest, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity));
+
+        RaycastHelper.predicate = predicate;
+        var result = entity.level().clip(new ClipContext(eye, dest, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity));
+        RaycastHelper.predicate = null;
+        return result;
     }
 
+    public static Predicate<BlockEntity> predicate = null;
 }
