@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
+import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
 public class DetachedRiftBlock extends WaterLoggableBlockWithEntity implements RiftProvider<DetachedRiftBlockEntity>, SimpleWaterloggedBlock {
     public static final MapCodec<DetachedRiftBlock> CODEC = simpleCodec(DetachedRiftBlock::new);

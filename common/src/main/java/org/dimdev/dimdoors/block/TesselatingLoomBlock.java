@@ -25,7 +25,7 @@ import org.dimdev.dimdoors.block.entity.TesselatingLoomBlockEntity;
 import org.dimdev.dimdoors.screen.TessellatingContainer;
 import org.jetbrains.annotations.Nullable;
 
-import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
+import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
 public class TesselatingLoomBlock extends BaseEntityBlock {
     public static final MapCodec<TesselatingLoomBlock> CODEC = simpleCodec(TesselatingLoomBlock::new);

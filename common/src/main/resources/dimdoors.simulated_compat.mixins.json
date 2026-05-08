@@ -1,0 +1,16 @@
+{
+  "required": false,
+  "package": "org.dimdev.dimdoors.compat.simulated.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "org.dimdev.dimdoors.compat.simulated.SimulatedMixinPlugin",
+  "minVersion": "0.8",
+  "mixins": [
+    "PhysicsAssemblerBlockEntityMixin",
+    "SimAssemblyContraptionMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

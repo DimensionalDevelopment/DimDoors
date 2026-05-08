@@ -20,13 +20,13 @@ repositories {
 }
 
 dependencies {
-    // Automatically include all JARs from .libs folder in runtime classpath
-    runtimeOnly fileTree(dir: "${rootProject.projectDir}/.libs", includes: ["*.jar"])
+
     runtimeOnly("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
+    runtimeOnly("dev.simulated_team.simulated:simulated-neoforge-${project.minecraft_version}:${project.simulated_version}")
+    runtimeOnly("dev.eriksonn.aeronautics:aeronautics-neoforge-${project.minecraft_version}:${project.aeronautics_version}")
 
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
-    includeCompile "com.moulberry:mixinconstraints:1.0.9"
 
     compileOnly "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
     compileOnly "mcp.mobius.waila:wthit:neo-${wthitVersion}"
@@ -47,12 +47,6 @@ dependencies {
 
 
     implementation "curse.maven:create-328085:7963363"
-}
-
-configurations.all {
-    resolutionStrategy {
-        force 'org.slf4j:slf4j-api:2.0.9'
-    }
 }
 
 neoForge {

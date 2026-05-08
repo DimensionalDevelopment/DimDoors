@@ -27,62 +27,63 @@ public abstract class WaterLoggableBlockWithEntity extends BaseEntityBlock imple
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     protected WaterLoggableBlockWithEntity(Properties settings) {
-    super(settings);
-    registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
+        super(settings);
+        registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    super.createBlockStateDefinition(builder);
-    builder.add(WATERLOGGED);
+        super.createBlockStateDefinition(builder);
+        builder.add(WATERLOGGED);
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult blockHitResult) {
-    InteractionResult result = super.useWithoutItem(state, world, pos, player, blockHitResult);
-    if (result.consumesAction()) {
-        world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-    }
-    return result;
+        InteractionResult result = super.useWithoutItem(state, world, pos, player, blockHitResult);
+        if (result.consumesAction()) {
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+        }
+        return result;
     }
 
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack itemStack) {
-    BlockPos up = pos.above();
-    world.setBlock(up, state.setValue(WATERLOGGED, world.getFluidState(up).getType() == Fluids.WATER), 3);
+        BlockPos up = pos.above();
+        world.setBlock(up, state.setValue(WATERLOGGED, world.getFluidState(up).getType() == Fluids.WATER), 3);
     }
 
     @Override
     public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
-    super.neighborChanged(state, world, pos, block, fromPos, notify);
-    if (state.getValue(WATERLOGGED)) {
-        world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-    }
+        super.neighborChanged(state, world, pos, block, fromPos, notify);
+        if (state.getValue(WATERLOGGED)) {
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+        }
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-    boolean water = ctx.getLevel().getFluidState(ctx.getClickedPos()).getType() == Fluids.WATER;
-    BlockState state = super.getStateForPlacement(ctx);
-    if (state == null) return null;
-    if (water) return state.setValue(WATERLOGGED, true);
-    return state;
+        boolean water = ctx.getLevel().getFluidState(ctx.getClickedPos()).getType() == Fluids.WATER;
+        BlockState state = super.getStateForPlacement(ctx);
+        if (state == null) return null;
+        if (water) return state.setValue(WATERLOGGED, true);
+        return state;
     }
 
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
-    if (state.getValue(WATERLOGGED)) {
-        world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-    }
+        if (state.getValue(WATERLOGGED)) {
+            world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
+        }
 
-    BlockState newState = super.updateShape(state, direction, neighborState, world, pos, neighborPos);
-    if (newState.isAir() && state.getFluidState().getType() == Fluids.WATER) return Blocks.WATER.defaultBlockState();
-    return newState;
+        BlockState newState = super.updateShape(state, direction, neighborState, world, pos, neighborPos);
+        if (newState.isAir() && state.getFluidState().getType() == Fluids.WATER)
+            return Blocks.WATER.defaultBlockState();
+        return newState;
     }
 
     @Override
     public FluidState getFluidState(BlockState state) {
-    return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 }

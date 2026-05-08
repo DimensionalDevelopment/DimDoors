@@ -26,7 +26,6 @@ dependencies {
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
     includeCompile "com.github.Chocohead:Fabric-ASM:v2.3"
-    includeCompile "com.moulberry:mixinconstraints:1.0.9"
 
     modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     // modApi "lol.bai:badpackets:fabric-4.2.0"

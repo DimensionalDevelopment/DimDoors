@@ -39,7 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiFunction;
 
-import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
+import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
 public class DimensionalDoorBlockRegistrar {
     public static final String PREFIX = "block_ag_dim_";

@@ -29,6 +29,9 @@ dependencies {
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
 
     api "dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}"
+    api "dev.simulated_team.simulated:simulated-common-${project.minecraft_version}:${project.simulated_version}"
+    api "dev.eriksonn.aeronautics:aeronautics-common-${project.minecraft_version}:${project.aeronautics_version}"
+    compileOnlyApi "curse.maven:create-328085:7963363"
 
     implementation "curse.maven:cyanide-541676:4824162"
 
@@ -39,7 +42,6 @@ dependencies {
     api "org.jgrapht:jgrapht-core:1.1.0"
     api "curse.maven:iris-${iris}:${iris_version}"
     api "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
-    api "com.moulberry:mixinconstraints:1.0.9"
     implementation "curse.maven:selene-499980:7522322"
     // api "com.sk89q.worldedit:worldedit-core:${worldedit}"
 
@@ -66,4 +68,3 @@ artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
-

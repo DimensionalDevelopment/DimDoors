@@ -52,7 +52,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
-import static org.dimdev.dimdoors.block.DimensionalPortalBlock.Dummy.checkType;
+import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
 public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements RiftProvider<EntranceRiftBlockEntity>, CoordinateTransformerBlock, ExplosionConvertibleBlock, AfterMoveCollidableBlock, CustomBreakHandling {
     public DimensionalDoorBlock(Properties settings, BlockSetType blockSetType) {
@@ -247,11 +247,6 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
         }
         createDetachedRift(level, pos);
         return true;
-    }
-
-    @Override
-    public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
-        super.destroy(level, pos, state);
     }
 
     @Override

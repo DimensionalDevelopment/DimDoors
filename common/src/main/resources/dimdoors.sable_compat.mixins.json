@@ -2,15 +2,17 @@
   "required": false,
   "package": "org.dimdev.dimdoors.compat.sable.mixins",
   "compatibilityLevel": "JAVA_21",
-  "plugin": "com.moulberry.mixinconstraints.ConstraintsMixinPlugin",
+  "plugin": "org.dimdev.dimdoors.compat.sable.SableMixinPlugin",
   "minVersion": "0.8",
   "mixins": [
     "BlockAssemblyMixin",
+    "DetachedRiftSubLevelCollisionMixin",
     "EntranceRiftSubLevelFixMixin",
     "RiftRegistrySableTrackingMixin",
     "RiftSableTrackingMixin",
     "ServerChunkCachePlotGuardMixin",
-    "ServerPlayerPlotRescueMixin"
+    "ServerPlayerPlotRescueMixin",
+    "VoxelNeighborhoodStateMixin"
   ],
   "client": [
   ],
