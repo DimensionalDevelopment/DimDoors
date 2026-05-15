@@ -1,82 +1,59 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import net.minecraft.core.HolderLookup;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.math.Equation;
-import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public class VoidGenerator extends PocketGenerator {
-    private static final Logger LOGGER = LogManager.getLogger();
+public class VoidGenerator extends PocketGenerator<VoidGenerator> {
+    public static final MapCodec<VoidGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
+            .and(Equation.CODEC.fieldOf("height").<VoidGenerator>forGetter(a -> a.height))
+            .and(Equation.CODEC.fieldOf("width").<VoidGenerator>forGetter(a -> a.width))
+            .and(Equation.CODEC.fieldOf("length").<VoidGenerator>forGetter(a -> a.length))
+            .apply(instance, VoidGenerator::new));
+
     public static final String KEY = "void";
-    private String width;
-    private Equation heightEquation;
-    private String height;
-    private Equation widthEquation;
-    private String length;
-    private Equation lengthEquation;
+    private final Equation height;
+    private final Equation width;
+    private final Equation length;
+
+    public VoidGenerator(Optional<AbstractPocket.AbstractPocketBuilder<?, ?>> builder, Equation weight, Optional<Boolean> setupLoot, List<Holder<Modifier>> modifiers, List<String> tags, Equation height, Equation width, Equation length) {
+        super(builder, weight, setupLoot, modifiers, tags);
+        this.height = height;
+        this.width = width;
+        this.length = length;
+    }
 
     @Override
     public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-    Pocket pocket = DimensionalRegistry.getPocketDirectory(parameters.world().dimension()).newPocket(builder);
-    Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
-    pocket.setSize((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
+        Pocket pocket = DimensionalRegistry.createPocket(parameters.world().dimension(), builder);
+        Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
+        pocket.setSize((int) width.apply(variableMap), (int) height.apply(variableMap), (int) length.apply(variableMap));
 
-    return pocket;
+        return pocket;
     }
 
     @Override
-    public PocketGeneratorType<? extends PocketGenerator> getType() {
-    return PocketGeneratorType.VOID;
-    }
-
-    @Override
-    public String getKey() {
-    return KEY;
+    public PocketGeneratorType<VoidGenerator> type() {
+        return PocketGeneratorType.VOID;
     }
 
     @Override
     public Vec3i getSize(PocketGenerationContext parameters) {
-    Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
-    return new Vec3i((int) widthEquation.apply(variableMap), (int) heightEquation.apply(variableMap), (int) lengthEquation.apply(variableMap));
-    }
-
-    @Override
-    public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    super.fromNbt(nbt, provider, manager);
-
-    try {
-        width = nbt.getString("width");
-        widthEquation = Equation.parse(width);
-        height = nbt.getString("height");
-        heightEquation = Equation.parse(height);
-        length = nbt.getString("length");
-        lengthEquation = Equation.parse(length);
-
-    } catch (EquationParseException e) {
-        LOGGER.error(e);
-    }
-
-    return this;
-    }
-
-    @Override
-    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    super.toNbtInternal(nbt, provider, allowReference);
-
-    nbt.putString("width", width);
-    nbt.putString("height", height);
-    nbt.putString("length", length);
-
-    return nbt;
+        Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
+        return new Vec3i((int) width.apply(variableMap), (int) height.apply(variableMap), (int) length.apply(variableMap));
     }
 }

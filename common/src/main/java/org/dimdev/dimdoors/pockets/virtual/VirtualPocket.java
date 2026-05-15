@@ -1,72 +1,34 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
-import com.google.common.collect.Multimap;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.api.util.ReferenceSerializable;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.RegistryFileCodec;
+import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.pockets.PocketCreator;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
+import java.util.function.Function;
 
-public interface VirtualPocket extends Weighted<PocketGenerationContext>, ReferenceSerializable, PocketCreator {
+public interface VirtualPocket extends Weighted<PocketGenerationContext>, PocketCreator {
     String RESOURCE_STARTING_PATH = "pockets/virtual"; //TODO: might want to restructure data packs
+    Codec<VirtualPocket> CODEC = Codec.lazyInitialized(() ->
+            Codec.either(
+                    ImplementedVirtualPocket.CODEC,
+                    VirtualPocketList.CODEC
+            ).xmap(either -> either.map(Function.identity(), Function.identity()),
+                    virtualPocket -> switch (virtualPocket) {
+                        case VirtualPocketList list -> Either.right(list);
+                        case ImplementedVirtualPocket implemented -> Either.left(implemented);
+                        case null, default -> throw new IllegalStateException("Unknown virtual pocket type.");
+                    }));
 
-    static VirtualPocket deserialize(Tag nbt, HolderLookup.Provider provider) {
-        return deserialize(nbt, provider, null);
-    }
-
-
-    //TODO: split up in ImplementedVirtualPocket and VirtualPocketList
-    static VirtualPocket deserialize(Tag nbt, HolderLookup.Provider provider, @Nullable ResourceManager manager) {
-        return switch (nbt.getId()) {
-            case Tag.TAG_LIST -> // It's a list of VirtualPocket
-                    VirtualPocketList.deserialize((ListTag) nbt, provider, manager);
-            case Tag.TAG_COMPOUND -> // It's a serialized VirtualPocket
-                    ImplementedVirtualPocket.deserialize((CompoundTag) nbt, provider, manager);
-            // TODO: throw if manager is null
-            case Tag.TAG_STRING -> // It's a reference to a resource location
-                    ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(nbtElement -> deserialize(nbtElement, provider, manager)));
-            default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getId()));
-        };
-    }
-
-    static Tag serialize(VirtualPocket virtualPocket, HolderLookup.Provider provider, boolean allowReference) {
-        if (virtualPocket instanceof VirtualPocketList) {
-            return VirtualPocketList.serialize((VirtualPocketList) virtualPocket, provider, allowReference);
-        }
-        return ImplementedVirtualPocket.serialize((ImplementedVirtualPocket) virtualPocket, provider, allowReference);
-    }
-
-    static Tag serialize(VirtualPocket virtualPocket, HolderLookup.Provider provider) {
-        return serialize(virtualPocket, provider, false);
-    }
-
-    void setResourceKey(String resourceKey);
-
-    String getResourceKey();
-
-    default void processFlags(Multimap<String, String> flags) {
-        // TODO: discuss some flag standardization
-        Collection<String> reference = flags.get("reference");
-        if (reference.stream().findFirst().map(string -> string.equals("local") || string.equals("global")).orElse(false)) {
-            setResourceKey(flags.get("resource_key").stream().findFirst().orElse(null));
-        }
-    }
+    Codec<Holder<VirtualPocket>> HOLDER_CODEC = RegistryFileCodec.create(ModRegistryKeys.VIRTUAL_POCKET, CODEC);
 
     PocketGeneratorReference getNextPocketGeneratorReference(PocketGenerationContext parameters);
 
     PocketGeneratorReference peekNextPocketGeneratorReference(PocketGenerationContext parameters);
 
-    // Override where needed
-    default void init() {
-
-    }
 }

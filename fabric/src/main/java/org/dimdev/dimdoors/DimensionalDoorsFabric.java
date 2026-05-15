@@ -4,6 +4,8 @@ import com.chocohead.mm.api.ClassTinkerers;
 import com.google.common.base.Suppliers;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -12,6 +14,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
@@ -56,6 +59,7 @@ import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.*;
+import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -324,5 +328,10 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
     @Override
     public void registerCommands(Consumer<CommandDispatcher<CommandSourceStack>> consumer) {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> consumer.accept(dispatcher));
+    }
+
+    @Override
+    public <T extends Typed<? extends V>, V extends CodecProvider<? extends T>> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<V> codec) {
+        DynamicRegistries.register(key, codec.dispatch(Typed::type, CodecProvider::codec));
     }
 }

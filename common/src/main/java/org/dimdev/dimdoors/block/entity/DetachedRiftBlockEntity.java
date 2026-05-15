@@ -124,7 +124,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Override
-    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = super.getUpdateTag(provider);
         tag.putFloat("size", this.size);
         tag.putInt("curveID", this.curveID);

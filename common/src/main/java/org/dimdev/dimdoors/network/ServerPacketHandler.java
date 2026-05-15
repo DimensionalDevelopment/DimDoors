@@ -81,7 +81,7 @@ public class ServerPacketHandler {
         public SyncPocketAddonsS2CPacket syncPocketAddonsIfNeeded(ServerPlayer player, Level world, BlockPos pos) {
             if (!ModDimensions.isPocketDimension(world)) return null;
             PocketDirectory directory = DimensionalRegistry.getPocketDirectory(world.dimension());
-            Pocket pocket = directory.getPocketAt(pos);
+            Pocket<?, ?> pocket = directory.getPocketAt(pos);
             if (pocket == null) return null;
             if ((pocketSyncDirty || pocket.getId() != lastSyncedPocketId || !world.dimension().location().equals(lastSyncedPocketWorld.location()))) {
                 pocketSyncDirty = false;

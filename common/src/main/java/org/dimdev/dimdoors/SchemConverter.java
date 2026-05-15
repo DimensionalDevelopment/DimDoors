@@ -36,6 +36,9 @@ import net.minecraft.nbt.*;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraft.util.datafix.fixes.References;
+import org.dimdev.dimdoors.util.schematic.SchemFixer;
+import org.dimdev.dimdoors.util.schematic.SchematicDataFixer;
+import org.dimdev.dimdoors.util.schematic.SpongeSchematicV2FixTypes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -72,69 +75,8 @@ public class SchemConverter {
 
             var nbt = NbtIo.readCompressed(path, NbtAccounter.unlimitedHeap());
 
-            toVersion = SharedConstants.getCurrentVersion().getDataVersion().getVersion();
-            fromVersion = NbtUtils.getDataVersion(nbt, toVersion);
-
-            var isDirty = false;
-            var lootTablePurged = false;
-
-            if (nbt.contains("BlockEntities")) {
-//                var value = nbt.getList("BlockEntities", Tag.TAG_COMPOUND).stream().map(CompoundTag.class::cast).map(SchemConverter::updateBlockEntity).collect(Collectors.toCollection(ListTag::new));
-//                nbt.put("BlockEntities", value);
-
-                var value = nbt.getList("BlockEntities", 10);
-
-                for(var entry : value) {
-                    var compound = (CompoundTag) entry;
-
-                    if(compound.contains("LootTable")) {
-                        if(compound.getString("LootTable").equals("dimdoors:dungeon_chest")) {
-                            isDirty = true;
-                            compound.remove("LootTable");
-                            lootTablePurged = true;
-                        }
-                    }
-
-                    if(compound.contains("Items")) {
-                        var items = compound.getList("Items", 10);
-
-                        if(items.isEmpty()) {
-                            compound.remove("Items");
-                            isDirty = true;
-                            lootTablePurged = true;
-                        } else {
-
-
-
-                            for (var entry1 : items) {
-                                var item = (CompoundTag) entry1;
-
-                                if (item.contains("Count")) {
-                                    item.putInt("count", item.getInt("Count"));
-                                    isDirty = true;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                NbtIo.writeCompressed(nbt, path);
-            }
-//
-//            if (nbt.contains("Entities")) {
-//                var value = nbt.getList("Entities", Tag.TAG_COMPOUND).stream().map(CompoundTag.class::cast).map(SchemConverter::updateEntity).collect(Collectors.toCollection(ListTag::new));
-//                nbt.put("Entities", value);
-//            }
-
-            if(fromVersion == toVersion) {
-                isDirty = true;
-                nbt.putInt("DataVersion", toVersion);
-            }
-
-            if(isDirty) {
-                NbtIo.writeCompressed(nbt, path);
-                if (lootTablePurged) System.out.println(path);
-            }
+            var dynamic = new Dynamic<>(NbtOps.INSTANCE, nbt);
+            System.out.println();
         } catch (IOException e) {
 //            System.out.println("Failed to convert path: " + path);
         } finally {

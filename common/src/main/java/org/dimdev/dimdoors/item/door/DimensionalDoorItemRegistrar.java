@@ -28,6 +28,7 @@ import org.dimdev.dimdoors.item.ItemExtensions;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.PublicPocketTarget;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,16 +128,16 @@ public class DimensionalDoorItemRegistrar {
     public void setupRift(EntranceRiftBlockEntity entranceRift) {
         RiftDataList data = DoorRiftDataLoader.getRiftData(originalItem);
         if (data != null) {
-        RiftDataList.OptRiftData riftData = data.getRiftData(entranceRift);
-        entranceRift.setDestination(riftData.getDestination());
-        riftData.getProperties().ifPresent(entranceRift::setProperties);
+            RiftDataList.OptRiftData riftData = data.getRiftData(entranceRift);
+            entranceRift.setDestination(riftData.getDestination());
+            riftData.getProperties().ifPresent(entranceRift::setProperties);
         } else {
-        entranceRift.setDestination(new PublicPocketTarget());
+            entranceRift.setDestination(new PublicPocketTarget());
         }
     }
 
     @Override
-    public MutableComponent getName(ItemStack stack) {
+    public @NotNull MutableComponent getName(@NotNull ItemStack stack) {
         return Component.translatable("dimdoors.autogen_item_prefix").append(originalItem.getDescription());
     }
 

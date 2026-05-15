@@ -1,28 +1,20 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import com.google.common.collect.Multimap;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.*;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.ReferenceSerializable;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.api.util.math.Equation;
-import org.dimdev.dimdoors.api.util.math.Equation.EquationParseException;
 import org.dimdev.dimdoors.pockets.PocketCreator;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
@@ -30,193 +22,54 @@ import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.PocketImpl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Supplier;
+import java.util.*;
 
-public abstract class PocketGenerator implements Weighted<PocketGenerationContext>, ReferenceSerializable, PocketCreator {
+public abstract class PocketGenerator<T extends PocketGenerator<T>> implements Weighted<PocketGenerationContext>, PocketCreator, Typed<PocketGenerator.PocketGeneratorType<T>> {
     private static final Logger LOGGER = LogManager.getLogger();
-    public static final ResourceKey<Registry<PocketGeneratorType<? extends PocketGenerator>>> KEY = ResourceKey.createRegistryKey(DimensionalDoors.id("pocket_generator_type"));
-    public static final Registry<PocketGeneratorType<? extends PocketGenerator>> REGISTRY = DimensionalDoors.getSided().createRegistry(KEY);
-    public static final String RESOURCE_STARTING_PATH = "pockets/generator"; //TODO: might want to restructure data packs
+    public static final Codec<PocketGenerator<?>> CODEC = PocketGeneratorType.CODEC.dispatch(PocketGenerator::type, PocketGeneratorType::codec);
 
-    private static final String defaultWeightEquation = "5"; // TODO: make config
-    private static final int fallbackWeight = 5; // TODO: make config
-    protected final List<Modifier> modifierList = new ArrayList<>();
-
-    private String resourceKey = null;
-
-    private CompoundTag builderNbt;
-    protected String weight = defaultWeightEquation;
-    protected Equation weightEquation;
-    protected Boolean setupLoot;
-
-    private final List<String> tags = new ArrayList<>();
-
-    public PocketGenerator() { }
-
-    public PocketGenerator(String weight) {
-    this.weight = weight;
-    parseWeight();
+    public static <T extends PocketGenerator<T>> Products.P5<RecordCodecBuilder.Mu<T>, Optional<AbstractPocket.AbstractPocketBuilder<?, ?>>, Equation, Optional<Boolean>, List<Holder<Modifier>>, List<String>> commonFields(RecordCodecBuilder.Instance<T> instance) {
+        return instance.group(
+                Pocket.PocketBuilder.CODEC.optionalFieldOf("builder").forGetter(a -> Optional.ofNullable(a.builder)),
+                Equation.CODEC.optionalFieldOf("weight", Equation.FIVE).forGetter(a -> a.weight),
+                Codec.BOOL.optionalFieldOf("setup_loot").forGetter(a -> Optional.ofNullable(a.setupLoot)),
+                Modifier.HOLDER_CODEC.listOf().fieldOf("modifiers").forGetter(a -> a.modifiers),
+                Codec.STRING.listOf().optionalFieldOf("tags", List.of()).forGetter(a -> a.tags)
+        );
     }
 
-    public static PocketGenerator deserialize(Tag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    return switch (nbt.getId()) {
-        case Tag.TAG_COMPOUND -> // It's a serialized Modifier
-            PocketGenerator.deserialize((CompoundTag) nbt, provider, manager);
-        case Tag.TAG_STRING -> // It's a reference to a resource location
-        // TODO: throw if manager is null
-            ResourceUtil.loadReferencedResource(manager, RESOURCE_STARTING_PATH, nbt.getAsString(), ResourceUtil.NBT_READER.andThenComposable(Tag -> deserialize(Tag, provider, manager)));
-        default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", nbt.getType()));
-    };
+
+    protected final AbstractPocket.AbstractPocketBuilder<?, ?> builder;
+    protected final Equation weight;
+    protected final List<Holder<Modifier>> modifiers;
+    protected final Boolean setupLoot;
+    protected final List<String> tags;
+
+
+    protected PocketGenerator(Optional<AbstractPocket.AbstractPocketBuilder<?, ?>> builder, Equation weight, Optional<Boolean> setupLoot, List<Holder<Modifier>> modifiers, List<String> tags) {
+        this.builder = builder.orElse(null);
+        this.weight = weight;
+        this.setupLoot = setupLoot.orElse(null);
+        this.modifiers = modifiers;
+        this.tags = tags;
     }
 
-    public static PocketGenerator deserialize(Tag nbt, HolderLookup.Provider provider) {
-    return deserialize(nbt, provider, null);
-    }
+    public abstract Pocket<?, ?> prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
 
-    public static PocketGenerator deserialize(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    ResourceLocation id = ResourceLocation.tryParse(nbt.getString("type")); // TODO: return some NONE PocketGenerator if type cannot be found or deserialization fails.
-    PocketGeneratorType<? extends PocketGenerator> type = REGISTRY.get(id);
-    if (type == null) {
-        LOGGER.error("Could not deserialize PocketGenerator: " + nbt.toString());
-        return null;
-    }
-    return type.fromNbt(nbt, provider, manager);
-    }
-
-    public static PocketGenerator deserialize(CompoundTag nbt, HolderLookup.Provider provider) {
-    return deserialize(nbt, provider, null);
-    }
-
-    public static Tag serialize(PocketGenerator pocketGenerator, HolderLookup.Provider provider, boolean allowReference) {
-    return pocketGenerator.toNbt(new CompoundTag(), provider, allowReference);
-    }
-
-    public static Tag serialize(PocketGenerator pocketGenerator, HolderLookup.Provider provider) {
-    return serialize(pocketGenerator, provider, false);
-    }
-
-    private void parseWeight() {
-    try {
-        this.weightEquation = Equation.parse(weight);
-    } catch (EquationParseException e) {
-        LOGGER.error("Could not parse weight equation \"" + weight + "\", defaulting to default weight equation \"" + defaultWeightEquation + "\"", e);
-        try {
-        // FIXME: do we actually want to have it serialize to the broken String equation we input?
-        this.weightEquation = Equation.newEquation(Equation.parse(defaultWeightEquation)::apply, stringBuilder -> stringBuilder.append(weight));
-        } catch (EquationParseException equationParseException) {
-        LOGGER.error("Could not parse default weight equation \"" + defaultWeightEquation + "\", defaulting to fallback weight \"" + fallbackWeight + "\"", equationParseException);
-        // FIXME: do we actually want to have it serialize to the broken String equation we input?
-        this.weightEquation = Equation.newEquation(stringDoubleMap -> (double) fallbackWeight, stringBuilder -> stringBuilder.append(weight));
-        }
-    }
-    }
-
-    public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    if (nbt.contains("builder", Tag.TAG_COMPOUND)) builderNbt = nbt.getCompound("builder");
-
-    this.weight = nbt.contains("weight") ? nbt.getString("weight") : defaultWeightEquation;
-    parseWeight();
-
-    if (nbt.contains("setup_loot")) setupLoot = nbt.getBoolean("setup_loot");
-
-    if (nbt.contains("modifiers")) {
-        ListTag modifiersNbt = nbt.getList("modifiers", 10);
-        for (int i = 0; i < modifiersNbt.size(); i++) {
-        modifierList.add(Modifier.deserialize(modifiersNbt.getCompound(i), provider, manager));
-        }
-    }
-
-    if (nbt.contains("modifier_references")) {
-        ListTag modifiersNbt = nbt.getList("modifier_references", Tag.TAG_STRING);
-        for (Tag Tag : modifiersNbt) {
-        modifierList.add(Modifier.deserialize(Tag, manager));
-        }
-    }
-
-    if (nbt.contains("tags")) {
-        ListTag nbtList = nbt.getList("tags", Tag.TAG_STRING);
-        for (int i = 0; i < nbtList.size(); i++) {
-        tags.add(nbtList.getString(i));
-        }
-    }
-    return this;
-    }
-
-    public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider) {
-    return fromNbt(nbt, null);
-    }
-
-    public Tag toNbt(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    if (allowReference && this.resourceKey != null) {
-        return StringTag.valueOf(this.resourceKey);
-    }
-    return toNbtInternal(nbt, provider, allowReference);
-    }
-
-    protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    this.getType().toNbt(nbt, provider);
-
-    if (builderNbt != null) nbt.put("builder", builderNbt);
-
-    if (!weight.equals(defaultWeightEquation)) nbt.putString("weight", weight);
-
-    if (setupLoot != null) nbt.putBoolean("setup_loot", setupLoot);
-
-    ListTag modifiersNbt = new ListTag();
-    ListTag modifierReferences = new ListTag();
-    for (Modifier modifier : modifierList) {
-        Tag modNbt = modifier.toNbt(new CompoundTag(), provider, allowReference);
-        switch (modNbt.getId()) {
-        case Tag.TAG_COMPOUND -> modifiersNbt.add(modNbt);
-        case Tag.TAG_STRING -> modifierReferences.add(modNbt);
-        default -> throw new RuntimeException(String.format("Unexpected NbtType %d!", modNbt.getType()));
-        }
-    }
-    if (modifiersNbt.size() > 0) nbt.put("modifiers", modifiersNbt);
-    if (modifierReferences.size() > 0) nbt.put("modifier_references", modifierReferences);
-
-    if (tags.size() > 0) {
-        ListTag nbtList = new ListTag();
-        for (String nbtStr : tags) {
-        nbtList.add(StringTag.valueOf(nbtStr));
-        }
-        nbt.put("tags", nbtList);
-    }
-
-    return nbt;
-    }
-
-    public Tag toNbt(CompoundTag nbt, HolderLookup.Provider provider) {
-    return toNbt(nbt, provider, false);
-    }
-
-    public void processFlags(Multimap<String, String> flags) {
-    // TODO: discuss some flag standardization
-    Collection<String> reference = flags.get("reference");
-    if (reference.stream().findFirst().map(string -> string.equals("local") || string.equals("global")).orElse(false)) {
-        resourceKey = flags.get("resource_key").stream().findFirst().orElse(null);
-    }
-    }
-
-    public abstract Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder);
-
-    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters) {
+    public Pocket<?, ?> prepareAndPlacePocket(PocketGenerationContext parameters) {
         return prepareAndPlacePocket(parameters, setupLoot);
     }
 
-    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot) {
+    public Pocket<?, ?> prepareAndPlacePocket(PocketGenerationContext parameters, Boolean setupLoot) {
 
         Pocket.PocketBuilder<?, ?> builder = pocketBuilder(parameters)
                 .virtualLocation(parameters.sourceVirtualLocation()); // TODO: virtualLocation thing still makes little sense
 
         this.applyModifiers(parameters, builder);
 
-        Pocket pocket = prepareAndPlacePocket(parameters, builder);
+        Pocket<?, ?> pocket = prepareAndPlacePocket(parameters, builder);
 
         RiftManager manager = getRiftManager(pocket);
 
@@ -227,34 +80,31 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
         return pocket;
     }
 
-    public abstract PocketGeneratorType<? extends PocketGenerator> getType();
-
-    public abstract String getKey();
+    public abstract PocketGeneratorType<T> type();
 
     @Override
     public double getWeight(PocketGenerationContext parameters) {
-    return this.weightEquation.apply(parameters.toVariableMap(new HashMap<>()));
+        return this.weight.apply(parameters.toVariableMap(new HashMap<>()));
     }
 
     public boolean isSetupLoot() {
-    return setupLoot != null && setupLoot;
+        return setupLoot != null && setupLoot;
     }
-
 
 
     public void applyModifiers(PocketGenerationContext parameters, RiftManager manager) {
-    for (Modifier modifier : modifierList) {
-        modifier.apply(parameters, manager);
-    }
+        for (Holder<Modifier> modifier : modifiers) {
+            modifier.value().apply(parameters, manager);
+        }
     }
 
     public void applyModifiers(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-    for (Modifier modifier : modifierList) {
-        modifier.apply(parameters, builder);
-    }
+        for (Holder<Modifier> modifier : modifiers) {
+            modifier.value().apply(parameters, builder);
+        }
     }
 
-    public void setup(Pocket pocket, RiftManager manager, PocketGenerationContext parameters, boolean setupLootTables) {
+    public void setup(Pocket<?, ?> pocket, RiftManager manager, PocketGenerationContext parameters, boolean setupLootTables) {
         ServerLevel world = parameters.world();
 
         if (setupLootTables) // temp
@@ -272,67 +122,52 @@ public abstract class PocketGenerator implements Weighted<PocketGenerationContex
         TemplateUtils.registerRifts(manager.getRifts(), parameters.linkTo(), parameters.linkProperties(), pocket);
     }
 
-    public RiftManager getRiftManager(Pocket pocket) {
-    return new RiftManager(pocket);
+    public RiftManager getRiftManager(Pocket<?, ?> pocket) {
+        return new RiftManager(pocket);
     }
 
     // why would you want to check for exact tags, but still need a blackList? Good question, but there is probably some use case for it.
     public boolean checkTags(List<String> required, List<String> blackList, boolean exact) {
-    if (exact && required.size() != tags.size()) return false;
-    if (required != null) {
-        for (String req : required) {
-        if (!tags.contains(req)) return false;
+        if (exact && required.size() != tags.size()) return false;
+        if (required != null) {
+            for (String req : required) {
+                if (!tags.contains(req)) return false;
+            }
         }
-    }
-    if (blackList != null) {
-        for (String black : blackList) {
-        if (tags.contains(black)) return false;
+        if (blackList != null) {
+            for (String black : blackList) {
+                if (tags.contains(black)) return false;
+            }
         }
-    }
-    return true;
+        return true;
     }
 
     public Pocket.PocketBuilder<?, ?> pocketBuilder(PocketGenerationContext parameters) { // TODO: PocketBuilder from json
-    if (builderNbt == null){
-        return Pocket.builder()
-            .expand(getSize(parameters));
-    }
-    AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = AbstractPocket.deserializeBuilder(builderNbt, parameters.provider());
-    if (! (abstractBuilder instanceof Pocket.PocketBuilder)) {
-        return Pocket.builder()
-            .expand(getSize(parameters));
-    }
-    Pocket.PocketBuilder<?, ?> builder = (Pocket.PocketBuilder<?, ?>) abstractBuilder;
-    return builder.expand(getSize(parameters));
+        if (builder == null) {
+            return PocketImpl.builder()
+                    .expand(getSize(parameters));
+        }
+        AbstractPocket.AbstractPocketBuilder<?, ?> abstractBuilder = builder.copy();
+
+        if (abstractBuilder instanceof Pocket.PocketBuilder<?, ?> builder) {
+            return builder.expand(getSize(parameters));
+        }
+        return PocketImpl.builder().expand(getSize(parameters));
     }
 
     public abstract Vec3i getSize(PocketGenerationContext parameters);
 
-    public interface PocketGeneratorType<T extends PocketGenerator> {
-    PocketGeneratorType<PocketGenerator> SCHEMATIC = register(DimensionalDoors.id(SchematicGenerator.KEY), SchematicGenerator::new);
-//    PocketGeneratorType<ChunkGenerator> CHUNK = register(DimensionalDoors.id(ChunkGenerator.KEY), ChunkGenerator::new);
-    PocketGeneratorType<VoidGenerator> VOID = register(DimensionalDoors.id(VoidGenerator.KEY), VoidGenerator::new);
+    public record PocketGeneratorType<T extends PocketGenerator<T>>(MapCodec<T> codec) implements CodecProvider<T> {
+        public static final Codec<PocketGeneratorType<?>> CODEC = ModRegistries.POCKET_GENERATOR_TYPE.byNameCodec();
 
-    PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager);
+        public static final PocketGeneratorType<SchematicGenerator> SCHEMATIC = register(SchematicGenerator.KEY, SchematicGenerator.CODEC);
+        public static final PocketGeneratorType<VoidGenerator> VOID = register(VoidGenerator.KEY, VoidGenerator.CODEC);
 
-    CompoundTag toNbt(CompoundTag nbt, HolderLookup.Provider provider);
-
-    static void register() {}
-
-    static <U extends PocketGenerator> PocketGeneratorType<U> register(ResourceLocation id, Supplier<U> constructor) {
-        return DimensionalDoors.getSided().register(KEY, id, new PocketGeneratorType<U>() {
-        @Override
-        public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-            return constructor.get().fromNbt(nbt, provider, manager);
+        public static void register() {
         }
 
-        @Override
-        public CompoundTag toNbt(CompoundTag nbt, HolderLookup.Provider provider) {
-            nbt.putString("type", id.toString());
-            return nbt;
+        static <U extends PocketGenerator<U>> PocketGeneratorType<U> register(String id, MapCodec<U> codec) {
+            return DimensionalDoors.getSided().register(ModRegistryKeys.POCKET_GENERATOR_TYPE, id, new PocketGeneratorType<>(codec));
         }
-        });
-
-    }
     }
 }

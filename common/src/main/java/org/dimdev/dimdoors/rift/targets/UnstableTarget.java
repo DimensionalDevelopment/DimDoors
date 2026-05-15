@@ -9,24 +9,24 @@ import org.dimdev.dimdoors.api.util.Location;
 
 import java.util.Collections;
 
-public class UnstableTarget extends VirtualTarget implements EntityTarget {
+public class UnstableTarget extends VirtualTarget<UnstableTarget> implements EntityTarget {
     public static final UnstableTarget INSTANCE = new UnstableTarget();
     private static final RandomSource RANDOM = RandomSource.create();
 
     @Override
-    public VirtualTargetType<? extends VirtualTarget> getType() {
+    public VirtualTargetType<UnstableTarget> getType() {
         return VirtualTargetType.UNSTABLE;
     }
 
     @Override
-    public VirtualTarget copy() {
+    public UnstableTarget copy() {
         return this;
     }
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
         if (RANDOM.nextBoolean()) {
-            return RandomTarget.builder()
+            return DungeonTarget.builder()
                     .acceptedGroups(Collections.singleton(0))
                     .coordFactor(1)
                     .negativeDepthFactor(10000)

@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.world.structure;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -19,6 +18,7 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.world.ModStructuresPieces;
+import org.jetbrains.annotations.NotNull;
 
 public class NetherGatewayPiece extends NetherFortressPieces.NetherBridgePiece {
 
@@ -27,18 +27,14 @@ public class NetherGatewayPiece extends NetherFortressPieces.NetherBridgePiece {
             setOrientation(orientation);
         }
 
-        public NetherGatewayPiece(CompoundTag tag) {
-            super(ModStructuresPieces.NETHER_GATEWAY, tag);
-        }
-
-        public static NetherGatewayPiece createPieces(StructurePieceAccessor pieces, int x, int y, int z, int genDepth, Direction orientation) {
+    public static NetherGatewayPiece createPieces(StructurePieceAccessor pieces, int x, int y, int z, int genDepth, Direction orientation) {
             BoundingBox boundingBox = BoundingBox.orientBox(x, y, z, -2, 0, 0, 7,8, 7, orientation);
             if (!isOkBox(boundingBox) || pieces.findCollisionPiece(boundingBox) != null) return null;
             else return new NetherGatewayPiece(genDepth, boundingBox, orientation);
         }
 
         @Override
-        public void postProcess(WorldGenLevel level, StructureManager structureManager, ChunkGenerator generator, RandomSource random, BoundingBox box, ChunkPos chunkPos, BlockPos pos) {
+        public void postProcess(@NotNull WorldGenLevel level, @NotNull StructureManager structureManager, @NotNull ChunkGenerator generator, @NotNull RandomSource random, @NotNull BoundingBox box, @NotNull ChunkPos chunkPos, @NotNull BlockPos pos) {
             var airstate = Blocks.AIR.defaultBlockState();
             var netherBrickFenceState = Blocks.NETHER_BRICK_FENCE.defaultBlockState();
             var netherBrickState = Blocks.NETHER_BRICKS.defaultBlockState();

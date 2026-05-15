@@ -1,54 +1,35 @@
 package org.dimdev.dimdoors.item.door.data.condition;
 
-import com.google.gson.JsonObject;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.ModRegistries;
+import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
-import java.util.Objects;
-import java.util.function.Function;
-
-public interface Condition {
-    ResourceKey<Registry<ConditionType<?>>> KEY = ResourceKey.createRegistryKey(DimensionalDoors.id("rift_data_condition"));
-    Registry<ConditionType<?>> REGISTRY = DimensionalDoors.getSided().createRegistry(KEY);
+public interface  Condition {
+    Codec<Condition> CODEC = Codec.lazyInitialized(() -> ModRegistries.CONDITION_TYPE.byNameCodec().dispatch(Condition::getType, ConditionType::codec));
 
     boolean matches(EntranceRiftBlockEntity rift);
 
-    default JsonObject toJson(JsonObject json) {
-        json.addProperty("type", getType().getId());
-        this.toJsonInner(json);
-        return json;
-    }
-
-    void toJsonInner(JsonObject json);
-
     ConditionType<?> getType();
 
-    static Condition fromJson(JsonObject json) {
-        ResourceLocation type = ResourceLocation.tryParse(json.getAsJsonPrimitive("type").getAsString());
-        return Objects.requireNonNull(REGISTRY.get(type)).fromJson(json);
-    }
+    public record ConditionType<T extends Condition>(MapCodec<T> codec) {
+        public static final ConditionType<?> ALWAYS_TRUE = register("always_true", AlwaysTrueCondition.CODEC);
+        public static final ConditionType<?> ALL = register("all", AllCondition.CODEC);
+        public static final ConditionType<?> ANY = register("any", AnyCondition.CODEC);
+        public static final ConditionType<?> INVERSE = register("inverse", InverseCondition.CODEC);
+        public static final ConditionType<?> WORLD_MATCH = register("world_match", WorldMatchCondition.CODEC);
+        public static final ConditionType<?> BIOME = register("biome", BiomeCondition.CODEC);
+        public static final ConditionType<?> HEIGHT = register("height", HeightCondition.CODEC);
+        public static final ConditionType<?> WATERLOGGED = register("waterlogged", WaterloggedCondition.CODEC);
+        public static final ConditionType<?> LIGHT_LEVEL = register("light_level", LightLevelCondition.CODEC);
 
-    interface ConditionType<T extends Condition> {
-        ConditionType<?> ALWAYS_TRUE = register("always_true", j -> AlwaysTrueCondition.INSTANCE);
-        ConditionType<?> ALL = register("all", AllCondition::fromJson);
-        ConditionType<?> ANY = register("any", AnyCondition::fromJson);
-        ConditionType<?> INVERSE = register("inverse", InverseCondition::fromJson);
-        ConditionType<?> WORLD_MATCH = register("world_match", WorldMatchCondition::fromJson);
-
-        T fromJson(JsonObject json);
-
-        default String getId() {
-            return String.valueOf(REGISTRY.getKey(this));
+        public static void register() {
         }
 
-        static void register() {
-        }
-
-        static <T extends Condition> ConditionType<T> register(String name, Function<JsonObject, T> fromJson) {
-            return DimensionalDoors.getSided().register(KEY, name, fromJson::apply);
+        static <T extends Condition> ConditionType<T> register(String name, MapCodec<T> codec) {
+            return DimensionalDoors.getSided().register(ModRegistryKeys.CONDITION_TYPE, name, new ConditionType<>(codec));
         }
     }
 }

@@ -10,7 +10,7 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
-public class PocketExitMarker extends VirtualTarget implements EntityTarget {
+public class PocketExitMarker extends VirtualTarget<PocketExitMarker> implements EntityTarget {
     public static final MapCodec<PocketExitMarker> CODEC = MapCodec.unit(PocketExitMarker::new);
     public static final PocketExitMarker INSTANCE = new PocketExitMarker();
 
@@ -24,12 +24,12 @@ public class PocketExitMarker extends VirtualTarget implements EntityTarget {
     }
 
     @Override
-    public VirtualTargetType<? extends VirtualTarget> getType() {
+    public VirtualTargetType<PocketExitMarker> getType() {
     return VirtualTargetType.POCKET_EXIT;
     }
 
     @Override
-    public VirtualTarget copy() {
+    public PocketExitMarker copy() {
     return this;
     }
 }

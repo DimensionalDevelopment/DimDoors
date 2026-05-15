@@ -8,6 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
+import org.dimdev.dimdoors.pockets.virtual.reference.IdReference;
+import org.dimdev.dimdoors.rift.targets.IdMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 import java.util.Objects;
@@ -24,11 +26,8 @@ public enum DetachedRiftProvider implements IBlockComponentProvider {
 //        }
         DetachedRiftBlockEntity blockEntity = accessor.getBlockEntity();
         VirtualTarget destination = Objects.requireNonNull(blockEntity).getDestination();
-        if (destination != null) {
-            Component tKey = Component.translatable(destination.getType().getTranslationKey());
-            Component main = Component.translatable("dimdoors.destination").append(": ").append(tKey);
-            tooltip.addLine(main);
-            tooltip.addLine(Component.nullToEmpty("Size:" + blockEntity.size));
+        if (destination instanceof IdMarker id) {
+            tooltip.addLine(Component.literal(String.valueOf(id.getId())));
         }
     }
 }

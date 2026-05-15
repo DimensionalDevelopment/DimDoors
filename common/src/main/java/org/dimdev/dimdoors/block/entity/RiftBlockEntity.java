@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -69,7 +70,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     public void deserialize(CompoundTag nbt) {
-        this.data = RiftData.fromNbt(nbt.getCompound("data"));
+        this.data = RiftData.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("data")).getOrThrow();
         this.closing = nbt.getBoolean("closing");
         this.stabilized = nbt.getBoolean("stablized");
         this.size = nbt.getFloat("size");
@@ -88,7 +89,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
             this.data.getDestination().setLocation(Location.ofWorld(serverLevel, this.worldPosition));
         }
 
-        nbt.put("data", RiftData.toNbt(this.data));
+
+        nbt.put("data", RiftData.CODEC.encodeStart(NbtOps.INSTANCE, this.data).getOrThrow());
 
         nbt.putBoolean("closing", this.closing);
         nbt.putBoolean("stablized", this.stabilized);
@@ -134,7 +136,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
 
 
 //    for (ServerPlayerEntity serverPlayerEntity : PlayerLookup.tracking(this)) { TODO: Multiplat this.
@@ -146,7 +148,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
             this.data.getDestination().setLocation(Location.ofWorld(serverLevel, this.worldPosition));
         }
 
-        nbt.put("data", RiftData.toNbt(this.data));
+        nbt.put("data", RiftData.CODEC.encodeStart(NbtOps.INSTANCE, this.data).getOrThrow());
         nbt.putBoolean("closing", this.closing);
         nbt.putBoolean("stablized", this.stabilized);
         nbt.putFloat("size", this.size);

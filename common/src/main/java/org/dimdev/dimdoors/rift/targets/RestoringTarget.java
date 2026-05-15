@@ -4,7 +4,7 @@ import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 
-public abstract class RestoringTarget extends VirtualTarget {
+public abstract class RestoringTarget<T extends VirtualTarget<T>> extends VirtualTarget<T> {
     public RestoringTarget() {
     }
 
@@ -47,9 +47,9 @@ public abstract class RestoringTarget extends VirtualTarget {
         if (this.isValid()) this.getTarget().unregister();
     }
 
-    protected abstract VirtualTarget getTarget();
+    protected abstract VirtualTarget<?> getTarget();
 
-    protected abstract void setTarget(VirtualTarget target);
+    protected abstract void setTarget(VirtualTarget<?> target);
 
     @Override
     public RGBA getColor() {

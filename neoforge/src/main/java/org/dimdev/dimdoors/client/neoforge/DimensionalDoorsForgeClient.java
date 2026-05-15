@@ -154,8 +154,6 @@ public class DimensionalDoorsForgeClient implements IClientSided {
      *  - all items whose path starts with PREFIX (inventory variant) with the baked template model
      */
     public static void onModifyBakingResult(ModelEvent.ModifyBakingResult event) {
-        DimensionalDoorsClient.initGeneratedDoorCutouts();
-
         ModelBakery bakery = event.getModelBakery();
         var models = event.getModels();
 

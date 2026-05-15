@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.item.door.data.condition;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 import java.util.List;
@@ -10,13 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class AnyCondition extends MultipleCondition {
+    public static MapCodec<AnyCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(LIST.forGetter(MultipleCondition::conditions)).apply(instance, AnyCondition::new));
+
     public AnyCondition(List<Condition> conditions) {
     super(conditions);
-    }
-
-    public static AnyCondition fromJson(JsonObject json) {
-    JsonArray conditions = json.getAsJsonArray("conditions");
-    return new AnyCondition(StreamSupport.stream(conditions.spliterator(), false).map(JsonElement::getAsJsonObject).map(Condition::fromJson).collect(Collectors.toList()));
     }
 
     @Override
@@ -26,6 +25,6 @@ public class AnyCondition extends MultipleCondition {
 
     @Override
     public boolean matches(EntranceRiftBlockEntity rift) {
-    return this.conditions.stream().anyMatch(c -> c.matches(rift));
+        return this.conditions.stream().anyMatch(c -> c.matches(rift));
     }
 }

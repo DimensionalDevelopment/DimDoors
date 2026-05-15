@@ -1,93 +1,61 @@
 package org.dimdev.dimdoors.pockets.generator;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.BlockPlacementType;
 import org.dimdev.dimdoors.api.util.Path;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
+import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-public class SchematicGenerator extends PocketGenerator {
+public class SchematicGenerator extends PocketGenerator<SchematicGenerator> {
+
+    public static final MapCodec<SchematicGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
+            .and(ResourceLocation.CODEC.fieldOf("id").forGetter(schematicGenerator -> schematicGenerator.templateID))
+            .and(BlockPlacementType.CODEC.optionalFieldOf("placement_type", BlockPlacementType.SECTION_NO_UPDATE).<SchematicGenerator>forGetter(a -> a.placementType)).apply(instance, SchematicGenerator::new));
+
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String KEY = "schematic";
 
-    private ResourceLocation templateID;
-    private BlockPlacementType placementType = BlockPlacementType.SECTION_NO_UPDATE;
+    private final ResourceLocation templateID;
+    private final BlockPlacementType placementType;
 
-//    private final List<RiftBlockEntity> rifts = new ArrayList<>();
-    private BlockPos origin;
-
-    public SchematicGenerator() {
-    }
-
-    public SchematicGenerator(ResourceLocation id) {
+    public SchematicGenerator(Optional<AbstractPocket.AbstractPocketBuilder<?, ?>> builder, Equation weight, Optional<Boolean> setupLoot, List<Holder<Modifier>> modifiers, List<String> tags, ResourceLocation id, BlockPlacementType placementType) {
+        super(builder, weight, setupLoot, modifiers, tags);
         this.templateID = id;
+        this.placementType = placementType;
     }
 
     public ResourceLocation getTemplateID() {
-    return templateID;
+        return templateID;
     }
 
     @Override
-    public PocketGenerator fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-        super.fromNbt(nbt, provider, manager);
-
-        this.templateID = ResourceLocation.tryParse(nbt.getString("id"));
-        if (nbt.contains("origin", Tag.TAG_INT_ARRAY)) {
-            int[] originInts = nbt.getIntArray("origin");
-            this.origin = new BlockPos(originInts[0], originInts[1], originInts[2]);
-        }
-        if (nbt.contains("placement_type", Tag.TAG_STRING))
-            placementType = BlockPlacementType.getFromId(nbt.getString("placement_type"));
-
-        return this;
-    }
-
-    @Override
-    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    super.toNbtInternal(nbt, provider, allowReference);
-
-    nbt.putString("id", this.templateID.toString());
-    if (placementType != BlockPlacementType.SECTION_NO_UPDATE) nbt.putString("placement_type", placementType.getId());
-
-    if (origin != null) nbt.putIntArray("origin", new int[]{origin.getX(), origin.getY(), origin.getZ()});
-
-    return nbt;
-    }
-
-//    @Override
-//    public RiftManager getRiftManager(Pocket pocket) {
-//    RiftManager manager = super.getRiftManager(pocket);
-//
-//    rifts.forEach(manager::add);
-//
-//    return manager;
-//    }
-
-    @Override
-    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+    public Pocket<?, ?> prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
         ServerLevel world = parameters.world();
         Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
 
         PocketTemplate template = PocketLoader.getTemplates().get(Path.stringPath(templateID));
+
         if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 
-        Pocket pocket = DimensionalRegistry.getPocketDirectory(world.dimension()).newPocket(builder);
+        Pocket pocket = DimensionalRegistry.createPocket(world.dimension(), builder);
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Generating pocket from template {} at location {}", templateID, origin);
 //        PocketCommand.logSetting.values().forEach(commandSource ->
@@ -109,20 +77,15 @@ public class SchematicGenerator extends PocketGenerator {
     }
 
     @Override
-    public PocketGeneratorType<? extends PocketGenerator> getType() {
-    return PocketGeneratorType.SCHEMATIC;
-    }
-
-    @Override
-    public String getKey() {
-    return KEY;
+    public PocketGeneratorType<SchematicGenerator> type() {
+        return PocketGeneratorType.SCHEMATIC;
     }
 
     @Override
     public Vec3i getSize(PocketGenerationContext parameters) {
-    PocketTemplate template = PocketLoader.getInstance().getTemplates().get(Path.stringPath(templateID));
-    if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
-    Schematic schem = template.getSchematic();
-    return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());
+        PocketTemplate template = PocketLoader.getTemplates().get(Path.stringPath(templateID));
+        if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
+        Schematic schem = template.getSchematic();
+        return new Vec3i(schem.getWidth(), schem.getHeight(), schem.getLength());
     }
 }

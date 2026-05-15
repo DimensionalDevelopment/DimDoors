@@ -13,7 +13,10 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,9 +27,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.api.util.SimpleTree;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
 import org.dimdev.dimdoors.item.RiftSignatureItem;
 import org.dimdev.dimdoors.pockets.PocketCreator;
@@ -41,10 +43,8 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
@@ -55,15 +55,15 @@ public class PocketCommand {
     // TODO: probably move somewhere else
 //    public static final Map<UUID, CommandSourceStack> logSetting = new HashMap<>();
 
-    public static ArgumentBuilder<CommandSourceStack, ?> placeOption(String name, Supplier<SimpleTree<String, ? extends PocketCreator>> mapSupplier, Function<ResourceLocation, PocketCreator> idFunction) {
+    public static <T extends PocketCreator> ArgumentBuilder<CommandSourceStack, ?> placeOption(String name, ResourceKey<Registry<T>> resourceKey) {
         return literal(name).then(
                 argument("id", ResourceLocationArgument.id())
                         .requires(CommandSourceStack::isPlayer)
-                        .suggests((ctx, builder) -> getSuggestions(mapSupplier.get().keySet(), builder))
+                        .suggests((ctx, builder) -> getSuggestions(ctx.getSource().registryAccess(), resourceKey, builder))
                         .executes(context -> placePocket(
                                 context.getSource(),
                                 ResourceLocationArgument.getId(context, "id"),
-                                idFunction,
+                                resourceKey,
                                 context.getSource().getPlayerOrException(),
                                 null
                         ))
@@ -71,7 +71,7 @@ public class PocketCommand {
                                 .executes(context -> placePocket(
                                         context.getSource(),
                                         ResourceLocationArgument.getId(context, "id"),
-                                        idFunction,
+                                        resourceKey,
                                         EntityArgument.getEntity(context, "locator"),
                                         null
                                 ))
@@ -80,7 +80,7 @@ public class PocketCommand {
                                 .executes(context -> placePocket(
                                         context.getSource(),
                                         ResourceLocationArgument.getId(context, "id"),
-                                        idFunction,
+                                        resourceKey,
                                         null,
                                         BlockPosArgument.getLoadedBlockPos(context, "source_pos")
                                 ))
@@ -91,9 +91,9 @@ public class PocketCommand {
         dispatcher.register(
                 literal("pocket")
                         .requires(source -> source.hasPermission(2))
-                        .then(placeOption("virtual_pocket", PocketLoader::getVirtualPockets, PocketLoader::getVirtual))
-                        .then(placeOption("pocket_group", PocketLoader::getPocketGroups, PocketLoader::getGroup))
-                        .then(placeOption("pocket_generator", PocketLoader::getPocketGenerators, PocketLoader::getGenerator)
+                        .then(placeOption("virtual_pocket", ModRegistryKeys.VIRTUAL_POCKET))
+                        .then(placeOption("pocket_group", ModRegistryKeys.POCKET_GROUPS))
+                        .then(placeOption("pocket_generator", ModRegistryKeys.VIRTUAL_POCKET)
                                 .then(
                                                 literal("dump")
                                                         .requires(src -> src.hasPermission(4))
@@ -105,19 +105,15 @@ public class PocketCommand {
                                                                 } catch (Exception e) {
                                                                     LOGGER.error("Error dumping pocket data", e);
                                                                 }
-                                                            }).thenRun(() -> {
-                                                                ctx.getSource().getServer().execute(() -> {
-                                                                    ctx.getSource().sendSuccess(() -> Component.literal("Dumped pocket data"), false);
-                                                                });
-                                                            });
+                                                            }).thenRun(() -> ctx.getSource().getServer().execute(() -> ctx.getSource().sendSuccess(() -> Component.literal("Dumped pocket data"), false)));
                                                             return Command.SINGLE_SUCCESS;
                                                         })
                                         )
                         ));
     }
 
-    private static int placePocket(CommandSourceStack source, ResourceLocation id, Function<ResourceLocation, PocketCreator> idFunction, @Nullable Entity locatorEntity, @Nullable BlockPos selectedSourcePos) throws CommandSyntaxException {
-        PocketCreator creator = idFunction.apply(id);
+    private static <T extends PocketCreator> int placePocket(CommandSourceStack source, ResourceLocation id, ResourceKey<Registry<T>> idFunction, @Nullable Entity locatorEntity, @Nullable BlockPos selectedSourcePos) throws CommandSyntaxException {
+        PocketCreator creator = source.registryAccess().registry(idFunction).map(a -> a.get(id)).orElse(null);
         if (creator == null) {
             source.sendFailure(Component.literal("Unknown pocket id: " + id));
             return 0;
@@ -159,7 +155,7 @@ public class PocketCommand {
                 pocketLevel.registryAccess()
         );
 
-        Pocket pocket;
+        Pocket<?, ?> pocket;
         try {
             pocket = creator.prepareAndPlacePocket(pocketGenerationContext);
         } catch (RuntimeException e) {
@@ -209,7 +205,7 @@ public class PocketCommand {
                 && player.mayUseItemAt(sourcePos, Direction.UP, ItemStack.EMPTY);
     }
 
-    public static CompletableFuture<Suggestions> getSuggestions(Set<Path<String>> paths, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(paths.stream().flatMap(path -> path.reduce(String::concat).stream()), builder);
+    public static <T extends PocketCreator> CompletableFuture<Suggestions> getSuggestions(RegistryAccess access, ResourceKey<Registry<T>> resourceKey, SuggestionsBuilder builder) {
+        return SharedSuggestionProvider.suggest(access.registry(resourceKey).map(Registry::keySet).stream().flatMap(Collection::stream).map(ResourceLocation::toString), builder);
     }
 }

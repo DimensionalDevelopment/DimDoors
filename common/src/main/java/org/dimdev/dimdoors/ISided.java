@@ -1,10 +1,13 @@
 package org.dimdev.dimdoors;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.serialization.Codec;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,6 +18,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.animal.Cod;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.level.Level;
@@ -24,6 +28,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
+import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 
 import java.nio.file.Path;
 import java.util.function.BiConsumer;
@@ -77,6 +82,8 @@ public interface ISided extends IRegister, ICreativeTabHandler, INetworking {
     long bucketAmount();
 
     void registerCommands(Consumer<CommandDispatcher<CommandSourceStack>> consumer);
+
+    public <T> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> codec);
 
     @FunctionalInterface
     interface AttackBlockCallback {

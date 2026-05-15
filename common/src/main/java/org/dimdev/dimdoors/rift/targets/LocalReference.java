@@ -64,14 +64,4 @@ public class LocalReference extends RiftReference {
         }
         return new RGBA(1, 0, 0, 1);
     }
-
-    @Override
-    public VirtualTargetType<?> getType() {
-        return VirtualTargetType.RIFT_REFENCE;
-    }
-
-    @Override
-    public VirtualTarget copy() {
-        return new RiftReference(getLocation());
-    }
 }

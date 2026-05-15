@@ -1,0 +1,12 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "dimdoors:myth/turris_eburnea",
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [0],
+      "rift_data": "dimdoors:pocket_entrance"
+    }
+  ],
+  "tags": ["myth"]
+}

@@ -54,7 +54,6 @@ abstract public class LimboDecayProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         return this.registries.thenCompose(provider -> {
-            Set<ResourceLocation> generatedDecayPatterns = Sets.newHashSet();
             List<CompletableFuture<?>> list = new ArrayList<>();
 
             Consumer<DecayPatternHolder> consumer = (patternHolder) -> {

@@ -2,27 +2,31 @@ package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class TemplateTarget extends WrappedDestinationTarget {
-    public static final MapCodec<TemplateTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.INSTANCE).forGetter(a -> a.wrappedDestination),
-                ResourceLocation.CODEC.fieldOf("template").forGetter(a -> a.template)).apply(instance, TemplateTarget::new));
+public class TemplateTarget extends WrappedDestinationTarget<TemplateTarget> {
+    public static final MapCodec<TemplateTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.INSTANCE).forGetter(a -> a.wrappedDestination),
+            VirtualPocket.HOLDER_CODEC.fieldOf("template").forGetter(a -> a.template)).apply(instance, TemplateTarget::new));
 
-    private final ResourceLocation template;
+    private final Holder<VirtualPocket> template;
 
-    public TemplateTarget(VirtualTarget wrappedDestination, ResourceLocation template) {
+    public TemplateTarget(VirtualTarget<?> wrappedDestination, Holder<VirtualPocket> template) {
         super(wrappedDestination);
         this.template = template;
     }
 
-    public TemplateTarget(ResourceLocation template) {
+    public TemplateTarget(Holder<VirtualPocket> template) {
         this(null, template);
     }
 
@@ -32,15 +36,16 @@ public class TemplateTarget extends WrappedDestinationTarget {
         VirtualLocation newVirtualLocation;
         int depth = riftVirtualLocation.getDepth() + 1;
         newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
-        Pocket pocket = PocketGenerator.generateFromVirtualPocket(DimensionalDoors.getWorld(ModDimensions.DUNGEON), template, newVirtualLocation, this.location.asTarget(), null);
+        Pocket<?, ?> pocket = PocketGenerator.generateFromVirtualPocket(DimensionalDoors.getWorld(ModDimensions.DUNGEON), template, newVirtualLocation, this.location.asTarget(), null);
 
         return DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
     }
 
     @Override
-    public VirtualTarget copy() {
+    public TemplateTarget copy() {
         return new TemplateTarget(wrappedDestination, template);
     }
+
     @Override
     public VirtualTargetType<TemplateTarget> getType() {
         return VirtualTargetType.TEMPLATE;

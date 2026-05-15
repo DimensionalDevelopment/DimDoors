@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ArgumentTypeInfos.class)
 public abstract class ArgumentTypesMixin {
-    @Shadow
-    private static <A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>> ArgumentTypeInfo<A, T> register(Registry<ArgumentTypeInfo<?, ?>> registry, String string, Class<? extends A> clazz, ArgumentTypeInfo<A, T> argumentSerializer) {
-    throw new AssertionError("Nope.");
-    }
-
-    @Inject(method = "bootstrap", at = @At("RETURN"))
-    private static void register(Registry<ArgumentTypeInfo<?, ?>> registry, CallbackInfoReturnable<ArgumentTypeInfo<?, ?>> ci) {
-    register(registry, "pocket", PocketTemplateArgumentType.class, SingletonArgumentInfo.contextFree(PocketTemplateArgumentType::new));
-    register(registry, "block_placement_type", BlockPlacementTypeArgumentType.class, SingletonArgumentInfo.contextFree(BlockPlacementTypeArgumentType::blockPlacementType));
-    }
+//    @Shadow
+//    private static <A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>> ArgumentTypeInfo<A, T> register(Registry<ArgumentTypeInfo<?, ?>> registry, String string, Class<? extends A> clazz, ArgumentTypeInfo<A, T> argumentSerializer) {
+//    throw new AssertionError("Nope.");
+//    }
+//
+//    @Inject(method = "bootstrap", at = @At("RETURN"))
+//    private static void register(Registry<ArgumentTypeInfo<?, ?>> registry, CallbackInfoReturnable<ArgumentTypeInfo<?, ?>> ci) {
+//    register(registry, "pocket", PocketTemplateArgumentType.class, SingletonArgumentInfo.contextFree(PocketTemplateArgumentType::new));
+//    register(registry, "block_placement_type", BlockPlacementTypeArgumentType.class, SingletonArgumentInfo.contextFree(BlockPlacementTypeArgumentType::blockPlacementType));
+//    }
 }

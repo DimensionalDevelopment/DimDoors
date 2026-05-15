@@ -12,5 +12,6 @@
       "ids": [2],
       "rift_data": "dimdoors:default_dungeon"
     }
-  ]
+  ],
+  "tags": ["myth"]
 }

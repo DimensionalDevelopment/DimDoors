@@ -1,58 +1,36 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 import org.dimdev.dimdoors.rift.targets.TemplateTarget;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.function.IntConsumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.dimdev.dimdoors.pockets.modifier.RiftDataModifier.stream;
-import static org.dimdev.dimdoors.pockets.modifier.RiftDataModifier.toByteArray;
+public record TemplateModifier(Holder<VirtualPocket> templateId, List<Integer> ids) implements Modifier {
+    public static MapCodec<TemplateModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            VirtualPocket.HOLDER_CODEC.fieldOf("templateId").forGetter(TemplateModifier::templateId),
+            Codec.INT_STREAM.xmap(IntStream::boxed, integerStream -> integerStream.mapToInt(Integer::intValue))
+                    .xmap(Stream::toList, Collection::stream).fieldOf("ids")
+                    .forGetter(TemplateModifier::ids)
+    ).apply(instance, TemplateModifier::new));
 
-public class TemplateModifier extends AbstractModifier {
     public static final String KEY = "template";
 
-    private ResourceLocation templateId;
-
-    private List<Integer> ids;
-
-    @Override
-    public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-        templateId = ResourceLocation.tryParse(nbt.getString("templateId"));
-        ids = stream(nbt.getByteArray("ids")).boxed().collect(Collectors.toList());
-        return this;
-    }
-
-    @Override
-    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-        super.toNbtInternal(nbt, provider, allowReference);
-
-        nbt.putString("templateId", templateId.toString());
-        nbt.putByteArray("ids", toByteArray(ids.stream().mapToInt(Integer::intValue).toArray()));
-        return nbt;
-    }
 
 
     @Override
     public ModifierType<? extends Modifier> getType() {
     return ModifierType.TEMPLATE_MODIFIER_TYPE;
-    }
-
-    @Override
-    public String getKey() {
-        return KEY;
     }
 
     @Override

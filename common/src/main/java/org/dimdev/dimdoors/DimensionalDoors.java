@@ -161,7 +161,7 @@ public class DimensionalDoors {
         sided.onServerStarting(Decay.DecayLoader::populate);
 
         registerListeners();
-        SchemFixer.run();
+//        SchemFixer.run();
     }
 
     private static void checkCompat() {

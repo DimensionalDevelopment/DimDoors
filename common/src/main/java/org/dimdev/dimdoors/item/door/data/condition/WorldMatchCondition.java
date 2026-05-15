@@ -1,6 +1,8 @@
 package org.dimdev.dimdoors.item.door.data.condition;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -8,24 +10,14 @@ import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public record WorldMatchCondition(ResourceKey<Level> world) implements Condition {
-    public static WorldMatchCondition fromJson(JsonObject json) {
-    ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(json.getAsJsonPrimitive("world").getAsString()));
-    return new WorldMatchCondition(key);
-    }
-
+    public static MapCodec<WorldMatchCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(Level.RESOURCE_KEY_CODEC.fieldOf("world").forGetter(WorldMatchCondition::world)).apply(instance, WorldMatchCondition::new));
     @Override
     public boolean matches(EntranceRiftBlockEntity rift) {
-    //noinspection ConstantConditions
-    return rift.getLevel().dimension().equals(this.world);
-    }
-
-    @Override
-    public void toJsonInner(JsonObject json) {
-    json.addProperty("world", world.location().toString());
+        return rift.getLevel().dimension().equals(this.world);
     }
 
     @Override
     public ConditionType<?> getType() {
-    return ConditionType.WORLD_MATCH;
+        return ConditionType.WORLD_MATCH;
     }
 }

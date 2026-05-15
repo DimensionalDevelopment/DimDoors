@@ -1,0 +1,23 @@
+{
+  "type": "dimdoors:schematic",
+  "builder": {
+    "type": "dimdoors:pocket"
+  },
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [
+        0
+      ],
+      "rift_data": "dimdoors:pocket_entrance"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [
+        1, 2
+      ],
+      "rift_data": "dimdoors:default_dungeon"
+    }
+  ],
+  "id": "dimdoors:dungeon/ruins_corrupted_desert_pyramid"
+}

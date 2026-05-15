@@ -29,64 +29,59 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTarget subclass
-    public static <T extends RandomTarget> Products.P8<RecordCodecBuilder.Mu<T>, Float, Double, Double, Double, Double, Set<Integer>, Boolean, Boolean> common(RecordCodecBuilder.Instance<T> instance) {
-    return instance.group(
-        Codec.FLOAT.fieldOf("newRiftWeight").forGetter(RandomTarget::getNewRiftWeight),
-        Codec.DOUBLE.fieldOf("weightMaximum").forGetter(RandomTarget::getWeightMaximum),
-        Codec.DOUBLE.fieldOf("coordFactor").forGetter(RandomTarget::getCoordFactor),
-        Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(RandomTarget::getPositiveDepthFactor),
-        Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(RandomTarget::getNegativeDepthFactor),
-        Codec.INT_STREAM.xmap(intStream -> intStream.boxed().collect(Collectors.toSet()), integers -> integers.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(RandomTarget::getAcceptedGroups),
-        Codec.BOOL.fieldOf("noLink").forGetter(RandomTarget::isNoLink),
-        Codec.BOOL.fieldOf("noLinkBack").forGetter(RandomTarget::isNoLinkBack)
-    );
+public abstract class RandomTarget<T extends RandomTarget<T>> extends VirtualTarget<T> {
+    public static <T extends RandomTarget<T>> Products.P8<RecordCodecBuilder.Mu<T>, Float, Double, Double, Double, Double, Set<Integer>, Boolean, Boolean> common(RecordCodecBuilder.Instance<T> instance) {
+        return instance.group(
+                Codec.FLOAT.fieldOf("newRiftWeight").forGetter(RandomTarget::getNewRiftWeight),
+                Codec.DOUBLE.fieldOf("weightMaximum").forGetter(RandomTarget::getWeightMaximum),
+                Codec.DOUBLE.fieldOf("coordFactor").forGetter(RandomTarget::getCoordFactor),
+                Codec.DOUBLE.fieldOf("positiveDepthFactor").forGetter(RandomTarget::getPositiveDepthFactor),
+                Codec.DOUBLE.fieldOf("negativeDepthFactor").forGetter(RandomTarget::getNegativeDepthFactor),
+                Codec.INT_STREAM.xmap(intStream -> intStream.boxed().collect(Collectors.toSet()), integers -> integers.stream().mapToInt(Integer::intValue)).fieldOf("acceptedGroups").forGetter(RandomTarget::getAcceptedGroups),
+                Codec.BOOL.fieldOf("noLink").forGetter(RandomTarget::isNoLink),
+                Codec.BOOL.fieldOf("noLinkBack").forGetter(RandomTarget::isNoLinkBack)
+        );
     }
 
-    public static final MapCodec<RandomTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> common(instance).apply(instance, RandomTarget::new));
-    private final float newRiftWeight;
-    private final double weightMaximum;
-    private final double coordFactor;
-    private final double positiveDepthFactor;
-    private final double negativeDepthFactor;
-    private final Set<Integer> acceptedGroups;
-    private final boolean noLink;
-    private final boolean noLinkBack;
+    protected final float newRiftWeight;
+    protected final double weightMaximum;
+    protected final double coordFactor;
+    protected final double positiveDepthFactor;
+    protected final double negativeDepthFactor;
+    protected final Set<Integer> acceptedGroups;
+    protected final boolean noLink;
+    protected final boolean noLinkBack;
 
     public RandomTarget(float newRiftWeight, double weightMaximum, double coordFactor, double positiveDepthFactor, double negativeDepthFactor, Set<Integer> acceptedGroups, boolean noLink, boolean noLinkBack) {
-    this.newRiftWeight = newRiftWeight;
-    this.weightMaximum = weightMaximum;
-    this.coordFactor = coordFactor;
-    this.positiveDepthFactor = positiveDepthFactor;
-    this.negativeDepthFactor = negativeDepthFactor;
-    this.acceptedGroups = acceptedGroups;
-    this.noLink = noLink;
-    this.noLinkBack = noLinkBack;
-    }
-
-    public static RandomTargetBuilder builder() {
-    return new RandomTargetBuilder();
+        this.newRiftWeight = newRiftWeight;
+        this.weightMaximum = weightMaximum;
+        this.coordFactor = coordFactor;
+        this.positiveDepthFactor = positiveDepthFactor;
+        this.negativeDepthFactor = negativeDepthFactor;
+        this.acceptedGroups = acceptedGroups;
+        this.noLink = noLink;
+        this.noLinkBack = noLinkBack;
     }
 
     @Override
     public Target receiveOther() { // TODO: Wrap rather than replace
-    VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(this.location);
+        VirtualLocation virtualLocationHere = VirtualLocation.fromLocation(this.location);
 
-    Map<Location, Float> riftWeights = calculateRiftWeights(virtualLocationHere);
+        Map<Location, Float> riftWeights = calculateRiftWeights(virtualLocationHere);
 
-    Location selectedLink;
-    if (riftWeights.isEmpty()) {
-        if (this.newRiftWeight == -1) {
-        selectedLink = null;
+        Location selectedLink;
+        if (riftWeights.isEmpty()) {
+            if (this.newRiftWeight == -1) {
+                selectedLink = null;
+            } else {
+                return null;
+            }
         } else {
-        return null;
+            selectedLink = MathUtil.weightedRandom(riftWeights);
         }
-    } else {
-        selectedLink = MathUtil.weightedRandom(riftWeights);
-    }
 
-    // Check if we have to generate a new rift
-    if (selectedLink == null) {
+        // Check if we have to generate a new rift
+        if (selectedLink == null) {
 //             Randomly select a distance from the distribution f(x) = 1/(m^2/x + x)^2. We use the same distribution as the
 //             weighting function. The idea is that there is some kind of "field" formed by the rift, with the field's
 //             intensity decreasing proportionally to the area of the sphere. The product of the area of the sphere and
@@ -105,62 +100,64 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
 //             Show[ListPlot[table], Plot[fit[x], {x, 0, 1}]]
 //             Clear[m];
 //             inverseCummulativeNormalizedDistribution = Normal[fit]
-        double r = Math.random();
-        double distance = this.weightMaximum * (2 * Math.tan(Math.PI / 2 * r) - 0.5578284481138029 * Math.sqrt(r) * Math.log(r));
+            double r = Math.random();
+            double distance = this.weightMaximum * (2 * Math.tan(Math.PI / 2 * r) - 0.5578284481138029 * Math.sqrt(r) * Math.log(r));
 
-        // Randomly split the vector into depth, x, and z components
-        // TODO: Two random angles isn't a uniformly random direction! Use random vector, normalize, add depth offset, scale xz, scale depth.
-        double theta = Math.random() * Math.PI; // Angle between vector and xz plane
-        double phi = Math.random() * Math.PI;  // Angle of the vector on the xz plane relative to the x axis
-        double depth = distance * Math.sin(theta);
-        depth /= depth > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
-        double x = Math.cos(theta) * Math.cos(phi) * distance / this.coordFactor;
-        double z = Math.cos(theta) * Math.sin(phi) * distance / this.coordFactor;
-        VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.getWorld(),
-            virtualLocationHere.getX() + (int) Math.round(x),
-            virtualLocationHere.getZ() + (int) Math.round(z),
-            virtualLocationHere.getDepth() + (int) Math.round(depth));
+            // Randomly split the vector into depth, x, and z components
+            // TODO: Two random angles isn't a uniformly random direction! Use random vector, normalize, add depth offset, scale xz, scale depth.
+            double theta = Math.random() * Math.PI; // Angle between vector and xz plane
+            double phi = Math.random() * Math.PI;  // Angle of the vector on the xz plane relative to the x axis
+            double depth = distance * Math.sin(theta);
+            depth /= depth > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
+            double x = Math.cos(theta) * Math.cos(phi) * distance / this.coordFactor;
+            double z = Math.cos(theta) * Math.sin(phi) * distance / this.coordFactor;
+            VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.getWorld(),
+                    virtualLocationHere.getX() + (int) Math.round(x),
+                    virtualLocationHere.getZ() + (int) Math.round(z),
+                    virtualLocationHere.getDepth() + (int) Math.round(depth));
 
-        if (virtualLocation.getDepth() <= 0) {
-        // This will lead to the overworld
-        ServerLevel world = DimensionalDoors.getWorld(virtualLocation.getWorld());
-        BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
-        if (pos.getY() == -1) {
-            // No blocks at that XZ (hole in bedrock)
-            pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ());
-        }
-        world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
+            if (virtualLocation.getDepth() <= 0) {
+                // This will lead to the overworld
+                ServerLevel world = DimensionalDoors.getWorld(virtualLocation.getWorld());
+                BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
+                if (pos.getY() == -1) {
+                    // No blocks at that XZ (hole in bedrock)
+                    pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ());
+                }
+                world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
 
-        RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
-        DetachedRiftBlockEntity riftEntity = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
-        // TODO: Should the rift not be configured like the other link
-        riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
+                RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
+                DetachedRiftBlockEntity riftEntity = (DetachedRiftBlockEntity) world.getBlockEntity(pos);
+                // TODO: Should the rift not be configured like the other link
+                riftEntity.setProperties(thisRift.getProperties().toBuilder().linksRemaining(1).build());
 
-        if (!this.noLinkBack && !riftEntity.getProperties().isOneWay())
-            TemplateUtils.linkRifts(Location.ofWorld(world, pos), this.location);
-        if (!this.noLink) TemplateUtils.linkRifts(this.location, Location.ofWorld(world, pos));
-        return riftEntity.as(Targets.ENTITY);
-        } else {
-        // Make a new dungeon pocket
-        RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
-        LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
-        Pocket pocket = generatePocket(virtualLocation, new RiftReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
+                if (!this.noLinkBack && !riftEntity.getProperties().isOneWay())
+                    TemplateUtils.linkRifts(Location.ofWorld(world, pos), this.location);
+                if (!this.noLink) TemplateUtils.linkRifts(this.location, Location.ofWorld(world, pos));
+                return riftEntity.as(Targets.ENTITY);
+            } else {
+                // Make a new dungeon pocket
+                RiftBlockEntity thisRift = (RiftBlockEntity) this.location.getBlockEntity();
+                LinkProperties newLink = thisRift.getProperties() != null ? thisRift.getProperties().toBuilder().linksRemaining(0).build() : null;
+                Pocket pocket = generatePocket(virtualLocation, new RiftReference(!this.noLinkBack ? this.location : null), newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
 
-                if (!this.noLink) TemplateUtils.linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
+                if (!this.noLink)
+                    TemplateUtils.linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
                 var entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
                 var beEntrance = entrance != null ? entrance.getBlockEntity() : null;
                 return beEntrance != null ? (Target) beEntrance : null;
-        }
-    } else {
-        // An existing rift was selected
-        RiftBlockEntity riftEntity = (RiftBlockEntity) selectedLink.getBlockEntity();
+            }
+        } else {
+            // An existing rift was selected
+            RiftBlockEntity riftEntity = (RiftBlockEntity) selectedLink.getBlockEntity();
 
-        // Link the rifts if necessary and teleport the entity
-        if (!this.noLink) TemplateUtils.linkRifts(this.location, selectedLink);
-        if (!this.noLinkBack && !riftEntity.getProperties().isOneWay()) TemplateUtils.linkRifts(selectedLink, this.location);
-        return riftEntity;
-    }
+            // Link the rifts if necessary and teleport the entity
+            if (!this.noLink) TemplateUtils.linkRifts(this.location, selectedLink);
+            if (!this.noLinkBack && !riftEntity.getProperties().isOneWay())
+                TemplateUtils.linkRifts(selectedLink, this.location);
+            return riftEntity;
+        }
     }
 
     private Map<Location, Float> calculateRiftWeights(VirtualLocation virtualLocation) {
@@ -198,110 +195,98 @@ public class RandomTarget extends VirtualTarget { // TODO: Split into DungeonTar
     }
 
     protected Pocket generatePocket(VirtualLocation location, RiftReference linkTo, LinkProperties props) {
-    return PocketGenerator.generateDungeonPocketV2(location, linkTo, props);
+        return PocketGenerator.generateDungeonPocketV2(location, linkTo, props);
     }
 
     private double sq(double a) {
-    return a * a;
+        return a * a;
     }
 
     public float getNewRiftWeight() {
-    return this.newRiftWeight;
+        return this.newRiftWeight;
     }
 
     public double getWeightMaximum() {
-    return this.weightMaximum;
+        return this.weightMaximum;
     }
 
     public double getCoordFactor() {
-    return this.coordFactor;
+        return this.coordFactor;
     }
 
     public double getPositiveDepthFactor() {
-    return this.positiveDepthFactor;
+        return this.positiveDepthFactor;
     }
 
     public double getNegativeDepthFactor() {
-    return this.negativeDepthFactor;
+        return this.negativeDepthFactor;
     }
 
     public Set<Integer> getAcceptedGroups() {
-    return this.acceptedGroups;
+        return this.acceptedGroups;
     }
 
     public boolean isNoLink() {
-    return this.noLink;
+        return this.noLink;
     }
 
     public boolean isNoLinkBack() {
-    return this.noLinkBack;
+        return this.noLinkBack;
     }
 
-    @Override
-    public VirtualTargetType<? extends VirtualTarget> getType() {
-    return VirtualTargetType.AVAILABLE_LINK;
-    }
+    public static abstract class RandomTargetBuilder<T extends RandomTarget<T>, V extends RandomTargetBuilder<T, V>> {
+        protected float newRiftWeight;
+        protected double weightMaximum;
+        protected double coordFactor;
+        protected double positiveDepthFactor;
+        protected double negativeDepthFactor;
+        protected Set<Integer> acceptedGroups = Collections.emptySet();
+        protected boolean noLink;
+        protected boolean noLinkBack;
 
-    @Override
-    public VirtualTarget copy() {
-    return new RandomTarget(newRiftWeight, weightMaximum, coordFactor, positiveDepthFactor, negativeDepthFactor, acceptedGroups, noLink, noLinkBack);
-    }
+        RandomTargetBuilder() {
+        }
 
-    public static class RandomTargetBuilder {
-    protected float newRiftWeight;
-    protected double weightMaximum;
-    protected double coordFactor;
-    protected double positiveDepthFactor;
-    protected double negativeDepthFactor;
-    protected Set<Integer> acceptedGroups = Collections.emptySet();
-    protected boolean noLink;
-    protected boolean noLinkBack;
+        public V newRiftWeight(float newRiftWeight) {
+            this.newRiftWeight = newRiftWeight;
+            return (V) this;
+        }
 
-    RandomTargetBuilder() {
-    }
+        public V weightMaximum(double weightMaximum) {
+            this.weightMaximum = weightMaximum;
+            return (V) this;
+        }
 
-    public RandomTargetBuilder newRiftWeight(float newRiftWeight) {
-        this.newRiftWeight = newRiftWeight;
-        return this;
-    }
+        public V coordFactor(double coordFactor) {
+            this.coordFactor = coordFactor;
+            return (V) this;
+        }
 
-    public RandomTargetBuilder weightMaximum(double weightMaximum) {
-        this.weightMaximum = weightMaximum;
-        return this;
-    }
+        public V positiveDepthFactor(double positiveDepthFactor) {
+            this.positiveDepthFactor = positiveDepthFactor;
+            return (V) this;
+        }
 
-    public RandomTargetBuilder coordFactor(double coordFactor) {
-        this.coordFactor = coordFactor;
-        return this;
-    }
+        public V negativeDepthFactor(double negativeDepthFactor) {
+            this.negativeDepthFactor = negativeDepthFactor;
+            return (V) this;
+        }
 
-    public RandomTargetBuilder positiveDepthFactor(double positiveDepthFactor) {
-        this.positiveDepthFactor = positiveDepthFactor;
-        return this;
-    }
+        public V acceptedGroups(Set<Integer> acceptedGroups) {
+            this.acceptedGroups = acceptedGroups;
+            return (V) this;
+        }
 
-    public RandomTargetBuilder negativeDepthFactor(double negativeDepthFactor) {
-        this.negativeDepthFactor = negativeDepthFactor;
-        return this;
-    }
+        public V noLink(boolean noLink) {
+            this.noLink = noLink;
+            return (V) this;
+        }
 
-    public RandomTargetBuilder acceptedGroups(Set<Integer> acceptedGroups) {
-        this.acceptedGroups = acceptedGroups;
-        return this;
-    }
+        public V noLinkBack(boolean noLinkBack) {
+            this.noLinkBack = noLinkBack;
+            return (V) this;
+        }
 
-    public RandomTargetBuilder noLink(boolean noLink) {
-        this.noLink = noLink;
-        return this;
-    }
-
-    public RandomTargetBuilder noLinkBack(boolean noLinkBack) {
-        this.noLinkBack = noLinkBack;
-        return this;
-    }
-
-    public RandomTarget build() {
-        return new RandomTarget(this.newRiftWeight, this.weightMaximum, this.coordFactor, this.positiveDepthFactor, this.negativeDepthFactor, this.acceptedGroups, this.noLink, this.noLinkBack);
-    }
+        abstract public T build();
     }
 }

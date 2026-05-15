@@ -117,16 +117,17 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
                     runnables.forEach(Runnable::run);
                 }
 
-                var map = toRegister.get(key);
                 var registry = event.getRegistry();
-
-                if (map != null && !map.isEmpty()) {
-                    populate(registry, map);
-                }
 
                 AddCallback<?> callback = callbacks.get(key);
 
                 if(callback != null) ((Registry) registry).addCallback(callback);
+
+                var map = toRegister.get(key);
+
+                if (map != null && !map.isEmpty()) {
+                    populate(registry, map);
+                }
             } finally {
                 DimensionalDoorsNeoForge.this.activeKey = null;
             }

@@ -1,46 +1,44 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.pockets.PocketLoader;
+import net.minecraft.resources.ResourceLocation;
+import org.dimdev.dimdoors.ModRegistryKeys;
+import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
 
 // TODO: Override equals
-public class PathSelector extends AbstractVirtualPocketList {
+public class PathSelector extends AbstractVirtualPocketList<PathSelector> {
+    public static final MapCodec<PathSelector> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(ResourceLocation.CODEC.fieldOf("path").forGetter(a -> a.path)).apply(instance, PathSelector::new));
     public static final String KEY = "path";
 
-    private String path;
+    private final ResourceLocation path;
+    private boolean initalized;
 
-    @Override
-    public ImplementedVirtualPocket fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    this.path = nbt.getString("path");
-
-    return this;
+    public PathSelector(ResourceLocation path) {
+        this.path = path;
     }
 
     @Override
-    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    super.toNbtInternal(nbt, provider, allowReference);
-
-    nbt.putString("path", path);
-
-    return nbt;
+    public ImplementedVirtualPocket.VirtualPocketType<PathSelector> getType() {
+        return ImplementedVirtualPocket.VirtualPocketType.PATH_SELECTOR;
     }
 
     @Override
-    public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-    return VirtualPocketType.PATH_SELECTOR;
+    public double getWeight(PocketGenerationContext context) {
+        if(!initalized) {
+            context.provider().lookup(ModRegistryKeys.VIRTUAL_POCKET).stream().flatMap(HolderLookup::listElements).filter(this::checkKey).map(Holder.Reference::value).forEach(this::add);
+            this.initalized = true;
+        }
+
+        return super.getWeight(context);
     }
 
-    @Override
-    public String getKey() {
-    return KEY;
-    }
-
-    @Override
-    public void init() {
-    this.addAll(PocketLoader.getInstance().getVirtualPockets().getNode(Path.stringPath(path)).values());
+    private boolean checkKey(Holder.Reference<VirtualPocket> virtualPocketReference) {
+        var key = virtualPocketReference.key().location();
+        return (key.getNamespace().equals("minecraft") || key.getNamespace().equals(path.getNamespace())) && key.getPath().startsWith(path.getPath());
     }
 }

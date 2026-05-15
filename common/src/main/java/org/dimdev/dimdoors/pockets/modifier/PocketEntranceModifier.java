@@ -1,43 +1,22 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
 import com.google.common.base.MoreObjects;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.packs.resources.ResourceManager;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.jetbrains.annotations.NotNull;
 
-public class PocketEntranceModifier extends AbstractModifier {
+public record PocketEntranceModifier(int id) implements Modifier {
     public static final String KEY = "pocket_entrance";
 
-    private int id;
-
-    public PocketEntranceModifier(int id) {
-    this.id = id;
-    }
-
-    public PocketEntranceModifier() {
-
-    }
+    public static final MapCodec<PocketEntranceModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(Codec.INT.fieldOf("id").forGetter(PocketEntranceModifier::id)).apply(instance, PocketEntranceModifier::new));
 
     @Override
-    public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    return new PocketEntranceModifier(nbt.getInt("id"));
-    }
-
-    @Override
-    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    super.toNbtInternal(nbt, provider, allowReference);
-
-    nbt.putInt("id", id);
-
-    return nbt;
-    }
-
-    @Override
-    public String toString() {
+    public @NotNull String toString() {
     return MoreObjects.toStringHelper(this)
         .add("id", id)
         .toString();
@@ -46,11 +25,6 @@ public class PocketEntranceModifier extends AbstractModifier {
     @Override
     public ModifierType<? extends Modifier> getType() {
     return ModifierType.PUBLIC_MODIFIER_TYPE;
-    }
-
-    @Override
-    public String getKey() {
-    return KEY;
     }
 
     @Override

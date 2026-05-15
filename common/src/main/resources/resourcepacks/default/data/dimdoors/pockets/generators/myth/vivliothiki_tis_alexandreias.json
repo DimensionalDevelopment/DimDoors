@@ -1,0 +1,19 @@
+{
+  "type": "dimdoors:schematic",
+  "id": "dimdoors:myth/vivliothiki_tis_alexandreias",
+  "builder": {
+    "type": "dimdoors:pocket"
+  },
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [1],
+      "rift_data": "dimdoors:pocket_entrance"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [2, 3, 4],
+      "rift_data": "dimdoors:default_dungeon"
+    }
+  ]
+}

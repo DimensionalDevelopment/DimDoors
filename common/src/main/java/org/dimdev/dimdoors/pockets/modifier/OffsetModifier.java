@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -10,55 +12,23 @@ import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import java.beans.Expression;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OffsetModifier extends AbstractModifier {
+public record OffsetModifier(Equation offsetX, Equation offsetY, Equation offsetZ) implements Modifier {
+    public static final MapCodec<OffsetModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Equation.CODEC.optionalFieldOf("offsetX", Equation.ZERO).forGetter(OffsetModifier::offsetX),
+            Equation.CODEC.optionalFieldOf("offsetY", Equation.ZERO).forGetter(OffsetModifier::offsetY),
+            Equation.CODEC.optionalFieldOf("offsetZ", Equation.ZERO).forGetter(OffsetModifier::offsetZ)
+    ).apply(instance, OffsetModifier::new));
+
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String KEY = "offset";
 
-    private String offsetX;
-    private Equation offsetXEquation;
-    private String offsetY;
-    private Equation offsetYEquation;
-    private String offsetZ;
-    private Equation offsetZEquation;
-
-    @Override
-    public Modifier fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    try {
-        offsetX = nbt.contains("offset_x") ? nbt.getString("offset_x") : "0";
-        offsetXEquation = Equation.parse(offsetX);
-        offsetY = nbt.contains("offset_y") ? nbt.getString("offset_y") : "0";
-        offsetYEquation = Equation.parse(offsetY);
-        offsetZ = nbt.contains("offset_z") ? nbt.getString("offset_z") : "0";
-        offsetZEquation = Equation.parse(offsetZ);
-    } catch (Equation.EquationParseException e) {
-        LOGGER.error(e);
-    }
-
-    return this;
-    }
-
-    @Override
-    public CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    super.toNbtInternal(nbt, provider, allowReference);
-
-    if (!offsetX.equals("0")) nbt.putString("offset_x", offsetX);
-    if (!offsetY.equals("0")) nbt.putString("offset_y", offsetY);
-    if (!offsetZ.equals("0")) nbt.putString("offset_z", offsetZ);
-
-    return nbt;
-    }
-
     @Override
     public ModifierType<? extends Modifier> getType() {
-    return ModifierType.OFFSET_MODIFIER_TYPE;
-    }
-
-    @Override
-    public String getKey() {
-    return KEY;
+        return ModifierType.OFFSET_MODIFIER_TYPE;
     }
 
     @Override
@@ -68,7 +38,7 @@ public class OffsetModifier extends AbstractModifier {
 
     @Override
     public void apply(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-    Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
-    builder.offsetOrigin(new Vec3i((int) offsetXEquation.apply(variableMap), (int) offsetYEquation.apply(variableMap), (int) offsetZEquation.apply(variableMap)));
+        Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
+        builder.offsetOrigin(new Vec3i((int) offsetX.apply(variableMap), (int) offsetY.apply(variableMap), (int) offsetZ.apply(variableMap)));
     }
 }

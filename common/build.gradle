@@ -29,8 +29,12 @@ dependencies {
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
 
     api "dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}"
-    api "dev.simulated_team.simulated:simulated-common-${project.minecraft_version}:${project.simulated_version}"
-    api "dev.eriksonn.aeronautics:aeronautics-common-${project.minecraft_version}:${project.aeronautics_version}"
+    api("dev.simulated_team.simulated:simulated-common-${project.minecraft_version}:${project.simulated_version}") {
+        exclude group: "dev.ryanhcode.sable"
+    }
+    api("dev.eriksonn.aeronautics:aeronautics-common-${project.minecraft_version}:${project.aeronautics_version}") {
+        exclude group: "dev.ryanhcode.sable"
+    }
     compileOnlyApi "curse.maven:create-328085:7963363"
 
     implementation "curse.maven:cyanide-541676:4824162"

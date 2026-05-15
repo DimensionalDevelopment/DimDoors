@@ -17,7 +17,7 @@ import java.util.Set;
  * such that when the target rift is gone, the destination is notified and invalidated
  * (see shouldInvalidate)
  */
-public class RiftReference extends VirtualTarget implements LocationProvider {
+public class RiftReference extends VirtualTarget<RiftReference> implements LocationProvider {
     public static MapCodec<RiftReference> CODEC = Location.CODEC.fieldOf("target").xmap(RiftReference::new, RiftReference::getLocation);
 
     private final Location target;
@@ -28,7 +28,7 @@ public class RiftReference extends VirtualTarget implements LocationProvider {
 
 
     @Override
-    public Location   getLocation() {
+    public Location getLocation() {
         return target;
     }
 
@@ -66,12 +66,12 @@ public class RiftReference extends VirtualTarget implements LocationProvider {
     }
 
     @Override
-    public VirtualTargetType<?> getType() {
+    public VirtualTargetType<RiftReference> getType() {
         return VirtualTargetType.RIFT_REFENCE;
     }
 
     @Override
-    public VirtualTarget copy() {
-        return new RiftReference(target);
+    public RiftReference copy() {
+        return new RiftReference(getLocation());
     }
 }

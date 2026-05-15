@@ -299,5 +299,37 @@
   {
     "id": "dimdoors:dungeon/gap_hallway",
     "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:decayed_house",
+    "type":"dimdoors:id"
+  },
+  {
+    "id": "dimdoors:eidlo",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:fantasmapolis",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:house",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:maze_of_doors",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:null",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:ruins_corrupted_desert_pyramid",
+    "type": "dimdoors:id"
+  },
+  {
+    "id": "dimdoors:spiti_me_vafles",
+    "type": "dimdoors:id"
   }
 ]

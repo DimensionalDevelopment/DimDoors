@@ -1,0 +1,24 @@
+{
+  "type": "dimdoors:schematic",
+  "setup_loot": true,
+  "builder": {
+    "type": "dimdoors:pocket"
+  },
+  "modifiers": [
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [
+        1
+      ],
+      "rift_data": "dimdoors:pocket_entrance"
+    },
+    {
+      "type": "dimdoors:rift_data",
+      "ids": [
+        2
+      ],
+      "rift_data": "dimdoors:default_dungeon"
+    }
+  ],
+  "id": "dimdoors:dungeon/null"
+}

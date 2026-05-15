@@ -1,117 +1,79 @@
 package org.dimdev.dimdoors.pockets.virtual.reference;
 
 import com.google.common.base.MoreObjects;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.server.packs.resources.ResourceManager;
-import org.dimdev.dimdoors.api.util.WeightedList;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import org.dimdev.dimdoors.ModRegistryKeys;
+import org.dimdev.dimdoors.api.util.HolderWeightedList;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
-import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
-import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class TagReference extends PocketGeneratorReference {
+public class TagReference extends PocketGeneratorReference<TagReference> {
+    public static final MapCodec<TagReference> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
+            .and(Codec.list(Codec.STRING).optionalFieldOf("required", List.of()).forGetter(a -> a.required))
+            .and(Codec.list(Codec.STRING).optionalFieldOf("blackList", List.of()).forGetter(a -> a.blackList))
+            .and(Codec.BOOL.optionalFieldOf("exact", false).forGetter(a -> a.exact)
+            ).apply(instance, TagReference::new)
+    );
+
     public static final String KEY = "tag";
 
-    private final List<String> required = new ArrayList<>();
-    private final List<String> blackList = new ArrayList<>();
-    private Boolean exact;
+    private final List<String> required;
+    private final List<String> blackList;
+    private final Boolean exact;
 
-    private WeightedList<PocketGenerator, PocketGenerationContext> pockets;
+    private HolderWeightedList<PocketGenerator<?>, PocketGenerationContext> pockets;
 
-    @Override
-    public ImplementedVirtualPocket fromNbt(CompoundTag nbt, HolderLookup.Provider provider, ResourceManager manager) {
-    super.fromNbt(nbt, provider, manager);
-
-    if (nbt.contains("required")) {
-        ListTag listNbt = nbt.getList("required", Tag.TAG_STRING);
-        for (int i = 0; i < listNbt.size(); i++) {
-        required.add(listNbt.getString(i));
-        }
-    }
-
-    if (nbt.contains("blackList")) {
-        ListTag listNbt = nbt.getList("blackList", Tag.TAG_STRING);
-        for (int i = 0; i < listNbt.size(); i++) {
-        blackList.add(listNbt.getString(i));
-        }
-    }
-
-    if (nbt.contains("exact")) exact = nbt.getBoolean("exact");
-
-    return this;
-    }
-
-    @Override
-    protected CompoundTag toNbtInternal(CompoundTag nbt, HolderLookup.Provider provider, boolean allowReference) {
-    super.toNbtInternal(nbt, provider, allowReference);
-
-    if (!required.isEmpty()) {
-        ListTag listNbt = new ListTag();
-        for (String nbtStr : required) {
-        listNbt.add(StringTag.valueOf(nbtStr));
-        }
-        nbt.put("required", listNbt);
-    }
-
-    if (!blackList.isEmpty()) {
-        ListTag list = new ListTag();
-        for (String nbtStr : blackList) {
-        list.add(StringTag.valueOf(nbtStr));
-        }
-        nbt.put("blackList", list);
-    }
-
-    if (exact != null) {
-        nbt.putBoolean("exact", exact);
-    }
-
-    return nbt;
+    public TagReference(Optional<Equation> weight, List<String> required, List<String> blackList, boolean exact) {
+        super(weight);
+        this.required = required;
+        this.blackList = blackList;
+        this.exact = exact;
     }
 
 
     @Override
-    public VirtualPocketType<? extends ImplementedVirtualPocket> getType() {
-    return VirtualPocketType.TAG_REFERENCE;
+    public VirtualPocketType<TagReference> getType() {
+        return VirtualPocketType.TAG_REFERENCE;
     }
 
-    @Override
-    public String getKey() {
-    return KEY;
-    }
     // TODO: this will break if pockets change in between (which they could if we add a tool for creating pocket json config stuff ingame)
     @Override
-    public PocketGenerator peekReferencedPocketGenerator(PocketGenerationContext parameters) {
-    return selectPocket(parameters, true);
+    public Holder<PocketGenerator<?>> peekReferencedPocketGenerator(PocketGenerationContext parameters) {
+        return selectPocket(parameters, true);
     }
 
     @Override
-    public PocketGenerator getReferencedPocketGenerator(PocketGenerationContext parameters) {
-    return selectPocket(parameters, false);
+    public Holder<PocketGenerator<?>> getReferencedPocketGenerator(PocketGenerationContext parameters) {
+        return selectPocket(parameters, false);
     }
 
-    private PocketGenerator selectPocket(PocketGenerationContext parameters, boolean peek) {
-    if (pockets == null) pockets = PocketLoader.getInstance().getPocketsMatchingTags(required, blackList, exact != null && exact);
-    return peek ? pockets.peekNextRandomWeighted(parameters) : pockets.getNextRandomWeighted(parameters);
+    private Holder<PocketGenerator<?>> selectPocket(PocketGenerationContext parameters, boolean peek) {
+        if (pockets == null) pockets = getPocketsMatchingTags(parameters.provider().lookupOrThrow(ModRegistryKeys.POCKET_GENERATOR).listElements(), required, blackList, exact != null && exact);
+        return peek ? pockets.peekNextRandomWeighted(parameters) : pockets.getNextRandomWeighted(parameters);
     }
+
+    public static HolderWeightedList<PocketGenerator<?>, PocketGenerationContext> getPocketsMatchingTags(Stream<Holder.Reference<PocketGenerator<?>>> references, List<String> required, List<String> blackList, boolean exact) {
+        return new HolderWeightedList<>(references.filter(pocketGenerator -> pocketGenerator.value().checkTags(required, blackList, exact)).collect(Collectors.toList()));
+    }
+
 
     @Override
     public String toString() {
-    return MoreObjects.toStringHelper(this)
-        .add("weight", weight)
-        .add("weightEquation", weightEquation)
-        .add("setupLoot", setupLoot)
-        .add("modifierList", modifierList)
-        .add("required", required)
-        .add("blackList", blackList)
-        .add("exact", exact)
-        .add("pockets", pockets)
-        .toString();
+        return MoreObjects.toStringHelper(this)
+                .add("weight", weight.asString())
+                .add("required", required)
+                .add("blackList", blackList)
+                .add("exact", exact)
+                .add("pockets", pockets)
+                .toString();
     }
 }

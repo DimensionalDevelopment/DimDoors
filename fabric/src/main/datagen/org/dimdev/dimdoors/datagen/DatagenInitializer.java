@@ -6,6 +6,8 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -118,6 +120,13 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
                 entries.addAll(registries.lookupOrThrow(Registries.JUKEBOX_SONG));
                 entries.addAll(registries.lookupOrThrow(Registries.ENCHANTMENT));
                 entries.addAll(registries.lookupOrThrow(Registries.PAINTING_VARIANT));
+            }
+        });
+
+        pack.addProvider(new DataProvider.Factory<DataProvider>() {
+            @Override
+            public DataProvider create(PackOutput packOutput) {
+                return new PocketDataGenClassic(packOutput);
             }
         });
     }
