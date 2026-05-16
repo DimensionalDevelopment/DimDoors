@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(RiftRegistry.class)
+@Mixin(value = RiftRegistry.class, remap = false)
 public class RiftRegistrySableTrackingMixin {
     @Inject(method = "addRift", at = @At("TAIL"))
     private void dimdoors$trackAddedRift(Location location, CallbackInfo ci) {

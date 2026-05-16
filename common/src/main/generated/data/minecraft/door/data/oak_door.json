@@ -1,0 +1,13 @@
+[
+  {
+    "condition": {
+      "type": "dimdoors:always_true"
+    },
+    "data": {
+      "destination": {
+        "type": "dimdoors:escape",
+        "canEscapeLimbo": true
+      }
+    }
+  }
+]

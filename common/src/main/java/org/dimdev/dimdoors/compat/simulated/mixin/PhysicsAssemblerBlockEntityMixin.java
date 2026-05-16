@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(dev.simulated_team.simulated.content.blocks.physics_assembler.PhysicsAssemblerBlockEntity.class)
+@Mixin(value = dev.simulated_team.simulated.content.blocks.physics_assembler.PhysicsAssemblerBlockEntity.class, remap = false)
 public class PhysicsAssemblerBlockEntityMixin {
     @Shadow
     private int disassemblyAngle;

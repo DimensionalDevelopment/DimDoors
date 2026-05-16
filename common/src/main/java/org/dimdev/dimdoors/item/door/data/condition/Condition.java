@@ -2,6 +2,8 @@ package org.dimdev.dimdoors.item.door.data.condition;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.ModRegistryKeys;
@@ -9,6 +11,18 @@ import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public interface  Condition {
     Codec<Condition> CODEC = Codec.lazyInitialized(() -> ModRegistries.CONDITION_TYPE.byNameCodec().dispatch(Condition::getType, ConditionType::codec));
+
+    static WorldMatchCondition level(ResourceKey<Level> key) {
+        return new WorldMatchCondition(key);
+    }
+
+    static InverseCondition not(Condition condition) {
+        return new InverseCondition(condition);
+    }
+
+    static AlwaysTrueCondition alwaysTrue() {
+        return AlwaysTrueCondition.INSTANCE;
+    }
 
     boolean matches(EntranceRiftBlockEntity rift);
 

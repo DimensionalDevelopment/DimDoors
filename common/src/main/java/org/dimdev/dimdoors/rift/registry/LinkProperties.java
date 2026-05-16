@@ -166,5 +166,9 @@ public class LinkProperties {
                     .append("oneWay", oneWay)
                     .toString();
         }
+
+        public LinkPropertiesBuilder groups(Integer... groups) {
+            return groups(Set.of(groups));
+        }
     }
 }

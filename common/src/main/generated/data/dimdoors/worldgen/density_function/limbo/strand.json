@@ -2,15 +2,60 @@
   "type": "minecraft:add",
   "argument1": {
     "type": "minecraft:mul",
-    "argument1": {
+    "argument1": 0.175,
+    "argument2": {
       "type": "minecraft:interpolated",
-      "argument": "dimdoors:limbo/terrain"
-    },
-    "argument2": 0.175
+      "argument": {
+        "type": "minecraft:add",
+        "argument1": {
+          "type": "minecraft:y_clamped_gradient",
+          "from_value": 0.32,
+          "from_y": 0,
+          "to_value": -0.35,
+          "to_y": 256
+        },
+        "argument2": {
+          "type": "minecraft:shifted_noise",
+          "noise": "dimdoors:limbo/terrain",
+          "shift_x": {
+            "type": "minecraft:mul",
+            "argument1": 75.0,
+            "argument2": {
+              "type": "minecraft:noise",
+              "noise": "dimdoors:limbo/x_shift",
+              "xz_scale": 4.0,
+              "y_scale": 0.675
+            }
+          },
+          "shift_y": {
+            "type": "minecraft:mul",
+            "argument1": 125.0,
+            "argument2": {
+              "type": "minecraft:noise",
+              "noise": "dimdoors:limbo/y_shift",
+              "xz_scale": 2.0,
+              "y_scale": 2.0
+            }
+          },
+          "shift_z": {
+            "type": "minecraft:mul",
+            "argument1": 75.0,
+            "argument2": {
+              "type": "minecraft:noise",
+              "noise": "dimdoors:limbo/x_shift",
+              "xz_scale": 4.0,
+              "y_scale": 0.675
+            }
+          },
+          "xz_scale": 2.0,
+          "y_scale": 9.75
+        }
+      }
+    }
   },
   "argument2": {
     "type": "minecraft:mul",
-    "argument1": -1,
+    "argument1": -1.0,
     "argument2": {
       "type": "minecraft:range_choice",
       "input": {
@@ -18,20 +63,20 @@
         "argument": {
           "type": "minecraft:range_choice",
           "input": "minecraft:y",
-          "min_inclusive": -60,
-          "max_exclusive": 225,
+          "max_exclusive": 255.0,
+          "min_inclusive": -60.0,
           "when_in_range": {
             "type": "minecraft:noise",
             "noise": "minecraft:noodle",
             "xz_scale": 0.75,
             "y_scale": 0.75
           },
-          "when_out_of_range": -1
+          "when_out_of_range": -1.0
         }
       },
-      "min_inclusive": -1000000,
-      "max_exclusive": 0,
-      "when_in_range": 64,
+      "max_exclusive": 0.0,
+      "min_inclusive": -1000000.0,
+      "when_in_range": 64.0,
       "when_out_of_range": {
         "type": "minecraft:add",
         "argument1": {
@@ -39,23 +84,23 @@
           "argument": {
             "type": "minecraft:range_choice",
             "input": "minecraft:y",
-            "min_inclusive": -60,
-            "max_exclusive": 225,
+            "max_exclusive": 255.0,
+            "min_inclusive": -60.0,
             "when_in_range": {
               "type": "minecraft:add",
-              "argument1": -0.07500000000000001,
+              "argument1": -0.075,
               "argument2": {
                 "type": "minecraft:mul",
                 "argument1": -0.065,
                 "argument2": {
                   "type": "minecraft:noise",
                   "noise": "minecraft:noodle_thickness",
-                  "xz_scale": 1,
-                  "y_scale": 1
+                  "xz_scale": 1.0,
+                  "y_scale": 1.0
                 }
               }
             },
-            "when_out_of_range": 0
+            "when_out_of_range": 0.0
           }
         },
         "argument2": {
@@ -70,15 +115,15 @@
                 "argument": {
                   "type": "minecraft:range_choice",
                   "input": "minecraft:y",
-                  "min_inclusive": -60,
-                  "max_exclusive": 225,
+                  "max_exclusive": 255.0,
+                  "min_inclusive": -60.0,
                   "when_in_range": {
                     "type": "minecraft:noise",
                     "noise": "dimdoors:limbo/strand_a",
-                    "xz_scale": 2,
+                    "xz_scale": 2.0,
                     "y_scale": 1.33
                   },
-                  "when_out_of_range": 0
+                  "when_out_of_range": 0.0
                 }
               }
             },
@@ -89,15 +134,15 @@
                 "argument": {
                   "type": "minecraft:range_choice",
                   "input": "minecraft:y",
-                  "min_inclusive": -60,
-                  "max_exclusive": 225,
+                  "max_exclusive": 255.0,
+                  "min_inclusive": -60.0,
                   "when_in_range": {
                     "type": "minecraft:noise",
                     "noise": "dimdoors:limbo/strand_b",
                     "xz_scale": 2.25,
                     "y_scale": 1.125
                   },
-                  "when_out_of_range": 0
+                  "when_out_of_range": 0.0
                 }
               }
             }

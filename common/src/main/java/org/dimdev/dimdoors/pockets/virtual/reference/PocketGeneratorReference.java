@@ -16,9 +16,9 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import java.util.*;
 
 public abstract class PocketGeneratorReference<T extends PocketGeneratorReference<T>> implements ImplementedVirtualPocket<T> {
-    public static <T extends PocketGeneratorReference<T>> Products.P1<RecordCodecBuilder.Mu<T>, Optional<Equation>> commonFields(RecordCodecBuilder.Instance<T> instance) {
+    public static <T extends PocketGeneratorReference<T>> Products.P1<RecordCodecBuilder.Mu<T>, Equation> commonFields(RecordCodecBuilder.Instance<T> instance) {
         return instance.group(
-                Equation.CODEC.optionalFieldOf("weight").forGetter(a -> Optional.ofNullable(a.weight))
+                Equation.CODEC.optionalFieldOf("weight", Equation.FIVE).<T>forGetter(a -> a.weight)
         );
     }
 
@@ -26,8 +26,8 @@ public abstract class PocketGeneratorReference<T extends PocketGeneratorReferenc
 
     protected Equation weight;
 
-    public PocketGeneratorReference(Optional<Equation> weight) {
-        this.weight = weight.orElse(null);
+    public PocketGeneratorReference(Equation weight) {
+        this.weight = weight;
     }
 
     @Override

@@ -199,7 +199,7 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
 
         protected static <T extends PocketBuilder<?, ?>> Products.P1<RecordCodecBuilder.Mu<T>, List<PocketAddon.PocketBuilderAddon<?,?>>> commonFields(RecordCodecBuilder.Instance<T> instance) {
             return instance.group(
-                    PocketAddon.LIST_BUILDER_CODEC.fieldOf("addons").<T>forGetter(t -> t.addons.values().stream().toList()));
+                    PocketAddon.LIST_BUILDER_CODEC.optionalFieldOf("addons", List.of()).<T>forGetter(t -> t.addons.values().stream().toList()));
         }
 
         public void initAddons() {

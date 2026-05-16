@@ -33,12 +33,12 @@ public class DimensionalDoorModifier implements Modifier {
                     DataResult::success
             ).forGetter(a -> a.facing),
             BuiltInRegistries.BLOCK.holderByNameCodec().flatXmap(blockHolder -> {
-                if (blockHolder.unwrap().right().filter(DimensionalDoorBlock.class::isInstance).isPresent()) {
+                if (blockHolder.value() instanceof DimensionalDoorBlock) {
                     return DataResult.success(blockHolder);
                 } else {
                     return DataResult.error(() -> blockHolder.getRegisteredName() + " is not an instance of DimensionalDoorBlock.");
                 }
-            }, DataResult::success).fieldOf("doorType").forGetter(a -> a.doorType),
+            }, DataResult::success).fieldOf("door_type").forGetter(a -> a.doorType),
             RiftData.HOLDER_CODEC.fieldOf("rift_data").forGetter(a -> a.doorData),
             Equation.CODEC.fieldOf("x").forGetter(a -> a.x),
             Equation.CODEC.fieldOf("y").forGetter(a -> a.y),

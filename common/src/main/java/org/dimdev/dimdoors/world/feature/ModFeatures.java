@@ -30,21 +30,14 @@ import static org.dimdev.dimdoors.DimensionalDoors.id;
 @SuppressWarnings("unused")
 public final class ModFeatures {
     public static final class Configured {
-    public static final ResourceKey<ConfiguredFeature<?, ?>> SOLID_STATIC_ORE = of("solid_static_ore");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> DECAYED_BLOCK_ORE = of("decayed_block_ore");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
+        public static final ResourceKey<ConfiguredFeature<?, ?>> SOLID_STATIC_ORE = of("solid_static_ore");
+        public static final ResourceKey<ConfiguredFeature<?, ?>> DECAYED_BLOCK_ORE = of("decayed_block_ore");
+        public static final ResourceKey<ConfiguredFeature<?, ?>> ETERNAL_FLUID_SPRING = of("eternal_fluid_spring");
         public static final ResourceKey<ConfiguredFeature<?, ?>> DRIFTWOOD_TREE = of("driftwood_tree");
 
-    public static ResourceKey<ConfiguredFeature<?, ?>> of(String id) {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, id(id));
-    }
-
-    public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> bootstapContext) {
-        bootstapContext.register(Configured.DECAYED_BLOCK_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(new BlockMatchTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.DECAYED_BLOCK.defaultBlockState())), 64, 0.0f)));
-        bootstapContext.register(Configured.SOLID_STATIC_ORE, new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(List.of(OreConfiguration.target(new BlockMatchTest(ModBlocks.UNRAVELLED_FABRIC), ModBlocks.SOLID_STATIC.defaultBlockState())), 4, 0.0f)));
-        bootstapContext.register(Configured.ETERNAL_FLUID_SPRING, new ConfiguredFeature<>(Feature.SPRING, new SpringConfiguration(ModFluids.ETERNAL_FLUID.defaultFluidState(), true, 1, 4, Placed.holderSet(ModBlocks.UNRAVELLED_FABRIC, ModBlocks.UNRAVELLED_BLOCK, ModBlocks.UNFOLDED_BLOCK, ModBlocks.UNWARPED_BLOCK))));
-            bootstapContext.register(Configured.DRIFTWOOD_TREE, new ConfiguredFeature<>(Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(BlockStateProvider.simple(ModBlocks.DRIFTWOOD_LOG), new StraightTrunkPlacer(4, 2, 0), BlockStateProvider.simple(ModBlocks.DRIFTWOOD_LEAVES), new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3), new TwoLayersFeatureSize(1, 0, 1)).ignoreVines().build()));
-    }
+        public static ResourceKey<ConfiguredFeature<?, ?>> of(String id) {
+            return ResourceKey.create(Registries.CONFIGURED_FEATURE, id(id));
+        }
     }
 
     public static class Placed {

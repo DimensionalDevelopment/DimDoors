@@ -331,7 +331,7 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
     }
 
     @Override
-    public <T extends Typed<? extends V>, V extends CodecProvider<? extends T>> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<V> codec) {
-        DynamicRegistries.register(key, codec.dispatch(Typed::type, CodecProvider::codec));
+    public <T> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> codec) {
+        DynamicRegistries.register(key, codec);
     }
 }

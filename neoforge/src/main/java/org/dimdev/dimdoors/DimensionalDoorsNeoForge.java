@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.serialization.Codec;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -32,6 +33,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
@@ -57,6 +59,7 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -66,6 +69,7 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.function.TriConsumer;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
+import org.dimdev.dimdoors.api.util.InstanceMap;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.dimdoors.fluid.neoforge.ModFluidTypes;
@@ -94,6 +98,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     private final Map<ResourceKey<?>, List<Runnable>> registerRunnables = new HashMap<>();
     private List<Registry<?>> registriesToRegister = new ArrayList<>();
     private final List<EntityAttributeRegistration> entityAttributeRegistrations = new ArrayList<>();
+    private final List<DataPackRegistryRegistration<?>> dataPackRegistries = new ArrayList<>();
 
     public DimensionalDoorsNeoForge(IEventBus bus) {
         ModAttachmentTypes.register(bus);
@@ -104,6 +109,8 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
         bus.addListener(this::buildCreateTabContents);
         bus.addListener(this::onEntityAttributeRegister);
+
+        bus.addListener(this::onDataPackRegister);
 
         bus.<NewRegistryEvent>addListener(event -> registriesToRegister.forEach(event::register));
 
@@ -153,6 +160,16 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
         NeoForge.EVENT_BUS.addListener(DimensionalDoorsNeoForge::addReloaders);
         bus.addListener(DimensionalDoorsNeoForge::addPackFinders);
+    }
+
+    private void onDataPackRegister(DataPackRegistryEvent.NewRegistry event) {
+        dataPackRegistries.forEach(registration -> registration.register(event));
+    }
+
+    private record DataPackRegistryRegistration<T>(ResourceKey<Registry<T>> key, Codec<T> codec) {
+        private void register(DataPackRegistryEvent.NewRegistry event) {
+            event.dataPackRegistry(key, codec);
+        }
     }
 
     public <T> void populate(Registry<T> registry, Map<ResourceLocation, Object> map) {
@@ -482,5 +499,10 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     @Override
     public void registerCommands(Consumer<CommandDispatcher<CommandSourceStack>> consumer) {
         NeoForge.EVENT_BUS.<RegisterCommandsEvent>addListener(event -> consumer.accept(event.getDispatcher()));
+    }
+
+    @Override
+    public <T> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> codec) {
+        dataPackRegistries.add(new DataPackRegistryRegistration<>(key, codec));
     }
 }

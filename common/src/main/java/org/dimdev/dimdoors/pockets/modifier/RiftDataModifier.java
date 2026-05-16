@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 public class RiftDataModifier implements Modifier {
     public static final MapCodec<RiftDataModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     RiftData.HOLDER_CODEC.optionalFieldOf("rift_data").forGetter(a -> Optional.ofNullable(a.doorData)),
-                    Codec.INT_STREAM.xmap(a -> a.boxed().toList(), integers -> integers.stream().mapToInt(Integer::intValue)).fieldOf("id").forGetter(a -> a.ids))
+                    Codec.INT_STREAM.xmap(a -> a.boxed().toList(), integers -> integers.stream().mapToInt(Integer::intValue)).fieldOf("ids").forGetter(a -> a.ids))
             .apply(instance, RiftDataModifier::new));
 
 

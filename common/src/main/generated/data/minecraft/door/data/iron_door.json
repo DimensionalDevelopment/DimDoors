@@ -1,12 +1,12 @@
 [
   {
+    "condition": {
+      "type": "dimdoors:always_true"
+    },
     "data": {
       "destination": {
         "type": "dimdoors:public_pocket"
       }
-    },
-    "condition": {
-      "type": "dimdoors:always_true"
     }
   }
 ]

@@ -16,12 +16,14 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public final class PocketGenerator {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static final ResourceKey<VirtualPocket> ALL_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("dungeon"));
     public static final ResourceKey<VirtualPocket> PUBLIC = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("dungeon"));
     public static final ResourceKey<VirtualPocket> PRIVATE = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("dungeon"));
     public static final ResourceKey<VirtualPocket> NETHER_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("nether"));
+    public static final ResourceKey<VirtualPocket> MYTH_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("myth"));
     public static final ResourceKey<VirtualPocket> RUINS_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("ruins"));
     public static final ResourceKey<VirtualPocket> ATLANTIS_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("atlantis"));
     public static final ResourceKey<VirtualPocket> JUNGLE_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("jungle"));

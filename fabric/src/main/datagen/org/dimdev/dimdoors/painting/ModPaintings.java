@@ -5,6 +5,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.datagen.DimDoorsDynamicRegistryProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,32 +20,8 @@ public class ModPaintings {
 
     public static final List<ResourceKey<PaintingVariant>> PAINTINGS_TO_DECAY_INTO;
 
-    public static void bootstrap(BootstrapContext<PaintingVariant> context) {
-        register(context, LIMBO, 4, 2);
-        register(context, PORTAL, 2, 4);
-        register(context, FREEDOM, 2, 2);
-        register(context, EYES, 2, 2);
-        register(context, GATEWAY_AT_NIGHT, 4, 2);
-
-
-//        for (int index = 0; index < PAINTINGS_TO_DECAY_INTO.size(); index++) {
-//            var x = index % 4;
-//            var y = index / 4;
-//
-//            var key = PAINTINGS_TO_DECAY_INTO.get(index);
-//
-//            if(key.location().getPath().startsWith("placeholder")) {
-//                register(context, key, x+1, y+1);
-//            }
-//        }
-    }
-
     private static ResourceKey<PaintingVariant> key(String name) {
         return ResourceKey.create(Registries.PAINTING_VARIANT, DimensionalDoors.id(name));
-    }
-
-    private static void register(BootstrapContext<PaintingVariant> bootstrapContext, ResourceKey<PaintingVariant> resourceKey, int width, int height) {
-        bootstrapContext.register(resourceKey, new PaintingVariant(width, height, resourceKey.location()));
     }
 
     private static void addIntoList(List<ResourceKey<PaintingVariant>> list, ResourceKey<PaintingVariant> key, int width, int height) {

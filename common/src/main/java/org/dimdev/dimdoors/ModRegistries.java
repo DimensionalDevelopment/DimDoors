@@ -3,6 +3,7 @@ package org.dimdev.dimdoors;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import org.dimdev.dimdoors.block.entity.RiftData;
+import org.dimdev.dimdoors.item.door.data.RiftDataList;
 import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
@@ -23,6 +24,7 @@ public class ModRegistries {
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.VIRTUAL_POCKET, VirtualPocket.CODEC);
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.POCKET_GROUPS, VirtualPocket.CODEC);
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.RIFT_DATA, RiftData.CODEC);
+        DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.DOOR_DATA, RiftDataList.CODEC);
 
     }
 }

@@ -1,0 +1,30 @@
+[
+  {
+    "condition": {
+      "type": "dimdoors:always_true"
+    },
+    "data": {
+      "destination": {
+        "type": "dimdoors:dungeon",
+        "acceptedGroups": [
+          0
+        ],
+        "coordFactor": 1.0,
+        "dungeonGroup": "dimdoors:nether",
+        "negativeDepthFactor": 160.0,
+        "newRiftWeight": 1.0,
+        "noLink": false,
+        "noLinkBack": true,
+        "positiveDepthFactor": 10000.0,
+        "weightMaximum": 100.0
+      },
+      "properties": {
+        "groups": [
+          1,
+          0
+        ],
+        "linksRemaining": 1
+      }
+    }
+  }
+]

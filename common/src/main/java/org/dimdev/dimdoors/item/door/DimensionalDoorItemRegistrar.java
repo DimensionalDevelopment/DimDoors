@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static org.dimdev.dimdoors.item.door.DoorRiftDataLoader.getRiftData;
+
 public class DimensionalDoorItemRegistrar {
     public static final String PREFIX = "item_ag_dim_";
 
@@ -126,14 +128,13 @@ public class DimensionalDoorItemRegistrar {
 
     @Override
     public void setupRift(EntranceRiftBlockEntity entranceRift) {
-        RiftDataList data = DoorRiftDataLoader.getRiftData(originalItem);
-        if (data != null) {
+        var access = entranceRift.getLevel().registryAccess();
+
+        getRiftData(access, originalItem).ifPresentOrElse(data -> {
             RiftDataList.OptRiftData riftData = data.getRiftData(entranceRift);
             entranceRift.setDestination(riftData.getDestination());
             riftData.getProperties().ifPresent(entranceRift::setProperties);
-        } else {
-            entranceRift.setDestination(new PublicPocketTarget());
-        }
+        }, () -> entranceRift.setDestination(new PublicPocketTarget()));
     }
 
     @Override
@@ -161,14 +162,11 @@ public class DimensionalDoorItemRegistrar {
 
         @Override
         public void setupRift(EntranceRiftBlockEntity entranceRift) {
-            RiftDataList data = DoorRiftDataLoader.getRiftData(getOriginalItem());
-            if (data != null) {
+            getRiftData(entranceRift.getLevel().registryAccess(), getOriginalItem()).ifPresentOrElse(data -> {
                 RiftDataList.OptRiftData riftData = data.getRiftData(entranceRift);
                 entranceRift.setDestination(riftData.getDestination());
                 riftData.getProperties().ifPresent(entranceRift::setProperties);
-            } else {
-                entranceRift.setDestination(new EscapeTarget(true));
-            }
+            }, () -> entranceRift.setDestination(new EscapeTarget(true)));
         }
 
     }

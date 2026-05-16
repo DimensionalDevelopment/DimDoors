@@ -7,7 +7,9 @@
       "max_delay": 0,
       "min_delay": 0,
       "replace_current_music": true,
-      "sound": "dimdoors:white_void"
+      "sound": {
+        "sound_id": "dimdoors:white_void"
+      }
     },
     "sky_color": 16777215,
     "water_color": 4159204,

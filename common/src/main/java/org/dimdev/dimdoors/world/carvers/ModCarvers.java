@@ -26,19 +26,4 @@ public class ModCarvers {
 
     public static void init() {
     }
-
-    public static void bootstrap(BootstrapContext<ConfiguredWorldCarver<?>> bootstapContext) {
-        bootstapContext.register(LIMBO, new ConfiguredWorldCarver<>(LIMBO_CARVER, new CaveCarverConfiguration(
-                0.2f,
-                UniformHeight.of(VerticalAnchor.absolute(0), VerticalAnchor.absolute(1)),
-                ConstantFloat.of(0.5f),
-                VerticalAnchor.aboveBottom(10),
-                CarverDebugSettings.DEFAULT,
-                HolderSet.direct(ModBlocks.UNRAVELLED_FABRIC.builtInRegistryHolder()),
-                ConstantFloat.of(1),
-                ConstantFloat.of(1),
-                ConstantFloat.of(-0.7f)
-        )));
-
-    }
 }

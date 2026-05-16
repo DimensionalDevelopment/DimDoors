@@ -32,7 +32,7 @@ public class TagReference extends PocketGeneratorReference<TagReference> {
 
     private HolderWeightedList<PocketGenerator<?>, PocketGenerationContext> pockets;
 
-    public TagReference(Optional<Equation> weight, List<String> required, List<String> blackList, boolean exact) {
+    public TagReference(Equation weight, List<String> required, List<String> blackList, boolean exact) {
         super(weight);
         this.required = required;
         this.blackList = blackList;

@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class PaintingTagProvider extends FabricTagProvider<PaintingVariant> {
+public class PaintingTagProvider extends DimDoorsTagsProvider<PaintingVariant> {
 
     public PaintingTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, Registries.PAINTING_VARIANT, registriesFuture);
@@ -44,7 +44,6 @@ public class PaintingTagProvider extends FabricTagProvider<PaintingVariant> {
 //                tag(TagKey.create(key.registryKey(), id)).addAll(references.stream().map(Holder.Reference::key).toList());
 //            }
 //        });
-
         tag(PaintingVariantTags.PLACEABLE).add(ModPaintings.LIMBO, ModPaintings.EYES, ModPaintings.FREEDOM, ModPaintings.PORTAL, ModPaintings.GATEWAY_AT_NIGHT);
     }
 }

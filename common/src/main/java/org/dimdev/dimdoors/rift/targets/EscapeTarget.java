@@ -42,6 +42,10 @@ public class EscapeTarget extends VirtualTarget<EscapeTarget> implements EntityT
         this.canEscapeLimbo = canEscapeLimbo;
     }
 
+    public static VirtualTarget<?> of(boolean canEscapeLimbo) {
+        return new EscapeTarget(canEscapeLimbo);
+    }
+
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location2) {
         if (!ModDimensions.isPocketDimension(entity.level()) && !(ModDimensions.isLimboDimension(entity.level()))) {

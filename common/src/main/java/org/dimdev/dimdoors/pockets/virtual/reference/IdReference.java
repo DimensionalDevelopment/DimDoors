@@ -17,7 +17,7 @@ public class IdReference extends PocketGeneratorReference<IdReference> {
     public static final String KEY = "id";
     private final ResourceKey<PocketGenerator<?>> id;
 
-    public IdReference(Optional<Equation> weight, ResourceKey<PocketGenerator<?>> id) {
+    public IdReference(Equation weight, ResourceKey<PocketGenerator<?>> id) {
         super(weight);
         this.id = id;
     }

@@ -156,7 +156,7 @@ public class DimensionalDoors {
 
         sided.registerServerLoader("pocket_loader", PocketLoader::reload);
         sided.registerServerLoader("decay_loader", Decay.DecayLoader::reload, true);
-        sided.registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
+//        sided.registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
 
         sided.onServerStarting(Decay.DecayLoader::populate);
 
@@ -189,6 +189,8 @@ public class DimensionalDoors {
         DecayPatternType.register();
         LocationConditionType.register();
         LocationValueWithType.register();
+
+        ModRegistries.register();
     }
 
     private static void registerListeners() {

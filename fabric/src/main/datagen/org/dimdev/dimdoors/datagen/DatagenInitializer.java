@@ -2,16 +2,10 @@ package org.dimdev.dimdoors.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.level.dimension.DimensionType;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.item.ModJukeboxSongs;
 import org.dimdev.dimdoors.painting.ModPaintings;
@@ -20,13 +14,7 @@ import org.dimdev.dimdoors.world.ModGatewayPools;
 import org.dimdev.dimdoors.world.ModProcessorLists;
 import org.dimdev.dimdoors.world.ModStructures;
 import org.dimdev.dimdoors.world.carvers.ModCarvers;
-import org.dimdev.dimdoors.world.feature.ModFeatures;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.OptionalLong;
-
-import static org.dimdev.dimdoors.world.ModDimensions.LIMBO_TYPE_KEY;
-import static org.dimdev.dimdoors.world.ModDimensions.POCKET_TYPE_KEY;
 
 public class DatagenInitializer implements DataGeneratorEntrypoint {
 
@@ -35,50 +23,11 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
 
         var pack = generator.createPack();
 
-//        pack.addProvider((FabricDataGenerator.Pack.RegistryDependentFactory<DataProvider>) (output, registriesFuture) -> new DataProvider() {
-//            @Override
-//            public CompletableFuture<?> run(CachedOutput cachedOutput) {
-//                var path = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "textures/painting");
+//        var defaultPack = generator.createBuiltinResourcePack()
 
-//                return registriesFuture.thenApply(provider -> provider.lookupOrThrow(Registries.PAINTING_VARIANT))
-//                        .thenApply(lookup -> ModPaintings.PAINTINGS_TO_DECAY_INTO.stream().filter(a -> a.location().getPath().startsWith("placeholder")).map(lookup::getOrThrow).toList())
-//                        .thenAccept(references -> references.forEach(painting -> {
-//                            var key = painting.key();
-//                            var value = painting.value();
-//
-//                            var width = value.width() * 16;
-//                            var height = value.height() * 16;
-//
-//                            try {
-//                                var image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-//
-//                                var graphics = image.createGraphics();
-//
-//                                graphics.setColor(Color.decode("#452719"));
-//                                graphics.fillRect(0, 0, width, height);
-//                                graphics.setColor(Color.decode("#404040"));
-//                                graphics.fillRect(1, 1, width-2, height-2);
-//
-//                                var writer = new ByteArrayOutputStream();
-//
-//                                ImageIO.write(image, "PNG", writer);
-//
-//                                var filePath = path.file(key.location(), "png");
-//
-//                                var bytes = writer.toByteArray();
-//
-//                                cachedOutput.writeIfNeeded(filePath, bytes, HashCode.fromBytes(bytes));
-//                            } catch (Exception e) {
-//                                throw new RuntimeException(e);
-//                            }
-//                        }));
-//            }
-//
-//            @Override
-//            public String getName() {
-//                return "Paintings Textures";
-//            }
-//        });
+//        pack.addProvider(DefaultPaintingDataGenerator::new);
+
+        pack.addProvider(DimDoorsDynamicRegistryDatagen::new);
 
         pack.addProvider(DimDoorsModelProvider::new);
         pack.addProvider(DimdoorsRecipeProvider::new);
@@ -94,72 +43,29 @@ public class DatagenInitializer implements DataGeneratorEntrypoint {
         pack.addProvider(BiomeTagProvider::new);
         pack.addProvider(ItemTagProvider::new);
         pack.addProvider(PaintingTagProvider::new);
-        pack.addProvider((output, registriesFuture) -> new FabricDynamicRegistryProvider(output, registriesFuture) {
 
-            @Override
-            public String getName() {
-                return "DimDoors Worldgen";
-            }
-
-            @Override
-            protected void configure(HolderLookup.Provider registries, Entries entries) {
-                entries.addAll(registries.lookupOrThrow(Registries.BIOME));
-                entries.addAll(registries.lookupOrThrow(Registries.CONFIGURED_FEATURE));
-                entries.addAll(registries.lookupOrThrow(Registries.PLACED_FEATURE));
-                entries.addAll(registries.lookupOrThrow(Registries.DIMENSION_TYPE));
-//                entries.addAll(registries.lookupOrThrow(Registries.LEVEL_STEM)); //TODO: Add when https://github.com/FabricMC/fabric/issues/3838 is resolved.
-
-                entries.addAll(registries.lookupOrThrow(Registries.NOISE));
-//                entries.addAll(registries.lookupOrThrow(Registries.NOISE_SETTINGS));
-                entries.addAll(registries.lookupOrThrow(Registries.CONFIGURED_CARVER));
-
-                entries.addAll(registries.lookupOrThrow(Registries.STRUCTURE));
-                entries.addAll(registries.lookupOrThrow(Registries.TEMPLATE_POOL));
-                entries.addAll(registries.lookupOrThrow(Registries.STRUCTURE_SET));
-                entries.addAll(registries.lookupOrThrow(Registries.PROCESSOR_LIST));
-                entries.addAll(registries.lookupOrThrow(Registries.JUKEBOX_SONG));
-                entries.addAll(registries.lookupOrThrow(Registries.ENCHANTMENT));
-                entries.addAll(registries.lookupOrThrow(Registries.PAINTING_VARIANT));
-            }
-        });
-
-        pack.addProvider(new DataProvider.Factory<DataProvider>() {
-            @Override
-            public DataProvider create(PackOutput packOutput) {
-                return new PocketDataGenClassic(packOutput);
-            }
-        });
+//        pack.addProvider(PocketDataGenClassic::new);
     }
 
     @Override
     public void buildRegistry(RegistrySetBuilder registryBuilder) {
-        registryBuilder.add(Registries.BIOME, ModBiomes::bootstrap)
-                .add(Registries.CONFIGURED_FEATURE, ModFeatures.Configured::bootstrap)
-                .add(Registries.PLACED_FEATURE, ModFeatures.Placed::bootstrap)
-                .add(Registries.DIMENSION_TYPE, bootstapContext -> {
-                    bootstapContext.register(LIMBO_TYPE_KEY, new DimensionType(OptionalLong.of(6000), true, false, false, false, 4, false, true, 0, 256, 256, BlockTags.INFINIBURN_OVERWORLD, DimensionalDoors.id("limbo"), 0.1f, new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0)));
-                    bootstapContext.register(POCKET_TYPE_KEY, new DimensionType(OptionalLong.of(6000), true, false, false, false, 4, false, true, 0, 256, 256, BlockTags.INFINIBURN_OVERWORLD, DimensionalDoors.id("dungeon"), 0.1f, new DimensionType.MonsterSettings(false, false, UniformInt.of(0, 7), 0)));
-                })
-//                .add(Registries.LEVEL_STEM, bootstapContext -> { TODO: Finish and enable when https://github.com/FabricMC/fabric/issues/3838 is resolved
-//                            var dimensionType = bootstapContext.lookup(Registries.DIMENSION_TYPE);
-//                            var biomes = bootstapContext.lookup(Registries.BIOME);
-//
-//                            bootstapContext.register(LIMBO_STEM, new LevelStem(dimensionType.getOrThrow(LIMBO_TYPE_KEY), new NoiseBasedChunkGenerator(new FixedBiomeSource(biomes.getOrThrow(ModBiomes.LIMBO_KEY)), bootstapContext.lookup(Registries.NOISE_SETTINGS).getOrThrow(ModChunkGeneratorSettings.LIMBO))));
-//        entries.register(PERSONAL_STEM, createPocketStem(pocketType, entries.ref(ModBiomes.PERSONAL_WHITE_VOID_KEY)));
-//        entries.register(PUBLIC_STEM, createPocketStem(pocketType, entries.ref(ModBiomes.DUNGEON_DANGEROUS_BLACK_VOID_KEY)));
-//        entries.register(DUNGEON_STEM, createPocketStem(pocketType, entries.ref(ModBiomes.DUNGEON_DANGEROUS_BLACK_VOID_KEY)));
-//                        })
-                .add(Registries.DENSITY_FUNCTION, ModDensityFunctions::bootstrap)
-                .add(Registries.NOISE, ModNoiseParameters::bootstrap)
-                .add(Registries.NOISE_SETTINGS, ModChunkGeneratorSettings::bootstrap)
-                .add(Registries.CONFIGURED_CARVER, ModCarvers::bootstrap)
-                .add(Registries.STRUCTURE, ModStructures::new)
-                .add(Registries.TEMPLATE_POOL, ModGatewayPools::bootstrap)
-                .add(Registries.STRUCTURE_SET, ModStructureSets::bootstrap)
-                .add(Registries.PROCESSOR_LIST, ModProcessorLists::bootstrap)
-                .add(Registries.JUKEBOX_SONG, ModJukeboxSongs::bootstrap)
-                .add(Registries.ENCHANTMENT, ModEnchants::bootstrap)
-                .add(Registries.PAINTING_VARIANT, ModPaintings::bootstrap);
+//        registryBuilder.add(Registries.BIOME, ModBiomes::bootstrap)
+//                .add(Registries.CONFIGURED_FEATURE, DefaultDynamicRegistryDataGen::bootstrapConfiguredFeature)
+//                .add(Registries.PLACED_FEATURE, DefaultDynamicRegistryDataGen::bootstrapPlacedFeature)
+//                .add(Registries.DIMENSION_TYPE, DefaultDynamicRegistryDataGen::bootstrapDimensionType)
+//                .add(Registries.LEVEL_STEM, DefaultDynamicRegistryDataGen::bootstrapLevelStem)
+//                .add(Registries.DENSITY_FUNCTION, ModDensityFunctions::bootstrap)
+//                .add(Registries.NOISE, ModNoiseParameters::bootstrap)
+//                .add(Registries.NOISE_SETTINGS, ModChunkGeneratorSettings::bootstrap)
+//                .add(Registries.CONFIGURED_CARVER, ModCarvers::bootstrap)
+//                .add(Registries.STRUCTURE, ModStructures::new)
+//                .add(Registries.TEMPLATE_POOL, ModGatewayPools::bootstrap)
+//                .add(Registries.STRUCTURE_SET, ModStructureSets::bootstrap)
+//                .add(Registries.PROCESSOR_LIST, ModProcessorLists::bootstrap)
+//                .add(Registries.JUKEBOX_SONG, ModJukeboxSongs::bootstrap)
+//                .add(Registries.ENCHANTMENT, ModEnchants::bootstrap)
+//                .add(Registries.PAINTING_VARIANT, ModPaintings::bootstrap)
+//                .add(ModRegistryKeys.RIFT_DATA, DoorDataDataGen::bootstrap)
 
     }
 

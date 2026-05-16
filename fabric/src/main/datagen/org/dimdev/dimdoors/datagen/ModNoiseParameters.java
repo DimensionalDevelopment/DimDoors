@@ -18,7 +18,7 @@ public class ModNoiseParameters {
         return ResourceKey.create(Registries.NOISE, DimensionalDoors.id("limbo/" + name));
     }
 
-    public static void bootstrap(BootstrapContext<NoiseParameters> entries) {
+    public static void bootstrap(DimDoorsDynamicRegistryDatagen.RegistrationHelper entries) {
         entries.register(STRAND_A, new NoiseParameters(-7, 1, 0.5, 0.25));
         entries.register(STRAND_B, new NoiseParameters(-7, 1, 0.5, 0.25));
         entries.register(TERRAIN, new NoiseParameters(-7, 1, 1, 0.5, 0.375, 0.25));

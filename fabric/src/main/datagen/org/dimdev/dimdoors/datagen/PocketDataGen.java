@@ -28,14 +28,18 @@ public abstract class PocketDataGen implements DataProvider {
     public CompletableFuture<?> run(CachedOutput cache) {
         List<CompletableFuture<?>> list = new ArrayList<>();
 
-        BiConsumer<ResourceLocation,PocketGenerator> consumer = (id, generator) -> {
+        BiConsumer<ResourceLocation,PocketGenerator<?>> consumer = (id, generator) -> {
             JsonElement object = JsonOps.INSTANCE.withEncoder(PocketGenerator.CODEC).apply(generator).getOrThrow();
-            Path outputPath = resolver.json(patternHolder.id());
+            Path outputPath = resolver.json(id);
             list.add(DataProvider.saveStable(cache, object, outputPath));
         };
 
-        generatePatterns(provider, consumer);
+        generateGenerators(consumer);
 
         return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
+    }
+
+    private void generateGenerators(BiConsumer<ResourceLocation, PocketGenerator<?>> consumer) {
+
     }
 }

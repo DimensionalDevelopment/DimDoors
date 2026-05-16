@@ -21,9 +21,9 @@ public class ModDensityFunctions {
         return ResourceKey.create(Registries.DENSITY_FUNCTION, DimensionalDoors.id(name));
     }
 
-    public static void bootstrap(BootstrapContext<DensityFunction> entries) {
-        var parameters = entries.lookup(Registries.NOISE);
-        var functions = entries.lookup(Registries.DENSITY_FUNCTION);
+    public static void bootstrap(DimDoorsDynamicRegistryDatagen.RegistrationHelper entries) {
+        var parameters = entries.registrylookup(Registries.NOISE);
+        var functions = entries.registrylookup(Registries.DENSITY_FUNCTION);
 
         var shift_x = DensityFunctions.mul(DensityFunctions.constant(75), DensityFunctions.noise(parameters.getOrThrow(ModNoiseParameters.X_SHIFT), 4, 0.675));
         entries.register(X_SHIFT, shift_x);
@@ -34,7 +34,7 @@ public class ModDensityFunctions {
 
         var terrain = DensityFunctions.add(
                 DensityFunctions.yClampedGradient(0, 256, 0.32, -0.35),
-                DensityFunctions.shiftedNoise2d(shift_x/*, shift_y.value()*/, shift_z, 2/*, 9.75*/, parameters.getOrThrow(ModNoiseParameters.TERRAIN)));
+                new DensityFunctions.ShiftedNoise(shift_x, shift_y, shift_z, 2, 9.75, new DensityFunction.NoiseHolder(parameters.getOrThrow(ModNoiseParameters.TERRAIN))));
         entries.register(TERRAIN, terrain);
 
 
@@ -131,7 +131,7 @@ public class ModDensityFunctions {
                                         )
                                 )
                         ).squeeze(),
-                        strand
+                        new DensityFunctions.HolderHolder(functions.getOrThrow(STRAND))
                 ));
 
 //        ))
