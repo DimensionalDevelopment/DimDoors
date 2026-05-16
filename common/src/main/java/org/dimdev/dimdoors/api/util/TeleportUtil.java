@@ -68,6 +68,8 @@ public final class TeleportUtil {
         // Force cast; we already asserted server side
         ServerLevel serverWorld = (ServerLevel) world;
 
+        pos = SableHelper.INSTANCE.adjustTeleportDestination(serverWorld, pos);
+
         // Clamp inside world border
         pos = clampToWorldBorder(pos, serverWorld.getWorldBorder());
         SableHelper.INSTANCE.validateTeleportDestination(serverWorld, pos);
@@ -133,11 +135,12 @@ public final class TeleportUtil {
     public static Entity teleportRandom(Entity entity, Level world, double y) {
         var random = RandomSource.create();
         double scale = random.nextGaussian() * random.nextInt(90);
+        Vec3 sourcePos = SableHelper.INSTANCE.projectFrom(entity.level(), entity.position());
         return teleport(
                 entity,
                 world,
-                entity.position()
-                        .subtract(0.0, entity.getY(), 0.0)
+                sourcePos
+                        .subtract(0.0, sourcePos.y, 0.0)
                         .add(0.0, y, 0.0)
                         .multiply(scale, 1.0, scale),
                 entity.getYRot()

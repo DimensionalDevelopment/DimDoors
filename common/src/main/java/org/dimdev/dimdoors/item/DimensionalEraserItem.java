@@ -14,6 +14,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
@@ -32,14 +33,15 @@ public class DimensionalEraserItem extends Item {
     HitResult hit = RaycastHelper.raycast(player, 1.0F, a -> !(a instanceof Player));
 
     if (!world.isClientSide() && hit != null && hit.getType() == HitResult.Type.ENTITY) {
-        if(((EntityHitResult) hit).getEntity() instanceof ServerPlayer) {
-        BlockPos teleportPos = ((EntityHitResult) hit).getEntity().blockPosition();
+        Entity target = ((EntityHitResult) hit).getEntity();
+        if(target instanceof ServerPlayer) {
+        BlockPos teleportPos = BlockPos.containing(SableHelper.INSTANCE.projectFrom(target.level(), target.position()));
         while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
             teleportPos = teleportPos.offset(1, 0, 1);
         }
-        TeleportUtil.teleport(((EntityHitResult) hit).getEntity(), ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(((EntityHitResult) hit).getEntity()), ((EntityHitResult) hit).getEntity().getDeltaMovement());
+        TeleportUtil.teleport(target, ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(target), target.getDeltaMovement());
         } else {
-        ((EntityHitResult) hit).getEntity().remove(Entity.RemovalReason.KILLED);
+        target.remove(Entity.RemovalReason.KILLED);
         player.playSound(ModSoundEvents.BLOOP, 1.0f, 1.0f);
         }
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

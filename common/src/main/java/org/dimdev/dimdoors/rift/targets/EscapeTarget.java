@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.UnravelUtil;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.world.ModDimensions;
 
 import java.util.Random;
@@ -142,7 +143,8 @@ public class EscapeTarget extends VirtualTarget<EscapeTarget> implements EntityT
                     chat(entity, Component.translatable("rifts.destinations.escape.rift_has_closed"));
                 }
                 if (ModDimensions.LIMBO_DIMENSION != null) {
-                    entity = TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, new BlockPos(this.location.getX(), this.location.getY(), this.location.getZ()), relativeAngle, relativeVelocity);
+                    BlockPos limboPos = SableHelper.INSTANCE.projectFrom(this.location.getWorld(), this.location.pos);
+                    entity = TeleportUtil.teleport(entity, ModDimensions.LIMBO_DIMENSION, limboPos, relativeAngle, relativeVelocity);
                     entity.fallDistance = -500;
                 }
             }
