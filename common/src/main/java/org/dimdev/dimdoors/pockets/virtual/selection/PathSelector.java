@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 
 // TODO: Override equals
 public class PathSelector extends AbstractVirtualPocketList<PathSelector> {
@@ -29,12 +30,30 @@ public class PathSelector extends AbstractVirtualPocketList<PathSelector> {
 
     @Override
     public double getWeight(PocketGenerationContext context) {
+        initialize(context);
+
+        return super.getWeight(context);
+    }
+
+    @Override
+    public PocketGeneratorReference<?> getNextPocketGeneratorReference(PocketGenerationContext context) {
+        initialize(context);
+
+        return super.getNextPocketGeneratorReference(context);
+    }
+
+    @Override
+    public PocketGeneratorReference<?> peekNextPocketGeneratorReference(PocketGenerationContext context) {
+        initialize(context);
+
+        return super.peekNextPocketGeneratorReference(context);
+    }
+
+    private void initialize(PocketGenerationContext context) {
         if(!initalized) {
             context.provider().lookup(ModRegistryKeys.VIRTUAL_POCKET).stream().flatMap(HolderLookup::listElements).filter(this::checkKey).map(Holder.Reference::value).forEach(this::add);
             this.initalized = true;
         }
-
-        return super.getWeight(context);
     }
 
     private boolean checkKey(Holder.Reference<VirtualPocket> virtualPocketReference) {

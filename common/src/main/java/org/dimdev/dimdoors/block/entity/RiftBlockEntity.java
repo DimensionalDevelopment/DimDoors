@@ -330,7 +330,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     public void setData(RiftData data) {
-        this.data = data;
+        this.data = data == null ? new RiftData() : data.copy();
     }
 
     public RiftData getData() {

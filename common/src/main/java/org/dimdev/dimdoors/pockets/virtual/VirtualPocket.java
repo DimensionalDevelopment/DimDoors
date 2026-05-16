@@ -21,7 +21,7 @@ public interface VirtualPocket extends Weighted<PocketGenerationContext>, Pocket
             ).xmap(either -> either.map(Function.identity(), Function.identity()),
                     virtualPocket -> switch (virtualPocket) {
                         case VirtualPocketList list -> Either.right(list);
-                        case ImplementedVirtualPocket implemented -> Either.left(implemented);
+                        case ImplementedVirtualPocket<?> implemented -> Either.left(implemented);
                         case null, default -> throw new IllegalStateException("Unknown virtual pocket type.");
                     }));
 

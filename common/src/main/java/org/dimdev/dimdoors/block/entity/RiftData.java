@@ -15,6 +15,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 public class RiftData {
@@ -43,6 +44,18 @@ public class RiftData {
     private RGBA color = RGBA.NONE;
 
     public RiftData() {
+    }
+
+    public RiftData copy() {
+        RiftData data = new RiftData();
+        data.destination = this.destination == null ? null : this.destination.copy();
+        data.properties = this.properties == null ? null : this.properties.toBuilder()
+                .groups(this.properties.getGroups() == null ? null : Set.copyOf(this.properties.getGroups()))
+                .build();
+        data.color = this.color == null ? null : this.color.clone();
+        data.alwaysDelete = this.alwaysDelete;
+        data.forcedColor = this.forcedColor;
+        return data;
     }
 
     public VirtualTarget<?> getDestination() {
