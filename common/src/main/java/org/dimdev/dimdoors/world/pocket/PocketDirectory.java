@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
@@ -18,16 +19,14 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 public class PocketDirectory {
-    public static Codec<Map<Integer, AbstractPocket<?, ?>>> POCKETS_CODEC = Codec.unboundedMap(Codec.INT, AbstractPocket.CODEC);
     public static final Codec<PocketDirectory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("grid_size").forGetter(a -> a.gridSize),
             Codec.INT.fieldOf("private_pocket_size").forGetter(a -> a.privatePocketSize),
             Codec.INT.fieldOf("public_pocket_size").forGetter(a -> a.publicPocketSize),
-            Codec.unboundedMap(Codec.INT, AbstractPocket.CODEC).fieldOf("pockets").forGetter(a -> a.pockets),
-            Codec.unboundedMap(Codec.INT, Codec.INT).xmap(Int2IntAVLTreeMap::new, Function.identity()).fieldOf("next_id_map").forGetter(a -> a.nextIDMap)
+            CodecUtils.unboundedMap(Codec.INT, AbstractPocket.CODEC).fieldOf("pockets").forGetter(a -> a.pockets),
+            CodecUtils.unboundedMap(Codec.INT, Codec.INT, Int2IntAVLTreeMap::new).fieldOf("next_id_map").forGetter(a -> a.nextIDMap)
     ).apply(instance, PocketDirectory::new));
 
 
@@ -36,7 +35,7 @@ public class PocketDirectory {
     int privatePocketSize;
     int publicPocketSize;
     Map<Integer, AbstractPocket<?, ?>> pockets;
-    private Int2IntAVLTreeMap nextIDMap;
+    private final Int2IntAVLTreeMap nextIDMap;
 
     public PocketDirectory() {
         this.gridSize = DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize;
@@ -70,10 +69,10 @@ public class PocketDirectory {
 
         int squaredSize = base3Size * base3Size;
 
-        int cursor = nextIDMap.headMap(base3Size + 1).values().stream().mapToInt(num -> num).max().orElse(0);
+        int cursor = nextIDMap.headMap(base3Size + 1).values().intStream().max().orElse(0);
         cursor = cursor - Math.floorMod(cursor, squaredSize);
 
-        Pocket pocketAt = getPocket(cursor);
+        Pocket<?, ?> pocketAt = getPocket(cursor);
         while (pocketAt != null) {
             size = pocketAt.getSize();
             longest = Math.max(size.getX(), size.getZ());
@@ -114,7 +113,7 @@ public class PocketDirectory {
         return pocket;
     }
 
-    private void preloadPocketChunks(Pocket pocket) {
+    private void preloadPocketChunks(Pocket<?, ?> pocket) {
         ServerLevel level = DimensionalDoors.getWorld(pocket.getWorld());
         if (level == null) return;
 
@@ -150,13 +149,13 @@ public class PocketDirectory {
      *
      * @return The pocket which occupies the GridPos represented by that ID, or null if there was no pocket occupying that GridPos.
      */
-    public Pocket getPocket(int id) {
+    public Pocket<?, ?> getPocket(int id) {
         AbstractPocket<?, ?> pocket = this.pockets.get(id);
         return pocket == null ? null : pocket.getReferencedPocket(this);
     }
 
-    public <P extends Pocket> P getPocket(int id, Class<P> clazz) {
-        Pocket pocket = getPocket(id);
+    public <P extends Pocket< ?, ?>> P getPocket(int id, Class<P> clazz) {
+        Pocket<?, ?> pocket = getPocket(id);
         if (clazz.isInstance(pocket)) return clazz.cast(pocket);
         return null;
     }
@@ -197,12 +196,12 @@ public class PocketDirectory {
         return this.gridPosToID(new GridUtil.GridPos(Math.floorDiv(pos.getX(), this.gridSize * 16), Math.floorDiv(pos.getZ(), this.gridSize * 16)));
     }
 
-    public Pocket getPocketAt(BlockPos pos) { // TODO: use BlockPos
+    public Pocket<?, ?> getPocketAt(BlockPos pos) { // TODO: use BlockPos
         return this.getPocket(this.posToID(pos));
     }
 
     public boolean isWithinPocketBounds(BlockPos pos) {
-        Pocket pocket = this.getPocketAt(pos);
+        Pocket<?, ?> pocket = this.getPocketAt(pos);
         return pocket != null && pocket.isInBounds(pos);
     }
 

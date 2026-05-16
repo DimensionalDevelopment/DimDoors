@@ -194,6 +194,10 @@ public class CodecUtils {
         return Codec.PASSTHROUGH.<Dynamic<?>>xmap(function, Function.identity()).flatXmap(baseCodec::parse, t -> baseCodec.encodeStart(JsonOps.INSTANCE, t).map(a -> new Dynamic<>(JsonOps.INSTANCE, a)));
     }
 
+    public static <K, V, M extends Map<K, V>> Codec<M> unboundedMap(Codec<K> keyCodec, Codec<V> valueCodec, Function<Map<K, V>, M> mapMFunction) {
+        return Codec.unboundedMap(keyCodec, valueCodec).xmap(mapMFunction, Function.identity());
+    }
+
     public static <K, V> Codec<Map<K, V>> unboundedMap(Codec<K> keyCodec, Codec<V> valueCodec) {
         return Codec.unboundedMap(keyCodec, valueCodec).xmap(Maps::newHashMap, Function.identity());
     }

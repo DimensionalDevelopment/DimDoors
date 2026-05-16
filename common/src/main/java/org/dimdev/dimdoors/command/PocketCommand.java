@@ -93,7 +93,7 @@ public class PocketCommand {
                         .requires(source -> source.hasPermission(2))
                         .then(placeOption("virtual_pocket", ModRegistryKeys.VIRTUAL_POCKET))
                         .then(placeOption("pocket_group", ModRegistryKeys.POCKET_GROUPS))
-                        .then(placeOption("pocket_generator", ModRegistryKeys.VIRTUAL_POCKET)
+                        .then(placeOption("pocket_generator", ModRegistryKeys.POCKET_GENERATOR)
                                 .then(
                                                 literal("dump")
                                                         .requires(src -> src.hasPermission(4))
