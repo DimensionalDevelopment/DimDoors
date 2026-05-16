@@ -37,10 +37,6 @@ public class SableHelper {
     public void validateTeleportDestination(ServerLevel level, Vec3 pos) {
     }
 
-    public Vec3 adjustTeleportDestination(ServerLevel level, Vec3 pos) {
-        return pos;
-    }
-
     public void updateRiftTrackingPoint(ServerLevel level, Rift rift) {
     }
 

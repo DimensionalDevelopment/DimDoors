@@ -17,36 +17,9 @@
         "argument2": {
           "type": "minecraft:shifted_noise",
           "noise": "dimdoors:limbo/terrain",
-          "shift_x": {
-            "type": "minecraft:mul",
-            "argument1": 75.0,
-            "argument2": {
-              "type": "minecraft:noise",
-              "noise": "dimdoors:limbo/x_shift",
-              "xz_scale": 4.0,
-              "y_scale": 0.675
-            }
-          },
-          "shift_y": {
-            "type": "minecraft:mul",
-            "argument1": 125.0,
-            "argument2": {
-              "type": "minecraft:noise",
-              "noise": "dimdoors:limbo/y_shift",
-              "xz_scale": 2.0,
-              "y_scale": 2.0
-            }
-          },
-          "shift_z": {
-            "type": "minecraft:mul",
-            "argument1": 75.0,
-            "argument2": {
-              "type": "minecraft:noise",
-              "noise": "dimdoors:limbo/x_shift",
-              "xz_scale": 4.0,
-              "y_scale": 0.675
-            }
-          },
+          "shift_x": "dimdoors:limbo/x_shift",
+          "shift_y": "dimdoors:limbo/y_shift",
+          "shift_z": "dimdoors:limbo/z_shift",
           "xz_scale": 2.0,
           "y_scale": 9.75
         }

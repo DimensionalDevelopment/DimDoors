@@ -14,7 +14,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
@@ -35,7 +34,7 @@ public class DimensionalEraserItem extends Item {
     if (!world.isClientSide() && hit != null && hit.getType() == HitResult.Type.ENTITY) {
         Entity target = ((EntityHitResult) hit).getEntity();
         if(target instanceof ServerPlayer) {
-        BlockPos teleportPos = BlockPos.containing(SableHelper.INSTANCE.projectFrom(target.level(), target.position()));
+        BlockPos teleportPos = target.blockPosition();
         while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
             teleportPos = teleportPos.offset(1, 0, 1);
         }

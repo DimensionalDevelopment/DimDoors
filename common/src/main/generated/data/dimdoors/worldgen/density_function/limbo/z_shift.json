@@ -3,7 +3,7 @@
   "argument1": 75.0,
   "argument2": {
     "type": "minecraft:noise",
-    "noise": "dimdoors:limbo/x_shift",
+    "noise": "dimdoors:limbo/z_shift",
     "xz_scale": 4.0,
     "y_scale": 0.675
   }

@@ -26,7 +26,6 @@ import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.util.RotationUtil;
-import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.joml.Vector3d;
 
@@ -89,23 +88,6 @@ public class ActiveSableHelper extends SableHelper {
         if (isMissingSablePlotHolder(level, BlockPos.containing(pos))) {
             throw new IllegalStateException("Teleport target " + pos + " in " + level.dimension().location() + " is inside Sable's plot grid, but no plot chunk holder is loaded there");
         }
-    }
-
-    @Override
-    public Vec3 adjustTeleportDestination(ServerLevel level, Vec3 pos) {
-        if (!ModDimensions.isLimboDimension(level) || !isMissingSablePlotHolder(level, BlockPos.containing(pos))) {
-            return pos;
-        }
-
-        var container = SubLevelContainer.getContainer(level);
-        if (container == null) {
-            return pos;
-        }
-
-        int plotBlockShift = container.getLogPlotSize() + 4;
-        long plotGridOriginX = (long) container.getOrigin().x << plotBlockShift;
-        long plotGridOriginZ = (long) container.getOrigin().y << plotBlockShift;
-        return new Vec3(pos.x - plotGridOriginX, pos.y, pos.z - plotGridOriginZ);
     }
 
     @Override
@@ -174,7 +156,6 @@ public class ActiveSableHelper extends SableHelper {
                 return unloadedFrame;
             }
 
-            pos = adjustTeleportDestination(level, pos);
             validateTeleportDestination(level, pos);
             return new TeleportFrame(pos, angle, velocity);
         }
@@ -302,7 +283,7 @@ public class ActiveSableHelper extends SableHelper {
             return serverSubLevel.logicalPose();
         }
 
-        return null;
+        return data.pose();
     }
 
     private Pose3dc resolveUntrackedRiftPose(ServerLevel level, Rift rift, Location location) {
@@ -325,7 +306,7 @@ public class ActiveSableHelper extends SableHelper {
 
         var loadedSubLevel = SableCompanion.INSTANCE.getContaining(level, localRiftPos);
         if (!(loadedSubLevel instanceof ServerSubLevel serverSubLevel)) {
-            return null;
+            return storedSubLevel.data().pose();
         }
 
         UUID trackingPoint = SubLevelTrackingPointSavedData.getOrLoad(level).generateTrackingPoint(localRiftPos, serverSubLevel);

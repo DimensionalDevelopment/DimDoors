@@ -8,7 +8,6 @@ import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
@@ -19,7 +18,7 @@ public class LimboTarget extends VirtualTarget<LimboTarget> implements EntityTar
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-        BlockPos teleportPos = BlockPos.containing(SableHelper.INSTANCE.projectFrom(entity.level(), entity.position()));
+        BlockPos teleportPos = entity.blockPosition();
         while (ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
             teleportPos = teleportPos.offset(1, 0, 1);
         }

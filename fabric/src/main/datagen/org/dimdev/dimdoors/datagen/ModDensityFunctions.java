@@ -25,17 +25,28 @@ public class ModDensityFunctions {
         var parameters = entries.registrylookup(Registries.NOISE);
         var functions = entries.registrylookup(Registries.DENSITY_FUNCTION);
 
-        var shift_x = DensityFunctions.mul(DensityFunctions.constant(75), DensityFunctions.noise(parameters.getOrThrow(ModNoiseParameters.X_SHIFT), 4, 0.675));
+        var shift_x = DensityFunctions.mul(
+                DensityFunctions.constant(75),
+                DensityFunctions.noise(
+                        parameters.getOrThrow(ModNoiseParameters.X_SHIFT),
+                        4,
+                        0.675)
+        );
         entries.register(X_SHIFT, shift_x);
         var shift_y = DensityFunctions.mul(DensityFunctions.constant(125), DensityFunctions.noise(parameters.getOrThrow(ModNoiseParameters.Y_SHIFT), 2, 2));
         entries.register(Y_SHIFT, shift_y);
-        var shift_z = DensityFunctions.mul(DensityFunctions.constant(75), DensityFunctions.noise(parameters.getOrThrow(ModNoiseParameters.X_SHIFT), 4, 0.675));
+        var shift_z = DensityFunctions.mul(DensityFunctions.constant(75), DensityFunctions.noise(parameters.getOrThrow(ModNoiseParameters.Z_SHIFT), 4, 0.675));
         entries.register(Z_SHIFT, shift_z);
 
         var terrain = DensityFunctions.add(
                 DensityFunctions.yClampedGradient(0, 256, 0.32, -0.35),
-                new DensityFunctions.ShiftedNoise(shift_x, shift_y, shift_z, 2, 9.75, new DensityFunction.NoiseHolder(parameters.getOrThrow(ModNoiseParameters.TERRAIN))));
+                new DensityFunctions.ShiftedNoise(
+                        new DensityFunctions.HolderHolder(functions.getOrThrow(X_SHIFT)),
+                        new DensityFunctions.HolderHolder(functions.getOrThrow(Y_SHIFT)),
+                        new DensityFunctions.HolderHolder(functions.getOrThrow(Z_SHIFT)), 2, 9.75,
+                        new DensityFunction.NoiseHolder(parameters.getOrThrow(ModNoiseParameters.TERRAIN))));
         entries.register(TERRAIN, terrain);
+        var terrainReference = new DensityFunctions.HolderHolder(functions.getOrThrow(TERRAIN));
 
 
         var noodle_function = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, ResourceLocation.withDefaultNamespace("noodle")));
@@ -112,11 +123,11 @@ public class ModDensityFunctions {
                                                                 DensityFunctions.add(
                                                                         DensityFunctions.add(
                                                                                 DensityFunctions.mul(
-                                                                                        DensityFunctions.yClampedGradient(240, 256, 0, 1),
+                                                                                        DensityFunctions.yClampedGradient(240, 256, 1, 0),
                                                                                         DensityFunctions.add(
                                                                                                 DensityFunctions.max(
                                                                                                         DensityFunctions.constant(-1),
-                                                                                                        terrain
+                                                                                                        terrainReference
                                                                                                 ),
                                                                                                 DensityFunctions.constant(0.078125)
                                                                                         )
