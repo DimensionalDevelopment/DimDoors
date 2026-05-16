@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -57,16 +58,43 @@ public final class SchematicPlacer {
         int width = schematic.getWidth();
         int height = schematic.getHeight();
         int length = schematic.getLength();
-        byte[] blockDataIntArray = schematic.getBlockData().array();
+        ByteBuffer blockDataBuffer = schematic.getBlockData().asReadOnlyBuffer();
+        blockDataBuffer.rewind();
         int[][][] blockData = new int[width][height][length];
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                for (int z = 0; z < length; z++) {
-                    blockData[x][y][z] = blockDataIntArray[x + z * width + y * width * length];
+        // Sponge schematic v2 stores palette indices as unsigned varints in x + z * width + y * width * length order.
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < length; z++) {
+                for (int x = 0; x < width; x++) {
+                    blockData[x][y][z] = readVarInt(blockDataBuffer, schematic);
                 }
             }
         }
+        if (blockDataBuffer.hasRemaining()) {
+            LOGGER.warn("Schematic \"{}\" has {} unread BlockData bytes after decoding {} blocks.", schematic.getMetadata().name(), blockDataBuffer.remaining(), width * height * length);
+        }
         return blockData;
+    }
+
+    private static int readVarInt(ByteBuffer buffer, Schematic schematic) {
+        int value = 0;
+        int shift = 0;
+
+        for (int byteCount = 0; byteCount < 5; byteCount++) {
+            if (!buffer.hasRemaining()) {
+                throw new IllegalArgumentException("Schematic \"" + schematic.getMetadata().name() + "\" ended before all BlockData varints could be decoded.");
+            }
+
+            int nextByte = buffer.get() & 0xFF;
+            value |= (nextByte & 0x7F) << shift;
+
+            if ((nextByte & 0x80) == 0) {
+                return value;
+            }
+
+            shift += 7;
+        }
+
+        throw new IllegalArgumentException("Schematic \"" + schematic.getMetadata().name() + "\" contains a BlockData varint that is too large.");
     }
 
     public static int[][] getBiomeData(Schematic schematic) {
