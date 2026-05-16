@@ -9,6 +9,8 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.ModRegistries;
+import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
@@ -76,9 +78,7 @@ public abstract class VirtualTarget<T extends VirtualTarget<?>> implements Targe
     public abstract T copy();
 
     public record VirtualTargetType<T extends VirtualTarget<?>>(MapCodec<T> codec, RGBA color) {
-        public static final ResourceKey<Registry<VirtualTargetType<? extends VirtualTarget<?>>>> KEY = ResourceKey.createRegistryKey(DimensionalDoors.id("virtual_type"));
-        public static final Registry<VirtualTargetType<?>> REGISTRY = DimensionalDoors.getSided().createRegistry(KEY);
-        public static final Codec<VirtualTargetType<?>> CODEC = REGISTRY.byNameCodec();
+        public static final Codec<VirtualTargetType<?>> CODEC = ModRegistries.VIRTUAL_TYPE.byNameCodec();
 
         public static final VirtualTargetType<AvailableLinkTarget> AVAILABLE_LINK = register("available_link", AvailableLinkTarget.CODEC);
         public static final VirtualTargetType<DungeonTarget> DUNGEON = register("dungeon", DungeonTarget.CODEC);
@@ -116,12 +116,12 @@ public abstract class VirtualTarget<T extends VirtualTarget<?>> implements Targe
         }
 
         static <T extends VirtualTarget<?>> VirtualTargetType<T> registerDeprecated(String id, MapCodec<T> codec) {
-            return DimensionalDoors.getSided().register(KEY, id, new VirtualTargetType<>(codec, COLOR));
+            return DimensionalDoors.getSided().register(ModRegistryKeys.VIRTUAL_TYPE, id, new VirtualTargetType<>(codec, COLOR));
         }
 
 
         static <T extends VirtualTarget<T>> VirtualTargetType<T> register(String id, MapCodec<T> codec, RGBA color) {
-            return DimensionalDoors.getSided().register(KEY, id, new VirtualTargetType<>(codec, color));
+            return DimensionalDoors.getSided().register(ModRegistryKeys.VIRTUAL_TYPE, id, new VirtualTargetType<>(codec, color));
         }
     }
 

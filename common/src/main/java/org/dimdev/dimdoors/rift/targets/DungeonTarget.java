@@ -25,7 +25,7 @@ public class DungeonTarget extends RandomTarget<DungeonTarget> {
     }
 
     @Override
-    protected Pocket<?, ?> generatePocket(VirtualLocation location, RiftReference linkTo, LinkProperties props) {
+    protected Pocket<?, ?> generatePocket(VirtualLocation location, VirtualTarget<?> linkTo, LinkProperties props) {
         return PocketGenerator.generateDungeonPocketV2(location, linkTo, props, this.dungeonGroup);
     }
 

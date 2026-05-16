@@ -113,7 +113,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
             this.getDestination().unregister();
         }
         this.data.setDestination(destination);
-        if (destination != null) {
+        if (destination != null && destination != VirtualTarget.NoneTarget.INSTANCE) {
             if (this.level != null && this.worldPosition != null) {
                 destination.setLocation(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
             }

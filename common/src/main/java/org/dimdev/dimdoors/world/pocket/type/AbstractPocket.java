@@ -112,7 +112,10 @@ public abstract class AbstractPocket<V extends AbstractPocket<V, T>, T extends A
         abstract public AbstractPocketType<T, P> type();
 
         public P copy() {
-            return instance();
+            P copy = instance();
+            copy.id = this.id;
+            copy.world = this.world;
+            return copy;
         }
 
         abstract P instance();

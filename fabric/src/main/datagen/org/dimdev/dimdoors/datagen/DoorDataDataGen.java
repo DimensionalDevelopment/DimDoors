@@ -28,7 +28,7 @@ public class DoorDataDataGen {
                 .newRiftWeight(1.0f)
                 .weightMaximum(100.0)
                 .coordFactor(1.0)
-                .noLinkBack(true)
+                .noLinkBack(false)
                 .positiveDepthFactor(10000)
                 .negativeDepthFactor(160.0)
                 .noLink(false);
@@ -48,13 +48,13 @@ public class DoorDataDataGen {
         );
 
         ctx.register(key(ModBlocks.AMALGAM_DOOR), RiftDataList.of(
-                dungeonBuilder.dungeonGroup(PocketGenerator.ALL_DUNGEONS).build(),
+                dungeonBuilder.dungeonGroup(PocketGenerator.MYTH_DUNGEONS).build(),
                 properties,
                 Condition.alwaysTrue())
         );
 
         ctx.register(key(ModBlocks.STONE_DOOR), RiftDataList.of(
-                dungeonBuilder.dungeonGroup(PocketGenerator.MYTH_DUNGEONS).build(),
+                dungeonBuilder.dungeonGroup(PocketGenerator.ALL_DUNGEONS).build(),
                 properties,
                 Condition.alwaysTrue())
         );

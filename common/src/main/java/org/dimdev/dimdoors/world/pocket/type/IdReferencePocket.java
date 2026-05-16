@@ -76,6 +76,13 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket, IdRefer
         }
 
         @Override
+        public IdReferencePocketBuilder copy() {
+            var copy = super.copy();
+            copy.referencedId = referencedId;
+            return copy;
+        }
+
+        @Override
         IdReferencePocketBuilder instance() {
             return new IdReferencePocketBuilder();
         }

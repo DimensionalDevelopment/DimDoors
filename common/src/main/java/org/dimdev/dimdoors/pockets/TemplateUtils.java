@@ -115,8 +115,15 @@ public class TemplateUtils {
             VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
-                rift.setDestination(rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : VirtualTarget.NoneTarget.INSTANCE);
-                rift.getDestination().setLocation(Location.ofWorld(world, rift.getBlockPos()));
+                VirtualTarget<?> exitDestination = rift.getProperties() == null || !rift.getProperties().isOneWay() ? linkTo : VirtualTarget.NoneTarget.INSTANCE;
+                if (exitDestination == null) {
+                    LOGGER.warn("No exit link target supplied for rift at {} in pocket {}", rift.getBlockPos(), pocket.getId());
+                    exitDestination = VirtualTarget.NoneTarget.INSTANCE;
+                }
+                rift.setDestination(exitDestination);
+                if (exitDestination != VirtualTarget.NoneTarget.INSTANCE) {
+                    exitDestination.setLocation(Location.ofWorld(world, rift.getBlockPos()));
+                }
             }
         }
 

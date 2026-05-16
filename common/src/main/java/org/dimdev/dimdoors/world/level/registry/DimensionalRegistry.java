@@ -12,6 +12,7 @@ import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DimensionalRegistry {
-    public static Codec<Map<ResourceKey<Level>, PocketDirectory>> POCKET_DIRECTORY_MAP_CODEC = Codec.unboundedMap(Level.RESOURCE_KEY_CODEC, PocketDirectory.CODEC);
+    public static Codec<Map<ResourceKey<Level>, PocketDirectory>> POCKET_DIRECTORY_MAP_CODEC = CodecUtils.unboundedMap(Level.RESOURCE_KEY_CODEC, PocketDirectory.CODEC);
 
     public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
     private static Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();

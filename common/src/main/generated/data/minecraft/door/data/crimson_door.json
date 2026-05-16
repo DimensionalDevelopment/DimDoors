@@ -14,7 +14,7 @@
         "negativeDepthFactor": 160.0,
         "newRiftWeight": 1.0,
         "noLink": false,
-        "noLinkBack": true,
+        "noLinkBack": false,
         "positiveDepthFactor": 10000.0,
         "weightMaximum": 100.0
       },

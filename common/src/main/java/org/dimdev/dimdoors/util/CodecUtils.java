@@ -1,5 +1,6 @@
 package org.dimdev.dimdoors.util;
 
+import com.google.common.collect.Maps;
 import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
@@ -13,11 +14,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.world.decay.conditions.GenericDecayCondition;
+import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -188,6 +192,10 @@ public class CodecUtils {
 
     public static <T> Codec<T> mapResult(Codec<T> baseCodec, Function<Dynamic<?>, Dynamic<?>> function) {
         return Codec.PASSTHROUGH.<Dynamic<?>>xmap(function, Function.identity()).flatXmap(baseCodec::parse, t -> baseCodec.encodeStart(JsonOps.INSTANCE, t).map(a -> new Dynamic<>(JsonOps.INSTANCE, a)));
+    }
+
+    public static <K, V> Codec<Map<K, V>> unboundedMap(Codec<K> keyCodec, Codec<V> valueCodec) {
+        return Codec.unboundedMap(keyCodec, valueCodec).xmap(Maps::newHashMap, Function.identity());
     }
 
     public static final class TagOrElementLocation<T> {

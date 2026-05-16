@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -178,11 +180,11 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
 
         protected Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon.PocketBuilderAddon<?, ?>> addons = new HashMap<>();
 
-        private Vec3i origin = new Vec3i(0, 0, 0);
-        private Vec3i size = new Vec3i(0, 0, 0);
-        private Vec3i expected = new Vec3i(0, 0, 0);
-        private VirtualLocation virtualLocation;
-        private int range = -1;
+        protected Vec3i origin = new Vec3i(0, 0, 0);
+        protected Vec3i size = new Vec3i(0, 0, 0);
+        protected Vec3i expected = new Vec3i(0, 0, 0);
+        protected VirtualLocation virtualLocation;
+        protected int range = -1;
 
         public PocketBuilder(List<PocketAddon.PocketBuilderAddon<?, ?>> addons) {
             this.addons = Util.make(new HashMap<>(), map -> {
@@ -237,6 +239,18 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
             addons.values().forEach(addon -> addon.apply(instance));
 
             return instance;
+        }
+
+        @Override
+        public P copy() {
+            var copy = super.copy();
+            copy.range = range;
+            copy.origin = origin;
+            copy.size = size;
+            copy.expected = expected;
+            copy.virtualLocation = virtualLocation;
+            copy.addons = Maps.newHashMap(addons);
+            return copy;
         }
 
         public P offsetOrigin(Vec3i offset) {
