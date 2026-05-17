@@ -15,7 +15,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.CommandBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.CommandBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
@@ -79,24 +81,28 @@ public class RelativeBlockSample {
     public void place(BlockPos origin, ServerLevel world, boolean biomes, HolderLookup.Provider provider) {
         shouldUpdate = false;
 
-        this.blockDataContainer.forEach((pos, data) -> {
-            if(data.state != null) {
-                BlockPos actualPos = origin.offset(pos);
+        try {
+            this.blockDataContainer.forEach((pos, data) -> {
+                if(data.state != null) {
+                    BlockPos actualPos = origin.offset(pos);
 
-                world.setBlock(actualPos, data.state, 0);
+                    world.setBlock(actualPos, data.state, 0);
 
-                if(data.blockEntity != null) {
-                    BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, data.state, data.blockEntity, provider);
-                    if (blockEntity != null) {
-                        world.setBlockEntity(blockEntity);
+                    if(data.blockEntity != null) {
+                        BlockEntity blockEntity = BlockEntity.loadStatic(actualPos, data.state, data.blockEntity, provider);
+                        if (blockEntity != null) {
+                            world.setBlockEntity(blockEntity);
+                        }
                     }
                 }
-            }
 
 
-        });
+            });
+        } finally {
+            shouldUpdate = true;
+        }
 
-        shouldUpdate = true;
+        this.initializePlacedCommandBlocks(origin, world);
 
 
         for (Map.Entry<CompoundTag, Vec3> entry : this.entityContainer.entrySet()) {
@@ -118,5 +124,35 @@ public class RelativeBlockSample {
             }
 
         }
+    }
+
+    private void initializePlacedCommandBlocks(BlockPos origin, ServerLevel world) {
+        this.blockDataContainer.forEach((pos, data) -> {
+            if (data.state == null || !(data.state.getBlock() instanceof CommandBlock)) {
+                return;
+            }
+
+            BlockPos actualPos = origin.offset(pos);
+            if (!(world.getBlockEntity(actualPos) instanceof CommandBlockEntity commandBlock)) {
+                return;
+            }
+
+            BlockState state = world.getBlockState(actualPos);
+            if (!(state.getBlock() instanceof CommandBlock block)) {
+                return;
+            }
+
+            boolean powered = world.hasNeighborSignal(actualPos);
+            commandBlock.setPowered(powered);
+
+            if (commandBlock.getMode() == CommandBlockEntity.Mode.SEQUENCE) {
+                return;
+            }
+
+            if (powered || commandBlock.isAutomatic()) {
+                commandBlock.markConditionMet();
+                world.scheduleTick(actualPos, block, 1);
+            }
+        });
     }
 }
