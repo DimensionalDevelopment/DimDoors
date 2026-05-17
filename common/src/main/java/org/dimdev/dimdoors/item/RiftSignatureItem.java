@@ -22,6 +22,7 @@ import org.dimdev.dimdoors.block.RiftVariantProvider;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -128,6 +129,10 @@ public class RiftSignatureItem extends Item {
 
     public static Optional<RiftBlockEntity> getOrCreateRift(ServerLevel world, BlockPos pos) {
         Optional<RiftBlockEntity> rift;
+
+        if (!SableHelper.INSTANCE.prepareRiftCreation(world, pos)) {
+            return Optional.empty();
+        }
 
         var state = world.getBlockState(pos);
 

@@ -10,6 +10,7 @@ import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -36,6 +37,11 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
 
         if(blockEntity instanceof RiftBlockEntity rift) {
             rift.setDeleteRift(false);
+            var newLocation = Location.ofWorld(resultingLevel, newPos);
+            var registry = DimensionalRegistry.getRiftRegistry();
+            if (registry.isRiftAt(newLocation)) {
+                SableHelper.INSTANCE.updateRiftTrackingPoint(resultingLevel, registry.getRift(newLocation));
+            }
         }
     }
 }

@@ -89,7 +89,10 @@ public final class ModConfig {
     public static ModConfig load(Path configRoot) {
         Path configPath = getConfigPath(configRoot);
         if (!Files.exists(configPath)) {
-            return new ModConfig();
+            var config = new ModConfig();
+            config.save(configRoot);
+
+            return config;
         }
 
         try (var reader = Files.newBufferedReader(configPath)) {

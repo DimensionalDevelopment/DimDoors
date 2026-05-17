@@ -12,6 +12,7 @@
     "RiftSableTrackingMixin",
     "ServerChunkCachePlotGuardMixin",
     "ServerPlayerPlotRescueMixin",
+    "SubLevelHoldingChunkMapAccessor",
     "VoxelNeighborhoodStateMixin"
   ],
   "client": [

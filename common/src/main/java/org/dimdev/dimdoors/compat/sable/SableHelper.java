@@ -37,6 +37,13 @@ public class SableHelper {
     public void validateTeleportDestination(ServerLevel level, Vec3 pos) {
     }
 
+    public boolean prepareRiftCreation(ServerLevel level, BlockPos pos) {
+        return true;
+    }
+
+    public void prepareCrossDimensionTeleport(Entity entity, ServerLevel destination) {
+    }
+
     public void updateRiftTrackingPoint(ServerLevel level, Rift rift) {
     }
 

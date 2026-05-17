@@ -5,6 +5,7 @@ import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.math.Pose3dc;
 import dev.ryanhcode.sable.sublevel.ServerSubLevel;
+import dev.ryanhcode.sable.sublevel.storage.HoldingSubLevel;
 import dev.ryanhcode.sable.sublevel.storage.holding.GlobalSavedSubLevelPointer;
 import dev.ryanhcode.sable.sublevel.storage.holding.SavedSubLevelPointer;
 import dev.ryanhcode.sable.sublevel.storage.serialization.SubLevelData;
@@ -14,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -24,6 +26,7 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.compat.sable.mixins.SubLevelHoldingChunkMapAccessor;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.util.RotationUtil;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -87,6 +90,62 @@ public class ActiveSableHelper extends SableHelper {
     public void validateTeleportDestination(ServerLevel level, Vec3 pos) {
         if (isMissingSablePlotHolder(level, BlockPos.containing(pos))) {
             throw new IllegalStateException("Teleport target " + pos + " in " + level.dimension().location() + " is inside Sable's plot grid, but no plot chunk holder is loaded there");
+        }
+    }
+
+    @Override
+    public boolean prepareRiftCreation(ServerLevel level, BlockPos pos) {
+        ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
+        if (container == null) {
+            return true;
+        }
+
+        ChunkPos chunkPos = new ChunkPos(pos);
+        if (!container.inBounds(chunkPos)) {
+            return true;
+        }
+
+        if (container.getChunkHolder(chunkPos) != null) {
+            return true;
+        }
+
+        var subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
+        if (!(subLevel instanceof ServerSubLevel)) {
+            forceLoadStoredSubLevelAt(level, Vec3.atCenterOf(pos));
+            subLevel = SableCompanion.INSTANCE.getContaining(level, pos);
+        }
+
+        if (!(subLevel instanceof ServerSubLevel serverSubLevel)) {
+            return false;
+        }
+
+        var plot = serverSubLevel.getPlot();
+        ChunkPos localChunkPos = plot.toLocal(chunkPos);
+        if (plot.getChunkHolder(localChunkPos) == null) {
+            plot.newEmptyChunk(chunkPos);
+        }
+
+        return plot.getChunkHolder(localChunkPos) != null;
+    }
+
+    @Override
+    public void prepareCrossDimensionTeleport(Entity entity, ServerLevel destination) {
+        if (!(entity instanceof ServerPlayer player) || !(entity.level() instanceof ServerLevel source)) {
+            return;
+        }
+
+        if (source.dimension().equals(destination.dimension())) {
+            return;
+        }
+
+        ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(source);
+        if (container == null) {
+            return;
+        }
+
+        UUID playerId = player.getUUID();
+        for (ServerSubLevel subLevel : container.getAllSubLevels()) {
+            subLevel.getTrackingPlayers().remove(playerId);
         }
     }
 
@@ -186,23 +245,25 @@ public class ActiveSableHelper extends SableHelper {
             return null;
         }
 
+        Pose3dc pose = null;
         Location location = findRiftLocation(level, targetLocation, pos);
-        if (location == null) {
-            return null;
+        if (location != null) {
+            var registry = DimensionalRegistry.getRiftRegistry();
+
+            Rift rift = registry.getRift(location);
+            if (rift instanceof SableRiftData sableRift) {
+                UUID trackingPointId = sableRift.dimdoors$getSableTrackingPoint();
+                pose = trackingPointId == null ? null : resolveTrackingPointPose(level, trackingPointId);
+                if (pose == null) {
+                    pose = resolveUntrackedRiftPose(level, rift, location);
+                }
+            }
         }
 
-        var registry = DimensionalRegistry.getRiftRegistry();
-
-        Rift rift = registry.getRift(location);
-        if (!(rift instanceof SableRiftData sableRift)) {
-            return null;
-        }
-
-        UUID trackingPointId = sableRift.dimdoors$getSableTrackingPoint();
-        Pose3dc pose = trackingPointId == null ? null : resolveTrackingPointPose(level, trackingPointId);
         if (pose == null) {
-            pose = resolveUntrackedRiftPose(level, rift, location);
+            pose = resolveStoredPlotPose(level, pos);
         }
+
         if (pose == null) {
             return null;
         }
@@ -316,10 +377,45 @@ public class ActiveSableHelper extends SableHelper {
         return serverSubLevel.logicalPose();
     }
 
+    private Pose3dc resolveStoredPlotPose(ServerLevel level, Vec3 pos) {
+        StoredSubLevel storedSubLevel = forceLoadStoredSubLevelAt(level, pos);
+        if (storedSubLevel == null) {
+            return null;
+        }
+
+        var loadedSubLevel = SableCompanion.INSTANCE.getContaining(level, pos);
+        if (loadedSubLevel instanceof ServerSubLevel serverSubLevel) {
+            return serverSubLevel.logicalPose();
+        }
+
+        return storedSubLevel.data().pose();
+    }
+
+    private StoredSubLevel forceLoadStoredSubLevelAt(ServerLevel level, Vec3 pos) {
+        ServerSubLevelContainer container = ServerSubLevelContainer.getContainer(level);
+        if (container == null) {
+            return null;
+        }
+
+        StoredSubLevel storedSubLevel = findStoredSubLevelContaining(container, pos);
+        if (storedSubLevel == null) {
+            return null;
+        }
+
+        forceLoadTeleportSubLevel(level, container, storedSubLevel.data(), storedSubLevel.pointer());
+
+        return storedSubLevel;
+    }
+
     private StoredSubLevel findStoredSubLevelContaining(ServerSubLevelContainer container, Vec3 pos) {
         ChunkPos targetChunk = new ChunkPos(BlockPos.containing(pos));
         int targetPlotX = (targetChunk.x >> container.getLogPlotSize()) - container.getOrigin().x;
         int targetPlotZ = (targetChunk.z >> container.getLogPlotSize()) - container.getOrigin().y;
+
+        StoredSubLevel loadedHoldingSubLevel = findLoadedHoldingSubLevelContaining(container, targetPlotX, targetPlotZ);
+        if (loadedHoldingSubLevel != null) {
+            return loadedHoldingSubLevel;
+        }
 
         Path folder = container.getHoldingChunkMap().getStorage().getFolder();
         if (!Files.isDirectory(folder)) {
@@ -347,6 +443,18 @@ public class ActiveSableHelper extends SableHelper {
         return null;
     }
 
+    private StoredSubLevel findLoadedHoldingSubLevelContaining(ServerSubLevelContainer container, int targetPlotX, int targetPlotZ) {
+        var holdingSubLevels = ((SubLevelHoldingChunkMapAccessor) container.getHoldingChunkMap()).dimdoors$getAllHoldingSubLevels();
+        for (HoldingSubLevel holdingSubLevel : holdingSubLevels.values()) {
+            SubLevelData data = holdingSubLevel.data();
+            if (isStoredInPlot(data, targetPlotX, targetPlotZ)) {
+                return new StoredSubLevel(data, holdingSubLevel.pointer());
+            }
+        }
+
+        return null;
+    }
+
     private StoredSubLevel findStoredSubLevelContaining(ServerSubLevelContainer container, int targetPlotX, int targetPlotZ, int regionX, int regionZ) {
         for (int localX = 0; localX < 32; localX++) {
             for (int localZ = 0; localZ < 32; localZ++) {
@@ -362,12 +470,7 @@ public class ActiveSableHelper extends SableHelper {
                         continue;
                     }
 
-                    if (!data.fullTag().contains("plot", Tag.TAG_COMPOUND)) {
-                        continue;
-                    }
-
-                    var plotTag = data.fullTag().getCompound("plot");
-                    if (plotTag.getInt("plot_x") == targetPlotX && plotTag.getInt("plot_z") == targetPlotZ) {
+                    if (isStoredInPlot(data, targetPlotX, targetPlotZ)) {
                         return new StoredSubLevel(data, new GlobalSavedSubLevelPointer(holdingChunkPos, pointer.storageIndex(), pointer.subLevelIndex()));
                     }
                 }
@@ -375,6 +478,15 @@ public class ActiveSableHelper extends SableHelper {
         }
 
         return null;
+    }
+
+    private boolean isStoredInPlot(SubLevelData data, int targetPlotX, int targetPlotZ) {
+        if (!data.fullTag().contains("plot", Tag.TAG_COMPOUND)) {
+            return false;
+        }
+
+        var plotTag = data.fullTag().getCompound("plot");
+        return plotTag.getInt("plot_x") == targetPlotX && plotTag.getInt("plot_z") == targetPlotZ;
     }
 
     private void forceLoadTeleportSubLevel(ServerLevel level, ServerSubLevelContainer container, SubLevelData data, GlobalSavedSubLevelPointer pointer) {
