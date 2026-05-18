@@ -25,6 +25,9 @@ config = "${mod_id}.neoforge.mixins.json"
 config = "${mod_id}.sable_compat.mixins.json"
 
 [[mixins]]
+config = "${mod_id}.create_compat.mixins.json"
+
+[[mixins]]
 config = "dimdoors.simulated_compat.mixins.json"
 
 [[dependencies.${mod_id}]]
@@ -39,6 +42,13 @@ modId = "minecraft"
 type = "required"
 versionRange = "${minecraft_version_range}"
 ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "create"
+type = "optional"
+versionRange = "[6.0.0,)"
+ordering = "AFTER"
 side = "BOTH"
 
 # [features.${mod_id}]

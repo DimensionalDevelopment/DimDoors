@@ -34,6 +34,7 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
@@ -114,7 +115,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
         bus.<NewRegistryEvent>addListener(event -> registriesToRegister.forEach(event::register));
 
-        bus.<RegisterEvent>addListener(event -> {
+        bus.<RegisterEvent>addListener(EventPriority.LOWEST, event -> {
             var key = event.getRegistryKey();
             DimensionalDoorsNeoForge.this.activeKey = key;
 
@@ -346,6 +347,9 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
         @Override
         public void onAdd(Registry<T> registry, int id, ResourceKey<T> key, T obj) {
+            if (!registry.key().equals(activeKey)) {
+                return;
+            }
             ResourceKey<? extends Registry<?>> previousKey = activeKey;
             activeKey = registry.key();
             try {

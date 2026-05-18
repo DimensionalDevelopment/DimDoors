@@ -211,38 +211,71 @@ public class RiftRegistry {
     }
 
     public void moveRift(Location oldLocation, Location newLocation) {
-        LOGGER.debug("Moving rift from " + oldLocation + " to " + newLocation);
+        this.moveRifts(Map.of(oldLocation, newLocation));
+    }
 
-        if (this.locationMap.containsKey(newLocation)) {
-            throw new IllegalArgumentException("There is already a rift registered at " + newLocation);
-        }
-
-        Rift rift = this.getRift(oldLocation);
-
-        this.locationMap.remove(oldLocation);
-        this.locationMap.put(newLocation, rift);
-
-        rift.setWorld(newLocation.world);
-        rift.setLocation(newLocation);
-
-        for (DefaultEdge edge : this.graph.incomingEdgesOf(rift)) {
-            RegistryVertex source = this.graph.getEdgeSource(edge);
-            if (source instanceof Rift r) {
-                r.targetMoved(rift);
-            }
-        }
-        for (DefaultEdge edge : this.graph.outgoingEdgesOf(rift)) {
-            RegistryVertex target = this.graph.getEdgeTarget(edge);
-            if (target instanceof Rift r) {
-                r.sourceMoved(rift);
+    public void moveRifts(Map<Location, Location> movements) {
+        Map<Location, Location> filteredMovements = new LinkedHashMap<>();
+        for (Map.Entry<Location, Location> entry : movements.entrySet()) {
+            if (!entry.getKey().equals(entry.getValue())) {
+                filteredMovements.put(entry.getKey(), entry.getValue());
             }
         }
 
-        this.overworldLocations.replaceAll((uuid, loc) ->
-                loc.equals(oldLocation) ? newLocation : loc
-        );
+        if (filteredMovements.isEmpty()) {
+            return;
+        }
 
-        rift.markDirty();
+        LOGGER.debug("Moving rifts " + filteredMovements);
+
+        Set<Location> oldLocations = filteredMovements.keySet();
+        Set<Location> newLocations = new HashSet<>();
+        for (Location newLocation : filteredMovements.values()) {
+            if (!newLocations.add(newLocation)) {
+                throw new IllegalArgumentException("Multiple rifts are moving to " + newLocation);
+            }
+            if (this.locationMap.containsKey(newLocation) && !oldLocations.contains(newLocation)) {
+                throw new IllegalArgumentException("There is already a rift registered at " + newLocation);
+            }
+        }
+
+        Map<Location, Rift> movedRifts = new LinkedHashMap<>();
+        for (Location oldLocation : oldLocations) {
+            movedRifts.put(oldLocation, this.getRift(oldLocation));
+        }
+
+        for (Location oldLocation : oldLocations) {
+            this.locationMap.remove(oldLocation);
+        }
+
+        for (Map.Entry<Location, Rift> entry : movedRifts.entrySet()) {
+            Location newLocation = filteredMovements.get(entry.getKey());
+            Rift rift = entry.getValue();
+
+            this.locationMap.put(newLocation, rift);
+            rift.setWorld(newLocation.world);
+            rift.setLocation(newLocation);
+        }
+
+        for (Rift rift : movedRifts.values()) {
+            for (DefaultEdge edge : Set.copyOf(this.graph.incomingEdgesOf(rift))) {
+                RegistryVertex source = this.graph.getEdgeSource(edge);
+                if (source instanceof Rift r) {
+                    r.targetMoved(rift);
+                }
+            }
+            for (DefaultEdge edge : Set.copyOf(this.graph.outgoingEdgesOf(rift))) {
+                RegistryVertex target = this.graph.getEdgeTarget(edge);
+                if (target instanceof Rift r) {
+                    r.sourceMoved(rift);
+                }
+            }
+
+            rift.markDirty();
+        }
+
+        this.overworldLocations.replaceAll((uuid, loc) -> filteredMovements.getOrDefault(loc, loc));
+
         DimensionalRegistry.setDirty();
     }
 

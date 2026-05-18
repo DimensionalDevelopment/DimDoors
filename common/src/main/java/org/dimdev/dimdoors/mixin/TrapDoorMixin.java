@@ -10,10 +10,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
-import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.rift.RiftUtils;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,8 +32,10 @@ public class TrapDoorMixin implements DoorSoundProvider, RiftVariantProvider {
     }
 
     @Override
-    public Optional<EntranceRiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
-        if (DimensionalDoors.getDimensionalDoorBlockRegistrar().getDimensionalVariant((Block) (Object) this) instanceof DimensionalTrapDoorBlock dimensionalDoor) {
+    public Optional<? extends RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
+        Block dimensionalDoor = DimensionalDoors.getDimensionalDoorBlockRegistrar().getDimensionalVariant((Block) (Object) this);
+
+        if (dimensionalDoor instanceof RiftVariantProvider variantProvider) {
             var baseState = dimensionalDoor.defaultBlockState();
 
             var blockState = state.getProperties().stream()
@@ -49,7 +48,7 @@ public class TrapDoorMixin implements DoorSoundProvider, RiftVariantProvider {
 
             world.setBlockAndUpdate(pos, blockState);
 
-            return world.getBlockEntity(pos, ModBlockEntityTypes.ENTRANCE_RIFT).map(RiftUtils::registerFunction);
+            return variantProvider.convertToRiftProvider(world, pos, blockState);
         }
         return Optional.empty();
     }

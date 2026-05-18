@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.Vec3;
@@ -53,8 +54,11 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     private RiftUtils.PortalPlane plane;
 
     public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
+        this(ModBlockEntityTypes.ENTRANCE_RIFT, pos, state);
+    }
 
+    protected EntranceRiftBlockEntity(BlockEntityType<? extends EntranceRiftBlockEntity> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
         updateState(pos, state);
     }
 

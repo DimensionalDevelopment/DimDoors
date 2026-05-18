@@ -1,0 +1,16 @@
+{
+  "required": false,
+  "package": "org.dimdev.dimdoors.compat.create.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "org.dimdev.dimdoors.compat.create.CreateMixinPlugin",
+  "minVersion": "0.8",
+  "mixins": [
+    "AbstractContraptionEntityMixin",
+    "ContraptionMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

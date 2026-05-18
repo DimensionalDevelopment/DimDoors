@@ -20,6 +20,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient;
+import org.dimdev.dimdoors.compat.create.CreateClientCompat;
 import org.dimdev.dimdoors.compat.iris.IrisCompat;
 import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -69,6 +70,9 @@ public class DimensionalDoorsClient {
 
         blockConsumer.accept(ModBlockEntityTypes.ENTRANCE_RIFT, EntranceRiftBlockEntityRenderer::new);
         blockConsumer.accept(ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntityRenderer::new);
+        if (DimensionalDoors.getSided().isModLoaded("create")) {
+            CreateClientCompat.initBlockEntityRenderers(blockConsumer);
+        }
     }
 
     public static void initGeneratedDoorCutouts() {

@@ -23,14 +23,14 @@ public abstract class WaterLoggableDoorBlock extends DoorBlock implements Simple
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     protected WaterLoggableDoorBlock(Properties settings, BlockSetType blockSetType) {
-    super(blockSetType, settings);
-    registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(HINGE, DoorHingeSide.LEFT).setValue(POWERED, false).setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
+        super(blockSetType, settings);
+        registerDefaultState(this.getStateDefinition().any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(HINGE, DoorHingeSide.LEFT).setValue(POWERED, false).setValue(HALF, DoubleBlockHalf.LOWER).setValue(WATERLOGGED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-    super.createBlockStateDefinition(builder);
-    builder.add(WATERLOGGED);
+        super.createBlockStateDefinition(builder);
+        builder.add(WATERLOGGED);
     }
 
 //    @Override
