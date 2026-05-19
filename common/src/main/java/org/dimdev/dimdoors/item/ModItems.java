@@ -40,7 +40,7 @@ public final class ModItems {
 
     public static final Item RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", RiftConfigurationToolItem::new);
 
-    public static final Item RIFT_BLADE = registerRegular("rift_blade", properties -> new RiftBladeItem(properties.durability(100)));
+    public static final Item RIFT_BLADE = registerRegular("rift_blade", properties -> new RiftBladeItem(properties.attributes(SwordItem.createAttributes(Tiers.IRON, 3, -2.4F))));
 
     public static final Item RIFT_REMOVER = registerRegular("rift_remover", properties -> new RiftRemoverItem(properties.stacksTo(1).durability(100)));
 
