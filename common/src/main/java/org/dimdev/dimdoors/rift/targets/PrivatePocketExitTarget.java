@@ -1,14 +1,16 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
@@ -40,8 +42,8 @@ public class PrivatePocketExitTarget extends VirtualTarget<PrivatePocketExitTarg
             }
         }
 
-        Object blockEntity = destLoc != null ? destLoc.getBlockEntity() : null;
-        if (!(blockEntity instanceof RiftBlockEntity)) {
+        EntityTarget target = this.resolveDestinationTarget(destLoc);
+        if (target == null) {
             if (destLoc == null) {
                 EntityUtils.chat(entity, Component.translatable("rifts.destinations.private_pocket_exit.did_not_use_rift"));
             } else {
@@ -53,7 +55,43 @@ public class PrivatePocketExitTarget extends VirtualTarget<PrivatePocketExitTarg
             return false;
         }
 
-        return ((EntityTarget) blockEntity).receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location);
+        return target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, destLoc);
+    }
+
+    private EntityTarget resolveDestinationTarget(Location location) {
+        if (location == null) {
+            return null;
+        }
+
+        ServerLevel level = location.getWorld();
+        if (level == null) {
+            return null;
+        }
+
+        SableHelper.INSTANCE.ensureSableSubLevelLoaded(level, location.pos);
+        return this.resolveDestinationTarget(level, location.pos);
+    }
+
+    private EntityTarget resolveDestinationTarget(ServerLevel level, BlockPos pos) {
+        EntityTarget target = this.resolveDestinationTargetAt(level, pos);
+        if (target != null) {
+            return target;
+        }
+
+        target = this.resolveDestinationTargetAt(level, pos.below());
+        if (target != null) {
+            return target;
+        }
+
+        return this.resolveDestinationTargetAt(level, pos.above());
+    }
+
+    private EntityTarget resolveDestinationTargetAt(ServerLevel level, BlockPos pos) {
+        if (SableHelper.INSTANCE.getBlockEntity(level, pos) instanceof EntityTarget target) {
+            return target;
+        }
+
+        return Targets.resolveBlockStateEntityTarget(level, pos);
     }
 
     @Override
