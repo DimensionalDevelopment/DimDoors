@@ -143,24 +143,22 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-        var blockPos = this.getBlockPos();
-
-        BlockState state = this.getLevel().getBlockState(this.getBlockPos());
-        Block block = state.getBlock();
-        Vec3 targetPos = Vec3.atCenterOf(blockPos).add(Vec3.atLowerCornerOf(this.getOrientation().getOpposite().getNormal()).scale(DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01/* slight offset to prevent issues due to mathematical inaccuracies*/));
-    /*
-    Unused code that needs to be edited if there are other ways to get to limbo
-    But if it is only dimteleport and going through rifts then this code isn't nessecary
-    if(DimensionalRegistry.getRiftRegistry().getOverworldRift(entity.getUuid()) == null) {
-        DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUuid(), new Location(World.OVERWORLD, ((ServerPlayerEntity)entity).getSpawnPointPosition()));
+        return receiveEntityAt((ServerLevel) this.level, this.getBlockPos(), this.getLevel().getBlockState(this.getBlockPos()), entity, relativePos, relativeAngle, relativeVelocity, location);
     }
-     */
-        if (block instanceof CoordinateTransformerBlock) {
-            CoordinateTransformerBlock transformer = (CoordinateTransformerBlock) block;
 
+    public static boolean receiveEntityAt(ServerLevel level, BlockPos blockPos, BlockState state, Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+        Block block = state.getBlock();
+        Direction direction = getOrientation(state).getOpposite();
+
+        // compute offset once — used whether or not it's a transformer block
+        double offset = DimensionalDoors.getConfig().getGeneralConfig().teleportOffset + 0.01;
+        Vec3 offsetVec = Vec3.atLowerCornerOf(direction.getNormal()).scale(offset);
+
+        Vec3 targetPos = Vec3.atCenterOf(blockPos).add(offsetVec);
+
+        if (block instanceof CoordinateTransformerBlock transformer) {
             if (transformer.isExitFlipped()) {
                 TransformationMatrix3d flipper = TransformationMatrix3d.builder().rotateY(Math.PI).build();
-
                 relativePos = flipper.transform(relativePos);
                 relativeAngle = flipper.transform(relativeAngle);
                 relativeVelocity = flipper.transform(relativeVelocity);
@@ -168,34 +166,28 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
             TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder = transformer.transformationBuilder(state, blockPos);
             TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder = transformer.rotatorBuilder(state, blockPos);
-            targetPos = transformer.transformOut(transformationBuilder, relativePos);
 
-            //TODO:offset entity one block infront of door
+            targetPos = transformer.transformOut(transformationBuilder, relativePos).add(offsetVec); // offset reapplied here
 
             relativeAngle = transformer.rotateOut(rotatorBuilder, relativeAngle);
             relativeVelocity = transformer.rotateOut(rotatorBuilder, relativeVelocity);
         }
 
-        // TODO: open door
-        Direction direction = getOrientation().getOpposite();
-
-
-        targetPos = targetPos.add((double) direction.getNormal().getX() / 2, (double) direction.getNormal().getY() / 2, (double) direction.getNormal().getZ() / 2);
-
-        Vec3 localTargetPos = targetPos;
-        Rotations localAngle = relativeAngle;
-        Vec3 localVelocity = relativeVelocity;
-
-        SableHelper.TeleportFrame frame = SableHelper.INSTANCE.projectTeleportFrame(
-                (ServerLevel) this.level,
-                localTargetPos,
-                localAngle,
-                localVelocity
+        targetPos = targetPos.add(
+                direction.getNormal().getX() / 2.0,
+                direction.getNormal().getY() / 2.0,
+                direction.getNormal().getZ() / 2.0
         );
 
+        SableHelper.TeleportFrame frame = SableHelper.INSTANCE.projectTeleportFrame(
+                level,
+                location,
+                targetPos,
+                relativeAngle,
+                relativeVelocity
+        );
 
-        TeleportUtil.teleport(entity, this.level, frame.pos(), frame.angle(), frame.velocity());
-
+        TeleportUtil.teleport(entity, level, frame.pos(), frame.angle(), frame.velocity());
         return true;
     }
 
@@ -206,6 +198,10 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
                 .filter(state -> state.hasProperty(HorizontalDirectionalBlock.FACING))
                 .map(state -> state.getValue(HorizontalDirectionalBlock.FACING))
                 .orElse(Direction.NORTH);
+    }
+
+    private static Direction getOrientation(BlockState state) {
+        return state.hasProperty(HorizontalDirectionalBlock.FACING) ? state.getValue(HorizontalDirectionalBlock.FACING) : Direction.NORTH;
     }
 
     public boolean hasOrientation() {

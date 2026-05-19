@@ -12,10 +12,11 @@
     "RiftSableTrackingMixin",
     "ServerChunkCachePlotGuardMixin",
     "ServerPlayerPlotRescueMixin",
+    "ServerPlayerSubLevelTrackingCleanupMixin",
+    "SubLevelHoldingChunkAccessor",
     "SubLevelHoldingChunkMapAccessor",
+    "SubLevelTrackingSystemDimensionChangeMixin",
     "VoxelNeighborhoodStateMixin"
-  ],
-  "client": [
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.MapCodec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
+import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 import java.util.Set;
@@ -34,7 +37,43 @@ public class RiftReference extends VirtualTarget<RiftReference> implements Locat
 
     @Override
     public Target receiveOther() {
-        return this.target.getBlockEntity() instanceof Target beTarget ? beTarget : null;
+        return this.resolveTarget(this.target);
+    }
+
+    protected Target resolveTarget(Location location) {
+        if (location == null) {
+            return null;
+        }
+
+        ServerLevel level = location.getWorld();
+        if (level == null) {
+            return null;
+        }
+
+        SableHelper.INSTANCE.ensureSableSubLevelLoaded(level, location.pos);
+        return this.resolveTarget(level, location.pos);
+    }
+
+    private Target resolveTarget(ServerLevel level, BlockPos pos) {
+        Target target = this.resolveTargetAt(level, pos);
+        if (target != null) {
+            return target;
+        }
+
+        target = this.resolveTargetAt(level, pos.below());
+        if (target != null) {
+            return target;
+        }
+
+        return this.resolveTargetAt(level, pos.above());
+    }
+
+    private Target resolveTargetAt(ServerLevel level, BlockPos pos) {
+        if (SableHelper.INSTANCE.getBlockEntity(level, pos) instanceof Target beTarget) {
+            return beTarget;
+        }
+
+        return Targets.resolveBlockStateEntityTarget(level, pos);
     }
 
     @Override

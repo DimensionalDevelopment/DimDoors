@@ -14,8 +14,6 @@ public class RelativeReference extends RiftReference {
 
     private final Vec3i pos;
 
-    private Location loc;
-
     public RelativeReference(Vec3i pos) {
         super(null);
         this.pos = pos;
@@ -24,15 +22,12 @@ public class RelativeReference extends RiftReference {
 
     @Override
     public Location getLocation() {
-        if(location != null && loc == null) {
-            loc = new Location(location.world, location.pos.offset(pos));
-        }
-        return loc;
+        return location == null ? null : new Location(location.world, location.pos.offset(pos));
     }
 
     @Override
     public Target receiveOther() {
-        return this.getLocation().getBlockEntity() instanceof Target beTarget ? beTarget : null;
+        return this.resolveTarget(this.getLocation());
     }
 
     @Override

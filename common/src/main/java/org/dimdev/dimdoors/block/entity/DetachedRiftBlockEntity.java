@@ -102,7 +102,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
         if (this.level instanceof ServerLevel serverLevel) {
             Vec3 localTargetPos = Vec3.atBottomCenterOf(this.worldPosition);
 
-            var frame = SableHelper.INSTANCE.projectTeleportFrame(serverLevel, localTargetPos, relativeAngle, velocity);
+            var frame = SableHelper.INSTANCE.projectTeleportFrame(serverLevel, location, localTargetPos, relativeAngle, velocity);
 
             TeleportUtil.teleport(entity, this.level, frame.pos(), frame.angle(), frame.velocity());
         }

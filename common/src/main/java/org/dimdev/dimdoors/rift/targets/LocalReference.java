@@ -15,8 +15,6 @@ public class LocalReference extends RiftReference {
 
     private final BlockPos pos;
 
-    private Location target;
-
     public LocalReference(BlockPos pos) {
         super(null);
         this.pos = pos;
@@ -25,15 +23,12 @@ public class LocalReference extends RiftReference {
 
     @Override
     public Location getLocation() {
-        if(location != null && target == null) {
-            target = new Location(location.world, pos);
-        }
-        return target;
+        return location == null ? null : new Location(location.world, pos);
     }
 
     @Override
     public Target receiveOther() {
-        return this.getLocation().getBlockEntity() instanceof Target beTarget ? beTarget : null;
+        return this.resolveTarget(this.getLocation());
     }
 
     @Override

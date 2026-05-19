@@ -21,6 +21,7 @@ public class ServerPlayerPlotRescueMixin {
         ServerPlayer player = (ServerPlayer) (Object) this;
         ServerLevel level = player.serverLevel();
 
+        SableHelper.INSTANCE.ensureSableSubLevelLoaded(level, player.blockPosition());
         if (!SableHelper.INSTANCE.isMissingSablePlotHolder(level, player.blockPosition())) {
             return;
         }

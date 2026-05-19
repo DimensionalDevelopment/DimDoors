@@ -19,6 +19,7 @@ public class ServerChunkCachePlotGuardMixin {
 
     @Inject(method = "blockChanged", at = @At("HEAD"), cancellable = true)
     private void dimdoors$ignoreMissingSablePlotHolderBlockChange(BlockPos pos, CallbackInfo ci) {
+        SableHelper.INSTANCE.ensureSableSubLevelLoaded(this.level, pos);
         if (SableHelper.INSTANCE.isMissingSablePlotHolder(this.level, pos)) {
             ci.cancel();
         }

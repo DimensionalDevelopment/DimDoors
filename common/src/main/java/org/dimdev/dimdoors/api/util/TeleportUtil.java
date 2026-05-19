@@ -91,7 +91,6 @@ public final class TeleportUtil {
                 serverPlayer.teleportTo(serverWorld, pos.x(), pos.y(), pos.z(), Set.<RelativeMovement>of(), yaw, pitch);
             } else {
                 // Cross-dimension
-                SableHelper.INSTANCE.prepareCrossDimensionTeleport(entity, serverWorld);
                 entity = teleport(entity, serverWorld, pos, velocity, yaw, pitch);
             }
 
@@ -107,7 +106,6 @@ public final class TeleportUtil {
             if (entity.level().dimension().equals(serverWorld.dimension())) {
                 entity.moveTo(pos.x(), pos.y(), pos.z(), yaw, pitch);
             } else {
-                SableHelper.INSTANCE.prepareCrossDimensionTeleport(entity, serverWorld);
                 entity = teleport(entity, serverWorld, pos, velocity, yaw, pitch);
             }
         }
