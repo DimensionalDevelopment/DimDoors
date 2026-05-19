@@ -13,7 +13,7 @@ accessWidener v1 named
 # for HackyFluidState
 extendable class net/minecraft/world/level/material/FluidState
 accessible field net/minecraft/world/level/block/state/StateHolder propertiesCodec Lcom/mojang/serialization/MapCodec;#Lnet/minecraft/state/State;codec:Lcom/mojang/serialization/MapCodec;
-
+mutable field net/minecraft/world/level/block/Block stateDefinition Lnet/minecraft/world/level/block/state/StateDefinition;
 
 #accessible method net/minecraft/client/render/WorldRenderer renderEndSky (Lnet/minecraft/client/util/math/MatrixStack;)V
 

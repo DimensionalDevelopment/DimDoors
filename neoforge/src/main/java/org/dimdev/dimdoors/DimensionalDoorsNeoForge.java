@@ -347,9 +347,6 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
         @Override
         public void onAdd(Registry<T> registry, int id, ResourceKey<T> key, T obj) {
-            if (!registry.key().equals(activeKey)) {
-                return;
-            }
             ResourceKey<? extends Registry<?>> previousKey = activeKey;
             activeKey = registry.key();
             try {

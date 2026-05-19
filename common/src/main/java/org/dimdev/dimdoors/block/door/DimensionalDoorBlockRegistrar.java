@@ -32,6 +32,7 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.tag.ModBlockTags;
 import org.dimdev.dimdoors.tag.ModItemTags;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -255,7 +256,28 @@ public class DimensionalDoorBlockRegistrar {
     }
 
     private static BlockBehaviour.Properties createProperties(Block original) {
-        return BlockBehaviour.Properties.ofFullCopy((BlockBehaviour) original).requiresCorrectToolForDrops();
+        return BlockBehaviour.Properties.ofFullCopy((BlockBehaviour) original)
+                .mapColor(original.defaultMapColor())
+                .lightLevel(state -> originalStateWithSharedProperties(original, state).getLightEmission())
+                .isValidSpawn((state, level, pos, type) -> originalStateWithSharedProperties(original, state).isValidSpawn(level, pos, type))
+                .isRedstoneConductor((state, level, pos) -> originalStateWithSharedProperties(original, state).isRedstoneConductor(level, pos))
+                .isSuffocating((state, level, pos) -> originalStateWithSharedProperties(original, state).isSuffocating(level, pos))
+                .isViewBlocking((state, level, pos) -> originalStateWithSharedProperties(original, state).isViewBlocking(level, pos))
+                .hasPostProcess((state, level, pos) -> originalStateWithSharedProperties(original, state).hasPostProcess(level, pos))
+                .emissiveRendering((state, level, pos) -> originalStateWithSharedProperties(original, state).emissiveRendering(level, pos))
+                .requiresCorrectToolForDrops();
+    }
+
+    private static BlockState originalStateWithSharedProperties(Block original, BlockState state) {
+        BlockState originalState = original.defaultBlockState();
+
+        for (Property<?> property : state.getProperties()) {
+            if (originalState.hasProperty(property)) {
+                originalState = transferProperty(state, originalState, property);
+            }
+        }
+
+        return originalState;
     }
 
     public ResourceLocation get(ResourceLocation ResourceLocation) {
@@ -322,6 +344,10 @@ public class DimensionalDoorBlockRegistrar {
             super(settings, originalBlock.getSetType());
             this.originalBlock = (Block) originalBlock;
 
+            StateDefinition.Builder<Block, BlockState> builder = new StateDefinition.Builder<>(this);
+            this.createBlockStateDefinition(builder);
+            this.stateDefinition = builder.create(Block::defaultBlockState, BlockState::new);
+
             BlockState state = this.getStateDefinition().any();
             BlockState originalState = this.originalBlock.defaultBlockState();
             for (Property<?> property : this.originalBlock.defaultBlockState().getProperties()) {
@@ -329,12 +355,19 @@ public class DimensionalDoorBlockRegistrar {
                     state = transferProperty(originalState, state, property);
                 }
             }
+
             registerDefaultState(state.setValue(WATERLOGGED, false));
         }
+
+        public static final List<Property<?>> EXISTING_DOOR_PROPERTIES = List.of(WATERLOGGED, DoorBlock.HALF, DoorBlock.OPEN, DoorBlock.FACING, DoorBlock.HINGE, DoorBlock.POWERED);
 
         @Override
         protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
             super.createBlockStateDefinition(builder);
+
+            if (originalBlock != null) {
+                originalBlock.defaultBlockState().getProperties().stream().filter(property -> !EXISTING_DOOR_PROPERTIES.contains(property)).forEach(builder::add);
+            }
         }
 
         @Override
@@ -373,6 +406,10 @@ public class DimensionalDoorBlockRegistrar {
             super(settings, originalBlock.getSetType());
             this.originalBlock = (Block) originalBlock;
 
+            StateDefinition.Builder<Block, BlockState> builder = new StateDefinition.Builder<>(this);
+            this.createBlockStateDefinition(builder);
+            this.stateDefinition = builder.create(Block::defaultBlockState, BlockState::new);
+
             BlockState state = this.getStateDefinition().any();
             BlockState originalState = this.originalBlock.defaultBlockState();
             for (Property<?> property : this.originalBlock.defaultBlockState().getProperties()) {
@@ -380,12 +417,19 @@ public class DimensionalDoorBlockRegistrar {
                     state = transferProperty(originalState, state, property);
                 }
             }
+
             registerDefaultState(state.setValue(WATERLOGGED, false));
         }
+
+        public static final List<Property<?>> EXISTING_TRAPDOOR_PROPERTIES = List.of(WATERLOGGED, TrapDoorBlock.HALF, TrapDoorBlock.OPEN, TrapDoorBlock.FACING, TrapDoorBlock.POWERED);
 
         @Override
         protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
             super.createBlockStateDefinition(builder);
+
+            if(originalBlock != null) {
+                originalBlock.defaultBlockState().getProperties().stream().filter(property -> !EXISTING_TRAPDOOR_PROPERTIES.contains(property)).forEach(builder::add);
+            }
         }
 
         @Override

@@ -43,11 +43,11 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
         return ((SlidingDoorBlock) originalBlock).isFoldingDoor();
     }
 
-    @Override
+/*    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(SlidingDoorBlock.VISIBLE);
-    }
+    }*/
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
