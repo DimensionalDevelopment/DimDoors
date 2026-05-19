@@ -27,7 +27,7 @@ LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
         PoseStack posestack = new PoseStack();
         posestack.mulPose(modelViewMatrix);
 
-        renderSkyBox(posestack);
+        renderSkyBox(posestack, 40);
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
@@ -55,9 +55,7 @@ LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
         RenderSystem.disableBlend();
     }
 
-    public static void renderSkyBox(PoseStack poseStack) {
-        RenderSystem.enableBlend();
-        RenderSystem.depthMask(false);
+    public static void renderSkyBox(PoseStack poseStack, int color) {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         for (int i = 0; i < 6; ++i) {
@@ -84,12 +82,14 @@ LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
 
             Matrix4f matrix4f = poseStack.last().pose();
             var bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-            bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, -100.0F).setUv(0.0F, 0.0F).setColor(40, 40, 40, 255);
-            bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, 100.0F).setUv(0.0F, 16.0F).setColor(40, 40, 40, 255);
-            bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, 100.0F).setUv(16.0F, 16.0F).setColor(40, 40, 40, 255);
-            bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, -100.0F).setUv(16.0F, 0.0F).setColor(40, 40, 40, 255);
+            bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, -100.0F).setUv(0.0F, 0.0F).setColor(color, color, color, 255);
+            bufferBuilder.addVertex(matrix4f, -100.0F, -100.0F, 100.0F).setUv(0.0F, 16.0F).setColor(color, color, color, 255);
+            bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, 100.0F).setUv(16.0F, 16.0F).setColor(color, color, color, 255);
+            bufferBuilder.addVertex(matrix4f, 100.0F, -100.0F, -100.0F).setUv(16.0F, 0.0F).setColor(color, color, color, 255);
             BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
             poseStack.popPose();
         }
+
+
     }
 }
