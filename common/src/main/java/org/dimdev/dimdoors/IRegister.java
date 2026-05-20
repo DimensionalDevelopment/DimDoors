@@ -1,11 +1,17 @@
 package org.dimdev.dimdoors;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.PrimitiveCodec;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -27,9 +33,11 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootTable;
 import org.apache.commons.lang3.function.TriConsumer;
+import org.dimdev.dimdoors.world.fray.DataValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface IRegister {
     <T, V extends T> V register(ResourceKey<Registry<T>> key, ResourceLocation id, V obj);
@@ -135,4 +143,8 @@ public interface IRegister {
     void registerRunnable(ResourceKey<? extends Registry<?>> key, Runnable runnable);
 
     <T> Registry<T> createRegistry(ResourceKey<Registry<T>> key);
+
+    <T> DataValue<T> registerDataValue(String fray, Supplier<T> defaultValue, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec);
+
+    void registerRunDataValue(Runnable runnable);
 }

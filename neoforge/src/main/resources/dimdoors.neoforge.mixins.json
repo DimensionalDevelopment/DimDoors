@@ -8,6 +8,7 @@
     "client.ModelBakeryMIxin"
   ],
   "mixins": [
+    "DataAttachmentMixin",
     "ServerPlayerGameModeMixin"
   ],
   "injectors": {
