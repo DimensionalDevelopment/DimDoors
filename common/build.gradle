@@ -22,6 +22,9 @@ neoForge {
 }
 
 dependencies {
+    compileOnlyApi "org.jetbrains:annotations:24.1.0"
+    compileOnlyApi "org.apache.commons:commons-lang3:3.14.0"
+
     compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
     compileOnly 'org.ow2.asm:asm-tree:9.6'
     // fabric and neoforge both bundle mixinextras, so it is safe to use it in common

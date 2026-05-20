@@ -20,7 +20,7 @@ public class SubLevelTrackingSystemDimensionChangeMixin {
                     value = "INVOKE",
                     target = "Ldev/ryanhcode/sable/sublevel/system/SubLevelTrackingSystem;sendRemoval(Lfoundry/veil/api/network/VeilPacketManager$PacketSink;Ldev/ryanhcode/sable/sublevel/ServerSubLevel;)V",
                     ordinal = 0
-            )
+            ), remap = false
     )
     private void dimdoors$skipSourceLevelRemovalPacket(SubLevelTrackingSystem instance, @Coerce Object sink, ServerSubLevel subLevel) {
     }
@@ -30,7 +30,7 @@ public class SubLevelTrackingSystemDimensionChangeMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V"
-            )
+            ), remap = false
     )
     private void dimdoors$skipSourceLevelStopMovingPacket(ServerGamePacketListenerImpl connection, Packet<?> packet) {
         if (packet instanceof ClientboundCustomPayloadPacket customPayloadPacket

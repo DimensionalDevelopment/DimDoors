@@ -71,6 +71,7 @@ import org.apache.commons.lang3.function.TriConsumer;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.api.event.ChunkServedCallback;
 import org.dimdev.dimdoors.api.util.InstanceMap;
+import org.dimdev.dimdoors.compat.create.CreateCompat;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
 import org.dimdev.dimdoors.fluid.neoforge.ModFluidTypes;
@@ -85,6 +86,8 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.*;
+
+import static org.dimdev.dimdoors.DimensionalDoors.getSided;
 
 @Mod(DimensionalDoors.MOD_ID)
 public class DimensionalDoorsNeoForge extends SidedImpl {
@@ -505,5 +508,12 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     @Override
     public <T> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> codec) {
         dataPackRegistries.add(new DataPackRegistryRegistration<>(key, codec));
+    }
+
+    @Override
+    public void checkCompat() {
+        if(getSided().isModLoaded("create")) {
+            CreateCompat.init();
+        }
     }
 }

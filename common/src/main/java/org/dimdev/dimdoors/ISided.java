@@ -85,6 +85,10 @@ public interface ISided extends IRegister, ICreativeTabHandler, INetworking {
 
     public <T> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> codec);
 
+    default void checkCompat() {
+
+    }
+
     @FunctionalInterface
     interface AttackBlockCallback {
         InteractionResult attack(Player player, InteractionHand hand, BlockPos pos, Direction direction);

@@ -39,6 +39,7 @@ import org.dimdev.dimdoors.client.config.ConfigScreenProvider;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.compat.create.CreateClientCompat;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
@@ -138,6 +139,10 @@ public class DimensionalDoorsForgeClient implements IClientSided {
 
     public static void registerEntities(EntityRenderersEvent.RegisterRenderers event) {
         DimensionalDoorsClient.initEntitiesClient(event::registerEntityRenderer, event::registerBlockEntityRenderer);
+
+        if (DimensionalDoors.getSided().isModLoaded("create")) {
+            CreateClientCompat.initBlockEntityRenderers(event::registerBlockEntityRenderer);
+        }
     }
 
     public static void registerModelLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
