@@ -59,8 +59,11 @@ import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.conditions.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPatternType;
 import org.dimdev.dimdoors.world.decay.results.DecayResultType;
+import org.dimdev.dimdoors.world.fray.DataValue;
+import org.dimdev.dimdoors.world.fray.Fray;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
+import org.dimdev.dimdoors.world.pocket.PocketChunkClaims;
 import org.dimdev.dimdoors.world.pocket.PocketChunkLoadingManager;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -132,6 +135,9 @@ public class DimensionalDoors {
         registerRun(Registries.PARTICLE_TYPE, () -> ModParticleTypes.init());
         registerRun(Registries.TRIGGER_TYPE, () -> ModCriteria.init());
         registerRun(Registries.STRUCTURE_PROCESSOR, () -> ModStructureProccessors.init());
+//        registerRunDataValue(() -> Fray.init()); TODO: Finish Fray
+        registerRunDataValue(() -> PocketChunkClaims.init());
+
 
         ModCommands.init();
         ModDimensions.init(sided);
@@ -176,6 +182,10 @@ public class DimensionalDoors {
 
     private static void registerRun(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
         sided.registerRunnable(key, runnable);
+    }
+
+    private static void registerRunDataValue(Runnable runnable) {
+        sided.registerRunDataValue(runnable);
     }
 
     public static void registerRegistries() {

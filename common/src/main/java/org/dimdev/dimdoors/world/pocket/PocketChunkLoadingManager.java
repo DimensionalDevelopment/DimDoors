@@ -4,8 +4,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.util.ChunkBounds;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -117,22 +117,4 @@ public final class PocketChunkLoadingManager {
         return pockets;
     }
 
-    private record ChunkBounds(int minX, int maxX, int minZ, int maxZ) {
-        static ChunkBounds of(Pocket<?, ?> pocket) {
-            BoundingBox box = pocket.getBox();
-            return new ChunkBounds(box.minX() >> 4, box.maxX() >> 4, box.minZ() >> 4, box.maxZ() >> 4);
-        }
-
-        boolean contains(int chunkX, int chunkZ) {
-            return chunkX >= minX && chunkX <= maxX && chunkZ >= minZ && chunkZ <= maxZ;
-        }
-
-        int width() {
-            return maxX - minX + 1;
-        }
-
-        int length() {
-            return maxZ - minZ + 1;
-        }
-    }
 }

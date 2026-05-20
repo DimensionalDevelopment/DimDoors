@@ -14,8 +14,9 @@ public final class ModCommands {
             DimTeleportCommand.register(dispatcher);
             PocketCommand.register(dispatcher);
             StandingInAir.register(dispatcher);
+//            FrayCommand.register(dispatcher); TODO: Finish Fray
 
-            dispatcher.register(Commands.literal("schem_fix").executes(SchemFixer::main));
+//            dispatcher.register(Commands.literal("schem_fix").requires(so).executes(SchemFixer::main));
         });
     }
 }

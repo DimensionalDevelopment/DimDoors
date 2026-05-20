@@ -72,8 +72,28 @@ public class PocketDirectory {
         int cursor = nextIDMap.headMap(base3Size + 1).values().intStream().max().orElse(0);
         cursor = cursor - Math.floorMod(cursor, squaredSize);
 
-        Pocket<?, ?> pocketAt = getPocket(cursor);
-        while (pocketAt != null) {
+        T pocket = null;
+        while (pocket == null) {
+            Pocket<?, ?> pocketAt = getPocket(cursor);
+            if (pocketAt == null) {
+                int pocketId = cursor + squaredSize - 1; // use the last id of the assigned grid space since it is in the bottom left corner
+
+                T candidate = builder.copy()
+                        .id(pocketId)
+                        .world(worldKey)
+                        .range(squaredSize)
+                        .offsetOrigin(idToCenteredPos(pocketId, base3Size, builder.getExpectedSize()))
+                        .build();
+
+                if (!PocketChunkClaims.hasClaimedChunk(candidate)) {
+                    cursor = pocketId;
+                    pocket = candidate;
+                } else {
+                    cursor += squaredSize;
+                }
+                continue;
+            }
+
             size = pocketAt.getSize();
             longest = Math.max(size.getX(), size.getZ());
             longest = (longest / (gridSize * 16)) + 1;
@@ -84,20 +104,10 @@ public class PocketDirectory {
             }
 
             cursor += Math.max(squaredSize, pocketBase3Size * pocketBase3Size);
-            pocketAt = getPocket(cursor);
         }
 
-        cursor = cursor + squaredSize - 1; // we actually want to use the last id of
-        // the assigned grid space since it is in the bottom left corner
-
-        T pocket = builder.copy()
-                .id(cursor)
-                .world(worldKey)
-                .range(squaredSize)
-                .offsetOrigin(idToCenteredPos(cursor, base3Size, builder.getExpectedSize()))
-                .build();
-
         nextIDMap.put(base3Size, cursor + squaredSize);
+        PocketChunkClaims.claimChunks(pocket);
         addPocket(pocket);
 
         preloadPocketChunks(pocket);

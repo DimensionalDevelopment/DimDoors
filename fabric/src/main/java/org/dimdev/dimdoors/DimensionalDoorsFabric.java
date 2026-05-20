@@ -6,8 +6,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import io.netty.buffer.ByteBuf;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
@@ -30,10 +35,14 @@ import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.fabricmc.fabric.impl.content.registry.util.ImmutableCollectionUtils;
 import net.fabricmc.loader.api.FabricLoader;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -60,6 +69,7 @@ import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
+import org.dimdev.dimdoors.world.fray.DataValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -245,6 +255,23 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
 
     @Override
     public void registerRunnable(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
+        runnable.run();
+    }
+
+    @Override
+    public <T> DataValue<T> registerDataValue(String name, Supplier<T> defaultValue, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
+        return (DataValue<T>) AttachmentRegistry.<T>create(DimensionalDoors.id(name), new Consumer<AttachmentRegistry.Builder<T>>() {
+            @Override
+            public void accept(AttachmentRegistry.Builder<T> builder) {
+                builder.initializer(defaultValue);
+                builder.persistent(codec);
+                if(streamCodec != null) builder.syncWith(streamCodec, AttachmentSyncPredicate.all());
+            }
+        });
+    }
+
+    @Override
+    public void registerRunDataValue(Runnable runnable) {
         runnable.run();
     }
 

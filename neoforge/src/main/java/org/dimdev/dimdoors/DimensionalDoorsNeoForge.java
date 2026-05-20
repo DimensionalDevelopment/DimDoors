@@ -2,11 +2,15 @@ package org.dimdev.dimdoors;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +45,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -81,6 +86,7 @@ import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
+import org.dimdev.dimdoors.world.fray.DataValue;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -105,7 +111,6 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     private final List<DataPackRegistryRegistration<?>> dataPackRegistries = new ArrayList<>();
 
     public DimensionalDoorsNeoForge(IEventBus bus) {
-        ModAttachmentTypes.register(bus);
         this.bus = bus;
 
         registerRunnable(NeoForgeRegistries.Keys.FLUID_TYPES, ModFluidTypes::init);
@@ -363,6 +368,21 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     @Override
     public void registerRunnable(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
         registerRunnables.computeIfAbsent(key, ignored -> new ArrayList<>()).add(runnable);
+    }
+
+    @Override
+    public <T> DataValue<T> registerDataValue(String name, Supplier<T> defaultValue, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
+        var dataValue = AttachmentType.builder(defaultValue).serialize(codec);
+        if(streamCodec != null) {
+            dataValue.sync(streamCodec);
+        }
+
+        return (DataValue<T>) (Object) register(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, name, dataValue.build());
+    }
+
+    @Override
+    public void registerRunDataValue(Runnable runnable) {
+        registerRunnable(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, runnable);
     }
 
     @Override
