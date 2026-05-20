@@ -101,6 +101,7 @@ public class PocketDirectory {
         addPocket(pocket);
 
         preloadPocketChunks(pocket);
+        PocketChunkLoadingManager.applyIfForceLoaded(pocket);
 
         IdReferencePocket.IdReferencePocketBuilder idReferenceBuilder = IdReferencePocket.builder();
         for (int i = 1; i < squaredSize; i++) {

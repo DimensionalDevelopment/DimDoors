@@ -71,6 +71,10 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
         return false;
     }
 
+    public boolean removeAddon(PocketAddon.PocketAddonType<?, ?> type) {
+        return addons.remove(type) != null;
+    }
+
     public <C extends PocketAddon> C getAddon(ResourceLocation id) {
         return (C) addons.get(id);
     }

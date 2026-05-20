@@ -62,6 +62,8 @@ public class DoorDataDataGen {
 
         ctx.register(key(Blocks.IRON_DOOR), RiftDataList.of(PublicPocketTarget.of(), Condition.alwaysTrue()));
 
+        ctx.register(key(Blocks.IRON_DOOR), RiftDataList.of(PublicPocketTarget.of(), Condition.alwaysTrue()));
+
         ctx.register(key(Blocks.OAK_DOOR), RiftDataList.of(EscapeTarget.of(true), Condition.alwaysTrue()));
     }
 

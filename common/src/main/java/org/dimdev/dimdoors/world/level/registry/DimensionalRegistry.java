@@ -18,6 +18,7 @@ import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
+import java.util.function.BiConsumer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,7 +112,11 @@ public class DimensionalRegistry {
     }
 
     private static Map<ResourceKey<Level>, PocketDirectory> getPocketDirectories() {
-    return pocketRegistry;
+        return pocketRegistry;
+    }
+
+    public static void forEachPocketDirectory(BiConsumer<ResourceKey<Level>, PocketDirectory> consumer) {
+        pocketRegistry.forEach(consumer);
     }
 
     public static boolean isValidWorld(Level level) {

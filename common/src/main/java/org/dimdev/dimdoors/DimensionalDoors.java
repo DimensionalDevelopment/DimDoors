@@ -61,6 +61,7 @@ import org.dimdev.dimdoors.world.decay.pattern.DecayPatternType;
 import org.dimdev.dimdoors.world.decay.results.DecayResultType;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
+import org.dimdev.dimdoors.world.pocket.PocketChunkLoadingManager;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.jetbrains.annotations.Nullable;
@@ -199,7 +200,10 @@ public class DimensionalDoors {
     private static void registerListeners() {
 //        sided.onPlayerQuit(player -> PocketCommand.logSetting.remove(player.getUUID()));
 
-        sided.onServerStarted(DimensionalRegistry::init);
+        sided.onServerStarted(server -> {
+            DimensionalRegistry.init(server);
+            PocketChunkLoadingManager.reconcileAll(server);
+        });
 
         sided.onAttackBlock(new AttackBlockCallbackListener());
         sided.onAttackBlock(new PocketAttackBlockCallbackListener());

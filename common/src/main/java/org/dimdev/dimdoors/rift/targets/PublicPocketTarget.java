@@ -10,7 +10,9 @@ import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public class PublicPocketTarget extends WrappedDestinationTarget<PublicPocketTarget> {
-    public static final MapCodec<PublicPocketTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.INSTANCE).forGetter(a -> a.wrappedDestination)).apply(instance, PublicPocketTarget::new));
+    public static final MapCodec<PublicPocketTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.INSTANCE).forGetter(a -> a.wrappedDestination)
+    ).apply(instance, PublicPocketTarget::new));
 
     private PublicPocketTarget(VirtualTarget<?> wrappedDestination) {
         super(wrappedDestination);
