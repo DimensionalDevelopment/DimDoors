@@ -988,9 +988,12 @@ public class ActiveSableHelper extends SableHelper {
      */
     @Override
     public AfterBlockData getAfterBlockData(Entity entity, AABB box, Vec3 previousPos, Vec3 currentPos) {
+        AABB currentBox = box;
+        AABB previousBox = currentBox.move(previousPos.subtract(currentPos));
+
         var trackingSubLevel = SableCompanion.INSTANCE.getTrackingSubLevel(entity);
         if (trackingSubLevel == null) {
-            return new AfterBlockData(box, previousPos, currentPos);
+            return new AfterBlockData(encompass(previousBox, currentBox), previousBox, currentBox, previousPos, currentPos);
         }
 
         var pose = trackingSubLevel.logicalPose();
@@ -998,6 +1001,14 @@ public class ActiveSableHelper extends SableHelper {
         previousPos = pose.transformPositionInverse(previousPos);
         currentPos = pose.transformPositionInverse(currentPos);
 
+        previousBox = transformBoxInverse(pose, previousBox);
+        currentBox = transformBoxInverse(pose, currentBox);
+        box = encompass(previousBox, currentBox);
+
+        return new AfterBlockData(box, previousBox, currentBox, previousPos, currentPos);
+    }
+
+    private AABB transformBoxInverse(Pose3dc pose, AABB box) {
         Vec3[] corners = new Vec3[] {
                 new Vec3(box.minX, box.minY, box.minZ),
                 new Vec3(box.minX, box.minY, box.maxZ),
@@ -1027,8 +1038,6 @@ public class ActiveSableHelper extends SableHelper {
             maxZ = Math.max(maxZ, localCorner.z);
         }
 
-        box = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
-
-        return new AfterBlockData(box, previousPos, currentPos);
+        return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 }

@@ -5,6 +5,7 @@ import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -44,14 +45,14 @@ public class ServerPlayNetworkHandlerMixin {
     protected void checkBlockCollision(ServerboundMovePlayerPacket packet, CallbackInfo ci) {
         var data = SableHelper.INSTANCE.getAfterBlockData(this.player, this.player.getBoundingBox(), this.dimdoors$positionBeforeMove, this.player.position());
 
-        this.dimdoors$checkAfterMoveCollision(data.box(), data.previousPos(), data.currentPos());
+        this.dimdoors$checkAfterMoveCollision(data.box(), data.previousBox(), data.currentBox(), data.previousPos(), data.currentPos());
     }
 
     @Unique
     Vector3d scratch = new Vector3d();
 
     @Unique
-    private void dimdoors$checkAfterMoveCollision(AABB box, Vec3 previousPos, Vec3 currentPos) {
+    private void dimdoors$checkAfterMoveCollision(AABB box, AABB previousBox, AABB currentBox, Vec3 previousPos, Vec3 currentPos) {
         ServerLevel level = this.player.serverLevel();
         BlockPos min = BlockPos.containing(box.minX + 1.0E-7D, box.minY + 1.0E-7D, box.minZ + 1.0E-7D);
         BlockPos max = BlockPos.containing(box.maxX - 1.0E-7D, box.maxY - 1.0E-7D, box.maxZ - 1.0E-7D);
@@ -65,7 +66,10 @@ public class ServerPlayNetworkHandlerMixin {
                     Block block = blockState.getBlock();
 
                     if (block instanceof AfterMoveCollidableBlock collidable) {
-                        collidable.onAfterMovePlayerCollision(blockState, level, mutable, this.player, previousPos, currentPos);
+                        InteractionResult result = collidable.onAfterMovePlayerCollision(blockState, level, mutable, this.player, previousBox, currentBox, previousPos, currentPos);
+                        if (result != InteractionResult.PASS) {
+                            return;
+                        }
                     }
                 }
             }

@@ -25,6 +25,8 @@
     "ServerPlayerInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",
     "ServerWorldMixin",
+    "TestArrowDeterminismMixin",
+    "TestProjectileDispenseBehaviorMixin",
     "ThreadedAnvilChunkStorageMixin",
     "TrapDoorMixin",
     "V1460SpongeSchematicMixin",

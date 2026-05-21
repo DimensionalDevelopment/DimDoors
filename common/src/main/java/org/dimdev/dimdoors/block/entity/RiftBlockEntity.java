@@ -229,6 +229,10 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     public boolean teleport(Entity entity) {
+        return teleport(entity, entity.position());
+    }
+
+    public boolean teleport(Entity entity, Vec3 sourcePosition) {
         this.riftStateChanged = false;
 
         // Attempt a teleport
@@ -249,7 +253,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
                         (ServerLevel) this.level,
                         blockPos,
                         entity,
-                        entity.position(),
+                        sourcePosition,
                         relativeAngle,
                         relativeVelocity
                 );

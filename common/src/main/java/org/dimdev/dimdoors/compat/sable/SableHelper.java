@@ -244,17 +244,32 @@ public class SableHelper {
      * @return converted after-block collision data
      */
     public AfterBlockData getAfterBlockData(Entity entity, AABB box, Vec3 previousPos, Vec3 currentPos) {
-        return new AfterBlockData(box, previousPos, currentPos);
+        AABB currentBox = box;
+        AABB previousBox = currentBox.move(previousPos.subtract(currentPos));
+        return new AfterBlockData(encompass(previousBox, currentBox), previousBox, currentBox, previousPos, currentPos);
+    }
+
+    protected static AABB encompass(AABB first, AABB second) {
+        return new AABB(
+                Math.min(first.minX, second.minX),
+                Math.min(first.minY, second.minY),
+                Math.min(first.minZ, second.minZ),
+                Math.max(first.maxX, second.maxX),
+                Math.max(first.maxY, second.maxY),
+                Math.max(first.maxZ, second.maxZ)
+        );
     }
 
     /**
      * Collision/movement data used when evaluating after-block behavior.
      *
-     * @param box the collision box to evaluate
+     * @param box the swept collision box to evaluate for candidate blocks
+     * @param previousBox the entity collision box before movement
+     * @param currentBox the entity collision box after movement
      * @param previousPos the entity's previous position
      * @param currentPos the entity's current position
      */
-    public record AfterBlockData(AABB box, Vec3 previousPos, Vec3 currentPos) {
+    public record AfterBlockData(AABB box, AABB previousBox, AABB currentBox, Vec3 previousPos, Vec3 currentPos) {
     }
 
     /**

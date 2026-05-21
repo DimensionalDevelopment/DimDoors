@@ -28,6 +28,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -91,35 +92,24 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
             return;
         }
 
-        onCollision(state, world, pos, entity, ((LastPositionProvider) entity).getLastPos(), entity.position());
+        onCollision(state, world, pos, entity, null, null, ((LastPositionProvider) entity).getLastPos(), entity.position());
     }
 
 
     @Override
-    public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, Vec3 previousPos, Vec3 currentPos) {
-        return onCollision(state, world, pos, player, previousPos, currentPos);
+    public InteractionResult onAfterMovePlayerCollision(BlockState state, ServerLevel world, BlockPos pos, ServerPlayer player, AABB previousBox, AABB currentBox, Vec3 previousPos, Vec3 currentPos) {
+        return onCollision(state, world, pos, player, previousBox, currentBox, previousPos, currentPos);
     }
 
-    private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, Vec3 previousPos, Vec3 currentPos) {
+    private InteractionResult onCollision(BlockState state, Level world, BlockPos pos, Entity entity, AABB previousBox, AABB currentBox, Vec3 previousPos, Vec3 currentPos) {
         var rift = this.getRift(world, pos, state);
 
-        if (!rift.hasTraversed(world, previousPos, currentPos)) {
-            // The movement did not cross the active portal plane.
-            return InteractionResult.PASS;
-        }
-
-        // TODO: replace with dimdoor cooldown?
-        if (entity.isOnPortalCooldown()) {
-            entity.setPortalCooldown();
-            return InteractionResult.PASS;
-        }
-        entity.setPortalCooldown();
-
-        rift.teleport(entity);
+        InteractionResult result = rift.tryTeleportOnTraversal(world, entity, previousBox, currentBox, previousPos, currentPos);
+        if (result == InteractionResult.PASS) return result;
 
         createDetachedRift(world, pos);
         
-        return InteractionResult.SUCCESS;
+        return result;
     }
 
     @Override

@@ -26,7 +26,7 @@ public abstract class EntityMixin implements LastPositionProvider {
 
     @Inject(method = "checkInsideBlocks()V", at = @At("TAIL"))
     public void checkBlockCollisionSaveLastPos(CallbackInfo ci) {
-    lastPos = ((Entity) (Object) this).position();
+        lastPos = ((Entity) (Object) this).position();
     }
 
     public Vec3 getLastPos() {

@@ -9,6 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.border.WorldBorder;
@@ -111,7 +112,20 @@ public final class TeleportUtil {
         }
 
         entity.setDeltaMovement(velocity);
+        alignProjectileRotation(entity, velocity);
+        entity.hasImpulse = true;
+        entity.setOldPosAndRot();
         return entity;
+    }
+
+    private static void alignProjectileRotation(Entity entity, Vec3 velocity) {
+        if (!(entity instanceof Projectile) || velocity.lengthSqr() <= 1.0E-12) {
+            return;
+        }
+
+        double horizontalDistance = velocity.horizontalDistance();
+        entity.setYRot((float) (Mth.atan2(velocity.x, velocity.z) * Mth.RAD_TO_DEG));
+        entity.setXRot((float) (Mth.atan2(velocity.y, horizontalDistance) * Mth.RAD_TO_DEG));
     }
 
     public static Entity teleport(Entity entity, Level world, BlockPos pos, Rotations angle, Vec3 velocity) {
