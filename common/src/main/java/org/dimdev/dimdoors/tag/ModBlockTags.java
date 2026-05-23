@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.tag;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.dimdev.dimdoors.DimensionalDoors;
+
+import java.util.function.Predicate;
 
 public class ModBlockTags {
     public static final TagKey<Block> DRIFTWOOD_LOGS = of("driftwood_logs");
@@ -140,6 +143,7 @@ public class ModBlockTags {
     public static final TagKey<Block> DECAYS_TO_UNRAVELED_FABRIC = decaysTo("unraveled_fabric");
     public static final TagKey<Block> DECAYS_TO_UNRAVELED_WALL = decaysTo("unraveled_wall");
     public static final TagKey<Block> DECAYS_TO_MOSS_CARPET = decaysTo("moss_carpet");
+    public static final TagKey<Block> DOES_NOT_REPLACE_FABRIC = of("does_not_replace_fabric");
 
     private static TagKey<Block> decaysTo(String id) {
         return of("decays_to/" + id);
