@@ -1,11 +1,14 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import dev.eriksonn.aeronautics.index.AeroTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
@@ -18,8 +21,11 @@ import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
+import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
+import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> implements EntityTarget {
@@ -70,18 +76,29 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
             return false;
         }
 
-        if (entity instanceof ItemEntity) {
-            Item item = ((ItemEntity) entity).getItem().getItem();
-//          TODO: Readd dying of personal pcokets.
-//        if (item instanceof DyeItem) {
-//        if (pocket.addDye(EntityUtils.getOwner(entity), ((DyeItem) item).getDyeColor())) {
-//            entity.remove(Entity.RemovalReason.DISCARDED);
-//        } else {
-//            target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
-//        }
-//        } else {
-            return target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
-//        }
+        if (entity instanceof ItemEntity itemEntity) {
+            var stack = itemEntity.getItem();
+
+            var dye = PocketColor.from(stack);
+
+            if (dye != null) {
+                var dyeableAddon = pocket.getAddon(PocketAddon.PocketAddonType.DYEABLE_ADDON).orElse(null);
+
+                if (dyeableAddon != null) {
+                    var remaining = dyeableAddon.addDye(pocket, EntityUtils.getOwner(entity), dye, stack.getCount());
+
+                    if(remaining <= 0) {
+                        entity.discard();
+                    } else {
+                        stack.setCount(remaining);
+                    }
+                    return true;
+                } else {
+                    return target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
+                }
+            } else {
+                return target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
+            }
         } else {
             boolean received = target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
             if (received) {

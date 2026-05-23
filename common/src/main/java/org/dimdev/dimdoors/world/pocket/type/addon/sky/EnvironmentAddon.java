@@ -52,7 +52,7 @@ public class EnvironmentAddon implements PocketAddon {
         }
 
     @Override
-    public void apply(Pocket pocket) {
+    public void apply(Pocket<?, ?> pocket) {
         EnvironmentAddon addon = new EnvironmentAddon(environment);
         pocket.addAddon(addon);
     }

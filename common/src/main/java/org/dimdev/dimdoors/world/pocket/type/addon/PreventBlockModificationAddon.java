@@ -70,7 +70,7 @@ public final class PreventBlockModificationAddon implements PocketAddon, UseItem
         public static MapCodec<PreventBlockModificationBuilderAddon> CODEC = MapCodec.unit(PreventBlockModificationBuilderAddon::new);
 
         @Override
-        public void apply(Pocket pocket) {
+        public void apply(Pocket<?, ?> pocket) {
             pocket.addAddon(PreventBlockModificationAddon.instance());
         }
 

@@ -18,7 +18,9 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
+import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -178,6 +180,7 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
     protected void setBox(BoundingBox box) {
         this.box = box;
     }
+
 
     // TODO: flesh this out a bit more, stuff like box() makes little sense in how it is implemented atm
     public static abstract class PocketBuilder<T extends Pocket<T, P>, P extends PocketBuilder<T, P>> extends AbstractPocketBuilder<T, P> {

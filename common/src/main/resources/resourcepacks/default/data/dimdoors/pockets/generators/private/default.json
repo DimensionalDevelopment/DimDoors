@@ -1,6 +1,11 @@
 {
   "builder": {
-    "type": "dimdoors:private_pocket"
+    "type": "dimdoors:private_pocket",
+    "addons": [
+      {
+        "type": "dimdoors:dyeable"
+      }
+    ]
   },
   "width": "5 + 16 * private_size",
   "length": "5 + 16 * private_size",

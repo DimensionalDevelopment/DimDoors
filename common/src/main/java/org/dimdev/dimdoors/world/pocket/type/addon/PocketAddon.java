@@ -53,7 +53,7 @@ public interface PocketAddon {
             addons.put(getType(), this);
         }
 
-        void apply(Pocket pocket);
+        void apply(Pocket<?, ?> pocket);
 
         PocketAddonType<T, U> getType();
     }

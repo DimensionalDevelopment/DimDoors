@@ -3,6 +3,10 @@ package org.dimdev.dimdoors.world.pocket.type;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.tag.ModItemTags;
+import org.jetbrains.annotations.Nullable;
 
 public enum PocketColor implements StringRepresentable {
     WHITE("white", DyeColor.WHITE),
@@ -31,6 +35,16 @@ public enum PocketColor implements StringRepresentable {
     PocketColor(String name, DyeColor color) {
     this.id = name;
     this.color = color;
+    }
+
+    public static @Nullable DyeColor from(ItemStack stack) {
+        for(var dyColor: DyeColor.values()) {
+            var tag = ModItemTags.DYES.get(dyColor);
+            if(tag != null && stack.is(tag)) return dyColor;
+        }
+
+        return null;
+
     }
 
     public DyeColor getColor() {

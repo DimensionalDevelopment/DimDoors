@@ -26,7 +26,7 @@ public final class ForceLoadedPocketAddon implements PocketAddon {
         public static final MapCodec<BuilderAddon> CODEC = MapCodec.unit(BuilderAddon::new);
 
         @Override
-        public void apply(Pocket pocket) {
+        public void apply(Pocket<?, ?> pocket) {
             pocket.addAddon(ForceLoadedPocketAddon.instance());
         }
 
