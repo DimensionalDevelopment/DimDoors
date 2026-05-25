@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-16T16:27:03.0892982	DimensionalDoors/Dimdoors: Dynamic Registries
+// 1.21.1	2026-05-25T04:39:03.945153	DimensionalDoors/Dimdoors: Dynamic Registries
 9a4f22c78c01f172a925144f6a0fbf65f4bb6b93 data\dimdoors\worldgen\density_function\limbo\strand.json
 f723fd123a85cf701d46f7091c34d26c1e640ee0 data\dimdoors\worldgen\placed_feature\solid_static_ore.json
 cf61fc186e0e380674be20e39a8b646611aec78b data\dimdoors\worldgen\biome\dangerous_black_void.json
@@ -38,6 +38,7 @@ f6af981f4d424d67234d5bbcd6f8f4fd1e4b9704 data\dimdoors\worldgen\template_pool\en
 800b58380552fe5b921bbadb65dfbfff666b5c3a data\dimdoors\worldgen\template_pool\enclosed_quartz_gateway.json
 3d0f05d06b222f19d7abffd57246012b264de1cc data\dimdoors\worldgen\template_pool\enclosed_mud_gateway.json
 0cf5c2c0d920affc93bd6361268fb64b82f65c06 data\dimdoors\worldgen\template_pool\enclosed_prismarine_gateway.json
+936a1ef5a0c074c75e3beb25cbb580d408aced0b data\dimdoors\door\data\gold_door.json
 b805d2d1b2b9c75f5eee2d31f3d7b44664ec3c33 data\dimdoors\enchantment\string_theory.json
 7d5e5099334f5e7e15cd0bae652639e362c6cd69 data\dimdoors\door\data\quartz_door.json
 01c484f63f7e2260bbed68ac236e830eb2940fa1 data\dimdoors\painting_variant\portal.json

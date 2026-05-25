@@ -87,6 +87,10 @@ repositories {
     maven {
         url = "https://cursemaven.com"
     }.content { includeGroup("curse.maven") }
+
+    maven {
+        url = "https://maven.shedaniel.me/"
+    }
 }
 
 // Declare capabilities on the outgoing configurations.

@@ -14,6 +14,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -35,7 +36,7 @@ import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.IClientSided;
 import org.dimdev.dimdoors.client.ModEntityModelLayers;
 import org.dimdev.dimdoors.client.ModRecipeBookGroups;
-import org.dimdev.dimdoors.client.config.ConfigScreenProvider;
+import org.dimdev.dimdoors.client.config.DimDoorsConfigScreen;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
@@ -72,7 +73,14 @@ public class DimensionalDoorsForgeClient implements IClientSided {
     public DimensionalDoorsForgeClient(IEventBus bus, ModContainer container) {
         this.bus = bus;
         DimensionalDoorsClient.init(this);
-        container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, previous) -> ConfigScreenProvider.getConfigScreen(previous));
+        container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, previous) -> DimDoorsConfigScreen.builder(DimensionalDoors.getConfig().copy())
+                .parent(previous)
+                .title(Component.translatable("text.autoconfig.dimdoors.title"))
+                .translationPrefix("text.autoconfig.dimdoors")
+                .save(config -> {
+                    DimensionalDoors.setConfig(config);
+                    DimensionalDoors.saveConfig();
+                }).build());
 
         bus.addListener(DimensionalDoorsForgeClient::registerRecipeBookCategories);
         bus.addListener(DimensionalDoorsForgeClient::registerParticles);

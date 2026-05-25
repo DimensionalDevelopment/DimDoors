@@ -26,6 +26,7 @@ import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class RiftSignatureItem extends Item {
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext itemUsageContext) {
+    public @NotNull InteractionResult useOn(UseOnContext itemUsageContext) {
         Level world = itemUsageContext.getLevel();
 
         if (world.isClientSide()) return InteractionResult.SUCCESS;

@@ -317,7 +317,7 @@ public class LanguageProvider extends FabricLanguageProvider {
         builder.add("text.autoconfig.dimdoors.option.pockets.defaultPocketsResourcePackActivationType", "Default Resource Pack Activation Type");
         builder.add("text.autoconfig.dimdoors.option.pockets.asyncWorldEditPocketLoading", "Async WorldEdit Pocket Loading");
         builder.add("text.autoconfig.dimdoors.option.pockets.asyncWorldEditPocketLoading.@Tooltip", "Sets loading pockets to your WorldEdit clipboard asynchronous or synchronous. Only affects when WorldEdit is installed.");
-        builder.add("text.autoconfig.dimdoors.option.pockets.canUseRiftSignatureInPrivatePockets", "Can use Rift Signature in Private Pockets");
+        builder.add("text.autoconfig.dimdoors.option.pockets.canUseRiftSignatureInPrivatePockets", "Rift Signature in Private Pockets");
         builder.add("text.autoconfig.dimdoors.option.pockets.canUseRiftSignatureInPrivatePockets.@Tooltip", "If Enabled, rift signatures can be used within private pockets.");
 
         builder.add("dimdoors.pocket.dyeAlreadyAbsorbed", "The pocket is already that color, so the rift didn't absorb the dye.");

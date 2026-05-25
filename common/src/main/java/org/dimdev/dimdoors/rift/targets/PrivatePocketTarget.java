@@ -28,6 +28,7 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import java.util.Arrays;
 import java.util.UUID;
 
+//TODO: add the ability to do addon spefific EntityTarget stuff and use it seperate dyeable from PrivatePocket
 public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> implements EntityTarget {
     public static final PrivatePocketTarget INSTANCE = new PrivatePocketTarget();
     private static final Logger LOGGER = LogManager.getLogger();

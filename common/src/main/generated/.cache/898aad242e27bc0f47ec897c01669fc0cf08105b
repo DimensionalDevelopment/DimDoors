@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-16T16:27:03.0823165	DimensionalDoors/Block Loot Tables
+// 1.21.1	2026-05-25T04:39:03.935181	DimensionalDoors/Block Loot Tables
 639373bca85e6cff8353c6fe6aee0dce2c185b98 data\dimdoors\loot_table\blocks\blue_terracotta_gate.json
 21d0539ea1c361babe0bd2b2fdba685255c1eb3c data\dimdoors\loot_table\blocks\pink_terracotta_gate.json
 3f0144feb68a8db930a20dee3986d4e03d94641a data\dimdoors\loot_table\blocks\blue_glazed_terracotta_gate.json
@@ -32,8 +32,8 @@ f4d0f5b2fd72cead57ebca9813edf26fc20dc4da data\dimdoors\loot_table\blocks\light_g
 e8d36abd9cc6c76c4fe4a402d4652c53c3c13e4d data\dimdoors\loot_table\blocks\gray_terracotta_gate.json
 eb6e83e020e9941e8d9e7da59f8185be3e8c597c data\dimdoors\loot_table\blocks\white_terracotta_wall.json
 97b73037a9c44a7ac587d7b107f0ff63913c527d data\dimdoors\loot_table\blocks\gravel_button.json
-6abc864729e44b5bdcde2c5b0cb3965a1a16ad5c data\dimdoors\loot_table\blocks\end_stone_slab.json
 2bb4378589b54555d25deafb1c03c53d1257dc68 data\dimdoors\loot_table\blocks\orange_fabric.json
+6abc864729e44b5bdcde2c5b0cb3965a1a16ad5c data\dimdoors\loot_table\blocks\end_stone_slab.json
 37bba58891add1e8ffa0319bd0fce9e68cf13196 data\dimdoors\loot_table\blocks\gray_glazed_terracott_slab.json
 679e33d420d894cd8973abe1a00777475155fe4d data\dimdoors\loot_table\blocks\cyan_terracotta_gate.json
 d4b24506811495a340eecb786378303a22e4a1ce data\dimdoors\loot_table\blocks\tesselating_loom.json
@@ -261,8 +261,8 @@ a283754de927b000387c85c14eec118fcfd624ee data\dimdoors\loot_table\blocks\white_t
 5228096da7bd2c4cc3db5bae21a61583a768f4c6 data\dimdoors\loot_table\blocks\sand_fence.json
 aa1b45e2be42c9a9e6dab54191008394a5a95e61 data\dimdoors\loot_table\blocks\pink_glazed_terracotta_fence.json
 9e3080ddb10f4564e0c347b22fe1ad82e964822b data\dimdoors\loot_table\blocks\amalgam_ore.json
-6b2acc65f19d215fa557db1e12c75c593d2bca9e data\dimdoors\loot_table\blocks\brown_glazed_terracotta_wall.json
 600af667bd4e948962de235897b2611004013949 data\dimdoors\loot_table\blocks\dark_sand_button.json
+6b2acc65f19d215fa557db1e12c75c593d2bca9e data\dimdoors\loot_table\blocks\brown_glazed_terracotta_wall.json
 c5df0cdde1d05901ecfee274c9cbeb11a1f28676 data\dimdoors\loot_table\blocks\red_glazed_terracotta_gate.json
 205f8504a30ae26149a8de62f88ac7f16ed0092a data\dimdoors\loot_table\blocks\dark_sand_slab.json
 326a25957f8822945fa09d3756a358685a059b50 data\dimdoors\loot_table\blocks\light_gray_terr_slab.json

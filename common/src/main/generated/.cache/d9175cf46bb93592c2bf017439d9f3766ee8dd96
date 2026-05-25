@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-16T16:27:03.0543921	DimensionalDoors/Tags for minecraft:item
+// 1.21.1	2026-05-25T04:39:03.8703559	DimensionalDoors/Tags for minecraft:item
 544bcc11c4743298c42cbf753aeac4bb3a8c3a49 data\c\tags\item\dyed\magenta.json
 0e36aa79b920b7a9ff9d5caa6905918ea5bf6c79 data\c\tags\item\dyed\cyan.json
 34cd16328f0fb57e37526790a4ca65bd8f9d6aef data\minecraft\tags\item\wooden_slabs.json
@@ -7,8 +7,8 @@ dfe45e7c247990a2f286f5fa8935be47c185acab data\c\tags\item\dyed\yellow.json
 db3a7e7d7dd4ceed0f922c3d3d9d85e4601ed334 data\minecraft\tags\item\walls.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\enchantable\sword.json
 90143909f9adbc3ef2bcbf962685462d46a4fe63 data\dimdoors\tags\item\ancient_fabric.json
-9f46873286f8b22321855b7fa2d9946ebb08c90e data\minecraft\tags\item\trimmable_armor.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\c\tags\item\tools\melee_weapon.json
+9f46873286f8b22321855b7fa2d9946ebb08c90e data\minecraft\tags\item\trimmable_armor.json
 2b00c94ccfd1e58d29b35306999e1c39fac5c677 data\minecraft\tags\item\stairs.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\breaks_decorated_pots.json
 9f46873286f8b22321855b7fa2d9946ebb08c90e data\minecraft\tags\item\enchantable\armor.json

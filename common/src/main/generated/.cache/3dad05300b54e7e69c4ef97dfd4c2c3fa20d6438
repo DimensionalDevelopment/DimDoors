@@ -1,4 +1,4 @@
-// 1.21.1	2026-05-16T16:27:03.0843111	DimensionalDoors/Tags for minecraft:block
+// 1.21.1	2026-05-25T04:39:03.9391696	DimensionalDoors/Tags for minecraft:block
 ac501b46ae982eba8a527f835279bc16e3b186f9 data\dimdoors\tags\block\decays_to\endstone_wall.json
 eb463824c89cdb6088a03a619352015965422ae7 data\minecraft\tags\block\walls.json
 907b19180d245010d16aaf529a921262260e3d10 data\c\tags\block\dyed\green.json
@@ -108,8 +108,8 @@ d122d377abd6ec7bd41cdd1a4290fec1ea4bd44d data\dimdoors\tags\block\decays_to\clay
 d39ee6d19b7a02e554af1a8b4b8906b794cde5a1 data\dimdoors\tags\block\decays_to\netherrack_stairs.json
 ad7e9ba9cc7d93fca2b552fe8925e1ebf1b43e71 data\minecraft\tags\block\fences.json
 8e412eb9203d8e0b509b4428a7f292a1b475c519 data\dimdoors\tags\block\decays_to\dark_sand_wall.json
-4e658256b68d127315b88dcb8987591d255b44fb data\c\tags\block\fence_gates\wooden.json
 3485578666acb97594e3d83ea064c7e50583abba data\minecraft\tags\block\mineable\hoe.json
+4e658256b68d127315b88dcb8987591d255b44fb data\c\tags\block\fence_gates\wooden.json
 543789f1b8118d671b9658cbb768ef57faffff05 data\minecraft\tags\block\planks.json
 31d3626e411e9716fe67153346e57fafd755f76e data\c\tags\block\dyed\purple.json
 a3571bf3b603977564da3607db7323486c81e0eb data\dimdoors\tags\block\decays_to\dark_sand_fence.json

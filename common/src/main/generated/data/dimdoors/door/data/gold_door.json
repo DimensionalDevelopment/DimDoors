@@ -19,14 +19,11 @@
         "weightMaximum": 100.0
       },
       "properties": {
-        "entranceWeight": 0.0,
-        "floatingWeight": 0.0,
         "groups": [
-          0,
-          1
+          1,
+          0
         ],
-        "linksRemaining": 1,
-        "oneWay": false
+        "linksRemaining": 1
       }
     }
   }

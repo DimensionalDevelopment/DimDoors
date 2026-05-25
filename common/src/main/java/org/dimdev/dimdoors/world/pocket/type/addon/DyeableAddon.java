@@ -27,7 +27,6 @@ import java.util.HashMap;
 
 public class DyeableAddon implements PocketAddon {
     public static ResourceLocation ID = DimensionalDoors.id("dyeable");
-    private static final int BLOCKS_PAINTED_PER_DYE = 1000;
     public static final MapCodec<DyeableAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     PocketColor.CODEC.fieldOf("dyeColor").forGetter(a -> a.dyeColor),
                     PocketColor.CODEC.fieldOf("nextDyeColor").forGetter(a -> a.nextDyeColor),
@@ -60,7 +59,7 @@ public class DyeableAddon implements PocketAddon {
     private static int amountOfDyeRequiredToColor(Pocket<?, ?> pocket) {
         int outerVolume = pocket.getBox().getYSpan() * pocket.getBox().getZSpan() * pocket.getBox().getXSpan();
 
-        return Math.max(outerVolume / BLOCKS_PAINTED_PER_DYE, 1);
+        return Math.max(outerVolume / DimensionalDoors.getConfig().getPocketsConfig().blocksColoredPerDye, 1);
     }
 
     private void repaint(Pocket<?, ?> pocket, DyeColor dyeColor) {

@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.datagen;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.door.data.RiftDataList;
@@ -53,14 +54,19 @@ public class DoorDataDataGen {
                 Condition.alwaysTrue())
         );
 
+        ctx.register(key(ModBlocks.GOLD_DOOR), RiftDataList.of(
+                dungeonBuilder.dungeonGroup(ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("gold"))).build(),
+                properties,
+                Condition.alwaysTrue())
+        );
+
+
         ctx.register(key(ModBlocks.STONE_DOOR), RiftDataList.of(
                 dungeonBuilder.dungeonGroup(PocketGenerator.ALL_DUNGEONS).build(),
                 properties,
                 Condition.alwaysTrue())
         );
 
-
-        ctx.register(key(Blocks.IRON_DOOR), RiftDataList.of(PublicPocketTarget.of(), Condition.alwaysTrue()));
 
         ctx.register(key(Blocks.IRON_DOOR), RiftDataList.of(PublicPocketTarget.of(), Condition.alwaysTrue()));
 
