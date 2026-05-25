@@ -36,10 +36,10 @@ import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.IClientSided;
 import org.dimdev.dimdoors.client.ModEntityModelLayers;
 import org.dimdev.dimdoors.client.ModRecipeBookGroups;
-import org.dimdev.dimdoors.client.config.DimDoorsConfigScreen;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
+import org.dimdev.dimdoors.compat.clothconfig.ClothConfigCompat;
 import org.dimdev.dimdoors.compat.create.CreateClientCompat;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModItems;
@@ -60,7 +60,7 @@ public class DimensionalDoorsForgeClient implements IClientSided {
     public static final EnumProxy<RecipeBookCategories> TESSELLATING_GENERAL = new EnumProxy<>(RecipeBookCategories.class, (Supplier<List<ItemStack>>) () -> List.of(ModItems.WORLD_THREAD.getDefaultInstance()));
     public static final EnumProxy<RecipeBookCategories> TESSELLATING_SEARCH = new EnumProxy<>(RecipeBookCategories.class, (Supplier<List<ItemStack>>) () -> List.of(Items.COMPASS.getDefaultInstance()));
     private final IEventBus bus;
-    private Map<BlockEntityType<?>, BlockEntityRendererProvider<?>> blockEntityRenderers = new HashMap<>();
+    private final Map<BlockEntityType<?>, BlockEntityRendererProvider<?>> blockEntityRenderers = new HashMap<>();
 
     public Supplier<RecipeBookCategories> getRecipBookCategories(String name, Supplier<ItemStack> itemStack) {
         return switch (name) {
@@ -73,14 +73,7 @@ public class DimensionalDoorsForgeClient implements IClientSided {
     public DimensionalDoorsForgeClient(IEventBus bus, ModContainer container) {
         this.bus = bus;
         DimensionalDoorsClient.init(this);
-        container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, previous) -> DimDoorsConfigScreen.builder(DimensionalDoors.getConfig().copy())
-                .parent(previous)
-                .title(Component.translatable("text.autoconfig.dimdoors.title"))
-                .translationPrefix("text.autoconfig.dimdoors")
-                .save(config -> {
-                    DimensionalDoors.setConfig(config);
-                    DimensionalDoors.saveConfig();
-                }).build());
+        if(DimensionalDoors.getSided().isModLoaded("cloth_config")) container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, previous) -> ClothConfigCompat.createScreen(previous));
 
         bus.addListener(DimensionalDoorsForgeClient::registerRecipeBookCategories);
         bus.addListener(DimensionalDoorsForgeClient::registerParticles);

@@ -180,7 +180,7 @@ public final class ModConfig {
         @Option public int privatePocketSize = 2;
         @Option public int publicPocketSize = 1;
         @Option public boolean canUseRiftSignatureInPrivatePockets = true;
-        @Option public int blocksColoredPerDye = 10;
+        @Option public int blocksColoredPerDye = 100;
     }
 
     public static class World {
