@@ -100,7 +100,7 @@ public final class ModItems {
 
     private static ArmorSet registerArmorSet(String name, ArmorMaterial material, Consumer<Item.Properties> propertiesConsumer) {
         var holder = BuiltInRegistries.ARMOR_MATERIAL.wrapAsHolder(material);
-        var properties = new Item.Properties();
+        var properties = new Item.Properties().stacksTo(1);
 
         var helmet = register(name + "_helmet", new ArmorItem(holder, ArmorItem.Type.HELMET, properties), DIMENSIONAL_DOORS);
         var chestplate = register(name + "_chestplate", new ArmorItem(holder, ArmorItem.Type.CHESTPLATE, properties), DIMENSIONAL_DOORS);
