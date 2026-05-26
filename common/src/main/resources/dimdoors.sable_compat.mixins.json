@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "org.dimdev.dimdoors.compat.sable.SableMixinPlugin",
   "minVersion": "0.8",
+  "refmap": "dimdoors.refmap.json",
   "mixins": [
     "BlockAssemblyMixin",
     "DetachedRiftSubLevelCollisionMixin",

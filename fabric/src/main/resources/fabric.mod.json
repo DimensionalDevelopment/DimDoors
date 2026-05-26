@@ -15,6 +15,7 @@
     "license": "${license}",
     "icon": "${mod_id}.png",
     "environment": "*",
+    "accessWidener": "${mod_id}.accesswidener",
     "entrypoints": {
         "main": [
             "org.dimdev.dimdoors.DimensionalDoorsFabric"
