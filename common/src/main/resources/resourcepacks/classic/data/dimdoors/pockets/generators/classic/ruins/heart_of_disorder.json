@@ -4,6 +4,7 @@
   "builder": {
     "type": "dimdoors:pocket"
   },
+  "setup_loot": true,
   "modifiers": [
     {
       "type": "dimdoors:rift_data",
