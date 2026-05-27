@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.mixin.neoforge;
 
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import org.dimdev.dimdoors.world.fray.DataValue;
+import org.dimdev.dimdoors.util.DataValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 

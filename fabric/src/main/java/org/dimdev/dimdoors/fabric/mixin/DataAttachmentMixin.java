@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.fabric.mixin;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.impl.attachment.AttachmentTypeImpl;
-import org.dimdev.dimdoors.world.fray.DataValue;
+import org.dimdev.dimdoors.util.DataValue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 

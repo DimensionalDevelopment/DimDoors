@@ -59,8 +59,6 @@ import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.conditions.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPatternType;
 import org.dimdev.dimdoors.world.decay.results.DecayResultType;
-import org.dimdev.dimdoors.world.fray.DataValue;
-import org.dimdev.dimdoors.world.fray.Fray;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 import org.dimdev.dimdoors.world.pocket.PocketChunkClaims;
