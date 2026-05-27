@@ -41,7 +41,7 @@ public abstract class PocketGeneratorReference<T extends PocketGeneratorReferenc
     }
 
     public Pocket<?, ?> prepareAndPlacePocket(PocketGenerationContext parameters) {
-        return prepareAndPlacePocket(parameters, false);
+        return prepareAndPlacePocket(parameters, null);
     }
 
     @Override
