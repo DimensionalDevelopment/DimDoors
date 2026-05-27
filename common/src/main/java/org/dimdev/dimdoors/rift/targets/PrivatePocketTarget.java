@@ -121,21 +121,23 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
 
     private PrivatePocket generatePrivatePocket(UUID uuid, VirtualLocation virtualLocation) {
         Pocket<?, ?> generatedPocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
-        if (!(generatedPocket instanceof PrivatePocket pocket)) {
+
+        if (generatedPocket instanceof PrivatePocket pocket) {
+            Location entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+            if (entrance == null) {
+                LOGGER.error("Could not create private pocket {} for {} because no entrance was registered.", pocket.getId(), uuid);
+                return null;
+            }
+
+            DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, null);
+            DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, null);
+            DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
+            return pocket;
+        } else {
             LOGGER.error("Could not create private pocket for {} because generation returned {}.", uuid, generatedPocket == null ? "null" : generatedPocket.getClass().getSimpleName());
             return null;
         }
 
-        Location entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
-        if (entrance == null) {
-            LOGGER.error("Could not create private pocket {} for {} because no entrance was registered.", pocket.getId(), uuid);
-            return null;
-        }
-
-        DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, null);
-        DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, null);
-        DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
-        return pocket;
     }
 
     private void sendMissingEntranceHint(Entity entity, PrivatePocket pocket) {

@@ -301,35 +301,35 @@
     "type": "dimdoors:id"
   },
   {
-    "id": "dimdoors:decayed_house",
+    "id": "dimdoors:dungeon/decayed_house",
     "type":"dimdoors:id"
   },
   {
-    "id": "dimdoors:eidlo",
+    "id": "dimdoors:dungeon/eidlo",
     "type": "dimdoors:id"
   },
   {
-    "id": "dimdoors:fantasmapolis",
+    "id": "dimdoors:dungeon/fantasmapolis",
     "type": "dimdoors:id"
   },
   {
-    "id": "dimdoors:house",
+    "id": "dimdoors:dungeon/house",
     "type": "dimdoors:id"
   },
   {
-    "id": "dimdoors:maze_of_doors",
+    "id": "dimdoors:dungeon/maze_of_doors",
     "type": "dimdoors:id"
   },
   {
-    "id": "dimdoors:null",
+    "id": "dimdoors:dungeon/null",
     "type": "dimdoors:id"
   },
   {
-    "id": "dimdoors:ruins_corrupted_desert_pyramid",
+    "id": "dimdoors:dungeon/ruins_corrupted_desert_pyramid",
     "type": "dimdoors:id"
   },
   {
-    "id": "dimdoors:spiti_me_vafles",
+    "id": "dimdoors:dungeon/spiti_me_vafles",
     "type": "dimdoors:id"
   }
 ]

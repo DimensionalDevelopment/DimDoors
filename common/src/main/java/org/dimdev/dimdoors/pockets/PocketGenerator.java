@@ -80,7 +80,7 @@ public final class PocketGenerator {
             return null;
         }
 
-        return pocketGeneratorReference.prepareAndPlacePocket(context);
+        return PocketCreator.create(pocketGeneratorReference, context);
     }
 
     public static Pocket<?, ?> generateDungeonPocketV2(VirtualLocation virtualLocation, VirtualTarget<?> linkTo, LinkProperties linkProperties) {

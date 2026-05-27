@@ -98,7 +98,9 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
         }
         entity.setPortalCooldown();
 
-        rift.teleport(entity);
+        if (!rift.teleport(entity)) {
+            return InteractionResult.PASS;
+        }
 
         if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
             closeDoorBehind(world, top, bottom);

@@ -32,4 +32,6 @@ public abstract class EntityMixin implements LastPositionProvider {
     public Vec3 getLastPos() {
         return lastPos == null ? ((Entity) (Object) this).position() : lastPos;
     }
+
+
 }

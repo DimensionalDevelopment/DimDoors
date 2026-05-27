@@ -8,6 +8,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.Heightmap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
@@ -30,6 +32,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class RandomTarget<T extends RandomTarget<T>> extends VirtualTarget<T> {
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public static <T extends RandomTarget<T>> Products.P8<RecordCodecBuilder.Mu<T>, Float, Double, Double, Double, Double, Set<Integer>, Boolean, Boolean> common(RecordCodecBuilder.Instance<T> instance) {
         return instance.group(
                 Codec.FLOAT.fieldOf("newRiftWeight").forGetter(RandomTarget::getNewRiftWeight),
@@ -142,10 +146,13 @@ public abstract class RandomTarget<T extends RandomTarget<T>> extends VirtualTar
                 VirtualTarget<?> linkBack = this.noLinkBack ? VirtualTarget.NoneTarget.INSTANCE : new RiftReference(this.location);
                 Pocket pocket = generatePocket(virtualLocation, linkBack, newLink); // TODO make the generated dungeon of the same type, but in the overworld
 
+                if (pocket == null) {
+                    LOGGER.error("Failed to generate dungeon pocket at {} from {}.", virtualLocation, this.location);
+                    return null;
+                }
 
-                if (!this.noLink)
-                    TemplateUtils.linkRifts(this.location, DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket));
                 var entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+                if (!this.noLink) TemplateUtils.linkRifts(this.location, entrance);
                 var beEntrance = entrance != null ? entrance.getBlockEntity() : null;
                 return beEntrance != null ? (Target) beEntrance : null;
             }

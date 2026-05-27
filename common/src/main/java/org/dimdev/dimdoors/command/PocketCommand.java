@@ -216,7 +216,7 @@ public class PocketCommand {
 
         Pocket<?, ?> pocket;
         try {
-            pocket = creator.prepareAndPlacePocket(pocketGenerationContext);
+            pocket = PocketCreator.create(creator, pocketGenerationContext);
         } catch (RuntimeException e) {
             LOGGER.error("Failed to generate pocket {} via command.", id, e);
             source.sendFailure(Component.literal("Failed to generate pocket " + id + ". Check the server log."));

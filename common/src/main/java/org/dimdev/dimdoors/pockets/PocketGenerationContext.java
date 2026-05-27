@@ -10,6 +10,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
 import java.util.Map;
+import java.util.Optional;
 
 public record PocketGenerationContext(ServerLevel world, VirtualLocation sourceVirtualLocation, VirtualTarget linkTo, LinkProperties linkProperties,
                       net.minecraft.core.HolderLookup.Provider provider) {
@@ -23,5 +24,9 @@ public record PocketGenerationContext(ServerLevel world, VirtualLocation sourceV
 
     public <T> Holder<T> lookupHolder(ResourceKey<T> id) {
         return provider.asGetterLookup().lookupOrThrow(id.registryKey()).getOrThrow(id);
+    }
+
+    public <T> Optional<Holder.Reference<T>> lookupHolderOptional(ResourceKey<T> id) {
+        return provider.asGetterLookup().lookupOrThrow(id.registryKey()).get(id);
     }
 }
