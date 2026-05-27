@@ -108,15 +108,8 @@ public class RelativeBlockSample {
             doubles.set(1, NbtOps.INSTANCE.createDouble(vec.y));
             doubles.set(2, NbtOps.INSTANCE.createDouble(vec.z));
             nbt.put("Pos", doubles);
-            Optional<Entity> entity = EntityType.create(nbt, world.getLevel());
-
-            if(entity.isEmpty()) {
-                System.out.println(entry.getKey());
-                System.out.println(entry.getValue());
-            } else {
-                world.addFreshEntity(entity.get());
-            }
-
+            nbt.remove("UUID");
+            EntityType.create(nbt, world.getLevel()).ifPresent(world::addFreshEntity);
         }
     }
 }
