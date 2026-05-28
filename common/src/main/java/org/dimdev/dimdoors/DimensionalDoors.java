@@ -26,7 +26,9 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.criteria.ModCriteria;
+import org.dimdev.dimdoors.effect.ModMobEffects;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.entity.mask.MaskEntity;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModArmorMaterials;
@@ -121,6 +123,7 @@ public class DimensionalDoors {
         registerRun(Registries.RECIPE_SERIALIZER, () -> ModRecipeSerializers.init());
         registerRun(Registries.MENU, () -> ModScreenHandlerTypes.init());
         registerRun(Registries.SOUND_EVENT, () -> ModSoundEvents.init());
+        registerRun(Registries.MOB_EFFECT, () -> ModMobEffects.init());
         registerRun(Registries.FLUID, () -> ModFluids.init());
         registerRun(Registries.ENTITY_TYPE, () -> ModEntityTypes.init());
         registerRun(Registries.ARMOR_MATERIAL, () -> ModArmorMaterials.init());
@@ -216,12 +219,25 @@ public class DimensionalDoors {
         sided.onAttackBlock(new AttackBlockCallbackListener());
         sided.onAttackBlock(new PocketAttackBlockCallbackListener());
 
-        sided.onBeforeBlockBreak(new PlayerBlockBreakEventBeforeListener());
+        sided.onBeforeBlockBreak((level, pos, state, player) -> {
+            boolean cancel = new PlayerBlockBreakEventBeforeListener().shouldCancel(level, pos, state, player);
+            if (!cancel) {
+                MaskEntity.alertMasksNearBlock(level, pos, player);
+            }
+            return cancel;
+        });
 
         sided.onUseItem(new UseItemCallbackListener());
         UseItemOnBlockCallback.EVENT.register(new UseItemOnBlockCallbackListener());
         sided.onUseBlock(new UseBlockCallbackListener());
-        sided.onBeforeBlockPlace((level, pos, state, placer) -> shouldCancelBlockModification(level, pos, placer));
+        sided.onBeforeBlockPlace((level, pos, state, placer) -> {
+            boolean cancel = shouldCancelBlockModification(level, pos, placer);
+            if (!cancel && placer instanceof Player player) {
+                MaskEntity.notifyEchoesOfPlacedBlock(level, pos, player);
+                MaskEntity.alertMasksNearBlock(level, pos, player);
+            }
+            return cancel;
+        });
 
         // placing doors on rifts
         UseItemOnBlockCallback.EVENT.register(new UseDoorItemOnBlockCallbackListener());

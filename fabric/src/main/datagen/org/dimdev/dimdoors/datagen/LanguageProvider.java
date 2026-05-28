@@ -190,8 +190,10 @@ public class LanguageProvider extends FabricLanguageProvider {
         builder.add("item.dimdoors.dimensional_eraser", "Dimensional Eraser");
         builder.add("item.dimdoors.dimensional_eraser.desc", "Erases entities");
         builder.add("item.dimdoors.monolith_spawner", "Monolith Spawner");
+        builder.add("item.dimdoors.mask", "Mask");
         builder.add("item.dimdoors.mask_wand", "Mask Wand");
         builder.add("item.dimdoors.mask_shard", "Mask Shard");
+        builder.add("effect.dimdoors.chased", "Chased");
         builder.add("item.dimdoors.fuzzy_fireball", "Fuzzy Fireball");
         builder.add("item.dimdoors.fabric_of_finality", "Fabric of Finality");
         builder.add("item.dimdoors.liminal_lint", "Liminal Lint");

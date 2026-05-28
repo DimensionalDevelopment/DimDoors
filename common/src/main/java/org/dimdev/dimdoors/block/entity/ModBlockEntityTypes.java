@@ -23,6 +23,8 @@ public class ModBlockEntityTypes {
 
     public static final MutableBlockEntityType<TesselatingLoomBlockEntity> TESSELATING_LOOM = registerMutable("tesselating_loom", TesselatingLoomBlockEntity::new);
 
+    public static final MutableBlockEntityType<MaskHomeBlockEntity> MASK_HOME = registerMutable("mask_home", MaskHomeBlockEntity::new);
+
 
     private static <E extends BlockEntity> BlockEntityType<E> register(String id, BiFunction<BlockPos, BlockState, E> factory, Block... blocks) {
         return DimensionalDoors.getSided().registerBlockEntityType(id, BlockEntityType.Builder.of(factory::apply, Stream.of(blocks).toArray(Block[]::new)).build(null));

@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.entity.mask.MaskEntity;
 
 public class ModEntityTypes {
 
@@ -23,7 +24,7 @@ public class ModEntityTypes {
 
     public static void init() {
         DimensionalDoors.getSided().registerEntityAttributes(MONOLITH, MonolithEntity::createMobAttributes);
-        DimensionalDoors.getSided().registerEntityAttributes(MASK, MonolithEntity::createMobAttributes);
+        DimensionalDoors.getSided().registerEntityAttributes(MASK, MaskEntity::createAttributes);
     }
 
     private static <E extends Entity> EntityType<E> register(String id, EntityType.EntityFactory<E> factory, float width, float height, boolean fixed) {

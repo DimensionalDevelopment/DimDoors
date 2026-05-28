@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.mixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.stats.ServerRecipeBook;
@@ -10,9 +11,11 @@ import net.minecraft.stats.Stat;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.DimensionTransition;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.api.util.math.Equation;
@@ -22,6 +25,7 @@ import org.dimdev.dimdoors.block.door.ServerPlayerExt;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
 import org.dimdev.dimdoors.entity.stat.ModStats;
+import org.dimdev.dimdoors.item.MaskItem;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,9 +34,11 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Mixin(value = ServerPlayer.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ServerPlayerExt {
@@ -141,6 +147,48 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
             case 1 -> makeLimboLikeNether(player);
             case 2 -> makeLimboLikeEnd(player);
         }
+    }
+
+    @Inject(method = "teleportTo(DDD)V", at = @At("HEAD"), cancellable = true)
+    private void dimdoors$redirectMaskedSameDimensionTeleport(double x, double y, double z, CallbackInfo ci) {
+        if (dimdoors$shouldRedirectMaskedTeleport(((ServerPlayer) (Object) this).level())) {
+            dimdoors$sendMaskedTeleportToLimbo();
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDFF)V", at = @At("HEAD"), cancellable = true)
+    private void dimdoors$redirectMaskedLevelTeleport(ServerLevel level, double x, double y, double z, float yaw, float pitch, CallbackInfo ci) {
+        if (dimdoors$shouldRedirectMaskedTeleport(level)) {
+            dimdoors$sendMaskedTeleportToLimbo();
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "teleportTo(Lnet/minecraft/server/level/ServerLevel;DDDLjava/util/Set;FF)Z", at = @At("HEAD"), cancellable = true)
+    private void dimdoors$redirectMaskedRelativeTeleport(ServerLevel level, double x, double y, double z, Set<RelativeMovement> movements, float yaw, float pitch, CallbackInfoReturnable<Boolean> cir) {
+        if (dimdoors$shouldRedirectMaskedTeleport(level)) {
+            dimdoors$sendMaskedTeleportToLimbo();
+            cir.setReturnValue(true);
+        }
+    }
+
+    @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
+    private void dimdoors$redirectMaskedDimensionChange(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
+        if (dimdoors$shouldRedirectMaskedTeleport(transition.newLevel())) {
+            cir.setReturnValue(dimdoors$sendMaskedTeleportToLimbo());
+        }
+    }
+
+    @Unique
+    private boolean dimdoors$shouldRedirectMaskedTeleport(Level targetLevel) {
+        ServerPlayer player = (ServerPlayer) (Object) this;
+        return MaskItem.isWearingMask(player) && ModDimensions.LIMBO_DIMENSION != null && !ModDimensions.isLimboDimension(targetLevel);
+    }
+
+    @Unique
+    private Entity dimdoors$sendMaskedTeleportToLimbo() {
+        return TeleportUtil.teleportUntargeted((ServerPlayer) (Object) this, ModDimensions.LIMBO_DIMENSION);
     }
 
     @Inject(method = "die", at = @At("HEAD"), cancellable = true)

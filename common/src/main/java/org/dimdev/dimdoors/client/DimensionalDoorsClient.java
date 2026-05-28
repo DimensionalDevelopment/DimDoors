@@ -22,8 +22,8 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.client.effect.sky.EnvironmentAddonClient;
 import org.dimdev.dimdoors.compat.iris.IrisCompat;
-import org.dimdev.dimdoors.entity.MaskEntity;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.entity.mask.MaskEntity;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;
 import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
 import org.dimdev.dimdoors.particle.client.LimboAshParticle;
@@ -61,12 +61,7 @@ public class DimensionalDoorsClient {
 
     public static void initEntitiesClient(BiConsumer<EntityType, EntityRendererProvider> consumer, BiConsumer<BlockEntityType, BlockEntityRendererProvider> blockConsumer) {
         consumer.accept(ModEntityTypes.MONOLITH, MonolithRenderer::new);
-        consumer.accept(ModEntityTypes.MASK, context -> new EntityRenderer<MaskEntity>(context) {
-            @Override
-            public ResourceLocation getTextureLocation(MaskEntity entity) {
-                return ResourceLocation.parse("blep");
-            }
-        });
+        consumer.accept(ModEntityTypes.MASK, MaskRenderer::new);
 
         blockConsumer.accept(ModBlockEntityTypes.ENTRANCE_RIFT, EntranceRiftBlockEntityRenderer::new);
         blockConsumer.accept(ModBlockEntityTypes.DETACHED_RIFT, DetachedRiftBlockEntityRenderer::new);

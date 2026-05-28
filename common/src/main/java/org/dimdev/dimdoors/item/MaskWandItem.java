@@ -1,51 +1,206 @@
 package org.dimdev.dimdoors.item;
 
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.dimdev.dimdoors.api.item.AttackBlockResult;
+import org.dimdev.dimdoors.api.item.ExtendedItem;
+import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.block.entity.MaskHomeBlockEntity;
+import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.entity.mask.MaskEntity;
+import org.dimdev.dimdoors.entity.mask.MaskType;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MaskWandItem extends Item {
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public static final String ID = "rift_configuration_tool";
+public class MaskWandItem extends Item implements ExtendedItem {
+    private static final int MAX_WAYPOINTS = 10;
 
     public MaskWandItem(Properties settings) {
-    super(settings);
+        super(settings);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-    ItemStack stack = player.getItemInHand(hand);
-    HitResult hit = player.pick(RaycastHelper.REACH_DISTANCE, 0, false);
+        ItemStack stack = player.getItemInHand(hand);
+        if (world.isClientSide) {
+            return InteractionResultHolder.success(stack);
+        }
 
-    if (world.isClientSide()) {
-        return InteractionResultHolder.fail(stack);
-    } else {
-        if(hit.getType().equals(HitResult.Type.BLOCK)) {
-//        MaskEntity mask = ModEntityTypes.MASK.create((ServerWorld) world, null, LiteralText.EMPTY, player, ((BlockHitResult) hit).getBlockPos(), SpawnReason.SPAWNER, true, false);
-//        world.spawnEntity(mask);
+        if (player.isShiftKeyDown()) {
+            setWaypoints(stack, List.of());
+            sync(player, stack, hand);
+            player.displayClientMessage(Component.literal("Mask waypoints cleared"), true);
+            return InteractionResultHolder.success(stack);
+        }
+
+        HitResult hit = player.pick(RaycastHelper.REACH_DISTANCE, 0.0F, false);
+        if (hit.getType() == HitResult.Type.BLOCK) {
+            BlockPos pos = ((BlockHitResult) hit).getBlockPos().immutable();
+            if (world.getBlockEntity(pos) instanceof MaskHomeBlockEntity home) {
+                home.showRoute(20 * 60);
+                player.displayClientMessage(Component.literal("Showing mask route"), true);
+                return InteractionResultHolder.success(stack);
+            }
+
+            List<BlockPos> waypoints = new ArrayList<>(getWaypoints(stack));
+            if (waypoints.size() >= MAX_WAYPOINTS) {
+                player.displayClientMessage(Component.literal("Mask waypoint list is full"), true);
+                return InteractionResultHolder.fail(stack);
+            }
+
+            waypoints.add(pos);
+            setWaypoints(stack, waypoints);
+            sync(player, stack, hand);
+            player.displayClientMessage(Component.literal("Stored mask waypoint " + waypoints.size() + ": " + formatPos(pos)), true);
+            return InteractionResultHolder.success(stack);
+        }
+
+        MaskType nextType = getSelectedType(stack).nextEditable();
+        setSelectedType(stack, nextType);
+        sync(player, stack, hand);
+        player.displayClientMessage(Component.literal("Mask type: " + typeName(nextType)), true);
+        return InteractionResultHolder.success(stack);
+    }
+
+    @Override
+    public AttackBlockResult onAttackBlock(Level world, Player player, InteractionHand hand, BlockPos pos, Direction direction) {
+        if (world.isClientSide) {
+            return AttackBlockResult.success(true);
+        }
+
+        if (!(world instanceof ServerLevel serverLevel)) {
+            return AttackBlockResult.fail(false);
+        }
+
+        ItemStack stack = player.getItemInHand(hand);
+        if (world.getBlockEntity(pos) instanceof MaskHomeBlockEntity home) {
+            if (player.isShiftKeyDown()) {
+                home.replaceWaypoints(getWaypoints(stack));
+                home.showRoute(20 * 60);
+                player.displayClientMessage(Component.literal("Mask home waypoints replaced"), true);
+                return AttackBlockResult.success(false);
+            }
+
+            player.displayClientMessage(Component.literal("Shift-left click to replace this mask home's waypoints"), true);
+            return AttackBlockResult.success(false);
+        }
+
+        MaskEntity mask = ModEntityTypes.MASK.create(serverLevel);
+        if (mask == null) {
+            return AttackBlockResult.fail(false);
+        }
+
+        BlockPos home = pos.immutable();
+        List<BlockPos> waypoints = getWaypoints(stack);
+        mask.configureFromWand(home, waypoints, getSelectedType(stack));
+        if (!serverLevel.setBlock(home, ModBlocks.MASK_HOME.defaultBlockState(), 3)) {
+            return AttackBlockResult.fail(false);
+        }
+        if (serverLevel.getBlockEntity(home) instanceof MaskHomeBlockEntity homeEntity) {
+            homeEntity.configure(waypoints, mask.getUUID());
+        }
+        serverLevel.addFreshEntity(mask);
+
+        String modeName = waypoints.size() >= 2 ? "patrol" : "guard";
+        player.displayClientMessage(Component.literal("Spawned " + typeName(mask.getMaskType()) + " mask in " + modeName + " mode"), true);
+        return AttackBlockResult.success(false);
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand) {
+        if (!(target instanceof MaskEntity mask)) {
+            return InteractionResult.PASS;
+        }
+
+        if (player.level().isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+
+        if (player.isShiftKeyDown()) {
+            mask.recallHomeAndToggleFrozen();
+            player.displayClientMessage(Component.literal(mask.isFrozen() ? "Mask frozen" : "Mask released"), true);
+        } else {
+            MaskType nextType = mask.getMaskType().nextEditable();
+            mask.setMaskType(nextType);
+            player.displayClientMessage(Component.literal("Mask type: " + typeName(nextType)), true);
+        }
+
+        return InteractionResult.SUCCESS;
+    }
+
+    public static boolean isHoldingMaskWand(Player player) {
+        return player.getMainHandItem().is(ModItems.MASK_WAND) || player.getOffhandItem().is(ModItems.MASK_WAND);
+    }
+
+    private static MaskType getSelectedType(ItemStack stack) {
+        MaskType type = stack.get(ModDataComponentTypes.MASK_WAND_TYPE);
+        return type == null || !type.isEditableSpawnType() ? MaskType.CYCLOP : type;
+    }
+
+    private static void setSelectedType(ItemStack stack, MaskType type) {
+        stack.set(ModDataComponentTypes.MASK_WAND_TYPE, type);
+    }
+
+    private static List<BlockPos> getWaypoints(ItemStack stack) {
+        List<BlockPos> waypoints = stack.get(ModDataComponentTypes.MASK_WAND_WAYPOINTS);
+        return waypoints == null ? List.of() : List.copyOf(waypoints);
+    }
+
+    private static void setWaypoints(ItemStack stack, List<BlockPos> waypoints) {
+        stack.set(ModDataComponentTypes.MASK_WAND_WAYPOINTS, List.copyOf(waypoints));
+    }
+
+    private static void sync(Player player, ItemStack stack, InteractionHand hand) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            ServerPacketHandler.sync(serverPlayer, stack, hand);
         }
     }
 
-    return InteractionResultHolder.success(stack);
+    private static String typeName(MaskType type) {
+        return switch (type) {
+            case CYCLOP -> "Cyclop";
+            case ECHO -> "Echo";
+            case ENLIGHTENED -> "Enlightened";
+            case FORESIGHT -> "Foresight";
+            case SCULKING -> "Sculking";
+            case RANDOM -> "Random";
+            case BLACK -> "Black";
+        };
+    }
+
+    private static String formatPos(BlockPos pos) {
+        return pos.getX() + ", " + pos.getY() + ", " + pos.getZ();
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
-    if (I18n.exists(this.getDescriptionId() + ".info")) {
-        list.add(Component.translatable(this.getDescriptionId() + ".info"));
-    }
+        if (I18n.exists(this.getDescriptionId() + ".info")) {
+            list.add(Component.translatable(this.getDescriptionId() + ".info"));
+        }
+
+        List<BlockPos> waypoints = getWaypoints(itemStack);
+        list.add(Component.literal("Type: " + typeName(getSelectedType(itemStack))));
+        list.add(Component.literal("Waypoints: " + waypoints.size() + "/" + MAX_WAYPOINTS));
+        if (!waypoints.isEmpty()) {
+            list.add(Component.literal("Next: " + formatPos(waypoints.get(waypoints.size() - 1))));
+        }
     }
 }

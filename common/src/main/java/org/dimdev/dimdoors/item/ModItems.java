@@ -56,6 +56,8 @@ public final class ModItems {
 
     public static final Item MONOLITH_SPAWNER = registerRegular("monolith_spawner", properties -> new SpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, properties));
 
+    public static final Item MASK = registerRegular("mask", properties -> new MaskItem(properties.stacksTo(1).fireResistant()));
+
     public static final Item MASK_WAND = registerRegular("mask_wand", properties -> new MaskWandItem(properties.stacksTo(1)));
 
     public static final Item STABLE_FABRIC = registerRegular("stable_fabric", Item::new);

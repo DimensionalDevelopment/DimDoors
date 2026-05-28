@@ -130,6 +130,8 @@ public final class ModBlocks {
 
     public static final Block MARKING_PLATE = registerWithoutTabOrItem("marking_plate", new Block(ofFullCopy(IRON_BLOCK).mapColor(DyeColor.BLACK).noOcclusion()));
 
+    public static final Block MASK_HOME = registerWithoutTabOrItem("mask_home", new MaskHomeBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().noLootTable().strength(0.2F)));
+
     public static final Block SOLID_STATIC = register("solid_static", new UnravelledFabricBlock(ofFullCopy(STONE).strength(7, 25).randomTicks().requiresCorrectToolForDrops().sound(SoundType.SAND)));
 
     public static final Block TESSELATING_LOOM = register("tesselating_loom", new TesselatingLoomBlock(of(LOOM)));
@@ -259,6 +261,7 @@ public final class ModBlocks {
         ModBlockEntityTypes.DETACHED_RIFT.addBlock(DETACHED_RIFT);
         ModBlockEntityTypes.TESSELATING_LOOM.addBlock(TESSELATING_LOOM);
         ModBlockEntityTypes.ENTRANCE_RIFT.addBlock(ModBlocks.DIMENSIONAL_PORTAL);
+        ModBlockEntityTypes.MASK_HOME.addBlock(MASK_HOME);
     }
 
     private static <T extends Block> T registerWithoutTabOrItem(String name, T block) {
