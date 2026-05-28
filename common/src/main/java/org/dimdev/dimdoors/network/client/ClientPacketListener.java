@@ -12,6 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.item.MaskItem;
+import org.dimdev.dimdoors.item.MaskWearerEffects;
+import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -129,5 +132,9 @@ public class ClientPacketListener {
             return Optional.empty();
         }
         return Optional.ofNullable((T) addons.get(type));
+    }
+
+    public static void onMaskCatch(MaskCatchAnimS2CPacket packet) {
+        Minecraft.getInstance().gameRenderer.displayItemActivation(MaskWearerEffects.createMaskStack(packet.maskType()));
     }
 }

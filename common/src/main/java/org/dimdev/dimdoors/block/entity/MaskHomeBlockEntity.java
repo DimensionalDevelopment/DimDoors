@@ -44,6 +44,7 @@ public class MaskHomeBlockEntity extends BlockEntity {
                     waypoint.getZ() - worldPosition.getZ()
             ));
         }
+        updateBoundMaskRoute();
         setChanged();
     }
 
@@ -65,6 +66,17 @@ public class MaskHomeBlockEntity extends BlockEntity {
         Entity entity = serverLevel.getEntity(boundMaskId);
         if (entity instanceof MaskEntity mask) {
             mask.detachFromDestroyedHome(worldPosition);
+        }
+    }
+
+    private void updateBoundMaskRoute() {
+        if (!(level instanceof ServerLevel serverLevel) || boundMaskId == null) {
+            return;
+        }
+
+        Entity entity = serverLevel.getEntity(boundMaskId);
+        if (entity instanceof MaskEntity mask) {
+            mask.replaceHomeWaypoints(worldPosition, getAbsoluteWaypoints());
         }
     }
 

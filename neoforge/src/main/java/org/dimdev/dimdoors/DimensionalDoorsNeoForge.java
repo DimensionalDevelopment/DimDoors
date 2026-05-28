@@ -155,6 +155,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
                     .playToClient(MonolithAggroParticlesPacket.TYPE, MonolithAggroParticlesPacket.STREAM_CODEC, (packet, context) -> ClientPacketListener.onMonolithAggroParticles(packet))
                     .playToClient(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, (packet, context) -> ClientPacketListener.onMonolithTeleportParticles(packet))
                     .playToClient(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, (packet, context) -> ClientPacketListener.onRenderBreakBlock(packet))
+                    .playToClient(MaskCatchAnimS2CPacket.TYPE, MaskCatchAnimS2CPacket.STREAM_CODEC, (packet, context) -> ClientPacketListener.onMaskCatch(packet))
                     .playToServer(NetworkHandlerInitializedC2SPacket.TYPE, NetworkHandlerInitializedC2SPacket.STREAM_CODEC, new PlayPayloadHandlerReturnable<>((packet, player) -> ServerPacketHandler.onNetworkHandlerInitialized(player)))
                     .playToServer(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, new PlayPayloadHandlerReturnable<>((packet, player) -> ServerPacketHandler.onAttackBlock(player, packet)));
         });

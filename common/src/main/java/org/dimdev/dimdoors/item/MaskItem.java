@@ -14,6 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.entity.mask.MaskType;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.network.packet.s2c.MaskCatchAnimS2CPacket;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -59,7 +61,7 @@ public class MaskItem extends Item {
             serverPlayer.setItemSlot(EquipmentSlot.HEAD, MaskWearerEffects.createMaskStack(serverPlayer, caughtType, 1));
         }
 
-        serverPlayer.level().broadcastEntityEvent(serverPlayer, (byte) 35);
+        ServerPacketHandler.sendPacket(serverPlayer, new MaskCatchAnimS2CPacket(caughtType));
         serverPlayer.level().playSound(null, serverPlayer.blockPosition(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 0.45F);
     }
 

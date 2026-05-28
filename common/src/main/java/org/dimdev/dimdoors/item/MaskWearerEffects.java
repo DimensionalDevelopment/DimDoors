@@ -22,7 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.entity.mask.MaskType;
 import org.dimdev.dimdoors.world.ModDimensions;
 
-final class MaskWearerEffects {
+public final class MaskWearerEffects {
     private static final int MAX_STACKS = 5;
     private static final int WITHER_REFRESH_INTERVAL = 40;
     private static final int WITHER_DURATION = 80;
@@ -39,10 +39,15 @@ final class MaskWearerEffects {
     }
 
     static ItemStack createMaskStack(ServerPlayer player, MaskType type, int stacks) {
-        ItemStack stack = new ItemStack(ModItems.MASK);
-        stack.set(ModDataComponentTypes.MASK_TYPE, type == MaskType.RANDOM ? MaskType.CYCLOP : type);
+        ItemStack stack = createMaskStack(type);
         stack.set(ModDataComponentTypes.MASK_STACKS, Mth.clamp(stacks, 1, MAX_STACKS));
         stack.enchant(player.registryAccess().registryOrThrow(Registries.ENCHANTMENT).getHolderOrThrow(Enchantments.BINDING_CURSE), 1);
+        return stack;
+    }
+
+    public static ItemStack createMaskStack(MaskType type) {
+        ItemStack stack = new ItemStack(ModItems.MASK);
+        stack.set(ModDataComponentTypes.MASK_TYPE, type == MaskType.RANDOM ? MaskType.CYCLOP : type);
         return stack;
     }
 

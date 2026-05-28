@@ -25,7 +25,7 @@ final class MaskPatrolRoute {
     void configure(BlockPos home, List<BlockPos> waypoints) {
         clear();
 
-        if (waypoints.isEmpty()) {
+        if (waypoints.size() < 2) {
             return;
         }
 

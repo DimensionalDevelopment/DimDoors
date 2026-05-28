@@ -284,6 +284,24 @@ public class MaskEntity extends Mob {
         teleportTo(home.getX() + 0.5, home.getY() + 1.05, home.getZ() + 0.5);
     }
 
+    public void replaceHomeWaypoints(BlockPos home, List<BlockPos> waypoints) {
+        if (homePos != null && !homePos.equals(home)) {
+            return;
+        }
+
+        homePos = home.immutable();
+        patrolRoute.configure(homePos, waypoints);
+        patrolRoute.resetPause();
+
+        MaskMode routeMode = patrolRoute.canPatrol() ? MaskMode.PATROL : MaskMode.GUARD;
+        if (resumeMode.isPassive()) {
+            resumeMode = routeMode;
+        }
+        if (getMode().isPassive()) {
+            setMode(routeMode);
+        }
+    }
+
     public MaskMode getMode() {
         byte id = entityData.get(MODE);
         MaskMode[] values = MaskMode.values();
