@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -25,6 +26,8 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.gameevent.DynamicGameEventListener;
+import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.effect.ChasedEffect;
@@ -36,8 +39,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
-public class MaskEntity extends Mob {
+public class MaskEntity extends Mob implements VibrationSystem {
     private static final EntityDataAccessor<Byte> MODE =
             SynchedEntityData.defineId(MaskEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> TYPE =
@@ -53,6 +57,9 @@ public class MaskEntity extends Mob {
 
     private final MaskPatrolRoute patrolRoute = new MaskPatrolRoute();
     private final MaskEchoBlockGoal echoBlockGoal = new MaskEchoBlockGoal(this);
+    private final VibrationSystem.User vibrationUser;
+    private VibrationSystem.Data vibrationData;
+    private final DynamicGameEventListener<VibrationSystem.Listener> dynamicVibrationListener;
 
     private int idleSoundCooldown;
 
@@ -60,6 +67,9 @@ public class MaskEntity extends Mob {
 
     public MaskEntity(EntityType<? extends MaskEntity> entityType, Level level) {
         super(entityType, level);
+        vibrationUser = new MaskVibrationUser(this);
+        vibrationData = new VibrationSystem.Data();
+        dynamicVibrationListener = new DynamicGameEventListener<>(new VibrationSystem.Listener(this));
         setNoGravity(true);
         xpReward = 0;
     }
@@ -127,6 +137,7 @@ public class MaskEntity extends Mob {
             return;
         }
 
+        tickVibrationSystem();
         tickSounds();
         MaskDetection.emitDetectionBubble(this);
     }
@@ -164,6 +175,29 @@ public class MaskEntity extends Mob {
                     0.65F + random.nextFloat() * 0.4F
             );
             idleSoundCooldown = 80;
+        }
+    }
+
+    private void tickVibrationSystem() {
+        if (getMaskType() == MaskType.SCULKING) {
+            VibrationSystem.Ticker.tick(level(), vibrationData, vibrationUser);
+        }
+    }
+
+    @Override
+    public VibrationSystem.Data getVibrationData() {
+        return vibrationData;
+    }
+
+    @Override
+    public VibrationSystem.User getVibrationUser() {
+        return vibrationUser;
+    }
+
+    @Override
+    public void updateDynamicGameEventListener(BiConsumer<DynamicGameEventListener<?>, ServerLevel> listenerConsumer) {
+        if (level() instanceof ServerLevel serverLevel) {
+            listenerConsumer.accept(dynamicVibrationListener, serverLevel);
         }
     }
 

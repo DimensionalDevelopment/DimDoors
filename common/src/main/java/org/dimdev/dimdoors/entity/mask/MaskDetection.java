@@ -50,8 +50,7 @@ final class MaskDetection {
         double distance = toPlayer.length();
 
         if (type == MaskType.SCULKING) {
-            return distance <= type.detectionRange()
-                    && (player.getDeltaMovement().horizontalDistanceSqr() > 0.0009 || !player.isShiftKeyDown());
+            return false;
         }
 
         if (distance > type.detectionRange()) {
