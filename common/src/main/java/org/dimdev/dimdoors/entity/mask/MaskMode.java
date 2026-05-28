@@ -16,6 +16,10 @@ public enum MaskMode implements StringRepresentable {
         this.name = name;
     }
 
+    public boolean isPassive() {
+        return this == GUARD || this == PATROL || this == WANDER;
+    }
+
     @Override
     public @NotNull String getSerializedName() {
         return name;

@@ -32,7 +32,7 @@ public class ChasedEffect extends MobEffect {
 
     public static void giveTo(ServerPlayer player) {
         ACTIVE_CHASES.put(player.getUUID(), new PocketVisit(player.level().dimension(), player.blockPosition()));
-        player.addEffect(new MobEffectInstance(ModMobEffects.chased(), MobEffectInstance.INFINITE_DURATION, 0, false, true, true));
+        player.addEffect(new MobEffectInstance(ModMobEffects.chased(), MobEffectInstance.INFINITE_DURATION, 0, false, false, false));
         player.displayClientMessage(Component.literal("Something follows you"), true);
     }
 

@@ -17,7 +17,8 @@ public enum MaskType implements StringRepresentable {
     BLACK("black");
 
     public static final Codec<MaskType> CODEC = StringRepresentable.fromValues(MaskType::values);
-    public static final StreamCodec<RegistryFriendlyByteBuf, MaskType> STREAM_CODEC = StreamCodec.of(FriendlyByteBuf::writeEnum, byteBuf -> byteBuf.readEnum(MaskType.class));
+    public static final StreamCodec<RegistryFriendlyByteBuf, MaskType> STREAM_CODEC =
+            StreamCodec.of(FriendlyByteBuf::writeEnum, byteBuf -> byteBuf.readEnum(MaskType.class));
 
     private final String name;
 
@@ -38,6 +39,17 @@ public enum MaskType implements StringRepresentable {
 
     public boolean isEditableSpawnType() {
         return this != BLACK;
+    }
+
+    public double detectionRange() {
+        return switch (this) {
+            case CYCLOP, RANDOM -> 6.0;
+            case ECHO -> 4.0;
+            case ENLIGHTENED -> 3.0;
+            case FORESIGHT -> 2.0;
+            case SCULKING -> 8.0;
+            case BLACK -> MaskConstants.CHASE_RANGE;
+        };
     }
 
     @Override

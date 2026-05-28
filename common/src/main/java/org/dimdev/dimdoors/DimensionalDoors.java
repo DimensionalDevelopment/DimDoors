@@ -28,6 +28,7 @@ import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.effect.ModMobEffects;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
+import org.dimdev.dimdoors.entity.mask.MaskAlert;
 import org.dimdev.dimdoors.entity.mask.MaskEntity;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
@@ -222,7 +223,7 @@ public class DimensionalDoors {
         sided.onBeforeBlockBreak((level, pos, state, player) -> {
             boolean cancel = new PlayerBlockBreakEventBeforeListener().shouldCancel(level, pos, state, player);
             if (!cancel) {
-                MaskEntity.alertMasksNearBlock(level, pos, player);
+                MaskAlert.alertMasksNearBlock(level, pos, player);
             }
             return cancel;
         });
@@ -233,8 +234,8 @@ public class DimensionalDoors {
         sided.onBeforeBlockPlace((level, pos, state, placer) -> {
             boolean cancel = shouldCancelBlockModification(level, pos, placer);
             if (!cancel && placer instanceof Player player) {
-                MaskEntity.notifyEchoesOfPlacedBlock(level, pos, player);
-                MaskEntity.alertMasksNearBlock(level, pos, player);
+                MaskAlert.notifyEchoesOfPlacedBlock(level, pos, player);
+                MaskAlert.alertMasksNearBlock(level, pos, player);
             }
             return cancel;
         });
