@@ -1,0 +1,47 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.dimdoors.trepidation"
+  },
+  "effects": {
+    "minecraft:tick": [
+      {
+        "effect": {
+          "type": "minecraft:play_sound",
+          "pitch": 1.0,
+          "sound": "minecraft:entity.warden.heartbeat",
+          "volume": 0.8
+        },
+        "requirements": {
+          "condition": "dimdoors:entity_nearby",
+          "interval": 40,
+          "predicate": {
+            "type": "#dimdoors:trepidation_detected"
+          },
+          "range": {
+            "type": "minecraft:enchantment_level",
+            "amount": {
+              "type": "minecraft:linear",
+              "base": 5.0,
+              "per_level_above_first": 5.0
+            }
+          }
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 25,
+    "per_level_above_first": 8
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 8
+  },
+  "slots": [
+    "chest"
+  ],
+  "supported_items": "#minecraft:enchantable/chest_armor",
+  "weight": 2
+}

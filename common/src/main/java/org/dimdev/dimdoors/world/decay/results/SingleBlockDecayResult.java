@@ -8,12 +8,11 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.DoublePlantBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.DecayInventoryHelper;
 
 import java.util.List;
-
-import static org.dimdev.dimdoors.block.UnravelUtil.copyState;
 
 public class SingleBlockDecayResult extends BlockDecayResult<SingleBlockDecayResult> {
 
@@ -46,5 +45,21 @@ public class SingleBlockDecayResult extends BlockDecayResult<SingleBlockDecayRes
     @Override
     public List<Result> produces() {
         return List.of(new Result(block, 1));
+    }
+
+    private static BlockState copyState(Block block, BlockState sourceState) {
+        BlockState newState = block.defaultBlockState();
+
+        for(Property<?> property : sourceState.getProperties()) {
+            if (newState.getProperties().contains(property)) {
+                newState = transferProperty(sourceState, newState, property);
+            }
+        }
+
+        return newState;
+    }
+
+    private static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
+        return to.setValue(property, from.getValue(property));
     }
 }

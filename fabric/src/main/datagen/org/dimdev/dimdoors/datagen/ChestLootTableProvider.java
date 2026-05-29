@@ -26,6 +26,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.apache.commons.lang3.stream.Streams;
 import org.dimdev.dimdoors.block.ModBlocks;
+import org.dimdev.dimdoors.tag.ModEnchantmentTags;
 import org.dimdev.dimdoors.world.ModLootTables;
 
 import java.util.concurrent.CompletableFuture;
@@ -61,6 +62,13 @@ public class ChestLootTableProvider extends SimpleFabricLootTableProvider {
                         .add(LootItem.lootTableItem(Items.BOOK).apply(
                                 new EnchantWithLevelsFunction.Builder(ConstantValue.exactly(10)).fromOptions(
                                         registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(EnchantmentTags.TREASURE)
+                                )))
+                        .add(EmptyLootItem.emptyItem().setWeight(14))
+                )
+                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.BOOK).apply(
+                                new EnchantWithLevelsFunction.Builder(ConstantValue.exactly(30)).fromOptions(
+                                        registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ModEnchantmentTags.DUNGEON_LOOT)
                                 )))
                         .add(EmptyLootItem.emptyItem().setWeight(14))
                 ));

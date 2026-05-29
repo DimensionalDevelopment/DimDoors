@@ -1,0 +1,29 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.dimdoors.transcendent"
+  },
+  "effects": {
+    "minecraft:projectile_spawned": [
+      {
+        "effect": {
+          "type": "dimdoors:transcendent_projectile"
+        }
+      }
+    ]
+  },
+  "max_cost": {
+    "base": 45,
+    "per_level_above_first": 10
+  },
+  "max_level": 1,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 10
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#dimdoors:enchantable/transcendent",
+  "weight": 2
+}

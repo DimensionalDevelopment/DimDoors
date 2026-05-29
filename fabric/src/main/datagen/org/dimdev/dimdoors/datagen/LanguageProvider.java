@@ -535,6 +535,9 @@ public class LanguageProvider extends FabricLanguageProvider {
         builder.add("resourcePackActivationType.alwaysEnabled", "Always Enabled");
 
         builder.add("enchantment.dimdoors.string_theory", "String Theory");
+        builder.add("enchantment.dimdoors.rending", "Rending");
+        builder.add("enchantment.dimdoors.transcendent", "Transcendent");
+        builder.add("enchantment.dimdoors.trepidation", "Trepidation");
 
         builder.add("dimdoors.mode.enable", "Enable");
         builder.add("dimdoors.mode.disable", "Disable");

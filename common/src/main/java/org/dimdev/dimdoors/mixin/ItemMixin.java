@@ -1,12 +1,16 @@
 package org.dimdev.dimdoors.mixin;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.enchantment.Rending;
 import org.dimdev.dimdoors.item.ItemExtensions;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Item.class)
 public class ItemMixin implements ItemExtensions {
@@ -21,6 +25,13 @@ public class ItemMixin implements ItemExtensions {
     @Override
     public Item.Properties dimdoors_getSettings() {
     return settings;
+    }
+
+    @Inject(method = "isCorrectToolForDrops", at = @At("RETURN"), cancellable = true)
+    private void dimdoors$rendingRaisesMiningTier(ItemStack stack, BlockState state, CallbackInfoReturnable<Boolean> cir) {
+        if (!cir.getReturnValue() && Rending.raisesMiningTier(stack, state)) {
+            cir.setReturnValue(true);
+        }
     }
 
     @Mixin(Item.Properties.class)

@@ -26,6 +26,8 @@ import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.criteria.ModCriteria;
+import org.dimdev.dimdoors.enchantment.ModEnchantmentEffects;
+import org.dimdev.dimdoors.enchantment.TranscendentProjectiles;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.fluid.ModFluids;
@@ -35,6 +37,7 @@ import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
 import org.dimdev.dimdoors.item.door.data.condition.Condition;
+import org.dimdev.dimdoors.item.loot.ModItemLootConditions;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.*;
@@ -115,6 +118,8 @@ public class DimensionalDoors {
         registerRegistries();
 
         registerRun(Registries.DATA_COMPONENT_TYPE, () -> ModDataComponentTypes.register());
+        registerRun(Registries.ENCHANTMENT_ENTITY_EFFECT_TYPE, () -> ModEnchantmentEffects.init());
+        registerRun(Registries.LOOT_CONDITION_TYPE, () -> ModItemLootConditions.init());
 
         registerRun(Registries.CHUNK_GENERATOR, () -> sided.register(Registries.CHUNK_GENERATOR, "blank", BlankChunkGenerator.CODEC));
         registerRun(Registries.RECIPE_TYPE, () -> ModRecipeTypes.init());
@@ -135,6 +140,7 @@ public class DimensionalDoors {
         registerRun(Registries.STRUCTURE_PROCESSOR, () -> ModStructureProccessors.init());
 //        registerRunDataValue(() -> Fray.init()); TODO: Finish Fray
         registerRunDataValue(() -> PocketChunkClaims.init());
+        registerRunDataValue(() -> TranscendentProjectiles.init());
 
 
         ModCommands.init();
@@ -246,6 +252,7 @@ public class DimensionalDoors {
         if (player.isCreative() && !DimensionalDoors.getConfig().getDoorsConfig().placeRiftsInCreativeMode) {
             return;
         }
+
         if (blockEntity instanceof EntranceRiftBlockEntity riftBlockEntity) {
             if (state.getBlock() instanceof DoorBlock && state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
                 pos = pos.below();

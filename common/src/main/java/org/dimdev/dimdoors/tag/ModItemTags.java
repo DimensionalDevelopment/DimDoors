@@ -21,6 +21,7 @@ public class ModItemTags {
     public static final TagKey<Item> DIMENSIONAL_DOORS = of("dimensional_doors");
     public static final TagKey<Item> FABRIC = of("fabric");
     public static final TagKey<Item> ANCIENT_FABRIC = of("ancient_fabric");
+    public static final TagKey<Item> TRANSCENDENT_ENCHANTABLE = of("enchantable/transcendent");
 
     public static final Map<DyeColor, TagKey<Item>> DYES = Arrays.stream(DyeColor.values()).collect(Collectors.toMap(Function.identity(), ModItemTags::dye));
 

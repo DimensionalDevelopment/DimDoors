@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.api.util;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
@@ -50,6 +51,15 @@ public final class EntityUtils {
     public static Player getOwnerPlayer(Entity entity) {
     Entity owner = getOwner(entity);
     return owner instanceof Player player ? player : null;
+    }
+
+    public static Projectile getProjectile(Entity entity) {
+    return entity instanceof Projectile projectile ? projectile : null;
+    }
+
+    public static Projectile getProjectile(DamageSource source) {
+    Projectile directProjectile = getProjectile(source.getDirectEntity());
+    return directProjectile != null ? directProjectile : getProjectile(source.getEntity());
     }
 
     public static UUID getOwnerPlayerUuid(Entity entity) {

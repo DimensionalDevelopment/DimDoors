@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
@@ -20,9 +19,9 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.UnravelUtil;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 
 import java.util.Random;
 
@@ -126,12 +125,7 @@ public class EscapeTarget extends VirtualTarget<EscapeTarget> implements EntityT
                     RandomSource random = RandomSource.create();
                     BlockPos.withinManhattan(location.pos.offset(0, -3, 0), 3, 2, 3).forEach((pos1 -> {
                         if (random.nextFloat() < (1 / ((float) location.pos.distSqr(pos1))) * DimensionalDoors.getConfig().getLimboConfig().limboBlocksCorruptingExitWorldAmount) {
-                            Block block = level.getBlockState(pos1).getBlock();
-                            if (UnravelUtil.unravelBlocksMap.containsKey(block))
-                                level.setBlockAndUpdate(pos1, UnravelUtil.unravelBlocksMap.get(block).defaultBlockState());
-                            else if (UnravelUtil.whitelistedBlocksForLimboRemoval.contains(block)) {
-                                level.setBlockAndUpdate(pos1, ModBlocks.UNRAVELLED_FABRIC.defaultBlockState());
-                            }
+                            decayBlock(level, pos1);
                         }
                     }));
                 }
@@ -172,6 +166,18 @@ public class EscapeTarget extends VirtualTarget<EscapeTarget> implements EntityT
                 level,
                 Location.getHeightmapPosSafe(level, randomizeCoord(pos.getX(), minRange, maxRange), randomizeCoord(pos.getZ(), minRange, maxRange))
         );
+    }
+
+    private static void decayBlock(ServerLevel level, BlockPos pos) {
+        var state = level.getBlockState(pos);
+        var context = new Decay.DecayContext(level, pos, state, pos, state, state.getFluidState(), null, DecaySource.LIMBO);
+
+        for (var pattern : Decay.DecayLoader.getPatterns(context)) {
+            if (pattern.value().test(context)) {
+                pattern.value().applyPattern(context);
+                return;
+            }
+        }
     }
 
     public static int randomizeCoord(int coord, int minRange, int maxRange) {

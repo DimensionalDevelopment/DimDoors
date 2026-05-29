@@ -25,6 +25,9 @@ public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
     @Override
     protected void addTags(HolderLookup.Provider arg) {
         this.tag(ModItemTags.DRIFTWOOD_LOGS).add(ModBlocks.DRIFTWOOD_LOG.asItem().builtInRegistryHolder().key(), ModBlocks.DRIFTWOOD_WOOD.asItem().builtInRegistryHolder().key());
+        this.tag(ModItemTags.TRANSCENDENT_ENCHANTABLE)
+                .addTag(ItemTags.BOW_ENCHANTABLE)
+                .addTag(ItemTags.CROSSBOW_ENCHANTABLE);
 
         add(ModItems.RIFT_BLADE, ConventionalItemTags.MELEE_WEAPON_TOOLS,
                 ItemTags.FIRE_ASPECT_ENCHANTABLE,

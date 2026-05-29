@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.datagen;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -11,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.tags.ItemTags;
@@ -18,13 +20,16 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.JukeboxSong;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.LevelBasedValue;
+import net.minecraft.world.item.enchantment.effects.PlaySoundEffect;
+import net.minecraft.world.level.storage.loot.providers.number.EnchantmentLevelProvider;
 import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -59,14 +64,18 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProc
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
+import org.dimdev.dimdoors.enchantment.effect.TranscendentProjectileEffect;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ModJukeboxSongs;
+import org.dimdev.dimdoors.item.loot.EntityNearBy;
 import org.dimdev.dimdoors.painting.ModPaintings;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.tag.ModBiomeTags;
+import org.dimdev.dimdoors.tag.ModEntityTypeTags;
+import org.dimdev.dimdoors.tag.ModItemTags;
 import org.dimdev.dimdoors.world.ModGatewayPools;
 import org.dimdev.dimdoors.world.ModProcessorLists;
 import org.dimdev.dimdoors.world.ModStructures;
@@ -290,17 +299,50 @@ public class DefaultDynamicRegistryDataGen {
     }
 
     public static void bootstrapEnchants(DimDoorsDynamicRegistryProvider.RegistrationHelper context) {
-        HolderGetter<DamageType> holderGetter = context.registrylookup(Registries.DAMAGE_TYPE);
-        HolderGetter<Enchantment> holderGetter2 = context.registrylookup(Registries.ENCHANTMENT);
-        HolderGetter<Item> holderGetter3 = context.registrylookup(Registries.ITEM);
-        HolderGetter<Block> holderGetter4 = context.registrylookup(Registries.BLOCK);
+        HolderGetter<Enchantment> enchantments = context.registrylookup(Registries.ENCHANTMENT);
+        HolderGetter<Item> items = context.registrylookup(Registries.ITEM);
 
         context.register(ModEnchants.STRING_THEORY_ENCHANTMENT, Enchantment.enchantment(Enchantment.definition(
-                        holderGetter3.getOrThrow(ItemTags.ARMOR_ENCHANTABLE), 10, 4,
+                        items.getOrThrow(ItemTags.ARMOR_ENCHANTABLE), 10, 4,
                         Enchantment.dynamicCost(1, 11),
                         Enchantment.dynamicCost(12, 11), 1,
                         EquipmentSlotGroup.ARMOR))
-                .exclusiveWith(holderGetter2.getOrThrow(EnchantmentTags.ARMOR_EXCLUSIVE)).build(ModEnchants.STRING_THEORY_ENCHANTMENT.location()));
+                .exclusiveWith(enchantments.getOrThrow(EnchantmentTags.ARMOR_EXCLUSIVE)).build(ModEnchants.STRING_THEORY_ENCHANTMENT.location()));
+
+        context.register(ModEnchants.TREPIDATION_ENCHANTMENT, Enchantment.enchantment(Enchantment.definition(
+                        items.getOrThrow(ItemTags.CHEST_ARMOR_ENCHANTABLE), 2, 3,
+                        Enchantment.dynamicCost(5, 8),
+                        Enchantment.dynamicCost(25, 8), 4,
+                        EquipmentSlotGroup.CHEST))
+                .withEffect(
+                        EnchantmentEffectComponents.TICK,
+                        new PlaySoundEffect(
+                                Holder.direct(SoundEvents.WARDEN_HEARTBEAT),
+                                ConstantFloat.of(0.8F),
+                                ConstantFloat.of(1.0F)
+                        ),
+                        EntityNearBy.nearby(
+                                EnchantmentLevelProvider.forEnchantmentLevel(LevelBasedValue.perLevel(5.0F, 5.0F)),
+                                EntityPredicate.Builder.entity().of(ModEntityTypeTags.TREPIDATION_DETECTED).build(),
+                                40
+                        )
+                ).build(ModEnchants.TREPIDATION_ENCHANTMENT.location()));
+
+        context.register(ModEnchants.TRANSCENDENT_ENCHANTMENT, Enchantment.enchantment(Enchantment.definition(
+                        items.getOrThrow(ModItemTags.TRANSCENDENT_ENCHANTABLE), 2, 1,
+                        Enchantment.dynamicCost(15, 10),
+                        Enchantment.dynamicCost(45, 10), 4,
+                        EquipmentSlotGroup.MAINHAND))
+                .withEffect(
+                        EnchantmentEffectComponents.PROJECTILE_SPAWNED,
+                        TranscendentProjectileEffect.INSTANCE
+                ).build(ModEnchants.TRANSCENDENT_ENCHANTMENT.location()));
+
+        context.register(ModEnchants.RENDING_ENCHANTMENT, Enchantment.enchantment(Enchantment.definition(
+                items.getOrThrow(ItemTags.MINING_ENCHANTABLE), 2, 2,
+                Enchantment.dynamicCost(15, 9),
+                Enchantment.dynamicCost(45, 9), 4,
+                EquipmentSlotGroup.MAINHAND)).build(ModEnchants.RENDING_ENCHANTMENT.location()));
     }
 
 
