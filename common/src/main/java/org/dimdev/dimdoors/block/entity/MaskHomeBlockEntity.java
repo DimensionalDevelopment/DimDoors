@@ -5,11 +5,13 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.entity.mask.MaskEntity;
+import org.dimdev.dimdoors.item.MaskWandItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,8 @@ public class MaskHomeBlockEntity extends BlockEntity {
     private static final String WAYPOINT_KEY = "Waypoint";
     private static final String BOUND_MASK_KEY = "BoundMask";
     private static final int ROUTE_PARTICLE_INTERVAL = 4;
+    private static final int HOME_MARKER_INTERVAL = 10;
+    private static final double HOME_MARKER_RANGE_SQ = 24.0 * 24.0;
 
     private final List<BlockPos> relativeWaypoints = new ArrayList<>();
     private UUID boundMaskId;
@@ -81,6 +85,10 @@ public class MaskHomeBlockEntity extends BlockEntity {
     }
 
     public static void tick(ServerLevel level, BlockPos pos, BlockState state, MaskHomeBlockEntity home) {
+        if (level.getGameTime() % HOME_MARKER_INTERVAL == 0 && hasNearbyWandHolder(level, pos)) {
+            level.sendParticles(ParticleTypes.END_ROD, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 3, 0.16, 0.16, 0.16, 0.01);
+        }
+
         if (home.routeDisplayTicks <= 0) {
             return;
         }
@@ -121,6 +129,20 @@ public class MaskHomeBlockEntity extends BlockEntity {
             Vec3 point = start.add(step.scale(i));
             level.sendParticles(ParticleTypes.WAX_ON, point.x, point.y, point.z, 1, 0.02, 0.02, 0.02, 0.0);
         }
+    }
+
+    private static boolean hasNearbyWandHolder(ServerLevel level, BlockPos pos) {
+        double x = pos.getX() + 0.5;
+        double y = pos.getY() + 0.5;
+        double z = pos.getZ() + 0.5;
+
+        for (ServerPlayer player : level.players()) {
+            if (MaskWandItem.isHoldingMaskWand(player) && player.distanceToSqr(x, y, z) <= HOME_MARKER_RANGE_SQ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

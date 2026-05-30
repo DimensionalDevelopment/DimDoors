@@ -57,7 +57,7 @@ public class MaskWandItem extends Item implements ExtendedItem {
         if (hit.getType() == HitResult.Type.BLOCK) {
             BlockHitResult blockHit = (BlockHitResult) hit;
             BlockPos clickedPos = blockHit.getBlockPos().immutable();
-            BlockPos waypoint = clickedPos.relative(blockHit.getDirection()).immutable();
+            BlockPos waypoint = targetPoint(clickedPos, blockHit.getDirection());
             MaskHomeBlockEntity home = findHome(world, clickedPos, blockHit.getDirection());
             if (home != null) {
                 home.showRoute(20 * 60);
@@ -99,24 +99,24 @@ public class MaskWandItem extends Item implements ExtendedItem {
         }
 
         ItemStack stack = player.getItemInHand(hand);
-        BlockPos homePos = pos.relative(direction).immutable();
+        BlockPos homePos = targetPoint(pos, direction);
         MaskHomeBlockEntity home = findHome(world, pos, direction);
         if (home != null) {
             if (player.isShiftKeyDown()) {
                 home.replaceWaypoints(getWaypoints(stack));
                 home.showRoute(20 * 60);
                 player.displayClientMessage(Component.literal("Mask home waypoints replaced"), true);
-                return AttackBlockResult.success(false);
+                return AttackBlockResult.success(true);
             }
 
             player.displayClientMessage(Component.literal("Shift-left click to replace this mask home's waypoints"), true);
-            return AttackBlockResult.success(false);
+            return AttackBlockResult.success(true);
         }
 
         BlockState homeState = serverLevel.getBlockState(homePos);
         if (!homeState.canBeReplaced()) {
             player.displayClientMessage(Component.literal("Mask home point is blocked: " + formatPos(homePos)), true);
-            return AttackBlockResult.success(false);
+            return AttackBlockResult.success(true);
         }
 
         MaskEntity mask = ModEntityTypes.MASK.create(serverLevel);
@@ -137,7 +137,7 @@ public class MaskWandItem extends Item implements ExtendedItem {
 
         String modeName = waypoints.isEmpty() ? "guard" : "patrol";
         player.displayClientMessage(Component.literal("Spawned " + typeName(mask.getMaskType()) + " mask in " + modeName + " mode"), true);
-        return AttackBlockResult.success(false);
+        return AttackBlockResult.success(true);
     }
 
     @Override
@@ -180,13 +180,17 @@ public class MaskWandItem extends Item implements ExtendedItem {
         return waypoints == null ? List.of() : List.copyOf(waypoints);
     }
 
+    private static BlockPos targetPoint(BlockPos clickedPos, Direction direction) {
+        return clickedPos.relative(direction).immutable();
+    }
+
     @Nullable
     private static MaskHomeBlockEntity findHome(Level world, BlockPos clickedPos, Direction direction) {
         if (world.getBlockEntity(clickedPos) instanceof MaskHomeBlockEntity home) {
             return home;
         }
 
-        if (world.getBlockEntity(clickedPos.relative(direction)) instanceof MaskHomeBlockEntity home) {
+        if (world.getBlockEntity(targetPoint(clickedPos, direction)) instanceof MaskHomeBlockEntity home) {
             return home;
         }
 
