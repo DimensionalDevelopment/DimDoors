@@ -92,11 +92,25 @@ public class DimensionalTrapDoorBlock extends TrapDoorBlock implements RiftProvi
         }
         entity.setPortalCooldown();
 
-        rift.teleport(entity);
+        if (entity instanceof ServerPlayer player) {
+            setDimensionalDoorTeleport(player, true);
+            try {
+                rift.teleport(entity);
+            } finally {
+                setDimensionalDoorTeleport(player, false);
+            }
+        } else {
+            rift.teleport(entity);
+        }
+
         if (DimensionalDoors.getConfig().getDoorsConfig().closeDoorBehind) {
             world.setBlockAndUpdate(pos, world.getBlockState(pos).setValue(DoorBlock.OPEN, false));
         }
         return InteractionResult.SUCCESS;
+    }
+
+    private static void setDimensionalDoorTeleport(ServerPlayer player, boolean active) {
+        ((ServerPlayerExt) player).setDimensionalDoorTeleport(active);
     }
 
     @Override

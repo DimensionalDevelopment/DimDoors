@@ -48,20 +48,24 @@ public class ServerPacketHandler {
     // TODO: attach this to some event to detect other kinds teleportation
 
     public static void sync(ServerPlayer player, ItemStack stack, InteractionHand hand) {
-    if (hand == InteractionHand.OFF_HAND) {
-        sendPacket(player, new PlayerInventorySlotUpdateS2CPacket(45, stack));
-    } else {
-        sendPacket(player, new PlayerInventorySlotUpdateS2CPacket(player.getInventory().selected, stack));
-    }
+        if (hand == InteractionHand.OFF_HAND) {
+            sendPacket(player, new PlayerInventorySlotUpdateS2CPacket(45, stack));
+        } else {
+            sendPacket(player, new PlayerInventorySlotUpdateS2CPacket(player.getInventory().selected, stack));
+        }
     }
 
     public static @Nullable CustomPacketPayload onAttackBlock(ServerPlayer player, HitBlockWithItemC2SPacket packet) {
-    player.getServer().execute(() -> {
-        Item item = player.getItemInHand(packet.hand()).getItem();
-        if (item instanceof ExtendedItem) {
-        ((ExtendedItem) item).onAttackBlock(player.level(), player, packet.hand(), packet.pos(), packet.direction());
-        }
-    });
+        player.getServer().execute(() -> {
+            try {
+                Item item = player.getItemInHand(packet.hand()).getItem();
+                if (item instanceof ExtendedItem extendedItem) {
+                    extendedItem.onAttackBlock(player.level(), player, packet.hand(), packet.pos(), packet.direction());
+                }
+            } catch (RuntimeException exception) {
+                LOGGER.error("Error handling attack-block packet for {} at {}", player.getName().getString(), packet.pos(), exception);
+            }
+        });
 
         return null;
     }

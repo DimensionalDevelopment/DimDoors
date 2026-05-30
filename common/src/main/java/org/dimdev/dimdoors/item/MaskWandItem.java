@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.item;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.dimdev.dimdoors.api.item.AttackBlockResult;
@@ -53,8 +55,11 @@ public class MaskWandItem extends Item implements ExtendedItem {
 
         HitResult hit = player.pick(RaycastHelper.REACH_DISTANCE, 0.0F, false);
         if (hit.getType() == HitResult.Type.BLOCK) {
-            BlockPos pos = ((BlockHitResult) hit).getBlockPos().immutable();
-            if (world.getBlockEntity(pos) instanceof MaskHomeBlockEntity home) {
+            BlockHitResult blockHit = (BlockHitResult) hit;
+            BlockPos clickedPos = blockHit.getBlockPos().immutable();
+            BlockPos waypoint = clickedPos.relative(blockHit.getDirection()).immutable();
+            MaskHomeBlockEntity home = findHome(world, clickedPos, blockHit.getDirection());
+            if (home != null) {
                 home.showRoute(20 * 60);
                 player.displayClientMessage(Component.literal("Showing mask route"), true);
                 return InteractionResultHolder.success(stack);
@@ -66,10 +71,13 @@ public class MaskWandItem extends Item implements ExtendedItem {
                 return InteractionResultHolder.fail(stack);
             }
 
-            waypoints.add(pos);
+            waypoints.add(waypoint);
             setWaypoints(stack, waypoints);
             sync(player, stack, hand);
-            player.displayClientMessage(Component.literal("Stored mask waypoint " + waypoints.size() + ": " + formatPos(pos)), true);
+            if (world instanceof ServerLevel serverLevel) {
+                showStoredWaypointIndicators(serverLevel, waypoints);
+            }
+            player.displayClientMessage(Component.literal("Stored mask waypoint " + waypoints.size() + ": " + formatPos(waypoint)), true);
             return InteractionResultHolder.success(stack);
         }
 
@@ -91,7 +99,9 @@ public class MaskWandItem extends Item implements ExtendedItem {
         }
 
         ItemStack stack = player.getItemInHand(hand);
-        if (world.getBlockEntity(pos) instanceof MaskHomeBlockEntity home) {
+        BlockPos homePos = pos.relative(direction).immutable();
+        MaskHomeBlockEntity home = findHome(world, pos, direction);
+        if (home != null) {
             if (player.isShiftKeyDown()) {
                 home.replaceWaypoints(getWaypoints(stack));
                 home.showRoute(20 * 60);
@@ -103,23 +113,29 @@ public class MaskWandItem extends Item implements ExtendedItem {
             return AttackBlockResult.success(false);
         }
 
+        BlockState homeState = serverLevel.getBlockState(homePos);
+        if (!homeState.canBeReplaced()) {
+            player.displayClientMessage(Component.literal("Mask home point is blocked: " + formatPos(homePos)), true);
+            return AttackBlockResult.success(false);
+        }
+
         MaskEntity mask = ModEntityTypes.MASK.create(serverLevel);
         if (mask == null) {
             return AttackBlockResult.fail(false);
         }
 
-        BlockPos home = pos.immutable();
         List<BlockPos> waypoints = getWaypoints(stack);
-        mask.configureFromWand(home, waypoints, getSelectedType(stack));
-        if (!serverLevel.setBlock(home, ModBlocks.MASK_HOME.defaultBlockState(), 3)) {
+        mask.configureFromWand(homePos, waypoints, getSelectedType(stack));
+        if (!serverLevel.setBlock(homePos, ModBlocks.MASK_HOME.defaultBlockState(), 3)) {
             return AttackBlockResult.fail(false);
         }
-        if (serverLevel.getBlockEntity(home) instanceof MaskHomeBlockEntity homeEntity) {
+        if (serverLevel.getBlockEntity(homePos) instanceof MaskHomeBlockEntity homeEntity) {
             homeEntity.configure(waypoints, mask.getUUID());
+            homeEntity.showRoute(20 * 60);
         }
         serverLevel.addFreshEntity(mask);
 
-        String modeName = waypoints.size() >= 2 ? "patrol" : "guard";
+        String modeName = waypoints.isEmpty() ? "guard" : "patrol";
         player.displayClientMessage(Component.literal("Spawned " + typeName(mask.getMaskType()) + " mask in " + modeName + " mode"), true);
         return AttackBlockResult.success(false);
     }
@@ -164,6 +180,19 @@ public class MaskWandItem extends Item implements ExtendedItem {
         return waypoints == null ? List.of() : List.copyOf(waypoints);
     }
 
+    @Nullable
+    private static MaskHomeBlockEntity findHome(Level world, BlockPos clickedPos, Direction direction) {
+        if (world.getBlockEntity(clickedPos) instanceof MaskHomeBlockEntity home) {
+            return home;
+        }
+
+        if (world.getBlockEntity(clickedPos.relative(direction)) instanceof MaskHomeBlockEntity home) {
+            return home;
+        }
+
+        return null;
+    }
+
     private static void setWaypoints(ItemStack stack, List<BlockPos> waypoints) {
         stack.set(ModDataComponentTypes.MASK_WAND_WAYPOINTS, List.copyOf(waypoints));
     }
@@ -188,6 +217,24 @@ public class MaskWandItem extends Item implements ExtendedItem {
 
     private static String formatPos(BlockPos pos) {
         return pos.getX() + ", " + pos.getY() + ", " + pos.getZ();
+    }
+
+    private static void showStoredWaypointIndicators(ServerLevel level, List<BlockPos> waypoints) {
+        for (int i = 0; i < waypoints.size(); i++) {
+            BlockPos waypoint = waypoints.get(i);
+            boolean newest = i == waypoints.size() - 1;
+            level.sendParticles(
+                    newest ? ParticleTypes.END_ROD : ParticleTypes.WAX_ON,
+                    waypoint.getX() + 0.5,
+                    waypoint.getY() + 0.5,
+                    waypoint.getZ() + 0.5,
+                    newest ? 24 : 8,
+                    0.18,
+                    0.18,
+                    0.18,
+                    0.02
+            );
+        }
     }
 
     @Override

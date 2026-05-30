@@ -92,7 +92,7 @@ public class MaskHomeBlockEntity extends BlockEntity {
 
         List<BlockPos> route = home.getDisplayRoute();
         for (BlockPos point : route) {
-            level.sendParticles(ParticleTypes.END_ROD, point.getX() + 0.5, point.getY() + 1.0, point.getZ() + 0.5, 4, 0.08, 0.08, 0.08, 0.01);
+            level.sendParticles(ParticleTypes.END_ROD, point.getX() + 0.5, point.getY() + 0.5, point.getZ() + 0.5, 4, 0.08, 0.08, 0.08, 0.01);
         }
 
         for (int i = 1; i < route.size(); i++) {
@@ -111,8 +111,8 @@ public class MaskHomeBlockEntity extends BlockEntity {
     }
 
     private static void emitLine(ServerLevel level, BlockPos from, BlockPos to) {
-        Vec3 start = Vec3.atCenterOf(from).add(0.0, 0.5, 0.0);
-        Vec3 end = Vec3.atCenterOf(to).add(0.0, 0.5, 0.0);
+        Vec3 start = Vec3.atCenterOf(from);
+        Vec3 end = Vec3.atCenterOf(to);
         Vec3 delta = end.subtract(start);
         double length = delta.length();
         int samples = Math.max(1, (int) Math.floor(length * 2.0));

@@ -38,6 +38,7 @@ import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock;
 import org.dimdev.dimdoors.api.entity.LastPositionProvider;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.block.door.ServerPlayerExt;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
@@ -115,11 +116,24 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
         }
         entity.setPortalCooldown();
 
-        rift.teleport(entity);
+        if (entity instanceof ServerPlayer player) {
+            setDimensionalDoorTeleport(player, true);
+            try {
+                rift.teleport(entity);
+            } finally {
+                setDimensionalDoorTeleport(player, false);
+            }
+        } else {
+            rift.teleport(entity);
+        }
 
         createDetachedRift(world, pos);
         
         return InteractionResult.SUCCESS;
+    }
+
+    private static void setDimensionalDoorTeleport(ServerPlayer player, boolean active) {
+        ((ServerPlayerExt) player).setDimensionalDoorTeleport(active);
     }
 
     @Override

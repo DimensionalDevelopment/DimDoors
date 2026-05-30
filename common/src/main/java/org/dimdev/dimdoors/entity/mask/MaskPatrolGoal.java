@@ -7,6 +7,8 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 class MaskPatrolGoal extends Goal {
+    private static final double ARRIVAL_DISTANCE_SQ = 0.45 * 0.45;
+
     private final MaskEntity mask;
 
     MaskPatrolGoal(MaskEntity mask) {
@@ -44,16 +46,16 @@ class MaskPatrolGoal extends Goal {
             return;
         }
 
-        Vec3 target = Vec3.atCenterOf(targetPos);
+        Vec3 target = MaskMovement.patrolCenter(targetPos);
 
-        if (mask.distanceToSqr(target) < 1.2) {
-            mask.setDeltaMovement(mask.getDeltaMovement().scale(0.45));
+        if (mask.distanceToSqr(target) <= ARRIVAL_DISTANCE_SQ) {
+            mask.setDeltaMovement(Vec3.ZERO);
             route.tickPausedAtTarget();
             return;
         }
 
         route.resetPause();
         MaskMovement.moveToward(mask, target, MaskConstants.PASSIVE_SPEED);
-        MaskMovement.breakBlockToward(mask, target, 0.75);
+        MaskMovement.breakContactBlocks(mask);
     }
 }

@@ -25,7 +25,7 @@ final class MaskPatrolRoute {
     void configure(BlockPos home, List<BlockPos> waypoints) {
         clear();
 
-        if (waypoints.size() < 2) {
+        if (waypoints.isEmpty()) {
             return;
         }
 
@@ -51,7 +51,7 @@ final class MaskPatrolRoute {
     }
 
     void tickPausedAtTarget() {
-        if (pauseTicks++ >= MaskConstants.PATROL_PAUSE_TICKS) {
+        if (++pauseTicks >= MaskConstants.PATROL_PAUSE_TICKS) {
             pauseTicks = 0;
             advance();
         }

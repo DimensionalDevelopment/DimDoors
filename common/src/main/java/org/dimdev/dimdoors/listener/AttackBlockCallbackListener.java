@@ -17,10 +17,13 @@ public class AttackBlockCallbackListener implements ISided.AttackBlockCallback {
     public InteractionResult attack(Player player, InteractionHand hand, BlockPos pos, Direction direction) {
         var world = player.level();
 
-        if (!world.isClientSide) return InteractionResult.PASS;
         Item item = player.getItemInHand(hand).getItem();
         if (!(item instanceof ExtendedItem extendedItem)) {
             return InteractionResult.PASS;
+        }
+
+        if (!world.isClientSide) {
+            return InteractionResult.SUCCESS;
         }
 
         AttackBlockResult result = extendedItem.onAttackBlock(world, player, hand, pos, direction);

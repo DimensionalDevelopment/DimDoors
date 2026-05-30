@@ -2,10 +2,13 @@ package org.dimdev.dimdoors.entity.mask;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
 class MaskGuardGoal extends Goal {
+    private static final double HOME_CORRECTION_DISTANCE_SQ = 0.45 * 0.45;
+
     private final MaskEntity mask;
     private int turnCooldown;
 
@@ -31,7 +34,12 @@ class MaskGuardGoal extends Goal {
 
     @Override
     public void tick() {
-        MaskMovement.moveToward(mask, MaskMovement.homeCenter(mask), MaskConstants.PASSIVE_SPEED * 0.55);
+        Vec3 home = MaskMovement.homeCenter(mask);
+        if (mask.distanceToSqr(home) > HOME_CORRECTION_DISTANCE_SQ) {
+            MaskMovement.moveTowardWithoutFacing(mask, home, MaskConstants.PASSIVE_SPEED * 0.55);
+        } else {
+            mask.setDeltaMovement(Vec3.ZERO);
+        }
 
         if (turnCooldown > 0) {
             turnCooldown--;

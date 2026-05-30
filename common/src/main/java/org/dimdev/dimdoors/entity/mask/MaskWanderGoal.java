@@ -34,6 +34,10 @@ class MaskWanderGoal extends Goal {
 
     @Override
     public void tick() {
+        if (wanderTarget != null && !MaskMovement.canWanderToward(mask, wanderTarget)) {
+            wanderTarget = null;
+        }
+
         if (wanderTarget == null || mask.distanceToSqr(wanderTarget) < 1.5 || mask.getRandom().nextInt(120) == 0) {
             wanderTarget = MaskMovement.pickWanderTarget(mask);
         }

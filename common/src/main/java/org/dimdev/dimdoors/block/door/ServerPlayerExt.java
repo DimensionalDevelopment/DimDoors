@@ -7,4 +7,6 @@ import net.minecraft.world.level.block.state.BlockState;
 public interface ServerPlayerExt {
     void recordAfterBlockMove(BlockState state, Level world, BlockPos pos);
     public void playerBackAfterBlockMove();
+    void setDimensionalDoorTeleport(boolean active);
+    boolean isDimensionalDoorTeleport();
 }

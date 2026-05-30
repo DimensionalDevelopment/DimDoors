@@ -98,7 +98,19 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
         }
         entity.setPortalCooldown();
 
-        if (!rift.teleport(entity)) {
+        boolean teleported;
+        if (entity instanceof ServerPlayer player) {
+            setDimensionalDoorTeleport(player, true);
+            try {
+                teleported = rift.teleport(entity);
+            } finally {
+                setDimensionalDoorTeleport(player, false);
+            }
+        } else {
+            teleported = rift.teleport(entity);
+        }
+
+        if (!teleported) {
             return InteractionResult.PASS;
         }
 
@@ -106,6 +118,10 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
             closeDoorBehind(world, top, bottom);
         }
         return InteractionResult.SUCCESS;
+    }
+
+    private static void setDimensionalDoorTeleport(ServerPlayer player, boolean active) {
+        ((ServerPlayerExt) player).setDimensionalDoorTeleport(active);
     }
 
     protected void closeDoorBehind(Level world, BlockPos top, BlockPos bottom) {

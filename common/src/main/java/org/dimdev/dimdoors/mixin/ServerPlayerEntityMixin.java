@@ -10,9 +10,11 @@ import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.stats.Stat;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.portal.DimensionTransition;
@@ -24,6 +26,7 @@ import org.dimdev.dimdoors.block.UnravelledFabricBlock;
 import org.dimdev.dimdoors.block.door.ServerPlayerExt;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.entity.limbo.LimboEntranceSource;
+import org.dimdev.dimdoors.entity.mask.MaskType;
 import org.dimdev.dimdoors.entity.stat.ModStats;
 import org.dimdev.dimdoors.item.MaskItem;
 import org.dimdev.dimdoors.world.ModDimensions;
@@ -57,6 +60,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     public ServerPlayerGameMode gameMode;
 
     @Unique private List<AfterBlockRecord> afterBlockMoves = new ArrayList<>();
+    @Unique private boolean dimdoors$dimensionalDoorTeleport;
     
     private static final float RANDOM_ACTION_CHANCE = 0.1F;
     private static final float CHANCE_TO_MAKE_LIMBO_LIKE_OTHER_DIMENSIONS = 0.1F;
@@ -183,7 +187,21 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     @Unique
     private boolean dimdoors$shouldRedirectMaskedTeleport(Level targetLevel) {
         ServerPlayer player = (ServerPlayer) (Object) this;
-        return MaskItem.isWearingMask(player) && ModDimensions.LIMBO_DIMENSION != null && !ModDimensions.isLimboDimension(targetLevel);
+        ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+        if (!MaskItem.isMask(helmet) || ModDimensions.LIMBO_DIMENSION == null || ModDimensions.isLimboDimension(targetLevel)) {
+            return false;
+        }
+
+        if (MaskItem.getMaskType(helmet) == MaskType.BLACK) {
+            return true;
+        }
+
+        if (dimdoors$dimensionalDoorTeleport) {
+            player.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
+            return false;
+        }
+
+        return true;
     }
 
     @Unique
@@ -219,5 +237,15 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     @Override
     public void playerBackAfterBlockMove() {
 
+    }
+
+    @Override
+    public void setDimensionalDoorTeleport(boolean active) {
+        dimdoors$dimensionalDoorTeleport = active;
+    }
+
+    @Override
+    public boolean isDimensionalDoorTeleport() {
+        return dimdoors$dimensionalDoorTeleport;
     }
 }

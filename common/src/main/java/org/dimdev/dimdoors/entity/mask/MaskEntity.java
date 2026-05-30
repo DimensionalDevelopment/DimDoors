@@ -56,7 +56,7 @@ public class MaskEntity extends Mob implements VibrationSystem {
     private BlockPos homePos;
 
     private final MaskPatrolRoute patrolRoute = new MaskPatrolRoute();
-    private final MaskEchoBlockGoal echoBlockGoal = new MaskEchoBlockGoal(this);
+    private MaskEchoBlockGoal echoBlockGoal;
     private final VibrationSystem.User vibrationUser;
     private VibrationSystem.Data vibrationData;
     private final DynamicGameEventListener<VibrationSystem.Listener> dynamicVibrationListener;
@@ -103,6 +103,7 @@ public class MaskEntity extends Mob implements VibrationSystem {
 
         goalSelector.addGoal(0, new MaskStunnedGoal(this));
         goalSelector.addGoal(1, new MaskChaseGoal(this));
+        echoBlockGoal = new MaskEchoBlockGoal(this);
         goalSelector.addGoal(2, echoBlockGoal);
 
         goalSelector.addGoal(3, new MaskGuardGoal(this));
@@ -249,7 +250,8 @@ public class MaskEntity extends Mob implements VibrationSystem {
         patrolRoute.resetPause();
 
         if (homePos != null) {
-            teleportTo(homePos.getX() + 0.5, homePos.getY() + 1.05, homePos.getZ() + 0.5);
+            Vec3 home = MaskMovement.homeCenter(this);
+            teleportTo(home.x, home.y, home.z);
         }
 
         setDeltaMovement(Vec3.ZERO);
@@ -315,7 +317,8 @@ public class MaskEntity extends Mob implements VibrationSystem {
             setMode(resumeMode);
         }
 
-        teleportTo(home.getX() + 0.5, home.getY() + 1.05, home.getZ() + 0.5);
+        Vec3 homeTarget = MaskMovement.homeCenter(this);
+        teleportTo(homeTarget.x, homeTarget.y, homeTarget.z);
     }
 
     public void replaceHomeWaypoints(BlockPos home, List<BlockPos> waypoints) {
@@ -377,7 +380,8 @@ public class MaskEntity extends Mob implements VibrationSystem {
     public void recallHomeAndToggleFrozen() {
         boolean freeze = !isFrozen();
         if (freeze && homePos != null) {
-            teleportTo(homePos.getX() + 0.5, homePos.getY() + 1.05, homePos.getZ() + 0.5);
+            Vec3 home = MaskMovement.homeCenter(this);
+            teleportTo(home.x, home.y, home.z);
             setDeltaMovement(Vec3.ZERO);
         }
         setFrozen(freeze);
