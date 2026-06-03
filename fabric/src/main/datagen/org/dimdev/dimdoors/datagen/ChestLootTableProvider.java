@@ -7,7 +7,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -18,7 +17,7 @@ import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
 import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
-import net.minecraft.world.level.storage.loot.functions.EnchantWithLevelsFunction;
+import net.minecraft.world.level.storage.loot.functions.EnchantRandomlyFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.functions.SetPotionFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -60,14 +59,7 @@ public class ChestLootTableProvider extends SimpleFabricLootTableProvider {
                 )
                 .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(Items.BOOK).apply(
-                                new EnchantWithLevelsFunction.Builder(ConstantValue.exactly(10)).fromOptions(
-                                        registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(EnchantmentTags.TREASURE)
-                                )))
-                        .add(EmptyLootItem.emptyItem().setWeight(14))
-                )
-                .withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(Items.BOOK).apply(
-                                new EnchantWithLevelsFunction.Builder(ConstantValue.exactly(30)).fromOptions(
+                                new EnchantRandomlyFunction.Builder().withOneOf(
                                         registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ModEnchantmentTags.DUNGEON_LOOT)
                                 )))
                         .add(EmptyLootItem.emptyItem().setWeight(14))

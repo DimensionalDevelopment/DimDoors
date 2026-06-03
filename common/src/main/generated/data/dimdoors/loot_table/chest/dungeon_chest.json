@@ -155,29 +155,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
-              "levels": 10.0,
-              "options": "#minecraft:treasure"
-            }
-          ],
-          "name": "minecraft:book"
-        },
-        {
-          "type": "minecraft:empty",
-          "weight": 14
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "minecraft:enchant_with_levels",
-              "levels": 30.0,
+              "function": "minecraft:enchant_randomly",
               "options": "#dimdoors:dungeon_loot"
             }
           ],
