@@ -1,12 +1,12 @@
 package org.dimdev.dimdoors.world.decay;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
 
 import java.util.function.Consumer;
 
-public record DecayPatternHolder(ResourceLocation id, DecayPattern value) {
+public record DecayPatternHolder(Identifier id, DecayPattern value) {
 //    public static final StreamCodec<RegistryFriendlyByteBuf, DecayPatternHolder> STREAM_CODEC;
 
     public boolean equals(Object object) {
@@ -21,15 +21,15 @@ public record DecayPatternHolder(ResourceLocation id, DecayPattern value) {
         return this.id.toString();
     }
 
-    public static Builder builder(ResourceLocation id) {
+    public static Builder builder(Identifier id) {
         return new Builder(id);
     }
 
     public static class Builder {
-        private ResourceLocation id;
+        private Identifier id;
         private DecayPattern.Builder<?> pattern;
 
-        private Builder(ResourceLocation id) {
+        private Builder(Identifier id) {
             this.id = id;
         }
 
@@ -52,6 +52,6 @@ public record DecayPatternHolder(ResourceLocation id, DecayPattern value) {
     }
 
     static {
-//        STREAM_CODEC = StreamCodec.composite(ResourceLocation.STREAM_CODEC, RecipeHolder::id, Recipe.STREAM_CODEC, RecipeHolder::value, RecipeHolder::new);
+//        STREAM_CODEC = StreamCodec.composite(Identifier.STREAM_CODEC, RecipeHolder::id, Recipe.STREAM_CODEC, RecipeHolder::value, RecipeHolder::new);
     }
 }

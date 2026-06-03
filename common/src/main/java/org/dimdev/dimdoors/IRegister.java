@@ -9,13 +9,12 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.alchemy.Potion;
@@ -37,9 +36,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public interface IRegister {
-    <T, V extends T> V register(ResourceKey<Registry<T>> key, ResourceLocation id, V obj);
+    <T, V extends T> V register(ResourceKey<Registry<T>> key, Identifier id, V obj);
 
-    <T> void registerCallback(Registry<T> key, TriConsumer<Registry<T>, ResourceLocation, T> consumer);
+    <T> void registerCallback(Registry<T> key, TriConsumer<Registry<T>, Identifier, T> consumer);
 
     default <T, V extends T> V register(ResourceKey<Registry<T>> key, String id, V obj) {
         return register(key, DimensionalDoors.id(id), obj);
@@ -100,10 +99,6 @@ public interface IRegister {
         return register(Registries.ENCHANTMENT, id, obj);
     }
 
-    default <T extends ArmorMaterial> T registerArmorMaterial(String id, T obj) {
-        return register(Registries.ARMOR_MATERIAL, id, obj);
-    }
-
     default <T extends DamageType> T registerDamageType(String id, T obj) {
         return register(Registries.DAMAGE_TYPE, id, obj);
     }
@@ -112,7 +107,7 @@ public interface IRegister {
         return register(Registries.DATA_COMPONENT_TYPE, id, obj);
     }
 
-    default ResourceLocation registerCustomStat(String id, ResourceLocation obj) {
+    default Identifier registerCustomStat(String id, Identifier obj) {
         return register(Registries.CUSTOM_STAT, id, obj);
     }
 

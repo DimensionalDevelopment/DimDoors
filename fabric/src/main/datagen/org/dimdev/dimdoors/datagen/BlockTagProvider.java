@@ -6,7 +6,7 @@ import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -213,23 +213,23 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
                 Blocks.TORCH
         ).addOptionalTag(BlockTags.FLOWER_POTS.location()).addOptionalTag(BlockTags.CANDLES.location());
         tag(ModBlockTags.DECAYS_TO_WITHER_ROSE)
-                .addOptional(ResourceLocation.parse("minecraft:dandelion"))
-                .addOptional(ResourceLocation.parse("minecraft:poppy"))
-                .addOptional(ResourceLocation.parse("minecraft:blue_orchid"))
-                .addOptional(ResourceLocation.parse("minecraft:allium"))
-                .addOptional(ResourceLocation.parse("minecraft:azure_bluet"))
-                .addOptional(ResourceLocation.parse("minecraft:red_tulip"))
-                .addOptional(ResourceLocation.parse("minecraft:orange_tulip"))
-                .addOptional(ResourceLocation.parse("minecraft:white_tulip"))
-                .addOptional(ResourceLocation.parse("minecraft:pink_tulip"))
-                .addOptional(ResourceLocation.parse("minecraft:oxeye_daisy"))
-                .addOptional(ResourceLocation.parse("minecraft:cornflower"))
-                .addOptional(ResourceLocation.parse("minecraft:lily_of_the_valley"))
-                .addOptional(ResourceLocation.parse("minecraft:torchflower"))
-                .addOptional(ResourceLocation.parse("minecraft:sunflower"))
-                .addOptional(ResourceLocation.parse("minecraft:lilac"))
-                .addOptional(ResourceLocation.parse("minecraft:rose_bush"))
-                .addOptional(ResourceLocation.parse("minecraft:peony"));
+                .addOptional(Identifier.parse("minecraft:dandelion"))
+                .addOptional(Identifier.parse("minecraft:poppy"))
+                .addOptional(Identifier.parse("minecraft:blue_orchid"))
+                .addOptional(Identifier.parse("minecraft:allium"))
+                .addOptional(Identifier.parse("minecraft:azure_bluet"))
+                .addOptional(Identifier.parse("minecraft:red_tulip"))
+                .addOptional(Identifier.parse("minecraft:orange_tulip"))
+                .addOptional(Identifier.parse("minecraft:white_tulip"))
+                .addOptional(Identifier.parse("minecraft:pink_tulip"))
+                .addOptional(Identifier.parse("minecraft:oxeye_daisy"))
+                .addOptional(Identifier.parse("minecraft:cornflower"))
+                .addOptional(Identifier.parse("minecraft:lily_of_the_valley"))
+                .addOptional(Identifier.parse("minecraft:torchflower"))
+                .addOptional(Identifier.parse("minecraft:sunflower"))
+                .addOptional(Identifier.parse("minecraft:lilac"))
+                .addOptional(Identifier.parse("minecraft:rose_bush"))
+                .addOptional(Identifier.parse("minecraft:peony"));
         add(ModBlockTags.DECAYS_TO_GLASS,
                 Blocks.TINTED_GLASS,
                 Blocks.REDSTONE_LAMP,
@@ -1203,7 +1203,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         var appender = tag(tag);
 
         for (String id : ids) {
-            appender.addOptional(id.contains(":") ? ResourceLocation.parse(id) : ResourceLocation.parse("minecraft:" + id));
+            appender.addOptional(id.contains(":") ? Identifier.parse(id) : Identifier.parse("minecraft:" + id));
         }
     }
 }

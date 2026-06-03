@@ -7,7 +7,7 @@ import net.minecraft.client.CloudStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -64,7 +64,7 @@ public abstract class LevelRendererMixin implements LevelRendererExtension {
 
     @Shadow
     @Final
-    private static ResourceLocation RAIN_LOCATION;
+    private static Identifier RAIN_LOCATION;
 
     @Shadow
     @Final
@@ -76,7 +76,7 @@ public abstract class LevelRendererMixin implements LevelRendererExtension {
 
     @Shadow
     @Final
-    private static ResourceLocation SNOW_LOCATION;
+    private static Identifier SNOW_LOCATION;
 
     @Shadow
     protected abstract boolean doesMobEffectBlockSky(Camera arg);

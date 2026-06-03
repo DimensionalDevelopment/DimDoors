@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
@@ -125,7 +125,7 @@ public class Location {
     public static Location fromNbt(CompoundTag nbt) {
         int[] pos = nbt.getIntArray("pos");
         return new Location(
-                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
+                ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getString("world"))),
                 new BlockPos(pos[0], pos[1], pos[2])
         );
     }

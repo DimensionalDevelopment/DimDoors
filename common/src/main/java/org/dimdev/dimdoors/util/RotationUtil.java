@@ -12,7 +12,7 @@ public final class RotationUtil {
     }
 
     public static Vec3 directionFromRot(Rotations rot) {
-        return directionFromRot(rot.getX(), rot.getY());
+        return directionFromRot(rot.x(), rot.y());
     }
 
     public static Vec3 directionFromRot(float pitch, float yaw) {
@@ -46,6 +46,6 @@ public final class RotationUtil {
     }
 
     public static Rotations rotFromDirection(Vec3 direction, Rotations original) {
-        return rotFromDirection(direction, original.getZ());
+        return rotFromDirection(direction, original.z());
     }
 }

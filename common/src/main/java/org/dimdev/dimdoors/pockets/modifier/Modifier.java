@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModRegistries;
@@ -47,7 +47,7 @@ public interface Modifier {
         public static void register() {
         }
 
-        static <U extends Modifier> ModifierType<U> register(ResourceLocation id, MapCodec<U> codec) {
+        static <U extends Modifier> ModifierType<U> register(Identifier id, MapCodec<U> codec) {
             return DimensionalDoors.getSided().register(ModRegistryKeys.MODIFIER_TYPE, id, new ModifierType<U>(codec));
         }
     }

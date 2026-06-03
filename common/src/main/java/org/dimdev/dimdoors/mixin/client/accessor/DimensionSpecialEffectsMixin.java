@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public abstract class DimensionSpecialEffectsMixin {
 
     @Accessor("EFFECTS")
-    public static Object2ObjectMap<ResourceLocation, DimensionSpecialEffects> getEffects() {
+    public static Object2ObjectMap<Identifier, DimensionSpecialEffects> getEffects() {
         throw new RuntimeException("You shouldn't be here.");
     }
 }

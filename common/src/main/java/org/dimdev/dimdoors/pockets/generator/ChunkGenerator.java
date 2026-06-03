@@ -7,7 +7,7 @@ package org.dimdev.dimdoors.pockets.generator;//package org.dimdev.dimdoors.pock
 //import net.minecraft.core.registries.Registries;
 //import net.minecraft.nbt.CompoundTag;
 //import net.minecraft.resources.ResourceKey;
-//import net.minecraft.resources.ResourceLocation;
+//import net.minecraft.resources.Identifier;
 //import net.minecraft.server.level.ServerLevel;
 //import net.minecraft.server.level.ThreadedLevelLightEngine;
 //import net.minecraft.server.level.WorldGenRegion;
@@ -52,7 +52,7 @@ package org.dimdev.dimdoors.pockets.generator;//package org.dimdev.dimdoors.pock
 //    private static final Logger LOGGER = LogManager.getLogger();
 //    public static final String KEY = "chunk";
 //
-//    private ResourceLocation dimensionID;
+//    private Identifier dimensionID;
 //    private Vec3i size; // TODO: equation-ify
 //    private int virtualYOffset; // TODO: equation-ify
 //
@@ -63,7 +63,7 @@ package org.dimdev.dimdoors.pockets.generator;//package org.dimdev.dimdoors.pock
 //    public PocketGenerator fromNbt(CompoundTag nbt, ResourceManager manager) {
 //    super.fromNbt(nbt, manager);
 //
-//    this.dimensionID = new ResourceLocation(nbt.getString("dimension_id"));
+//    this.dimensionID = new Identifier(nbt.getString("dimension_id"));
 //
 //    int[] temp = nbt.getIntArray("size");
 //    this.size = new Vec3i(temp[0], temp[1], temp[2]);

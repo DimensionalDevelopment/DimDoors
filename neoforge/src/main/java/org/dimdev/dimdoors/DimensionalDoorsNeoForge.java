@@ -10,8 +10,9 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -43,6 +44,7 @@ import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -53,6 +55,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -92,8 +95,8 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     public static final EnumProxy<RecipeBookType> TESSELLATING = new EnumProxy<>(RecipeBookType.class);
 
     private final List<Consumer<BuildCreativeModeTabContentsEvent>> BUILD_CONTENTS_LISTENERS = new ArrayList<>();
-    private final Map<ResourceKey<?>, Map<ResourceLocation, Object>> toRegister = new HashMap<>();
-    private final Map<ResourceKey<?>, Map<ResourceLocation, Object>> toRegisterHolder = new HashMap<>();
+    private final Map<ResourceKey<?>, Map<Identifier, Object>> toRegister = new HashMap<>();
+    private final Map<ResourceKey<?>, Map<Identifier, Object>> toRegisterHolder = new HashMap<>();
     private final Map<ResourceKey<?>, AddCallback<?>> callbacks = new HashMap<>();
     private final IEventBus bus;
     private ResourceKey<? extends Registry<?>> activeKey;
@@ -173,8 +176,8 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
         }
     }
 
-    public <T> void populate(Registry<T> registry, Map<ResourceLocation, Object> map) {
-        map.forEach((resourceLocation, obj) -> Registry.register(registry, resourceLocation, (T) obj));
+    public <T> void populate(Registry<T> registry, Map<Identifier, Object> map) {
+        map.forEach((Identifier, obj) -> Registry.register(registry, Identifier, (T) obj));
     }
 
     @Override
@@ -223,11 +226,11 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     }
 
     @Override
-    public <T, V extends T> V register(ResourceKey<Registry<T>> key, ResourceLocation id, V obj) {
+    public <T, V extends T> V register(ResourceKey<Registry<T>> key, Identifier id, V obj) {
         if (key.equals(activeKey)) {
             return Registry.register((Registry<T>) BuiltInRegistries.REGISTRY.get(key.location()), id, obj);
         } else {
-            Map<ResourceLocation, Object> map = this.toRegister.computeIfAbsent(key, a -> new HashMap<>());
+            Map<Identifier, Object> map = this.toRegister.computeIfAbsent(key, a -> new HashMap<>());
 
             map.putIfAbsent(id, obj);
 
@@ -236,7 +239,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     }
 
     @Override
-    public <T> void registerCallback(Registry<T> registry, TriConsumer<Registry<T>, ResourceLocation, T> consumer) {
+    public <T> void registerCallback(Registry<T> registry, TriConsumer<Registry<T>, Identifier, T> consumer) {
         callbacks.put(registry.key(), new Callback<>(consumer));
     }
 
@@ -311,7 +314,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
     @Override
     public void onBeforeBlockBreak(BlockBreakCallback callback) {
-        NeoForge.EVENT_BUS.<BlockEvent.BreakEvent>addListener(event -> {
+        NeoForge.EVENT_BUS.<BreakBlockEvent>addListener(event -> {
             if (event.getLevel() instanceof Level level && callback.shouldCancel(level, event.getPos(), event.getState(), event.getPlayer())) {
                 event.setCanceled(true);
             }
@@ -339,9 +342,9 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
     private record EntityAttributeRegistration(EntityType<? extends LivingEntity> type, Supplier<AttributeSupplier.Builder> attributes) { }
 
     class Callback<T> implements AddCallback<T> {
-        private final TriConsumer<Registry<T>, ResourceLocation, T> consumer;
+        private final TriConsumer<Registry<T>, Identifier, T> consumer;
 
-        Callback(TriConsumer<Registry<T>, ResourceLocation, T> consumer) {
+        Callback(TriConsumer<Registry<T>, Identifier, T> consumer) {
             this.consumer = consumer;
         }
 
@@ -350,7 +353,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
             ResourceKey<? extends Registry<?>> previousKey = activeKey;
             activeKey = registry.key();
             try {
-                consumer.accept(registry, key.location(), obj);
+                consumer.accept(registry, key.identifier(), obj);
             } finally {
                 activeKey = previousKey;
             }
@@ -364,7 +367,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
 
     @Override
     public <T> DataValue<T> registerDataValue(String name, Supplier<T> defaultValue, Codec<T> codec, StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
-        var dataValue = AttachmentType.builder(defaultValue).serialize(codec);
+        var dataValue = AttachmentType.builder(defaultValue).serialize(codec.fieldOf(name));
         if(streamCodec != null) {
             dataValue.sync(streamCodec);
         }
@@ -432,12 +435,7 @@ public class DimensionalDoorsNeoForge extends SidedImpl {
         PacketDistributor.sendToPlayer(player, packet);
     }
 
-    @Override
-    public <T extends CustomPacketPayload> void sendPacket(T packet) {
-        PacketDistributor.sendToServer(packet);
-    }
-
-    private static List<Triple<ResourceLocation, BiConsumer<HolderLookup.Provider, ResourceManager>, Boolean>> loaders = new ArrayList<>();
+    private static List<Triple<Identifier, BiConsumer<HolderLookup.Provider, ResourceManager>, Boolean>> loaders = new ArrayList<>();
 
     public Path getConfigRoot() {
         return FMLPaths.CONFIGDIR.get();

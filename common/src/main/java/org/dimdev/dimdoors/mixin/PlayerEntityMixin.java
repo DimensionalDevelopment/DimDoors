@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.mixin;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = Player.class)
 public abstract class PlayerEntityMixin extends LivingEntityMixin {
     @Shadow
-    public abstract void awardStat(ResourceLocation stat);
+    public abstract void awardStat(Identifier stat);
 
     @Inject(method = "causeFallDamage", at = @At("HEAD"), cancellable = true)
     public void handleLimboFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {

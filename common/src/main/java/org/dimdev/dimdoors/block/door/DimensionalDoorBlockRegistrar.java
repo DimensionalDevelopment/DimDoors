@@ -9,7 +9,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -47,9 +47,9 @@ public class DimensionalDoorBlockRegistrar {
     private final DimensionalDoorItemRegistrar itemRegistrar;
 
     //The key is the id of the generated dimensional door and value is the key of the original block.
-    private final BiMap<ResourceLocation, ResourceLocation> mappedDoorBlocks = HashBiMap.create();
+    private final BiMap<Identifier, Identifier> mappedDoorBlocks = HashBiMap.create();
 
-    private final Map<ResourceLocation, DoorProduction> customDoorProductions = new HashMap<>();
+    private final Map<Identifier, DoorProduction> customDoorProductions = new HashMap<>();
     private final List<DoorProductionRule> customDoorProductionRules = new ArrayList<>();
     private boolean initialized;
 
@@ -149,17 +149,17 @@ public class DimensionalDoorBlockRegistrar {
     }
 
     @FunctionalInterface
-    public interface DoorProductionSelector extends BiPredicate<ResourceLocation, Block> {
+    public interface DoorProductionSelector extends BiPredicate<Identifier, Block> {
         @Override
-        boolean test(ResourceLocation id, Block block);
+        boolean test(Identifier id, Block block);
     }
 
     private record DoorProductionRule(DoorProductionSelector selector, DoorProduction production) {
     }
 
     public record GeneratedDoorContext(
-            ResourceLocation originalId,
-            ResourceLocation generatedId,
+            Identifier originalId,
+            Identifier generatedId,
             BlockBehaviour.Properties properties
     ) {
     }
@@ -197,7 +197,7 @@ public class DimensionalDoorBlockRegistrar {
         sided.registerCallback(blockRegistry, (registry, id, obj) -> handleEntry(id, obj));
     }
 
-    public void handleEntry(ResourceLocation location, Block original) {
+    public void handleEntry(Identifier location, Block original) {
         if (DimensionalDoors.getConfig().getDoorsConfig().isAllowed(location)) {
             DoorProduction production = getProduction(location, original);
             if (!(original instanceof DimensionalDoorBlock) && original instanceof DoorBlock doorBlock) {
@@ -208,7 +208,7 @@ public class DimensionalDoorBlockRegistrar {
         }
     }
 
-    private DoorProduction getProduction(ResourceLocation location, Block original) {
+    private DoorProduction getProduction(Identifier location, Block original) {
         DoorProduction production = customDoorProductions.get(location);
         if (production != null) {
             return production;
@@ -223,8 +223,8 @@ public class DimensionalDoorBlockRegistrar {
         return DEFAULT_PRODUCTION;
     }
 
-    private void registerDoor(ResourceLocation location, DoorBlock original, DoorProduction production) {
-        ResourceLocation gennedId = generatedId(location);
+    private void registerDoor(Identifier location, DoorBlock original, DoorProduction production) {
+        Identifier gennedId = generatedId(location);
         GeneratedDoorContext context = new GeneratedDoorContext(location, gennedId, createProperties(original));
 
         var result = production.createDoor(context, original);
@@ -232,8 +232,8 @@ public class DimensionalDoorBlockRegistrar {
         if(result != null) register(context, original, result, production);
     }
 
-    private void registerTrapdoor(ResourceLocation location, TrapDoorBlock original, DoorProduction production) {
-        ResourceLocation gennedId = generatedId(location);
+    private void registerTrapdoor(Identifier location, TrapDoorBlock original, DoorProduction production) {
+        Identifier gennedId = generatedId(location);
         GeneratedDoorContext context = new GeneratedDoorContext(location, gennedId, createProperties(original));
 
         var result = production.createTrapdoor(context, original);
@@ -251,7 +251,7 @@ public class DimensionalDoorBlockRegistrar {
         production.onBlockRegistered(context, dimBlock);
     }
 
-    private static ResourceLocation generatedId(ResourceLocation location) {
+    private static Identifier generatedId(Identifier location) {
         return DimensionalDoors.id(PREFIX + location.getNamespace() + "_" + location.getPath());
     }
 
@@ -280,11 +280,11 @@ public class DimensionalDoorBlockRegistrar {
         return originalState;
     }
 
-    public ResourceLocation get(ResourceLocation ResourceLocation) {
-        return mappedDoorBlocks.get(ResourceLocation);
+    public Identifier get(Identifier Identifier) {
+        return mappedDoorBlocks.get(Identifier);
     }
 
-    public void registerCustomDoorProduction(ResourceLocation id, DoorProduction production) {
+    public void registerCustomDoorProduction(Identifier id, DoorProduction production) {
         checkMutable("Custom dimensional door production for " + id);
         DoorProduction previous = customDoorProductions.putIfAbsent(id, production);
         if (previous != null && previous != production) {
@@ -292,8 +292,8 @@ public class DimensionalDoorBlockRegistrar {
         }
     }
 
-    public void registerCustomDoorProduction(Collection<ResourceLocation> ids, DoorProduction production) {
-        for (ResourceLocation id : ids) {
+    public void registerCustomDoorProduction(Collection<Identifier> ids, DoorProduction production) {
+        for (Identifier id : ids) {
             registerCustomDoorProduction(id, production);
         }
     }
@@ -317,8 +317,8 @@ public class DimensionalDoorBlockRegistrar {
         }
     }
 
-    public boolean isMapped(ResourceLocation ResourceLocation) {
-        return mappedDoorBlocks.containsKey(ResourceLocation);
+    public boolean isMapped(Identifier Identifier) {
+        return mappedDoorBlocks.containsKey(Identifier);
     }
 
     public static <T extends Comparable<T>> BlockState transferProperty(BlockState from, BlockState to, Property<T> property) {
@@ -333,7 +333,7 @@ public class DimensionalDoorBlockRegistrar {
         return new AutoGenDimensionalTrapdoorBlock(settings, originalBlock);
     }
 
-    public Set<ResourceLocation> getGennedIds() {
+    public Set<Identifier> getGennedIds() {
         return mappedDoorBlocks.keySet();
     }
 

@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.pockets.generator;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,22 +27,22 @@ import java.util.Optional;
 public class SchematicGenerator extends PocketGenerator<SchematicGenerator> {
 
     public static final MapCodec<SchematicGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
-            .and(ResourceLocation.CODEC.fieldOf("id").forGetter(schematicGenerator -> schematicGenerator.templateID))
+            .and(Identifier.CODEC.fieldOf("id").forGetter(schematicGenerator -> schematicGenerator.templateID))
             .and(BlockPlacementType.CODEC.optionalFieldOf("placement_type", BlockPlacementType.SECTION_NO_UPDATE).<SchematicGenerator>forGetter(a -> a.placementType)).apply(instance, SchematicGenerator::new));
 
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String KEY = "schematic";
 
-    private final ResourceLocation templateID;
+    private final Identifier templateID;
     private final BlockPlacementType placementType;
 
-    public SchematicGenerator(Optional<AbstractPocket.AbstractPocketBuilder<?, ?>> builder, Equation weight, Optional<Boolean> setupLoot, List<Holder<Modifier>> modifiers, List<String> tags, ResourceLocation id, BlockPlacementType placementType) {
+    public SchematicGenerator(Optional<AbstractPocket.AbstractPocketBuilder<?, ?>> builder, Equation weight, Optional<Boolean> setupLoot, List<Holder<Modifier>> modifiers, List<String> tags, Identifier id, BlockPlacementType placementType) {
         super(builder, weight, setupLoot, modifiers, tags);
         this.templateID = id;
         this.placementType = placementType;
     }
 
-    public ResourceLocation getTemplateID() {
+    public Identifier getTemplateID() {
         return templateID;
     }
 

@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
@@ -13,13 +13,13 @@ import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 
 // TODO: Override equals
 public class PathSelector extends AbstractVirtualPocketList<PathSelector> {
-    public static final MapCodec<PathSelector> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(ResourceLocation.CODEC.fieldOf("path").forGetter(a -> a.path)).apply(instance, PathSelector::new));
+    public static final MapCodec<PathSelector> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(Identifier.CODEC.fieldOf("path").forGetter(a -> a.path)).apply(instance, PathSelector::new));
     public static final String KEY = "path";
 
-    private final ResourceLocation path;
+    private final Identifier path;
     private boolean initalized;
 
-    public PathSelector(ResourceLocation path) {
+    public PathSelector(Identifier path) {
         this.path = path;
     }
 

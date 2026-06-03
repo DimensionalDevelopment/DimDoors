@@ -7,7 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.sky.EnvironmentAddon;
@@ -64,7 +64,7 @@ public interface PocketAddon {
         public static ResourceKey<Registry<PocketAddonType<?, ?>>> KEY = ResourceKey.createRegistryKey(DimensionalDoors.id("pocket_applicable_addon_type"));
         public static Registry<PocketAddonType<?, ?>> REGISTRY = DimensionalDoors.getSided().createRegistry(KEY);
         public static Codec<PocketAddonType<?, ?>> CODEC = REGISTRY.byNameCodec();
-        public static StreamCodec<RegistryFriendlyByteBuf, PocketAddonType<?, ?>> STREAM_CODEC = ResourceLocation.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().map(REGISTRY::get, REGISTRY::getKey);
+        public static StreamCodec<RegistryFriendlyByteBuf, PocketAddonType<?, ?>> STREAM_CODEC = Identifier.STREAM_CODEC.<RegistryFriendlyByteBuf>cast().map(REGISTRY::get, REGISTRY::getKey);
 
         public static final PocketAddonType<DyeableAddon, DyeableAddon.DyeableBuilderAddon> DYEABLE_ADDON = register(DyeableAddon.ID, DyeableAddon.CODEC, DyeableAddon.DyeableBuilderAddon.CODEC);
         public static PocketAddonType<PreventBlockModificationAddon, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon> PREVENT_BLOCK_MODIFICATION_ADDON = register(PreventBlockModificationAddon.ID, PreventBlockModificationAddon.CODEC, PreventBlockModificationAddon.PreventBlockModificationBuilderAddon.CODEC, PreventBlockModificationAddon.STREAM_CODEC);
@@ -75,11 +75,11 @@ public interface PocketAddon {
         public static void register() {
         }
 
-        static <V extends PocketAddon, S extends PocketBuilderAddon<V, S>> PocketAddonType<V, S> register(ResourceLocation id, MapCodec<V> codec, MapCodec<S> builderCodec) {
+        static <V extends PocketAddon, S extends PocketBuilderAddon<V, S>> PocketAddonType<V, S> register(Identifier id, MapCodec<V> codec, MapCodec<S> builderCodec) {
             return register(id, codec, builderCodec, null);
         }
 
-        static <V extends PocketAddon, S extends PocketBuilderAddon<V, S>> PocketAddonType<V, S> register(ResourceLocation id, MapCodec<V> codec, MapCodec<S> builderCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> streamCodec) {
+        static <V extends PocketAddon, S extends PocketBuilderAddon<V, S>> PocketAddonType<V, S> register(Identifier id, MapCodec<V> codec, MapCodec<S> builderCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> streamCodec) {
             return DimensionalDoors.getSided().register(KEY, id, new PocketAddonType<>(codec, builderCodec, streamCodec));
         }
 

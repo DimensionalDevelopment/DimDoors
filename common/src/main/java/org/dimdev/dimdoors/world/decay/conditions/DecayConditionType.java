@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public record DecayConditionType<T extends DecayCondition>(MapCodec<T> codec) {
@@ -23,7 +23,7 @@ public record DecayConditionType<T extends DecayCondition>(MapCodec<T> codec) {
     public static void register() {
     }
 
-    static <U extends DecayCondition> DecayConditionType<U> register(ResourceLocation id, MapCodec<U> codec) {
+    static <U extends DecayCondition> DecayConditionType<U> register(Identifier id, MapCodec<U> codec) {
         return DimensionalDoors.getSided().register(KEY, id, new DecayConditionType<>(codec));
     }
 }

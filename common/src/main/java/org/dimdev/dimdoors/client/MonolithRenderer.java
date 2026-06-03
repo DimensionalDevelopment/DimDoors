@@ -2,17 +2,17 @@ package org.dimdev.dimdoors.client;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.entity.MonolithEntity;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel> {
-    public static final List<ResourceLocation> TRANSPARENT = Stream.of(
+public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithRenderState, MonolithModel> {
+    public static final List<Identifier> TRANSPARENT = Stream.of(
             DimensionalDoors.id("textures/mob/monolith/transparent/monolith_0.png"),
             DimensionalDoors.id("textures/mob/monolith/transparent/monolith_1.png"),
             DimensionalDoors.id("textures/mob/monolith/transparent/monolith_2.png"),
@@ -34,7 +34,7 @@ public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel>
             DimensionalDoors.id("textures/mob/monolith/transparent/monolith_18.png")
     ).collect(Collectors.toList());
 
-    public static final List<ResourceLocation> SOLID = Stream.of(
+    public static final List<Identifier> SOLID = Stream.of(
             DimensionalDoors.id("textures/mob/monolith/solid/monolith_0.png"),
             DimensionalDoors.id("textures/mob/monolith/solid/monolith_1.png"),
             DimensionalDoors.id("textures/mob/monolith/solid/monolith_2.png"),
@@ -67,12 +67,26 @@ public class MonolithRenderer extends MobRenderer<MonolithEntity, MonolithModel>
     }
 
     @Override
-    protected boolean shouldShowName(MonolithEntity mobEntity) {
+    protected boolean shouldShowName(@NonNull MonolithEntity entity, double distanceToCameraSq) {
         return false;
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(MonolithEntity entity) {
-        return (entity.getSolid() ? SOLID : TRANSPARENT).get(entity.getTextureState());
+    public @NonNull Identifier getTextureLocation(MonolithRenderState state) {
+        return (state.isSolid ? SOLID : TRANSPARENT).get(state.textureState);
+    }
+
+    @Override
+    public @NonNull MonolithRenderState createRenderState() {
+        return new MonolithRenderState();
+    }
+
+    @Override
+    public void extractRenderState(@NonNull MonolithEntity entity, @NonNull MonolithRenderState state, float partialTicks) {
+        super.extractRenderState(entity, state, partialTicks);
+        state.isSolid = entity.getSolid();
+        state.textureState = entity.getTextureState();
+        state.id = entity.getId();
+        state.aggro = entity.getAggro();
     }
 }

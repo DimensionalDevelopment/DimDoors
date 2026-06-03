@@ -15,17 +15,17 @@ public enum EmptyEnvironment implements Environment {
     public static StreamCodec<RegistryFriendlyByteBuf, EmptyEnvironment> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     @Override
-    public SkyData getSky() {
+    public SkyData sky() {
         return SkyData.empty();
     }
 
     @Override
-    public CloudData getCloud() {
+    public CloudData cloud() {
         return CloudData.empty();
     }
 
     @Override
-    public WeatherData getWeather() {
+    public WeatherData weather() {
         return WeatherData.empty();
     }
 

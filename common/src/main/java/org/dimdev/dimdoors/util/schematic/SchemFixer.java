@@ -25,7 +25,7 @@ public class SchemFixer {
 
             var main = Paths.get("D:\\Git Repos\\DimDoorsNew\\common\\src\\main\\resources\\resourcepacks\\default\\data\\dimdoors\\pockets\\schematic");
 
-            var dataVersion = SharedConstants.getCurrentVersion().getDataVersion().getVersion();
+            var dataVersion = SharedConstants.getCurrentVersion().dataVersion().version();
 
             System.out.println("Current version is " + dataVersion);
 
@@ -39,7 +39,7 @@ public class SchemFixer {
                         if (nbt.contains("DataVersion")) {
 
 
-                            var version = nbt.getInt("DataVersion");
+                            int version = nbt.getInt("DataVersion").orElse(-1);
 
 
                             if (version < dataVersion) {

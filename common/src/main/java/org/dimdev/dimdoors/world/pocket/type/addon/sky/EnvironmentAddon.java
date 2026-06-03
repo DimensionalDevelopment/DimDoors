@@ -4,14 +4,14 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.cloud.CloudData;
 
 public class EnvironmentAddon implements PocketAddon {
-    public static ResourceLocation ID = DimensionalDoors.id("environment");
+    public static Identifier ID = DimensionalDoors.id("environment");
     public static final MapCodec<EnvironmentAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(Environment.CODEC.optionalFieldOf("environment", EmptyEnvironment.INSTANCE).forGetter(a -> a.environment)).apply(instance, EnvironmentAddon::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, EnvironmentAddon> STREAM_CODEC = StreamCodec.composite(Environment.STREAM_CODEC, a -> a.environment, EnvironmentAddon::new);
 
@@ -31,15 +31,15 @@ public class EnvironmentAddon implements PocketAddon {
     }
 
     public SkyData getSky() {
-        return environment.getSky();
+        return environment.sky();
     }
 
     public CloudData getCloud() {
-        return environment.getCloud();
+        return environment.cloud();
     }
 
     public WeatherData getWeather() {
-        return environment.getWeather();
+        return environment.weather();
     }
 
     public static class EnvironmentBuilderAddon implements PocketBuilderAddon<EnvironmentAddon, EnvironmentBuilderAddon> {

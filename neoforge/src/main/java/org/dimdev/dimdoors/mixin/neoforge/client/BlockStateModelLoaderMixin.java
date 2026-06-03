@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.mixin.neoforge.client;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.resources.model.BlockStateModelLoader;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -81,7 +81,7 @@ public class BlockStateModelLoaderMixin {
     }
 
     private static boolean dimdoors$isGeneratedBlockState(Object value) {
-        return value instanceof ResourceLocation location
+        return value instanceof Identifier location
                 && location.getNamespace().equals("dimdoors")
                 && location.getPath().startsWith("blockstates/block_ag_dim_");
     }

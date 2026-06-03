@@ -7,7 +7,7 @@ package org.dimdev.dimdoors.mixin;//package org.dimdev.dimdoors.mixin;
 //import net.minecraft.nbt.NbtAccounter;
 //import net.minecraft.nbt.NbtIo;
 //import net.minecraft.resources.FileToIdConverter;
-//import net.minecraft.resources.ResourceLocation;
+//import net.minecraft.resources.Identifier;
 //import net.minecraft.server.packs.resources.ResourceManager;
 //import net.minecraft.world.level.block.Block;
 //import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -43,15 +43,15 @@ package org.dimdev.dimdoors.mixin;//package org.dimdev.dimdoors.mixin;
 //    builder.add(new StructureTemplateManager.Source(this::loadSchemFromResource, this::listSchemResources));
 //    }
 //
-//    private Optional<StructureTemplate> loadSchemFromResource(ResourceLocation id) {
-//    ResourceLocation resourceLocation = SCHEM_LISTER.idToFile(id);
+//    private Optional<StructureTemplate> loadSchemFromResource(Identifier id) {
+//    Identifier Identifier = SCHEM_LISTER.idToFile(id);
 //
-//    return this.loadSchem(() -> this.resourceManager.open(resourceLocation), (throwable) -> {
+//    return this.loadSchem(() -> this.resourceManager.open(Identifier), (throwable) -> {
 //        LOGGER.error("Couldn't load structure {}", (Object) id, throwable);
 //    });
 //    }
 //
-//    private Stream<ResourceLocation> listSchemResources() {
+//    private Stream<Identifier> listSchemResources() {
 //    return SCHEM_LISTER.listMatchingResources(this.resourceManager).keySet().stream().map(SCHEM_LISTER::fileToId);
 //    }
 //

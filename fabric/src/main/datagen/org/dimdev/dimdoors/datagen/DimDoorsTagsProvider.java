@@ -18,7 +18,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
@@ -31,7 +31,7 @@ public abstract class DimDoorsTagsProvider<T> implements DataProvider {
     private final CompletableFuture<Void> contentsDone;
     private final CompletableFuture<TagLookup<T>> parentProvider;
     protected final ResourceKey<? extends Registry<T>> registryKey;
-    private final Map<ResourceLocation, TagBuilder> builders;
+    private final Map<Identifier, TagBuilder> builders;
 
     protected DimDoorsTagsProvider(PackOutput output, ResourceKey<? extends Registry<T>> registryKey, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         this(output, registryKey, lookupProvider, CompletableFuture.completedFuture(TagLookup.empty()));
@@ -63,14 +63,14 @@ public abstract class DimDoorsTagsProvider<T> implements DataProvider {
             return new CombinedData<>(provider, tagLookup);
         }, Util.backgroundExecutor()).thenCompose((arg) -> {
             HolderLookup.RegistryLookup<T> registryLookup = arg.contents.lookupOrThrow(this.registryKey);
-            Predicate<ResourceLocation> predicate = (resourceLocation) -> registryLookup.get(ResourceKey.create(this.registryKey, resourceLocation)).isPresent();
-            Predicate<ResourceLocation> predicate2 = (resourceLocation) -> this.builders.containsKey(resourceLocation) || arg.parent.contains(TagKey.create(this.registryKey, resourceLocation));
+            Predicate<Identifier> predicate = (Identifier) -> registryLookup.get(ResourceKey.create(this.registryKey, Identifier)).isPresent();
+            Predicate<Identifier> predicate2 = (Identifier) -> this.builders.containsKey(Identifier) || arg.parent.contains(TagKey.create(this.registryKey, Identifier));
             return CompletableFuture.allOf(this.builders.entrySet().stream().map((entry) -> {
-                ResourceLocation resourceLocation = (ResourceLocation)entry.getKey();
+                Identifier Identifier = (Identifier)entry.getKey();
                 TagBuilder tagBuilder = entry.getValue();
                 List<TagEntry> list = tagBuilder.build();
 
-                Path path = this.pathProvider.json(resourceLocation);
+                Path path = this.pathProvider.json(Identifier);
                 return DataProvider.saveStable(output, arg.contents, TagFile.CODEC, new TagFile(list, false), path);
             }).toArray((i) -> new CompletableFuture[i]));
         });
@@ -82,7 +82,7 @@ public abstract class DimDoorsTagsProvider<T> implements DataProvider {
     }
 
     protected TagBuilder getOrCreateRawBuilder(TagKey<T> tag) {
-        return this.builders.computeIfAbsent(tag.location(), (resourceLocation) -> TagBuilder.create());
+        return this.builders.computeIfAbsent(tag.location(), (Identifier) -> TagBuilder.create());
     }
 
     public CompletableFuture<TagLookup<T>> contentsGetter() {
@@ -137,7 +137,7 @@ public abstract class DimDoorsTagsProvider<T> implements DataProvider {
             return this;
         }
 
-        public TagAppender<T> addOptional(ResourceLocation location) {
+        public TagAppender<T> addOptional(Identifier location) {
             this.builder.addOptionalElement(location);
             return this;
         }
@@ -147,7 +147,7 @@ public abstract class DimDoorsTagsProvider<T> implements DataProvider {
             return this;
         }
 
-        public TagAppender<T> addOptionalTag(ResourceLocation location) {
+        public TagAppender<T> addOptionalTag(Identifier location) {
             this.builder.addOptionalTag(location);
             return this;
         }

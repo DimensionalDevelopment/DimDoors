@@ -8,9 +8,6 @@ def includeCompile(entry) {
         api(entry)
         jarJar(entry)
     }
-    neoForge.runs.configureEach {
-        project.dependencies.add(additionalRuntimeClasspathConfiguration.name, entry)
-    }
 }
 
 repositories {
@@ -21,9 +18,10 @@ repositories {
 
 dependencies {
 
-    runtimeOnly("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
-    runtimeOnly("dev.simulated_team.simulated:simulated-neoforge-${project.minecraft_version}:${project.simulated_version}")
-    runtimeOnly("dev.eriksonn.aeronautics:aeronautics-neoforge-${project.minecraft_version}:${project.aeronautics_version}")
+    // TODO 26.1.2: re-enable when these libraries publish 26.1.2 NeoForge artifacts.
+    // runtimeOnly("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
+    // runtimeOnly("dev.simulated_team.simulated:simulated-neoforge-${project.minecraft_version}:${project.simulated_version}")
+    // runtimeOnly("dev.eriksonn.aeronautics:aeronautics-neoforge-${project.minecraft_version}:${project.aeronautics_version}")
 
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
@@ -32,8 +30,9 @@ dependencies {
     compileOnly "mcp.mobius.waila:wthit:neo-${wthitVersion}"
     // modApi "lol.bai:badpackets:forge-0.4.2"
     // modApi "com.sk89q.worldedit:worldedit-forge-mc${world_edit_minecraft_version}:${worldedit}"
-    compileOnly "curse.maven:worldedit-${worldedit_CF}:${worldedit_CF_version}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei}"
+    compileOnly "maven.modrinth:worldedit:${worldedit_version}"
+    // TODO 26.1.2: re-enable when REI publishes 26.1.2 artifacts.
+    // compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei}"
     compileOnlyApi "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei}"
 
     api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
@@ -48,7 +47,7 @@ dependencies {
 //    }
 
 
-    implementation "curse.maven:create-328085:7963363"
+    // implementation "curse.maven:create-328085:7963363"
 }
 
 neoForge {
@@ -63,10 +62,6 @@ neoForge {
         interfaceInjectionData.from(interfaces.absolutePath)
     }
 
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
     runs {
         configureEach {
             systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
@@ -75,14 +70,6 @@ neoForge {
         }
         client {
             client()
-        }
-        data {
-            data()
-
-            // DataGen can be run by - "./gradlew :neoforge:runData" in Terminal.
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-
         }
         server {
             server()

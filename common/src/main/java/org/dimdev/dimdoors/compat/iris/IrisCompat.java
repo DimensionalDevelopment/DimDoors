@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.compat.iris;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.irisshaders.iris.shaderpack.materialmap.WorldRenderingSettings;
 import net.irisshaders.iris.uniforms.CapturedRenderingState;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.ShaderPackDetector;
@@ -14,7 +14,7 @@ import static org.dimdev.dimdoors.client.MyRenderLayer.WARP_PATH;
 
 public class IrisCompat implements ShaderPackDetector {
     @Override
-    public void wrap(Consumer<RenderType> type) {
+    public void wrap(Consumer<net.minecraft.client.renderer.rendertype.RenderType> type) {
         if(IrisApi.getInstance().isShaderPackInUse()) {
             CapturedRenderingState state = CapturedRenderingState.INSTANCE;
             int previous = state.getCurrentRenderedBlockEntity();
@@ -23,7 +23,7 @@ public class IrisCompat implements ShaderPackDetector {
 
             try {
                 state.setCurrentBlockEntity(id);
-                type.accept(RenderType.entitySolid(WARP_PATH));
+                type.accept(RenderTypes.entitySolid(WARP_PATH));
             } finally {
                 state.setCurrentBlockEntity(previous);
             }

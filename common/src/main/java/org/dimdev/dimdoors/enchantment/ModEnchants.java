@@ -77,6 +77,6 @@ public class ModEnchants {
     }
 
     private static void register(BootstrapContext<Enchantment> bootstrapContext, ResourceKey<Enchantment> resourceKey, Enchantment.Builder builder) {
-        bootstrapContext.register(resourceKey, builder.build(resourceKey.location()));
+        bootstrapContext.register(resourceKey, builder.build(resourceKey.identifier()));
     }
 }

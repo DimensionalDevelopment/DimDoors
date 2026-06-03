@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.io.IOException;
 
@@ -12,5 +12,5 @@ public interface SimplePacket<T> {
 
     void apply(T listener);
 
-    ResourceLocation channelId();
+    Identifier channelId();
 }

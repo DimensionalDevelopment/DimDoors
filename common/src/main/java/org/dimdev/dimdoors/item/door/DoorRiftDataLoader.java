@@ -8,7 +8,7 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
@@ -36,10 +36,10 @@ public final class DoorRiftDataLoader {
 
     public static void reload(HolderLookup.Provider provider, ResourceManager manager) {
 //        itemRiftData.clear();
-        Map<ResourceLocation, Resource> resources = manager.listResources("door/data", id -> id.getPath().endsWith(".json"));
+        Map<Identifier, Resource> resources = manager.listResources("door/data", id -> id.getPath().endsWith(".json"));
         resources.forEach((id, resource) -> {
             String name = id.getPath().substring(id.getPath().lastIndexOf('/') + 1, id.getPath().lastIndexOf('.'));
-            ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), name);
+            Identifier itemId = Identifier.fromNamespaceAndPath(id.getNamespace(), name);
             if (!BuiltInRegistries.ITEM.containsKey(itemId)) {
                 LOGGER.error("Could not find item " + itemId + " for door data " + id);
                 return;

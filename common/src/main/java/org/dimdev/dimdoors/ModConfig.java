@@ -11,8 +11,8 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.config.Option;
 import org.dimdev.dimdoors.config.Category;
@@ -166,7 +166,7 @@ public final class ModConfig {
             }
         }
 
-        public boolean isAllowed(ResourceLocation id) {
+        public boolean isAllowed(Identifier id) {
             String idStr = id.toString();
             boolean contains = doorList.doors.contains(idStr);
 
@@ -275,12 +275,12 @@ public final class ModConfig {
 
         @Override
         public ResourceKey<Level> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(json.getAsJsonPrimitive().getAsString()));
+            return ResourceKey.create(Registries.DIMENSION, Identifier.parse(json.getAsJsonPrimitive().getAsString()));
         }
 
         @Override
         public JsonElement serialize(ResourceKey<Level> src, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(src.location().toString());
+            return new JsonPrimitive(src.identifier().toString());
         }
     }
 }

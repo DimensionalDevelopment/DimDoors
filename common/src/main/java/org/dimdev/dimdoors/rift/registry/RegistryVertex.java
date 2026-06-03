@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.rift.registry;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 
@@ -45,7 +45,7 @@ public abstract class RegistryVertex {
     }
 
     public static RegistryVertex fromNbt(CompoundTag nbt) {
-    return Objects.requireNonNull(REGISTRY.get(ResourceLocation.parse(nbt.getString("type")))).fromNbt(nbt);
+    return Objects.requireNonNull(REGISTRY.get(Identifier.parse(nbt.getString("type")))).fromNbt(nbt);
     }
 
     public static CompoundTag toNbt(RegistryVertex registryVertex) {

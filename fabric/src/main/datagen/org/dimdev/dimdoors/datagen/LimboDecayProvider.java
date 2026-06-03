@@ -12,7 +12,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.level.block.Block;
@@ -84,7 +84,7 @@ abstract public class LimboDecayProvider implements DataProvider {
         return addPattern(DimensionalDoors.id(getId(to)), to, from);
     }
 
-    protected DecayPatternHolder.Builder addPattern(ResourceLocation id, Object to, Object from) {
+    protected DecayPatternHolder.Builder addPattern(Identifier id, Object to, Object from) {
         return createPatterData(id, from, to);
     }
 
@@ -157,23 +157,23 @@ abstract public class LimboDecayProvider implements DataProvider {
         }
     }
 
-    protected Block getBlock(ResourceLocation id) {
+    protected Block getBlock(Identifier id) {
         return BuiltInRegistries.BLOCK.get(id);
     }
 
-    protected ResourceLocation getBlockId(Block block) {
+    protected Identifier getBlockId(Block block) {
         return BuiltInRegistries.BLOCK.getKey(block);
     }
 
-    protected DecayPatternHolder turnIntoSelf(ResourceLocation ResourceLocation, Object before) {
-        return new DecayPatternHolder(ResourceLocation, new CompoundDecayPattern(List.of(getPredicate(before)), SelfDecayResult.instance()));
+    protected DecayPatternHolder turnIntoSelf(Identifier Identifier, Object before) {
+        return new DecayPatternHolder(Identifier, new CompoundDecayPattern(List.of(getPredicate(before)), SelfDecayResult.instance()));
     }
 
-    protected static Path getOutput(Path rootOutput, ResourceLocation lootTableId) {
+    protected static Path getOutput(Path rootOutput, Identifier lootTableId) {
         return rootOutput.resolve("data/" + lootTableId.getNamespace() + "/decay_patterns/" + lootTableId.getPath() + ".json");
     }
 
-    protected DecayPatternHolder.Builder createPatterData(ResourceLocation id, Object before, Object after) {
+    protected DecayPatternHolder.Builder createPatterData(Identifier id, Object before, Object after) {
         return DecayPatternHolder.builder(id).pattern(CompoundDecayPattern.builder().condition(getPredicate(before)).result(getProcessor(after)));
     }
 
@@ -181,13 +181,13 @@ abstract public class LimboDecayProvider implements DataProvider {
         addDoublePattern(DimensionalDoors.id(getId(after)), after, before);
     }
 
-    public DecayPatternHolder.Builder addDoublePattern(ResourceLocation id, Object after, Object before) {
+    public DecayPatternHolder.Builder addDoublePattern(Identifier id, Object after, Object before) {
         Block block = (Block) after;
 
         return DecayPatternHolder.builder(id).pattern(CompoundDecayPattern.builder().condition(getPredicate(before)).result(new DoubleBlockDecayResult(1, 0.0f, block)));
     }
 
-    public DecayPatternHolder createDoublePattern(ResourceLocation id, Object before, Block after) {
+    public DecayPatternHolder createDoublePattern(Identifier id, Object before, Block after) {
         return new DecayPatternHolder(id, new CompoundDecayPattern(List.of(getPredicate(before)), new DoubleBlockDecayResult(1, 0.0f, after)));
     }
 }

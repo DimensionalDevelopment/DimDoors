@@ -77,9 +77,9 @@ public interface DefaultDungeonDestinations { // TODO: lower weights?
         return getGateway(ALL_DUNGEONS);
     }
 
-    static DungeonTarget getGateway(ResourceKey<VirtualPocket> resourceLocation) {
+    static DungeonTarget getGateway(ResourceKey<VirtualPocket> Identifier) {
         return DungeonTarget.builder()
-                .dungeonGroup(resourceLocation)
+                .dungeonGroup(Identifier)
                 .acceptedGroups(Collections.singleton(0))
                 .coordFactor(1)
                 .negativeDepthFactor(Double.POSITIVE_INFINITY)

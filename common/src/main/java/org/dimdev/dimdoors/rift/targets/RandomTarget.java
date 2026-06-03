@@ -3,7 +3,6 @@ package org.dimdev.dimdoors.rift.targets;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -115,18 +114,18 @@ public abstract class RandomTarget<T extends RandomTarget<T>> extends VirtualTar
             depth /= depth > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
             double x = Math.cos(theta) * Math.cos(phi) * distance / this.coordFactor;
             double z = Math.cos(theta) * Math.sin(phi) * distance / this.coordFactor;
-            VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.getWorld(),
-                    virtualLocationHere.getX() + (int) Math.round(x),
-                    virtualLocationHere.getZ() + (int) Math.round(z),
-                    virtualLocationHere.getDepth() + (int) Math.round(depth));
+            VirtualLocation virtualLocation = new VirtualLocation(virtualLocationHere.world(),
+                    virtualLocationHere.x() + (int) Math.round(x),
+                    virtualLocationHere.z() + (int) Math.round(z),
+                    virtualLocationHere.depth() + (int) Math.round(depth));
 
-            if (virtualLocation.getDepth() <= 0) {
+            if (virtualLocation.depth() <= 0) {
                 // This will lead to the overworld
-                ServerLevel world = DimensionalDoors.getWorld(virtualLocation.getWorld());
-                BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ()));
+                ServerLevel world = DimensionalDoors.getWorld(virtualLocation.world());
+                BlockPos pos = world.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(virtualLocation.x(), 0, virtualLocation.z()));
                 if (pos.getY() == -1) {
                     // No blocks at that XZ (hole in bedrock)
-                    pos = new BlockPos(virtualLocation.getX(), 0, virtualLocation.getZ());
+                    pos = new BlockPos(virtualLocation.x(), 0, virtualLocation.z());
                 }
                 world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState());
 
@@ -181,9 +180,9 @@ public abstract class RandomTarget<T extends RandomTarget<T>> extends VirtualTar
 
             // Calculate the distance as sqrt((coordFactor * coordDistance)^2 + (depthFactor * depthDifference)^2)
             if (otherRift.getProperties().getLinksRemaining() == 0) continue;
-            double depthDifference = otherVirtualLocation.getDepth() - virtualLocation.getDepth();
-            double coordDistance = Math.sqrt(this.sq(otherVirtualLocation.getX() - virtualLocation.getX())
-                    + this.sq(otherVirtualLocation.getZ() - virtualLocation.getZ()));
+            double depthDifference = otherVirtualLocation.depth() - virtualLocation.depth();
+            double coordDistance = Math.sqrt(this.sq(otherVirtualLocation.x() - virtualLocation.x())
+                    + this.sq(otherVirtualLocation.z() - virtualLocation.z()));
             double depthFactor = depthDifference > 0 ? this.positiveDepthFactor : this.negativeDepthFactor;
             double distance = Math.sqrt(this.sq(this.coordFactor * coordDistance) + this.sq(depthFactor * depthDifference));
 

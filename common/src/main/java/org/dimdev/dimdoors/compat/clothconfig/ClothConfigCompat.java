@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModConfig;
@@ -215,7 +215,7 @@ public class ClothConfigCompat {
             return null;
         }
 
-        return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(trimmed));
+        return ResourceKey.create(Registries.DIMENSION, Identifier.parse(trimmed));
     }
 
     private static List<String> levelKeysToStrings(List<ResourceKey<Level>> keys) {

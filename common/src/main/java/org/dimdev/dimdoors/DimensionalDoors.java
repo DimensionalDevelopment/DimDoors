@@ -4,8 +4,8 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -80,8 +80,8 @@ public class DimensionalDoors {
     private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
     private static ISided sided;
 
-    public static ResourceLocation id(String id) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+    public static Identifier id(String id) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, id);
     }
 
     public static MinecraftServer getServer() {
@@ -128,7 +128,7 @@ public class DimensionalDoors {
         registerRun(Registries.SOUND_EVENT, () -> ModSoundEvents.init());
         registerRun(Registries.FLUID, () -> ModFluids.init());
         registerRun(Registries.ENTITY_TYPE, () -> ModEntityTypes.init());
-        registerRun(Registries.ARMOR_MATERIAL, () -> ModArmorMaterials.init());
+        ModArmorMaterials.init();
         registerRun(Registries.BLOCK, () -> ModBlocks.init());
         registerRun(Registries.ITEM, () -> ModItems.init());
         registerRun(Registries.BLOCK_ENTITY_TYPE, () -> ModBlockEntityTypes.init());

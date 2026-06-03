@@ -4,7 +4,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IIngredientManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.client.screen.TesselatingLoomScreen;
@@ -19,13 +19,13 @@ import static org.dimdev.dimdoors.compat.jei.ModRecipeTypes.TESSELATING;
 
 @JeiPlugin
 public class DimDoorsJeiCompatClient implements IModPlugin {
-    private static final ResourceLocation id = DimensionalDoors.id("jei");
+    private static final Identifier id = DimensionalDoors.id("jei");
     @Nullable private TesselatingRecipeCategory tesselatingCategory;
     @Nullable private DecayCategory decayCategory;
 
 
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         return id;
     }
 

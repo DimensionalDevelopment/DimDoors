@@ -1,12 +1,12 @@
 package org.dimdev.dimdoors.world.pocket.type.addon;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public final class ForceLoadedPocketAddon implements PocketAddon {
-    public static final ResourceLocation ID = DimensionalDoors.id("force_loaded");
+    public static final Identifier ID = DimensionalDoors.id("force_loaded");
     private static final ForceLoadedPocketAddon INSTANCE = new ForceLoadedPocketAddon();
     public static final MapCodec<ForceLoadedPocketAddon> CODEC = MapCodec.unit(INSTANCE);
 

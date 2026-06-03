@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.compat.decay;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.world.decay.DecayPatternHolder;
 import org.dimdev.dimdoors.world.decay.pattern.CompoundDecayPattern;
 import org.dimdev.dimdoors.world.decay.results.DecayResult;
@@ -9,7 +9,7 @@ import org.dimdev.dimdoors.world.decay.results.DecayResult;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record DecayDisplayData(ResourceLocation id, Object input, List<DecayResult.Result> outputs) {
+public record DecayDisplayData(Identifier id, Object input, List<DecayResult.Result> outputs) {
     public static Stream<DecayDisplayData> list(DecayPatternHolder patternHolder, RegistryAccess registryAccess) {
         List<DecayResult.Result> outputs = patternHolder.value() instanceof CompoundDecayPattern compoundPattern
                 ? compoundPattern.result().produces()

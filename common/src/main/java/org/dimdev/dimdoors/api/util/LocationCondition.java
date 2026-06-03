@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public interface LocationCondition {
         public static void register() {
         }
 
-        static <U extends LocationCondition> LocationConditionType<U> register(ResourceLocation id, MapCodec<U> codec) {
+        static <U extends LocationCondition> LocationConditionType<U> register(Identifier id, MapCodec<U> codec) {
             return DimensionalDoors.getSided().register(KEY, id, new LocationConditionType<>(codec));
         }
     }

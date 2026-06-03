@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -82,7 +82,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
     private RecipeHolder<TesselatingRecipe> cachedRecipe;
     private final List<TessellatingContainer> openContainers = new ArrayList<>();
 
-    private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
+    private final Object2IntOpenHashMap<Identifier> recipesUsed = new Object2IntOpenHashMap<>();
 
 
     public TesselatingLoomBlockEntity(BlockPos pos, BlockState state) {
@@ -232,7 +232,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
     return getRecipe();
     }
 
-    public Optional<RecipeHolder<TesselatingRecipe>> getRecipe(ResourceLocation location) {
+    public Optional<RecipeHolder<TesselatingRecipe>> getRecipe(Identifier location) {
     return this.level.getRecipeManager().getRecipeFor(ModRecipeTypes.TESSELATING, this.asCraftInput(), level, location);
     }
 
@@ -388,7 +388,7 @@ public class TesselatingLoomBlockEntity extends BlockEntity implements MenuProvi
 //    public List<Recipe<?>> getRecipesToAwardAndPopExperience(ServerLevel level, Vec3 popVec) {
 //    ArrayList<Recipe<?>> list = Lists.newArrayList();
 //    for (Object2IntMap.Entry entry : this.recipesUsed.object2IntEntrySet()) {
-//        level.getRecipeManager().byKey((ResourceLocation)entry.getKey()).ifPresent(recipe -> {
+//        level.getRecipeManager().byKey((Identifier)entry.getKey()).ifPresent(recipe -> {
 //        list.add(recipe.value());
 //        createExperience(level, popVec, entry.getIntValue(), (recipe).value()..getExperience());
 //        });

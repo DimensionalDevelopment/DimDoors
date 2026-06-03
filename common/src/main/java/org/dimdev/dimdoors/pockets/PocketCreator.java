@@ -49,8 +49,8 @@ public interface PocketCreator {
             VirtualLocation virtualLocation = parameters.sourceVirtualLocation();
             return new GenerationKey(
                     "virtual",
-                    virtualLocation.getWorld(),
-                    new BlockPos(virtualLocation.getX(), virtualLocation.getDepth(), virtualLocation.getZ())
+                    virtualLocation.world(),
+                    new BlockPos(virtualLocation.x(), virtualLocation.depth(), virtualLocation.z())
             );
         }
     }

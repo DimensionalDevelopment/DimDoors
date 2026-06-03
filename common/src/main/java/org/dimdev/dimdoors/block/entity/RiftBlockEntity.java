@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +40,7 @@ import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
 
@@ -64,39 +67,38 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
-        this.deserialize(nbt);
+    protected void loadAdditional(@NonNull ValueInput input) {
+        super.loadAdditional(input);
+        this.deserialize(input);
     }
 
-    public void deserialize(CompoundTag nbt) {
-        this.data = RiftData.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("data")).getOrThrow();
-        this.closing = nbt.getBoolean("closing");
-        this.stabilized = nbt.getBoolean("stablized");
-        this.size = nbt.getFloat("size");
-        this.updateTimer = nbt.getInt("updateTimer");
+    public void deserialize(ValueInput input) {
+        this.data = input.read("data", RiftData.CODEC).orElseThrow();
+        this.closing = input.getBooleanOr("closing", false);
+        this.stabilized = input.getBooleanOr("stablized", false);
+        this.size = input.getFloatOr("size", 0f);
+        this.updateTimer = input.getIntOr("updateTimer", random.nextInt(UPDATE_PERIOD));
     }
 
     @Override
-    public void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        super.saveAdditional(nbt, provider);
-        this.serialize(nbt);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        this.serialize(output);
     }
 
-    public CompoundTag serialize(CompoundTag nbt) {
+    public void serialize(ValueOutput output) {
         //      TODO: Eventually removal when RelativeReference and LocalReference are purged
         if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE && this.level instanceof ServerLevel serverLevel) {
             this.data.getDestination().setLocation(Location.ofWorld(serverLevel, this.worldPosition));
         }
 
 
-        nbt.put("data", RiftData.CODEC.encodeStart(NbtOps.INSTANCE, this.data).getOrThrow());
+        output.store("data", RiftData.CODEC, this.data);
 
-        nbt.putBoolean("closing", this.closing);
-        nbt.putBoolean("stablized", this.stabilized);
-        nbt.putFloat("size", this.size);
-        nbt.putInt("updateTimer", this.updateTimer);
-        return nbt;
+        output.putBoolean("closing", this.closing);
+        output.putBoolean("stablized", this.stabilized);
+        output.putFloat("size", this.size);
+        output.putInt("updateTimer", this.updateTimer);
     }
 
     @Override
@@ -263,7 +265,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
             if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
                 VirtualLocation vLoc = VirtualLocation.fromLocation(Location.ofWorld((ServerLevel) entity.level(), entity.blockPosition()));
                 if (DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages)
-                    EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
+                    EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.x() + ", y = ?, z = " + vLoc.z() + ", w = " + vLoc.depth()));
                 return true;
             }
         } catch (Exception e) {
@@ -346,7 +348,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     public void tick(Level level, BlockPos pos, BlockState blockState) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
 //    if(!blockClass().isInstance(level.getBlockState(pos).getBlock())) {
 //        setRemoved();
@@ -362,7 +364,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
         if (closing) {
             if (size > 0) {
-                size -= DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
+                size -= (float) DimensionalDoors.getConfig().getGeneralConfig().riftCloseSpeed;
             } else {
                 onClose(level, pos);
             }

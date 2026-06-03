@@ -7,8 +7,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.decoration.Painting;
-import net.minecraft.world.entity.decoration.PaintingVariant;
+import net.minecraft.world.entity.decoration.painting.Painting;
+import net.minecraft.world.entity.decoration.painting.PaintingVariant;
 import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.decay.Decay;
 
@@ -36,7 +36,7 @@ public record PaintingDecayPattern(CodecUtils.TagOrElementLocation<PaintingVaria
     @Override
     public int process(Decay.DecayContext context) {
         if(context.targetEntity() instanceof Painting painting) {
-            painting.setVariant(context.world().registryAccess().registryOrThrow(Registries.PAINTING_VARIANT).getHolderOrThrow(to));
+            painting.setVariant(context.world().registryAccess().lookupOrThrow(Registries.PAINTING_VARIANT).get(to).orElseThrow());
             return 1;
         }
         return 0;

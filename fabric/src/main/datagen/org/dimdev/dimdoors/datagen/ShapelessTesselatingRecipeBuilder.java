@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -72,8 +72,8 @@ public class ShapelessTesselatingRecipeBuilder extends SimpleTesselatingRecipeBu
         return this;
     }
 
-    public NonNullList<Ingredient> ensureValid(ResourceLocation resourceLocation) {
-        super.ensureValid(resourceLocation);
+    public NonNullList<Ingredient> ensureValid(Identifier Identifier) {
+        super.ensureValid(Identifier);
         return ingredients;
     }
 

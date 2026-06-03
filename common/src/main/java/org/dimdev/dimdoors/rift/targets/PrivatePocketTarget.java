@@ -7,9 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +22,6 @@ import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 //TODO: add the ability to do addon spefific EntityTarget stuff and use it seperate dyeable from PrivatePocket
@@ -120,7 +116,7 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
     }
 
     private PrivatePocket generatePrivatePocket(UUID uuid, VirtualLocation virtualLocation) {
-        Pocket<?, ?> generatedPocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
+        Pocket<?, ?> generatedPocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.world(), virtualLocation.x(), virtualLocation.z(), -1));
 
         if (generatedPocket instanceof PrivatePocket pocket) {
             Location entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
@@ -154,9 +150,9 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
                 origin.getX(),
                 origin.getY(),
                 origin.getZ(),
-                virtualLocation.getX(),
-                virtualLocation.getZ(),
-                virtualLocation.getDepth()
+                virtualLocation.x(),
+                virtualLocation.z(),
+                virtualLocation.depth()
         )));
     }
 }

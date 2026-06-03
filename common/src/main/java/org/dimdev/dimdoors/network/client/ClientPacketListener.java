@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
@@ -36,7 +37,7 @@ public class ClientPacketListener {
     private static Map<PocketAddon.PocketAddonType<?, ?>, PocketAddon> addons = new HashMap<>();
 
     public static <T extends CustomPacketPayload> void sendPacket(T packet) {
-        DimensionalDoors.getSided().sendPacket(packet);
+        DimensionalDoorsClient.getClientSided().sendPacket(packet);
     }
 
     public static <T extends CustomPacketPayload> boolean tryToSendPacket(T packet) {

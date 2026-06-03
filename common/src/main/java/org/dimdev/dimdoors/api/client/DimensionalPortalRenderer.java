@@ -7,9 +7,10 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.ModShaders;
@@ -20,23 +21,25 @@ import java.util.List;
 import java.util.Set;
 
 public final class DimensionalPortalRenderer {
-    public static final ResourceLocation WARP_PATH;
+    public static final Identifier WARP_PATH;
     private static final RenderStateShard.ShaderStateShard DIMENSIONAL_PORTAL_SHADER;
     public static final RenderType RENDER_LAYER;
     private static final ModelPart MODEL;
     private static final ModelPart TALL_MODEL;
 
-    public static void renderDimensionalPortal(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
-        renderDimensionalPortal(matrixStack, vertexConsumerProvider, transformer, tickDelta, light, overlay, true);
+    public static void renderDimensionalPortal(SubmitNodeCollector submitNodeCollector, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
+        renderDimensionalPortal(submitNodeCollector, matrixStack, vertexConsumerProvider, transformer, tickDelta, light, overlay, true);
     }
 
-    public static void renderDimensionalPortal(PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay, boolean tall) {
+    public static void renderDimensionalPortal(SubmitNodeCollector submitNodeCollector, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay, boolean tall) {
         ModelPart model = tall ? TALL_MODEL : MODEL;
-        renderModelWithPortalShader(model, matrixStack, vertexConsumerProvider, transformer, tickDelta, light, overlay);
+        renderModelWithPortalShader(submitNodeCollector, model, matrixStack, vertexConsumerProvider, transformer, tickDelta, light, overlay);
     }
 
-    public static void renderModelWithPortalShader(ModelPart model, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
+    public static void renderModelWithPortalShader(SubmitNodeCollector submitNodeCollector, ModelPart model, PoseStack matrixStack, MultiBufferSource vertexConsumerProvider, Transformer transformer, float tickDelta, int light, int overlay) {
         transformer.transform(matrixStack);
+
+        submitNodeCollector.submitModelPart();
 
         DimensionalDoorsClient.detector.wrap(type -> model.render(matrixStack, vertexConsumerProvider.getBuffer(type), light, overlay));
     }

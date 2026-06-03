@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.pockets;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,9 +15,9 @@ public class PocketTemplate {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final boolean replacingPlaceholders = false;
     private final Schematic schematic;
-    private final ResourceLocation id;
+    private final Identifier id;
 
-    public PocketTemplate(Schematic schematic, ResourceLocation id) {
+    public PocketTemplate(Schematic schematic, Identifier id) {
         this.schematic = schematic;
         this.id = id;
     }
@@ -57,7 +57,7 @@ public class PocketTemplate {
     }
      */
 
-    public void place(Pocket pocket, BlockPlacementType placementType) {
+    public void place(Pocket<?, ?> pocket, BlockPlacementType placementType) {
         pocket.setSize(schematic.getWidth(), schematic.getHeight(), schematic.getLength());
         ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
         BlockPos origin = pocket.getOrigin();
@@ -80,7 +80,7 @@ public class PocketTemplate {
         return this.schematic;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 }

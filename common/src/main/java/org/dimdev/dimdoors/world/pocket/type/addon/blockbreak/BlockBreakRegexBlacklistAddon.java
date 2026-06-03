@@ -16,7 +16,7 @@ package org.dimdev.dimdoors.world.pocket.type.addon.blockbreak;
 //    }
 //
 //    @Override
-//    public ResourceLocation getContainerId() {
+//    public Identifier getContainerId() {
 //    return BlockBreakContainer.ID;
 //    }
 //
@@ -31,7 +31,7 @@ package org.dimdev.dimdoors.world.pocket.type.addon.blockbreak;
 //    }
 //
 //    @Override
-//    public ResourceLocation getId() {
+//    public Identifier getId() {
 //    return null;
 //    }
 //}

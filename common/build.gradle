@@ -15,10 +15,6 @@ neoForge {
     if (interfaces.exists()) {
         interfaceInjectionData.from(interfaces.absolutePath)
     }
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
 }
 
 dependencies {
@@ -31,28 +27,30 @@ dependencies {
     compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
     annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
 
-    api "dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}"
-    api("dev.simulated_team.simulated:simulated-common-${project.minecraft_version}:${project.simulated_version}") {
-        exclude group: "dev.ryanhcode.sable"
-    }
-    api("dev.eriksonn.aeronautics:aeronautics-common-${project.minecraft_version}:${project.aeronautics_version}") {
-        exclude group: "dev.ryanhcode.sable"
-    }
-    compileOnlyApi "curse.maven:create-328085:7963363"
+    // TODO 26.1.2: re-enable when these libraries publish 26.1.2 artifacts.
+    // api "dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}"
+    // api("dev.simulated_team.simulated:simulated-common-${project.minecraft_version}:${project.simulated_version}") {
+    //     exclude group: "dev.ryanhcode.sable"
+    // }
+    // api("dev.eriksonn.aeronautics:aeronautics-common-${project.minecraft_version}:${project.aeronautics_version}") {
+    //     exclude group: "dev.ryanhcode.sable"
+    // }
+    // compileOnlyApi "curse.maven:create-328085:7963363"
 
-    implementation "curse.maven:cyanide-541676:4824162"
+    // implementation "curse.maven:cyanide-541676:4824162"
     api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
 
     compileOnlyApi "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
 
     api "org.jgrapht:jgrapht-core:1.1.0"
-    api "curse.maven:iris-${iris}:${iris_version}"
+    api "maven.modrinth:iris:${iris_version}"
     api "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
-    implementation "curse.maven:selene-499980:7522322"
+    // implementation "curse.maven:selene-499980:7522322"
     // api "com.sk89q.worldedit:worldedit-core:${worldedit}"
 
-    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${rei}"
+    // TODO 26.1.2: re-enable when REI publishes 26.1.2 artifacts.
+    // compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei}"
+    // compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${rei}"
 
     compileOnlyApi "mezz.jei:jei-${minecraft_version}-lib:${jei}"
     compileOnlyApi "mezz.jei:jei-${minecraft_version}-common-api:${jei}"

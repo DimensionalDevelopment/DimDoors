@@ -7,12 +7,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -69,20 +71,19 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Override
-    public CompoundTag serialize(CompoundTag nbt) {
+    public void serialize(ValueOutput nbt) {
         super.serialize(nbt);
         nbt.putInt("spawnedEnderManId", this.spawnedEndermanId);
         nbt.putInt("curveID", this.curveID);
         nbt.putFloat("rotation", this.riftYaw);
-        return nbt;
     }
 
     @Override
-    public void deserialize(CompoundTag nbt) {
+    public void deserialize(ValueInput nbt) {
         super.deserialize(nbt);
-        this.spawnedEndermanId = nbt.getInt("spawnedEnderManId");
-        this.curveID = nbt.getInt("curveID");
-        this.riftYaw = nbt.getFloat("rotation");
+        this.spawnedEndermanId = nbt.getIntOr("spawnedEnderManId", 0);
+        this.curveID = nbt.getIntOr("curveID", 0);
+        this.riftYaw = nbt.getFloatOr("rotation", 0f);
     }
 
     @Override
@@ -140,7 +141,7 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     protected void onUpdate(Level level, BlockPos pos) {
-        if (level.isClientSide) return;
+        if (level.isClientSide()) return;
 
         if (level.getEntity(spawnedEndermanId) instanceof EnderMan) {
             return;
@@ -154,8 +155,8 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
                     EnderMan enderman = EntityType.ENDERMAN.spawn(
                             (ServerLevel) level,
                             pos,
-                            MobSpawnType.STRUCTURE);
-                    Objects.requireNonNull(enderman).absMoveTo(pos.getX() + 0.5, pos.getY() - 1, pos.getZ() + 0.5, 5, 6);
+                            EntitySpawnReason.SPAWNER);
+                    Objects.requireNonNull(enderman).moveOrInterpolateTo(Vec3.atBottomCenterOf(pos).add(0, -1, 0));
 
                     if (random.nextDouble() < DimensionalDoors.getConfig().getGeneralConfig().endermanAggressiveChance) {
                         Player player = level.getNearestPlayer(enderman, 50);

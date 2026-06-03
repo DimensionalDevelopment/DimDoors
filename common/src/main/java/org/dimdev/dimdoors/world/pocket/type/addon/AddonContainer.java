@@ -4,7 +4,7 @@ package org.dimdev.dimdoors.world.pocket.type.addon;//package org.dimdev.dimdoor
 //import net.minecraft.nbt.ListTag;
 //import net.minecraft.nbt.NbtOps;
 //import net.minecraft.nbt.Tag;
-//import net.minecraft.resources.ResourceLocation;
+//import net.minecraft.resources.Identifier;
 //
 //import java.util.ArrayList;
 //import java.util.Collection;
@@ -13,13 +13,13 @@ package org.dimdev.dimdoors.world.pocket.type.addon;//package org.dimdev.dimdoor
 //import java.util.function.Function;
 //
 //public abstract class AddonContainer<T extends ContainedAddon> implements PocketAddon {
-//    protected ResourceLocation id;
+//    protected Identifier id;
 //    protected List<T> addons = new ArrayList<>();
 //
 //    public AddonContainer() {
 //    }
 //
-//    public void setId(ResourceLocation id) {
+//    public void setId(Identifier id) {
 //    this.id = id;
 //    }
 //
@@ -54,7 +54,7 @@ package org.dimdev.dimdoors.world.pocket.type.addon;//package org.dimdev.dimdoor
 //    }
 //
 //    @Override
-//    public ResourceLocation getId() {
+//    public Identifier getId() {
 //    return id;
 //    }
 //}

@@ -1,17 +1,18 @@
 package org.dimdev.dimdoors.fluid;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.DimensionalDoors;
 
 public class ModFluids {
-    public record FluidDetails(ResourceLocation still, ResourceLocation flowing, ResourceLocation overlay) {
-        public static FluidDetails of(ResourceLocation id) {
+    public record FluidDetails(Identifier still, Identifier flowing, Identifier overlay) {
+        public static FluidDetails of(Identifier id) {
             return new FluidDetails(
-                    ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath() + "_still"),
-                    ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath() + "_flow"),
-                    ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath() + "_flow")
+                    Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath() + "_still"),
+                    Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath() + "_flow"),
+                    Identifier.fromNamespaceAndPath(id.getNamespace(), "block/" + id.getPath() + "_flow")
             );
         }
     }

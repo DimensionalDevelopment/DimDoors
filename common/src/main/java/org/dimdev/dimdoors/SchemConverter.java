@@ -90,7 +90,7 @@ public class SchemConverter {
 
         // Step 1: Convert "Id" → "id"
         boolean hadUpperId = false;
-        if (temp.contains("Id", Tag.TAG_STRING)) {
+        if (temp.contains("Id")) {
             temp.putString("id", temp.getString("Id"));
             temp.remove("Id");
             hadUpperId = true;
@@ -99,7 +99,7 @@ public class SchemConverter {
         // Step 2: Convert "Pos" → x,y,z
         boolean hadPos = false;
         int[] pos = null;
-        if (temp.contains("Pos", Tag.TAG_INT_ARRAY)) {
+        if (temp.contains("Pos")) {
             pos = ((IntArrayTag) temp.get("Pos")).getAsIntArray();
             if (pos.length >= 3) {
                 temp.putInt("x", pos[0]);
@@ -116,7 +116,7 @@ public class SchemConverter {
         CompoundTag result = (CompoundTag) fixed.getValue();
 
         // Step 4: Revert "id" → "Id"
-        if (hadUpperId && result.contains("id", Tag.TAG_STRING)) {
+        if (hadUpperId && result.contains("id")) {
             result.putString("Id", result.getString("id"));
             result.remove("id");
         }

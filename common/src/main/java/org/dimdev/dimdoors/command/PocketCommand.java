@@ -10,7 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.commands.arguments.IdentifierArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,7 +18,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -60,12 +60,12 @@ public class PocketCommand {
 
     public static <T extends PocketCreator> ArgumentBuilder<CommandSourceStack, ?> placeOption(String name, ResourceKey<Registry<T>> resourceKey) {
         return literal(name).then(
-                argument("id", ResourceLocationArgument.id())
+                argument("id", IdentifierArgument.id())
                         .requires(CommandSourceStack::isPlayer)
                         .suggests((ctx, builder) -> getSuggestions(ctx.getSource().registryAccess(), resourceKey, builder))
                         .executes(context -> placePocket(
                                 context.getSource(),
-                                ResourceLocationArgument.getId(context, "id"),
+                                IdentifierArgument.getId(context, "id"),
                                 resourceKey,
                                 context.getSource().getPlayerOrException(),
                                 null
@@ -73,7 +73,7 @@ public class PocketCommand {
                         .then(argument("locator", EntityArgument.entity())
                                 .executes(context -> placePocket(
                                         context.getSource(),
-                                        ResourceLocationArgument.getId(context, "id"),
+                                        IdentifierArgument.getId(context, "id"),
                                         resourceKey,
                                         EntityArgument.getEntity(context, "locator"),
                                         null
@@ -82,7 +82,7 @@ public class PocketCommand {
                         .then(argument("source_pos", BlockPosArgument.blockPos())
                                 .executes(context -> placePocket(
                                         context.getSource(),
-                                        ResourceLocationArgument.getId(context, "id"),
+                                        IdentifierArgument.getId(context, "id"),
                                         resourceKey,
                                         null,
                                         BlockPosArgument.getLoadedBlockPos(context, "source_pos")
@@ -171,7 +171,7 @@ public class PocketCommand {
         return pocket;
     }
 
-    private static <T extends PocketCreator> int placePocket(CommandSourceStack source, ResourceLocation id, ResourceKey<Registry<T>> idFunction, @Nullable Entity locatorEntity, @Nullable BlockPos selectedSourcePos) throws CommandSyntaxException {
+    private static <T extends PocketCreator> int placePocket(CommandSourceStack source, Identifier id, ResourceKey<Registry<T>> idFunction, @Nullable Entity locatorEntity, @Nullable BlockPos selectedSourcePos) throws CommandSyntaxException {
         PocketCreator creator = source.registryAccess().registry(idFunction).map(a -> a.get(id)).orElse(null);
         if (creator == null) {
             source.sendFailure(Component.literal("Unknown pocket id: " + id));
@@ -265,6 +265,6 @@ public class PocketCommand {
     }
 
     public static <T extends PocketCreator> CompletableFuture<Suggestions> getSuggestions(RegistryAccess access, ResourceKey<Registry<T>> resourceKey, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggest(access.registry(resourceKey).map(Registry::keySet).stream().flatMap(Collection::stream).map(ResourceLocation::toString), builder);
+        return SharedSuggestionProvider.suggest(access.registry(resourceKey).map(Registry::keySet).stream().flatMap(Collection::stream).map(Identifier::toString), builder);
     }
 }

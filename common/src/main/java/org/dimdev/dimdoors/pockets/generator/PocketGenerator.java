@@ -26,7 +26,7 @@ import org.dimdev.dimdoors.world.pocket.type.PocketImpl;
 
 import java.util.*;
 
-public abstract class PocketGenerator<T extends PocketGenerator<T>> implements Weighted<PocketGenerationContext>, PocketCreator, Typed<PocketGenerator.PocketGeneratorType<T>> {
+public abstract class PocketGenerator<T extends PocketGenerator<T>> implements Weighted<PocketGenerationContext>, PocketCreator {
     private static final Logger LOGGER = LogManager.getLogger();
     public static final Codec<PocketGenerator<?>> CODEC = PocketGeneratorType.CODEC.dispatch(PocketGenerator::type, PocketGeneratorType::codec);
 
@@ -157,7 +157,7 @@ public abstract class PocketGenerator<T extends PocketGenerator<T>> implements W
 
     public abstract Vec3i getSize(PocketGenerationContext parameters);
 
-    public record PocketGeneratorType<T extends PocketGenerator<T>>(MapCodec<T> codec) implements CodecProvider<T> {
+    public record PocketGeneratorType<T extends PocketGenerator<T>>(MapCodec<T> codec) {
         public static final Codec<PocketGeneratorType<?>> CODEC = ModRegistries.POCKET_GENERATOR_TYPE.byNameCodec();
 
         public static final PocketGeneratorType<SchematicGenerator> SCHEMATIC = register(SchematicGenerator.KEY, SchematicGenerator.CODEC);

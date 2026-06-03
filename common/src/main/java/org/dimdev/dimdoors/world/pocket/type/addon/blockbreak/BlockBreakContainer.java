@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.world.pocket.type.addon.blockbreak;
 
 // TODO
 //public class BlockBreakContainer extends AddonContainer<TryBlockBreakEventAddon> {
-//    public static ResourceLocation ID = DimensionalDoors.id("block_break_container");
+//    public static Identifier ID = DimensionalDoors.id("block_break_container");
 //
 //    @Override
 //    public PocketAddonType<?, ?> getType() {

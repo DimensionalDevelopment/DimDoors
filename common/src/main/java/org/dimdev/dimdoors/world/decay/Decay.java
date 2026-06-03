@@ -5,7 +5,7 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.decoration.Painting;
+import net.minecraft.world.entity.decoration.painting.Painting;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -116,15 +116,15 @@ public final class Decay {
             undiffernitatedPatterns = ResourceUtil.loadResourcePathToCollection(manager, "decay_patterns", ".json", new ArrayList<>(), ResourceUtil.JSON_READER.andThenReader(DecayLoader::loadPattern));
         }
 
-    private static DecayPatternHolder loadPattern(JsonElement json, ResourceLocation id) {
+    private static DecayPatternHolder loadPattern(JsonElement json, Identifier id) {
         return new DecayPatternHolder(id, JsonOps.INSTANCE.withDecoder(DecayPattern.CODEC).apply(json).getOrThrow().getFirst());
     }
 
     public static Collection<DecayPatternHolder> getPatterns(Object object) {
             if(object != null) {
                 return switch (object) {
-                    case FluidState state -> getPatterns(state.holder());
-                    case BlockState state -> getPatterns(state.getBlockHolder());
+                    case FluidState state -> getPatterns(state.typeHolder());
+                    case BlockState state -> getPatterns(state.typeHolder());
                     case ResourceKey<?> key -> patterns.getOrDefault(key, Collections.emptyList());
                     case Holder<?> holder -> holder.unwrapKey().map(patterns::get).orElse(Collections.emptyList());
                     case DecayContext context -> {

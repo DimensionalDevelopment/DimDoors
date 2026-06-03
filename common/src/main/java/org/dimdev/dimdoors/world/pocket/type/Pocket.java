@@ -1,15 +1,13 @@
 package org.dimdev.dimdoors.world.pocket.type;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Util;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,9 +16,7 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
-import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -75,10 +71,6 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
 
     public boolean removeAddon(PocketAddon.PocketAddonType<?, ?> type) {
         return addons.remove(type) != null;
-    }
-
-    public <C extends PocketAddon> C getAddon(ResourceLocation id) {
-        return (C) addons.get(id);
     }
 
     public List<PocketAddon> getAddons(Predicate<PocketAddon> predicate) {
@@ -140,7 +132,7 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
         ChunkPos maxChunk = new ChunkPos(box.maxX() >> 4, box.maxZ() >> 4);
 
         ChunkPos.rangeClosed(minChunk, maxChunk).forEach(chunkPos -> {
-            serverWorld.getChunk(chunkPos.x, chunkPos.z)
+            serverWorld.getChunk(chunkPos.x(), chunkPos.z())
                     .getBlockEntities()
                     .forEach((blockPos, blockEntity) -> {
                         if (this.box.isInside(blockPos)) {
@@ -164,7 +156,7 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
         variableMap.put("width", (double) this.box.getLength().getX());
         variableMap.put("height", (double) this.box.getLength().getY());
         variableMap.put("length", (double) this.box.getLength().getZ());
-        variableMap.put("depth", (double) this.virtualLocation.getDepth());
+        variableMap.put("depth", (double) this.virtualLocation.depth());
         return variableMap;
     }
 

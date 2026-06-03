@@ -55,17 +55,18 @@ public class DestinationDataModifier extends StructureProcessor {
     }
 
     public CompoundTag apply(@Nullable CompoundTag tag) {
-        if(tag != null && tag.contains("data")) {
-            var data = tag.getCompound("data");
+        if(tag != null) {
+            tag.getCompound("data").ifPresent(data -> {
 
-            var id = getMarkerId(data);
-            if(id >= 0) {
-                if(destinations.containsKey(id)) {
-                    var nbt = destinations.get(id);
+                var id = getMarkerId(data);
+                if (id >= 0) {
+                    if (destinations.containsKey(id)) {
+                        var nbt = destinations.get(id);
 
-                    data.put("destination", nbt);
+                        data.put("destination", nbt);
+                    }
                 }
-            }
+            });
         }
 
         return tag;
@@ -77,11 +78,11 @@ public class DestinationDataModifier extends StructureProcessor {
     }
 
     private int getMarkerId(CompoundTag data) {
-        var destination = data.getCompound("destination");
-        if(destination.getString("type").equals("dimdoors:id_marker")) {
-            return destination.getInt("id");
-        }
-
-        return -1;
+        return data.getCompound("destination")
+                .filter(a -> a.getString("type")
+                        .filter(type -> type.equals("dimdoors:id_marker"))
+                        .isPresent())
+                .flatMap(a -> a.getInt("id"))
+                .orElse(-1);
     }
 }

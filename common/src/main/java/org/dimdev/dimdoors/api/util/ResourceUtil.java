@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.nbt.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +28,7 @@ public class ResourceUtil {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Gson GSON = new GsonBuilder().setLenient().setPrettyPrinting().create();
 
-    public static final BiFunction<String, ResourceLocation, Path<String>> PATH_KEY_PROVIDER = (startingPath, id) -> Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + (startingPath.endsWith("/") ? 0 : 1)));
+    public static final BiFunction<String, Identifier, Path<String>> PATH_KEY_PROVIDER = (startingPath, id) -> Path.stringPath(id.getNamespace() + ":" + id.getPath().substring(0, id.getPath().lastIndexOf(".")).substring(startingPath.length() + (startingPath.endsWith("/") ? 0 : 1)));
 
     public static final ComposableFunction<JsonElement, Tag> JSON_TO_NBT = json -> JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, json);
 
@@ -63,12 +63,12 @@ public class ResourceUtil {
 
         String identifier = splitResourceKey[splitResourceKey.length - 1];
         int identifierSplitIndex = identifier.indexOf(':');
-        R resource = loadResource(manager, ResourceLocation.fromNamespaceAndPath(identifier.substring(0, identifierSplitIndex), startingPath + identifier.substring(identifierSplitIndex + 1)), reader);
+        R resource = loadResource(manager, Identifier.fromNamespaceAndPath(identifier.substring(0, identifierSplitIndex), startingPath + identifier.substring(identifierSplitIndex + 1)), reader);
         resource.processFlags(flags);
         return resource;
     }
 
-    public static <R> R loadResource(ResourceManager manager, ResourceLocation resourceKey, Function<InputStream, R> reader) {
+    public static <R> R loadResource(ResourceManager manager, Identifier resourceKey, Function<InputStream, R> reader) {
         try {
             return reader.apply(manager.getResource(resourceKey).get().open());
         } catch (IOException e) {
@@ -76,8 +76,8 @@ public class ResourceUtil {
         }
     }
 
-    public static <K, T, M extends Map<K, T>> M loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, ResourceLocation, K> keyProvider) {
-        Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
+    public static <K, T, M extends Map<K, T>> M loadResourcePathToMap(ResourceManager manager, String startingPath, String extension, M map, BiFunction<InputStream, K, T> reader, BiFunction<String, Identifier, K> keyProvider) {
+        Map<Identifier, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
 
         map.putAll(ids.entrySet().parallelStream().unordered().collect(new ExceptionHandlingCollector<>(Collectors.toConcurrentMap(
                 id -> keyProvider.apply(startingPath, id.getKey()),
@@ -92,8 +92,8 @@ public class ResourceUtil {
         return map;
     }
 
-    public static <T, M extends Collection<T>> M loadResourcePathToCollection(ResourceManager manager, String startingPath, String extension, M collection, BiFunction<InputStream, ResourceLocation, T> reader) {
-        Map<ResourceLocation, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
+    public static <T, M extends Collection<T>> M loadResourcePathToCollection(ResourceManager manager, String startingPath, String extension, M collection, BiFunction<InputStream, Identifier, T> reader) {
+        Map<Identifier, Resource> ids = manager.listResources(startingPath, str -> str.getPath().endsWith(extension));
 
         collection.addAll(ids.entrySet().parallelStream().unordered().map(id -> {
             try {

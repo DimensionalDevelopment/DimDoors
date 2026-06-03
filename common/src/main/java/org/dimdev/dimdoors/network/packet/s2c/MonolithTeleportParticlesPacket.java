@@ -3,14 +3,14 @@ package org.dimdev.dimdoors.network.packet.s2c;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.jetbrains.annotations.NotNull;
 
 public enum MonolithTeleportParticlesPacket implements CustomPacketPayload {
     INSTANCE;
 
-    public static final ResourceLocation ID = DimensionalDoors.id("monolith_tp_particles");
+    public static final Identifier ID = DimensionalDoors.id("monolith_tp_particles");
     public static final Type<MonolithTeleportParticlesPacket> TYPE = new Type<>(ID);
     public static final StreamCodec<RegistryFriendlyByteBuf, MonolithTeleportParticlesPacket> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 

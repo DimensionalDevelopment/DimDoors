@@ -16,7 +16,7 @@ import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.category.AbstractRecipeCategory;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.recipe.ShapedTesselatingRecipe;
@@ -112,7 +112,7 @@ public class TesselatingRecipeCategory extends AbstractRecipeCategory<RecipeHold
 
     @SuppressWarnings("removal")
     @Override
-    public ResourceLocation getRegistryName(RecipeHolder<TesselatingRecipe> recipeHolder) {
+    public Identifier getRegistryName(RecipeHolder<TesselatingRecipe> recipeHolder) {
         return this.extendableHelper.getOptionalRecipeExtension(recipeHolder)
                 .flatMap(extension -> extension.getRegistryName(recipeHolder))
                 .orElseGet(recipeHolder::id);

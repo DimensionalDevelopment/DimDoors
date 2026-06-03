@@ -4,7 +4,7 @@ import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ public abstract class TesselatingRecipeBuilder<T extends TesselatingRecipe, V> i
         return this;
     }
 
-    protected V ensureValid(ResourceLocation id) {
+    protected V ensureValid(Identifier id) {
         if (this.criteria.isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + id);
         }
@@ -41,7 +41,7 @@ public abstract class TesselatingRecipeBuilder<T extends TesselatingRecipe, V> i
         return null;
     }
 
-    public void save(RecipeOutput recipeOutput, ResourceLocation id) {
+    public void save(RecipeOutput recipeOutput, Identifier id) {
         var extraValue = this.ensureValid(id);
         Advancement.Builder builder = recipeOutput.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id)).rewards(AdvancementRewards.Builder.recipe(id)).requirements(AdvancementRequirements.Strategy.OR);
         Objects.requireNonNull(builder);

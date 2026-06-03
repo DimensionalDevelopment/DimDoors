@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -17,27 +18,14 @@ public class OverWorldSkyDataImpl implements OverWorldSkyData {
             Codec.FLOAT.optionalFieldOf("rain_level", 0.0f).forGetter(OverWorldSkyData::getRainLevel),
             Codec.FLOAT.optionalFieldOf("thunder_level", 0.0f).forGetter(OverWorldSkyData::getThunderLevel)
     ).apply(instance, OverWorldSkyDataImpl::new));
-    public static final StreamCodec<RegistryFriendlyByteBuf, OverWorldSkyData> STREAM_CODEC = new StreamCodec<RegistryFriendlyByteBuf, OverWorldSkyData>() {
-        @Override
-        public @NotNull OverWorldSkyData decode(RegistryFriendlyByteBuf buf) {
-            return new OverWorldSkyDataImpl(
-                    buf.readVarLong(),
-                    buf.readVarInt(),
-                    buf.readVec3(),
-                    buf.readFloat(),
-                    buf.readFloat()
-            );
-        }
-
-        @Override
-        public void encode(RegistryFriendlyByteBuf buf, OverWorldSkyData data) {
-            buf.writeVarLong(data.getDayTime());
-            buf.writeVarInt(data.getMoonPhase());
-            buf.writeVec3(data.getSkyColor());
-            buf.writeFloat(data.getRainLevel());
-            buf.writeFloat(data.getThunderLevel());
-        }
-    };
+    public static final StreamCodec<RegistryFriendlyByteBuf, OverWorldSkyData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_LONG, OverWorldSkyData::getDayTime,
+            ByteBufCodecs.INT, OverWorldSkyData::getMoonPhase,
+            Vec3.STREAM_CODEC, OverWorldSkyData::getSkyColor,
+            ByteBufCodecs.FLOAT, OverWorldSkyData::getRainLevel,
+            ByteBufCodecs.FLOAT, OverWorldSkyData::getThunderLevel,
+            OverWorldSkyDataImpl::new
+    );
 
     private long dayTime;
     private int moonPhase;

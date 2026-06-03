@@ -5,8 +5,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Vec3i;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModRegistries;
@@ -69,7 +69,7 @@ public abstract class AbstractPocket<V extends AbstractPocket<V, T>, T extends A
         public static void register() {
         }
 
-        static <U extends AbstractPocket<U, P>, P extends AbstractPocket.AbstractPocketBuilder<U, P>> AbstractPocketType<U, P> register(ResourceLocation id, MapCodec<U> codec, MapCodec<P> builderCodec, Supplier<U> supplier) {
+        static <U extends AbstractPocket<U, P>, P extends AbstractPocket.AbstractPocketBuilder<U, P>> AbstractPocketType<U, P> register(Identifier id, MapCodec<U> codec, MapCodec<P> builderCodec, Supplier<U> supplier) {
             return DimensionalDoors.getSided().register(ModRegistryKeys.POCKET_TYPE, id, new AbstractPocketType<>(codec, builderCodec, supplier));
         }
     }

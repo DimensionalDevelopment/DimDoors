@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.datagen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -49,9 +49,9 @@ public class ModDensityFunctions {
         var terrainReference = new DensityFunctions.HolderHolder(functions.getOrThrow(TERRAIN));
 
 
-        var noodle_function = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, ResourceLocation.withDefaultNamespace("noodle")));
-        var thick_noodle_noise = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, ResourceLocation.withDefaultNamespace("noodle_thickness")));
-        var y_function =  new DensityFunctions.HolderHolder(functions.getOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, ResourceLocation.withDefaultNamespace("y"))));
+        var noodle_function = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, Identifier.withDefaultNamespace("noodle")));
+        var thick_noodle_noise = parameters.getOrThrow(ResourceKey.create(Registries.NOISE, Identifier.withDefaultNamespace("noodle_thickness")));
+        var y_function =  new DensityFunctions.HolderHolder(functions.getOrThrow(ResourceKey.create(Registries.DENSITY_FUNCTION, Identifier.withDefaultNamespace("y"))));
 
         var strand = DensityFunctions.add(
                 DensityFunctions.mul(DensityFunctions.interpolated(terrain), DensityFunctions.constant(0.175)),
@@ -149,6 +149,6 @@ public class ModDensityFunctions {
     }
 
     private static ResourceKey<DensityFunction> createKey(String location) {
-        return ResourceKey.create(Registries.DENSITY_FUNCTION, ResourceLocation.parse(location));
+        return ResourceKey.create(Registries.DENSITY_FUNCTION, Identifier.parse(location));
     }
 }

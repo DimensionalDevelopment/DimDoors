@@ -64,8 +64,8 @@ public final class ModDimensions {
 
     public static void init(ISided sided) {
         sided.onServerStarted(server -> {
-            ModDimensions.LIMBO_TYPE = server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(LIMBO_TYPE_KEY);
-            ModDimensions.POCKET_TYPE = server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(POCKET_TYPE_KEY);
+            ModDimensions.LIMBO_TYPE = server.registryAccess().get(LIMBO_TYPE_KEY).orElseThrow().value();
+            ModDimensions.POCKET_TYPE = server.registryAccess().get(POCKET_TYPE_KEY).orElseThrow().value();
             ModDimensions.LIMBO_DIMENSION = server.getLevel(LIMBO);
             ModDimensions.PERSONAL_POCKET_DIMENSION = server.getLevel(PERSONAL);
             ModDimensions.PUBLIC_POCKET_DIMENSION = server.getLevel(PUBLIC);

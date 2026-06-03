@@ -39,7 +39,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -130,7 +130,7 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T, V extends T> V register(ResourceKey<Registry<T>> key, ResourceLocation id, V obj) {
+    public <T, V extends T> V register(ResourceKey<Registry<T>> key, Identifier id, V obj) {
         Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(key.location());
         if (registry == null) {
             throw new IllegalArgumentException("Unknown registry: " + key.location());
@@ -140,7 +140,7 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
     }
 
     @Override
-    public <T> void registerCallback(Registry<T> registry, TriConsumer<Registry<T>, ResourceLocation, T> consumer) {
+    public <T> void registerCallback(Registry<T> registry, TriConsumer<Registry<T>, Identifier, T> consumer) {
         RegistryEntryAddedCallback.event(registry).register((rawId, id, object) -> consumer.accept(registry, id, object));
     }
 
@@ -273,11 +273,6 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
         ServerPlayNetworking.send(player, packet);
     }
 
-    @Override
-    public <T extends CustomPacketPayload> void sendPacket(T packet) {
-        ClientPlayNetworking.send(packet);
-    }
-
     public Path getConfigRoot() {
         return FabricLoader.getInstance().getConfigDir();
     }
@@ -292,15 +287,15 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(id, provider -> new FabricResourceLoader(id, manager -> consumer.accept(provider, manager), loadAfterTags ? List.of(ResourceReloadListenerKeys.TAGS) : List.of()));
     }
 
-    private record FabricResourceLoader(ResourceLocation id, Consumer<ResourceManager> consumer, List<ResourceLocation> dependecies) implements IdentifiableResourceReloadListener, ResourceManagerReloadListener {
+    private record FabricResourceLoader(Identifier id, Consumer<ResourceManager> consumer, List<Identifier> dependecies) implements IdentifiableResourceReloadListener, ResourceManagerReloadListener {
 
         @Override
-        public ResourceLocation getFabricId() {
+        public Identifier getFabricId() {
             return id;
         }
 
         @Override
-        public Collection<ResourceLocation> getFabricDependencies() {
+        public Collection<Identifier> getFabricDependencies() {
             return dependecies;
         }
 

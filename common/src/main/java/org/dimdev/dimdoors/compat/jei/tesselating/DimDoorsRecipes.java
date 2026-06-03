@@ -9,7 +9,7 @@ import mezz.jei.library.plugins.vanilla.crafting.CategoryRecipeValidator;
 import mezz.jei.library.util.RecipeUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -91,7 +91,7 @@ public final class DimDoorsRecipes {
 
         @SuppressWarnings("removal")
         @Override
-        public Optional<ResourceLocation> getRegistryName(RecipeHolder<T> recipeHolder) {
+        public Optional<Identifier> getRegistryName(RecipeHolder<T> recipeHolder) {
             return Optional.of(recipeHolder.id());
         }
 

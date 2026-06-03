@@ -5,7 +5,7 @@ import com.mojang.serialization.JsonOps;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.world.decay.DecayPatternHolder;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPattern;
@@ -28,7 +28,7 @@ public abstract class PocketDataGen implements DataProvider {
     public CompletableFuture<?> run(CachedOutput cache) {
         List<CompletableFuture<?>> list = new ArrayList<>();
 
-        BiConsumer<ResourceLocation,PocketGenerator<?>> consumer = (id, generator) -> {
+        BiConsumer<Identifier,PocketGenerator<?>> consumer = (id, generator) -> {
             JsonElement object = JsonOps.INSTANCE.withEncoder(PocketGenerator.CODEC).apply(generator).getOrThrow();
             Path outputPath = resolver.json(id);
             list.add(DataProvider.saveStable(cache, object, outputPath));
@@ -39,7 +39,7 @@ public abstract class PocketDataGen implements DataProvider {
         return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
     }
 
-    private void generateGenerators(BiConsumer<ResourceLocation, PocketGenerator<?>> consumer) {
+    private void generateGenerators(BiConsumer<Identifier, PocketGenerator<?>> consumer) {
 
     }
 }

@@ -12,17 +12,17 @@ public enum EndEnvironment implements Environment {
     public static StreamCodec<RegistryFriendlyByteBuf, EndEnvironment> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
     @Override
-    public SkyData getSky() {
+    public SkyData sky() {
         return EndSkyData.INSTANCE;
     }
 
     @Override
-    public CloudData getCloud() {
+    public CloudData cloud() {
         return CloudData.empty();
     }
 
     @Override
-    public WeatherData getWeather() {
+    public WeatherData weather() {
         return WeatherData.empty();
     }
 

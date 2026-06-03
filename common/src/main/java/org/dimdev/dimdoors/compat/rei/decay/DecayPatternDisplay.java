@@ -10,7 +10,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class DecayPatternDisplay extends BasicDisplay {
-    public DecayPatternDisplay(List<EntryIngredient> input, List<EntryIngredient> output, Optional<ResourceLocation> id) {
+    public DecayPatternDisplay(List<EntryIngredient> input, List<EntryIngredient> output, Optional<Identifier> id) {
         super(input, output, id);
     }
 

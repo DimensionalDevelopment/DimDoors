@@ -6,7 +6,8 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.RGBA;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class DetachedRiftBlockEntityRenderer extends RiftBlockEntityRenderer<DetachedRiftBlockEntity> {
-    public static final ResourceLocation TESSERACT_PATH = DimensionalDoors.id("textures/other/tesseract.png");
+    public static final Identifier TESSERACT_PATH = DimensionalDoors.id("textures/other/tesseract.png");
     private static final RGBA DEFAULT_COLOR = new RGBA(1, 0.5f, 1, 1);
 
     public DetachedRiftBlockEntityRenderer(BlockEntityRendererProvider.Context context) {

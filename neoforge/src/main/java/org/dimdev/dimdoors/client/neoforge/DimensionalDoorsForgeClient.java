@@ -8,14 +8,17 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.resources.model.ModelIdentifier;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -30,6 +33,8 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.NeoForge;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
@@ -60,7 +65,6 @@ public class DimensionalDoorsForgeClient implements IClientSided {
     public static final EnumProxy<RecipeBookCategories> TESSELLATING_GENERAL = new EnumProxy<>(RecipeBookCategories.class, (Supplier<List<ItemStack>>) () -> List.of(ModItems.WORLD_THREAD.getDefaultInstance()));
     public static final EnumProxy<RecipeBookCategories> TESSELLATING_SEARCH = new EnumProxy<>(RecipeBookCategories.class, (Supplier<List<ItemStack>>) () -> List.of(Items.COMPASS.getDefaultInstance()));
     private final IEventBus bus;
-    private final Map<BlockEntityType<?>, BlockEntityRendererProvider<?>> blockEntityRenderers = new HashMap<>();
 
     public Supplier<RecipeBookCategories> getRecipBookCategories(String name, Supplier<ItemStack> itemStack) {
         return switch (name) {
@@ -84,10 +88,7 @@ public class DimensionalDoorsForgeClient implements IClientSided {
         bus.addListener(DimensionalDoorsForgeClient::onRegisterAdditionalModels);
         bus.addListener(DimensionalDoorsForgeClient::onModifyBakingResult);
         bus.addListener(DimensionalDoorsForgeClient::registerDimensionEffect);
-        bus.<FMLClientSetupEvent>addListener(event -> event.enqueueWork(() -> {
-            DimensionalDoorsClient.initGeneratedDoorCutouts();
-            DimensionalDoorsClient.initClient();
-        }));
+        bus.addListener(DimensionalDoorsForgeClient::initalizeFluidModels);
     }
 
     public static void registerRecipeBookCategories(RegisterRecipeBookCategoriesEvent event) {
@@ -117,24 +118,17 @@ public class DimensionalDoorsForgeClient implements IClientSided {
         event.registerFluidType(new FluidExtension(ModFluids.LEAK_DETAILS), ModFluids.LEAK.getFluidType());
     }
 
-    public record FluidExtension(ResourceLocation flowing, ResourceLocation still, ResourceLocation overlay) implements IClientFluidTypeExtensions {
+    static void initalizeFluidModels(RegisterFluidModelsEvent event) {
+        event.register(createFluidModel(ModFluids.ETERNAL_FLUID_DETAILS), ModFluids.ETERNAL_FLUID);
+    }
+
+    public static FluidModel.Unbaked createFluidModel(ModFluids.FluidDetails details) {
+        return new FluidModel.Unbaked(new Material(details.flowing()), new Material(details.still()), new Material(details.overlay()), null);
+    }
+
+    public record FluidExtension(Identifier flowing, Identifier still, Identifier overlay) implements IClientFluidTypeExtensions {
         public FluidExtension(ModFluids.FluidDetails attributes) {
             this(attributes.flowing(), attributes.still(), attributes.overlay());
-        }
-
-        @Override
-        public ResourceLocation getFlowingTexture() {
-            return flowing;
-        }
-
-        @Override
-        public @Nullable ResourceLocation getOverlayTexture() {
-            return overlay;
-        }
-
-        @Override
-        public ResourceLocation getStillTexture() {
-            return still;
         }
     }
 
@@ -150,8 +144,9 @@ public class DimensionalDoorsForgeClient implements IClientSided {
         ModEntityModelLayers.initClient(event::registerLayerDefinition);
     }
 
-    public static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(new ModelResourceLocation(DimensionalDoorsClient.childItem, ModelResourceLocation.STANDALONE_VARIANT));
+    public static void onRegisterAdditionalModels(ModelEvent.RegisterStandalone event) {
+        event.
+        event.register(new StandaloneModelKey<>(DimensionalDoorsClient.childItem, ModelIdentifier.STANDALONE_VARIANT));
     }
 
     /**
@@ -164,7 +159,7 @@ public class DimensionalDoorsForgeClient implements IClientSided {
         var models = event.getModels();
 
         BakedModel childBaked = bakery.getBakedTopLevelModels().get(
-                new ModelResourceLocation(DimensionalDoorsClient.childItem, ModelResourceLocation.STANDALONE_VARIANT)
+                new ModelIdentifier(DimensionalDoorsClient.childItem, ModelIdentifier.STANDALONE_VARIANT)
         );
         if (childBaked == null) {
             DimensionalDoors.LOGGER.error("DimDoors: childItem model missing at bake time!");
@@ -183,7 +178,7 @@ public class DimensionalDoorsForgeClient implements IClientSided {
         // Items: override inventory model for any item whose id path starts with PREFIX.
         BuiltInRegistries.ITEM.keySet().stream()
                 .filter(id -> id.getPath().startsWith(PREFIX))
-                .forEach(id -> models.put(ModelResourceLocation.inventory(id), childBaked));
+                .forEach(id -> models.put(ModelIdentifier.inventory(id), childBaked));
     }
 
     public static void registerDimensionEffect(RegisterDimensionSpecialEffectsEvent event) {
@@ -192,19 +187,14 @@ public class DimensionalDoorsForgeClient implements IClientSided {
     }
 
     @Override
-    public void register(RenderType type, Block... blocks) {
-        for (Block block : blocks) {
-            ItemBlockRenderTypes.setRenderLayer(block, type);
-        }
-    }
-
-    @Override
     public void onClientPlayerJoin(Runnable listener) {
         NeoForge.EVENT_BUS.<ClientPlayerNetworkEvent.LoggingIn>addListener(event -> listener.run());
     }
 
     @Override
-    public void registerCoreShader(ResourceLocation id, VertexFormat vertexFormat, Consumer<ShaderInstance> loadCallback) {
+    public void registerCoreShader(Identifier id, VertexFormat vertexFormat, Consumer<ShaderInstance> loadCallback) {
+
+
         bus.<RegisterShadersEvent>addListener(event -> {
             try {
                 event.registerShader(new ShaderInstance(event.getResourceProvider(), id, vertexFormat), loadCallback);
@@ -212,5 +202,10 @@ public class DimensionalDoorsForgeClient implements IClientSided {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    @Override
+    public <T extends CustomPacketPayload> void sendPacket(T packet) {
+        ClientPacketDistributor.sendToServer(packet);
     }
 }

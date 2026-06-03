@@ -77,17 +77,17 @@ public class OverworldEnvironment implements Environment {
     }
 
     @Override
-    public SkyData getSky() {
+    public SkyData sky() {
         return skyData;
     }
 
     @Override
-    public CloudData getCloud() {
+    public CloudData cloud() {
         return cloudData;
     }
 
     @Override
-    public WeatherData getWeather() {
+    public WeatherData weather() {
         return weatherData;
     }
 

@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -40,13 +41,13 @@ public class ServerPlayerGameModeMixin {
 //    }
 
     @Inject(method = "removeBlock", at = @At(value = "HEAD"), remap = false)
-    private void onBlockBrokenFront(BlockPos pos, BlockState state, boolean canHarvest, CallbackInfoReturnable<Boolean> cir) {
+    private void onBlockBrokenFront(BlockPos pos, BlockState state, boolean canHarvest, ItemStack toolStack, CallbackInfoReturnable<Boolean> cir) {
         dimdoors$pair = new Pair<>(this.level.getBlockState(pos), this.level.getBlockEntity(pos));
     }
 
 
     @Inject(at = @At(value = "TAIL"), method = "removeBlock", remap = false)
-    private void onBlockBrokenBack(BlockPos pos, BlockState state, boolean canHarvest, CallbackInfoReturnable<Boolean> cir) {
+    private void onBlockBrokenBack(BlockPos pos, BlockState state, boolean canHarvest, ItemStack toolStack, CallbackInfoReturnable<Boolean> cir) {
         DimensionalDoors.afterBlockBreak(this.level, this.player, pos, dimdoors$pair.getFirst(), dimdoors$pair.getSecond());
     }
 }

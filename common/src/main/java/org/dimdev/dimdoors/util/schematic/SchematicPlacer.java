@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.storage.ValueInput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -35,24 +36,6 @@ public final class SchematicPlacer {
         RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
         blockSample.place(origin, world, false, world.registryAccess());
     }
-
-//    public static Map<BlockPos, RiftBlockEntity> getAbsoluteRifts(Schematic schematic, BlockPos origin) {
-//        RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-//        return blockSample.getAbsoluteRifts(origin);
-//    }
-
-//    public static void place(Schematic schematic, ServerLevel world, ChunkAccess chunk, BlockPos origin, BlockPlacementType placementType) {
-//        LOGGER.debug("Placing schematic: {}", schematic.getMetadata().name());
-//        for (String id : schematic.getMetadata().requiredMods()) {
-//            if (!Platform.isModLoaded(id)) {
-//                LOGGER.warn("Schematic \"" + schematic.getMetadata().name() + "\" depends on mod \"" + id + "\", which is missing!");
-//            }
-//        }
-//        RelativeBlockSample blockSample = Schematic.getBlockSample(schematic);
-//        blockSample.place(origin, world, chunk, placementType, false, world.registryAccess());
-//    }
-//
-
 
     public static int[][][] getBlockData(Schematic schematic) {
         int width = schematic.getWidth();
@@ -118,7 +101,7 @@ public final class SchematicPlacer {
             ListTag nbtList = Objects.requireNonNull(nbt.getList("Pos", 6), "Entity in schematic  \"" + schematic.getMetadata().name() + "\" did not have a Pos nbt list!");
             SchematicPlacer.processPos(nbtList, origin, schematic.getOffset(), nbt);
 
-            EntityType<?> entityType = EntityType.by(fixEntityId(nbt)).orElseThrow(AssertionError::new);
+            EntityType<?> entityType = EntityType.by(ValueInput fixEntityId(nbt)).orElseThrow(AssertionError::new);
             Entity e = entityType.create(world.getLevel());
             // TODO: fail with an exception
             if (e != null) {
@@ -133,9 +116,9 @@ public final class SchematicPlacer {
 
     public static CompoundTag fixEntityId(CompoundTag nbt) {
         if (!nbt.contains("Id") && nbt.contains("id")) {
-            nbt.putString("Id", nbt.getString("id"));
+            nbt.putString("Id", nbt.getString("id").orElseThrow());
         } else if (nbt.contains("Id") && !nbt.contains("id")) {
-            nbt.putString("id", nbt.getString("Id"));
+            nbt.putString("id", nbt.getString("Id").orElseThrow());
         }
         if (!nbt.contains("Id") || !nbt.contains("id")) {
             System.err.println("An unexpected error occurred parsing this entity");
@@ -146,9 +129,9 @@ public final class SchematicPlacer {
     }
 
     private static void processPos(ListTag nbtList, BlockPos origin, Vec3i offset, CompoundTag nbt) {
-        double x = nbtList.getDouble(0);
-        double y = nbtList.getDouble(1);
-        double z = nbtList.getDouble(2);
+        double x = nbtList.getDouble(0).orElseThrow();
+        double y = nbtList.getDouble(1).orElseThrow();
+        double z = nbtList.getDouble(2).orElseThrow();
         nbt.remove("Pos");
         nbt.put("Pos", NbtOps.INSTANCE.createList(Stream.of(DoubleTag.valueOf(x + origin.getX() - offset.getX()),
                 DoubleTag.valueOf(y + origin.getY() - offset.getY()),

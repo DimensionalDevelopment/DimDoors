@@ -16,11 +16,14 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -34,15 +37,11 @@ import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static org.dimdev.dimdoors.client.DimensionalDoorsClient.initGeneratedDoorCutouts;
-
 public class DimensionalDoorsClientFabric implements ClientModInitializer, IClientSided {
 
     @Override
     public void onInitializeClient() {
         DimensionalDoorsClient.init(this);
-        DimensionalDoorsClient.initClient();
-        initGeneratedDoorCutouts();
 
         RecipeBookManager.init();
         ModelLoadingPlugin.register(new DimensionalDoorsModelLoadingPlugin());
@@ -81,17 +80,13 @@ public class DimensionalDoorsClientFabric implements ClientModInitializer, IClie
     }
 
     @Override
-    public void register(RenderType type, Block... blocks) {
-        BlockRenderLayerMap.INSTANCE.putBlocks(type, blocks);
-    }
-
-    @Override
     public void onClientPlayerJoin(Runnable listener) {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> listener.run());
     }
 
     @Override
-    public void registerCoreShader(ResourceLocation id, VertexFormat vertexFormat, Consumer<ShaderInstance> loadCallback) {
+    public void registerCoreShader(Identifier id, VertexFormat vertexFormat, Consumer<ShaderInstance> loadCallback) {
         CoreShaderRegistrationCallback.EVENT.register(context -> context.register(id, vertexFormat, loadCallback));
     }
+
 }

@@ -5,7 +5,7 @@ import mezz.jei.api.gui.ingredient.ICraftingGridHelper;
 import mezz.jei.api.gui.ingredient.IRecipeSlotDrawable;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.category.extensions.IRecipeCategoryExtension;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.dimdev.dimdoors.recipe.TesselatingRecipe;
 import org.jetbrains.annotations.Nullable;
@@ -26,7 +26,7 @@ public interface ITesselatingCategoryExtension<T extends TesselatingRecipe> exte
             since = "19.4.1",
             forRemoval = true
     )
-    default Optional<ResourceLocation> getRegistryName(RecipeHolder<T> recipeHolder) {
+    default Optional<Identifier> getRegistryName(RecipeHolder<T> recipeHolder) {
         return Optional.ofNullable(this.getRegistryName()).or(() -> {
             return Optional.of(recipeHolder.id());
         });
@@ -54,7 +54,7 @@ public interface ITesselatingCategoryExtension<T extends TesselatingRecipe> exte
             since = "16.0.0",
             forRemoval = true
     )
-    default @Nullable ResourceLocation getRegistryName() {
+    default @Nullable Identifier getRegistryName() {
         return null;
     }
 

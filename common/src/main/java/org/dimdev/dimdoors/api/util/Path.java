@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.api.util;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -51,7 +51,7 @@ public class Path<K> {
     return new Path<>(str.split("(?<=[/:])"));
     }
 
-    public static Path<String> stringPath(ResourceLocation id) {
+    public static Path<String> stringPath(Identifier id) {
     return stringPath(id.toString());
     }
 

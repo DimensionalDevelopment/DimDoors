@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.datagen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.*;
 import org.dimdev.dimdoors.DimensionalDoors;
@@ -26,7 +26,7 @@ public class ModChunkGeneratorSettings {
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),
-                        DensityFunctions.noise(context.lookup(ResourceKey.create(Registries.NOISE, ResourceLocation.withDefaultNamespace("aquifer_lava"))), 1, 1),
+                        DensityFunctions.noise(context.lookup(ResourceKey.create(Registries.NOISE, Identifier.withDefaultNamespace("aquifer_lava"))), 1, 1),
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),
                         DensityFunctions.constant(0),

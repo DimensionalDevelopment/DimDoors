@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.datagen;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -65,8 +65,8 @@ public class ShapedTesselatingRecipeJsonBuilder extends SimpleTesselatingRecipeB
         return new ShapedTesselatingRecipe(this.group == null ? "" : this.group, pattern, result, weavingTime, this.showNotification);
     }
 
-    public ShapedRecipePattern ensureValid(ResourceLocation resourceLocation) {
-        super.ensureValid(resourceLocation);
+    public ShapedRecipePattern ensureValid(Identifier Identifier) {
+        super.ensureValid(Identifier);
         return ShapedRecipePattern.of(this.key, this.rows);
     }
 }

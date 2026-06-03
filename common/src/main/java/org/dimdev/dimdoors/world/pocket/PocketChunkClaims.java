@@ -43,7 +43,7 @@ public final class PocketChunkClaims {
                 ChunkAccess chunk = level.getChunk(cx, cz);
                 if (!isClaimed(chunk)) {
                     POCKET_GENERATED.set(chunk, true);
-                    chunk.setUnsaved(true);
+                    chunk.markUnsaved();
                     claimed++;
                 }
             }

@@ -422,8 +422,8 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
 //
 //
 //        Stream.of(DyeColor.values()).map(DyeColor::getSerializedName).forEach(name -> {
-//            addPattern(getBlock(ResourceLocation.tryParse(name + "_terracotta")), getBlock(ResourceLocation.tryParse(name + "_glazed_terracotta"))).accept(consumer, provider);
-//            addPattern(getBlock(ResourceLocation.tryParse(name + "_concrete")), getBlock(ResourceLocation.tryParse(name + "_concrete_powder"))).accept(consumer, provider);
+//            addPattern(getBlock(Identifier.tryParse(name + "_terracotta")), getBlock(Identifier.tryParse(name + "_glazed_terracotta"))).accept(consumer, provider);
+//            addPattern(getBlock(Identifier.tryParse(name + "_concrete")), getBlock(Identifier.tryParse(name + "_concrete_powder"))).accept(consumer, provider);
 //        });
 //        addPattern(Blocks.GLASS, ModBlockTags.DECAYS_TO_GLASS).accept(consumer, provider);
 //

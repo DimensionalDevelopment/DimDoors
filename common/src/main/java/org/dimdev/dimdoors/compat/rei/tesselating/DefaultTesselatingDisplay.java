@@ -14,7 +14,7 @@ import me.shedaniel.rei.api.common.transfer.info.MenuSerializationContext;
 import me.shedaniel.rei.api.common.transfer.info.simple.SimpleGridMenuInfo;
 import me.shedaniel.rei.api.common.util.CollectionUtils;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -77,7 +77,7 @@ public abstract class DefaultTesselatingDisplay<C extends TesselatingRecipe> ext
     }
 
     @Override
-    public Optional<ResourceLocation> getDisplayLocation() {
+    public Optional<Identifier> getDisplayLocation() {
         return Optional.of(getOptionalRecipe().id());
     }
 

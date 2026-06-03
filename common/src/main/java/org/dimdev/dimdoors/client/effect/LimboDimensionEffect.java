@@ -5,15 +5,15 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.joml.Matrix4f;
 
 public class
 LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
     public static final LimboDimensionEffect INSTANCE = new LimboDimensionEffect();
-    private static final ResourceLocation MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
-    private static final ResourceLocation SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
+    private static final Identifier MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
+    private static final Identifier SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
 
     @Override
     public void renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {

@@ -3,6 +3,8 @@ package org.dimdev.dimdoors.item;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -40,7 +42,7 @@ public final class ModItems {
 
     public static final Item RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", RiftConfigurationToolItem::new);
 
-    public static final Item RIFT_BLADE = registerRegular("rift_blade", properties -> new RiftBladeItem(properties.attributes(SwordItem.createAttributes(Tiers.IRON, 3, -2.4F))));
+    public static final Item RIFT_BLADE = registerRegular("rift_blade", properties -> new RiftBladeItem(properties.sword(ToolMaterial.IRON, 3.0f, -2.4f));
 
     public static final Item RIFT_REMOVER = registerRegular("rift_remover", properties -> new RiftRemoverItem(properties.stacksTo(1).durability(100)));
 
@@ -54,7 +56,7 @@ public final class ModItems {
 
     public static final Item DIMENSIONAL_ERASER = registerRegular("dimensional_eraser", properties -> new DimensionalEraserItem(properties.durability(100)));
 
-    public static final Item MONOLITH_SPAWNER = registerRegular("monolith_spawner", properties -> new SpawnEggItem(ModEntityTypes.MONOLITH, 0xffffff, 0xffffff, properties));
+    public static final Item MONOLITH_SPAWNER = registerRegular("monolith_spawner", properties -> new SpawnEggItem(properties.spawnEgg(ModEntityTypes.MONOLITH)));
 
     public static final Item MASK_WAND = registerRegular("mask_wand", properties -> new MaskWandItem(properties.stacksTo(1)));
 
@@ -99,13 +101,12 @@ public final class ModItems {
     }
 
     private static ArmorSet registerArmorSet(String name, ArmorMaterial material, Consumer<Item.Properties> propertiesConsumer) {
-        var holder = BuiltInRegistries.ARMOR_MATERIAL.wrapAsHolder(material);
         var properties = new Item.Properties().stacksTo(1);
 
-        var helmet = register(name + "_helmet", new ArmorItem(holder, ArmorItem.Type.HELMET, properties), DIMENSIONAL_DOORS);
-        var chestplate = register(name + "_chestplate", new ArmorItem(holder, ArmorItem.Type.CHESTPLATE, properties), DIMENSIONAL_DOORS);
-        var leggings = register(name + "_leggings", new ArmorItem(holder, ArmorItem.Type.LEGGINGS, properties), DIMENSIONAL_DOORS);
-        var boots = register(name + "_boots", new ArmorItem(holder, ArmorItem.Type.BOOTS, properties), DIMENSIONAL_DOORS);
+        var helmet = register(name + "_helmet", new Item(properties.humanoidArmor(material, ArmorType.HELMET)), DIMENSIONAL_DOORS);
+        var chestplate = register(name + "_chestplate", new Item(properties.humanoidArmor(material, ArmorType.CHESTPLATE)), DIMENSIONAL_DOORS);
+        var leggings = register(name + "_leggings", new Item(properties.humanoidArmor(material, ArmorType.LEGGINGS)), DIMENSIONAL_DOORS);
+        var boots = register(name + "_boots", new Item(properties.humanoidArmor(material, ArmorType.BOOTS)), DIMENSIONAL_DOORS);
 
         return new ArmorSet(helmet, chestplate, leggings, boots);
     }

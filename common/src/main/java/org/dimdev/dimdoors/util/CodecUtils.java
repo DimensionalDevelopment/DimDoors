@@ -8,20 +8,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.world.decay.conditions.GenericDecayCondition;
-import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -48,7 +43,7 @@ public class CodecUtils {
     }
 
     public static <T> Codec<T> codecWithReference(Codec<T> base, String path) {
-//        Codec<T> reference = ResourceLocation.CODEC.flatXmap((Function<ResourceLocation, DataResult<ResourceLocation>>) resourceLocation -> DataResult.success(resourceLocation.withPrefix(path + "/").withSuffix(".json")), resourceLocation -> DataResult.error(() -> "")).flatXmap(resourceLocation -> ResourceUtil.loadResource(manager, resourceLocation, ResourceUtil.JSON_READER.andThenComposable(json -> {
+//        Codec<T> reference = Identifier.CODEC.flatXmap((Function<Identifier, DataResult<Identifier>>) Identifier -> DataResult.success(Identifier.withPrefix(path + "/").withSuffix(".json")), Identifier -> DataResult.error(() -> "")).flatXmap(Identifier -> ResourceUtil.loadResource(manager, Identifier, ResourceUtil.JSON_READER.andThenComposable(json -> {
 //            var result = JsonOps.INSTANCE.withParser(base).apply(json);
 //
 //            result.ifError(new Consumer<DataResult.Error<T>>() {
@@ -66,8 +61,8 @@ public class CodecUtils {
 //        return Codec.PASSTHROUGH.flatXmap(new Function<Dynamic<?>, DataResult<? extends T>>() {
 //            @Override
 //            public DataResult<? extends T> apply(Dynamic<?> dynamic) {
-//                var optional = dynamic.asString().flatMap(ResourceLocation::read).map(a -> a.withSuffix(".json").withPrefix(path)).flatMap(resourceLocation -> {
-//                    return ResourceUtil.loadResource(manager, resourceLocation, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json)));
+//                var optional = dynamic.asString().flatMap(Identifier::read).map(a -> a.withSuffix(".json").withPrefix(path)).flatMap(Identifier -> {
+//                    return ResourceUtil.loadResource(manager, Identifier, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json)));
 //                });
 //
 //                if (optional.isSuccess()) {
@@ -91,10 +86,10 @@ public class CodecUtils {
                 dynamic -> {
                     var stringResult = dynamic.asString().result();
                     if (stringResult.isPresent()) {
-                        var locationResult = ResourceLocation.read(stringResult.get()).resultOrPartial(a -> System.out.println("Error location not found: " + a));
+                        var locationResult = Identifier.read(stringResult.get()).resultOrPartial(a -> System.out.println("Error location not found: " + a));
                         if (locationResult.isPresent()) {
-                            var resourceLocation = locationResult.get().withSuffix(".json").withPrefix(path);
-                            var loaded = ResourceUtil.loadResource(manager, resourceLocation, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json).ifError(a -> System.out.println("Error with " + resourceLocation + ": " + a.message()))));
+                            var Identifier = locationResult.get().withSuffix(".json").withPrefix(path);
+                            var loaded = ResourceUtil.loadResource(manager, Identifier, ResourceUtil.JSON_READER.andThenComposable(json -> JsonOps.INSTANCE.withParser(base).apply(json).ifError(a -> System.out.println("Error with " + Identifier + ": " + a.message()))));
                             if (loaded != null && loaded.isSuccess()) return loaded;
                         }
                     }
@@ -129,56 +124,6 @@ public class CodecUtils {
         };
     }
 
-    public static final Codec<Path<String>> RESOURECE_LOCATION_PATH_CODEC = ResourceLocation.CODEC.flatXmap(a -> DataResult.success(Path.stringPath(a)), a -> DataResult.error(() -> " can not encode path."));
-
-    public static <T> Codec<T> codecWithMapFallback(Codec<T> base, Function<Path<String>, T> function) {
-        return Codec.withAlternative(base, RESOURECE_LOCATION_PATH_CODEC, function);
-
-/*
-        return Codec.PASSTHROUGH.flatXmap(new Function<Dynamic<?>, DataResult<T>>() {
-            @Override
-            public DataResult<T> apply(Dynamic<?> dynamic) {
-                var stringResult = codecPath.parse(dynamic);
-
-                if(stringResult.isSuccess()) {
-                    return stringResult;
-                } else {
-
-                    return base.parse(dynamic);
-                }
-            }
-        }, new Function<T, DataResult<Dynamic<?>>>() {
-            @Override
-            public DataResult<Dynamic<?>> apply(T t) {
-                return DataResult.error(() -> "");
-            }
-        });*/
-    }
-
-    public static <T> Codec<Map<T, CompoundTag>> createTagMapCodec(Codec<T> codec) {
-        var mapCodec = codec.fieldOf("Pos");
-        return CompoundTag.CODEC.flatXmap(nbt -> {
-            if (nbt.contains("Id") && !nbt.contains("id")) {
-                nbt.putString("id", nbt.getString("Id"));
-            }
-
-            if(!nbt.contains("id")) {
-                return DataResult.error(() -> "The tag did not have an 'id' nbt string");
-            }
-
-            return DataResult.success(nbt);
-        }, DataResult::success).flatXmap(tagToPair(mapCodec), pairToTag(mapCodec)).listOf().xmap(entries -> entries.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), map -> map.entrySet().stream().toList());
-
-    }
-
-    private static <T> Function<CompoundTag, DataResult<Map.Entry<T, CompoundTag>>> tagToPair(MapCodec<T> codec) {
-        return tag -> codec.compressedDecode(NbtOps.INSTANCE, tag).map(t -> Map.entry(t, tag));
-    }
-
-    private static <T> Function<Map.Entry<T, CompoundTag>, DataResult<CompoundTag>> pairToTag(MapCodec<T> codec) {
-        return pair -> codec.encode(pair.getKey(), NbtOps.INSTANCE, NbtOps.INSTANCE.mapBuilder()).build(pair.getValue()).map(CompoundTag.class::cast);
-    }
-
     public static <T extends GenericDecayCondition<?>, V> Products.P2<RecordCodecBuilder.Mu<T>, TagOrElementLocation<V>, Boolean> decayConditionFields(RecordCodecBuilder.Instance<T> instance, ResourceKey<Registry<V>> key) {
         return instance.group(
                 TagOrElementLocation.codec(key).fieldOf("entry").forGetter(t -> (TagOrElementLocation<V>) t.getTagOrElementLocation()),
@@ -207,7 +152,7 @@ public class CodecUtils {
         private ResourceKey<T> key;
 
         public static <T> Codec<TagOrElementLocation<T>> codec(ResourceKey<Registry<T>> key) {
-            return Codec.STRING.comapFlatMap(string -> string.startsWith("#") ? ResourceLocation.read(string.substring(1)).map(resourceLocation -> new TagOrElementLocation<>(resourceLocation, true, key)) : ResourceLocation.read(string).map(resourceLocation -> new TagOrElementLocation<T>(resourceLocation, false, key)), TagOrElementLocation::decoratedId);
+            return Codec.STRING.comapFlatMap(string -> string.startsWith("#") ? Identifier.read(string.substring(1)).map(Identifier -> new TagOrElementLocation<>(Identifier, true, key)) : Identifier.read(string).map(Identifier -> new TagOrElementLocation<T>(Identifier, false, key)), TagOrElementLocation::decoratedId);
         }
 
         public static <T> TagOrElementLocation<T> of(TagKey<T> tag, ResourceKey<Registry<T>> registry) {
@@ -215,10 +160,10 @@ public class CodecUtils {
         }
 
         public static <T> TagOrElementLocation<T> of(ResourceKey<T> tag, ResourceKey<Registry<T>> registry) {
-            return new TagOrElementLocation<>(tag.location(), false, registry);
+            return new TagOrElementLocation<>(tag.identifier(), false, registry);
         }
 
-        public TagOrElementLocation(ResourceLocation id, boolean tag, ResourceKey<Registry<T>> registryResourceKey) {
+        public TagOrElementLocation(Identifier id, boolean tag, ResourceKey<Registry<T>> registryResourceKey) {
             if(tag) this.tag = TagKey.create(registryResourceKey, id);
             else this.key = ResourceKey.create(registryResourceKey, id);
         }
@@ -229,7 +174,7 @@ public class CodecUtils {
         }
 
         private String decoratedId() {
-            return this.tag != null ? "#" + tag.location() : this.key.location().toString();
+            return this.tag != null ? "#" + tag.location() : this.key.identifier().toString();
         }
 
         public boolean test(Holder<T> holder) {

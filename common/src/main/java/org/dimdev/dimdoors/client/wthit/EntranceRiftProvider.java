@@ -5,7 +5,7 @@ import mcp.mobius.waila.api.IBlockComponentProvider;
 import mcp.mobius.waila.api.IPluginConfig;
 import mcp.mobius.waila.api.ITooltip;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
@@ -17,7 +17,7 @@ import java.util.Objects;
 public enum EntranceRiftProvider implements IBlockComponentProvider {
     INSTANCE;
 
-    static final ResourceLocation ID = DimensionalDoors.id("entrance_rift_provider");
+    static final Identifier ID = DimensionalDoors.id("entrance_rift_provider");
 
     @Override
     public void appendBody(ITooltip tooltip, IBlockAccessor accessor, IPluginConfig config) {

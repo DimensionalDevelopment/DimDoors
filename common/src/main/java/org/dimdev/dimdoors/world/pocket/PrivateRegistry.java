@@ -5,7 +5,7 @@ import com.google.common.collect.HashBiMap;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +29,7 @@ public class PrivateRegistry {
 
         public static PocketInfo fromNbt(CompoundTag nbt) {
             return new PocketInfo(
-                    ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
+                    ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getString("world"))),
                     nbt.getInt("id")
             );
         }

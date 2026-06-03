@@ -11,10 +11,8 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -25,23 +23,24 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.client.ToolTipHelper;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static org.dimdev.dimdoors.item.RaycastHelper.DETACH;
 
-public class RiftBladeItem extends SwordItem {
+public class RiftBladeItem extends Item {
     public static final String ID = "rift_blade";
 
-    public RiftBladeItem(Properties settings) {
-        super(Tiers.IRON, settings);
+    public RiftBladeItem(Item.Properties settings) {
+        super(settings);
     }
 
+
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
-        ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
+    public void appendHoverText(@NonNull ItemStack itemStack, @NonNull TooltipContext context, @NonNull TooltipDisplay display, @NonNull Consumer<Component> builder, @NonNull TooltipFlag tooltipFlag) {
+        ToolTipHelper.processTranslation(builder, this.getDescriptionId() + ".info");
     }
 
     @Override
@@ -55,7 +54,8 @@ public class RiftBladeItem extends SwordItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public @NonNull InteractionResult use(@NonNull Level world, Player player, @NonNull InteractionHand hand) {
+
         ItemStack stack = player.getItemInHand(hand);
         HitResult hit = RaycastHelper.raycast(player, 0.0F, LivingEntity.class::isInstance);
 
@@ -67,13 +67,13 @@ public class RiftBladeItem extends SwordItem {
             hit = RaycastHelper.findDetachRift(player, DETACH);
         }
 
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             if (RaycastHelper.hitsLivingEntity(hit) || RaycastHelper.hitsRift(hit, world)) {
-                return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+                return InteractionResult.SUCCESS;
             } else {
-                player.displayClientMessage(Component.translatable(this.getDescriptionId() + ".rift_miss"), true);
+                player.sendSystemMessage(Component.translatable(this.getDescriptionId() + ".rift_miss"));
                 RiftBlockEntity.showRiftCoreUntil = System.currentTimeMillis() + DimensionalDoors.getConfig().getGraphicsConfig().highlightRiftCoreFor;
-                return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                return InteractionResult.FAIL;
             }
         }
 
@@ -124,9 +124,9 @@ public class RiftBladeItem extends SwordItem {
 
 
             // Apply damage to the item stack
-            stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
+            stack.hurtAndBreak(1, serverPlayer.level(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
 
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResult.SUCCESS;
         } else if (RaycastHelper.hitsDetachedRift(hit, world)) {
             BlockHitResult blockHitResult = (BlockHitResult) hit;
             BlockPos pos = blockHitResult.getBlockPos();
@@ -135,9 +135,9 @@ public class RiftBladeItem extends SwordItem {
             world.setBlockAndUpdate(pos, ModBlocks.DIMENSIONAL_PORTAL.defaultBlockState().setValue(DimensionalPortalBlock.FACING, blockHitResult.getDirection().getOpposite()));
             var entranceRift = ((EntranceRiftBlockEntity) world.getBlockEntity(pos));
             entranceRift.copyFrom(rift);
-            stack.hurtAndBreak(1, serverPlayer.serverLevel(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            stack.hurtAndBreak(1, serverPlayer.level(), serverPlayer, a -> {/*player.broadcastBreakEvent(equipmentSlot)*/});
+            return InteractionResult.SUCCESS;
         }
-        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+        return InteractionResult.FAIL;
     }
 }

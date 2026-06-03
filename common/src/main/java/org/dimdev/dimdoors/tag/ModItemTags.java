@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.tag;
 
 import dev.eriksonn.aeronautics.index.AeroTags;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
@@ -26,7 +26,7 @@ public class ModItemTags {
     public static final Map<DyeColor, TagKey<Item>> DYES = Arrays.stream(DyeColor.values()).collect(Collectors.toMap(Function.identity(), ModItemTags::dye));
 
     private static TagKey<Item> dye(DyeColor dyeColor) {
-        return TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "dyes/" + dyeColor.getSerializedName()));
+        return TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "dyes/" + dyeColor.getSerializedName()));
     }
 
 

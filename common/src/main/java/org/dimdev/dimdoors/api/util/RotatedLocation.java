@@ -9,7 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 
 public class RotatedLocation extends Location {
@@ -47,7 +47,7 @@ public class RotatedLocation extends Location {
     public static RotatedLocation deserialize(CompoundTag nbt) {
         int[] pos = nbt.getIntArray("pos");
         return new RotatedLocation(
-                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
+                ResourceKey.create(Registries.DIMENSION, Identifier.parse(nbt.getString("world"))),
                 new BlockPos(pos[0], pos[1], pos[2]),
                 nbt.getFloat("yaw"),
                 nbt.getFloat("pitch")
