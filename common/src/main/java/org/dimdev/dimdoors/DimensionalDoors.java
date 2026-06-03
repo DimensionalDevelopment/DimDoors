@@ -23,6 +23,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.criteria.ModCriteria;
@@ -116,6 +117,8 @@ public class DimensionalDoors {
         reloadConfig();
 
         registerRegistries();
+
+        ModRecipeBookTypes.init();
 
         registerRun(Registries.DATA_COMPONENT_TYPE, () -> ModDataComponentTypes.register());
         registerRun(Registries.ENCHANTMENT_ENTITY_EFFECT_TYPE, () -> ModEnchantmentEffects.init());
