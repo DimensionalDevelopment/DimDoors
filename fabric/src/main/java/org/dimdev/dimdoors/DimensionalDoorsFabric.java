@@ -91,6 +91,7 @@ public class DimensionalDoorsFabric extends SidedImpl implements ModInitializer 
     public void onInitialize() {
         ModAttachmentTypes.register();
         ServerLifecycleEvents.SERVER_STARTING.register(this::setServer);
+        getTesselatingRecipeBookType();
         DimensionalDoors.init(this);
         PlayerBlockBreakEvents.AFTER.register(DimensionalDoors::afterBlockBreak);
 
