@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "dimdoors.refmap.json",
   "mixins": [
+    "AbstractArrowMixin",
     "ArgumentTypesMixin",
     "BlockMixin",
     "ContextClipMixin",
