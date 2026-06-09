@@ -2,11 +2,9 @@ package org.dimdev.dimdoors.world.level.registry;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.Level;
@@ -18,45 +16,68 @@ import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.function.BiConsumer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
-public class DimensionalRegistry {
-    public static Codec<Map<ResourceKey<Level>, PocketDirectory>> POCKET_DIRECTORY_MAP_CODEC = CodecUtils.unboundedMap(Level.RESOURCE_KEY_CODEC, PocketDirectory.CODEC);
+public class DimensionalRegistry extends SavedData {
+    public static final Codec<Map<ResourceKey<Level>, PocketDirectory>> POCKET_DIRECTORY_MAP_CODEC =
+            CodecUtils.unboundedMap(Level.RESOURCE_KEY_CODEC, PocketDirectory.CODEC);
 
-    public static final int RIFT_DATA_VERSION = 1; // Increment this number every time a new schema is added
-    private static Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
-    private static RiftRegistry riftRegistry = new RiftRegistry();
-    private static PrivateRegistry privateRegistry = new PrivateRegistry();
+    public static final int RIFT_DATA_VERSION = 1;
 
-    public static Pocket createPocket(ResourceKey<Level> key, Pocket.PocketBuilder<?, ?> builder) {
-        return getPocketDirectory(key).newPocket(key, builder);
-    }
+    private static final String DATA_NAME = "dimensional_registry";
 
-    private static class DummyData extends SavedData {
-    private static final DummyData INSTANCE = new DummyData();
+    private static DimensionalRegistry INSTANCE;
 
-    @Override
-    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        writeToNbt(compoundTag, provider);
+    private Map<ResourceKey<Level>, PocketDirectory> pocketRegistry = new HashMap<>();
+    private RiftRegistry riftRegistry = new RiftRegistry();
+    private PrivateRegistry privateRegistry = new PrivateRegistry();
 
-        return compoundTag;
-    }
-    }
-
-    public static void setDirty() {
-        DummyData.INSTANCE.setDirty();
+    public DimensionalRegistry() {
     }
 
     public static void init(MinecraftServer server) {
-    server.overworld().getDataStorage().computeIfAbsent(new SavedData.Factory<DummyData>(() -> DummyData.INSTANCE, (compoundTag, provider) -> {
-            readFromNbt(compoundTag, provider);
-            return DummyData.INSTANCE;
-        }, DataFixTypes.LEVEL /*TODO: FIgure out if correct for a singlemon data*/), "dimensional_registry");
+        INSTANCE = server.overworld().getDataStorage().computeIfAbsent(
+                new SavedData.Factory<>(
+                        DimensionalRegistry::new,
+                        DimensionalRegistry::load,
+                        DataFixTypes.LEVEL
+                ),
+                DATA_NAME
+        );
     }
 
-    public static void readFromNbt(CompoundTag nbt, HolderLookup.Provider provider) {
+    private static DimensionalRegistry load(CompoundTag nbt, HolderLookup.Provider provider) {
+        DimensionalRegistry registry = new DimensionalRegistry();
+        registry.readFromNbt(nbt, provider);
+        return registry;
+    }
+
+    private static DimensionalRegistry getInstance() {
+        if (INSTANCE == null) {
+            throw new IllegalStateException("DimensionalRegistry has not been initialized.");
+        }
+
+        return INSTANCE;
+    }
+
+    public static Pocket<?, ?> createPocket(ResourceKey<Level> key, Pocket.PocketBuilder<?, ?> builder) {
+        return getPocketDirectory(key).newPocket(key, builder);
+    }
+
+    public static void setIsDirty() {
+        getInstance().setDirty();
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider provider) {
+        writeToNbt(nbt, provider);
+        return nbt;
+    }
+
+    public void readFromNbt(CompoundTag nbt, HolderLookup.Provider provider) {
         int riftDataVersion = nbt.getInt("RiftDataVersion");
         if (riftDataVersion < RIFT_DATA_VERSION) {
             nbt = RiftSchemas.update(riftDataVersion, nbt);
@@ -64,59 +85,58 @@ public class DimensionalRegistry {
             throw new UnsupportedOperationException("Downgrading is not supported!");
         }
 
-        pocketRegistry = POCKET_DIRECTORY_MAP_CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("pocket_registry")).getOrThrow();
+        this.pocketRegistry = POCKET_DIRECTORY_MAP_CODEC
+                .parse(NbtOps.INSTANCE, nbt.getCompound("pocket_registry"))
+                .getOrThrow();
 
-        CompoundTag privateRegistryNbt = nbt.getCompound("private_registry");
+        this.privateRegistry = new PrivateRegistry();
+        this.privateRegistry.fromNbt(nbt.getCompound("private_registry"));
 
-        privateRegistry = new PrivateRegistry();
-        privateRegistry.fromNbt(privateRegistryNbt);
-
-        CompoundTag riftRegistryNbt = nbt.getCompound("rift_registry");
-        riftRegistry = RiftRegistry.fromNbt(pocketRegistry, riftRegistryNbt);
+        this.riftRegistry = RiftRegistry.fromNbt(this.pocketRegistry, nbt.getCompound("rift_registry"));
     }
 
-    public static void writeToNbt(CompoundTag nbt, HolderLookup.Provider provider) {
-        POCKET_DIRECTORY_MAP_CODEC.encodeStart(NbtOps.INSTANCE, pocketRegistry).result().ifPresent(a -> nbt.put("pocket_registry", a));
-        nbt.put("rift_registry", riftRegistry.toNbt());
-        nbt.put("private_registry", privateRegistry.toNbt(new CompoundTag()));
+    public void writeToNbt(CompoundTag nbt, HolderLookup.Provider provider) {
+        nbt.put("pocket_registry", POCKET_DIRECTORY_MAP_CODEC
+                .encodeStart(NbtOps.INSTANCE, this.pocketRegistry)
+                .getOrThrow());
+
+        nbt.put("rift_registry", this.riftRegistry.toNbt());
+        nbt.put("private_registry", this.privateRegistry.toNbt(new CompoundTag()));
         nbt.putInt("RiftDataVersion", RIFT_DATA_VERSION);
     }
 
     public static RiftRegistry getRiftRegistry() {
-    return riftRegistry;
+        return getInstance().riftRegistry;
     }
 
     public static PrivateRegistry getPrivateRegistry() {
-    return privateRegistry;
+        return getInstance().privateRegistry;
     }
 
     public static PocketDirectory getPocketDirectory(ResourceKey<Level> key) {
-    if (!(ModDimensions.isPocketDimension(key))) {
-        throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
-    }
+        if (!ModDimensions.isPocketDimension(key)) {
+            throw new UnsupportedOperationException("PocketRegistry is only available for pocket dimensions!");
+        }
 
-    return pocketRegistry.computeIfAbsent(key, DimensionalRegistry::createPocketRegistry);
+        DimensionalRegistry registry = getInstance();
+        return registry.pocketRegistry.computeIfAbsent(key, registry::createPocketRegistry);
     }
 
     public static PocketDirectory peekPocketDirectory(ResourceKey<Level> key) {
-    if (!(ModDimensions.isPocketDimension(key))) {
-        return null;
+        if (!ModDimensions.isPocketDimension(key)) {
+            return null;
+        }
+
+        return getInstance().pocketRegistry.get(key);
     }
 
-    return pocketRegistry.get(key);
-    }
-
-    private static PocketDirectory createPocketRegistry(ResourceKey<Level> key) {
-        setDirty();
+    private PocketDirectory createPocketRegistry(ResourceKey<Level> key) {
+        this.setIsDirty();
         return new PocketDirectory();
     }
 
-    private static Map<ResourceKey<Level>, PocketDirectory> getPocketDirectories() {
-        return pocketRegistry;
-    }
-
     public static void forEachPocketDirectory(BiConsumer<ResourceKey<Level>, PocketDirectory> consumer) {
-        pocketRegistry.forEach(consumer);
+        getInstance().pocketRegistry.forEach(consumer);
     }
 
     public static boolean isValidWorld(Level level) {
@@ -125,6 +145,6 @@ public class DimensionalRegistry {
     }
 
     public Map<ResourceKey<Level>, PocketDirectory> getPocketRegistry() {
-    return pocketRegistry;
+        return Collections.unmodifiableMap(this.pocketRegistry);
     }
 }

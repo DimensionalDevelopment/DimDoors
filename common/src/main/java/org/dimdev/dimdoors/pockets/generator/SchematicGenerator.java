@@ -55,7 +55,7 @@ public class SchematicGenerator extends PocketGenerator<SchematicGenerator> {
 
         if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 
-        Pocket pocket = DimensionalRegistry.createPocket(world.dimension(), builder);
+        Pocket<?, ?> pocket = DimensionalRegistry.createPocket(world.dimension(), builder);
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Generating pocket from template {} at location {}", templateID, origin);
 //        PocketCommand.logSetting.values().forEach(commandSource ->

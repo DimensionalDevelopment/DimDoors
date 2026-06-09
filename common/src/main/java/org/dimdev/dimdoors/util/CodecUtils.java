@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.util;
 
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.Products;
+import com.mojang.datafixers.types.Func;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -39,6 +40,8 @@ public class CodecUtils {
     }
 
     public static final Codec<Music> GAME_MUSIC = Codec.withAlternative(Music.CODEC, SoundEvent.CODEC, CodecUtils::createMusic);
+
+    public static final Codec<Integer> STRING_INT = Codec.STRING.xmap(Integer::valueOf, value -> Integer.toString(value));
 
     public static <T, V, U extends Map<T, V>> Codec<U> listMap(Codec<T> keyCodec, Codec<V> valueCodec, Supplier<U> supplier) {
         return Codec.pair(keyCodec, valueCodec).listOf().<U>xmap(pairs -> {

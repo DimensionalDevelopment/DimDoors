@@ -38,8 +38,8 @@ public class VoidGenerator extends PocketGenerator<VoidGenerator> {
     }
 
     @Override
-    public Pocket prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-        Pocket pocket = DimensionalRegistry.createPocket(parameters.world().dimension(), builder);
+    public Pocket<?, ?> prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
+        Pocket<?, ?> pocket = DimensionalRegistry.createPocket(parameters.world().dimension(), builder);
         Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
         pocket.setSize((int) width.apply(variableMap), (int) height.apply(variableMap), (int) length.apply(variableMap));
 

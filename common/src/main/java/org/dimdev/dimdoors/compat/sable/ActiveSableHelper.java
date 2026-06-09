@@ -316,7 +316,7 @@ public class ActiveSableHelper extends SableHelper {
         Location location = rift.getLocation();
         if (location == null || !location.world.equals(level.dimension())) {
             if (previousTrackingPoint != null) {
-                DimensionalRegistry.setDirty();
+                DimensionalRegistry.setIsDirty();
             }
             return;
         }
@@ -325,14 +325,14 @@ public class ActiveSableHelper extends SableHelper {
         var subLevel = SableCompanion.INSTANCE.getContaining(level, localPos);
         if (!(subLevel instanceof ServerSubLevel serverSubLevel)) {
             if (previousTrackingPoint != null) {
-                DimensionalRegistry.setDirty();
+                DimensionalRegistry.setIsDirty();
             }
             return;
         }
 
         UUID trackingPoint = trackingData.generateTrackingPoint(localPos, serverSubLevel);
         sableRift.dimdoors$setSableTrackingPoint(trackingPoint);
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     /**
@@ -353,7 +353,7 @@ public class ActiveSableHelper extends SableHelper {
 
         SubLevelTrackingPointSavedData.getOrLoad(level).removeTrackingPoint(previousTrackingPoint);
         sableRift.dimdoors$setSableTrackingPoint(null);
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     /**
@@ -569,7 +569,7 @@ public class ActiveSableHelper extends SableHelper {
 
         UUID trackingPoint = SubLevelTrackingPointSavedData.getOrLoad(level).generateTrackingPoint(localRiftPos, serverSubLevel);
         sableRift.dimdoors$setSableTrackingPoint(trackingPoint);
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
 
         return serverSubLevel.logicalPose();
     }

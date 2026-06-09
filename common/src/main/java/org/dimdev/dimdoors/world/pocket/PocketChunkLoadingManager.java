@@ -40,10 +40,10 @@ public final class PocketChunkLoadingManager {
         boolean wasForceLoaded = isForceLoaded(pocket);
         if (forceLoaded && !wasForceLoaded) {
             pocket.addAddon(ForceLoadedPocketAddon.instance());
-            DimensionalRegistry.setDirty();
+            DimensionalRegistry.setIsDirty();
         } else if (!forceLoaded && wasForceLoaded) {
             pocket.removeAddon(PocketAddon.PocketAddonType.FORCE_LOADED_ADDON);
-            DimensionalRegistry.setDirty();
+            DimensionalRegistry.setIsDirty();
         } else if (!forceLoaded) {
             return 0;
         }

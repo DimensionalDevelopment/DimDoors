@@ -205,7 +205,7 @@ public class RiftRegistry {
             this.uuidMap.put(rift.id, rift);
             this.graph.addVertex(rift);
 
-            DimensionalRegistry.setDirty();
+            DimensionalRegistry.setIsDirty();
         }
         return rift;
     }
@@ -276,7 +276,7 @@ public class RiftRegistry {
 
         this.overworldLocations.replaceAll((uuid, loc) -> filteredMovements.getOrDefault(loc, loc));
 
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public void addRift(Location location) {
@@ -298,7 +298,7 @@ public class RiftRegistry {
         this.locationMap.put(location, rift);
         rift.markDirty();
 
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public void removeRift(Location location) {
@@ -317,7 +317,7 @@ public class RiftRegistry {
         for (DefaultEdge edge : incomingEdges) this.graph.getEdgeSource(edge).targetGone(rift);
         for (DefaultEdge edge : outgoingEdges) this.graph.getEdgeTarget(edge).sourceGone(rift);
 
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
 
@@ -335,7 +335,7 @@ public class RiftRegistry {
 
     private void removeEdge(RegistryVertex from, RegistryVertex to) {
         this.graph.removeEdge(from, to);
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public void addLink(Location locationFrom, Location locationTo) {
@@ -352,7 +352,7 @@ public class RiftRegistry {
             to.sourceAdded(from);
         }
 
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public void removeLink(Location locationFrom, Location locationTo) {
@@ -367,7 +367,7 @@ public class RiftRegistry {
         from.targetGone(to);
         to.sourceGone(from);
 
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public void setProperties(Location location, LinkProperties properties) {
@@ -375,7 +375,7 @@ public class RiftRegistry {
         Rift rift = this.getRift(location);
         rift.setProperties(properties);
         rift.markDirty();
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public Set<Location> getPocketEntrances(Pocket pocket) {
@@ -412,7 +412,7 @@ public class RiftRegistry {
                 this.getRift(location)
         );
 
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public boolean removePocketReferences(Pocket pocket) {
@@ -459,7 +459,7 @@ public class RiftRegistry {
                 .forEach(Rift::markDirty);
 
         if (removed) {
-            DimensionalRegistry.setDirty();
+            DimensionalRegistry.setIsDirty();
         }
         return removed;
     }
@@ -513,7 +513,7 @@ public class RiftRegistry {
     public void setLastPrivatePocketEntrance(UUID playerUUID, Location rift) {
         LOGGER.debug("Setting last used private pocket entrance for " + playerUUID + " at " + rift);
         this.setPlayerRiftPointer(playerUUID, rift, this.lastPrivatePocketEntrances);
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public Location getPrivatePocketExit(UUID playerUUID) {
@@ -524,7 +524,7 @@ public class RiftRegistry {
     public void setLastPrivatePocketExit(UUID playerUUID, Location rift) {
         LOGGER.debug("Setting last used private pocket exit for " + playerUUID + " at " + rift);
         this.setPlayerRiftPointer(playerUUID, rift, this.lastPrivatePocketExits);
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public Location getOverworldRift(UUID playerUUID) {
@@ -535,7 +535,7 @@ public class RiftRegistry {
     public void setOverworldRift(UUID playerUUID, Location rift) {
 
         this.setPlayerRiftPointer(playerUUID, rift, this.overworldRifts);
-        DimensionalRegistry.setDirty();
+        DimensionalRegistry.setIsDirty();
     }
 
     public Collection<Rift> getRifts() {
