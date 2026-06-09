@@ -11,7 +11,6 @@ import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 import org.dimdev.dimdoors.world.pocket.type.addon.cloud.CloudData;
 
 public class EnvironmentAddon implements PocketAddon {
-    public static ResourceLocation ID = DimensionalDoors.id("environment");
     public static final MapCodec<EnvironmentAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(Environment.CODEC.optionalFieldOf("environment", EmptyEnvironment.INSTANCE).forGetter(a -> a.environment)).apply(instance, EnvironmentAddon::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, EnvironmentAddon> STREAM_CODEC = StreamCodec.composite(Environment.STREAM_CODEC, a -> a.environment, EnvironmentAddon::new);
 
@@ -27,7 +26,7 @@ public class EnvironmentAddon implements PocketAddon {
 
     @Override
     public PocketAddonType<?, ?> getType() {
-    return PocketAddonType.ENVIRONMENT_ADDON;
+        return PocketAddonType.ENVIRONMENT_ADDON;
     }
 
     public SkyData getSky() {
@@ -45,7 +44,7 @@ public class EnvironmentAddon implements PocketAddon {
     public static class EnvironmentBuilderAddon implements PocketBuilderAddon<EnvironmentAddon, EnvironmentBuilderAddon> {
         public static final MapCodec<EnvironmentBuilderAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(Environment.CODEC.optionalFieldOf("environment", EmptyEnvironment.INSTANCE).forGetter(a -> a.environment)).apply(instance, EnvironmentBuilderAddon::new));
 
-        private Environment environment = EmptyEnvironment.INSTANCE;
+        private final Environment environment;
 
         public EnvironmentBuilderAddon(Environment environment) {
             this.environment = environment;
@@ -57,10 +56,9 @@ public class EnvironmentAddon implements PocketAddon {
         pocket.addAddon(addon);
     }
 
-    @Override
-    public PocketAddonType<EnvironmentAddon, EnvironmentBuilderAddon> getType() {
-        return PocketAddonType.ENVIRONMENT_ADDON;
+        @Override
+        public PocketAddonType<EnvironmentAddon, EnvironmentBuilderAddon> getType() {
+            return PocketAddonType.ENVIRONMENT_ADDON;
+        }
     }
-    }
-
 }

@@ -29,14 +29,14 @@ public abstract class ClientPlayerInteractionManagerMixin {
 
     @Inject(method = "useItemOn", cancellable = true, at = @At(value = "NEW", target = "org/apache/commons/lang3/mutable/MutableObject", remap = false))
     public void useItemOnBlock(LocalPlayer player, InteractionHand hand, BlockHitResult hitResult, CallbackInfoReturnable<InteractionResult> info) {
-    InteractionResult result = UseItemOnBlockCallback.EVENT.invoker().useItemOnBlock(player, minecraft.level, hand, hitResult);
-    if (result == InteractionResult.PASS) {
-        return;
-    }
-    info.setReturnValue(result);
-    info.cancel();
-    if (result == InteractionResult.SUCCESS) {
-        this.startPrediction(this.minecraft.level, sequence -> new ServerboundUseItemOnPacket(hand, hitResult, sequence));
-    }
+        InteractionResult result = UseItemOnBlockCallback.EVENT.invoker().useItemOnBlock(player, minecraft.level, hand, hitResult);
+        if (result == InteractionResult.PASS) {
+            return;
+        }
+        info.setReturnValue(result);
+        info.cancel();
+        if (result == InteractionResult.SUCCESS) {
+            this.startPrediction(this.minecraft.level, sequence -> new ServerboundUseItemOnPacket(hand, hitResult, sequence));
+        }
     }
 }

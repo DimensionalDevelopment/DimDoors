@@ -47,10 +47,10 @@
     "client.ClientPlayerInteractionManagerMixin",
     "client.InGameHudMixin",
     "client.LevelRendererMixin",
+    "client.MinecraftMixin",
     "client.ParticleEngineMixin",
     "client.PlaceRecipeMixin",
     "client.PostProcessShaderMixin",
-    "client.accessor.DimensionSpecialEffectsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

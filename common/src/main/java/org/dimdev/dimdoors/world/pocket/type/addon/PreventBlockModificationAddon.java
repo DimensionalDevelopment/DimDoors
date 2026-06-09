@@ -18,7 +18,6 @@ import org.dimdev.dimdoors.api.event.UseItemOnBlockCallback;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public final class PreventBlockModificationAddon implements PocketAddon, UseItemOnBlockCallback {
-    public static final ResourceLocation ID = DimensionalDoors.id("prevent_block_modification");
     private static final PreventBlockModificationAddon INSTANCE = new PreventBlockModificationAddon();
     public static final MapCodec<PreventBlockModificationAddon> CODEC = MapCodec.unit(INSTANCE);
     public static final StreamCodec<RegistryFriendlyByteBuf, PreventBlockModificationAddon> STREAM_CODEC = StreamCodec.unit(INSTANCE);

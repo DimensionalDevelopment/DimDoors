@@ -26,7 +26,6 @@ import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 import java.util.HashMap;
 
 public class DyeableAddon implements PocketAddon {
-    public static ResourceLocation ID = DimensionalDoors.id("dyeable");
     public static final MapCodec<DyeableAddon> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     PocketColor.CODEC.fieldOf("dyeColor").forGetter(a -> a.dyeColor),
                     PocketColor.CODEC.fieldOf("nextDyeColor").forGetter(a -> a.nextDyeColor),

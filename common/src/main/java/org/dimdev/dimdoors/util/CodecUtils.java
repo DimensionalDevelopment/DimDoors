@@ -13,6 +13,9 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.sounds.Music;
+import net.minecraft.sounds.Musics;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.api.util.Path;
@@ -31,6 +34,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class CodecUtils {
+    private static Music createMusic(Holder<SoundEvent> sound) {
+        return new Music(sound, 0, 0, true);
+    }
+
+    public static final Codec<Music> GAME_MUSIC = Codec.withAlternative(Music.CODEC, SoundEvent.CODEC, CodecUtils::createMusic);
+
     public static <T, V, U extends Map<T, V>> Codec<U> listMap(Codec<T> keyCodec, Codec<V> valueCodec, Supplier<U> supplier) {
         return Codec.pair(keyCodec, valueCodec).listOf().<U>xmap(pairs -> {
             var map = supplier.get();

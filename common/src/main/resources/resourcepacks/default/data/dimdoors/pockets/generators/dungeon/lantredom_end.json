@@ -9,6 +9,10 @@
         "environment": {
           "type": "dimdoors:end"
         }
+      },
+      {
+        "type": "dimdoors:music",
+        "music": "minecraft:music.end"
       }
     ]
   },
