@@ -13,13 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -27,13 +22,13 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock {
+public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock<SlidingEntranceRiftBlockEntity> {
 
     public SlidingDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
         super(settings, originalBlock);
@@ -50,7 +45,7 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
     }*/
 
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         if (!state.getValue(OPEN) && state.getValue(SlidingDoorBlock.VISIBLE)) {
             return super.getShape(state, level, pos, context);
         }
@@ -61,7 +56,7 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
     }
 
     @Override
-    public VoxelShape getInteractionShape(BlockState state, BlockGetter level, BlockPos pos) {
+    public @NotNull VoxelShape getInteractionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos) {
         return getShape(state, level, pos, CollisionContext.empty());
     }
 
@@ -78,14 +73,14 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
 
 
     @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+    public void onPlace(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState oldState, boolean isMoving) {
         if (!oldState.is(this)) {
             deferUpdate(level, pos);
         }
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    public @NotNull BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
         BlockState updatedState = super.updateShape(state, direction, neighborState, level, currentPos, facingPos);
         if (updatedState.isAir()) {
             return updatedState;
@@ -105,7 +100,7 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
     }
 
     @Override
-    public void setOpen(@Nullable Entity entity, Level level, BlockState state, BlockPos pos, boolean open) {
+    public void setOpen(@Nullable Entity entity, @NotNull Level level, BlockState state, @NotNull BlockPos pos, boolean open) {
         if (!state.is(this) || state.getValue(OPEN) == open) {
             return;
         }
@@ -129,7 +124,7 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+    public void neighborChanged(BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block block, @NotNull BlockPos fromPos, boolean isMoving) {
         boolean lower = state.getValue(HALF) == DoubleBlockHalf.LOWER;
         boolean powered = isDoorPowered(level, pos, state);
         if (defaultBlockState().is(block) || powered == state.getValue(POWERED)) {
@@ -173,7 +168,7 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
     }
 
     @Override
-    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+    public @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
         state = state.cycle(OPEN);
         boolean open = state.getValue(OPEN);
         if (open) {
@@ -200,12 +195,12 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
     }
 
     @Override
-    protected void closeDoorBehind(Level level, BlockPos top, BlockPos bottom) {
-        closeDoorHalfBehind(level, top);
-        closeDoorHalfBehind(level, bottom);
+    public void postTraverseEffect(Level level, BlockPos pos, BlockState state, RiftBlockEntity rift) {
+        super.postTraverseEffect(level, pos, state, rift);
     }
 
-    private void closeDoorHalfBehind(Level level, BlockPos pos) {
+    @Override
+    protected void closeDoorBehind(Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         if (!state.is(this)) {
             return;
@@ -219,31 +214,9 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
         }
     }
 
-    @Nullable
     @Override
-    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        if (state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
-            return null;
-        }
-        return new SlidingEntranceRiftBlockEntity(pos, state);
-    }
-
-    @Override
-    public EntranceRiftBlockEntity getRift(Level world, BlockPos pos, BlockState state) {
-        BlockPos riftPos = state.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
-        return world.getBlockEntity(riftPos, CreateCompatBlockEntityTypes.SLIDING_ENTRANCE_RIFT)
-                .orElseThrow(() -> new IllegalStateException("Sliding dimensional door at " + pos + " in world " + world + " contained no rift."));
-    }
-
-    @Override
-    protected RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-        return DimensionalPortalBlock.checkType(type, CreateCompatBlockEntityTypes.SLIDING_ENTRANCE_RIFT, (level, blockPos, blockState, blockEntity) -> blockEntity.tick(level, blockPos, blockState));
+    public BlockEntityType<SlidingEntranceRiftBlockEntity> getRiftBlockEnityType() {
+        return CreateCompatBlockEntityTypes.SLIDING_ENTRANCE_RIFT;
     }
 
     private void deferUpdate(LevelAccessor level, BlockPos pos) {

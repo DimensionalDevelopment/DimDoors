@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity {
@@ -19,7 +18,6 @@ public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity {
 
     private float animation;
     private float previousAnimation;
-    private BlockState renderBlockState;
     int bridgeTicks;
     boolean deferUpdate;
 
@@ -31,7 +29,6 @@ public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity {
         super(type, pos, state);
         this.animation = isOpen(state) ? 1 : 0;
         this.previousAnimation = this.animation;
-        this.renderBlockState = createRenderBlockState(state);
     }
 
     @Override
@@ -64,17 +61,6 @@ public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity {
         }
     }
 
-    @Override
-    public void setBlockState(BlockState state) {
-        super.setBlockState(state);
-        this.renderBlockState = createRenderBlockState(state);
-    }
-
-    @Override
-    public BlockState getRenderBlockState() {
-        return renderBlockState == null ? super.getRenderBlockState() : renderBlockState;
-    }
-
     public float getAnimation(float partialTicks) {
         return Mth.lerp(partialTicks, previousAnimation, animation);
     }
@@ -83,26 +69,22 @@ public class SlidingEntranceRiftBlockEntity extends EntranceRiftBlockEntity {
         return !isVisible(state) || bridgeTicks != 0;
     }
 
-    private BlockState createRenderBlockState(BlockState state) {
-        if (state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoDimensionalDoorBlock) {
-            return autoDimensionalDoorBlock.getEffectiveBlockState(state);
-        }
-        return state;
-    }
-
     private boolean isVisible(BlockState state) {
         return state.getOptionalValue(SlidingDoorBlock.VISIBLE)
                 .orElse(true);
     }
 
     private void showBlockModel() {
-        BlockState state = getBlockState();
-        if (!state.hasProperty(SlidingDoorBlock.VISIBLE)) {
-            return;
-        }
+        if(level != null) {
 
-        level.setBlock(worldPosition, state.setValue(SlidingDoorBlock.VISIBLE, true), Block.UPDATE_ALL);
-        level.playSound(null, worldPosition, SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, .5f, 1);
+            BlockState state = getBlockState();
+            if (!state.hasProperty(SlidingDoorBlock.VISIBLE)) {
+                return;
+            }
+
+            level.setBlock(worldPosition, state.setValue(SlidingDoorBlock.VISIBLE, true), Block.UPDATE_ALL);
+            level.playSound(null, worldPosition, SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, .5f, 1);
+        }
     }
 
     private static boolean isOpen(BlockState state) {

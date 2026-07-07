@@ -21,8 +21,6 @@ dependencies {
 
     modApi("dev.ryanhcode.sable:sable-fabric-${project.minecraft_version}:${project.sable_version}")
 
-//    modApi "dev.architectury:architectury-fabric:${architectury_version}"
-
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
     includeCompile "com.github.Chocohead:Fabric-ASM:v2.3"
@@ -34,7 +32,6 @@ dependencies {
 
     modApi "curse.maven:worldedit-${worldedit_CF}:${worldedit_CF_version}"
 
-    modApi "mcp.mobius.waila:wthit:fabric-${wthitVersion}"
     modImplementation "curse.maven:selene-499980:7522322"
     modImplementation "curse.maven:modmenu-308702:7808443"
 
@@ -52,8 +49,6 @@ dependencies {
 //            break
 //        }
 //    }
-
-    modImplementation "curse.maven:modmenu-308702:5810603"
 }
 
 loom {

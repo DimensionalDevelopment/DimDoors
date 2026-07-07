@@ -13,12 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +24,9 @@ import net.minecraft.world.level.block.state.properties.Property;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ISided;
 import org.dimdev.dimdoors.api.event.RegisterDimensionalDoorProductionsCallback;
+import org.dimdev.dimdoors.block.AutoGenTraversalRiftBlock;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
 import org.dimdev.dimdoors.tag.ModBlockTags;
@@ -37,8 +36,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiPredicate;
-
-import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
 public class DimensionalDoorBlockRegistrar {
     public static final String PREFIX = "block_ag_dim_";
@@ -68,9 +65,7 @@ public class DimensionalDoorBlockRegistrar {
         }
 
         Map<TagKey<Block>, List<Holder<Block>>> result = new HashMap<>(map.size());
-        map.forEach((tag, holders) -> {
-            result.put(tag, new ArrayList<>(holders));
-        });
+        map.forEach((tag, holders) -> result.put(tag, new ArrayList<>(holders)));
 
         map.forEach((tag, holders) -> {
             if (tag.equals(BlockTags.MOB_INTERACTABLE_DOORS)) {
@@ -108,9 +103,7 @@ public class DimensionalDoorBlockRegistrar {
         }
 
         Map<TagKey<Item>, List<Holder<Item>>> result = new HashMap<>(map.size());
-        map.forEach((tag, holders) -> {
-            result.put(tag, new ArrayList<>(holders));
-        });
+        map.forEach((tag, holders) -> result.put(tag, new ArrayList<>(holders)));
 
         map.forEach((tag, holders) -> {
             List<Holder<Item>> tagList = result.get(tag);
@@ -167,12 +160,12 @@ public class DimensionalDoorBlockRegistrar {
     private static final DoorProduction DEFAULT_PRODUCTION = new DoorProduction() {
         @Override
         public Block createDoor(GeneratedDoorContext context, DoorBlock originalBlock) {
-            return createAutoGenDimensionalDoorBlock(context.properties(), originalBlock);
+            return new DefaultAutoGenDoorBlock(context.properties(), originalBlock);
         }
 
         @Override
         public Block createTrapdoor(GeneratedDoorContext context, TrapDoorBlock originalBlock) {
-            return createAutoGenDimensionalTrapdoorBlock(context.properties(), (DoorSoundProvider) originalBlock);
+            return new DefaultAutoGenTrapDoorBlock(context.properties(), originalBlock);
         }
 
         @Override
@@ -256,7 +249,7 @@ public class DimensionalDoorBlockRegistrar {
     }
 
     private static BlockBehaviour.Properties createProperties(Block original) {
-        return BlockBehaviour.Properties.ofFullCopy((BlockBehaviour) original)
+        return BlockBehaviour.Properties.ofFullCopy( original)
                 .mapColor(original.defaultMapColor())
                 .lightLevel(state -> originalStateWithSharedProperties(original, state).getLightEmission())
                 .isValidSpawn((state, level, pos, type) -> originalStateWithSharedProperties(original, state).isValidSpawn(level, pos, type))
@@ -325,19 +318,11 @@ public class DimensionalDoorBlockRegistrar {
         return to.setValue(property, from.getValue(property));
     }
 
-    private static AutoGenDimensionalDoorBlock createAutoGenDimensionalDoorBlock(BlockBehaviour.Properties settings, DoorSoundProvider originalBlock) {
-        return new AutoGenDimensionalDoorBlock(settings, originalBlock);
-    }
-
-    private static AutoGenDimensionalTrapdoorBlock createAutoGenDimensionalTrapdoorBlock(BlockBehaviour.Properties settings, DoorSoundProvider originalBlock) {
-        return new AutoGenDimensionalTrapdoorBlock(settings, originalBlock);
-    }
-
     public Set<ResourceLocation> getGennedIds() {
         return mappedDoorBlocks.keySet();
     }
 
-    public static class AutoGenDimensionalDoorBlock extends DimensionalDoorBlock {
+    public static abstract class AutoGenDimensionalDoorBlock<T extends EntranceRiftBlockEntity> extends DimensionalDoorBlock<T> {
         protected final Block originalBlock;
 
         public AutoGenDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
@@ -371,20 +356,7 @@ public class DimensionalDoorBlockRegistrar {
         }
 
         @Override
-        public BlockState getEffectiveBlockState(BlockState state) {
-            var baseState = originalBlock.defaultBlockState();
-
-            return state.getProperties().stream()
-                    .filter(baseState::hasProperty)
-                    .reduce(
-                            baseState,
-                            (newState, property) -> transferProperty(state, newState, property),
-                            (a, b) -> b
-                    );
-        }
-
-        @Override
-        public MutableComponent getName() {
+        public @NotNull MutableComponent getName() {
             return Component.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
         }
 
@@ -392,14 +364,25 @@ public class DimensionalDoorBlockRegistrar {
             return originalBlock;
         }
 
-        @Nullable
         @Override
-        public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-            return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT, (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
+        public BlockState getVisualBlockState(BlockState state) {
+            return getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
         }
     }
 
-    public static class AutoGenDimensionalTrapdoorBlock extends DimensionalTrapDoorBlock {
+    public static class DefaultAutoGenDoorBlock extends AutoGenDimensionalDoorBlock<EntranceRiftBlockEntity> {
+
+        public DefaultAutoGenDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
+            super(settings, originalBlock);
+        }
+
+        @Override
+        public BlockEntityType<EntranceRiftBlockEntity> getRiftBlockEnityType() {
+            return ModBlockEntityTypes.ENTRANCE_RIFT;
+        }
+    }
+
+    public static abstract class  AutoGenDimensionalTrapdoorBlock<T extends EntranceRiftBlockEntity> extends DimensionalTrapDoorBlock<T> implements AutoGenTraversalRiftBlock<T> {
         private final Block originalBlock;
 
         public AutoGenDimensionalTrapdoorBlock(Properties settings, DoorSoundProvider originalBlock) {
@@ -424,7 +407,7 @@ public class DimensionalDoorBlockRegistrar {
         public static final List<Property<?>> EXISTING_TRAPDOOR_PROPERTIES = List.of(WATERLOGGED, TrapDoorBlock.HALF, TrapDoorBlock.OPEN, TrapDoorBlock.FACING, TrapDoorBlock.POWERED);
 
         @Override
-        protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
             super.createBlockStateDefinition(builder);
 
             if(originalBlock != null) {
@@ -432,32 +415,25 @@ public class DimensionalDoorBlockRegistrar {
             }
         }
 
-        @Override
-        public BlockState getEffectiveBlockState(BlockState state) {
-            var baseState = originalBlock.defaultBlockState();
-
-            return state.getProperties().stream()
-                    .filter(baseState::hasProperty)
-                    .reduce(
-                            baseState,
-                            (newState, property) -> transferProperty(state, newState, property),
-                            (a, b) -> b
-                    );
-        }
-
-        @Override
-        public MutableComponent getName() {
-            return Component.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
-        }
-
         public Block getOriginalBlock() {
             return originalBlock;
         }
 
-        @Nullable
         @Override
-        public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type) {
-            return checkType(type, ModBlockEntityTypes.ENTRANCE_RIFT, (level, blockPos, blockState, blockEntity) -> blockEntity.tick(world, blockPos, blockState));
+        public BlockState getVisualBlockState(BlockState state) {
+            return getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(POWERED, state.getValue(POWERED)).setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
+        }
+    }
+
+    public static class DefaultAutoGenTrapDoorBlock extends AutoGenDimensionalTrapdoorBlock<EntranceRiftBlockEntity> {
+
+        public DefaultAutoGenTrapDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
+            super(settings, originalBlock);
+        }
+
+        @Override
+        public BlockEntityType<EntranceRiftBlockEntity> getRiftBlockEnityType() {
+            return ModBlockEntityTypes.ENTRANCE_RIFT;
         }
     }
 }

@@ -12,30 +12,30 @@ public interface CoordinateTransformerBlock {
     TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder(BlockState state, BlockPos pos);
 
     default Vec3 transformTo(TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder, Vec3 vector) {
-    return transformationBuilder.build().transform(vector);
+        return transformationBuilder.build().transform(vector);
     }
 
     default Vec3 transformOut(TransformationMatrix3d.TransformationMatrix3dBuilder transformationBuilder, Vec3 vector) {
-    return transformationBuilder.buildReverse().transform(vector);
+        return transformationBuilder.buildReverse().transform(vector);
     }
 
     default Rotations rotateTo(TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder, Rotations angle) {
-    return rotatorBuilder.build().transform(angle);
+        return rotatorBuilder.build().transform(angle);
     }
 
     default Vec3 rotateTo(TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder, Vec3 vector) {
-    return rotatorBuilder.build().transform(vector);
+        return rotatorBuilder.build().transform(vector);
     }
 
     default Rotations rotateOut(TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder, Rotations angle) {
-    return rotatorBuilder.buildReverse().transform(angle);
+        return rotatorBuilder.buildReverse().transform(angle);
     }
 
     default Vec3 rotateOut(TransformationMatrix3d.TransformationMatrix3dBuilder rotatorBuilder, Vec3 vector) {
-    return rotatorBuilder.buildReverse().transform(vector);
+        return rotatorBuilder.buildReverse().transform(vector);
     }
 
     default boolean isExitFlipped() {
-    return false;
+        return false;
     }
 }

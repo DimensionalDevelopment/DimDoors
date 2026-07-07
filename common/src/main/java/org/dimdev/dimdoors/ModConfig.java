@@ -199,7 +199,7 @@ public final class ModConfig {
     }
 
     public static class Limbo {
-        private final WorldList worldsLeadingToLimbo = new WorldList();
+        @Option private final WorldList worldsLeadingToLimbo = new WorldList();
         @Option public boolean hardcoreLimbo = false;
 
         @Option public int limboReturnDistanceMax = 200;
@@ -248,28 +248,6 @@ public final class ModConfig {
         @Option public double riftSize = 1;
         @Option public double riftJitter = 1;
     }
-
-//    public enum ExtendedResourcePackActivationType {
-//        NORMAL(ResourcePackActivationType.NORMAL, "resourcePackActivationType.normal"),
-//        DEFAULT_ENABLED(ResourcePackActivationType.DEFAULT_ENABLED, "resourcePackActivationType.defaultEnabled"),
-//        ALWAYS_ENABLED(ResourcePackActivationType.ALWAYS_ENABLED, "resourcePackActivationType.alwaysEnabled");
-//
-//        private final ResourcePackActivationType resourcePackActivationType;
-//        private final String translationKey;
-//
-//        ExtendedResourcePackActivationType(ResourcePackActivationType resourcePackActivationType, String translationKey) {
-//            this.resourcePackActivationType = resourcePackActivationType;
-//            this.translationKey = translationKey;
-//        }
-//
-//        public ResourcePackActivationType asResourcePackActivationType() {
-//            return resourcePackActivationType;
-//        }
-//
-//        public @NotNull String getKey() {
-//            return translationKey;
-//        }
-//    }
 
     public static final class LevelKeyAdapter implements JsonSerializer<ResourceKey<Level>>, JsonDeserializer<ResourceKey<Level>> {
 

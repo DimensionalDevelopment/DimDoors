@@ -14,6 +14,7 @@ import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 
+
 @Mixin(value = { DimensionalDoorBlock.class, DimensionalTrapDoorBlock.class, DimensionalPortalBlock.class, DetachedRiftBlock.class })
 public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListener {
     @Override

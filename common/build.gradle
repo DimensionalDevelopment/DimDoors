@@ -40,7 +40,6 @@ dependencies {
     }
     compileOnlyApi "curse.maven:create-328085:7963363"
 
-    implementation "curse.maven:cyanide-541676:4824162"
     api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
 
     compileOnlyApi "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
@@ -48,8 +47,6 @@ dependencies {
     api "org.jgrapht:jgrapht-core:1.1.0"
     api "curse.maven:iris-${iris}:${iris_version}"
     api "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
-    implementation "curse.maven:selene-499980:7522322"
-    // api "com.sk89q.worldedit:worldedit-core:${worldedit}"
 
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin:${rei}"

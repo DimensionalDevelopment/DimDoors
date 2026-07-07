@@ -1,18 +1,49 @@
 package org.dimdev.dimdoors.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
+
+import static com.mojang.text2speech.Narrator.LOGGER;
+
 public interface RiftProvider<T extends RiftBlockEntity> extends EntityBlock, RiftVariantProvider, PerservesBlockEntity {
-    T getRift(Level world, BlockPos pos, BlockState state);
+    default T getRift(Level world, BlockPos pos, BlockState state) {
+        var rifPos = getRiftPos(world, pos, state);
+
+        return world.getBlockEntity(pos, getRiftBlockEnityType())
+                .orElseGet(() -> {
+                    LOGGER.warn(providerType() + " at " + rifPos + " in world " + world + " contained no rift.");
+                    return null;
+                });
+    }
+
+    default BlockPos getRiftPos(Level world, BlockPos pos, BlockState state) {
+        return pos;
+    }
+
+    @Override
+    default Optional<? extends RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state)  {
+        pos = getRiftPos(world, pos, state);
+        var rift = getRift(world, pos, state);
+        return Optional.ofNullable(rift);
+    }
+
+    default String providerType() {
+        return "Rift Block";
+    }
 
     default boolean isTall(BlockState cachedState) {
-    return false;
+        return false;
     }
 
     default boolean stateContainsRift(BlockState oldState) {
@@ -20,14 +51,24 @@ public interface RiftProvider<T extends RiftBlockEntity> extends EntityBlock, Ri
     }
 
     @Override
-    public default boolean isCompatible(BlockState oldState) {
+    default boolean isCompatible(BlockState oldState) {
         return oldState.getBlock() instanceof RiftProvider<?> riftProvider && riftProvider.stateContainsRift(oldState);
     }
 
     @Override
     default void attemptTransfer(BlockEntity blockEntity, @Nullable BlockEntity blockEntityToBetransfered) {
-        if(blockEntity instanceof RiftBlockEntity rift1 && blockEntityToBetransfered instanceof RiftBlockEntity rift2) {
+        if (blockEntity instanceof RiftBlockEntity rift1 && blockEntityToBetransfered instanceof RiftBlockEntity rift2) {
             rift1.copyFrom(rift2);
         }
+    }
+
+    BlockEntityType<T> getRiftBlockEnityType();
+
+    default @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
+        return getRiftBlockEnityType().create(pos, state);
+    }
+
+    static <R extends RiftBlockEntity> void tickRift(Level level, BlockPos blockPos, BlockState state, R rift) {
+        rift.tick(level, blockPos, state);
     }
 }

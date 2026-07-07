@@ -13,12 +13,6 @@ def includeCompile(entry) {
     }
 }
 
-repositories {
-    flatDir {
-        dirs "${rootProject.projectDir}/.libs"
-    }
-}
-
 dependencies {
 
     runtimeOnly("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
@@ -30,8 +24,6 @@ dependencies {
 
     compileOnly "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
     compileOnly "mcp.mobius.waila:wthit:neo-${wthitVersion}"
-    // modApi "lol.bai:badpackets:forge-0.4.2"
-    // modApi "com.sk89q.worldedit:worldedit-forge-mc${world_edit_minecraft_version}:${worldedit}"
     compileOnly "curse.maven:worldedit-${worldedit_CF}:${worldedit_CF_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei}"
     compileOnlyApi "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei}"

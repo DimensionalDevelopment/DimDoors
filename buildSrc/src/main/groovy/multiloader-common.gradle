@@ -87,10 +87,6 @@ repositories {
     maven {
         url = "https://cursemaven.com"
     }.content { includeGroup("curse.maven") }
-
-    maven {
-        url = "https://maven.shedaniel.me/"
-    }
 }
 
 // Declare capabilities on the outgoing configurations.
@@ -172,8 +168,12 @@ publishing {
         }
     }
     repositories {
-        maven {
-            url System.getenv('local_maven_url')
+        var local_maven_url = System.getenv('local_maven_url')
+
+        if (local_maven_url != null) {
+            maven {
+                url local_maven_url
+            }
         }
     }
 }

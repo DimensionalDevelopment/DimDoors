@@ -408,4 +408,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     public void setDeleteRift(boolean deleteRift) {
         this.deleteRift = deleteRift;
     }
+
+    public void detach() {
+
+    }
 }

@@ -12,27 +12,17 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
-import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.block.DimensionalPortalBlock;
-import org.dimdev.dimdoors.block.ModBlocks;
-import org.dimdev.dimdoors.block.RiftProvider;
-import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
-import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
-import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
+import org.dimdev.dimdoors.block.*;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.item.RiftKeyItem;
 import org.dimdev.dimdoors.pockets.DefaultDungeonDestinations;
@@ -40,16 +30,13 @@ import org.dimdev.dimdoors.rift.RiftUtils;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.world.ModDimensions;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-import static net.minecraft.world.level.block.DoorBlock.*;
-import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
-
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
     private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
-    private static final Logger LOGGER = LogManager.getLogger();
-    private BlockState doorBlockState;
+    protected BlockState doorBlockState;
     private boolean locked;
     private RiftUtils.PortalPlane plane;
 
@@ -68,34 +55,17 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
         doorBlockState = state;
         plane = null;
 
-        switch (block) {
-            case DimensionalDoorBlock dimDoor -> {
-                if (dimDoor instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoDimDoor)
-                    doorBlockState = autoDimDoor.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
-                plane = RiftUtils.PortalPlane.ofDoor(state, pos);
-            }
-            case DimensionalTrapDoorBlock dimTrapDoor -> {
-                if (dimTrapDoor instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalTrapdoorBlock autoDimTrapDoor)
-                    doorBlockState = autoDimTrapDoor.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(POWERED, state.getValue(POWERED)).setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
-                plane = RiftUtils.PortalPlane.ofTrapdoor(state, pos);
-            }
-            case DimensionalPortalBlock dimensionalPortalBlock -> plane = RiftUtils.PortalPlane.ofDoor(state, pos);
-            default -> {
-            }
+        if (block instanceof TraversableRiftBlock<?> traversableRiftBlock) {
+            doorBlockState = traversableRiftBlock.getVisualBlockState(state);
+            plane = traversableRiftBlock.getPortalPlane(state, pos);
         }
     }
 
     @Override
-    public void setBlockState(BlockState state) {
+    public void setBlockState(@NotNull BlockState state) {
         super.setBlockState(state);
 
-        if (state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalDoorBlock autoGenDimensionalDoorBlock) {
-            doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(HINGE, state.getValue(HINGE)).setValue(POWERED, state.getValue(POWERED)).setValue(HALF, state.getValue(HALF));
-        } else if (state.getBlock() instanceof DimensionalDoorBlockRegistrar.AutoGenDimensionalTrapdoorBlock autoGenDimensionalDoorBlock) {
-            doorBlockState = autoGenDimensionalDoorBlock.getOriginalBlock().defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(OPEN, state.getValue(OPEN)).setValue(POWERED, state.getValue(POWERED)).setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
-        } else {
-            doorBlockState = state;
-        }
+        doorBlockState = state.getBlock() instanceof TraversableRiftBlock<?> traversableRiftBlock ? traversableRiftBlock.getVisualBlockState(state) : state;
     }
 
     @Override
@@ -143,6 +113,7 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
+        if(getLevel() == null) return false;
         return receiveEntityAt((ServerLevel) this.level, this.getBlockPos(), this.getLevel().getBlockState(this.getBlockPos()), entity, relativePos, relativeAngle, relativeVelocity, location);
     }
 
@@ -239,48 +210,13 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
         }
     }
 
-    public void generateDetached(Level world) {
-        var blockState = getBlockState();
-        var pos = getBlockPos();
-        world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, blockState.getValue(WATERLOGGED)));
-        ((DetachedRiftBlockEntity) world.getBlockEntity(pos)).setData(getData());
-    }
-
     @Override
     protected void onClose(Level level, BlockPos pos) {
         var state = level.getBlockState(pos);
         var block = state.getBlock();
 
-        if (block instanceof DimensionalDoorBlock dimensionalDoorBlock) {
-            var base = dimensionalDoorBlock.baseBlock();
-
-            if (base instanceof DoorBlock doorBlock) {
-                var newState = doorBlock.defaultBlockState()
-                        .setValue(FACING, state.getValue(FACING))
-                        .setValue(OPEN, state.getValue(OPEN))
-                        .setValue(HINGE, state.getValue(HINGE))
-                        .setValue(POWERED, state.getValue(POWERED))
-                        .setValue(HALF, DoubleBlockHalf.LOWER);
-
-                level.removeBlock(pos, false);
-                level.setBlockAndUpdate(pos, newState);
-                level.setBlockAndUpdate(pos.above(), newState.setValue(HALF, DoubleBlockHalf.UPPER));
-            }
-        } else if (block instanceof DimensionalTrapDoorBlock dimensionalDoorBlock) {
-            var base = dimensionalDoorBlock.baseBlock();
-
-            if (base instanceof TrapDoorBlock doorBlock) {
-                var newState = doorBlock.defaultBlockState()
-                        .setValue(FACING, state.getValue(FACING))
-                        .setValue(OPEN, state.getValue(OPEN))
-                        .setValue(POWERED, state.getValue(POWERED))
-                        .setValue(TrapDoorBlock.HALF, state.getValue(TrapDoorBlock.HALF));
-
-                level.removeBlock(pos, false);
-                level.setBlockAndUpdate(pos, newState);
-            }
-        } else if (block instanceof DimensionalPortalBlock) {
-            level.removeBlock(pos, false);
+        if(block instanceof TraversableRiftBlock<?> traversableRiftBlock) {
+            traversableRiftBlock.closeRift(level, pos, state);
         }
     }
 
@@ -294,6 +230,16 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     }
 
     public boolean hasTraversed(Level level, Vec3 previousPosition, Vec3 currentPosition) {
-        return plane != null && plane.isTraversed(level, previousPosition, currentPosition);
+        return plane == null || !plane.isTraversed(level, previousPosition, currentPosition);
+    }
+
+    @Override
+    public void detach() {
+        if(level != null) {
+            var waterlogged = getBlockState().hasProperty(BlockStateProperties.WATERLOGGED) ? getRenderBlockState().getValue(BlockStateProperties.WATERLOGGED) : false;
+
+            level.setBlockAndUpdate(worldPosition, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, waterlogged));
+            level.getBlockEntity(worldPosition, ModBlockEntityTypes.DETACHED_RIFT).ifPresent(a -> a.setData(this.getData()));
+        }
     }
 }

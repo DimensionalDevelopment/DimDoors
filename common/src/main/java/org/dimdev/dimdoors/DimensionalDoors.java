@@ -261,7 +261,10 @@ public class DimensionalDoors {
                 pos = pos.below();
             }
 
-            world.setBlockAndUpdate(pos, ModBlocks.DETACHED_RIFT.defaultBlockState().setValue(WATERLOGGED, state.getValue(WATERLOGGED)));
+            var detachedState = ModBlocks.DETACHED_RIFT.defaultBlockState();
+            if(state.hasProperty(WATERLOGGED)) detachedState = detachedState.setValue(WATERLOGGED, state.getValue(WATERLOGGED));
+
+            world.setBlockAndUpdate(pos, detachedState);
             world.getBlockEntity(pos, ModBlockEntityTypes.DETACHED_RIFT).ifPresent(rift -> rift.setData((riftBlockEntity).getData()));
         }
     }

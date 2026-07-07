@@ -5,6 +5,7 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.dimdev.dimdoors.block.TraversableRiftBlock;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,10 +32,6 @@ public abstract class ParticleEngineMixin {
 
     @Unique
     private static BlockState checkIfDimensionalDoor(BlockState state) {
-        if (state.getBlock() instanceof DimensionalDoorBlock dimensionalDoorBlock)
-            return dimensionalDoorBlock.getEffectiveBlockState(state);
-        else if (state.getBlock() instanceof DimensionalTrapDoorBlock dimensionalDoorBlock)
-            return dimensionalDoorBlock.getEffectiveBlockState(state);
-        return state;
+        return state.getBlock() instanceof TraversableRiftBlock<?> traversableRiftBlock ? traversableRiftBlock.getVisualBlockState(state) : state;
     }
 }
