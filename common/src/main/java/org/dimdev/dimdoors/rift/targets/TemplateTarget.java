@@ -14,20 +14,14 @@ import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-public class TemplateTarget extends WrappedDestinationTarget<TemplateTarget> {
+public class TemplateTarget extends RestoringTarget<TemplateTarget> {
     public static final MapCodec<TemplateTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            VirtualTarget.CODEC.optionalFieldOf("wrappedDestination", NoneTarget.INSTANCE).forGetter(a -> a.wrappedDestination),
             VirtualPocket.HOLDER_CODEC.fieldOf("template").forGetter(a -> a.template)).apply(instance, TemplateTarget::new));
 
     private final Holder<VirtualPocket> template;
 
-    public TemplateTarget(VirtualTarget<?> wrappedDestination, Holder<VirtualPocket> template) {
-        super(wrappedDestination);
-        this.template = template;
-    }
-
     public TemplateTarget(Holder<VirtualPocket> template) {
-        this(null, template);
+        this.template = template;
     }
 
     @Override
@@ -43,7 +37,7 @@ public class TemplateTarget extends WrappedDestinationTarget<TemplateTarget> {
 
     @Override
     public TemplateTarget copy() {
-        return new TemplateTarget(wrappedDestination, template);
+        return new TemplateTarget(template);
     }
 
     @Override

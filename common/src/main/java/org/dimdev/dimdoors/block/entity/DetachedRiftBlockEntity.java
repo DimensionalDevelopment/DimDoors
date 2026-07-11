@@ -114,16 +114,6 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
     }
 
     @Override
-    public boolean isLocked() {
-        return false;
-    }
-
-    @Override
-    public void setLocked(boolean locked) {
-        // NO-OP
-    }
-
-    @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = super.getUpdateTag(provider);
         tag.putFloat("size", this.size);

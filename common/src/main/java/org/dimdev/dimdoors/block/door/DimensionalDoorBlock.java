@@ -177,6 +177,31 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> ex
     }
 
     @Override
+    public void revertToBaseVariant(ServerLevel level, BlockPos pos, BlockState state) {
+        state = getVisualBlockState(state);
+
+        BlockPos upperPos;
+        BlockState upperState;
+        BlockPos lowerPos;
+        BlockState lowerState;
+
+        if(state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER) {
+            upperPos = pos;
+            upperState = state;
+            lowerPos = pos.below();
+            lowerState = state.setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER);
+        } else {
+            upperPos = pos.above();
+            upperState = state.setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER);
+            lowerPos = pos;
+            lowerState = state;
+        }
+
+        level.setBlock(lowerPos, lowerState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+        level.setBlock(upperPos, upperState, Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+    }
+
+    @Override
     public RiftUtils.PortalPlane getPortalPlane(BlockState state, BlockPos pos) {
         return RiftUtils.PortalPlane.ofDoor(state, pos);
     }

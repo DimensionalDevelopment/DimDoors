@@ -19,8 +19,8 @@ public class PocketExitMarker extends VirtualTarget<PocketExitMarker> implements
 
     @Override
     public boolean receiveEntity(Entity entity, Vec3 relativePos, Rotations relativeAngle, Vec3 relativeVelocity, Location location) {
-    EntityUtils.chat(entity, Component.literal("The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug."));
-    return false;
+        EntityUtils.chat(entity, Component.literal("The exit of this dungeon has not been linked. If this is a normally generated pocket, please report this bug."));
+        return false;
     }
 
     @Override

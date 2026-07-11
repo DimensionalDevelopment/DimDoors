@@ -69,7 +69,12 @@ public class PrivatePocketExitTarget extends VirtualTarget<PrivatePocketExitTarg
         }
 
         SableHelper.INSTANCE.ensureSableSubLevelLoaded(level, location.pos);
-        return this.resolveDestinationTarget(level, location.pos);
+        EntityTarget target = this.resolveDestinationTarget(level, location.pos);
+        if (target != null) {
+            return target;
+        }
+
+        return location.asTarget().as(Targets.ENTITY);
     }
 
     private EntityTarget resolveDestinationTarget(ServerLevel level, BlockPos pos) {

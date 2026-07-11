@@ -129,6 +129,11 @@ public abstract class DimensionalTrapDoorBlock<T extends EntranceRiftBlockEntity
     }
 
     @Override
+    public void revertToBaseVariant(ServerLevel world, BlockPos pos, BlockState state) {
+        world.setBlock(pos, getVisualBlockState(state), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+    }
+
+    @Override
     public void closeRift(Level level, BlockPos pos, BlockState state) {
         var base = baseBlock();
 

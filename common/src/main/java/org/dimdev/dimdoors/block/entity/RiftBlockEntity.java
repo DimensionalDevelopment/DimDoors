@@ -104,7 +104,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public void setDestination(VirtualTarget destination) {
+    public void setDestination(VirtualTarget<?> destination) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Setting destination {} for {}", destination, this.worldPosition.toShortString());
         }
@@ -114,7 +114,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
         }
         this.data.setDestination(destination);
         if (destination != null && destination != VirtualTarget.NoneTarget.INSTANCE) {
-            if (this.level != null && this.worldPosition != null) {
+            if (this.level != null) {
                 destination.setLocation(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
             }
             if (this.isRegistered()) destination.register();
@@ -237,9 +237,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
             Rotations relativeAngle = new Rotations(entity.getXRot(), entity.getYRot(), 0);
             Vec3 relativeVelocity = entity.getDeltaMovement();
 
-            var location = this.getTarget() instanceof LocationProvider provider ? provider.getLocation() : null;
-
-            EntityTarget target = this.getTarget().as(Targets.ENTITY);
+            Target target = this.getTarget();
+            var location = target instanceof LocationProvider provider ? provider.getLocation() : null;
 
             BlockState state = this.getLevel().getBlockState(this.getBlockPos());
             Block block = state.getBlock();
@@ -260,7 +259,8 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
                 relativeVelocity = transformer.rotateTo(rotatorBuilder, sourceFrame.velocity());
             }
 
-            if (target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
+            EntityTarget entityTarget = target.as(Targets.ENTITY);
+            if (entityTarget.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, location)) {
                 VirtualLocation vLoc = VirtualLocation.fromLocation(Location.ofWorld((ServerLevel) entity.level(), entity.blockPosition()));
                 if (DimensionalDoors.getConfig().getGeneralConfig().enableDebugMessages)
                     EntityUtils.chat(entity, Component.literal("You are at x = " + vLoc.getX() + ", y = ?, z = " + vLoc.getZ() + ", w = " + vLoc.getDepth()));
@@ -291,10 +291,6 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
     }
 
     public abstract boolean isDetached();
-
-    public abstract void setLocked(boolean locked);
-
-    public abstract boolean isLocked();
 
     public void copyFrom(RiftBlockEntity rift) {
         this.data.setDestination(rift.data.getDestination());

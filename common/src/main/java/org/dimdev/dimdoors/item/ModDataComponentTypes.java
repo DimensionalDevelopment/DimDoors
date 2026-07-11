@@ -9,6 +9,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.RotatedLocation;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -18,12 +19,17 @@ public class ModDataComponentTypes {
 
     public static final DataComponentType<RotatedLocation> DESTINATION = register("destination", RotatedLocation.CODEC, RotatedLocation.STREAM_CODEC);
     public static final DataComponentType<Integer> COUNT = register("count", Codec.INT, StreamCodec.of(RegistryFriendlyByteBuf::writeVarInt, RegistryFriendlyByteBuf::readVarInt));
-    public static final DataComponentType<Set<UUID>> KEY_IDS = register("key_ids", UUIDUtil.CODEC_LINKED_SET, ByteBufCodecs.collection(LinkedHashSet::new, UUIDUtil.STREAM_CODEC));
+    public static final DataComponentType<VirtualTarget<?>> VIRTUAL_TARGET = register("virtual_target", VirtualTarget.CODEC);
+
+    private static <T, V extends Codec<T>, U extends StreamCodec<RegistryFriendlyByteBuf, T>> DataComponentType<T> register(String name, V codec) {
+        return register(name, codec, null);
+    }
 
     private static <T, V extends Codec<T>, U extends StreamCodec<RegistryFriendlyByteBuf, T>> DataComponentType<T> register(String name, V codec, U streamCodec) {
-        return DimensionalDoors.getSided().registerDataComponentType(name, DataComponentType.<T>builder().persistent(codec).networkSynchronized(streamCodec).cacheEncoding().build());
+        var builder = DataComponentType.<T>builder().persistent(codec);
+        if(streamCodec != null) builder.networkSynchronized(streamCodec).cacheEncoding();
+        return DimensionalDoors.getSided().registerDataComponentType(name, builder.build());
     }
 
-    public static void register() {
-    }
+    public static void register() {}
 }

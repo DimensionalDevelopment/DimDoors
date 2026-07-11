@@ -85,6 +85,7 @@ public abstract class VirtualTarget<T extends VirtualTarget<?>> implements Targe
         public static final VirtualTargetType<TemplateTarget> TEMPLATE = register("template", TemplateTarget.CODEC);
         public static final VirtualTargetType<EscapeTarget> ESCAPE = register("escape", EscapeTarget.CODEC);
         public static final VirtualTargetType<RiftReference> RIFT_REFENCE = register("rift_reference", RiftReference.CODEC);
+        public static final VirtualTargetType<TempTarget> TEMP = register("temp", TempTarget.CODEC);
         public static final VirtualTargetType<LimboTarget> LIMBO = register("limbo", LimboTarget.INSTANCE);
         public static final VirtualTargetType<PublicPocketTarget> PUBLIC_POCKET = register("public_pocket", PublicPocketTarget.CODEC);
         public static final VirtualTargetType<PocketEntranceMarker> POCKET_ENTRANCE = register("pocket_entrance", PocketEntranceMarker.CODEC);

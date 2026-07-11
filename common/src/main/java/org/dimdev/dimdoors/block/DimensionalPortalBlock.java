@@ -124,7 +124,7 @@ public class DimensionalPortalBlock extends WaterLoggableBlockWithEntity impleme
 
     @Override
     public BlockEntityType<EntranceRiftBlockEntity> getRiftBlockEnityType() {
-        return null;
+        return ModBlockEntityTypes.ENTRANCE_RIFT;
     }
 
     @Nullable

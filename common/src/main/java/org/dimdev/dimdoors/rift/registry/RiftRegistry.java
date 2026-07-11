@@ -494,12 +494,8 @@ public class RiftRegistry {
         if (rift != null) {
             RegistryVertex target = this.locationMap.get(rift);
             if (!(target instanceof Rift)) {
-                LOGGER.warn("Skipping player rift pointer update for {} because {} is not registered.", playerUUID, rift);
-                return;
-            }
-            if (target instanceof RiftPlaceholder) {
-                LOGGER.warn("Skipping player rift pointer update for {} because {} only resolves to a placeholder.", playerUUID, rift);
-                return;
+                LOGGER.debug("Creating player rift pointer placeholder for {} at {}.", playerUUID, rift);
+                target = this.getRiftOrPlaceholder(rift);
             }
 
             pointer = new PlayerRiftPointer(playerUUID);

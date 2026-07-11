@@ -20,7 +20,7 @@ public interface RiftProvider<T extends RiftBlockEntity> extends EntityBlock, Ri
     default T getRift(Level world, BlockPos pos, BlockState state) {
         var rifPos = getRiftPos(world, pos, state);
 
-        return world.getBlockEntity(pos, getRiftBlockEnityType())
+        return world.getBlockEntity(rifPos, getRiftBlockEnityType())
                 .orElseGet(() -> {
                     LOGGER.warn(providerType() + " at " + rifPos + " in world " + world + " contained no rift.");
                     return null;

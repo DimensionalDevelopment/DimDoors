@@ -33,23 +33,32 @@ public class TrapDoorMixin implements DoorSoundProvider, RiftVariantProvider {
 
     @Override
     public Optional<? extends RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
+        Optional<BlockState> providerState = this.getRiftProviderState(state);
+        if (providerState.isEmpty()) {
+            return Optional.empty();
+        }
+
+        BlockState blockState = providerState.get();
+        world.setBlockAndUpdate(pos, blockState);
+
+        return ((RiftVariantProvider) blockState.getBlock()).convertToRiftProvider(world, pos, blockState);
+    }
+
+    @Override
+    public Optional<BlockState> getRiftProviderState(BlockState state) {
         Block dimensionalDoor = DimensionalDoors.getDimensionalDoorBlockRegistrar().getDimensionalVariant((Block) (Object) this);
 
-        if (dimensionalDoor instanceof RiftVariantProvider variantProvider) {
+        if (dimensionalDoor instanceof RiftVariantProvider) {
             var baseState = dimensionalDoor.defaultBlockState();
-
-            var blockState = state.getProperties().stream()
+            return Optional.of(state.getProperties().stream()
                     .filter(baseState::hasProperty)
                     .reduce(
                             baseState,
                             (newState, property) -> transferProperty(state, newState, property),
                             (a, b) -> b
-                    );
-
-            world.setBlockAndUpdate(pos, blockState);
-
-            return variantProvider.convertToRiftProvider(world, pos, blockState);
+                    ));
         }
+
         return Optional.empty();
     }
 }

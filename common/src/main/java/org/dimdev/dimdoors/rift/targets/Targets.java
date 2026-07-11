@@ -14,9 +14,11 @@ import org.dimdev.dimdoors.api.rift.target.*;
 import org.dimdev.dimdoors.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
-import org.dimdev.dimdoors.block.RiftProvider;
+import org.dimdev.dimdoors.block.RiftVariantProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
+
+import java.util.Optional;
 
 // A list of the default targets provided by dimcore. Add your own in ModTargets
 public final class Targets {
@@ -111,8 +113,21 @@ public final class Targets {
             block = state.getBlock();
         }
 
-        if (!(block instanceof RiftProvider<?>) || !(block instanceof CoordinateTransformerBlock)) {
-            return null;
+        if (!(block instanceof CoordinateTransformerBlock)) {
+            if (!(block instanceof RiftVariantProvider provider)) {
+                return null;
+            }
+
+            Optional<BlockState> providerState = provider.getRiftProviderState(state);
+            if (providerState.isEmpty()) {
+                return null;
+            }
+
+            state = providerState.get();
+            block = state.getBlock();
+            if (!(block instanceof CoordinateTransformerBlock)) {
+                return null;
+            }
         }
 
         BlockState targetState = state;

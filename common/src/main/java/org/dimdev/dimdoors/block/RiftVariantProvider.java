@@ -9,4 +9,10 @@ import java.util.Optional;
 
 public interface RiftVariantProvider {
     Optional<? extends RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state);
+
+    default Optional<BlockState> getRiftProviderState(BlockState state) {
+        return Optional.empty();
+    }
+
+    default void revertToBaseVariant(ServerLevel world, BlockPos pos, BlockState state) {}
 }

@@ -37,7 +37,6 @@ import java.util.Optional;
 public class EntranceRiftBlockEntity extends RiftBlockEntity {
     private static final EscapeTarget ESCAPE_TARGET = new EscapeTarget(true);
     protected BlockState doorBlockState;
-    private boolean locked;
     private RiftUtils.PortalPlane plane;
 
     public EntranceRiftBlockEntity(BlockPos pos, BlockState state) {
@@ -68,40 +67,11 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
         doorBlockState = state.getBlock() instanceof TraversableRiftBlock<?> traversableRiftBlock ? traversableRiftBlock.getVisualBlockState(state) : state;
     }
 
-    @Override
-    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
-        locked = nbt.getBoolean("locked");
-    }
-
-    @Override
-    public void saveAdditional(CompoundTag nbt, HolderLookup.Provider provider) {
-        nbt.putBoolean("locked", locked);
-        super.saveAdditional(nbt, provider);
-    }
 
     @Override
     public boolean teleport(Entity entity) {
         //Sets the location where the player should be teleported back to if they are in limbo and try to escape, to be the entrance of the rift that took them into dungeons.
 
-        if (this.isLocked()) {
-            if (entity instanceof LivingEntity) {
-                ItemStack stack = ((LivingEntity) entity).getItemInHand(((LivingEntity) entity).getUsedItemHand());
-                Rift rift = this.asRift();
-
-                if (RiftKeyItem.has(stack, rift.getId())) {
-                    return innerTeleport(entity);
-                }
-
-                EntityUtils.chat(entity, Component.translatable("rifts.isLocked"));
-            }
-            return false;
-        }
-
-        return innerTeleport(entity);
-    }
-
-    private boolean innerTeleport(Entity entity) {
         boolean status = super.teleport(entity);
 
         if (this.riftStateChanged && !this.data.isAlwaysDelete()) {
@@ -189,16 +159,6 @@ public class EntranceRiftBlockEntity extends RiftBlockEntity {
     @Override
     public boolean isDetached() {
         return false;
-    }
-
-    @Override
-    public boolean isLocked() {
-        return locked;
-    }
-
-    @Override
-    public void setLocked(boolean locked) {
-        this.locked = locked;
     }
 
     public void setPortalDestination(ServerLevel world) {
