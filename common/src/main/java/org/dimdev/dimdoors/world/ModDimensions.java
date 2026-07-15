@@ -62,7 +62,7 @@ public final class ModDimensions {
         return world != null && world.dimension().equals(LIMBO);
     }
 
-    public static void init(ISided sided) {
+    public static void init(ISided<?> sided) {
         sided.onServerStarted(server -> {
             ModDimensions.LIMBO_TYPE = server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(LIMBO_TYPE_KEY);
             ModDimensions.POCKET_TYPE = server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).get(POCKET_TYPE_KEY);

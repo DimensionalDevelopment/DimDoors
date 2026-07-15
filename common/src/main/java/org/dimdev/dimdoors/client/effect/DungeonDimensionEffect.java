@@ -21,24 +21,28 @@ import org.joml.Matrix4f;
 
 import java.util.Optional;
 
-public enum DungeonDimensionEffect implements DimensionSpecialEffectsExtensions {
+public enum DungeonDimensionEffect implements DimensionEffect {
     INSTANCE;
 
     @Override
-    public void renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+    public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
         var data = getEnvironmentAddon(level, camera.getBlockPosition()).map(EnvironmentAddon::getSky).orElse(null);
 
         processSky(data, level.dimension().equals(ModDimensions.PERSONAL) ? 255 : 0, level, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
+
+        return true;
     }
 
     @Override
-    public void renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
+    public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix) {
         getEnvironmentAddon(level, BlockPos.containing(camX, camY, camZ)).map(EnvironmentAddon::getCloud).ifPresent(data -> EnvironmentAddonClient.renderCloud(data, level, ticks, partialTick, poseStack, camX, camY, camZ, modelViewMatrix, projectionMatrix));
+        return true;
     }
 
     @Override
-    public void renderWeather(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {
+    public boolean renderWeather(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ) {
         getEnvironmentAddon(level, BlockPos.containing(camX, camY, camZ)).map(EnvironmentAddon::getWeather).ifPresent(data -> EnvironmentAddonClient.renderWeather(data, level, ticks, partialTick, lightTexture, camX, camY, camZ));
+        return true;
     }
 
     private Optional<EnvironmentAddon> getEnvironmentAddon(ClientLevel level, BlockPos pos) {

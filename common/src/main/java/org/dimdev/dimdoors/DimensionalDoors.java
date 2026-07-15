@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -23,6 +24,7 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.client.IDimDoorsClientSided;
 import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 import org.dimdev.dimdoors.command.ModCommands;
 import org.dimdev.dimdoors.compat.sable.SableCompat;
@@ -42,6 +44,11 @@ import org.dimdev.dimdoors.item.loot.ModItemLootConditions;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
 import org.dimdev.dimdoors.listener.pocket.*;
+import org.dimdev.dimdoors.network.ServerPacketHandler;
+import org.dimdev.dimdoors.network.client.ClientPacketListener;
+import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
+import org.dimdev.dimdoors.network.packet.c2s.NetworkHandlerInitializedC2SPacket;
+import org.dimdev.dimdoors.network.packet.s2c.*;
 import org.dimdev.dimdoors.particle.ModParticleTypes;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
@@ -74,12 +81,14 @@ import org.slf4j.Logger;
 
 import static org.dimdev.dimdoors.block.door.WaterLoggableDoorBlock.WATERLOGGED;
 
-public class DimensionalDoors {
+public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
+    public static final DimensionalDoors INSTANCE = new DimensionalDoors();
+
     public static final String MOD_ID = "dimdoors";
     public static final Logger LOGGER = LogUtils.getLogger();
     private static DimensionalDoorItemRegistrar dimensionalDoorItemRegistrar;
     private static DimensionalDoorBlockRegistrar dimensionalDoorBlockRegistrar;
-    private static ISided sided;
+    private static IDimensionalDoorsSided<?> sided;
 
     public static ResourceLocation id(String id) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
@@ -111,7 +120,7 @@ public class DimensionalDoors {
         config = ModConfig.load(sided.getConfigRoot());
     }
 
-    public static void init(ISided sided) {
+    public void init(IDimensionalDoorsSided<?> sided) {
         DimensionalDoors.sided = sided;
 
         reloadConfig();
@@ -150,7 +159,7 @@ public class DimensionalDoors {
         ModDimensions.init(sided);
         dimensionalDoorItemRegistrar = new DimensionalDoorItemRegistrar(sided);
         dimensionalDoorBlockRegistrar = new DimensionalDoorBlockRegistrar(sided, dimensionalDoorItemRegistrar);
-        checkCompat();
+        sided.checkCompat();
         registerRun(Registries.BLOCK, dimensionalDoorBlockRegistrar::init);
         registerRun(Registries.ITEM, () -> {
             dimensionalDoorItemRegistrar.init();
@@ -166,25 +175,24 @@ public class DimensionalDoors {
 
 //        ModRecipeBookTypes.init();
 
-
-        sided.initBuiltinPacks();
-
         sided.registerServerLoader("pocket_loader", PocketLoader::reload);
         sided.registerServerLoader("decay_loader", Decay.DecayLoader::reload, true);
 //        sided.registerServerLoader("door_data_loader", DoorRiftDataLoader::reload);
 
+        sided.registerClientPacket(PlayerInventorySlotUpdateS2CPacket.TYPE, PlayerInventorySlotUpdateS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onPlayerInventorySlotUpdate(packet));
+        sided.registerClientPacket(SyncPocketAddonsS2CPacket.TYPE, SyncPocketAddonsS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onSyncPocketAddons(packet));
+        sided.registerClientPacket(MonolithAggroParticlesPacket.TYPE, MonolithAggroParticlesPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onMonolithAggroParticles(packet));
+        sided.registerClientPacket(MonolithTeleportParticlesPacket.TYPE, MonolithTeleportParticlesPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onMonolithTeleportParticles(packet));
+        sided.registerClientPacket(RenderBreakBlockS2CPacket.TYPE, RenderBreakBlockS2CPacket.STREAM_CODEC, (packet) -> ClientPacketListener.onRenderBreakBlock(packet));
+        sided.registerServerPacket(HitBlockWithItemC2SPacket.TYPE, HitBlockWithItemC2SPacket.STREAM_CODEC, (packet, player) -> ServerPacketHandler.onAttackBlock(player, packet));
+        sided.registerServerPacket(NetworkHandlerInitializedC2SPacket.TYPE, NetworkHandlerInitializedC2SPacket.STREAM_CODEC, (packet, player) -> ServerPacketHandler.onNetworkHandlerInitialized(player));
         sided.onServerStarting(Decay.DecayLoader::populate);
+
+        sided.addPack(PackType.SERVER_DATA, "default", "Default", true);
+        sided.addPack(PackType.SERVER_DATA, "classic", "Classic", true);
 
         registerListeners();
 //        SchemFixer.run();
-    }
-
-    private static void checkCompat() {
-        if(getSided().isModLoaded("sable")) {
-            SableCompat.init();
-        }
-
-        getSided().checkCompat();
     }
 
     private static void registerRun(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
@@ -269,7 +277,7 @@ public class DimensionalDoors {
         }
     }
 
-    public static ISided getSided() {
+    public static IDimensionalDoorsSided<?> getSided() {
         return sided;
     }
 }

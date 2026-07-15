@@ -10,13 +10,13 @@ import org.dimdev.dimdoors.DimensionalDoors;
 import org.joml.Matrix4f;
 
 public class
-LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
+LimboDimensionEffect implements DimensionEffect {
     public static final LimboDimensionEffect INSTANCE = new LimboDimensionEffect();
     private static final ResourceLocation MOON_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_moon.png");
     private static final ResourceLocation SUN_RENDER_PATH = DimensionalDoors.id("textures/other/limbo_sun.png");
 
     @Override
-    public void renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
+    public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
         Tesselator tessellator = Tesselator.getInstance();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -53,6 +53,8 @@ LimboDimensionEffect implements DimensionSpecialEffectsExtensions {
         RenderSystem.depthMask(true);
 //        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
+
+        return true;
     }
 
     public static void renderSkyBox(PoseStack poseStack, int color) {

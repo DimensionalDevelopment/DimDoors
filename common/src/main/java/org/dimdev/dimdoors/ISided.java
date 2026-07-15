@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,22 +34,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public interface ISided extends IRegister, ICreativeTabHandler, INetworking {
-    default Fluid createFlowingEternalFluid() {
-        return new EternalFluid.Flowing();
+public interface ISided<T extends ISided<T>> extends IRegister, ICreativeTabHandler, INetworking {
+    default T self() {
+        return (T) this;
     }
 
-    default FlowingFluid createEternalFluid() {
-        return new EternalFluid.Still();
-    }
-
-    default Fluid createFlowingLeakFluid() {
-        return new LeakFluid.Flowing();
-    }
-
-    default FlowingFluid createLeakFluid() {
-        return new LeakFluid.Still();
-    }
 
     void onServerStarting(Consumer<MinecraftServer> consumer);
     void onServerStarted(Consumer<MinecraftServer> consumer);
@@ -62,16 +52,16 @@ public interface ISided extends IRegister, ICreativeTabHandler, INetworking {
     void onBeforeBlockPlace(BlockPlaceCallback callback);
     void registerEntityAttributes(EntityType<? extends LivingEntity> type, Supplier<AttributeSupplier.Builder> attributes);
 
+    void addPack(PackType type, String id, String name, boolean defaultedOn);
+
     Path getConfigRoot();
-    void initBuiltinPacks();
 
     public void registerServerLoader(String name, BiConsumer<HolderLookup.Provider, ResourceManager> consumer, boolean loadAfterTags);
 
-    default public void registerServerLoader(String pocketLoader, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
+    default void registerServerLoader(String pocketLoader, BiConsumer<HolderLookup.Provider, ResourceManager> consumer) {
         registerServerLoader(pocketLoader, consumer, false);
     }
 
-    public RecipeBookType getTesselatingRecipeBookType();
 
     boolean isModLoaded(String id);
 
@@ -81,11 +71,9 @@ public interface ISided extends IRegister, ICreativeTabHandler, INetworking {
 
     void registerCommands(Consumer<CommandDispatcher<CommandSourceStack>> consumer);
 
-    public <T> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> codec);
+    <T> void createDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> codec);
 
-    default void checkCompat() {
-
-    }
+    String getModId();
 
     @FunctionalInterface
     interface AttackBlockCallback {

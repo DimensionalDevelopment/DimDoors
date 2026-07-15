@@ -9,8 +9,4 @@ import java.util.function.Supplier;
 
 public class ModEntityModelLayers {
     public static ModelLayerLocation MONOLITH = new ModelLayerLocation(DimensionalDoors.id("monolith"), "body");
-
-    public static void initClient(BiConsumer<ModelLayerLocation, Supplier<LayerDefinition>> consumer) {
-        consumer.accept(MONOLITH, MonolithModel::getTexturedModelData);
-    }
 }

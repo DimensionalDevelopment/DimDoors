@@ -5,7 +5,13 @@ import com.google.common.collect.MultimapBuilder;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class SidedImpl implements ISided {
+public abstract class SidedImpl<V extends SidedImpl<V, T>, T extends ModCommon<? super V>> implements ISided<V> {
+    protected final T common;
+
+    public SidedImpl(T common) {
+        this.common = common;
+    }
+
     protected final Multimap<CreativeModeTab, ItemStack> APPENDS = MultimapBuilder.hashKeys().arrayListValues().build();
 
     @Override

@@ -5,6 +5,8 @@
   "minVersion": "0.8",
   "refmap": "dimdoors.refmap.json",
   "client": [
+    "client.DimensionSpecialEffectsMixin",
+    "client.LevelRendererMixin",
     "client.RecipeBookCategoriesAccessor",
     "client.RecipeBookCategoriesMixin",
     "client.RecipeBookManagerMixin"
