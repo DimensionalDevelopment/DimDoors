@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.api.event;
 
-import org.dimdev.dimdoors.api.util.SimpleEvent;
+import org.dimdev.limlib.api.util.SimpleEvent;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 
 @FunctionalInterface

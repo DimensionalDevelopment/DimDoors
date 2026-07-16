@@ -9,7 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
-import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 
 public class PocketEntranceMarker extends VirtualTarget<PocketEntranceMarker> implements EntityTarget {

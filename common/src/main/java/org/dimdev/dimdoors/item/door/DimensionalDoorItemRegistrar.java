@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.ISided;
-import org.dimdev.dimdoors.api.util.function.TriFunction;
+import org.dimdev.limlib.api.ISided;
+import org.dimdev.limlib.api.util.function.TriFunction;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
@@ -41,7 +41,7 @@ import static org.dimdev.dimdoors.item.door.DoorRiftDataLoader.getRiftData;
 public class DimensionalDoorItemRegistrar {
     public static final String PREFIX = "item_ag_dim_";
 
-    private final ISided sided;
+    private final ISided<?> sided;
 
     private final Map<Block, Block> blocksAlreadyNotifiedAbout = new HashMap<>();
     private final Map<Block, Triple<ResourceLocation, Item, Function<Block, BlockItem>>> toBeMapped = new HashMap<>();

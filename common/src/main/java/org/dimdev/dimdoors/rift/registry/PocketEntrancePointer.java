@@ -10,8 +10,8 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
     private int pocketId;
 
     public PocketEntrancePointer(ResourceKey<Level> pocketDim, int pocketId) {
-    this.setWorld(pocketDim);
-    this.pocketId = pocketId;
+        this.setWorld(pocketDim);
+        this.pocketId = pocketId;
     }
 
     public PocketEntrancePointer() {
@@ -19,28 +19,28 @@ public class PocketEntrancePointer extends RegistryVertex { // TODO: PocketRiftP
 
     @Override
     public RegistryVertexType<? extends RegistryVertex> getType() {
-    return RegistryVertexType.ENTRANCE;
+        return RegistryVertexType.ENTRANCE;
     }
 
     public String toString() {
-    return "PocketEntrancePointer(pocketDim=" + this.getWorld() + ", pocketId=" + this.pocketId + ")";
+        return "PocketEntrancePointer(pocketDim=" + this.getWorld() + ", pocketId=" + this.pocketId + ")";
     }
 
     public static CompoundTag toNbt(PocketEntrancePointer vertex) {
-    CompoundTag nbt = new CompoundTag();
-    nbt.putUUID("id", vertex.id);
-    nbt.putString("pocketDim", vertex.getWorld().location().toString());
-    nbt.putInt("pocketId", vertex.pocketId);
-    return nbt;
+        CompoundTag nbt = new CompoundTag();
+        nbt.putUUID("id", vertex.id);
+        nbt.putString("pocketDim", vertex.getWorld().location().toString());
+        nbt.putInt("pocketId", vertex.pocketId);
+        return nbt;
     }
 
     public static PocketEntrancePointer fromNbt(CompoundTag nbt) {
-    PocketEntrancePointer pointer = new PocketEntrancePointer(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
-    pointer.id = nbt.getUUID("id");
-    return pointer;
+        PocketEntrancePointer pointer = new PocketEntrancePointer(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("pocketDim"))), nbt.getInt("pocketId"));
+        pointer.id = nbt.getUUID("id");
+        return pointer;
     }
 
     public int getPocketId() {
-    return pocketId;
+        return pocketId;
     }
 }

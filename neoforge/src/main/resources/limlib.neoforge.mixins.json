@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "org.dimdev.limlib.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "DataAttachmentMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -12,13 +12,13 @@ import org.dimdev.dimdoors.world.decay.DecaySource;
 public class RealitySpongeBlock extends Block {
 
     public RealitySpongeBlock(Properties settings) {
-    super(settings);
+        super(settings);
     }
 
     @Override
     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
-    for (Direction direction : Direction.values()) {
+        for (Direction direction : Direction.values()) {
             Decay.decayBlock(world, pos, state, direction, DecaySource.REAlITY_SPONGE);
-    }
+        }
     }
 }

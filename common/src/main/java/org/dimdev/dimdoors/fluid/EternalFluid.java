@@ -18,20 +18,21 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.item.ModItems;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class EternalFluid extends FlowingFluid {
     @Override
-    public Fluid getFlowing() {
+    public @NotNull Fluid getFlowing() {
         return ModFluids.FLOWING_ETERNAL_FLUID;
     }
 
     @Override
-    public FluidState getSource(boolean falling) {
+    public @NotNull FluidState getSource(boolean falling) {
         return ModFluids.ETERNAL_FLUID.defaultFluidState().setValue(FALLING, falling);
     }
 
     @Override
-    public Item getBucket() {
+    public @NotNull Item getBucket() {
         return ModItems.ETERNAL_FLUID_BUCKET;
     }
 

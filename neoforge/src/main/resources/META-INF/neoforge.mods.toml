@@ -30,6 +30,12 @@ config = "${mod_id}.create_compat.mixins.json"
 [[mixins]]
 config = "dimdoors.simulated_compat.mixins.json"
 
+[[mixins]]
+config = "limlib.mixins.json"
+
+[[mixins]]
+config = "limlib.neoforge.mixins.json"
+
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"

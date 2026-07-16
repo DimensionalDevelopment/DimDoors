@@ -5,24 +5,17 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.function.TriConsumer;
@@ -45,11 +38,14 @@ import org.dimdev.dimdoors.particle.client.LimboAshParticle;
 import org.dimdev.dimdoors.particle.client.MonolithParticle;
 import org.dimdev.dimdoors.particle.client.RiftParticle;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
+import org.dimdev.limlib.api.client.ModClient;
+import org.dimdev.limlib.api.client.ModelLoadingRegistry;
+import org.dimdev.limlib.api.fluid.FluidDetails;
+import org.dimdev.limlib.impl.client.ModelLoadingOverride;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar.PREFIX;
@@ -110,7 +106,7 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     }
 
     @Override
-    public void initFluids(TriConsumer<FlowingFluid, Fluid, ModFluids.FluidDetails> register) {
+    public void initFluids(TriConsumer<FlowingFluid, Fluid, FluidDetails> register) {
         register.accept(ModFluids.LEAK, ModFluids.FLOWING_LEAK, ModFluids.LEAK_DETAILS);
         register.accept(ModFluids.ETERNAL_FLUID, ModFluids.FLOWING_ETERNAL_FLUID, ModFluids.ETERNAL_FLUID_DETAILS);
     }

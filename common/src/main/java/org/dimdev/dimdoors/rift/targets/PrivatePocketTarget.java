@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
-import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.pockets.PocketGenerator;

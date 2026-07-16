@@ -76,6 +76,7 @@ import org.dimdev.dimdoors.world.pocket.PocketChunkClaims;
 import org.dimdev.dimdoors.world.pocket.PocketChunkLoadingManager;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
+import org.dimdev.limlib.api.ModCommon;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 

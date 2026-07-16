@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.item.door.data.condition;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.limlib.api.util.math.Equation;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 
 import java.util.Map;

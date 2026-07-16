@@ -4,6 +4,7 @@ import net.minecraft.client.RecipeBookCategories;
 import net.minecraft.world.inventory.RecipeBookType;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import org.dimdev.limlib.api.util.SimpleEvent;
 
 import java.util.List;
 import java.util.function.BiConsumer;

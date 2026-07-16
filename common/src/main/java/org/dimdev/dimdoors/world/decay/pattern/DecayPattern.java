@@ -6,7 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.api.util.SimpleEvent;
+import org.dimdev.limlib.api.util.SimpleEvent;
 import org.dimdev.dimdoors.world.decay.Decay;
 
 import java.util.stream.Stream;

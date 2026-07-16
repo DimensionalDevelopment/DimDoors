@@ -13,7 +13,7 @@ import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.ISided;
+import org.dimdev.limlib.api.ISided;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 
 import java.util.Objects;

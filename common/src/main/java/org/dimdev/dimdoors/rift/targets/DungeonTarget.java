@@ -12,7 +12,7 @@ import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.Set;
 
-import static org.dimdev.dimdoors.api.util.Products.and;
+import static org.dimdev.limlib.api.util.Products.and;
 
 public class DungeonTarget extends RandomTarget<DungeonTarget> {
     public static final MapCodec<DungeonTarget> CODEC = RecordCodecBuilder.mapCodec(instance -> and(common(instance), ResourceKey.codec(ModRegistryKeys.POCKET_GROUPS).fieldOf("dungeonGroup").forGetter(a -> a.dungeonGroup)).apply(instance, DungeonTarget::new));

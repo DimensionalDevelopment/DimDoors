@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.item.AttackBlockResult;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
-import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.item.component.IdCounter;
 import org.dimdev.dimdoors.network.ServerPacketHandler;

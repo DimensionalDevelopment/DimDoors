@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.DimensionalDoorsClient;
 import org.dimdev.dimdoors.client.ModShaders;
+import org.dimdev.limlib.api.client.RenderLayerFactory;
 
 import java.util.Collections;
 import java.util.HashSet;

@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.client.ToolTipHelper;
+import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

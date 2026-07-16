@@ -41,7 +41,9 @@
     "mixins": [
         "${mod_id}.mixins.json",
         "${mod_id}.sable_compat.mixins.json",
-        "${mod_id}.fabric.mixins.json"
+        "${mod_id}.fabric.mixins.json",
+        "limlib.fabric.mixins.json",
+        "limlib.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",

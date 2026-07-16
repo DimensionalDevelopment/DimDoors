@@ -5,7 +5,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import org.dimdev.dimdoors.api.util.SimpleEvent;
+import org.dimdev.limlib.api.util.SimpleEvent;
 
 public interface UseItemOnBlockCallback {
     SimpleEvent<UseItemOnBlockCallback> EVENT = SimpleEvent.of(

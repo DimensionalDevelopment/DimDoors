@@ -1,9 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.item.door.data.RiftDataList;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;

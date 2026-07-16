@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public class TagBlockBreakCriteria extends SimpleCriterionTrigger<TagBlockBreakC
     }
 
     @Override
-    public Codec<TriggerInstance> codec() {
+    public @NotNull Codec<TriggerInstance> codec() {
     return TriggerInstance.CODEC;
     }
 

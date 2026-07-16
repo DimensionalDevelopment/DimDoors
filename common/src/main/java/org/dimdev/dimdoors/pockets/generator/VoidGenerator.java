@@ -6,7 +6,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.limlib.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;

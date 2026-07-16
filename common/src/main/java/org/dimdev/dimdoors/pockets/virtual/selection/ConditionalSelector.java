@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.pockets.virtual.selection;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.dimdev.dimdoors.api.util.math.Equation;
+import org.dimdev.limlib.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;

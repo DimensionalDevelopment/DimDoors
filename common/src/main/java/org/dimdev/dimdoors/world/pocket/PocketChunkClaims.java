@@ -3,10 +3,9 @@ package org.dimdev.dimdoors.world.pocket;
 import com.mojang.serialization.Codec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.util.ChunkBounds;
-import org.dimdev.dimdoors.util.DataValue;
+import org.dimdev.limlib.util.DataValue;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 public final class PocketChunkClaims {

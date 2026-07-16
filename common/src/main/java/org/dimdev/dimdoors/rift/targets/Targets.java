@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.*;
-import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.RiftVariantProvider;

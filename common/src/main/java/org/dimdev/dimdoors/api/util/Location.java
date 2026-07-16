@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 
@@ -139,7 +138,7 @@ public class Location {
         return mutablePos.move(Direction.UP);
     }
 
-    public VirtualTarget asTarget() {
+    public VirtualTarget<?> asTarget() {
         return new RiftReference(this);
     }
 }

@@ -6,6 +6,7 @@ import net.minecraft.world.level.material.Fluid;
 import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.fluid.EternalFluid;
 import org.dimdev.dimdoors.fluid.LeakFluid;
+import org.dimdev.limlib.api.ISided;
 
 public interface IDimensionalDoorsSided<T extends IDimensionalDoorsSided<T>> extends ISided<T> {
     public RecipeBookType getTesselatingRecipeBookType();

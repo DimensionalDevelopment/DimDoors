@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.rift.target.Target;
-import org.dimdev.dimdoors.api.util.EntityUtils;
+import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;

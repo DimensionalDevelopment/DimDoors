@@ -6,7 +6,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import org.dimdev.dimdoors.ISided;
+import org.dimdev.limlib.api.ISided;
 import org.dimdev.dimdoors.api.item.AttackBlockResult;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.network.client.ClientPacketListener;

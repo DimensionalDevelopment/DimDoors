@@ -6,9 +6,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.api.util.Path;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
-import org.dimdev.dimdoors.api.util.SimpleTree;
+import org.dimdev.limlib.api.util.Path;
+import org.dimdev.limlib.api.util.ResourceUtil;
+import org.dimdev.limlib.api.util.SimpleTree;
 import org.dimdev.dimdoors.util.schematic.Schematic;
 
 public class PocketLoader {

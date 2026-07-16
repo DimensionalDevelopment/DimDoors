@@ -1,26 +1,15 @@
 package org.dimdev.dimdoors.pockets.modifier;
 
-import com.google.common.collect.Multimap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.*;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryFileCodec;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.ModRegistryKeys;
-import org.dimdev.dimdoors.api.util.ReferenceSerializable;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
-import java.util.Collection;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public interface Modifier {
     public Codec<Modifier> BASE_CODEC = ModRegistries.MODIFIER_TYPE.byNameCodec().dispatch(Modifier::getType, ModifierType::codec);

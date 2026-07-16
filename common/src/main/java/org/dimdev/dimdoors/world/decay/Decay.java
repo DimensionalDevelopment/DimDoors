@@ -22,7 +22,7 @@ import net.minecraft.world.phys.AABB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.api.util.ResourceUtil;
+import org.dimdev.limlib.api.util.ResourceUtil;
 import org.dimdev.dimdoors.network.ServerPacketHandler;
 import org.dimdev.dimdoors.network.packet.s2c.RenderBreakBlockS2CPacket;
 import org.dimdev.dimdoors.sound.ModSoundEvents;

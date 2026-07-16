@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.client.ToolTipHelper;
+import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.dimdev.dimdoors.item.RaycastHelper;
 import org.dimdev.dimdoors.listener.UseDoorItemOnBlockCallbackListener;
 import org.jetbrains.annotations.Nullable;

@@ -24,7 +24,7 @@ import org.dimdev.dimdoors.block.DimensionalPortalBlock;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.client.ToolTipHelper;
+import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

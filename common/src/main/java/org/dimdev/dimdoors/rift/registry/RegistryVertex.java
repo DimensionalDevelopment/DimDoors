@@ -41,63 +41,63 @@ public abstract class RegistryVertex {
     public abstract RegistryVertexType<? extends RegistryVertex> getType();
 
     public String toString() {
-    return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";
+        return "RegistryVertex(dim=" + this.world + ", id=" + this.id + ")";
     }
 
     public static RegistryVertex fromNbt(CompoundTag nbt) {
-    return Objects.requireNonNull(REGISTRY.get(ResourceLocation.parse(nbt.getString("type")))).fromNbt(nbt);
+        return Objects.requireNonNull(REGISTRY.get(ResourceLocation.parse(nbt.getString("type")))).fromNbt(nbt);
     }
 
     public static CompoundTag toNbt(RegistryVertex registryVertex) {
-    String type = REGISTRY.getKey(registryVertex.getType()).toString();
+        String type = REGISTRY.getKey(registryVertex.getType()).toString();
 
-    CompoundTag nbt = registryVertex.getType().toNbt(registryVertex);
-    nbt.putString("type", type);
+        CompoundTag nbt = registryVertex.getType().toNbt(registryVertex);
+        nbt.putString("type", type);
 
-    return nbt;
+        return nbt;
     }
 
     public UUID getId() {
-    return id;
+        return id;
     }
 
     public void setId(UUID id) {
-    this.id = id;
+        this.id = id;
     }
 
     protected ResourceKey<Level> getWorld() {
-    return world;
+        return world;
     }
 
     protected void setWorld(ResourceKey<Level> world) {
-    this.world = world;
+        this.world = world;
     }
 
     public interface RegistryVertexType<T extends RegistryVertex> {
-    RegistryVertexType<PlayerRiftPointer> PLAYER = register("player", PlayerRiftPointer::fromNbt, PlayerRiftPointer::toNbt);
-    RegistryVertexType<Rift> RIFT = register("rift", Rift::fromNbt, Rift::toNbt);
-    RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer::fromNbt, PocketEntrancePointer::toNbt);
-    RegistryVertexType<RiftPlaceholder> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder::fromNbt, RiftPlaceholder::toNbt);
+        RegistryVertexType<PlayerRiftPointer> PLAYER = register("player", PlayerRiftPointer::fromNbt, PlayerRiftPointer::toNbt);
+        RegistryVertexType<Rift> RIFT = register("rift", Rift::fromNbt, Rift::toNbt);
+        RegistryVertexType<PocketEntrancePointer> ENTRANCE = register("entrance", PocketEntrancePointer::fromNbt, PocketEntrancePointer::toNbt);
+        RegistryVertexType<RiftPlaceholder> RIFT_PLACEHOLDER = register("rift_placeholder", RiftPlaceholder::fromNbt, RiftPlaceholder::toNbt);
 
-    static void register() {
-    }
-
-    T fromNbt(CompoundTag nbt);
-
-    CompoundTag toNbt(RegistryVertex virtualType);
-
-    static <T extends RegistryVertex> RegistryVertexType<T> register(String id, Function<CompoundTag, T> fromNbt, Function<T, CompoundTag> toNbt) {
-        return DimensionalDoors.getSided().register(KEY, id, new RegistryVertexType<T>() {
-        @Override
-        public T fromNbt(CompoundTag nbt) {
-            return fromNbt.apply(nbt);
+        static void register() {
         }
 
-        @Override
-        public CompoundTag toNbt(RegistryVertex registryVertex) {
-            return toNbt.apply((T) registryVertex);
+        T fromNbt(CompoundTag nbt);
+
+        CompoundTag toNbt(RegistryVertex virtualType);
+
+        static <T extends RegistryVertex> RegistryVertexType<T> register(String id, Function<CompoundTag, T> fromNbt, Function<T, CompoundTag> toNbt) {
+            return DimensionalDoors.getSided().register(KEY, id, new RegistryVertexType<T>() {
+                @Override
+                public T fromNbt(CompoundTag nbt) {
+                    return fromNbt.apply(nbt);
+                }
+
+                @Override
+                public CompoundTag toNbt(RegistryVertex registryVertex) {
+                    return toNbt.apply((T) registryVertex);
+                }
+            });
         }
-        });
-    }
     }
 }
