@@ -2,12 +2,19 @@ package org.dimdev.dimdoors.compat.create;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import com.simibubi.create.content.decoration.slidingDoor.SlidingDoorBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.DoorBlock;
@@ -72,6 +79,41 @@ public class SlidingEntranceRiftBlockEntityRenderer extends RiftBlockEntityRende
                 .add(Vec3.atLowerCornerOf(facing.getNormal())
                         .scale(value2 * 1 / 32f));
 
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.cutoutMipped());
+        if (((SlidingDoorBlock) renderState.getBlock()).isFoldingDoor()) {
+            boolean flip = renderState.getValue(DoorBlock.HINGE) == DoorHingeSide.RIGHT;
+            for (boolean left : new boolean[] {true, false}) {
+                float f = flip ? -1 : 1;
+                BakedModel model = getFoldingModel(renderState, left ^ flip);
+
+                matrixStack.pushPose();
+                matrixStack.translate(0, -1 / 512f, 0);
+                Vec3 facingOffset = Vec3.atLowerCornerOf(facing.getNormal())
+                        .scale(value2 * 1 / 32f);
+                matrixStack.translate(facingOffset.x, facingOffset.y, facingOffset.z);
+                rotateCenteredY(matrixStack, facing.getClockWise().toYRot());
+
+                if (flip) {
+                    matrixStack.translate(0, 0, 1);
+                }
+                matrixStack.mulPose(Axis.YP.rotationDegrees(91 * f * value * value));
+
+                if (!left) {
+                    matrixStack.translate(0, 0, f / 2f);
+                    matrixStack.mulPose(Axis.YP.rotationDegrees(-181 * f * value * value));
+                }
+
+                if (flip) {
+                    matrixStack.translate(0, 0, -1 / 2f);
+                }
+
+                renderModel(model, renderState, blockEntity.getLevel().getRandom(), matrixStack, vertexConsumer, light, overlay);
+                matrixStack.popPose();
+            }
+
+            return;
+        }
+
         RandomSource random = blockEntity.getLevel().getRandom();
         for (DoubleBlockHalf half : DoubleBlockHalf.values()) {
             matrixStack.pushPose();
@@ -80,6 +122,21 @@ public class SlidingEntranceRiftBlockEntityRenderer extends RiftBlockEntityRende
                     .setValue(DoorBlock.HALF, half), random, matrixStack, buffer, light, overlay);
             matrixStack.popPose();
         }
+    }
+
+    private BakedModel getFoldingModel(BlockState renderState, boolean right) {
+        ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(renderState.getBlock());
+        ResourceLocation modelId = ResourceLocation.fromNamespaceAndPath(
+                blockId.getNamespace(),
+                "block/" + blockId.getPath() + (right ? "/fold_right" : "/fold_left")
+        );
+        return Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(modelId));
+    }
+
+    private void rotateCenteredY(PoseStack matrixStack, float degrees) {
+        matrixStack.translate(.5f, .5f, .5f);
+        matrixStack.mulPose(Axis.YP.rotationDegrees(degrees));
+        matrixStack.translate(-.5f, -.5f, -.5f);
     }
 
     private Transformer getTransformer(SlidingEntranceRiftBlockEntity blockEntity) {
@@ -95,6 +152,10 @@ public class SlidingEntranceRiftBlockEntityRenderer extends RiftBlockEntityRende
         var renderType = ItemBlockRenderTypes.getRenderType(renderState, false);
         var vertexConsumer = vertexConsumerProvider.getBuffer(renderType);
 
+        renderModel(model, renderState, random, matrixStack, vertexConsumer, light, overlay);
+    }
+
+    private void renderModel(BakedModel model, BlockState renderState, RandomSource random, PoseStack matrixStack, VertexConsumer vertexConsumer, int light, int overlay) {
         for (var direction : Direction.values()) {
             var quads = model.getQuads(renderState, direction, random);
             renderQuads(matrixStack, vertexConsumer, quads, light, overlay);

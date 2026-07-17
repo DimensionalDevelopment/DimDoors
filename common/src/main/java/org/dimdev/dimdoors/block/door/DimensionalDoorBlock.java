@@ -17,6 +17,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
@@ -41,6 +44,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
+import static org.dimdev.dimdoors.block.DimensionalPortalBlock.checkType;
 
 public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> extends WaterLoggableDoorBlock implements TraversableRiftBlock<T> {
     public DimensionalDoorBlock(Properties settings, BlockSetType blockSetType, boolean addWaterlog) {
@@ -131,6 +135,11 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> ex
     @Override
     public @NotNull VoxelShape getInteractionShape(@NotNull BlockState blockState, @NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos) {
         return Shapes.block();
+    }
+
+    @Override
+    public @Nullable <R extends BlockEntity> BlockEntityTicker<R> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<R> blockEntityType) {
+        return checkType(blockEntityType, getRiftBlockEnityType(), RiftProvider::tickRift);
     }
 
     @Override

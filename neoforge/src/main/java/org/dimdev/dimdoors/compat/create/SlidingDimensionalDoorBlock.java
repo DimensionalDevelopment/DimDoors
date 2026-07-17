@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -113,10 +112,16 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
 
         DoorHingeSide hinge = changedState.getValue(HINGE);
         Direction facing = changedState.getValue(FACING);
-        BlockPos otherPos = pos.relative(hinge == DoorHingeSide.LEFT ? facing.getClockWise() : facing.getCounterClockWise());
+        BlockPos otherPos = SlidingDoorInterop.getOtherDoorPos(pos, hinge, facing);
         BlockState otherDoor = level.getBlockState(otherPos);
-        if (SlidingDoorBlock.isDoubleDoor(changedState, hinge, facing, otherDoor)) {
-            setOpen(entity, level, otherDoor, otherPos, open);
+        if (SlidingDoorInterop.isCompatibleDoubleDoor(changedState, hinge, facing, otherDoor)) {
+            if (otherDoor.is(this)) {
+                setOpen(entity, level, otherDoor, otherPos, open);
+            } else {
+                BlockState changedOtherDoor = SlidingDoorInterop.setOpen(otherDoor, open, open);
+                level.setBlock(otherPos, changedOtherDoor, Block.UPDATE_CLIENTS | Block.UPDATE_IMMEDIATE);
+                SlidingDoorInterop.scheduleWaterTickIfNeeded(level, otherPos, changedOtherDoor);
+            }
         }
 
         this.playSound(entity, level, pos, open);
@@ -148,23 +153,18 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
 
             DoorHingeSide hinge = changedState.getValue(HINGE);
             Direction facing = changedState.getValue(FACING);
-            BlockPos otherPos = pos.relative(hinge == DoorHingeSide.LEFT ? facing.getClockWise() : facing.getCounterClockWise());
+            BlockPos otherPos = SlidingDoorInterop.getOtherDoorPos(pos, hinge, facing);
             BlockState otherDoor = level.getBlockState(otherPos);
 
-            if (SlidingDoorBlock.isDoubleDoor(changedState, hinge, facing, otherDoor)) {
-                otherDoor = otherDoor.setValue(POWERED, powered)
-                        .setValue(OPEN, powered);
-                if (powered) {
-                    otherDoor = otherDoor.setValue(SlidingDoorBlock.VISIBLE, false);
-                }
+            if (SlidingDoorInterop.isCompatibleDoubleDoor(changedState, hinge, facing, otherDoor)) {
+                otherDoor = SlidingDoorInterop.setPoweredOpen(otherDoor, powered);
                 level.setBlock(otherPos, otherDoor, Block.UPDATE_CLIENTS);
+                SlidingDoorInterop.scheduleWaterTickIfNeeded(level, otherPos, otherDoor);
             }
         }
 
         level.setBlock(pos, changedState, Block.UPDATE_CLIENTS);
-        if (!level.isClientSide && changedState.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
-        }
+        SlidingDoorInterop.scheduleWaterTickIfNeeded(level, pos, changedState);
     }
 
     @Override
@@ -175,17 +175,25 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
             state = state.setValue(SlidingDoorBlock.VISIBLE, false);
         }
         level.setBlock(pos, state, Block.UPDATE_CLIENTS | Block.UPDATE_IMMEDIATE);
-        if (!level.isClientSide && state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
-        }
+        SlidingDoorInterop.scheduleWaterTickIfNeeded(level, pos, state);
         level.gameEvent(player, isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
 
         DoorHingeSide hinge = state.getValue(HINGE);
         Direction facing = state.getValue(FACING);
-        BlockPos otherPos = pos.relative(hinge == DoorHingeSide.LEFT ? facing.getClockWise() : facing.getCounterClockWise());
+        BlockPos otherPos = SlidingDoorInterop.getOtherDoorPos(pos, hinge, facing);
         BlockState otherDoor = level.getBlockState(otherPos);
-        if (SlidingDoorBlock.isDoubleDoor(state, hinge, facing, otherDoor)) {
-            useWithoutItem(otherDoor, level, otherPos, player, hitResult);
+        if (SlidingDoorInterop.isCompatibleDoubleDoor(state, hinge, facing, otherDoor)) {
+            if (otherDoor.is(this)) {
+                useWithoutItem(otherDoor, level, otherPos, player, hitResult);
+            } else {
+                BlockState changedOtherDoor = SlidingDoorInterop.setOpen(otherDoor, open, open);
+                level.setBlock(otherPos, changedOtherDoor, Block.UPDATE_CLIENTS | Block.UPDATE_IMMEDIATE);
+                SlidingDoorInterop.scheduleWaterTickIfNeeded(level, otherPos, changedOtherDoor);
+                if (open) {
+                    this.playSound(player, level, pos, true);
+                    level.gameEvent(player, GameEvent.BLOCK_OPEN, pos);
+                }
+            }
         } else if (open) {
             this.playSound(player, level, pos, true);
             level.gameEvent(player, GameEvent.BLOCK_OPEN, pos);
@@ -207,11 +215,25 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
         }
 
         BlockState closedState = state.setValue(OPEN, false)
-                .setValue(SlidingDoorBlock.VISIBLE, true);
+                .setValue(SlidingDoorBlock.VISIBLE, false);
         level.setBlock(pos, closedState, Block.UPDATE_ALL);
-        if (!level.isClientSide && closedState.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        SlidingDoorInterop.scheduleWaterTickIfNeeded(level, pos, closedState);
+        closeOtherDoorBehind(level, pos, closedState);
+    }
+
+    private void closeOtherDoorBehind(Level level, BlockPos pos, BlockState closedState) {
+        DoorHingeSide hinge = closedState.getValue(HINGE);
+        Direction facing = closedState.getValue(FACING);
+        BlockPos otherPos = SlidingDoorInterop.getOtherDoorPos(pos, hinge, facing);
+        BlockState otherDoor = level.getBlockState(otherPos);
+
+        if (!SlidingDoorInterop.isCompatibleDoubleDoor(closedState, hinge, facing, otherDoor)) {
+            return;
         }
+
+        BlockState closedOtherDoor = SlidingDoorInterop.setOpen(otherDoor, false, true);
+        level.setBlock(otherPos, closedOtherDoor, Block.UPDATE_ALL);
+        SlidingDoorInterop.scheduleWaterTickIfNeeded(level, otherPos, closedOtherDoor);
     }
 
     @Override
@@ -238,10 +260,10 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
         boolean lower = state.getValue(HALF) == DoubleBlockHalf.LOWER;
         DoorHingeSide hinge = state.getValue(HINGE);
         Direction facing = state.getValue(FACING);
-        BlockPos otherPos = pos.relative(hinge == DoorHingeSide.LEFT ? facing.getClockWise() : facing.getCounterClockWise());
+        BlockPos otherPos = SlidingDoorInterop.getOtherDoorPos(pos, hinge, facing);
         BlockState otherDoor = level.getBlockState(otherPos);
 
-        if (SlidingDoorBlock.isDoubleDoor(state.cycle(OPEN), hinge, facing, otherDoor) && (level.hasNeighborSignal(otherPos)
+        if (SlidingDoorInterop.isCompatibleDoubleDoor(state.cycle(OPEN), hinge, facing, otherDoor) && (level.hasNeighborSignal(otherPos)
                 || level.hasNeighborSignal(otherPos.relative(lower ? Direction.UP : Direction.DOWN)))) {
             return true;
         }

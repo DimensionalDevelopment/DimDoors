@@ -6,7 +6,8 @@
   "minVersion": "0.8",
   "mixins": [
     "AbstractContraptionEntityMixin",
-    "ContraptionMixin"
+    "ContraptionMixin",
+    "SlidingDoorBlockMixin"
   ],
   "client": [
   ],
