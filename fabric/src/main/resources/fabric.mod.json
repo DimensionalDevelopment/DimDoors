@@ -41,14 +41,13 @@
     "mixins": [
         "${mod_id}.mixins.json",
         "${mod_id}.sable_compat.mixins.json",
-        "${mod_id}.fabric.mixins.json",
-        "limlib.fabric.mixins.json",
-        "limlib.mixins.json"
+        "${mod_id}.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=${fabric_loader_version}",
         "fabric-api": "*",
         "minecraft": "${minecraft_version}",
+        "limlib": "${limlib_version}",
         "java": ">=${java_version}"
     },
     "custom": {

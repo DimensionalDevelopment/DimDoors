@@ -30,7 +30,6 @@ public class DimensionalDoorsNeoForge extends NeoForgeSided<DimensionalDoorsNeoF
         super(bus, DimensionalDoors.INSTANCE);
 
         registerRunnable(NeoForgeRegistries.Keys.FLUID_TYPES, ModFluidTypes::init);
-        common.init(this);
 
         ModBiomeModifiers.init(bus);
 

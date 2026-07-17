@@ -2,7 +2,6 @@ package org.dimdev.dimdoors.util;
 
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.Products;
-import com.mojang.datafixers.types.Func;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,17 +14,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.Music;
-import net.minecraft.sounds.Musics;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.Level;
-import org.dimdev.limlib.api.util.Path;
-import org.dimdev.limlib.api.util.ResourceUtil;
+import org.dimdev.dimdoors.api.util.Path;
+import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.world.decay.conditions.GenericDecayCondition;
-import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;

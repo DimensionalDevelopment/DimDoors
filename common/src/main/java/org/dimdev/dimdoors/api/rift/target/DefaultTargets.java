@@ -2,7 +2,7 @@ package org.dimdev.dimdoors.api.rift.target;
 
 import java.util.Optional;
 
-import org.dimdev.limlib.api.util.InstanceMap;
+import org.dimdev.dimdoors.api.util.InstanceMap;
 
 public final class DefaultTargets {
     private static final InstanceMap DEFAULT_TARGETS = new InstanceMap();

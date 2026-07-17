@@ -6,14 +6,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.limlib.api.util.math.Equation;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.RiftManager;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
-
-import java.util.*;
 
 public abstract class PocketGeneratorReference<T extends PocketGeneratorReference<T>> implements ImplementedVirtualPocket<T> {
     public static <T extends PocketGeneratorReference<T>> Products.P1<RecordCodecBuilder.Mu<T>, Equation> commonFields(RecordCodecBuilder.Instance<T> instance) {

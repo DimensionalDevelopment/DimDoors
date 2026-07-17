@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.RegistryFileCodec;
 import org.dimdev.dimdoors.ModRegistryKeys;
-import org.dimdev.limlib.api.util.Weighted;
+import org.dimdev.dimdoors.api.util.Weighted;
 import org.dimdev.dimdoors.pockets.PocketCreator;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;

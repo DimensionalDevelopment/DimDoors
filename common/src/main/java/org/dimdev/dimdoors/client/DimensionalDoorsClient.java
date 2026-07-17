@@ -41,7 +41,7 @@ import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.limlib.api.client.ModClient;
 import org.dimdev.limlib.api.client.ModelLoadingRegistry;
 import org.dimdev.limlib.api.fluid.FluidDetails;
-import org.dimdev.limlib.impl.client.ModelLoadingOverride;
+import org.dimdev.limlib.client.ModelLoadingOverride;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
@@ -64,6 +64,11 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
         sided.onClientPlayerJoin(() -> ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket()));
         registerCompats();
         EnvironmentAddonClient.init();
+    }
+
+    @Override
+    public String getModId() {
+        return DimensionalDoors.MOD_ID;
     }
 
     @Override

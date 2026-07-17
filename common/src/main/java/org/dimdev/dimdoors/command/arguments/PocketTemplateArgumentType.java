@@ -9,8 +9,8 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import org.dimdev.limlib.api.util.Path;
-import org.dimdev.limlib.api.util.SimpleTree;
+import org.dimdev.dimdoors.api.util.Path;
+import org.dimdev.dimdoors.api.util.SimpleTree;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 

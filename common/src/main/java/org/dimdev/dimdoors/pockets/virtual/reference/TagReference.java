@@ -6,13 +6,12 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
 import org.dimdev.dimdoors.ModRegistryKeys;
-import org.dimdev.limlib.api.util.HolderWeightedList;
-import org.dimdev.limlib.api.util.math.Equation;
+import org.dimdev.dimdoors.api.util.HolderWeightedList;
+import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

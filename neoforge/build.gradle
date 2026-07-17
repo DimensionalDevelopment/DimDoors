@@ -30,6 +30,8 @@ dependencies {
 
     api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
 
+    implementation "org.dimdev:limlib-neoforge-${minecraft_version}:${limlib_version}"
+
 //    switch (recipe_viewer?.toString()) {
 //        case 'rei':
 //            compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rei}"

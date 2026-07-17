@@ -30,12 +30,6 @@ config = "${mod_id}.create_compat.mixins.json"
 [[mixins]]
 config = "dimdoors.simulated_compat.mixins.json"
 
-[[mixins]]
-config = "limlib.mixins.json"
-
-[[mixins]]
-config = "limlib.neoforge.mixins.json"
-
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "required"
@@ -47,6 +41,13 @@ side = "BOTH"
 modId = "minecraft"
 type = "required"
 versionRange = "${minecraft_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "limlib"
+type = "required"
+versionRange = "${limlib_version}"
 ordering = "NONE"
 side = "BOTH"
 

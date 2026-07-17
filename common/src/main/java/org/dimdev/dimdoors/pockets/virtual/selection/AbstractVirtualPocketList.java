@@ -1,6 +1,6 @@
 package org.dimdev.dimdoors.pockets.virtual.selection;
 
-import org.dimdev.limlib.api.util.WeightedList;
+import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;

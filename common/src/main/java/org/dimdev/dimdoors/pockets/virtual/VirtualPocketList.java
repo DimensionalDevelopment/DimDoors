@@ -1,7 +1,7 @@
 package org.dimdev.dimdoors.pockets.virtual;
 
 import com.mojang.serialization.Codec;
-import org.dimdev.limlib.api.util.WeightedList;
+import org.dimdev.dimdoors.api.util.WeightedList;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.virtual.reference.PocketGeneratorReference;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;

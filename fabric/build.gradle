@@ -34,7 +34,7 @@ dependencies {
 
     modImplementation "curse.maven:selene-499980:7522322"
     modImplementation "curse.maven:modmenu-308702:7808443"
-
+    modImplementation "org.dimdev:limlib-fabric-${minecraft_version}:${limlib_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${rei}"
 
     modCompileOnlyApi "mezz.jei:jei-${minecraft_version}-fabric-api:${jei}"
