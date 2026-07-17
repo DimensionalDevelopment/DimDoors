@@ -43,8 +43,8 @@ import java.util.Optional;
 import static net.minecraft.world.level.material.PushReaction.BLOCK;
 
 public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> extends WaterLoggableDoorBlock implements TraversableRiftBlock<T> {
-    public DimensionalDoorBlock(Properties settings, BlockSetType blockSetType) {
-        super(settings.pushReaction(BLOCK), blockSetType);
+    public DimensionalDoorBlock(Properties settings, BlockSetType blockSetType, boolean addWaterlog) {
+        super(settings.pushReaction(BLOCK), blockSetType, addWaterlog);
     }
 
     @Override
