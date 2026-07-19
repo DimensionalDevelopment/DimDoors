@@ -7,22 +7,21 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static com.mojang.text2speech.Narrator.LOGGER;
-
 public interface RiftProvider<T extends RiftBlockEntity> extends EntityBlock, RiftVariantProvider, PerservesBlockEntity {
+
     default T getRift(Level world, BlockPos pos, BlockState state) {
         var rifPos = getRiftPos(world, pos, state);
 
         return world.getBlockEntity(rifPos, getRiftBlockEnityType())
                 .orElseGet(() -> {
-                    LOGGER.warn(providerType() + " at " + rifPos + " in world " + world + " contained no rift.");
+                    DimensionalDoors.LOGGER.warn(providerType() + " at " + rifPos + " in world " + world + " contained no rift.");
                     return null;
                 });
     }

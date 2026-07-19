@@ -97,7 +97,7 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> ex
 
     @Nullable
     @Override
-    public T newBlockEntity(@NotNull BlockPos pos, BlockState state) {
+    public T newBlockEntity(@NotNull BlockPos pos, @NotNull BlockState state) {
         return state.getValue(DoorBlock.HALF) == DoubleBlockHalf.UPPER ? null : getRiftBlockEnityType().create(pos, state);
     }
 
