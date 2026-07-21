@@ -196,6 +196,11 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
 //        SchemFixer.run();
     }
 
+    @Override
+    public String getModId() {
+        return "dimdoors";
+    }
+
     private static void registerRun(ResourceKey<? extends Registry<?>> key, Runnable runnable) {
         sided.registerRunnable(key, runnable);
     }

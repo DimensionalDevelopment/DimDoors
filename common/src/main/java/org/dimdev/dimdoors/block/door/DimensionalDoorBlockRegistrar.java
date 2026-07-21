@@ -326,7 +326,7 @@ public class DimensionalDoorBlockRegistrar {
         protected final Block originalBlock;
 
         public AutoGenDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
-            super(settings, originalBlock.getSetType(), !((Block) originalBlock).stateDefinition.getProperties().contains(WATERLOGGED));
+            super(settings, originalBlock.getSetType(), !((Block) originalBlock).defaultBlockState().hasProperty(WATERLOGGED));
             this.originalBlock = (Block) originalBlock;
 
             StateDefinition.Builder<Block, BlockState> builder = new StateDefinition.Builder<>(this);

@@ -43,9 +43,4 @@ public class DimensionalDoorsFabric extends FabricSided<DimensionalDoorsFabric, 
     public RecipeBookType getTesselatingRecipeBookType() {
         return TESSELLATING.get();
     }
-
-    @Override
-    public String getModId() {
-        return MOD_ID;
-    }
 }

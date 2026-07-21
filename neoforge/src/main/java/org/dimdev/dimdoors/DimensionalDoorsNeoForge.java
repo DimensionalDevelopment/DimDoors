@@ -40,11 +40,6 @@ public class DimensionalDoorsNeoForge extends NeoForgeSided<DimensionalDoorsNeoF
     }
 
     @Override
-    public String getModId() {
-        return DimensionalDoors.MOD_ID;
-    }
-
-    @Override
     public Fluid createFlowingEternalFluid() {
         return new EternalFluid.Flowing() {
             @Override

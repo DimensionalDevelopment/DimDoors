@@ -14,8 +14,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.config.Option;
-import org.dimdev.dimdoors.config.Category;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,23 +35,14 @@ public final class ModConfig {
             .registerTypeAdapter(new TypeToken<ResourceKey<Level>>() {}.getType(), new LevelKeyAdapter())
             .create();
 
-    @Category
     private final General general = new General();
-    @Category
     private final Pockets pockets = new Pockets();
-    @Category
     private final World world = new World();
-    @Category
     private final Dungeons dungeons = new Dungeons();
-    @Category
     private final Monoliths monoliths = new Monoliths();
-    @Category
     private final Limbo limbo = new Limbo();
-    @Category
     private final Graphics graphics = new Graphics();
-    @Category
     private final Doors doors = new Doors();
-    @Category
     private final Decay decay = new Decay();
 
     public General getGeneralConfig() {
@@ -130,21 +119,21 @@ public final class ModConfig {
     }
 
     public static class General {
-        @Option public double teleportOffset = 0;
-        @Option public boolean riftBoundingBoxInCreative;
-        @Option public double riftCloseSpeed = 0.1;
-        @Option public double riftGrowthSpeed = 1;
-        @Option public boolean enableRiftDecay = true;
-        @Option public int depthSpreadFactor = 20;
-        @Option public double endermanSpawnChance = 0.00005;
-        @Option public double endermanAggressiveChance = 0.5;
-        @Option public boolean enableDebugMessages = false;
+        public double teleportOffset = 0;
+        public boolean riftBoundingBoxInCreative;
+        public double riftCloseSpeed = 0.1;
+        public double riftGrowthSpeed = 1;
+        public boolean enableRiftDecay = true;
+        public int depthSpreadFactor = 20;
+        public double endermanSpawnChance = 0.00005;
+        public double endermanAggressiveChance = 0.5;
+        public boolean enableDebugMessages = false;
     }
 
     public static class Doors {
-        @Option public boolean closeDoorBehind = true;
-        @Option public DoorList doorList = new DoorList();
-        @Option public boolean placeRiftsInCreativeMode = true;
+        public boolean closeDoorBehind = true;
+        public DoorList doorList = new DoorList();
+        public boolean placeRiftsInCreativeMode = true;
 
         public static class DoorList {
             public Mode mode = Mode.DISABLE;
@@ -175,43 +164,43 @@ public final class ModConfig {
     }
 
     public static class Pockets {
-        @Option public int pocketGridSize = 32;
-        @Option public int maxPocketSize = 15;
-        @Option public int privatePocketSize = 2;
-        @Option public int publicPocketSize = 1;
-        @Option public boolean canUseRiftSignatureInPrivatePockets = true;
-        @Option public int blocksColoredPerDye = 100;
+        public int pocketGridSize = 32;
+        public int maxPocketSize = 15;
+        public int privatePocketSize = 2;
+        public int publicPocketSize = 1;
+        public boolean canUseRiftSignatureInPrivatePockets = true;
+        public int blocksColoredPerDye = 100;
     }
 
     public static class World {
-        @Option public double clusterGenChance = 20000;
-        @Option public List<String> clusterDimBlacklist = new LinkedList<>();
-        @Option public List<String> gatewayDimBlacklist = new LinkedList<>();
+        public double clusterGenChance = 20000;
+        public List<String> clusterDimBlacklist = new LinkedList<>();
+        public List<String> gatewayDimBlacklist = new LinkedList<>();
     }
 
     public static class Dungeons {
-        @Option public int maxDungeonDepth = 50;
+        public int maxDungeonDepth = 50;
     }
 
     public static class Monoliths {
-        @Option public boolean dangerousLimboMonoliths = false;
-        @Option public boolean monolithTeleportation = true;
+        public boolean dangerousLimboMonoliths = false;
+        public boolean monolithTeleportation = true;
     }
 
     public static class Limbo {
-        @Option private final WorldList worldsLeadingToLimbo = new WorldList();
-        @Option public boolean hardcoreLimbo = false;
+        private final WorldList worldsLeadingToLimbo = new WorldList();
+        public boolean hardcoreLimbo = false;
 
-        @Option public int limboReturnDistanceMax = 200;
-        @Option public int limboReturnDistanceMin = 100;
+        public int limboReturnDistanceMax = 200;
+        public int limboReturnDistanceMin = 100;
 
-        @Option public boolean decaySurroundings;
+        public boolean decaySurroundings;
 
-        @Option public boolean tryPlayerBedSpawn = false;
-        @Option public boolean defaultToWorldSpawn = true;
+        public boolean tryPlayerBedSpawn = false;
+        public boolean defaultToWorldSpawn = true;
 
-        @Option public float limboBlocksCorruptingExitWorldAmount = 5;
-        @Option @Nullable public ResourceKey<Level> escapeTargetWorld = Level.OVERWORLD;
+        public float limboBlocksCorruptingExitWorldAmount = 5;
+        @Nullable public ResourceKey<Level> escapeTargetWorld = Level.OVERWORLD;
 
         public boolean shouldUseLimbo(ResourceKey<Level> level) {
             return worldsLeadingToLimbo.blacklist != worldsLeadingToLimbo.list.contains(level);
@@ -237,16 +226,16 @@ public final class ModConfig {
     }
 
     public static class Decay {
-        @Option public double decaySpreadChance = 1.0;
-        @Option public int decayDelay = 40;
-        @Option public boolean decaysIntoAir = true;
+        public double decaySpreadChance = 1.0;
+        public int decayDelay = 40;
+        public boolean decaysIntoAir = true;
     }
 
     public static class Graphics {
-        @Option public boolean showRiftCore = false;
-        @Option public int highlightRiftCoreFor = 15000;
-        @Option public double riftSize = 1;
-        @Option public double riftJitter = 1;
+        public boolean showRiftCore = false;
+        public int highlightRiftCoreFor = 15000;
+        public double riftSize = 1;
+        public double riftJitter = 1;
     }
 
     public static final class LevelKeyAdapter implements JsonSerializer<ResourceKey<Level>>, JsonDeserializer<ResourceKey<Level>> {

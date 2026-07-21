@@ -3,6 +3,7 @@
   "package": "org.dimdev.dimdoors.compat.create.mixin",
   "compatibilityLevel": "JAVA_21",
   "plugin": "org.dimdev.dimdoors.compat.create.CreateMixinPlugin",
+  "refmap": "dimdoors.refmap.json",
   "minVersion": "0.8",
   "mixins": [
     "AbstractContraptionEntityMixin",

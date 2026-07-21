@@ -40,7 +40,7 @@
     },
     "mixins": [
         "${mod_id}.mixins.json",
-        "${mod_id}.sable_compat.mixins.json",
+        "${mod_id}.sable-compat.mixins.json",
         "${mod_id}.fabric.mixins.json"
     ],
     "depends": {
