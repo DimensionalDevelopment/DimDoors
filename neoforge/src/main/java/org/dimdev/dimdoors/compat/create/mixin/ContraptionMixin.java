@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import org.apache.commons.lang3.tuple.Pair;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.compat.create.CreateRiftMovement;
 import org.dimdev.dimdoors.compat.create.DimDoorsCreateContraption;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
@@ -50,7 +50,7 @@ public abstract class ContraptionMixin implements DimDoorsCreateContraption {
 
     @Inject(method = "addBlock", at = @At("TAIL"))
     private void dimdoors$trackRift(Level level, BlockPos pos, Pair<StructureBlockInfo, BlockEntity> pair, CallbackInfo ci) {
-        if (!(level instanceof ServerLevel serverLevel) || !(pair.getValue() instanceof RiftBlockEntity)) {
+        if (!(level instanceof ServerLevel serverLevel) || !(pair.getValue() instanceof Rift)) {
             return;
         }
 
@@ -74,7 +74,7 @@ public abstract class ContraptionMixin implements DimDoorsCreateContraption {
             }
 
             BlockEntity blockEntity = world.getBlockEntity(sourcePos);
-            if (blockEntity instanceof RiftBlockEntity rift) {
+            if (blockEntity instanceof Rift rift) {
                 rift.setDeleteRift(false);
             }
         }

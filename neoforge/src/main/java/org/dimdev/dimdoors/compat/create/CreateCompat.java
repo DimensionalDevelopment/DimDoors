@@ -9,15 +9,30 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.api.rift.target.DefaultTargets;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
+import org.dimdev.dimdoors.compat.create.target.KineticTarget;
 
 public final class CreateCompat {
     private CreateCompat() {
     }
 
     public static void init() {
+        DimensionalDoors.getSided().registerRunnable(Registries.BLOCK, CreateCompatBlocks::init);
         DimensionalDoors.getSided().registerRunnable(Registries.BLOCK_ENTITY_TYPE, CreateCompatBlockEntityTypes::init);
+
+        DefaultTargets.registerDefaultTarget(KineticTarget.class, new KineticTarget() {
+            @Override
+            public float getStressCapacity() {
+                return 0;
+            }
+
+            @Override
+            public float getRotationalSpeed() {
+                return 0;
+            }
+        });
 
         BlockMovementChecks.registerMovementAllowedCheck((state, world, pos) ->
                 state.getBlock() instanceof RiftProvider<?> ? CheckResult.SUCCESS : CheckResult.PASS);

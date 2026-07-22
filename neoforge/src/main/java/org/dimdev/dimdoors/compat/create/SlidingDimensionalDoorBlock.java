@@ -23,7 +23,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.dimdev.dimdoors.block.DoorSoundProvider;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -203,7 +203,7 @@ public class SlidingDimensionalDoorBlock extends DimensionalDoorBlockRegistrar.A
     }
 
     @Override
-    public void postTraverseEffect(Level level, BlockPos pos, BlockState state, RiftBlockEntity rift) {
+    public void postTraverseEffect(Level level, BlockPos pos, BlockState state, Rift rift) {
         super.postTraverseEffect(level, pos, state, rift);
     }
 

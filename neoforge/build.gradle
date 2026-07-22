@@ -43,6 +43,7 @@ dependencies {
 
 
     implementation "curse.maven:create-328085:7963363"
+    compileOnlyApi "net.createmod.ponder:ponder-neoforge:1.0.82+mc1.21.1"
 }
 
 neoForge {
