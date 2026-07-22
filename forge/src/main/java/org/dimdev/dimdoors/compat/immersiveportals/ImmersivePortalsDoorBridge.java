@@ -4,17 +4,26 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.compat.DoorPortalBridge;
+import org.dimdev.dimdoors.rift.targets.PrivatePocketExitTarget;
+import org.dimdev.dimdoors.rift.targets.PrivatePocketTarget;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
+import org.dimdev.dimdoors.rift.targets.VirtualTarget;
+import org.dimdev.dimdoors.rift.targets.WrappedDestinationTarget;
+import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
+import org.jetbrains.annotations.Nullable;
 import qouteall.imm_ptl.core.McHelper;
 import qouteall.imm_ptl.core.platform_specific.IPRegistry;
 import qouteall.imm_ptl.core.portal.Portal;
@@ -22,14 +31,29 @@ import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.my_util.DQuaternion;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Immersive Portals backed implementation of {@link DoorPortalBridge}.
  *
- * When a dimensional door that is mutually linked to another dimensional door
- * is opened, a bi-directional, double-faced see-through portal cluster is
- * spawned between the two doorways and the far door is opened as well.
- * Closing (or breaking) either door removes the cluster and closes both doors.
+ * Opening a dimensional door whose destination can be resolved to a fixed
+ * location spawns a see-through portal in the doorway:
+ * - mutually linked door pairs get the full bi-directional double-faced
+ *   cluster, and their open/close state is synchronized;
+ * - one-way destinations (pocket doors, doors leading to detached rifts, ...)
+ *   get a one-way portal, matching DimDoors' one-way teleport semantics;
+ * - player-dependent destinations (personal pockets) get portals bound to the
+ *   opening player via {@code specificPlayerId} — other players see and use
+ *   the door classically.
+ *
+ * The portal transform matches DimDoors' teleport convention: you always come
+ * out of the BACK of the destination door (see EntranceRiftBlockEntity
+ * #receiveEntity, which offsets along {@code getOrientation().getOpposite()}).
+ *
+ * With the {@code persistentImmersivePortals} config enabled, closing a door
+ * keeps its portals (view through the door's window cutout) but makes them
+ * non-traversable until the door is opened again.
  *
  * Only loaded when Immersive Portals is present.
  */
@@ -43,9 +67,12 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 	 */
 	private static final double PORTAL_OFFSET_FROM_CENTER = 0.31;
 
+	/** Guards against hook re-entry while this bridge itself toggles a door. */
+	private boolean syncing;
+
 	@Override
-	public void onDoorStateChanged(Level level, BlockPos pos, BlockState state) {
-		if (!(level instanceof ServerLevel world)) {
+	public void onDoorStateChanged(Level level, BlockPos pos, BlockState state, @Nullable Player opener) {
+		if (!(level instanceof ServerLevel world) || this.syncing) {
 			return;
 		}
 		BlockPos bottom = bottomPos(pos, state);
@@ -54,21 +81,41 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 			return;
 		}
 
-		DoorPair pair = resolvePair(world, bottom);
+		ResolvedDestination dest = resolveDestination(world, bottom, opener);
+		boolean persistent = DimensionalDoors.getConfig().getDoorsConfig().persistentImmersivePortals;
 
 		if (doorState.getValue(DoorBlock.OPEN)) {
-			if (pair == null) {
-				return; // not mutually linked to another dimensional door
+			List<Portal> existing = findDoorPortals(world, bottom);
+			setTeleportable(existing, true);
+			if (dest == null) {
+				return;
 			}
-			if (findDoorPortals(world, bottom).isEmpty()) {
-				spawnPortalCluster(world, bottom, doorState, pair);
+			setTeleportable(findDoorPortals(dest.world(), dest.pos()), true);
+			boolean alreadyBridged = existing.stream()
+					.anyMatch(p -> Objects.equals(p.specificPlayerId, dest.playerRestriction()));
+			if (!alreadyBridged) {
+				spawnPortals(world, bottom, doorState, dest);
 			}
-			setDoorOpen(pair.world(), pair.pos(), true);
+			if (dest.doorState() != null) {
+				syncedSetDoorOpen(dest.world(), dest.pos(), true);
+			}
 		} else {
-			removeDoorPortals(world, bottom);
-			if (pair != null) {
-				removeDoorPortals(pair.world(), pair.pos());
-				setDoorOpen(pair.world(), pair.pos(), false);
+			if (persistent) {
+				setTeleportable(findDoorPortals(world, bottom), false);
+				if (dest != null) {
+					setTeleportable(findDoorPortals(dest.world(), dest.pos()), false);
+					if (dest.mutual()) {
+						syncedSetDoorOpen(dest.world(), dest.pos(), false);
+					}
+				}
+			} else {
+				removeDoorPortals(world, bottom);
+				if (dest != null) {
+					removeDoorPortals(dest.world(), dest.pos());
+					if (dest.mutual()) {
+						syncedSetDoorOpen(dest.world(), dest.pos(), false);
+					}
+				}
 			}
 		}
 	}
@@ -78,68 +125,125 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 		if (!(level instanceof ServerLevel world)) {
 			return;
 		}
-		removeDoorPortals(world, bottomPos(pos, state));
+		BlockPos bottom = bottomPos(pos, state);
+		// the block entity still exists at this point, so the far side can be cleaned up too
+		ResolvedDestination dest = resolveDestination(world, bottom, null);
+		removeDoorPortals(world, bottom);
+		if (dest != null) {
+			removeDoorPortals(dest.world(), dest.pos());
+		}
 	}
 
 	@Override
-	public boolean handlesTeleport(Level level, BlockPos bottomPos, BlockState doorState) {
-		return level instanceof ServerLevel && !findDoorPortals(level, bottomPos).isEmpty();
+	public boolean handlesTeleport(Level level, BlockPos bottomPos, BlockState doorState, Entity entity) {
+		if (!(level instanceof ServerLevel)) {
+			return false;
+		}
+		for (Portal portal : findDoorPortals(level, bottomPos)) {
+			if (mayTeleport(portal, entity)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public boolean suppressesRiftRendering(EntranceRiftBlockEntity rift) {
+		// player-specific portals are only synced to their owner, so on any
+		// client a portal is present exactly when this player would see it
 		Level level = rift.getLevel();
 		return level != null && !findDoorPortals(level, rift.getBlockPos()).isEmpty();
 	}
 
-	private record DoorPair(ServerLevel world, BlockPos pos, BlockState state) {
-	}
+	// ------------------------------------------------------------------
+	// destination resolution
+	// ------------------------------------------------------------------
 
 	/**
-	 * Resolves the door this one leads to, requiring a mutual link: this door's
-	 * rift must reference the far door and the far door's rift must reference
-	 * this door back. Returns null otherwise.
+	 * @param doorState the far door's (lower half) state, or null when the far
+	 *                  side is not a dimensional door (e.g. a detached rift)
+	 * @param playerRestriction non-null for player-dependent destinations
 	 */
-	private static DoorPair resolvePair(ServerLevel world, BlockPos bottom) {
+	private record ResolvedDestination(ServerLevel world, BlockPos pos, @Nullable BlockState doorState,
+									   boolean mutual, @Nullable UUID playerRestriction) {
+	}
+
+	/** @param shared false when the location is only valid for the resolving player */
+	private record TargetResolution(Location location, boolean shared) {
+	}
+
+	@Nullable
+	private static ResolvedDestination resolveDestination(ServerLevel world, BlockPos bottom, @Nullable Player opener) {
 		if (!(world.getBlockEntity(bottom) instanceof EntranceRiftBlockEntity rift)) {
 			return null;
 		}
 		Location here = new Location(world, bottom);
-		Location target = referencedLocation(rift, here);
-		if (target == null) {
+		TargetResolution resolution = resolveTarget(rift.getDestination(), here, opener);
+		if (resolution == null || resolution.location() == null || resolution.location().equals(here)) {
 			return null;
 		}
+		Location target = resolution.location();
 		ServerLevel farWorld = target.getWorld();
 		if (farWorld == null) {
 			return null;
 		}
 		BlockState farState = farWorld.getBlockState(target.pos);
-		if (!(farState.getBlock() instanceof DimensionalDoorBlock)
-				|| farState.getValue(DoorBlock.HALF) != DoubleBlockHalf.LOWER) {
-			return null;
+		boolean farIsDoor = farState.getBlock() instanceof DimensionalDoorBlock
+				&& farState.hasProperty(DoorBlock.HALF)
+				&& farState.getValue(DoorBlock.HALF) == DoubleBlockHalf.LOWER;
+
+		boolean mutual = false;
+		if (farIsDoor && resolution.shared()
+				&& farWorld.getBlockEntity(target.pos) instanceof EntranceRiftBlockEntity farRift) {
+			TargetResolution back = resolveTarget(farRift.getDestination(), new Location(farWorld, target.pos), null);
+			mutual = back != null && back.shared() && here.equals(back.location());
 		}
-		if (!(farWorld.getBlockEntity(target.pos) instanceof EntranceRiftBlockEntity farRift)) {
-			return null;
-		}
-		Location back = referencedLocation(farRift, target);
-		if (back == null || !back.equals(here)) {
-			return null;
-		}
-		return new DoorPair(farWorld, target.pos, farState);
+
+		return new ResolvedDestination(farWorld, target.pos, farIsDoor ? farState : null, mutual,
+				resolution.shared() || opener == null ? null : opener.getUUID());
 	}
 
-	private static Location referencedLocation(EntranceRiftBlockEntity rift, Location riftLocation) {
-		if (!(rift.getDestination() instanceof RiftReference reference)) {
+	@Nullable
+	private static TargetResolution resolveTarget(@Nullable VirtualTarget dest, Location here, @Nullable Player opener) {
+		if (dest == null) {
 			return null;
 		}
-		reference.setLocation(riftLocation); // relative/local references resolve against the rift's own location
-		return reference.getReferencedLocation();
+		dest.setLocation(here);
+		if (dest instanceof RiftReference reference) {
+			return new TargetResolution(reference.getReferencedLocation(), true);
+		}
+		if (dest instanceof WrappedDestinationTarget wrapped) {
+			// e.g. a public pocket door that has already generated its pocket
+			VirtualTarget inner = wrapped.getWrappedDestination();
+			return inner != null ? resolveTarget(inner, here, opener) : null;
+		}
+		if (opener == null) {
+			return null;
+		}
+		UUID uuid = opener.getUUID();
+		if (dest instanceof PrivatePocketTarget) {
+			PrivatePocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
+			if (pocket == null) {
+				return null; // pocket not generated yet; first entry stays classic
+			}
+			Location entrance = DimensionalRegistry.getRiftRegistry().getPrivatePocketEntrance(uuid);
+			return entrance == null ? null : new TargetResolution(entrance, false);
+		}
+		if (dest instanceof PrivatePocketExitTarget) {
+			Location exit = DimensionalRegistry.getRiftRegistry().getPrivatePocketExit(uuid);
+			return exit == null ? null : new TargetResolution(exit, false);
+		}
+		return null;
 	}
 
-	private static void spawnPortalCluster(ServerLevel world, BlockPos bottom, BlockState doorState, DoorPair pair) {
+	// ------------------------------------------------------------------
+	// portal creation / removal
+	// ------------------------------------------------------------------
+
+	private static void spawnPortals(ServerLevel world, BlockPos bottom, BlockState doorState, ResolvedDestination dest) {
 		Direction facing = doorState.getValue(DoorBlock.FACING);
-		Direction farFacing = pair.state().getValue(DoorBlock.FACING);
 		Vec3 up = new Vec3(0, 1, 0);
+		Vec3 normal = Vec3.atLowerCornerOf(facing.getNormal());
 
 		Portal portal = IPRegistry.PORTAL.get().create(world);
 		if (portal == null) {
@@ -147,21 +251,34 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 		}
 
 		portal.setOriginPos(portalPlaneCenter(bottom, facing));
-		Vec3 normal = Vec3.atLowerCornerOf(facing.getNormal());
 		portal.setOrientationAndSize(up.cross(normal), up, 1.0, 2.0);
+		portal.setDestinationDimension(dest.world().dimension());
 
-		portal.setDestinationDimension(pair.world().dimension());
-		portal.setDestination(portalPlaneCenter(pair.pos(), farFacing));
-
-		// Entering the front of this door exits out of the front of the far
-		// door, so the far side of the transform faces into the far door's back.
-		Vec3 farNormal = Vec3.atLowerCornerOf(farFacing.getOpposite().getNormal());
-		portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(up.cross(farNormal), up, farNormal));
+		if (dest.doorState() != null) {
+			Direction farFacing = dest.doorState().getValue(DoorBlock.FACING);
+			portal.setDestination(portalPlaneCenter(dest.pos(), farFacing));
+			// you come out of the BACK of the far door (DimDoors teleport convention)
+			Vec3 farNormal = Vec3.atLowerCornerOf(farFacing.getNormal());
+			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(up.cross(farNormal), up, farNormal));
+		} else {
+			// no door on the far side (e.g. detached rift): keep the travel
+			// direction and exit one block clear of the target to avoid
+			// immediately triggering the rift again
+			portal.setDestination(Vec3.atBottomCenterOf(dest.pos()).add(0, 1.0, 0).add(normal.scale(-1.0)));
+		}
 
 		portal.portalTag = PORTAL_TAG;
+		portal.specificPlayerId = dest.playerRestriction();
 
 		McHelper.spawnServerEntity(portal);
-		PortalManipulation.completeBiWayBiFacedPortal(portal, p -> {}, p -> {}, IPRegistry.PORTAL.get());
+		if (dest.mutual()) {
+			PortalManipulation.completeBiWayBiFacedPortal(portal, p -> {}, p -> {}, IPRegistry.PORTAL.get());
+		} else {
+			// one-way: see-through and traversable from this doorway only, but
+			// from both of its faces — exactly like DimDoors' own teleport
+			Portal flipped = PortalManipulation.createFlippedPortal(portal, IPRegistry.PORTAL.get());
+			McHelper.spawnServerEntity(flipped);
+		}
 	}
 
 	private static Vec3 portalPlaneCenter(BlockPos bottom, Direction facing) {
@@ -181,10 +298,37 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 		}
 	}
 
-	private static void setDoorOpen(ServerLevel world, BlockPos bottom, boolean open) {
-		BlockState state = world.getBlockState(bottom);
-		if (state.getBlock() instanceof DoorBlock door && state.getValue(DoorBlock.OPEN) != open) {
-			door.setOpen(null, world, state, bottom, open);
+	private static void setTeleportable(List<Portal> portals, boolean teleportable) {
+		for (Portal portal : portals) {
+			if (portal.teleportable != teleportable) {
+				portal.setTeleportable(teleportable);
+				portal.reloadAndSyncToClientNextTick();
+			}
+		}
+	}
+
+	private static boolean mayTeleport(Portal portal, Entity entity) {
+		if (!portal.teleportable) {
+			return false;
+		}
+		if (portal.specificPlayerId == null) {
+			return true;
+		}
+		if (entity instanceof Player) {
+			return entity.getUUID().equals(portal.specificPlayerId);
+		}
+		return portal.specificPlayerId.equals(Portal.nullUUID);
+	}
+
+	private void syncedSetDoorOpen(ServerLevel world, BlockPos bottom, boolean open) {
+		this.syncing = true;
+		try {
+			BlockState state = world.getBlockState(bottom);
+			if (state.getBlock() instanceof DoorBlock door && state.getValue(DoorBlock.OPEN) != open) {
+				door.setOpen(null, world, state, bottom, open);
+			}
+		} finally {
+			this.syncing = false;
 		}
 	}
 

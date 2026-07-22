@@ -296,6 +296,8 @@
   "text.autoconfig.dimdoors.category.doors": "Doors Settings",
   "text.autoconfig.dimdoors.option.doors.closeDoorBehind": "Close Door Behind",
   "text.autoconfig.dimdoors.option.doors.closeDoorBehind.@Tooltip": "When true, Dimensional Doors will automatically close when the player enters their portal.",
+  "text.autoconfig.dimdoors.option.doors.persistentImmersivePortals": "Persistent Immersive Portals",
+  "text.autoconfig.dimdoors.option.doors.persistentImmersivePortals.@Tooltip": "Requires the Immersive Portals mod. When true, see-through portals stay when a linked door is closed (visible through the door's window) instead of being removed. The portal cannot be traveled through while the door is shut.",
   "text.autoconfig.dimdoors.option.doors.doorList": "Doors",
   "text.autoconfig.dimdoors.option.doors.doorList.@Tooltip": "Set overrides for enabling/disabling certain doors",
   "text.autoconfig.dimdoors.option.doors.doorList.mode": "Mode",

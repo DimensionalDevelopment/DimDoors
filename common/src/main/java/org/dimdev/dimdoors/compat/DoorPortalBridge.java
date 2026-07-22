@@ -1,9 +1,12 @@
 package org.dimdev.dimdoors.compat;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Hooks for optional see-through portal integration (Immersive Portals).
@@ -23,9 +26,11 @@ public interface DoorPortalBridge {
 
 	/**
 	 * Called server-side after a dimensional door's open state changed.
-	 * {@code pos}/{@code state} may be either door half.
+	 * {@code pos}/{@code state} may be either door half. {@code opener} is the
+	 * player who toggled the door, or null (e.g. redstone); it is used to
+	 * resolve player-dependent destinations such as personal pockets.
 	 */
-	default void onDoorStateChanged(Level level, BlockPos pos, BlockState state) {
+	default void onDoorStateChanged(Level level, BlockPos pos, BlockState state, @Nullable Player opener) {
 	}
 
 	/**
@@ -36,10 +41,11 @@ public interface DoorPortalBridge {
 	}
 
 	/**
-	 * True if a see-through portal currently handles teleportation for this door,
-	 * in which case DimDoors' own portal-plane teleport must not run as well.
+	 * True if a see-through portal currently handles teleportation of
+	 * {@code entity} for this door, in which case DimDoors' own portal-plane
+	 * teleport must not run as well.
 	 */
-	default boolean handlesTeleport(Level level, BlockPos bottomPos, BlockState doorState) {
+	default boolean handlesTeleport(Level level, BlockPos bottomPos, BlockState doorState, Entity entity) {
 		return false;
 	}
 

@@ -19,4 +19,9 @@ public abstract class WrappedDestinationTarget extends RestoringTarget {
     protected void setTarget(VirtualTarget target) {
         this.wrappedDestination = target;
     }
+
+    /** The concrete destination this target has linked to, or null if it has not been used yet. */
+    public VirtualTarget getWrappedDestination() {
+        return this.wrappedDestination;
+    }
 }

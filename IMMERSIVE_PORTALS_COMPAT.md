@@ -60,21 +60,47 @@ reference IP classes. The integration uses a tiny service interface:
 
 ## 3. When does a door get a see-through portal?
 
-Only when the link is **mutual**. On door open, the bridge:
+Whenever its destination can be **resolved to a fixed location** at the
+moment the door is opened. The resolver understands:
 
-1. Reads the door's `EntranceRiftBlockEntity` (it lives on the lower door
-   half) and requires its destination to be a `RiftReference`
-   (local/global/relative rift-to-rift link — dungeon targets, random
-   targets, etc. don't qualify).
-2. Resolves the referenced `Location` and requires a
-   `DimensionalDoorBlock` with its own rift there.
-3. Requires that far rift's destination to reference the original door
-   back. This is the same condition DimDoors itself uses to color a link
-   green ("properly linked").
+- **`RiftReference`** (local/global/relative rift-to-rift links) — the
+  plain "this door leads there" case.
+- **`WrappedDestinationTarget`** (e.g. public pocket doors) — once the
+  pocket has been generated (first walk-through), the wrapped target is a
+  concrete `RiftReference` and resolves like one. The very first entry
+  stays classic, because the pocket literally does not exist yet.
+- **`PrivatePocketTarget` / `PrivatePocketExitTarget`** (personal
+  pockets) — these depend on *who* is asking, so they are resolved using
+  the player who opened the door (via the rift registry's per-player
+  entrance/exit pointers). The resulting portal is bound to that player
+  with IP's `specificPlayerId`: IP only syncs such portals to their
+  owner, so other players see the classic swirl and get DimDoors'
+  classic per-player teleport. Redstone can't open a personal-pocket
+  portal (there is no player to resolve against).
 
-If any check fails, nothing happens and the door keeps its classic
-behavior. This keeps one-way doors, dungeon entrances, and unlinked
-doors fully vanilla.
+What kind of portal is spawned depends on the link topology:
+
+- **Mutual link** (this door's rift references the far door and the far
+  door's rift references back — DimDoors' "green link"): the full
+  four-portal bi-directional, double-faced cluster, plus door open/close
+  synchronization.
+- **Anything else that resolves** (pocket doors, a door leading to a
+  detached rift, any one-way reference): a **one-way portal pair** — the
+  doorway is see-through and traversable from both of its faces, but
+  there is no return portal on the far side, exactly mirroring DimDoors'
+  one-way teleport semantics. If the far side is a door it is forced
+  open (so the exit isn't blocked); if it is not a door (e.g. the
+  floating rift of a gateway), the exit point is offset one block clear
+  of the target so the arriving player doesn't immediately re-trigger
+  the rift.
+
+Destinations that cannot be statically resolved (dungeon `RandomTarget`
+before first use, `EscapeTarget`, unlinked doors, ...) keep the classic
+behavior untouched.
+
+A re-entrancy guard prevents cascades: when the bridge itself force-opens
+a far door, that door's own state-change hook is suppressed, so opening a
+door can never recursively open a chain of third doors.
 
 ## 4. Placing the portal: geometry
 
@@ -89,16 +115,17 @@ Everything is anchored to constants that already exist in DimDoors:
 - Orientation uses IP's axis convention (`axisW × axisH = normal`):
   `axisH = up`, `axisW = up × facing`, so the portal's front face is the
   door's front face.
-- The cross-dimension transform must map "walking into the front of
-  door A" onto "walking out of the front of door B". That means the
-  rotation sends `-facingA → +facingB` (with up staying up), which is
-  expressed by giving the far side the basis
-  `axisW' = up × (−facingB)`, `axisH' = up`, `normal' = −facingB` via
+- The cross-dimension transform must match DimDoors' own teleport
+  convention. `EntranceRiftBlockEntity.receiveEntity` places and pushes
+  the arriving entity along `getOrientation().getOpposite()` — **you
+  always come out of the BACK of the destination door.** So the rotation
+  sends `-facingA → -facingB` (walk into A's front, emerge from B's
+  back, with up staying up), expressed by giving the far side the basis
+  `axisW' = up × facingB`, `axisH' = up`, `normal' = facingB` via
   `DQuaternion.matrixToQuaternion(...)` +
-  `Portal.setOtherSideOrientation(...)`. Sanity check: two doors facing
-  each other (north/south) produce the identity rotation; two doors
-  facing the same way produce a 180° turn — both match how DimDoors'
-  own teleport math behaves.
+  `Portal.setOtherSideOrientation(...)`. (The first version of this
+  compat mapped front→front, which made some door pairs feel "flipped"
+  compared to walking through them classically.)
 
 A doorway is visible and enterable from **both** faces and must work in
 **both** directions, so one `Portal` entity isn't enough. After spawning
@@ -113,6 +140,18 @@ box around a doorway — no persistent bookkeeping needed, which also
 makes cleanup robust across server restarts (IP portals are ordinary
 entities and save with the world, exactly like the door state they
 mirror).
+
+## 4b. Persistent portals (config)
+
+`doors.persistentImmersivePortals` (default **off**, in the standard
+DimDoors config screen): when enabled, closing a bridged door does *not*
+remove its portals. Instead every portal in the cluster is made
+non-teleportable (`Portal.setTeleportable(false)` + client resync) and
+stays in place, so the destination remains visible through the door's
+window cutout while the closed door physically blocks passage. Opening
+the door re-enables traversal. Breaking a door always removes its
+portals regardless of this setting. Portals (and their teleportable
+flag) are ordinary entities, so the state survives server restarts.
 
 ## 5. Open/close synchronization
 

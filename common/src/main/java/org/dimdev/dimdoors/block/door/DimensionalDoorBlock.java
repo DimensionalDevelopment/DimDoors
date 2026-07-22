@@ -85,7 +85,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 			return InteractionResult.PASS;
 		}
 
-		if (DoorPortalBridge.get().handlesTeleport(world, bottom, doorState)) {
+		if (DoorPortalBridge.get().handlesTeleport(world, bottom, doorState, entity)) {
 			return InteractionResult.PASS;
 		}
 		Vec3 currentPos = entity.position();
@@ -149,7 +149,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		this.playSound(player, world, pos, state.getValue(OPEN));
 		world.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
 		if (!world.isClientSide) {
-			DoorPortalBridge.get().onDoorStateChanged(world, pos, state);
+			DoorPortalBridge.get().onDoorStateChanged(world, pos, state, player);
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -161,7 +161,7 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		if (!world.isClientSide) {
 			BlockState newState = world.getBlockState(pos);
 			if (newState.is(this) && newState.getValue(OPEN) != wasOpen) {
-				DoorPortalBridge.get().onDoorStateChanged(world, pos, newState);
+				DoorPortalBridge.get().onDoorStateChanged(world, pos, newState, null);
 			}
 		}
 	}

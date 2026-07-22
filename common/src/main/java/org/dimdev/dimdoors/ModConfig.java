@@ -108,6 +108,7 @@ public final class ModConfig implements ConfigData {
 
 	public static class Doors {
 		@Tooltip public boolean closeDoorBehind = true;
+		@Tooltip public boolean persistentImmersivePortals = false;
 		@Tooltip @CollapsibleObject public DoorList doorList = new DoorList();
 		@Tooltip public boolean placeRiftsInCreativeMode = true;
 
