@@ -13,6 +13,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
+import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.compat.DoorPortalBridge;
@@ -257,9 +259,14 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 		if (dest.doorState() != null) {
 			Direction farFacing = dest.doorState().getValue(DoorBlock.FACING);
 			portal.setDestination(portalPlaneCenter(dest.pos(), farFacing));
-			// you come out of the BACK of the far door (DimDoors teleport convention)
-			Vec3 farNormal = Vec3.atLowerCornerOf(farFacing.getNormal());
-			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(up.cross(farNormal), up, farNormal));
+			// rotate the portal frame through DimDoors' own teleport pipeline
+			// (source rotator in, exit flip, destination rotator out) so the
+			// portal matches the classic teleport for every facing combination
+			CoordinateTransformerBlock srcTransformer = (CoordinateTransformerBlock) doorState.getBlock();
+			CoordinateTransformerBlock farTransformer = (CoordinateTransformerBlock) dest.doorState().getBlock();
+			Vec3 farAxisW = dimDoorsRotate(srcTransformer, doorState, bottom, farTransformer, dest.doorState(), dest.pos(), portal.axisW);
+			Vec3 farAxisH = dimDoorsRotate(srcTransformer, doorState, bottom, farTransformer, dest.doorState(), dest.pos(), portal.axisH);
+			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(farAxisW, farAxisH, farAxisW.cross(farAxisH)));
 		} else {
 			// no door on the far side (e.g. detached rift): keep the travel
 			// direction and exit one block clear of the target to avoid
@@ -279,6 +286,23 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 			Portal flipped = PortalManipulation.createFlippedPortal(portal, IPRegistry.PORTAL.get());
 			McHelper.spawnServerEntity(flipped);
 		}
+	}
+
+	private static final TransformationMatrix3d EXIT_FLIP = TransformationMatrix3d.builder().rotateY(Math.PI).build();
+
+	/**
+	 * Applies exactly the rotation DimDoors' teleport applies to angles and
+	 * velocities: into the source door's frame, 180° exit flip (if the
+	 * destination flips exits), out of the destination door's frame. See
+	 * RiftBlockEntity#teleport and EntranceRiftBlockEntity#receiveEntity.
+	 */
+	private static Vec3 dimDoorsRotate(CoordinateTransformerBlock srcTransformer, BlockState srcState, BlockPos srcPos,
+									   CoordinateTransformerBlock farTransformer, BlockState farState, BlockPos farPos, Vec3 vector) {
+		Vec3 relative = srcTransformer.rotateTo(srcTransformer.rotatorBuilder(srcState, srcPos), vector);
+		if (farTransformer.isExitFlipped()) {
+			relative = EXIT_FLIP.transform(relative);
+		}
+		return farTransformer.rotateOut(farTransformer.rotatorBuilder(farState, farPos), relative);
 	}
 
 	private static Vec3 portalPlaneCenter(BlockPos bottom, Direction facing) {

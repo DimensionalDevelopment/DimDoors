@@ -115,17 +115,18 @@ Everything is anchored to constants that already exist in DimDoors:
 - Orientation uses IP's axis convention (`axisW × axisH = normal`):
   `axisH = up`, `axisW = up × facing`, so the portal's front face is the
   door's front face.
-- The cross-dimension transform must match DimDoors' own teleport
-  convention. `EntranceRiftBlockEntity.receiveEntity` places and pushes
-  the arriving entity along `getOrientation().getOpposite()` — **you
-  always come out of the BACK of the destination door.** So the rotation
-  sends `-facingA → -facingB` (walk into A's front, emerge from B's
-  back, with up staying up), expressed by giving the far side the basis
-  `axisW' = up × facingB`, `axisH' = up`, `normal' = facingB` via
-  `DQuaternion.matrixToQuaternion(...)` +
-  `Portal.setOtherSideOrientation(...)`. (The first version of this
-  compat mapped front→front, which made some door pairs feel "flipped"
-  compared to walking through them classically.)
+- The cross-dimension rotation is **not derived by hand**. Early versions
+  computed the far-side basis from the two doors' `FACING` values, and
+  disagreed with DimDoors' classic teleport for some facing
+  combinations (walking into the front of one door stranded you behind
+  the other). The bridge now rotates the portal's `axisW`/`axisH`
+  through DimDoors' own `CoordinateTransformerBlock` pipeline — source
+  door `rotatorBuilder` in, the `isExitFlipped()` 180° yaw flip, then
+  destination door `rotatorBuilder` out (the exact sequence of
+  `RiftBlockEntity.teleport` + `EntranceRiftBlockEntity.receiveEntity`)
+  — and feeds the resulting basis to `Portal.setOtherSideOrientation`.
+  Whatever DimDoors does, the portal now does by construction, for
+  every pair of facings.
 
 A doorway is visible and enterable from **both** faces and must work in
 **both** directions, so one `Portal` entity isn't enough. After spawning
