@@ -44,6 +44,7 @@ import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.compat.DoorPortalBridge;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -81,6 +82,10 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 
 		// TODO: decide whether door should need to be open for teleportation
 		if (doorState.getBlock() != this || !doorState.getValue(DoorBlock.OPEN)) { // '== this' to check if not half-broken
+			return InteractionResult.PASS;
+		}
+
+		if (DoorPortalBridge.get().handlesTeleport(world, bottom, doorState)) {
 			return InteractionResult.PASS;
 		}
 		Vec3 currentPos = entity.position();
@@ -143,7 +148,30 @@ public class DimensionalDoorBlock extends WaterLoggableDoorBlock implements Rift
 		}
 		this.playSound(player, world, pos, state.getValue(OPEN));
 		world.gameEvent(player, this.isOpen(state) ? GameEvent.BLOCK_OPEN : GameEvent.BLOCK_CLOSE, pos);
+		if (!world.isClientSide) {
+			DoorPortalBridge.get().onDoorStateChanged(world, pos, state);
+		}
 		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean notify) {
+		boolean wasOpen = state.getValue(OPEN);
+		super.neighborChanged(state, world, pos, block, fromPos, notify);
+		if (!world.isClientSide) {
+			BlockState newState = world.getBlockState(pos);
+			if (newState.is(this) && newState.getValue(OPEN) != wasOpen) {
+				DoorPortalBridge.get().onDoorStateChanged(world, pos, newState);
+			}
+		}
+	}
+
+	@Override
+	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (!world.isClientSide && !state.is(newState.getBlock())) {
+			DoorPortalBridge.get().onDoorRemoved(world, pos, state);
+		}
+		super.onRemove(state, world, pos, newState, isMoving);
 	}
 
 	@Override

@@ -32,3 +32,6 @@ logs
 *.hprof
 .vscode
 /test
+
+# architectury
+.architectury-transformer

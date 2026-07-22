@@ -24,29 +24,28 @@ public enum DefaultTransformation implements Transformer {
 	NORTH_DOOR {
 		@Override
 		public void transform(PoseStack matrices) {
-			matrices.translate(0, 0, 0.81F);
+			matrices.translate(0, 0, 0.87F);
 		}
 	},
 	SOUTH_DOOR {
 		@Override
 		public void transform(PoseStack matrices) {
-			matrices.translate(0, 0, 0.19F);
+			matrices.mulPose(new Quaternionf().rotateY((float) Math.toRadians(180f)));
+			matrices.translate(-1, 0, -0.13F);
 		}
 	},
 	WEST_DOOR {
 		@Override
 		public void transform(PoseStack matrices) {
-			// TODO
-			matrices.mulPose(new Quaternionf().rotateY((float) Math.toRadians(-90f)));
-			matrices.translate(0, 0, -0.81F);
+			matrices.mulPose(new Quaternionf().rotateY((float) Math.toRadians(90f)));
+			matrices.translate(-1, 0, 0.87F);
 		}
 	},
 	EAST_DOOR {
 		@Override
 		public void transform(PoseStack matrices) {
-			// TODO
 			matrices.mulPose(new Quaternionf().rotateY((float) Math.toRadians(-90f)));
-			matrices.translate(0, 0, -0.19F);
+			matrices.translate(0, 0, -0.13F);
 		}
 	},
 	NONE {

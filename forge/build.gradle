@@ -27,6 +27,15 @@ configurations {
     developmentForge.extendsFrom common
 }
 
+repositories {
+    maven {
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
+    }
+}
+
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
     // Remove the next line if you don't want to depend on the API
@@ -43,6 +52,11 @@ dependencies {
 //    modApi "lol.bai:badpackets:forge-0.4.2"
 //    modApi "com.sk89q.worldedit:worldedit-forge-mc${rootProject.world_edit_minecraft_version}:${rootProject.worldedit}"
     modApi("curse.maven:worldedit-${project.properties["worldedit_CF"]}:${project.properties["worldedit_CF_version"]}")
+
+    // Immersive Portals (optional compat). compileOnly so it stays optional at runtime.
+    modCompileOnly "maven.modrinth:immersive-portals-neoforge:${rootProject.immersive_portals_version}"
+    // Uncomment to test with Immersive Portals in the dev client:
+//    modRuntimeOnly "maven.modrinth:immersive-portals-neoforge:${rootProject.immersive_portals_version}"
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:$rei_version"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:$rei_version"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:$rei_version"

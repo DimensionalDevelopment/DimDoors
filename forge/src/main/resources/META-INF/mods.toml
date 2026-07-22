@@ -40,3 +40,10 @@ mandatory = true
 versionRange = "[${cloth_config_version},)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.dimdoors]]
+modId = "imm_ptl_core"
+mandatory = false
+versionRange = "[3.0,)"
+ordering = "AFTER"
+side = "BOTH"

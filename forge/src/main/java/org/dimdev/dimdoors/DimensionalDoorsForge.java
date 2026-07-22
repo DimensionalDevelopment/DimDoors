@@ -5,6 +5,7 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.dimdev.dimdoors.api.util.StreamUtils;
+import org.dimdev.dimdoors.compat.immersiveportals.ImmersivePortalsCompat;
 import org.dimdev.dimdoors.item.component.forge.CounterComponentImpl;
 import org.dimdev.dimdoors.world.ModBiomeModifiers;
 import org.dimdev.dimdoors.world.level.component.ChunkLazilyGeneratedComponent;
@@ -21,6 +22,8 @@ public class DimensionalDoorsForge {
         DimensionalDoors.init();
 
         ModBiomeModifiers.init();
+
+        ImmersivePortalsCompat.init();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterCapabilitiesEvent>) registerCapabilitiesEvent -> {
             registerCapabilitiesEvent.register(CounterComponentImpl.class);

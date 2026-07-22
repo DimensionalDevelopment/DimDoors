@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import org.dimdev.dimdoors.api.client.DimensionalPortalRenderer;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
+import org.dimdev.dimdoors.compat.DoorPortalBridge;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.rift.targets.IdMarker;
 
@@ -29,6 +30,10 @@ public class EntranceRiftBlockEntityRenderer implements BlockEntityRenderer<Entr
 
 					matrixStack.popPose();
 				}
+
+		if (DoorPortalBridge.get().suppressesRiftRendering(blockEntity)) {
+			return;
+		}
 
 		DimensionalPortalRenderer.renderDimensionalPortal(matrixStack, vertexConsumerProvider, blockEntity.getTransformer(), tickDelta, light, overlay, blockEntity.isTall());
 	}
