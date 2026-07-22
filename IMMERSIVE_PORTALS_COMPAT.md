@@ -69,14 +69,11 @@ moment the door is opened. The resolver understands:
   pocket has been generated (first walk-through), the wrapped target is a
   concrete `RiftReference` and resolves like one. The very first entry
   stays classic, because the pocket literally does not exist yet.
-- **`PrivatePocketTarget` / `PrivatePocketExitTarget`** (personal
-  pockets) — these depend on *who* is asking, so they are resolved using
-  the player who opened the door (via the rift registry's per-player
-  entrance/exit pointers). The resulting portal is bound to that player
-  with IP's `specificPlayerId`: IP only syncs such portals to their
-  owner, so other players see the classic swirl and get DimDoors'
-  classic per-player teleport. Redstone can't open a personal-pocket
-  portal (there is no player to resolve against).
+- **Personal pockets are deliberately excluded.** Their destination
+  depends on which player walks through (`PrivatePocketTarget` resolves
+  per player), so any world-visible portal would show the wrong pocket
+  to everyone else on a multiplayer server. Personal pocket doors keep
+  the classic swirl and classic teleport.
 
 What kind of portal is spawned depends on the link topology:
 
@@ -115,18 +112,25 @@ Everything is anchored to constants that already exist in DimDoors:
 - Orientation uses IP's axis convention (`axisW × axisH = normal`):
   `axisH = up`, `axisW = up × facing`, so the portal's front face is the
   door's front face.
-- The cross-dimension rotation is **not derived by hand**. Early versions
-  computed the far-side basis from the two doors' `FACING` values, and
-  disagreed with DimDoors' classic teleport for some facing
-  combinations (walking into the front of one door stranded you behind
-  the other). The bridge now rotates the portal's `axisW`/`axisH`
-  through DimDoors' own `CoordinateTransformerBlock` pipeline — source
-  door `rotatorBuilder` in, the `isExitFlipped()` 180° yaw flip, then
-  destination door `rotatorBuilder` out (the exact sequence of
-  `RiftBlockEntity.teleport` + `EntranceRiftBlockEntity.receiveEntity`)
-  — and feeds the resulting basis to `Portal.setOtherSideOrientation`.
-  Whatever DimDoors does, the portal now does by construction, for
-  every pair of facings.
+- The cross-dimension rotation guarantees **front in, front out**, like
+  the classic teleport. The far-side basis is computed by rotating the
+  portal's `axisW`/`axisH` through DimDoors' own
+  `CoordinateTransformerBlock` pipeline — source door `rotatorBuilder`
+  in, the `isExitFlipped()` 180° yaw flip, then destination door
+  `rotatorBuilder` out (the exact sequence of `RiftBlockEntity.teleport`
+  + `EntranceRiftBlockEntity.receiveEntity`). One trap discovered the
+  hard way: `Portal.setOtherSideOrientation` expects the far-side frame
+  *as seen looking back through the portal* —
+  `PortalManipulation.computeDeltaTransformation` bakes in an extra 180°
+  flip around `axisH` (`flipAxisW`). So the pipeline result is mirrored
+  (axisW and normal negated) before being passed in; the net input is
+  simply the far door's own doorway frame with its normal along the far
+  door's `FACING`. Passing the unmirrored frame is what made portals
+  exit out the far door's back.
+- When a far door is force-opened for a bridge, its `HINGE` is also set
+  to match the near door. DimDoors places generated doors hinge-left,
+  so a right-hinged near door would otherwise never visually line up
+  with its far door through the portal.
 
 A doorway is visible and enterable from **both** faces and must work in
 **both** directions, so one `Portal` entity isn't enough. After spawning
