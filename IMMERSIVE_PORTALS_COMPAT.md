@@ -128,12 +128,16 @@ Everything is anchored to constants that already exist in DimDoors:
   door's `FACING`. Passing the unmirrored frame is what made portals
   exit out the far door's back.
 - When a far door is force-opened for a bridge, its `HINGE` is set to
-  the **mirror** of the near door's hinge. The portal joins the doors
-  front-to-front, so the far door is viewed from its other side through
-  the portal — a door seen from its other side appears hinge-flipped,
-  and only the mirrored hinge makes the two panels overlap as one door.
-  (Equal hinges only lined up under the old back-to-back transform,
-  which was not walkable.)
+  the **same side** as the near door's hinge — determined empirically
+  in-game: with matching hinges the two panels overlap as one door
+  through the portal.
+- One-way exits at non-door targets (a gateway's detached rift) are
+  **terrain-aware**: the bridge scores the four horizontal directions
+  around the target for open space (two blocks out, foot and head
+  height) and orients both the exit and the view along the most open
+  one, preferring the source door's facing on ties. Without this, a
+  gateway whose pillars straddle the source door's compass heading
+  would aim the exit straight into a pillar.
 - Opening a door always purges tagged portals at **both** endpoints
   before spawning fresh ones. This prevents portal stacking when a
   link's topology changes — e.g. a one-way portal aimed at a detached
