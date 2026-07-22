@@ -99,9 +99,16 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 			removeDoorPortals(dest.world(), dest.pos());
 			spawnPortals(world, bottom, doorState, dest);
 			if (dest.doorState() != null) {
-				// Empirically (tested in-game), the doors overlap seamlessly
-				// through the portal when both carry the SAME hinge side.
-				syncFarDoor(dest.world(), dest.pos(), true, doorState.getValue(DoorBlock.HINGE));
+				// The portal fuses the two doors into ONE door seen from its
+				// two sides — and a real door's hinge is on the left from one
+				// side and on the right from the other. So the far door must
+				// store the MIRRORED hinge for the panels to overlap through
+				// the front-to-front portal. (Equal hinges only lined up under
+				// the old back-to-back transform, which was not walkable.)
+				DoorHingeSide mirroredHinge = doorState.getValue(DoorBlock.HINGE) == DoorHingeSide.LEFT
+						? DoorHingeSide.RIGHT
+						: DoorHingeSide.LEFT;
+				syncFarDoor(dest.world(), dest.pos(), true, mirroredHinge);
 			}
 		} else {
 			if (persistent) {
@@ -252,19 +259,17 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 			Vec3 farAxisH = dimDoorsRotate(srcTransformer, doorState, bottom, farTransformer, dest.doorState(), dest.pos(), portal.axisH);
 			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(farAxisW, farAxisH, farAxisW.cross(farAxisH)));
 		} else {
-			// No door on the far side (e.g. a gateway's detached rift), so
-			// there is no facing to orient against. Pick the most open
-			// horizontal direction around the target (a gateway rift is
-			// flanked by pillars — the open axis is the walkable one), aim
-			// the exit that way, and land one block past the target so the
-			// arriving player walks away from the rift instead of into it.
-			Direction exitDir = pickOpenDirection(dest.world(), dest.pos(), facing);
-			Vec3 exitVec = Vec3.atLowerCornerOf(exitDir.getNormal());
-			portal.setDestination(Vec3.atBottomCenterOf(dest.pos()).add(0, 1.0, 0).add(exitVec));
-			// virtual far door facing -exitDir: front-to-front convention
-			// makes you exit moving along +exitDir (see the door case above)
-			Vec3 virtualFarNormal = exitVec.scale(-1);
-			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(up.cross(virtualFarNormal), up, virtualFarNormal));
+			// No door on the far side (e.g. a gateway's detached rift).
+			// Classic DimDoors normalizes these arrivals: the source door's
+			// rotateTo output is used as world coordinates with no further
+			// rotation (DetachedRiftBlockEntity#receiveEntity), so walking
+			// straight through any door's front always lands you at the rift
+			// heading world NORTH — gateway structures face that convention.
+			// Replicate it: exit direction is -(otherSide normal), so pass
+			// SOUTH to exit heading NORTH, one block clear of the rift.
+			Vec3 south = new Vec3(0, 0, 1);
+			portal.setDestination(Vec3.atBottomCenterOf(dest.pos()).add(0, 1.0, 0).add(0, 0, -1.0));
+			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(up.cross(south), up, south));
 		}
 
 		portal.portalTag = PORTAL_TAG;
@@ -297,35 +302,6 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 		return farTransformer.rotateOut(farTransformer.rotatorBuilder(farState, farPos), relative);
 	}
 
-	/**
-	 * Picks the most open horizontal direction around a target position by
-	 * scoring passability two blocks out at foot and head height. Ties prefer
-	 * the source door's facing, then its sides, then behind.
-	 */
-	private static Direction pickOpenDirection(ServerLevel world, BlockPos pos, Direction sourceFacing) {
-		Direction best = sourceFacing;
-		int bestScore = -1;
-		Direction[] candidates = {sourceFacing, sourceFacing.getClockWise(), sourceFacing.getCounterClockWise(), sourceFacing.getOpposite()};
-		for (Direction dir : candidates) {
-			int score = 0;
-			for (int dist = 1; dist <= 2; dist++) {
-				BlockPos foot = pos.relative(dir, dist);
-				BlockPos head = foot.above();
-				if (world.getBlockState(foot).getCollisionShape(world, foot).isEmpty()) {
-					score++;
-				}
-				if (world.getBlockState(head).getCollisionShape(world, head).isEmpty()) {
-					score++;
-				}
-			}
-			if (score > bestScore) {
-				bestScore = score;
-				best = dir;
-			}
-		}
-		return best;
-	}
-
 	private static Vec3 portalPlaneCenter(BlockPos bottom, Direction facing) {
 		return Vec3.atBottomCenterOf(bottom)
 				.add(Vec3.atLowerCornerOf(facing.getOpposite().getNormal()).scale(PORTAL_OFFSET_FROM_CENTER))
@@ -355,8 +331,8 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 	/**
 	 * Opens/closes the far door of a bridged pair without re-triggering this
 	 * bridge, and (on open) sets its hinge so the two doors overlap seamlessly
-	 * through the portal — empirically that is the SAME hinge side as the
-	 * near door.
+	 * through the portal (the caller passes the mirrored hinge — one physical
+	 * door has its hinge on opposite sides when viewed from its two sides).
 	 */
 	private void syncFarDoor(ServerLevel world, BlockPos bottom, boolean open, @Nullable DoorHingeSide hinge) {
 		this.syncing = true;
