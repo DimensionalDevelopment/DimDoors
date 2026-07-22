@@ -127,10 +127,18 @@ Everything is anchored to constants that already exist in DimDoors:
   simply the far door's own doorway frame with its normal along the far
   door's `FACING`. Passing the unmirrored frame is what made portals
   exit out the far door's back.
-- When a far door is force-opened for a bridge, its `HINGE` is also set
-  to match the near door. DimDoors places generated doors hinge-left,
-  so a right-hinged near door would otherwise never visually line up
-  with its far door through the portal.
+- When a far door is force-opened for a bridge, its `HINGE` is set to
+  the **mirror** of the near door's hinge. The portal joins the doors
+  front-to-front, so the far door is viewed from its other side through
+  the portal — a door seen from its other side appears hinge-flipped,
+  and only the mirrored hinge makes the two panels overlap as one door.
+  (Equal hinges only lined up under the old back-to-back transform,
+  which was not walkable.)
+- Opening a door always purges tagged portals at **both** endpoints
+  before spawning fresh ones. This prevents portal stacking when a
+  link's topology changes — e.g. a one-way portal aimed at a detached
+  rift that a player later replaces with a dimensional door, upgrading
+  the link to a mutual pair.
 
 A doorway is visible and enterable from **both** faces and must work in
 **both** directions, so one `Portal` entity isn't enough. After spawning

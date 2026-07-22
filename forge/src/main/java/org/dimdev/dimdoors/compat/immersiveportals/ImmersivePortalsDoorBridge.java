@@ -88,17 +88,25 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 		boolean persistent = DimensionalDoors.getConfig().getDoorsConfig().persistentImmersivePortals;
 
 		if (doorState.getValue(DoorBlock.OPEN)) {
-			List<Portal> existing = findDoorPortals(world, bottom);
-			setTeleportable(existing, true);
+			// Always purge both endpoints before spawning: this replaces any
+			// stale portals from an older link (e.g. a one-way portal whose
+			// target rift has since been replaced by a door) instead of
+			// stacking new portals on top of them.
+			removeDoorPortals(world, bottom);
 			if (dest == null) {
 				return;
 			}
-			setTeleportable(findDoorPortals(dest.world(), dest.pos()), true);
-			if (existing.isEmpty()) {
-				spawnPortals(world, bottom, doorState, dest);
-			}
+			removeDoorPortals(dest.world(), dest.pos());
+			spawnPortals(world, bottom, doorState, dest);
 			if (dest.doorState() != null) {
-				syncFarDoor(dest.world(), dest.pos(), true, doorState.getValue(DoorBlock.HINGE));
+				// The portal connects the doors front-to-front, so the far
+				// door is seen from its other side through the portal — its
+				// hinge must be MIRRORED for the two doors to overlap
+				// seamlessly as one.
+				DoorHingeSide mirroredHinge = doorState.getValue(DoorBlock.HINGE) == DoorHingeSide.LEFT
+						? DoorHingeSide.RIGHT
+						: DoorHingeSide.LEFT;
+				syncFarDoor(dest.world(), dest.pos(), true, mirroredHinge);
 			}
 		} else {
 			if (persistent) {
@@ -249,10 +257,12 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 			Vec3 farAxisH = dimDoorsRotate(srcTransformer, doorState, bottom, farTransformer, dest.doorState(), dest.pos(), portal.axisH);
 			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(farAxisW, farAxisH, farAxisW.cross(farAxisH)));
 		} else {
-			// no door on the far side (e.g. detached rift): keep the travel
-			// direction and exit one block clear of the target to avoid
-			// immediately triggering the rift again
-			portal.setDestination(Vec3.atBottomCenterOf(dest.pos()).add(0, 1.0, 0).add(normal.scale(-1.0)));
+			// No door on the far side (e.g. detached rift): keep the travel
+			// direction (entering the front means moving along the door's
+			// FACING) and exit one block PAST the target along that direction,
+			// so the arriving player walks away from the rift instead of into
+			// it (or into whatever surrounds it).
+			portal.setDestination(Vec3.atBottomCenterOf(dest.pos()).add(0, 1.0, 0).add(normal.scale(1.0)));
 		}
 
 		portal.portalTag = PORTAL_TAG;
@@ -313,10 +323,10 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 
 	/**
 	 * Opens/closes the far door of a bridged pair without re-triggering this
-	 * bridge, and (on open) aligns its hinge with the near door so the two
-	 * doors overlap seamlessly through the portal. DimDoors always places
-	 * generated doors with the hinge on the left, so without this a
-	 * right-hinged near door would never line up.
+	 * bridge, and (on open) sets its hinge so the two doors overlap seamlessly
+	 * through the portal. Because the portal joins the doors front-to-front,
+	 * the far door is viewed from its other side and must carry the MIRRORED
+	 * hinge of the near door (the caller passes the already-mirrored value).
 	 */
 	private void syncFarDoor(ServerLevel world, BlockPos bottom, boolean open, @Nullable DoorHingeSide hinge) {
 		this.syncing = true;
