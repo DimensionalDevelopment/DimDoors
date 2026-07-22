@@ -20,7 +20,7 @@ import org.dimdev.dimdoors.api.util.RotatedLocation;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.rift.RiftUtils;
@@ -128,8 +128,8 @@ public class RiftSignatureItem extends Item {
         }
     }
 
-    public static Optional<RiftBlockEntity> getOrCreateRift(ServerLevel world, BlockPos pos) {
-        Optional<RiftBlockEntity> rift;
+    public static Optional<? extends Rift> getOrCreateRift(ServerLevel world, BlockPos pos) {
+        Optional<? extends Rift> rift;
 
         if (!SableHelper.INSTANCE.prepareRiftCreation(world, pos)) {
             return Optional.empty();

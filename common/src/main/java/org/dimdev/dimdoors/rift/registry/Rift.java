@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 import java.util.UUID;
@@ -39,7 +38,7 @@ public class Rift extends RegistryVertex {
     @Override
     public void sourceGone(RegistryVertex source) {
         super.sourceGone(source);
-        RiftBlockEntity riftTileEntity = (RiftBlockEntity) this.location.getBlockEntity();
+        org.dimdev.dimdoors.block.entity.Rift riftTileEntity = (org.dimdev.dimdoors.block.entity.Rift) this.location.getBlockEntity();
         if (source instanceof Rift) {
             riftTileEntity.handleSourceGone(((Rift) source).location);
         }
@@ -49,7 +48,7 @@ public class Rift extends RegistryVertex {
     public void targetGone(RegistryVertex target) {
         super.targetGone(target);
 
-        if (this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) {
+        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) {
             if (target instanceof Rift) {
                 riftBlockEntity.handleTargetGone(((Rift) target).location);
             }
@@ -61,7 +60,7 @@ public class Rift extends RegistryVertex {
     public void targetMoved(RegistryVertex target) {
         super.sourceAdded(target);
 
-        if (this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) {
+        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) {
             if (target instanceof Rift) {
                 riftBlockEntity.handleSourceMoved(((Rift) target).location);
             }
@@ -71,11 +70,11 @@ public class Rift extends RegistryVertex {
 
     public void targetChanged(RegistryVertex target) {
         LOGGER.debug("Rift " + this + " notified of target " + target + " having changed. Updating color.");
-        if (this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) riftBlockEntity.updateColor();
+        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) riftBlockEntity.updateColor();
     }
 
     public void markDirty() {
-        if (this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) riftBlockEntity.updateColor();
+        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) riftBlockEntity.updateColor();
 
         for (Location location : DimensionalRegistry.getRiftRegistry().getTargets(this.location)) {
             DimensionalRegistry.getRiftRegistry().getRift(location).targetChanged(this);
@@ -83,7 +82,7 @@ public class Rift extends RegistryVertex {
     }
 
     private void updateColor() {
-        if (this.location.getBlockEntity() instanceof RiftBlockEntity riftBlockEntity) riftBlockEntity.updateColor();
+        if (this.location.getBlockEntity() instanceof org.dimdev.dimdoors.block.entity.Rift riftBlockEntity) riftBlockEntity.updateColor();
     }
 
     @Override

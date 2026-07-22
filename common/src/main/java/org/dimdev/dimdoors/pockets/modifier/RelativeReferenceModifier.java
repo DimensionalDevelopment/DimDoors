@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.StringRepresentable;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -61,7 +61,7 @@ public record RelativeReferenceModifier(int point_a, int point_b, ConnectionType
                 .toString();
     }
 
-    private boolean addLink(RiftBlockEntity rift, VirtualTarget<?> link) {
+    private boolean addLink(Rift rift, VirtualTarget<?> link) {
         rift.setDestination(link);
         return true;
     }

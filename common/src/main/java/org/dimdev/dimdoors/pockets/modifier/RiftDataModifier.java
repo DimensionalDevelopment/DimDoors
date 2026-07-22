@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.block.entity.RiftData;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
@@ -38,17 +38,17 @@ public class RiftDataModifier implements Modifier {
 
     @Override
     public void apply(PocketGenerationContext parameters, RiftManager manager) {
-        Consumer<RiftBlockEntity> riftBlockEntityConsumer;
+        Consumer<Rift> riftConsumer;
 
         if (doorData == null) {
-            riftBlockEntityConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
+            riftConsumer = rift -> rift.setDestination(VirtualTarget.NoneTarget.INSTANCE);
         } else {
-            riftBlockEntityConsumer = rift -> rift.setData(doorData.value());
+            riftConsumer = rift -> rift.setData(doorData.value());
         }
 
         manager.foreachConsume((id, rift) -> {
             if (ids.contains(id)) {
-                riftBlockEntityConsumer.accept(rift);
+                riftConsumer.accept(rift);
                 return true;
             } else {
                 return false;

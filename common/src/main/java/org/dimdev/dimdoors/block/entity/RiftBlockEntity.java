@@ -30,7 +30,6 @@ import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.CoordinateTransformerBlock;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.targets.LocationProvider;
 import org.dimdev.dimdoors.rift.targets.MessageTarget;
 import org.dimdev.dimdoors.rift.targets.Targets;
@@ -41,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public abstract class RiftBlockEntity extends BlockEntity implements Target, EntityTarget {
+public abstract class RiftBlockEntity extends BlockEntity implements Rift, Target, EntityTarget {
     private static final int UPDATE_PERIOD = 200; //10 seconds
     private static final RandomSource random = RandomSource.create();
     private static final Logger LOGGER = LogManager.getLogger();
@@ -194,7 +193,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
     public void updateType() {
         if (!this.isRegistered()) return;
-        Rift rift = DimensionalRegistry.getRiftRegistry().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
+        org.dimdev.dimdoors.rift.registry.Rift rift = DimensionalRegistry.getRiftRegistry().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
         rift.setDetached(this.isDetached());
         rift.markDirty();
     }
@@ -292,16 +291,20 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
 
     public abstract boolean isDetached();
 
-    public void copyFrom(RiftBlockEntity rift) {
-        this.data.setDestination(rift.data.getDestination());
-        this.data.setProperties(rift.data.getProperties());
-        this.data.setAlwaysDelete(rift.data.isAlwaysDelete());
-        this.data.setForcedColor(rift.data.isForcedColor());
-        this.stabilized = rift.stabilized;
+    @Override
+    public void copyFrom(Rift rift) {
+        this.data.setDestination(rift.getDestination());
+        this.data.setProperties(rift.getProperties());
+        this.data.setAlwaysDelete(rift.isAlwaysDelete());
+        this.data.setColor(rift.getColor());
+        this.data.setForcedColor(rift.isForcedColor());
+        if (rift instanceof RiftBlockEntity riftBlockEntity) {
+            this.stabilized = riftBlockEntity.stabilized;
 
-        if (this.closing) {
-            this.closing = rift.closing;
-            this.size = rift.size;
+            if (this.closing) {
+                this.closing = riftBlockEntity.closing;
+                this.size = riftBlockEntity.size;
+            }
         }
     }
 
@@ -337,7 +340,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
         this.level = level;
     }
 
-    public Rift asRift() {
+    public org.dimdev.dimdoors.rift.registry.Rift asRift() {
         return DimensionalRegistry.getRiftRegistry().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
     }
 
@@ -401,6 +404,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Target, Ent
         return false;
     }
 
+    @Override
     public void setDeleteRift(boolean deleteRift) {
         this.deleteRift = deleteRift;
     }

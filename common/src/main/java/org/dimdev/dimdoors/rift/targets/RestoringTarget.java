@@ -2,8 +2,7 @@ package org.dimdev.dimdoors.rift.targets;
 
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.api.util.RGBA;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 
 public abstract class RestoringTarget<T extends VirtualTarget<T>> extends VirtualTarget<T> {
 
@@ -12,7 +11,7 @@ public abstract class RestoringTarget<T extends VirtualTarget<T>> extends Virtua
 
         Location linkTarget = this.makeLinkTarget();
 
-        if (linkTarget != null && this.location.getBlockEntity() instanceof RiftBlockEntity rift) {
+        if (linkTarget != null && this.location.getBlockEntity() instanceof Rift rift) {
             var reference = linkTarget.asTarget();
 
             rift.setDestination(reference);

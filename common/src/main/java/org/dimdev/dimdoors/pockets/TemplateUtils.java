@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
@@ -72,14 +72,14 @@ public class TemplateUtils {
 //        }
     }
 
-    static public void registerRifts(List<? extends RiftBlockEntity> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
+    static public void registerRifts(List<? extends Rift> rifts, VirtualTarget linkTo, LinkProperties linkProperties, Pocket pocket) {
         ServerLevel world = DimensionalDoors.getWorld(pocket.getWorld());
-        HashMap<RiftBlockEntity, Float> entranceWeights = new HashMap<>();
+        HashMap<Rift, Float> entranceWeights = new HashMap<>();
 
         // Add logging to debug
         LOGGER.info("Registering {} rifts for pocket {}", rifts.size(), pocket.getId());
 
-        for (RiftBlockEntity rift : rifts) {
+        for (Rift rift : rifts) {
             if (rift.getDestination() instanceof PocketEntranceMarker) {
                 entranceWeights.put(rift, ((PocketEntranceMarker) rift.getDestination()).getWeight());
             }
@@ -90,11 +90,11 @@ public class TemplateUtils {
             return;
         }
 
-        RiftBlockEntity selectedEntrance = MathUtil.weightedRandom(entranceWeights);
+        Rift selectedEntrance = MathUtil.weightedRandom(entranceWeights);
         LOGGER.info("Selected entrance at {} for pocket {}", selectedEntrance.getBlockPos(), pocket.getId());
 
         // Replace entrances with appropriate destinations
-        for (RiftBlockEntity rift : rifts) {
+        for (Rift rift : rifts) {
             VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketEntranceMarker) {
                 if (rift == selectedEntrance) {
@@ -111,7 +111,7 @@ public class TemplateUtils {
             }
         }
 
-        for (RiftBlockEntity rift : rifts) {
+        for (Rift rift : rifts) {
             VirtualTarget dest = rift.getDestination();
             if (dest instanceof PocketExitMarker) {
                 if (linkProperties != null) rift.setProperties(linkProperties);
@@ -127,24 +127,24 @@ public class TemplateUtils {
             }
         }
 
-        for (RiftBlockEntity rift : rifts) {
+        for (Rift rift : rifts) {
             rift.register();
-            rift.setChanged();
+            rift.markStateChanged();
         }
     }
 
     public static void linkRifts(Location from, Location to) {
         if (from == null || to == null) return;
-        RiftBlockEntity fromBe = (RiftBlockEntity) from.getBlockEntity();
+        if (!(from.getBlockEntity() instanceof Rift fromBe)) return;
         //This is the freaking potato texture from tf2. Bad things happen if this invocation is removed
 //    to.getWorld(); //TODO: Figure out how ensure world is loaded before .getBlockEntity is called so that this janky line isn't needed.
-        RiftBlockEntity toBe = (RiftBlockEntity) to.getBlockEntity();
+        Rift toBe = to.getBlockEntity() instanceof Rift rift ? rift : null;
         fromBe.setDestination(to.asTarget());
-        fromBe.setChanged();
+        fromBe.markStateChanged();
         if (toBe != null && toBe.getProperties() != null) {
             toBe.setProperties(toBe.getProperties().withLinksRemaining(toBe.getProperties().getLinksRemaining() - 1));
             toBe.updateProperties();
-            toBe.setChanged();
+            toBe.markStateChanged();
         }
     }
 

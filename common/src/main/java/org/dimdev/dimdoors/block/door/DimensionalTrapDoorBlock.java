@@ -32,7 +32,6 @@ import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.*;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -124,7 +123,7 @@ public abstract class DimensionalTrapDoorBlock<T extends EntranceRiftBlockEntity
     }
 
     @Override
-    public Optional<RiftBlockEntity> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
+    public Optional<T> convertToRiftProvider(ServerLevel world, BlockPos pos, BlockState state) {
         return Optional.of(getRift(world, pos, state));
     }
 

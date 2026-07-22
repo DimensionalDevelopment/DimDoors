@@ -13,7 +13,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.block.entity.DetachedRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.joml.Vector3d;
 
 import java.util.function.BiConsumer;
@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 public final class RaycastHelper {
     public static final int REACH_DISTANCE = 16;
     public static Predicate<BlockEntity> DETACH = blockEntity -> blockEntity instanceof DetachedRiftBlockEntity;
-    public static Predicate<BlockEntity> RIFT = blockEntity -> blockEntity instanceof RiftBlockEntity;
+    public static Predicate<BlockEntity> RIFT = blockEntity -> blockEntity instanceof Rift;
 
     public static BiConsumer<Level, Vector3d> transformFunction = (level, pos) -> {};
 
@@ -33,7 +33,7 @@ public final class RaycastHelper {
     }
 
     public static boolean hitsRift(HitResult hit, BlockGetter world) {
-        return hit != null && hit.getType() == HitResult.Type.BLOCK && world.getBlockEntity(((BlockHitResult) hit).getBlockPos()) instanceof RiftBlockEntity;
+        return hit != null && hit.getType() == HitResult.Type.BLOCK && world.getBlockEntity(((BlockHitResult) hit).getBlockPos()) instanceof Rift;
     }
 
     public static boolean hitsLivingEntity(HitResult hit) {

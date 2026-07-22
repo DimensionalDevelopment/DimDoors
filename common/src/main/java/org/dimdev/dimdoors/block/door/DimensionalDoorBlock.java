@@ -35,7 +35,7 @@ import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.block.*;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.rift.RiftUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,7 +67,7 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> ex
     }
 
     @Override
-    public void postTraverseEffect(Level level, BlockPos pos, BlockState state, RiftBlockEntity rift) {
+    public void postTraverseEffect(Level level, BlockPos pos, BlockState state, Rift rift) {
         closeDoorBehind(level, pos);
         closeDoorBehind(level, pos.above());
     }

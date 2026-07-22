@@ -15,6 +15,7 @@ import org.dimdev.dimdoors.api.block.ExplosionConvertibleBlock;
 import org.dimdev.dimdoors.api.entity.LastPositionProvider;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.rift.RiftUtils;
 
@@ -60,7 +61,7 @@ public interface TraversableRiftBlock<T extends EntranceRiftBlockEntity> extends
         return InteractionResult.SUCCESS;
     }
 
-    default void postTraverseEffect(Level level, BlockPos pos, BlockState state, RiftBlockEntity rift) {
+    default void postTraverseEffect(Level level, BlockPos pos, BlockState state, Rift rift) {
 
     }
 

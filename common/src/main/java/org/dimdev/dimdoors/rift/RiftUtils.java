@@ -6,15 +6,15 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.phys.Vec3;
-import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
+import org.dimdev.dimdoors.block.entity.Rift;
 import org.jetbrains.annotations.NotNull;
 
 import static org.dimdev.dimdoors.block.DimensionalPortalBlock.FACING;
 
 public class RiftUtils {
-    public static <T extends RiftBlockEntity> T registerFunction(@NotNull T riftBlockEntity) {
-        riftBlockEntity.register();
-        return riftBlockEntity;
+    public static <T extends Rift> T registerFunction(@NotNull T rift) {
+        rift.register();
+        return rift;
     }
 
     public static record PortalPlane(Vec3 normal, Vec3 tangentX, Vec3 tangentY, Vec3 origin, double halfWidth, double height) {
