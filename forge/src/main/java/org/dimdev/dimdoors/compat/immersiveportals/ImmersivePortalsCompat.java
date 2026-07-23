@@ -19,4 +19,10 @@ public final class ImmersivePortalsCompat {
 			DoorPortalBridge.set(new ImmersivePortalsDoorBridge());
 		}
 	}
+
+	public static void initClient() {
+		if (Platform.isModLoaded(IP_MOD_ID)) {
+			ImmersivePortalsClientCompat.init();
+		}
+	}
 }

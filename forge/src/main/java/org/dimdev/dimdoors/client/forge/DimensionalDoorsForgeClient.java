@@ -26,6 +26,7 @@ import org.dimdev.dimdoors.client.ModEntityModelLayers;
 import org.dimdev.dimdoors.client.config.ModMenu;
 import org.dimdev.dimdoors.client.effect.DungeonDimensionEffect;
 import org.dimdev.dimdoors.client.effect.LimboDimensionEffect;
+import org.dimdev.dimdoors.compat.immersiveportals.ImmersivePortalsCompat;
 
 import java.util.function.Consumer;
 
@@ -40,6 +41,7 @@ public class DimensionalDoorsForgeClient {
         ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, screen) -> ModMenu.getConfigScreen(screen)));
 //        FMLJavaModLoadingContext.get().getModEventBus().addListener((Consumer<RegisterRecipeBookCategoriesEvent>) event1 -> org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent.EVENT.invoker().accept(new org.dimdev.dimdoors.api.util.RegisterRecipeBookCategoriesEvent(event1::registerAggregateCategory, event1::registerBookCategories, event1::registerRecipeCategoryFinder)));
         DimensionalDoorsClient.init();
+        ImmersivePortalsCompat.initClient();
     }
 
     @SubscribeEvent

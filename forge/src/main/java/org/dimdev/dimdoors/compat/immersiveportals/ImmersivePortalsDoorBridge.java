@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import qouteall.imm_ptl.core.McHelper;
 import qouteall.imm_ptl.core.platform_specific.IPRegistry;
 import qouteall.imm_ptl.core.portal.Portal;
+import qouteall.imm_ptl.core.portal.PortalExtension;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.my_util.DQuaternion;
 
@@ -61,8 +62,10 @@ import java.util.List;
  * Only loaded when Immersive Portals is present.
  */
 public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
-	/** Tag applied to every portal of a door cluster so they can be found again. */
+	/** Legacy tag applied to DimDoors portals before each generated set got its own tag. */
 	private static final String PORTAL_TAG = "dimdoors:door_portal";
+	/** Prefix for tags applied to every portal of one generated door portal set. */
+	private static final String PORTAL_TAG_PREFIX = PORTAL_TAG + "/";
 	/**
 	 * The portal plane sits this far behind the block center, along the opposite
 	 * of the door's facing. Matches the collision plane in DimensionalDoorBlock
@@ -273,7 +276,8 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(up.cross(south), up, south));
 		}
 
-		portal.portalTag = PORTAL_TAG;
+		portal.portalTag = portalSetTag(portal);
+		PortalExtension.get(portal).bindCluster = false;
 
 		McHelper.spawnServerEntity(portal);
 		if (dest.mutual()) {
@@ -331,7 +335,29 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 
 	private static List<Portal> findDoorPortals(Level world, BlockPos bottom) {
 		AABB doorway = new AABB(bottom).expandTowards(0, 1, 0).inflate(1.0);
-		return world.getEntitiesOfClass(Portal.class, doorway, portal -> PORTAL_TAG.equals(portal.portalTag));
+		return world.getEntitiesOfClass(Portal.class, doorway, ImmersivePortalsDoorBridge::isDimDoorsPortal);
+	}
+
+	private static String portalSetTag(Portal portal) {
+		return PORTAL_TAG_PREFIX + portal.getUUID();
+	}
+
+	static boolean isDimDoorsPortal(Portal portal) {
+		return isDimDoorsPortalTag(portal.portalTag);
+	}
+
+	static boolean isSameDimDoorsPortalSet(Portal first, Portal second) {
+		return isUniqueDoorPortalSetTag(first.portalTag)
+				&& isUniqueDoorPortalSetTag(second.portalTag)
+				&& first.portalTag.equals(second.portalTag);
+	}
+
+	private static boolean isDimDoorsPortalTag(@Nullable String tag) {
+		return PORTAL_TAG.equals(tag) || isUniqueDoorPortalSetTag(tag);
+	}
+
+	private static boolean isUniqueDoorPortalSetTag(@Nullable String tag) {
+		return tag != null && tag.startsWith(PORTAL_TAG_PREFIX);
 	}
 
 	private static void removeDoorPortals(ServerLevel world, BlockPos bottom) {
