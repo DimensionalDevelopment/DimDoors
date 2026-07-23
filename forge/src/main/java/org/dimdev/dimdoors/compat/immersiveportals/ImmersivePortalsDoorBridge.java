@@ -237,6 +237,7 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 		Vec3 normal = Vec3.atLowerCornerOf(facing.getNormal());
 
 		Portal portal = IPRegistry.PORTAL.get().create(world);
+
 		if (portal == null) {
 			return;
 		}
@@ -277,11 +278,31 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 		McHelper.spawnServerEntity(portal);
 		if (dest.mutual()) {
 			PortalManipulation.completeBiWayBiFacedPortal(portal, p -> {}, p -> {}, IPRegistry.PORTAL.get());
+			adjustDoorPortalDestinations(world, bottom, doorState, dest.world(), dest.pos(), dest.doorState());
+			adjustDoorPortalDestinations(dest.world(), dest.pos(), dest.doorState(), world, bottom, doorState);
 		} else {
 			// one-way: see-through and traversable from this doorway only, but
 			// from both of its faces — exactly like DimDoors' own teleport
 			Portal flipped = PortalManipulation.createFlippedPortal(portal, IPRegistry.PORTAL.get());
 			McHelper.spawnServerEntity(flipped);
+		}
+	}
+
+	private static void adjustDoorPortalDestinations(ServerLevel localWorld, BlockPos localBottom, BlockState localState,
+													 ServerLevel remoteWorld, BlockPos remoteBottom, BlockState remoteState) {
+		Vec3 localFacing = Vec3.atLowerCornerOf(localState.getValue(DoorBlock.FACING).getNormal());
+		Vec3 remoteFacing = Vec3.atLowerCornerOf(remoteState.getValue(DoorBlock.FACING).getNormal());
+
+		for (Portal portal : findDoorPortals(localWorld, localBottom)) {
+			double offset = portal.getNormal().dot(localFacing) >= 0
+					? -PORTAL_OFFSET_FROM_CENTER
+					: PORTAL_OFFSET_FROM_CENTER;
+
+			Vec3 destination = Vec3.atBottomCenterOf(remoteBottom)
+					.add(remoteFacing.scale(offset))
+					.add(0, 1.0, 0);
+			portal.setDestination(destination);
+			portal.reloadAndSyncToClientNextTick();
 		}
 	}
 
