@@ -82,6 +82,7 @@ public class ClothConfigCompat {
                         worldsLeadingToLimbo.list.addAll(value);
                     }))
                     .addEntry(createBoolean(entryBuilder, "limbo.hardcoreLimbo", limbo.hardcoreLimbo, false, value -> limbo.hardcoreLimbo = value))
+                    .addEntry(createBoolean(entryBuilder, "limbo.genericDeathMessages", limbo.genericDeathMessages, false, value -> limbo.genericDeathMessages = value))
                     .addEntry(createInt(entryBuilder, "limbo.limboReturnDistanceMax", limbo.limboReturnDistanceMax, 200, value -> limbo.limboReturnDistanceMax = value))
                     .addEntry(createInt(entryBuilder, "limbo.limboReturnDistanceMin", limbo.limboReturnDistanceMin, 100, value -> limbo.limboReturnDistanceMin = value))
                     .addEntry(createBoolean(entryBuilder, "limbo.decaySurroundings", limbo.decaySurroundings, false, value -> limbo.decaySurroundings = value))

@@ -351,6 +351,8 @@ public class LanguageProvider extends FabricLanguageProvider {
         builder.add("dimdoors.config.option.limbo.universalLimbo.tooltip", "When true, players are also teleported to Limbo when they die in any non-Pocket Dimension (except Limbo itself). Otherwise, players only go to Limbo if they die in a Pocket Dimension.");
         builder.add("dimdoors.config.option.limbo.hardcoreLimbo", "Hardcore Limbo");
         builder.add("dimdoors.config.option.limbo.hardcoreLimbo.tooltip", "When true, a player dying in Limbo will respawn in Limbo, making Eternal Fluid or Golden Dimensional Doors the only way to escape Limbo.");
+        builder.add("dimdoors.config.option.limbo.genericDeathMessages", "Generic Death Messages");
+        builder.add("dimdoors.config.option.limbo.genericDeathMessages.tooltip", "When true, instead of using custom death messages, \"...and was sent to Limbo\" will be added to the end of regular death messages.");
         builder.add("dimdoors.config.option.limbo.limboBlocksCorruptingExitWorldAmount", "Exit World Decay Radius");
         builder.add("dimdoors.config.option.limbo.limboBlocksCorruptingExitWorldAmount.tooltip", "The radius around a player in which blocks can decay upon exiting limbo.");
         builder.add("dimdoors.config.option.limbo.worldsLeadingToLimbo", "Worlds Leading to Limbo");

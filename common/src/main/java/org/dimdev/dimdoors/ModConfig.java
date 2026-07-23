@@ -201,6 +201,7 @@ public final class ModConfig {
     public static class Limbo {
         @Option private final WorldList worldsLeadingToLimbo = new WorldList();
         @Option public boolean hardcoreLimbo = false;
+        @Option public boolean genericDeathMessages = false;
 
         @Option public int limboReturnDistanceMax = 200;
         @Option public int limboReturnDistanceMin = 100;
