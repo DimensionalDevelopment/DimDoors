@@ -215,7 +215,7 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 	private static void spawnPortals(ServerLevel world, BlockPos bottom, BlockState doorState, ResolvedDestination dest) {
 		Direction facing = doorState.getValue(DoorBlock.FACING);
 		Vec3 up = new Vec3(0, 1, 0);
-		Vec3 normal = Vec3.atLowerCornerOf(facing.getNormal());
+		Vec3 normal = Vec3.atLowerCornerOf(facing.getOpposite().getNormal());
 
 		Portal portal = IPRegistry.PORTAL.get().create(world);
 
@@ -260,7 +260,7 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 
 		McHelper.spawnServerEntity(portal);
 		if (dest.mutual()) {
-			PortalManipulation.completeBiWayBiFacedPortal(portal, p -> {}, p -> {}, IPRegistry.PORTAL.get());
+			PortalManipulation.completeBiWayPortal(portal, IPRegistry.PORTAL.get());
 			adjustDoorPortalDestinations(world, bottom, doorState, dest.pos(), dest.doorState(), portalSetTag);
 			adjustDoorPortalDestinations(dest.world(), dest.pos(), dest.doorState(), bottom, doorState, portalSetTag);
 		} else {
@@ -281,9 +281,7 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 				continue;
 			}
 
-			double offset = portal.getNormal().dot(localFacing) >= 0
-					? -PORTAL_OFFSET_FROM_CENTER
-					: PORTAL_OFFSET_FROM_CENTER;
+			double offset = 1-PORTAL_OFFSET_FROM_CENTER-PORTAL_OFFSET_FROM_CENTER;
 
 			Vec3 destination = Vec3.atBottomCenterOf(remoteBottom)
 					.add(remoteFacing.scale(offset))
