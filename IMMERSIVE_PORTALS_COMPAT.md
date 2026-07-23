@@ -5,8 +5,8 @@ This document explains the two features added to this fork of DimDoors
 lives:
 
 1. **Optional Immersive Portals integration** — mutually linked
-   dimensional doors become genuine see-through portals, and their
-   open/close state is synchronized across the link.
+   dimensional doors become genuine see-through portals without mutating
+   the remote door's block state.
 2. **The "camachange" portal visuals** — the classic swirly portal
    surface is slightly transparent and has real 3D depth (used whenever
    Immersive Portals is not installed or a door is not bridged).
@@ -79,14 +79,12 @@ What kind of portal is spawned depends on the link topology:
 
 - **Mutual link** (this door's rift references the far door and the far
   door's rift references back — DimDoors' "green link"): the full
-  four-portal bi-directional, double-faced cluster, plus door open/close
-  synchronization.
+  four-portal bi-directional, double-faced cluster.
 - **Anything else that resolves** (pocket doors, a door leading to a
   detached rift, any one-way reference): a **one-way portal pair** — the
   doorway is see-through and traversable from both of its faces, but
   there is no return portal on the far side, exactly mirroring DimDoors'
-  one-way teleport semantics. If the far side is a door it is forced
-  open (so the exit isn't blocked); if it is not a door (e.g. the
+  one-way teleport semantics. If the far side is not a door (e.g. the
   floating rift of a gateway), the exit point is offset one block clear
   of the target so the arriving player doesn't immediately re-trigger
   the rift.
@@ -95,9 +93,9 @@ Destinations that cannot be statically resolved (dungeon `RandomTarget`
 before first use, `EscapeTarget`, unlinked doors, ...) keep the classic
 behavior untouched.
 
-A re-entrancy guard prevents cascades: when the bridge itself force-opens
-a far door, that door's own state-change hook is suppressed, so opening a
-door can never recursively open a chain of third doors.
+Opening or closing a door manages only the Immersive Portals entities at
+the resolved endpoints. The bridge does not force-open the far door or
+alter remote door block state.
 
 ## 4. Placing the portal: geometry
 
@@ -127,14 +125,9 @@ Everything is anchored to constants that already exist in DimDoors:
   simply the far door's own doorway frame with its normal along the far
   door's `FACING`. Passing the unmirrored frame is what made portals
   exit out the far door's back.
-- When a far door is force-opened for a bridge, its `HINGE` is set to
-  the **mirror** of the near door's hinge. The portal fuses the pair
-  into one door seen from its two sides, and a real door's hinge sits
-  on the left from one side and the right from the other — so the two
-  door blocks must store opposite hinge values for their panels to
-  overlap. (Matching hinges only lined up under the old back-to-back
-  transform, which exited into walls; with the walkable front-to-front
-  transform the mirrored hinge is what preserves the illusion.)
+- The bridge does not mutate the far door's `OPEN` or `HINGE` state.
+  Door-model overlap is handled by the portal orientation and the
+  per-face destination offsets.
 - One-way exits at non-door targets (a gateway's detached rift) copy
   classic DimDoors' convention exactly: `DetachedRiftBlockEntity`
   applies no rotation to the source-frame vectors, which normalizes
@@ -174,19 +167,15 @@ the door re-enables traversal. Breaking a door always removes its
 portals regardless of this setting. Portals (and their teleportable
 flag) are ordinary entities, so the state survives server restarts.
 
-## 5. Open/close synchronization
+## 5. Door state handling
 
-"Open one side, both open; close one side, both close":
+Opening or closing one dimensional door does not change the remote door's
+`OPEN` or `HINGE` properties:
 
 - **Open:** after the mutual-link check, the bridge spawns the portal
-  cluster *first*, then opens the far door with vanilla
-  `DoorBlock.setOpen` (which plays the right sound/game event). Ordering
-  matters: any re-entrant hook fired by the far door's state change sees
-  the portals already in place and does nothing, so exactly one cluster
-  is ever created.
-- **Close:** remove all tagged portals on both sides, then close the far
-  door. The handler is idempotent — the far door's own hook finds no
-  portals left and no state to change, so there is no recursion.
+  cluster for the resolved endpoints.
+- **Close:** remove or disable tagged portals on both sides, depending
+  on the persistent-portal config.
 - **Break:** `onRemove` kills the cluster near the broken door.
 
 Redstone works because the `neighborChanged` override compares the OPEN

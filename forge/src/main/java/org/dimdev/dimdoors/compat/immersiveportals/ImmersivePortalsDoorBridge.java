@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -38,7 +37,7 @@ import java.util.List;
  * Opening a dimensional door whose destination can be resolved to a fixed
  * location spawns a see-through portal in the doorway:
  * - mutually linked door pairs get the full bi-directional double-faced
- *   cluster, and their open/close state (and hinge) is synchronized;
+ *   cluster;
  * - one-way destinations (public pocket doors, doors leading to detached
  *   rifts, ...) get a one-way portal, matching DimDoors' one-way teleport
  *   semantics;
@@ -73,12 +72,9 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 	 */
 	private static final double PORTAL_OFFSET_FROM_CENTER = 0.31;
 
-	/** Guards against hook re-entry while this bridge itself toggles a door. */
-	private boolean syncing;
-
 	@Override
 	public void onDoorStateChanged(Level level, BlockPos pos, BlockState state, @Nullable Player opener) {
-		if (!(level instanceof ServerLevel world) || this.syncing) {
+		if (!(level instanceof ServerLevel world)) {
 			return;
 		}
 		BlockPos bottom = bottomPos(pos, state);
@@ -101,34 +97,16 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 			}
 			removeDoorPortals(dest.world(), dest.pos());
 			spawnPortals(world, bottom, doorState, dest);
-			if (dest.doorState() != null) {
-				// The portal fuses the two doors into ONE door seen from its
-				// two sides — and a real door's hinge is on the left from one
-				// side and on the right from the other. So the far door must
-				// store the MIRRORED hinge for the panels to overlap through
-				// the front-to-front portal. (Equal hinges only lined up under
-				// the old back-to-back transform, which was not walkable.)
-				DoorHingeSide mirroredHinge = doorState.getValue(DoorBlock.HINGE) == DoorHingeSide.LEFT
-						? DoorHingeSide.RIGHT
-						: DoorHingeSide.LEFT;
-				syncFarDoor(dest.world(), dest.pos(), true, mirroredHinge);
-			}
 		} else {
 			if (persistent) {
 				setTeleportable(findDoorPortals(world, bottom), false);
 				if (dest != null) {
 					setTeleportable(findDoorPortals(dest.world(), dest.pos()), false);
-					if (dest.mutual()) {
-						syncFarDoor(dest.world(), dest.pos(), false, null);
-					}
 				}
 			} else {
 				removeDoorPortals(world, bottom);
 				if (dest != null) {
 					removeDoorPortals(dest.world(), dest.pos());
-					if (dest.mutual()) {
-						syncFarDoor(dest.world(), dest.pos(), false, null);
-					}
 				}
 			}
 		}
@@ -276,14 +254,15 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 			portal.setOtherSideOrientation(DQuaternion.matrixToQuaternion(up.cross(south), up, south));
 		}
 
-		portal.portalTag = portalSetTag(portal);
+		String portalSetTag = portalSetTag(portal);
+		portal.portalTag = portalSetTag;
 		PortalExtension.get(portal).bindCluster = false;
 
 		McHelper.spawnServerEntity(portal);
 		if (dest.mutual()) {
 			PortalManipulation.completeBiWayBiFacedPortal(portal, p -> {}, p -> {}, IPRegistry.PORTAL.get());
-			adjustDoorPortalDestinations(world, bottom, doorState, dest.world(), dest.pos(), dest.doorState());
-			adjustDoorPortalDestinations(dest.world(), dest.pos(), dest.doorState(), world, bottom, doorState);
+			adjustDoorPortalDestinations(world, bottom, doorState, dest.pos(), dest.doorState(), portalSetTag);
+			adjustDoorPortalDestinations(dest.world(), dest.pos(), dest.doorState(), bottom, doorState, portalSetTag);
 		} else {
 			// one-way: see-through and traversable from this doorway only, but
 			// from both of its faces — exactly like DimDoors' own teleport
@@ -293,11 +272,15 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 	}
 
 	private static void adjustDoorPortalDestinations(ServerLevel localWorld, BlockPos localBottom, BlockState localState,
-													 ServerLevel remoteWorld, BlockPos remoteBottom, BlockState remoteState) {
+													 BlockPos remoteBottom, BlockState remoteState, String portalSetTag) {
 		Vec3 localFacing = Vec3.atLowerCornerOf(localState.getValue(DoorBlock.FACING).getNormal());
 		Vec3 remoteFacing = Vec3.atLowerCornerOf(remoteState.getValue(DoorBlock.FACING).getNormal());
 
 		for (Portal portal : findDoorPortals(localWorld, localBottom)) {
+			if (!portalSetTag.equals(portal.portalTag)) {
+				continue;
+			}
+
 			double offset = portal.getNormal().dot(localFacing) >= 0
 					? -PORTAL_OFFSET_FROM_CENTER
 					: PORTAL_OFFSET_FROM_CENTER;
@@ -372,31 +355,6 @@ public class ImmersivePortalsDoorBridge implements DoorPortalBridge {
 				portal.setTeleportable(teleportable);
 				portal.reloadAndSyncToClientNextTick();
 			}
-		}
-	}
-
-	/**
-	 * Opens/closes the far door of a bridged pair without re-triggering this
-	 * bridge, and (on open) sets its hinge so the two doors overlap seamlessly
-	 * through the portal (the caller passes the mirrored hinge — one physical
-	 * door has its hinge on opposite sides when viewed from its two sides).
-	 */
-	private void syncFarDoor(ServerLevel world, BlockPos bottom, boolean open, @Nullable DoorHingeSide hinge) {
-		this.syncing = true;
-		try {
-			BlockState state = world.getBlockState(bottom);
-			if (!(state.getBlock() instanceof DoorBlock door)) {
-				return;
-			}
-			if (hinge != null && state.hasProperty(DoorBlock.HINGE) && state.getValue(DoorBlock.HINGE) != hinge) {
-				world.setBlockAndUpdate(bottom, state.setValue(DoorBlock.HINGE, hinge));
-				state = world.getBlockState(bottom);
-			}
-			if (state.getValue(DoorBlock.OPEN) != open) {
-				door.setOpen(null, world, state, bottom, open);
-			}
-		} finally {
-			this.syncing = false;
 		}
 	}
 
