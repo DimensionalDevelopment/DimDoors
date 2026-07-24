@@ -1,0 +1,6 @@
+{
+  "parent": "create:block/brass_casing",
+  "specialmodels": {
+    "dimdoors:dimensional_portal": "dimdoors:shader/liminal_coupler"
+  }
+}

@@ -42,8 +42,10 @@ import org.dimdev.limlib.api.client.ModClient;
 import org.dimdev.limlib.api.client.ModelLoadingRegistry;
 import org.dimdev.limlib.api.fluid.FluidDetails;
 import org.dimdev.limlib.client.ModelLoadingOverride;
+import org.dimdev.limlib.client.specialmodels.SpecialModelShaderRegistry;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -61,6 +63,7 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
 
     public void init(IDimDoorsClientSided<?> sided) {
         setClientSided(sided);
+        DimensionalPortalSpecialModelRenderer.register();
         sided.onClientPlayerJoin(() -> ClientPacketListener.sendPacket(new NetworkHandlerInitializedC2SPacket()));
         registerCompats();
         EnvironmentAddonClient.init();
@@ -98,6 +101,11 @@ public class DimensionalDoorsClient implements ModClient<IDimDoorsClientSided<?>
     @Override
     public void initShaders(TriConsumer<ResourceLocation, VertexFormat, Consumer<ShaderInstance>> shaderRegister) {
         shaderRegister.accept(DimensionalDoors.id("dimensional_portal"), DefaultVertexFormat.POSITION, ModShaders::setDimensionalPortal);
+        try {
+            SpecialModelShaderRegistry.registerCoreShaders(shaderRegister);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

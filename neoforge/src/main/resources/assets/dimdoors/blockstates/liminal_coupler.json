@@ -1,0 +1,26 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "dimdoors:block/liminal_coupler",
+      "x": 180
+    },
+    "facing=east": {
+      "model": "dimdoors:block/liminal_coupler",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "dimdoors:block/liminal_coupler",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "dimdoors:block/liminal_coupler"
+    },
+    "facing=up": {
+      "model": "dimdoors:block/liminal_coupler"
+    },
+    "facing=west": {
+      "model": "dimdoors:block/liminal_coupler",
+      "y": 90
+    }
+  }
+}
