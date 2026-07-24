@@ -31,6 +31,7 @@ dependencies {
     api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
 
     implementation "org.dimdev:limlib-neoforge-${minecraft_version}:${limlib_version}"
+    implementation "net.caffeinemc:sodium-neoforge-mod:${sodium_version}+mc${minecraft_version}"
 
 //    switch (recipe_viewer?.toString()) {
 //        case 'rei':

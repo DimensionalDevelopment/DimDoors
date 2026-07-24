@@ -24,6 +24,10 @@ repositories {
 
 
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+    maven {
+        name = "CaffeineMC"
+        url = "https://maven.caffeinemc.net/releases"
+    }
     maven { url = "https://mvn.devos.one/snapshots" } // Registrate
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
 
@@ -142,6 +146,7 @@ processResources {
             'group'                        : project.group, //Else we target the task's group.
             'minecraft_version'            : minecraft_version,
             'sable_version'                : sable_version,
+            'sodium_version'               : sodium_version,
             'limlib_version'               : limlib_version,
             'minecraft_version_range'      : minecraft_version_range,
             'fabric_version'               : fabric_version,

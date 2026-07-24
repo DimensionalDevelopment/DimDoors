@@ -34,6 +34,7 @@ dependencies {
 
     modImplementation "curse.maven:selene-499980:7522322"
     modImplementation "curse.maven:modmenu-308702:7808443"
+    modRuntimeOnly "net.caffeinemc:sodium-fabric:${sodium_version}+mc${minecraft_version}"
     modImplementation "org.dimdev:limlib-fabric-${minecraft_version}:${limlib_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${rei}"
 
