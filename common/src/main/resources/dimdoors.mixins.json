@@ -16,6 +16,7 @@
     "ExplosionMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",
+    "LanguageMixin",
     "LevelChunkMixin",
     "LevelMixin",
     "LivingEntityMixin",
@@ -49,7 +50,7 @@
     "client.MinecraftMixin",
     "client.ParticleEngineMixin",
     "client.PlaceRecipeMixin",
-    "client.PostProcessShaderMixin",
+    "client.PostProcessShaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

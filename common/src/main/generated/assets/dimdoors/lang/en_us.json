@@ -401,7 +401,7 @@
   "dimdoors.advancement.unravelled_but_immutable.desc": "Obtain Infrangible Fiber",
   "dimdoors.advancement.world_unfurled": "World Unfurled",
   "dimdoors.advancement.world_unfurled.desc": "Collect Unravelled Fabric",
-  "dimdoors.autogen_block_prefix": "Dimensional ",
+  "dimdoors.autogen_block_prefix": "Dimensional %",
   "dimdoors.autogen_item_prefix": "Dimensional ",
   "dimdoors.config.category.decay": "Decay Settings",
   "dimdoors.config.category.doors": "Doors Settings",

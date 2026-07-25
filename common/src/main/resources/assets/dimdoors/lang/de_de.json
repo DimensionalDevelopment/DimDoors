@@ -1,6 +1,6 @@
 {
   "itemGroup.dimensional_doors_creative_tab": "Dimensional Doors: Items",
-  "block.gold_door": "Goldtür",
+  "block.dimdoors.gold_door": "Goldtür",
   "block.quartz_door": "Quarztür",
   "block.iron_dimensional_door": "Dimensionaltür",
   "block.gold_dimensional_door": "Goldene Dimensionaltür",

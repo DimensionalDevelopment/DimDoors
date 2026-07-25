@@ -2,6 +2,7 @@ package org.dimdev.dimdoors.block.door;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -323,6 +324,8 @@ public class DimensionalDoorBlockRegistrar {
     }
 
     public static abstract class AutoGenDimensionalDoorBlock<T extends EntranceRiftBlockEntity> extends DimensionalDoorBlock<T> {
+
+
         protected final Block originalBlock;
 
         public AutoGenDimensionalDoorBlock(Properties settings, DoorSoundProvider originalBlock) {
@@ -357,6 +360,8 @@ public class DimensionalDoorBlockRegistrar {
 
         @Override
         public @NotNull MutableComponent getName() {
+
+
             return Component.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
         }
 

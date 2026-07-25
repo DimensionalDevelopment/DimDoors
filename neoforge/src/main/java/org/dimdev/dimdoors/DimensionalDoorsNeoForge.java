@@ -2,6 +2,7 @@ package org.dimdev.dimdoors;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.inventory.RecipeBookType;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;

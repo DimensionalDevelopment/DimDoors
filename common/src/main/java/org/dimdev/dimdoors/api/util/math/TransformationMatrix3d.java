@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.api.util.math;
 
 import net.minecraft.core.Rotations;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 
 public class TransformationMatrix3d extends TransformationMatrixdImpl<TransformationMatrix3d> {
@@ -49,7 +50,6 @@ public class TransformationMatrix3d extends TransformationMatrixdImpl<Transforma
 
         direction = transform(direction);
         upwards = transform(upwards);
-
         return MathUtil.eulerAngle(direction, upwards);
     }
 
