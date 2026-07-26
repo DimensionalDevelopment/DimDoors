@@ -16,7 +16,6 @@
     "ExplosionMixin",
     "ItemMixin",
     "ItemMixin$SettingsMixin",
-    "LanguageMixin",
     "LevelChunkMixin",
     "LevelMixin",
     "LivingEntityMixin",
@@ -44,6 +43,7 @@
   "client": [
     "client.BackgroundRendererMixin",
     "client.BuiltinModelItemRendererMixin",
+    "client.ClientLanguageMixin",
     "client.ClientPlayerInteractionManagerMixin",
     "client.InGameHudMixin",
     "client.LevelRendererMixin",

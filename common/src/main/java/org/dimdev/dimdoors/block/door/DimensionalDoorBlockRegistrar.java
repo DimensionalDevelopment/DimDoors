@@ -7,8 +7,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -323,6 +321,10 @@ public class DimensionalDoorBlockRegistrar {
         return mappedDoorBlocks.keySet();
     }
 
+    public Map<ResourceLocation, ResourceLocation> getGeneratedBlockMappings() {
+        return Collections.unmodifiableMap(mappedDoorBlocks);
+    }
+
     public static abstract class AutoGenDimensionalDoorBlock<T extends EntranceRiftBlockEntity> extends DimensionalDoorBlock<T> {
 
 
@@ -356,13 +358,6 @@ public class DimensionalDoorBlockRegistrar {
             if (originalBlock != null) {
                 originalBlock.defaultBlockState().getProperties().stream().filter(property -> !EXISTING_DOOR_PROPERTIES.contains(property)).forEach(builder::add);
             }
-        }
-
-        @Override
-        public @NotNull MutableComponent getName() {
-
-
-            return Component.translatable("dimdoors.autogen_block_prefix").append(originalBlock.getName());
         }
 
         public Block getOriginalBlock() {

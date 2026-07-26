@@ -1,7 +1,5 @@
 package org.dimdev.dimdoors.block;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
@@ -20,10 +18,6 @@ public interface AutoGenTraversalRiftBlock<T extends EntranceRiftBlockEntity> ex
                         (newState, property) -> transferProperty(state, newState, property),
                         (a, b) -> b
                 );
-    }
-
-    default MutableComponent getName() {
-        return Component.translatable("dimdoors.autogen_block_prefix").append(getOriginalBlock().getName());
     }
 
     Block getOriginalBlock();

@@ -47,7 +47,7 @@ dependencies {
     compileOnlyApi "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"
 
     api "org.jgrapht:jgrapht-core:1.1.0"
-    api "curse.maven:iris-${iris}:${iris_version}"
+    api "maven.modrinth:iris:${iris_version}"
     api "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
     compileOnly "org.dimdev:limlib-common-${minecraft_version}:${limlib_version}"
 
