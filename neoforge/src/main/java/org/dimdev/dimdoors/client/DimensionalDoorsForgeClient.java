@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.client;
 
 import net.minecraft.client.RecipeBookCategories;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
@@ -11,12 +12,14 @@ import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 import net.neoforged.neoforge.client.event.*;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.client.*;
+import org.dimdev.dimdoors.client.config.ConfigScreen;
 import org.dimdev.dimdoors.client.effect.DimensionEffect;
 import org.dimdev.dimdoors.client.effect.VoidDimensionSpecialEffects;
 import org.dimdev.dimdoors.compat.create.CreateCompatBlockEntityTypes;
 import org.dimdev.dimdoors.compat.create.SlidingEntranceRiftBlockEntityRenderer;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.limlib.client.NeoForgeClientSided;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -36,6 +39,7 @@ public class DimensionalDoorsForgeClient extends NeoForgeClientSided<Dimensional
 
     public DimensionalDoorsForgeClient(IEventBus bus, ModContainer container) {
         super(bus, container, DimensionalDoorsClient.INSTANCE);
+        container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, screen) -> ConfigScreen.createScreen(screen));
         DimensionalDoorsClient.INSTANCE.init(this);
 
         bus.addListener(DimensionalDoorsForgeClient::registerRecipeBookCategories);
