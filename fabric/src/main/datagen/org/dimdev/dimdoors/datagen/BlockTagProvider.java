@@ -1067,7 +1067,7 @@ public class BlockTagProvider extends FabricTagProvider.BlockTagProvider {
         setupSet(ModBlocks.PINK_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
         setupSet(ModBlocks.PINK_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
         setupSet(ModBlocks.GRAY_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
-        setupSet(ModBlocks.GRAY_GLAZED_TERRACOTTASET, BlockTags.MINEABLE_WITH_PICKAXE);
+        setupSet(ModBlocks.GRAY_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
         setupSet(ModBlocks.LIGHT_GRAY_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
         setupSet(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);
         setupSet(ModBlocks.CYAN_TERRACOTTA_SET, BlockTags.MINEABLE_WITH_PICKAXE);

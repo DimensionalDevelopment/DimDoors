@@ -2,7 +2,7 @@
   "type": "dimdoors:compound",
   "conditions": {
     "type": "dimdoors:block",
-    "entry": "dimdoors:gray_glazed_terracott_fence"
+    "entry": "dimdoors:gray_glazed_terracotta_fence"
   },
   "result": {
     "type": "dimdoors:single_block",
