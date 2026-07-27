@@ -8,7 +8,6 @@ import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -144,9 +143,9 @@ public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
                 .save(advancementConsumer, "dimdoors:dimdoors/unravelled_but_immutable");
 
         Advancement.Builder.advancement()
-                .display(makeDisplay(ModItems.FRAYED_FILAMENTS, "fuzzy_unreality"))
+                .display(makeDisplay(ModItems.FRAYED_FILAMENT, "fuzzy_unreality"))
                 .parent(enterLimbo)
-                .addCriterion("get_the_immutable", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.FRAYED_FILAMENTS))
+                .addCriterion("get_the_immutable", InventoryChangeTrigger.TriggerInstance.hasItems(ModItems.FRAYED_FILAMENT))
                 .save(advancementConsumer, "dimdoors:dimdoors/fuzzy_unreality");
 
 //        Advancement.Task.create()

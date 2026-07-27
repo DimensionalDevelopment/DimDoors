@@ -21,8 +21,8 @@ public class TesselatingRecipeProvider {
         ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.LIMINAL_LINT)
                 .pattern("XX")
                 .pattern("XX")
-                .define('X', ModItems.FRAYED_FILAMENTS)
-                .unlockedBy("frayed_filaments", TriggerInstance.hasItems(ModItems.FRAYED_FILAMENTS))
+                .define('X', ModItems.FRAYED_FILAMENT)
+                .unlockedBy("frayed_filaments", TriggerInstance.hasItems(ModItems.FRAYED_FILAMENT))
                 .save(exporter, DimensionalDoors.id("liminal_lint"));
         ShapedTesselatingRecipeJsonBuilder.shaped(ModItems.ENDURING_FIBERS)
                 .pattern("XX")

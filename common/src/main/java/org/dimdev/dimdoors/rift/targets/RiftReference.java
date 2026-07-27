@@ -106,7 +106,7 @@ public class RiftReference extends VirtualTarget<RiftReference> implements Locat
 
     @Override
     public VirtualTargetType<RiftReference> getType() {
-        return VirtualTargetType.RIFT_REFENCE;
+        return VirtualTargetType.RIFT_REFERENCE;
     }
 
     @Override

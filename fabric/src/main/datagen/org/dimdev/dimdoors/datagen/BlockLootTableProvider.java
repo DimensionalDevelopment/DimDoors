@@ -39,7 +39,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         this.add(ModBlocks.UNRAVELLED_FABRIC, block ->
                 this.createSilkTouchDispatchTable(
                         block,
-                        LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS)
+                        LootItem.lootTableItem(ModItems.FRAYED_FILAMENT)
                                 .when(BonusLevelTableCondition.bonusLevelFlatChance(
                                         registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE),
                                         0.1F, 0.14285715F, 0.25F, 1.0F
@@ -60,7 +60,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         this.dropSelf(ModBlocks.DRIFTWOOD_LEAVES);
         add(ModBlocks.DRIFTWOOD_LEAVES, block -> {
             HolderLookup.RegistryLookup<Enchantment> registryLookup = this.registries.lookupOrThrow(Registries.ENCHANTMENT);
-            return createLeavesDrops(block, ModBlocks.DRIFTWOOD_SAPLING, NORMAL_LEAVES_SAPLING_CHANCES).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).when(this.doesNotHaveShearsOrSilkTouch()).add((this.applyExplosionCondition(block, LootItem.lootTableItem(ModItems.FRAYED_FILAMENTS))).when(BonusLevelTableCondition.bonusLevelFlatChance(registryLookup.getOrThrow(Enchantments.FORTUNE), 0.005F, 0.0055555557F, 0.00625F, 0.008333334F, 0.025F))));
+            return createLeavesDrops(block, ModBlocks.DRIFTWOOD_SAPLING, NORMAL_LEAVES_SAPLING_CHANCES).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).when(this.doesNotHaveShearsOrSilkTouch()).add((this.applyExplosionCondition(block, LootItem.lootTableItem(ModItems.FRAYED_FILAMENT))).when(BonusLevelTableCondition.bonusLevelFlatChance(registryLookup.getOrThrow(Enchantments.FORTUNE), 0.005F, 0.0055555557F, 0.00625F, 0.008333334F, 0.025F))));
         });
 
 

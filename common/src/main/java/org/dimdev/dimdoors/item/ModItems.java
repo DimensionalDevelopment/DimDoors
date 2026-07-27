@@ -36,7 +36,7 @@ public final class ModItems {
 
     public static final Item WORLD_THREAD = registerRegular("world_thread", Item::new);
 
-    public static final Item FRAYED_FILAMENTS = registerRegular("frayed_filament", Item::new);
+    public static final Item FRAYED_FILAMENT = registerRegular("frayed_filament", Item::new);
 
     public static final Item RIFT_CONFIGURATION_TOOL = registerRegular("rift_configuration_tool", RiftConfigurationToolItem::new);
 
