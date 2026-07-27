@@ -15,9 +15,15 @@ def includeCompile(entry) {
 
 dependencies {
 
-    runtimeOnly("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}")
-    runtimeOnly("dev.simulated_team.simulated:simulated-neoforge-${project.minecraft_version}:${project.simulated_version}")
-    runtimeOnly("dev.eriksonn.aeronautics:aeronautics-neoforge-${project.minecraft_version}:${project.aeronautics_version}")
+    runtimeOnly("dev.ryanhcode.sable:sable-neoforge-${project.minecraft_version}:${project.sable_version}") {
+        exclude group: "foundry.veil"
+    }
+    runtimeOnly("dev.simulated_team.simulated:simulated-neoforge-${project.minecraft_version}:${project.simulated_version}") {
+        exclude group: "foundry.veil"
+    }
+    runtimeOnly("dev.eriksonn.aeronautics:aeronautics-neoforge-${project.minecraft_version}:${project.aeronautics_version}") {
+        exclude group: "foundry.veil"
+    }
 
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
@@ -31,7 +37,8 @@ dependencies {
     api("me.shedaniel.cloth:cloth-config-neoforge:${cloth_config}")
 
     implementation "org.dimdev:limlib-neoforge-${minecraft_version}:${limlib_version}"
-    implementation "net.caffeinemc:sodium-neoforge-mod:${sodium_version}+mc${minecraft_version}"
+    compileOnly("net.caffeinemc:sodium-neoforge-mod:${sodium_version}+mc${minecraft_version}")
+    compileOnly("maven.modrinth:iris:${iris_version}-neoforge")
 
 //    switch (recipe_viewer?.toString()) {
 //        case 'rei':

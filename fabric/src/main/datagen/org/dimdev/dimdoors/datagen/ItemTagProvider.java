@@ -1,10 +1,10 @@
 package org.dimdev.dimdoors.datagen;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -17,9 +17,9 @@ import org.dimdev.dimdoors.tag.ModItemTags;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-public class ItemTagProvider extends FabricTagProvider.ItemTagProvider {
+public class ItemTagProvider extends DimDoorsTagsProvider<Item> {
     public ItemTagProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
-        super(output, completableFuture);
+        super(output, Registries.ITEM, completableFuture);
     }
 
     @Override

@@ -4,6 +4,7 @@ import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceKey;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.StringUtils;
+import org.dimdev.dimdoors.ModRegistries;
 import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.enchantment.ModEnchants;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
@@ -25,6 +27,7 @@ import org.dimdev.dimdoors.fluid.ModFluids;
 import org.dimdev.dimdoors.item.ArmorSet;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.painting.ModPaintings;
+import org.dimdev.dimdoors.rift.targets.EscapeTarget;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModBiomes;
 
@@ -134,19 +137,11 @@ public class LanguageProvider extends AbstractLanguageProvider {
         add(ModBlocks.GRITTY_STONE);
         add(ModBlocks.LEAK);
 
-        add(ModItems.RIFT_KEY, () -> {
-            add("bound.info", "Bound");
-            add("unbound.info", "Unbound");
-            add("no_links", "There are no saved links.");
-        });
-
         add(ModItems.RIFT_KEY, "Rift Key", () -> {
-            add("bound.info", "Bound");
-            add("unbound.info", "Unbound");
-            add("no_links", "There are no saved links.");
+            //TODO: TO be populated later
         });
 
-        addDoorAutoGen(Blocks.IRON_DOOR, "Public Dimensional Door", () -> {
+        addDoorAutoGen(Blocks.IRON_DOOR, "Public Door", () -> {
             info(0, "Place on the block under a rift");
             info(1, "to activate that rift or place");
             info(2, "anywhere else to create a");
@@ -161,6 +156,8 @@ public class LanguageProvider extends AbstractLanguageProvider {
         });
 
         add(ModItems.RIFT_REMOVER, "Rift Remover", () -> {
+            add("closing", "The rift will close soon");
+            add("already_closing", "This rift is already closing");
             info(0, "Use near exposed rift");
             info(1, "to remove it and");
             info(2, "any nearby rifts.");
@@ -173,8 +170,7 @@ public class LanguageProvider extends AbstractLanguageProvider {
 
         addArmor(ModItems.WORLD_THREAD_ARMOR, "Woven World Thread");
 
-        add("item.dimdoors.unstable_dimensional_door", "Unstable Dimensional Door");
-        add("item.dimdoors.oak_dimensional_door", "Wood Dimensional Door");
+//        add("item.dimdoors.unstable_dimensional_door", "Unstable Dimensional Door");
 
         add(ModItems.RIFT_SIGNATURE, () -> {
             add("stored", "Location stored");
@@ -219,16 +215,8 @@ public class LanguageProvider extends AbstractLanguageProvider {
         });
 
 
-        add(ModItems.RIFT_REMOVER, () -> {
-            add("closing", "The rift will close soon");
-            add("already_closing", "This rift is already closing");
-            info(0, "Use near exposed rift");
-            info(1, "to remove it and");
-            info(2, "any nearby rifts.");
-        });
-
         add(ModItems.RIFT_STABILIZER, () -> {
-            add("info", "Use on a rift's core to stop its growth.");
+            info("Use on a rift's core to stop its growth.");
             add("stabilized", "The rift has been stabilized and will stop growing");
             add("already_stabilized", "This rift is already stable");
         });
@@ -245,23 +233,38 @@ public class LanguageProvider extends AbstractLanguageProvider {
         add(ModItems.STABLE_FABRIC, "Stable Fabric");
 
 
-        builder.add("block.dimdoors.quartz_dimensional_door.info", "Creates a pathway to your personal pocket.");
+        addDoorAutoGen(Blocks.OAK_DOOR, "Escape Door", () -> {
+            info(0, "Place on the block under a rift");
+            info(1, "to create a portal, or place anywhere");
+            info(2, "in a pocket dimension to exit.");
+        });
 
+        addDoorAutoGen(ModBlocks.QUARTZ_DOOR, "Personal Door", () -> {
+            info("Creates a pathway to your personal pocket.");
+        });
 
-        builder.add("item.dimdoors.unstable_dimensional_door.info", "Caution, Leads to random destination");
+        addDoorAutoGen(ModBlocks.AMALGAM_DOOR, "Myth Door", () -> {
+            info(0, "Create a pathway to");
+            info(1, "a dungeon so mythical");
+            info(2, "that a normal door");
+            info(3, "can not maintain.");
+        });
 
-        builder.add("block.dimdoors.oak_dimensional_door.info0", "Place on the block under a rift.");
-        builder.add("block.dimdoors.oak_dimensional_door.info1", "to create a portal, or place anywhere.");
-        builder.add("block.dimdoors.oak_dimensional_door.info2", "in a pocket dimension to exit.");
+        addDoorAutoGen(Blocks.CRIMSON_DOOR, "Myth Door", () -> {
+            info(0, "Create a gateway to");
+            info(1, "to an infernal dungeon.");
+        });
+
+//        builder.add("item.dimdoors.unstable_dimensional_door.info", "Caution, Leads to random destination"); //TODO: readd the unstable door
 
         addDisc(ModItems.CREEPY_RECORD, "Stevenrs11 - Creepy");
 
-        builder.add("item.dimdoors.eternal_fluid_bucket", "Eternal Fluid Bucket");
-        builder.add("item.dimdoors.leak_bucket", "Leak Bucket");
+        add(ModItems.ETERNAL_FLUID_BUCKET);
+        add(ModItems.LEAK_BUCKET);
 
         addDisc(ModItems.WHITE_VOID_RECORD, "Lachney - White Void");
         add(ModItems.DIMENSIONAL_ERASER, () -> {
-            add("desc", "Erases entities");
+            info("Erases entities");
         });
 
         add(ModItems.MONOLITH_SPAWNER, "Monolith Spawner");
@@ -347,21 +350,20 @@ public class LanguageProvider extends AbstractLanguageProvider {
 
         add(VirtualTarget.VirtualTargetType.AVAILABLE_LINK, "Random");
 
-
-        add(VirtualTarget.VirtualTargetType.ESCAPE, "Escape");
-        add(VirtualTarget.VirtualTargetType.RIFT_REFERENCE, "Global");
-        add(VirtualTarget.VirtualTargetType.GLOBAL, "Global");
-        add(VirtualTarget.VirtualTargetType.LIMBO, "Limbo");
-        add(VirtualTarget.VirtualTargetType.LOCAL, "Local");
-        add(VirtualTarget.VirtualTargetType.PUBLIC_POCKET, "Public Pocket");
-        add(VirtualTarget.VirtualTargetType.POCKET_ENTRANCE, "Pocket Entrance");
-        add(VirtualTarget.VirtualTargetType.POCKET_EXIT, "Pocket Exit");
-        add(VirtualTarget.VirtualTargetType.PRIVATE, "Private Pocket Entrance");
-        add(VirtualTarget.VirtualTargetType.PRIVATE_POCKET_EXIT, "Private Pocket Exit");
-        add(VirtualTarget.VirtualTargetType.RELATIVE, "Relative");
-        add(VirtualTarget.VirtualTargetType.ID_MARKER, "Id Marker");
-        add(VirtualTarget.VirtualTargetType.UNSTABLE, "Unstable");
-        add(VirtualTarget.VirtualTargetType.NONE, "None");
+        virtualType(VirtualTarget.VirtualTargetType.ESCAPE, "Escape");
+        virtualType(VirtualTarget.VirtualTargetType.RIFT_REFERENCE, "Rift Reference");
+        virtualType(VirtualTarget.VirtualTargetType.GLOBAL, "Global");
+        virtualType(VirtualTarget.VirtualTargetType.LIMBO, "Limbo");
+        virtualType(VirtualTarget.VirtualTargetType.LOCAL, "Local");
+        virtualType(VirtualTarget.VirtualTargetType.PUBLIC_POCKET, "Public Pocket");
+        virtualType(VirtualTarget.VirtualTargetType.POCKET_ENTRANCE, "Pocket Entrance");
+        virtualType(VirtualTarget.VirtualTargetType.POCKET_EXIT, "Pocket Exit");
+        virtualType(VirtualTarget.VirtualTargetType.PRIVATE, "Private Pocket Entrance");
+        virtualType(VirtualTarget.VirtualTargetType.PRIVATE_POCKET_EXIT, "Private Pocket Exit");
+        virtualType(VirtualTarget.VirtualTargetType.RELATIVE, "Relative");
+        virtualType(VirtualTarget.VirtualTargetType.ID_MARKER, "Id Marker");
+        virtualType(VirtualTarget.VirtualTargetType.UNSTABLE, "Unstable");
+        virtualType(VirtualTarget.VirtualTargetType.NONE, "None");
 
         scope("category.dimdoors", () -> {
             add("tesselating", "Tesselating");
@@ -499,10 +501,10 @@ public class LanguageProvider extends AbstractLanguageProvider {
         add("argument.dimdoors.schematic.invalidNamespace", "Invalid schematic namespace. Expected one of %s, found %s.");
         add("command.dimdoors.schematicv2.unknownSchematic", "Unknown schematic \"%s\" in namespace \"%s\" ");
 
-        add(ModBiomes.PUBLIC_BLACK_VOID_KEY, "Black void (Public Pockets)");
-        add(ModBiomes.DUNGEON_DANGEROUS_BLACK_VOID_KEY, "Dangerous Black void (Dungeon Pockets)");
-        add(ModBiomes.LIMBO_KEY, "Limbo");
-        add(ModBiomes.PERSONAL_WHITE_VOID_KEY, "White void (Private Pockets)");
+        biome(ModBiomes.PUBLIC_BLACK_VOID_KEY, "Black void (Public Pockets)");
+        biome(ModBiomes.DUNGEON_DANGEROUS_BLACK_VOID_KEY, "Dangerous Black void (Dungeon Pockets)");
+        biome(ModBiomes.LIMBO_KEY, "Limbo");
+        biome(ModBiomes.PERSONAL_WHITE_VOID_KEY, "White void (Private Pockets)");
 
         scope("limbo", () -> {
             scope("death", () -> {
@@ -638,14 +640,29 @@ public class LanguageProvider extends AbstractLanguageProvider {
         add(ModFluids.FLOWING_LEAK, "Flowing Leak");
     }
 
+    private void biome(ResourceKey<Biome> biome, String name) {
+        var key = Util.makeDescriptionId("biome", biome.location());
+        add(key, name);
+    }
+
+    private void virtualType(VirtualTarget.VirtualTargetType<?> type, String name) {
+        var key = Util.makeDescriptionId("virtual_type", ModRegistries.VIRTUAL_TYPE.getKey(type));
+
+        add(key, name);
+    }
+
+    private void info(String value) {
+        add("info", value);
+    }
+
     private void info(int i, String value) {
         add("info" + i, value);
     }
 
     private void addDoorAutoGen(Block block, String name, Runnable runnable) {
-        var key = Util.makeDescriptionId("door_autogen", BuiltInRegistries.BLOCK.getKey(block));
+        var key = Util.makeDescriptionId("autogen", BuiltInRegistries.BLOCK.getKey(block));
         scope(key, () -> {
-            add(name);
+            add("name", name);
             runnable.run();
         });
     }
@@ -656,7 +673,7 @@ public class LanguageProvider extends AbstractLanguageProvider {
 
     private void addDesc(String key, String name, String desc) {
         add(key, name);
-        add(key + ".desc", name);
+        add(key + ".desc", desc);
     }
 
     private void addCategory(String value) {
@@ -669,7 +686,7 @@ public class LanguageProvider extends AbstractLanguageProvider {
 
     private void addOption(String key, String value, String tooltip) {
         add("option" + "." + key, value);
-        add("option" + "." + tooltip + ".tooltip", value);
+        add("option" + "." + key + ".tooltip", tooltip);
     }
 
     private void addArmor(ArmorSet set, String prefix) {
@@ -713,30 +730,31 @@ public class LanguageProvider extends AbstractLanguageProvider {
     private <T> void addCapitalizedEntry(Registry<T> registry, T entry) {
         var location = registry.getKey(entry);
         var value = capitialize(location.getPath());
-        var registryKey = registry.key().location();
-        var key = location.toLanguageKey((registryKey.getPath().equals("minecraft") ? "" : registryKey.getPath() + ".") + registryKey.getPath());
-
-        builder.add(key, value);
+        builder.add(translationKey(registry, entry), value);
     }
 
     private void add(Item item, String name, Runnable runnable) {
         var key = item.getDescriptionId();
-        add(key, name);
+        builder.add(key, name);
 
         scope(key, runnable);
     }
 
     private <T> void add(Registry<T> registry, T entry, String value) {
+        builder.add(translationKey(registry, entry), value);
+    }
+
+    private <T> String translationKey(Registry<T> registry, T entry) {
         var location = registry.getKey(entry);
         var registryKey = registry.key().location();
-        var key = location.toLanguageKey((registryKey.getPath().equals("minecraft") ? "" : registryKey.getPath() + ".") + registryKey.getPath());
-
-        builder.add(key, value);
+        return location.toLanguageKey((registryKey.getPath().equals("minecraft") ? "" : registryKey.getPath() + ".") + registryKey.getPath());
     }
 
     private void add(Object object) {
         add(object, () -> {});
     }
+
+
 
     private void add(Object object, Runnable runnable) {
         switch (object) {
@@ -749,11 +767,13 @@ public class LanguageProvider extends AbstractLanguageProvider {
             case Block entry -> {
                 var value = capitialize(BuiltInRegistries.BLOCK.getKey(entry).getPath());
                 builder.add(entry, value);
+                scope(entry.getDescriptionId(), runnable);
             }
 
             case Item entry -> {
                 var value = capitialize(BuiltInRegistries.ITEM.getKey(entry).getPath());
                 builder.add(entry, value);
+                scope(entry.getDescriptionId(), runnable);
             }
 
             case CreativeModeTab tab -> {
@@ -763,6 +783,7 @@ public class LanguageProvider extends AbstractLanguageProvider {
 
             case Fluid entry -> {
                 addCapitalizedEntry(BuiltInRegistries.FLUID, entry);
+                scope(BuiltInRegistries.FLUID.getKey(entry).toLanguageKey("fluid"), runnable);
             }
 
             case null -> {
@@ -770,12 +791,6 @@ public class LanguageProvider extends AbstractLanguageProvider {
             }
 
             default -> {
-                var registry = getRegistry(object);
-
-                if(registry != null) {
-                    addCapitalizedEntry(registry, object);
-                }
-
             }
         }
     }
@@ -800,45 +815,11 @@ public class LanguageProvider extends AbstractLanguageProvider {
             }
 
             default -> {
-                var registry = getRegistry(object);
-
-                if(registry != null) {
-                    add(registry, object, value);
-                }
-
             }
         }
     }
 
     private Map<Class<?>, Registry<?>> map = new HashMap<>();
-
-    public static Class<?> getRegistryClass(Registry<?> registry) {
-        for (Type type : registry.getClass().getGenericInterfaces()) {
-
-            if (type instanceof ParameterizedType pt && pt.getRawType() == Registry.class) {
-
-                return (Class<?>) pt.getActualTypeArguments()[0];
-            }
-        }
-        return null;
-    }
-
-    private Map<Class<?>, Registry<?>> registryClassMap = Util.make(new HashMap<>(), classRegistryHashMap -> BuiltInRegistries.REGISTRY.stream().forEach((Consumer<Registry<?>>) registry -> {
-        var key = getRegistryClass(registry);
-
-        if(key != null) {
-            classRegistryHashMap.put(key, registry);
-        }
-    }));
-
-    private <T> Registry<T> getRegistry(T object) {
-        var clazz = object.getClass();
-
-        var registry = map.get(clazz);
-
-        return registry != null ? (Registry<T>) registry : null;
-    }
-
 
     private void add(Component component, String string) {
         if(component.getContents() instanceof TranslatableContents translatable) {

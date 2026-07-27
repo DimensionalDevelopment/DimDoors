@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.item;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -9,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -18,34 +20,41 @@ import org.dimdev.dimdoors.sound.ModSoundEvents;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 
+import java.util.List;
+
 import static org.dimdev.dimdoors.api.util.math.MathUtil.entityEulerAngle;
 
-public class DimensionalEraserItem extends Item {
+public class DimensionalEraserItem extends DimDoorsItem {
     public DimensionalEraserItem(Properties settings) {
-    super(settings);
+        super(settings);
     }
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
-    ItemStack stack = player.getItemInHand(hand);
+        ItemStack stack = player.getItemInHand(hand);
 
-    HitResult hit = RaycastHelper.raycast(player, 1.0F, a -> !(a instanceof Player));
+        HitResult hit = RaycastHelper.raycast(player, 1.0F, a -> !(a instanceof Player));
 
-    if (!world.isClientSide() && hit != null && hit.getType() == HitResult.Type.ENTITY) {
-        Entity target = ((EntityHitResult) hit).getEntity();
-        if(target instanceof ServerPlayer) {
-        BlockPos teleportPos = target.blockPosition();
-        while(ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
-            teleportPos = teleportPos.offset(1, 0, 1);
+        if (!world.isClientSide() && hit != null && hit.getType() == HitResult.Type.ENTITY) {
+            Entity target = ((EntityHitResult) hit).getEntity();
+            if (target instanceof ServerPlayer) {
+                BlockPos teleportPos = target.blockPosition();
+                while (ModDimensions.LIMBO_DIMENSION.getBlockState(VirtualLocation.getTopPos(ModDimensions.LIMBO_DIMENSION, teleportPos.getX(), teleportPos.getZ())).getBlock() == ModBlocks.ETERNAL_FLUID) {
+                    teleportPos = teleportPos.offset(1, 0, 1);
+                }
+                TeleportUtil.teleport(target, ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(target), target.getDeltaMovement());
+            } else {
+                target.remove(Entity.RemovalReason.KILLED);
+                player.playSound(ModSoundEvents.BLOOP, 1.0f, 1.0f);
+            }
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         }
-        TeleportUtil.teleport(target, ModDimensions.LIMBO_DIMENSION, teleportPos.atY(255), entityEulerAngle(target), target.getDeltaMovement());
-        } else {
-        target.remove(Entity.RemovalReason.KILLED);
-        player.playSound(ModSoundEvents.BLOOP, 1.0f, 1.0f);
-        }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+
+        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
     }
 
-    return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> list, TooltipFlag tooltipFlag) {
+        list.add(Component.translatable(this.getDescriptionId() + ".info"));
     }
 }

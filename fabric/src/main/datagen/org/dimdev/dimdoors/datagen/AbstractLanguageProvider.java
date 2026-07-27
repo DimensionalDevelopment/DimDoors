@@ -37,7 +37,7 @@ public abstract class AbstractLanguageProvider extends FabricLanguageProvider {
     }
 
     public void add(String key, String value) {
-        builder.add(currentKeyPath.peek() + "." + key, value);
+        builder.add(currentKeyPath.empty() ? key : currentKeyPath.peek() + "." + key, value);
     }
 
     public void scope(String path, Runnable runnable) {
@@ -47,8 +47,7 @@ public abstract class AbstractLanguageProvider extends FabricLanguageProvider {
     }
 
     public void push(String path) {
-        var current = currentKeyPath.peek();
-        var newKey = current + "." + path;
+        var newKey = currentKeyPath.empty() ? path : currentKeyPath.peek() + "." + path;
         currentKeyPath.push(newKey);
 
     }

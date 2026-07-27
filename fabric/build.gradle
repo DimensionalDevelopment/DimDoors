@@ -19,7 +19,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    modApi("dev.ryanhcode.sable:sable-fabric-${project.minecraft_version}:${project.sable_version}")
+    modApi("dev.ryanhcode.sable:sable-fabric-${project.minecraft_version}:${project.sable_version}") {
+        exclude group: "net.fabricmc", module: "fabric-loader"
+    }
 
     includeCompile "org.jgrapht:jgrapht-core:1.1.0"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
@@ -34,7 +36,12 @@ dependencies {
 
     modImplementation "curse.maven:selene-499980:7522322"
     modImplementation "curse.maven:modmenu-308702:7808443"
-    modRuntimeOnly "net.caffeinemc:sodium-fabric:${sodium_version}+mc${minecraft_version}"
+    modCompileOnly("net.caffeinemc:sodium-fabric:${sodium_version}+mc${minecraft_version}") {
+        exclude group: "net.fabricmc", module: "fabric-loader"
+    }
+
+    modCompileOnly("maven.modrinth:iris:${iris_version}-fabric")
+
     modImplementation "org.dimdev:limlib-fabric-${minecraft_version}:${limlib_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${rei}"
 
@@ -95,6 +102,88 @@ loom {
                 srcDirs += [
                         project(":common").file("src/main/generated")
                 ]
+            }
+        }
+    }
+}
+
+tasks.register("traceFabricLoader") {
+    doLast {
+        def runtime = configurations.runtimeClasspath
+
+        println "runtimeClasspath hierarchy:"
+        runtime.hierarchy.each { configuration ->
+            println "\n${project.path}:${configuration.name}"
+
+            configuration.dependencies
+                    .findAll {
+                        it.group == "net.fabricmc" &&
+                                it.name == "fabric-loader"
+                    }
+                    .each {
+                        println "  DIRECT: ${it.group}:${it.name}:${it.version}"
+                    }
+
+            configuration.dependencyConstraints
+                    .findAll {
+                        it.group == "net.fabricmc" &&
+                                it.name == "fabric-loader"
+                    }
+                    .each {
+                        println "  CONSTRAINT: ${it.group}:${it.name}:${it.version}"
+                    }
+        }
+    }
+}
+
+tasks.register("traceFabricLoaderOrigins") {
+    doLast {
+        configurations.findAll { configuration ->
+            configuration.canBeResolved &&
+                    (configuration.name.toLowerCase().contains("mod") ||
+                            configuration.name.toLowerCase().contains("runtime"))
+        }.each { configuration ->
+            try {
+                def root = configuration.incoming.resolutionResult.rootComponent.get()
+                def paths = []
+
+                def visit
+                visit = { component, path, seen ->
+                    component.dependencies.each { dependency ->
+                        if (!(dependency instanceof org.gradle.api.artifacts.result.ResolvedDependencyResult)) {
+                            return
+                        }
+
+                        def selected = dependency.selected
+                        def module = selected.moduleVersion
+                        def edge = "${dependency.requested.displayName} -> ${selected.id.displayName}"
+                        def nextPath = path + edge
+
+                        if (module?.group == "net.fabricmc" &&
+                                module.name == "fabric-loader") {
+                            paths << nextPath
+                            return
+                        }
+
+                        def nextSeen = new LinkedHashSet(seen)
+                        if (nextSeen.add(selected.id)) {
+                            visit(selected, nextPath, nextSeen)
+                        }
+                    }
+                }
+
+                visit(root, [], [root.id] as Set)
+
+                if (!paths.empty) {
+                    println "\n=== ${configuration.name} ==="
+
+                    paths.each { path ->
+                        println path.collect { "  ${it}" }.join("\n")
+                        println()
+                    }
+                }
+            } catch (Exception ignored) {
+                // Some Loom configurations cannot be resolved independently.
             }
         }
     }

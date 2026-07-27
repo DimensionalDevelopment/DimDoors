@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.datagen;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.EntityTypePredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
@@ -323,7 +324,9 @@ public class DefaultDynamicRegistryDataGen {
                         ),
                         EntityNearBy.nearby(
                                 EnchantmentLevelProvider.forEnchantmentLevel(LevelBasedValue.perLevel(5.0F, 5.0F)),
-                                EntityPredicate.Builder.entity().of(ModEntityTypeTags.TREPIDATION_DETECTED).build(),
+                                EntityPredicate.Builder.entity()
+                                        .entityType(new EntityTypePredicate(context.registrylookup(Registries.ENTITY_TYPE).getOrThrow(ModEntityTypeTags.TREPIDATION_DETECTED)))
+                                        .build(),
                                 40
                         )
                 ).build(ModEnchants.TREPIDATION_ENCHANTMENT.location()));

@@ -1,5 +1,5 @@
-// 1.21.1	2026-05-25T14:32:13.4268884	DimensionalDoors/minecraft:chest Loot Table
-9bd1e18f722800b9ccab10e186fd3545b8ea3f89 data\dimdoors\loot_table\chest\dispenser_potion_arrows.json
-27d920c5c7af12c58a25a41f099844a6b17524f7 data\dimdoors\loot_table\chest\dungeon_chest.json
-6b3e81efe54b367063413776aeffebf3c8f1701d data\dimdoors\loot_table\chest\dispenser_projectiles.json
+// 1.21.1	2026-07-27T07:07:53.1723264	DimensionalDoors/minecraft:chest Loot Table
 ed1dc205902bd610d8589a37ce34ec21474e062b data\dimdoors\loot_table\chest\dispenser_splash_potions.json
+6b3e81efe54b367063413776aeffebf3c8f1701d data\dimdoors\loot_table\chest\dispenser_projectiles.json
+9bd1e18f722800b9ccab10e186fd3545b8ea3f89 data\dimdoors\loot_table\chest\dispenser_potion_arrows.json
+eba07f5be7a6eeb5c1c5e5bdce5cd2932d642b0a data\dimdoors\loot_table\chest\dungeon_chest.json

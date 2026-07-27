@@ -9,12 +9,13 @@
         "effect": {
           "type": "minecraft:play_sound",
           "pitch": 1.0,
-          "sound": "minecraft:entity.warden.heartbeat",
+          "sound": {
+            "sound_id": "minecraft:entity.warden.heartbeat"
+          },
           "volume": 0.8
         },
         "requirements": {
           "condition": "dimdoors:entity_nearby",
-          "interval": 40,
           "predicate": {
             "type": "#dimdoors:trepidation_detected"
           },

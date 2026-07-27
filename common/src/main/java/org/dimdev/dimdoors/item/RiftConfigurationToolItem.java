@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.item.AttackBlockResult;
 import org.dimdev.dimdoors.api.item.ExtendedItem;
+import org.dimdev.limlib.api.client.ToolTipHelper;
 import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.item.component.IdCounter;
@@ -36,6 +37,8 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
     RiftConfigurationToolItem(Properties properties) {
         super(properties.stacksTo(1).durability(16));
     }
+
+
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
@@ -105,8 +108,6 @@ public class RiftConfigurationToolItem extends Item implements ExtendedItem {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable TooltipContext level, List<Component> list, TooltipFlag tooltipFlag) {
-        if (I18n.exists(this.getDescriptionId() + ".info")) {
-            list.add(Component.translatable(this.getDescriptionId() + ".info"));
-        }
+        ToolTipHelper.processTranslation(list, this.getDescriptionId() + ".info");
     }
 }
