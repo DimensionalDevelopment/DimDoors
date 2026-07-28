@@ -5,6 +5,7 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
+import org.dimdev.dimdoors.DimensionalDoors;
 
 public abstract class LimboEntranceSource {
     public abstract Component getMessage(Player player);
@@ -26,8 +27,12 @@ public abstract class LimboEntranceSource {
 
         @Override
         public Component getMessage(Player player) {
-            TranslatableContents message = (TranslatableContents) this.damageSource.getLocalizedDeathMessage(player).getContents();
-            return Component.translatable("limbo." + message.getKey(), message.getArgs());
+            if (DimensionalDoors.getConfig().getLimboConfig().genericDeathMessages) {
+                return this.damageSource.getLocalizedDeathMessage(player).copy().append(Component.translatable("limbo.death.generic"));
+            } else {
+                TranslatableContents message = (TranslatableContents) this.damageSource.getLocalizedDeathMessage(player).getContents();
+                return Component.translatable("limbo." + message.getKey(), message.getArgs());
+            }
         }
     }
 }

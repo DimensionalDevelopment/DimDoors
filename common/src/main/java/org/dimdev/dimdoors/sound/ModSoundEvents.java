@@ -11,6 +11,7 @@ public final class ModSoundEvents {
     public static final SoundEvent DOOR_LOCK_REMOVED = register("door_lock_removed");
     public static final SoundEvent KEY_LOCK = register("key_lock");
     public static final SoundEvent KEY_UNLOCKED = register("key_unlock");
+    public static final SoundEvent ARMOR_EQUIP_THREAD = register("equip_thread");
     public static final SoundEvent MONK = register("monk");
     public static final SoundEvent RIFT = register("rift");
     public static final SoundEvent RIFT_CLOSE = register("rift_close");

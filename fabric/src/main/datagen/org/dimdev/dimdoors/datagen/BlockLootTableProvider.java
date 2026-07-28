@@ -110,7 +110,7 @@ public class BlockLootTableProvider extends FabricBlockLootTableProvider {
         this.dropSelf(ModBlocks.PINK_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.PINK_GLAZED_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.GRAY_TERRACOTTA_SET);
-        this.dropSelf(ModBlocks.GRAY_GLAZED_TERRACOTTASET);
+        this.dropSelf(ModBlocks.GRAY_GLAZED_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.LIGHT_GRAY_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET);
         this.dropSelf(ModBlocks.CYAN_TERRACOTTA_SET);

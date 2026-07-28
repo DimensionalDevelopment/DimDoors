@@ -188,6 +188,7 @@ public final class ModConfig {
     }
 
     public static class Limbo {
+        public boolean genericDeathMessages = false;
         private final WorldList worldsLeadingToLimbo = new WorldList();
         public boolean hardcoreLimbo = false;
 

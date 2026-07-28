@@ -89,7 +89,7 @@ public class DimDoorsModelProvider extends FabricModelProvider {
         generateDecaySet(generator, Blocks.PINK_TERRACOTTA, ModBlocks.PINK_TERRACOTTA_SET);
         generateDecaySet(generator, Blocks.PINK_GLAZED_TERRACOTTA, ModBlocks.PINK_GLAZED_TERRACOTTA_SET);
         generateDecaySet(generator, Blocks.GRAY_TERRACOTTA, ModBlocks.GRAY_TERRACOTTA_SET);
-        generateDecaySet(generator, Blocks.GRAY_GLAZED_TERRACOTTA, ModBlocks.GRAY_GLAZED_TERRACOTTASET);
+        generateDecaySet(generator, Blocks.GRAY_GLAZED_TERRACOTTA, ModBlocks.GRAY_GLAZED_TERRACOTTA_SET);
         generateDecaySet(generator, Blocks.LIGHT_GRAY_TERRACOTTA, ModBlocks.LIGHT_GRAY_TERRACOTTA_SET);
         generateDecaySet(generator, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET);
         generateDecaySet(generator, Blocks.CYAN_TERRACOTTA, ModBlocks.CYAN_TERRACOTTA_SET);

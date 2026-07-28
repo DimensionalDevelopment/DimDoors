@@ -41,10 +41,10 @@ public class ItemTagProvider extends DimDoorsTagsProvider<Item> {
                 ItemTags.SHARP_WEAPON_ENCHANTABLE,
                 ItemTags.SWORDS);
 
-        addHead(ModItems.WORLD_THREAD_ARMOR.boots().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.boots().builtInRegistryHolder().key());
+        addHead(ModItems.WORLD_THREAD_ARMOR.helmet().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.helmet().builtInRegistryHolder().key());
         addChest(ModItems.WORLD_THREAD_ARMOR.chestplate().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.chestplate().builtInRegistryHolder().key());
-        addLegs(ModItems.WORLD_THREAD_ARMOR.helmet().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.helmet().builtInRegistryHolder().key());
-        addFeet(ModItems.WORLD_THREAD_ARMOR.leggings().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.leggings().builtInRegistryHolder().key());
+        addLegs(ModItems.WORLD_THREAD_ARMOR.leggings().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.leggings().builtInRegistryHolder().key());
+        addFeet(ModItems.WORLD_THREAD_ARMOR.boots().builtInRegistryHolder().key(), ModItems.GARMENT_OF_REALITY_ARMOR.boots().builtInRegistryHolder().key());
 
         tag(ConventionalItemTags.MUSIC_DISCS).add(
                 ModItems.THEY_STARE_BACK_RECORD.builtInRegistryHolder().key(),

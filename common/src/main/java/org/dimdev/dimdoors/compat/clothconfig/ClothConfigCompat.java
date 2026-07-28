@@ -88,7 +88,8 @@ public class ClothConfigCompat {
                     .addEntry(createBoolean(entryBuilder, "limbo", "tryPlayerBedSpawn", limbo.tryPlayerBedSpawn, false, value -> limbo.tryPlayerBedSpawn = value))
                     .addEntry(createBoolean(entryBuilder, "limbo", "defaultToWorldSpawn", limbo.defaultToWorldSpawn, true, value -> limbo.defaultToWorldSpawn = value))
                     .addEntry(createFloat(entryBuilder, "limbo", "limboBlocksCorruptingExitWorldAmount", limbo.limboBlocksCorruptingExitWorldAmount, 5.0F, value -> limbo.limboBlocksCorruptingExitWorldAmount = value))
-                    .addEntry(createLevelKey(entryBuilder, "limbo", "escapeTargetWorld", limbo.escapeTargetWorld, Level.OVERWORLD, value -> limbo.escapeTargetWorld = value));
+                    .addEntry(createLevelKey(entryBuilder, "limbo", "escapeTargetWorld", limbo.escapeTargetWorld, Level.OVERWORLD, value -> limbo.escapeTargetWorld = value))
+                    .addEntry(createBoolean(entryBuilder, "limbo", "genericDeathMessages", limbo.genericDeathMessages, false, value -> limbo.genericDeathMessages = value));
 
             var graphics = config.getGraphicsConfig();
             builder.getOrCreateCategory(Component.translatable("config.dimdoors.graphics.category"))

@@ -308,7 +308,6 @@ public class LanguageProvider extends AbstractLanguageProvider {
                 builder.add("saveschem.success", "Pocket %s has been successfully saved");
             });
 
-
             add("generic.dimdoors.not_in_pocket_dim", "You must be in a pocket dimension to use this command.");
             add("generic.dimdoors.not_in_pocket", "You must be in a pocket to use this command.");
             add("generic.unknownValue", "Unknown value '%s'");
@@ -448,6 +447,7 @@ public class LanguageProvider extends AbstractLanguageProvider {
                     addOption("decaySurroundings", "Decay Surroundings", "Does escaping limbo cause limbo decay around the location?");
                     addOption("tryPlayerBedSpawn", "Try Player Bed Spawn", "When true, the bed spawn of the player will be used as the center of possible return locations if available.");
                     addOption("defaultToWorldSpawn", "Default To World Spawn", "When true, the world spawn of the world the player is escaping from limbo to will be used as the center of possible return location.");
+                    addOption("genericDesthMesages", "Generic Death Messsages", "When true, instead of using custom death messages, \\\"...and was sent to Limbo\\\" will be added to the end of regular death messages.\"");
                 });
 
                 scope("graphics", () -> {
@@ -594,7 +594,7 @@ public class LanguageProvider extends AbstractLanguageProvider {
                     add("fireworks", "%1$s went into Limbo with a bang");
                     add("fireworks.player", "%1$s went into Limbo with a bang whilst fighting %2$s");
                     add("fireworks.item", "%1$s went into Limbo with a bang due to a firework fired from %3$s by %2$s");
-                    add("badRespawnPoint.message", "%1$s was killed by %2$s and was sent by Limbo");
+                    add("badRespawnPoint.message", "%1$s was killed by %2$s and was sent to Limbo");
                     add("badRespawnPoint.link", "Intentional Game Design");
                     add("sweetBerryBush", "%1$s poked a hole in reality");
                     add("sweetBerryBush.player", "%1$s poked a hole in reality whilst trying to escape %2$s");
@@ -603,6 +603,8 @@ public class LanguageProvider extends AbstractLanguageProvider {
                     add("freeze", "%1$s froze into Limbo");
                     add("freeze.player", "%1$s was frozen into Limbo by %2$s");
                 });
+
+                add("generic", " and was sent to limbo.");
             });
 
             scope("exit", () -> {

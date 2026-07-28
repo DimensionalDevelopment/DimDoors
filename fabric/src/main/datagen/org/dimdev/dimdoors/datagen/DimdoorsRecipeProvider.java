@@ -142,9 +142,9 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
 //        blockSetRecipes(ModBlocks.PINK_TERRACOTTA_SET, Blocks.PINK_TERRACOTTA, exporter);
 //        blockSetRecipes(ModBlocks.PINK_GLAZED_TERRACOTTA_SET, Blocks.PINK_GLAZED_TERRACOTTA, exporter);
 //        blockSetRecipes(ModBlocks.GRAY_TERRACOTTA_SET, Blocks.GRAY_TERRACOTTA, exporter);
-//        blockSetRecipes(ModBlocks.GRAY_GLAZED_TERRACOTTASET, Blocks.GRAY_GLAZED_TERRACOTTA, exporter);
-//        blockSetRecipes(ModBlocks.LIGHT_GRAY_TERRACOTTASET, Blocks.LIGHT_GRAY_TERRACOTTA, exporter);
-//        blockSetRecipes(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTASET, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.GRAY_GLAZED_TERRACOTTA_SET, Blocks.GRAY_GLAZED_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.LIGHT_GRAY_TERRACOTTA_SET, Blocks.LIGHT_GRAY_TERRACOTTA, exporter);
+//        blockSetRecipes(ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, exporter);
 //        blockSetRecipes(ModBlocks.CYAN_TERRACOTTA_SET, Blocks.CYAN_TERRACOTTA, exporter);
 //        blockSetRecipes(ModBlocks.CYAN_GLAZED_TERRACOTTA_SET, Blocks.CYAN_GLAZED_TERRACOTTA, exporter);
 //        blockSetRecipes(ModBlocks.PURPLE_TERRACOTTA_SET, Blocks.PURPLE_TERRACOTTA, exporter);
@@ -175,7 +175,7 @@ public class DimdoorsRecipeProvider extends RecipeProvider {
         terraCottaRecipes(ModBlocks.YELLOW_TERRACOTTA_SET, Blocks.YELLOW_TERRACOTTA, ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET, Blocks.YELLOW_GLAZED_TERRACOTTA, DyeColor.YELLOW, exporter);
         terraCottaRecipes(ModBlocks.LIME_TERRACOTTA_SET, Blocks.LIME_TERRACOTTA, ModBlocks.LIME_GLAZED_TERRACOTTA_SET, Blocks.LIME_GLAZED_TERRACOTTA, DyeColor.LIME, exporter);
         terraCottaRecipes(ModBlocks.PINK_TERRACOTTA_SET, Blocks.PINK_TERRACOTTA, ModBlocks.PINK_GLAZED_TERRACOTTA_SET, Blocks.PINK_GLAZED_TERRACOTTA, DyeColor.PINK, exporter);
-        terraCottaRecipes(ModBlocks.GRAY_TERRACOTTA_SET, Blocks.GRAY_TERRACOTTA, ModBlocks.GRAY_GLAZED_TERRACOTTASET, Blocks.GRAY_GLAZED_TERRACOTTA, DyeColor.GRAY, exporter);
+        terraCottaRecipes(ModBlocks.GRAY_TERRACOTTA_SET, Blocks.GRAY_TERRACOTTA, ModBlocks.GRAY_GLAZED_TERRACOTTA_SET, Blocks.GRAY_GLAZED_TERRACOTTA, DyeColor.GRAY, exporter);
         terraCottaRecipes(ModBlocks.LIGHT_GRAY_TERRACOTTA_SET, Blocks.LIGHT_GRAY_TERRACOTTA, ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, DyeColor.LIGHT_GRAY, exporter);
         terraCottaRecipes(ModBlocks.CYAN_TERRACOTTA_SET, Blocks.CYAN_TERRACOTTA, ModBlocks.CYAN_GLAZED_TERRACOTTA_SET, Blocks.CYAN_GLAZED_TERRACOTTA, DyeColor.CYAN, exporter);
         terraCottaRecipes(ModBlocks.PURPLE_TERRACOTTA_SET, Blocks.PURPLE_TERRACOTTA, ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET, Blocks.PURPLE_GLAZED_TERRACOTTA, DyeColor.PURPLE, exporter);

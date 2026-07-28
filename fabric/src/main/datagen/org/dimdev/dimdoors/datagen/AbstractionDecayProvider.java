@@ -264,7 +264,7 @@ public class AbstractionDecayProvider extends LimboDecayProvider {
         addTerracottaVariantPatterns(provider, consumer, Blocks.YELLOW_TERRACOTTA, Blocks.YELLOW_GLAZED_TERRACOTTA, ModBlocks.YELLOW_TERRACOTTA_SET, ModBlocks.YELLOW_GLAZED_TERRACOTTA_SET);
         addTerracottaVariantPatterns(provider, consumer, Blocks.LIME_TERRACOTTA, Blocks.LIME_GLAZED_TERRACOTTA, ModBlocks.LIME_TERRACOTTA_SET, ModBlocks.LIME_GLAZED_TERRACOTTA_SET);
         addTerracottaVariantPatterns(provider, consumer, Blocks.PINK_TERRACOTTA, Blocks.PINK_GLAZED_TERRACOTTA, ModBlocks.PINK_TERRACOTTA_SET, ModBlocks.PINK_GLAZED_TERRACOTTA_SET);
-        addTerracottaVariantPatterns(provider, consumer, Blocks.GRAY_TERRACOTTA, Blocks.GRAY_GLAZED_TERRACOTTA, ModBlocks.GRAY_TERRACOTTA_SET, ModBlocks.GRAY_GLAZED_TERRACOTTASET);
+        addTerracottaVariantPatterns(provider, consumer, Blocks.GRAY_TERRACOTTA, Blocks.GRAY_GLAZED_TERRACOTTA, ModBlocks.GRAY_TERRACOTTA_SET, ModBlocks.GRAY_GLAZED_TERRACOTTA_SET);
         addTerracottaVariantPatterns(provider, consumer, Blocks.LIGHT_GRAY_TERRACOTTA, Blocks.LIGHT_GRAY_GLAZED_TERRACOTTA, ModBlocks.LIGHT_GRAY_TERRACOTTA_SET, ModBlocks.LIGHT_GRAY_GLAZED_TERRACOTTA_SET);
         addTerracottaVariantPatterns(provider, consumer, Blocks.CYAN_TERRACOTTA, Blocks.CYAN_GLAZED_TERRACOTTA, ModBlocks.CYAN_TERRACOTTA_SET, ModBlocks.CYAN_GLAZED_TERRACOTTA_SET);
         addTerracottaVariantPatterns(provider, consumer, Blocks.PURPLE_TERRACOTTA, Blocks.PURPLE_GLAZED_TERRACOTTA, ModBlocks.PURPLE_TERRACOTTA_SET, ModBlocks.PURPLE_GLAZED_TERRACOTTA_SET);

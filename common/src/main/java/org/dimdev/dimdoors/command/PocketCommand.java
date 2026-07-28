@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.RiftVariantProvider;
+import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.item.RiftSignatureItem;
 import org.dimdev.dimdoors.pockets.PocketCreator;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
@@ -67,15 +68,15 @@ public class PocketCommand {
                                 context.getSource(),
                                 ResourceLocationArgument.getId(context, "id"),
                                 resourceKey,
-                                context.getSource().getPlayerOrException(),
+                                null,
                                 null
                         ))
-                        .then(argument("locator", EntityArgument.entity())
+                        .then(argument("target", EntityArgument.entity())
                                 .executes(context -> placePocket(
                                         context.getSource(),
                                         ResourceLocationArgument.getId(context, "id"),
                                         resourceKey,
-                                        EntityArgument.getEntity(context, "locator"),
+                                        EntityArgument.getEntity(context, "target"),
                                         null
                                 ))
                         )
@@ -171,7 +172,7 @@ public class PocketCommand {
         return pocket;
     }
 
-    private static <T extends PocketCreator> int placePocket(CommandSourceStack source, ResourceLocation id, ResourceKey<Registry<T>> idFunction, @Nullable Entity locatorEntity, @Nullable BlockPos selectedSourcePos) throws CommandSyntaxException {
+    private static <T extends PocketCreator> int placePocket(CommandSourceStack source, ResourceLocation id, ResourceKey<Registry<T>> idFunction, @Nullable Entity targetEntity, @Nullable BlockPos selectedSourcePos) throws CommandSyntaxException {
         PocketCreator creator = source.registryAccess().registry(idFunction).map(a -> a.get(id)).orElse(null);
         if (creator == null) {
             source.sendFailure(Component.literal("Unknown pocket id: " + id));
@@ -185,9 +186,9 @@ public class PocketCommand {
         if (selectedSourcePos != null) {
             sourceLevel = player.serverLevel();
             sourcePos = normalizeSourcePos(sourceLevel, selectedSourcePos);
-        } else if (locatorEntity != null) {
-            sourceLevel = (ServerLevel) locatorEntity.level();
-            sourcePos = normalizeSourcePos(sourceLevel, locatorEntity.blockPosition());
+        } else if (targetEntity != null) {
+            sourceLevel = (ServerLevel) targetEntity.level();
+            sourcePos = normalizeSourcePos(sourceLevel, targetEntity.blockPosition());
         } else {
             sourceLevel = player.serverLevel();
             sourcePos = normalizeSourcePos(sourceLevel, player.blockPosition());
@@ -242,6 +243,12 @@ public class PocketCommand {
         }
 
         TemplateUtils.linkRifts(contextLocation, entrance);
+        if (targetEntity != null
+            && !((RiftBlockEntity) contextLocation.getBlockEntity()).teleport(targetEntity)) { // This line does not feel safe but theoretically any block entity errors would happen inside linkRifts
+            source.sendFailure(Component.literal("Failed to teleport entity through created rift."));
+            return 0;
+        }
+
         source.sendSuccess(() -> Component.literal(
                 "Linked " + linkedSourcePos.toShortString()
                         + " to " + id
