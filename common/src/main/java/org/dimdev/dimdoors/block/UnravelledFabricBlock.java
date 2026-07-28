@@ -18,14 +18,14 @@ public class UnravelledFabricBlock extends Block {
     public static final String ID = "unravelled_fabric";
 
     public UnravelledFabricBlock(Properties settings) {
-    super(settings);
+        super(settings);
     }
 
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-    if (ModDimensions.isLimboDimension(level)) {
-        Decay.applySpreadDecay(level, pos, random, DecaySource.LIMBO);
-    }
+        if (ModDimensions.isLimboDimension(level)) {
+            Decay.applySpreadDecay(level, pos, random, DecaySource.LIMBO);
+        }
     }
 
     @Override

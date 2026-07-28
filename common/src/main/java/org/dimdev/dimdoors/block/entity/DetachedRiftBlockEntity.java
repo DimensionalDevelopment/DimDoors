@@ -20,6 +20,8 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.TeleportUtil;
 import org.dimdev.dimdoors.client.RiftCurves;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
+import org.dimdev.dimdoors.world.decay.Decay;
+import org.dimdev.dimdoors.world.decay.DecaySource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -47,11 +49,14 @@ public class DetachedRiftBlockEntity extends RiftBlockEntity {
      */
     public void applySpreadDecay(ServerLevel world, BlockPos pos) {
 //        TODO: Reimplment
-//    float chance = size/100f;
-//    if ((random.nextFloat()) <= chance) {
-//        BlockPos selected = BlockPos.randomInCube(world.getRandom(), 1, pos, (int) (chance)).iterator().next();
-//        Decay.decayBlock(world, selected, world.getBlockState(selected), DecaySource.RIFT);
-//    }
+        float chance = size / 100f;
+        if ((random.nextFloat()) <= chance) {
+            BlockPos selected = BlockPos.randomInCube(world.getRandom(), 1, pos, (int) (chance)).iterator().next();
+            if (pos.getCenter().distanceTo(selected.getCenter()) >= (int) chance) {
+                return;
+            }
+            Decay.decayBlock(world, pos, world.getBlockState(pos), selected, world.getBlockState(selected), DecaySource.RIFT);
+        }
     }
 
     public void setClosing(boolean closing) {

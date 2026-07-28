@@ -53,19 +53,25 @@ public final class Decay {
 
             //Apply decay to the blocks above, below, and on all four sides.
             // TODO: make max amount configurable
-            int decayAmount = random.nextInt(5) + 1;
+            int decayAmount = random.nextInt(Direction.values().length - 1) + 1;
             List<Direction> directions = new ArrayList<>(Arrays.asList(Direction.values()));
             for (int i = 0; i < decayAmount; i++) {
-                decayBlock(world, pos, origin, directions.remove(random.nextInt(5 - i)), source);
+                var direction = directions.remove(random.nextInt(directions.size()));
+                decayBlock(world, pos, origin, direction, source);
             }
         }
+    }
+
+    public static void decayBlock(ServerLevel world, BlockPos originPos, BlockState originBlockState, Direction direction, DecaySource source) {
+        BlockPos targetPos = originPos.relative(direction);
+        decayBlock(world, originPos, originBlockState, targetPos, world.getBlockState(targetPos), source);
     }
 
     /**
      * Checks if a block can be decayed and, if so, changes it to the next block ID along the decay sequence.
      */
-    public static void decayBlock(ServerLevel world, BlockPos originPos, BlockState originBlockState, Direction direction, DecaySource source) {
-        DecayContext context = DecayContext.create(world, originPos, originBlockState, direction, source);
+    public static void decayBlock(ServerLevel world, BlockPos originPos, BlockState originBlockState, BlockPos targetPos, BlockState targetBlockState, DecaySource source) {
+        DecayContext context = DecayContext.create(world, originPos, originBlockState, targetPos, targetBlockState, source);
 
         var patterns = DecayLoader.getPatterns(context);
 
@@ -178,31 +184,39 @@ public final class Decay {
 
         public void process() {
             sendBreakBlockProgress(context.world(), context.targetBlockPos(), -1);
+            DecayContext currentContext = DecayContext.create(
+                    context.world(),
+                    context.originBlockPos(),
+                    context.world().getBlockState(context.originBlockPos()),
+                    context.targetBlockPos(),
+                    context.world().getBlockState(context.targetBlockPos()),
+                    context.source()
+            );
 
-            if (context.source().decayIntoWorldThread()) {
+            if (!processor.value().test(currentContext)) {
+                return;
+            }
+
+            if (currentContext.source().decayIntoWorldThread()) {
                 if (DimensionalDoors.getConfig().getDecayConfig().decaysIntoAir) {
-                    var contents = DecayInventoryHelper.takeContents(context.world(), context.targetBlockPos());
-                    context.world().setBlockAndUpdate(context.targetBlockPos, Blocks.AIR.defaultBlockState());
-                    DecayInventoryHelper.drop(context.world(), context.targetBlockPos(), contents);
-                } else processor.value().applyPattern(context);
+                    var contents = DecayInventoryHelper.takeContents(currentContext.world(), currentContext.targetBlockPos());
+                    currentContext.world().setBlockAndUpdate(currentContext.targetBlockPos(), Blocks.AIR.defaultBlockState());
+                    DecayInventoryHelper.drop(currentContext.world(), currentContext.targetBlockPos(), contents);
+                } else processor.value().applyPattern(currentContext);
             } else {
-                processor.value().applyPattern(context);
+                processor.value().applyPattern(currentContext);
             }
         }
     }
 
     public record DecayContext(ServerLevel world, BlockPos originBlockPos, BlockState originBlockState, BlockPos targetBlockPos, BlockState targetBlockState, FluidState targetFluidState, @Nullable Entity targetEntity, DecaySource source) {
 
-        public static DecayContext create(ServerLevel world, BlockPos originBlockPos, BlockState originBlockState, Direction direction, DecaySource source) {
-            var targetPos = originBlockPos.relative(direction);
+        public static DecayContext create(ServerLevel world, BlockPos originBlockPos, BlockState originBlockState, BlockPos targetBlockPos, BlockState targetBlockState, DecaySource source) {
+            FluidState targetFluidState = world.getFluidState(targetBlockPos);
 
-            var targetBlockState = world.getBlockState(targetPos);
+            var entity = world.getEntitiesOfClass(Painting.class, AABB.encapsulatingFullBlocks(targetBlockPos, targetBlockPos)).stream().findFirst().orElse(null);
 
-            FluidState targetFluidState = world.getFluidState(targetPos);
-
-            var entity = world.getEntitiesOfClass(Painting.class, AABB.encapsulatingFullBlocks(targetPos, targetPos)).stream().findFirst().orElse(null);
-
-            return new DecayContext(world, originBlockPos, originBlockState, targetPos, targetBlockState, targetFluidState, entity, source);
+            return new DecayContext(world, originBlockPos, originBlockState, targetBlockPos, targetBlockState, targetFluidState, entity, source);
         }
     }
 }

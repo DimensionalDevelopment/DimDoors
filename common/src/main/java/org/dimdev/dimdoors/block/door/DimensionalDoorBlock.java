@@ -63,7 +63,7 @@ public abstract class DimensionalDoorBlock<T extends EntranceRiftBlockEntity> ex
 
     @Override
     public boolean validStateForTraversal(BlockState state) {
-        return state.getBlock() != this || !state.getValue(DoorBlock.OPEN);
+        return state.getBlock() == this && state.getValue(DoorBlock.OPEN);
     }
 
     @Override

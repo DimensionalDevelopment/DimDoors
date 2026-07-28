@@ -8,13 +8,19 @@ import java.util.Map;
 
 public enum DecaySource implements StringRepresentable {
     LIMBO("unravelled_fabric", false),
-    REAlITY_SPONGE("reality_sponge", false),
+    REALITY_SPONGE("reality_sponge", false),
     RIFT("rift", true),
     CUSTOM("custom", false);
 
     public static final Codec<DecaySource> CODEC = StringRepresentable.fromValues(DecaySource::values);
 
     private static final Map<String, DecaySource> MAP = new HashMap<>(); //TODO: Remove once converted into codec.
+
+    static {
+        for (DecaySource source : values()) {
+            MAP.put(source.getSerializedName(), source);
+        }
+    }
 
     private final String name;
     private final boolean decayIntoWorldThread;

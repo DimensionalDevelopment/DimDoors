@@ -1,14 +1,14 @@
-// 1.21.1	2026-07-27T19:30:03.0814322	DimensionalDoors/Tags for minecraft:item
+// 1.21.1	2026-07-27T20:21:48.1512371	DimensionalDoors/Tags for minecraft:item
 8c72aee9016ef5d30103537c6816d991a5d732f6 data\c\tags\item\fence_gates.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\minecraft\tags\item\enchantable\sword.json
 c271b34bed3724cbaf6e66b1db8164bc101c8852 data\c\tags\item\ores.json
 18ef648ae8bd9439c8cf73538a187b41516835cb data\minecraft\tags\item\wooden_stairs.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\c\tags\item\enchantables.json
-a57fa5058b910960a2c250a1d6db912e8e8e8a81 data\c\tags\item\dyed\pink.json
 5d012d4f8fb9e2f65ab59939c6c0591fa1a5df5b data\c\tags\item\dyed\brown.json
+a57fa5058b910960a2c250a1d6db912e8e8e8a81 data\c\tags\item\dyed\pink.json
 bd609edc2d80462eab96eb74e1dbb199fe383100 data\c\tags\item\dyed\gray.json
-969a8801e02d00619ba12bc2b12c607700704929 data\minecraft\tags\item\completes_find_tree_tutorial.json
 b30c990ea036903eae7a3d93b03acbee4087cdd2 data\c\tags\item\music_discs.json
+969a8801e02d00619ba12bc2b12c607700704929 data\minecraft\tags\item\completes_find_tree_tutorial.json
 ec98865bddf585fb8bf7bdacb2853714404fe0f9 data\c\tags\item\tools.json
 01e8d0165920b64b6293e052d2ff9e84533d8a99 data\c\tags\item\gems.json
 2e89f80f8ba8b146adc4d04cfd6bbaad8cb121a1 data\minecraft\tags\item\beacon_payment_items.json
@@ -54,8 +54,8 @@ dbcc03e48802ed569fe8072833434ea0eebe4a19 data\minecraft\tags\item\enchantable\du
 9e6d80c0f0df04fddcc954c5761407c9cdffe0c3 data\c\tags\item\buckets.json
 22c3c0806fe9b64996f5d8d4b73005cc46aa2f7e data\minecraft\tags\item\logs.json
 dbcc03e48802ed569fe8072833434ea0eebe4a19 data\minecraft\tags\item\enchantable\vanishing.json
-9338d2f6967c73a7816996781c16a7c9f4222aaf data\minecraft\tags\item\walls.json
 4c221805df2ecdadf34c214fd4d520bae2c6b3ed data\c\tags\item\dyed\light_gray.json
+9338d2f6967c73a7816996781c16a7c9f4222aaf data\minecraft\tags\item\walls.json
 543789f1b8118d671b9658cbb768ef57faffff05 data\minecraft\tags\item\planks.json
 34cd16328f0fb57e37526790a4ca65bd8f9d6aef data\minecraft\tags\item\wooden_slabs.json
 5381089cac668940b3f12295dd58b4cf9370d0e1 data\minecraft\tags\item\wooden_fences.json

@@ -37,7 +37,7 @@ public interface TraversableRiftBlock<T extends EntranceRiftBlockEntity> extends
 
         state = world.getBlockState(pos);
 
-        if(validStateForTraversal(state)) return InteractionResult.PASS;
+        if (!validStateForTraversal(state)) return InteractionResult.PASS;
 
         var rift = this.getRift(world, pos, state);
 
