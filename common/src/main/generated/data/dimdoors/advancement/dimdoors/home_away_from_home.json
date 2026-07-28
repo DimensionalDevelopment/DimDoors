@@ -11,14 +11,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.home_away_from_home.desc"
+      "translate": "advancement.dimdoors.home_away_from_home.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:item_ag_dim_minecraft_iron_door"
     },
     "title": {
-      "translate": "dimdoors.advancement.home_away_from_home"
+      "translate": "advancement.dimdoors.home_away_from_home"
     }
   },
   "requirements": [

@@ -15,14 +15,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.fuzzy_unreality.desc"
+      "translate": "advancement.dimdoors.fuzzy_unreality.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:frayed_filament"
     },
     "title": {
-      "translate": "dimdoors.advancement.fuzzy_unreality"
+      "translate": "advancement.dimdoors.fuzzy_unreality"
     }
   },
   "requirements": [

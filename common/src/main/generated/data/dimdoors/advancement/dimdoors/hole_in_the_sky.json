@@ -8,14 +8,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.hole_in_the_sky.desc"
+      "translate": "advancement.dimdoors.hole_in_the_sky.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:rift_configuration_tool"
     },
     "title": {
-      "translate": "dimdoors.advancement.hole_in_the_sky"
+      "translate": "advancement.dimdoors.hole_in_the_sky"
     }
   },
   "requirements": [

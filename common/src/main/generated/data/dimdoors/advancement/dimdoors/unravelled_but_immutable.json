@@ -15,14 +15,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.unravelled_but_immutable.desc"
+      "translate": "advancement.dimdoors.unravelled_but_immutable.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:infrangible_fiber"
     },
     "title": {
-      "translate": "dimdoors.advancement.unravelled_but_immutable"
+      "translate": "advancement.dimdoors.unravelled_but_immutable"
     }
   },
   "requirements": [

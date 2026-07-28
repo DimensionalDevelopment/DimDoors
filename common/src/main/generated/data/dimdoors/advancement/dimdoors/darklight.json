@@ -15,14 +15,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.darklight.desc"
+      "translate": "advancement.dimdoors.darklight.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:black_fabric"
     },
     "title": {
-      "translate": "dimdoors.advancement.darklight"
+      "translate": "advancement.dimdoors.darklight"
     }
   },
   "requirements": [

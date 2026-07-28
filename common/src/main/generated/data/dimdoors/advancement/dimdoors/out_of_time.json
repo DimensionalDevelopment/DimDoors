@@ -8,14 +8,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.out_of_time.desc"
+      "translate": "advancement.dimdoors.out_of_time.desc"
     },
     "icon": {
       "count": 1,
       "id": "minecraft:respawn_anchor"
     },
     "title": {
-      "translate": "dimdoors.advancement.out_of_time"
+      "translate": "advancement.dimdoors.out_of_time"
     }
   },
   "requirements": [

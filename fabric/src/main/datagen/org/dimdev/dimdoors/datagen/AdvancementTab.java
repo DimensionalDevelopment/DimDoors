@@ -26,8 +26,8 @@ import java.util.function.Consumer;
 public class AdvancementTab implements Consumer<Consumer<AdvancementHolder>> {
     static DisplayInfo makeDisplay(ItemLike item, String titleKey) {
         return new DisplayInfo(item.asItem().getDefaultInstance(),
-                Component.translatable("dimdoors.advancement." + titleKey),
-                Component.translatable("dimdoors.advancement." + titleKey + ".desc"),
+                Component.translatable("advancement.dimdoors." + titleKey),
+                Component.translatable("advancement.dimdoors." + titleKey + ".desc"),
                 Optional.of(DimensionalDoors.id("textures/block/unravelled_fabric.png")),
                 AdvancementType.TASK,
                 true,

@@ -11,14 +11,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.public_pocket.desc"
+      "translate": "advancement.dimdoors.public_pocket.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:item_ag_dim_minecraft_iron_door"
     },
     "title": {
-      "translate": "dimdoors.advancement.public_pocket"
+      "translate": "advancement.dimdoors.public_pocket"
     }
   },
   "requirements": [

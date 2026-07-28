@@ -14,14 +14,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.root.desc"
+      "translate": "advancement.dimdoors.root.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:rift_blade"
     },
     "title": {
-      "translate": "dimdoors.advancement.root"
+      "translate": "advancement.dimdoors.root"
     }
   },
   "requirements": [

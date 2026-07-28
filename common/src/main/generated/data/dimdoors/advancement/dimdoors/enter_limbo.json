@@ -11,14 +11,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.enter_limbo.desc"
+      "translate": "advancement.dimdoors.enter_limbo.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:monolith_spawner"
     },
     "title": {
-      "translate": "dimdoors.advancement.enter_limbo"
+      "translate": "advancement.dimdoors.enter_limbo"
     }
   },
   "requirements": [

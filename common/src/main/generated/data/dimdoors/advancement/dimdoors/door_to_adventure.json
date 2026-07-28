@@ -11,14 +11,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.door_to_adventure.desc"
+      "translate": "advancement.dimdoors.door_to_adventure.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:item_ag_dim_dimdoors_gold_door"
     },
     "title": {
-      "translate": "dimdoors.advancement.door_to_adventure"
+      "translate": "advancement.dimdoors.door_to_adventure"
     }
   },
   "requirements": [

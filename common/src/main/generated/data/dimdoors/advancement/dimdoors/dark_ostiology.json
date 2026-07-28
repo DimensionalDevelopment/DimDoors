@@ -11,14 +11,14 @@
   "display": {
     "background": "dimdoors:textures/block/unravelled_fabric.png",
     "description": {
-      "translate": "dimdoors.advancement.dark_ostiology.desc"
+      "translate": "advancement.dimdoors.dark_ostiology.desc"
     },
     "icon": {
       "count": 1,
       "id": "dimdoors:item_ag_dim_minecraft_oak_door"
     },
     "title": {
-      "translate": "dimdoors.advancement.dark_ostiology"
+      "translate": "advancement.dimdoors.dark_ostiology"
     }
   },
   "requirements": [
