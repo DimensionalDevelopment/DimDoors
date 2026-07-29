@@ -38,8 +38,7 @@ package org.dimdev.dimdoors.pockets.generator;//package org.dimdev.dimdoors.pock
 //import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
 //import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 //import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
-//import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
-//import org.dimdev.dimdoors.world.pocket.VirtualLocation;
+////import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 //import org.dimdev.dimdoors.world.pocket.type.Pocket;
 //
 //import java.util.ArrayList;

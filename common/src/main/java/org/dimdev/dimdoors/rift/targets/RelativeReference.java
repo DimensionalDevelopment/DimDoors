@@ -1,11 +1,12 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Vec3i;
 import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 import java.util.Set;
 
@@ -32,13 +33,13 @@ public class RelativeReference extends RiftReference {
 
     @Override
     public void register() {
-        DimensionalRegistry.getRiftRegistry().addLink(this.location, this.getLocation());
+        RiftRegistry.getInstance().addLink(this.location, this.getLocation());
     }
 
     @Override
     public void unregister() {
         if (this.location != null)
-            DimensionalRegistry.getRiftRegistry().removeLink(this.location, getLocation());
+            RiftRegistry.getInstance().removeLink(this.location, getLocation());
     }
 
     @Override
@@ -50,8 +51,8 @@ public class RelativeReference extends RiftReference {
     @Override
     public RGBA getColor() {
 
-        if (getLocation() != null && DimensionalRegistry.getRiftRegistry().isRiftAt(getLocation())) {
-            Set<Location> otherRiftTargets = DimensionalRegistry.getRiftRegistry().getTargets(getLocation());
+        if (getLocation() != null && RiftRegistry.getInstance().isRiftAt(getLocation())) {
+            Set<Location> otherRiftTargets = RiftRegistry.getInstance().getTargets(getLocation());
             if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(this.location)) {
                 return new RGBA(0, 1, 0, 1);
             }

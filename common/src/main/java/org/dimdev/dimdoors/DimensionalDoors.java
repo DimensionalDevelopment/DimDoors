@@ -24,10 +24,8 @@ import org.dimdev.dimdoors.block.ModBlocks;
 import org.dimdev.dimdoors.block.door.DimensionalDoorBlockRegistrar;
 import org.dimdev.dimdoors.block.entity.EntranceRiftBlockEntity;
 import org.dimdev.dimdoors.block.entity.ModBlockEntityTypes;
-import org.dimdev.dimdoors.client.IDimDoorsClientSided;
 import org.dimdev.dimdoors.client.ModRecipeBookTypes;
 import org.dimdev.dimdoors.command.ModCommands;
-import org.dimdev.dimdoors.compat.sable.SableCompat;
 import org.dimdev.dimdoors.criteria.ModCriteria;
 import org.dimdev.dimdoors.enchantment.ModEnchantmentEffects;
 import org.dimdev.dimdoors.enchantment.TranscendentProjectiles;
@@ -38,7 +36,6 @@ import org.dimdev.dimdoors.item.ModArmorMaterials;
 import org.dimdev.dimdoors.item.ModDataComponentTypes;
 import org.dimdev.dimdoors.item.ModItems;
 import org.dimdev.dimdoors.item.door.DimensionalDoorItemRegistrar;
-import org.dimdev.dimdoors.item.door.DoorRiftDataLoader;
 import org.dimdev.dimdoors.item.door.data.condition.Condition;
 import org.dimdev.dimdoors.item.loot.ModItemLootConditions;
 import org.dimdev.dimdoors.listener.AttackBlockCallbackListener;
@@ -56,12 +53,14 @@ import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.recipe.ModRecipeSerializers;
 import org.dimdev.dimdoors.recipe.ModRecipeTypes;
+import org.dimdev.dimdoors.rift.registry.LegacyDimensionalRegistryMigrator;
 import org.dimdev.dimdoors.rift.registry.RegistryVertex;
+import org.dimdev.dimdoors.rift.registry.SubSystem;
+import org.dimdev.dimdoors.rift.registry.SubsystemTypes;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.screen.ModScreenHandlerTypes;
 import org.dimdev.dimdoors.sound.ModSoundEvents;
-import org.dimdev.dimdoors.util.schematic.SchemFixer;
 import org.dimdev.dimdoors.world.ModBiomes;
 import org.dimdev.dimdoors.world.ModDimensions;
 import org.dimdev.dimdoors.world.ModStructureProccessors;
@@ -70,7 +69,6 @@ import org.dimdev.dimdoors.world.decay.Decay;
 import org.dimdev.dimdoors.world.decay.conditions.DecayConditionType;
 import org.dimdev.dimdoors.world.decay.pattern.DecayPatternType;
 import org.dimdev.dimdoors.world.decay.results.DecayResultType;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.BlankChunkGenerator;
 import org.dimdev.dimdoors.world.pocket.PocketChunkClaims;
 import org.dimdev.dimdoors.world.pocket.PocketChunkLoadingManager;
@@ -218,6 +216,7 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
         PocketGenerator.PocketGeneratorType.register();
         AbstractPocket.AbstractPocketType.register();
         PocketAddon.PocketAddonType.register();
+        SubsystemTypes.register();
         Condition.ConditionType.register();
         DecayConditionType.register();
         DecayResultType.register();
@@ -232,7 +231,9 @@ public class DimensionalDoors implements ModCommon<IDimensionalDoorsSided<?>> {
 //        sided.onPlayerQuit(player -> PocketCommand.logSetting.remove(player.getUUID()));
 
         sided.onServerStarted(server -> {
-            DimensionalRegistry.init(server);
+
+            LegacyDimensionalRegistryMigrator.migrateIfNeeded(server);
+            SubSystem.initialize(server);
             PocketChunkLoadingManager.reconcileAll(server);
         });
 

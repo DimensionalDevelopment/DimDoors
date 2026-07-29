@@ -7,12 +7,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
+import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -33,12 +34,12 @@ public class PrivatePocketExitTarget extends VirtualTarget<PrivatePocketExitTarg
             return false; // Non-player/owned entity tried to escape/leave private pocket
         }
 
-        Location destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketExit(uuid);
-        Pocket<?, ?> pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
+        Location destLoc = PrivateRegistry.getInstance().getExitLocation(uuid);
+        Pocket<?, ?> pocket = PrivateRegistry.getInstance().getPrivatePocket(uuid);
         if (ModDimensions.isPrivatePocketDimension(this.location.getWorld()) && pocket != null) {
-            Pocket<?, ?> currentPocket = DimensionalRegistry.getPocketDirectory(pocket.getWorld()).getPocketAt(this.location.pos);
+            Pocket<?, ?> currentPocket = PocketRegistry.getInstance().getPocketDirectory(pocket.getWorld()).getPocketAt(this.location.pos);
             if (pocket.equals(currentPocket)) {
-                DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
+                PrivateRegistry.getInstance().setEntrance(uuid, this.location); // Remember which exit was used for next time the pocket is entered
             }
         }
 
@@ -102,10 +103,10 @@ public class PrivatePocketExitTarget extends VirtualTarget<PrivatePocketExitTarg
     @Override
     public void register() {
         super.register();
-        PocketDirectory privatePocketRegistry = DimensionalRegistry.getPocketDirectory(this.location.world);
+        PocketDirectory privatePocketRegistry = PocketRegistry.getInstance().getPocketDirectory(this.location.world);
         Pocket<?, ?> pocket = privatePocketRegistry.getPocketAt(this.location.pos);
         if (pocket != null) {
-            DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, this.location);
+            PocketRegistry.getInstance().addPocketEntrance(pocket, this.location);
         }
     }
 

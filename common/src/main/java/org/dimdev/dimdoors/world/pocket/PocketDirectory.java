@@ -3,6 +3,7 @@ package org.dimdev.dimdoors.world.pocket;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.Int2IntAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceKey;
@@ -11,16 +12,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.math.GridUtil;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.util.CodecUtils;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.IdReferencePocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class PocketDirectory {
     public static final Codec<PocketDirectory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -34,20 +32,20 @@ public class PocketDirectory {
     int gridSize;
     int privatePocketSize;
     int publicPocketSize;
-    Map<Integer, AbstractPocket<?, ?>> pockets;
+    Int2ObjectAVLTreeMap<AbstractPocket<?, ?>> pockets;
     private final Int2IntAVLTreeMap nextIDMap;
 
     public PocketDirectory() {
         this.gridSize = DimensionalDoors.getConfig().getPocketsConfig().pocketGridSize;
         this.nextIDMap = new Int2IntAVLTreeMap();
-        this.pockets = new HashMap<>();
+        this.pockets = new Int2ObjectAVLTreeMap<>();
     }
 
     public PocketDirectory(int gridSize, int privatePocketSize, int publicPocketSize, Map<Integer, AbstractPocket<?, ?>> pockets, Int2IntAVLTreeMap nextIDMap) {
         this.gridSize = gridSize;
         this.privatePocketSize = privatePocketSize;
         this.publicPocketSize = publicPocketSize;
-        this.pockets = new HashMap<>(Objects.requireNonNull(pockets, "pockets"));
+        this.pockets = new Int2ObjectAVLTreeMap<>(Objects.requireNonNull(pockets, "pockets"));
         this.nextIDMap = Objects.requireNonNull(nextIDMap, "nextIDMap");
 
         validateLoadedState();
@@ -174,7 +172,7 @@ public class PocketDirectory {
                     + ", New=" + pocket);
         }
 
-        DimensionalRegistry.setIsDirty();
+        PocketRegistry.getInstance().setDirty();
     }
 
     public void removePocket(int id) {

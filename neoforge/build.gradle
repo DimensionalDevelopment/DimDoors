@@ -25,7 +25,7 @@ dependencies {
         exclude group: "foundry.veil"
     }
 
-    includeCompile "org.jgrapht:jgrapht-core:1.1.0"
+    includeCompile "org.jgrapht:jgrapht-core:${jgrapht_version}"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 
     compileOnly "mcp.mobius.waila:wthit-api:neo-${wthitVersion}"

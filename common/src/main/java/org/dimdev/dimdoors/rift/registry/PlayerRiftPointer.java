@@ -1,6 +1,7 @@
 package org.dimdev.dimdoors.rift.registry;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -8,21 +9,17 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.UUID;
 
 public class PlayerRiftPointer extends RegistryVertex {
-    public static final Codec<PlayerRiftPointer> CODEC = RecordCodecBuilder.create(instance -> {
-        return instance.group(
-                UUIDUtil.CODEC.fieldOf("id").forGetter(a -> a.id),
-                UUIDUtil.CODEC.fieldOf("player").forGetter(a -> a.player)
-        ).apply(instance, (id, player) -> {
-            PlayerRiftPointer pointer = new PlayerRiftPointer(player);
-            pointer.id = id;
-            return pointer;
-        });
-    });
+    public static final MapCodec<PlayerRiftPointer> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            UUIDUtil.CODEC.fieldOf("id").forGetter(RegistryVertex::getId)).apply(instance, PlayerRiftPointer::new));
+    public static final Codec<PlayerRiftPointer> CODEC = MAP_CODEC.codec();
 
-    private final UUID player;
+    public PlayerRiftPointer() {
+        super();
+    }
 
-    public PlayerRiftPointer(UUID player) {
-        this.player = player;
+    public PlayerRiftPointer(UUID id) {
+        this();
+        this.id = id;
     }
 
     @Override
@@ -31,21 +28,16 @@ public class PlayerRiftPointer extends RegistryVertex {
     }
 
     public String toString() {
-        return "PlayerRiftPointer(player=" + this.player + ")";
+        return "PlayerRiftPointer(id=" + this.id + ")";
     }
 
     public static CompoundTag toNbt(PlayerRiftPointer vertex) {
         CompoundTag nbt = new CompoundTag();
         nbt.putUUID("id", vertex.id);
-        nbt.putUUID("player", vertex.player);
         return nbt;
     }
 
     public static PlayerRiftPointer fromNbt(CompoundTag nbt) {
         return new PlayerRiftPointer(nbt.getUUID("id"));
-    }
-
-    public UUID getPlayer() {
-        return player;
     }
 }

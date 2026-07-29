@@ -89,11 +89,6 @@ public class DimTeleportCommand {
             TeleportUtil.teleport(entity, dimension, pos.apply(entity), angle.apply(entity), entity.getDeltaMovement());
         }
 
-//        TODO: Figure out a proper way to track vs just raw.
-//        if (entity instanceof Player) {
-//            DimensionalRegistry.getRiftRegistry().setOverworldRift(entity.getUUID(), new Location((ServerLevel) entity.level(), entity.blockPosition()));
-//        }
-
 //    TeleportUtil.teleport(entity, dimension, pos, angle, entity.getDeltaMovement());
         return Command.SINGLE_SUCCESS;
     }

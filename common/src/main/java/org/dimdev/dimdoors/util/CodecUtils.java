@@ -1,8 +1,8 @@
 package org.dimdev.dimdoors.util;
 
-import com.google.common.collect.Maps;
 import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
@@ -16,11 +16,13 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Path;
 import org.dimdev.dimdoors.api.util.ResourceUtil;
 import org.dimdev.dimdoors.world.decay.conditions.GenericDecayCondition;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -28,6 +30,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CodecUtils {
     private static Music createMusic(Holder<SoundEvent> sound) {
@@ -121,10 +124,10 @@ public class CodecUtils {
             @Override
             public <D> DataResult<Pair<T, D>> apply(DynamicOps<D> ops, D input, DataResult<Pair<T, D>> result) {
                 result.result().ifPresent(pair -> {
-                    System.err.println(onSuccess.apply(pair.getFirst()));
+                    DimensionalDoors.LOGGER.error(onSuccess.apply(pair.getFirst()));
                 });
                 result.error().ifPresent(error -> {
-                    System.err.println(onError.apply(error.message()));
+                    DimensionalDoors.LOGGER.error(onError.apply(error.message()));
                 });
                 return result;
             }
@@ -202,11 +205,75 @@ public class CodecUtils {
     }
 
     public static <K, V, M extends Map<K, V>> Codec<M> unboundedMap(Codec<K> keyCodec, Codec<V> valueCodec, Function<Map<K, V>, M> mapMFunction) {
-        return Codec.unboundedMap(keyCodec, valueCodec).xmap(mapMFunction, Function.identity());
+        return unboundedMap(keyCodec, valueCodec).xmap(mapMFunction, Function.identity());
     }
 
     public static <K, V> Codec<Map<K, V>> unboundedMap(Codec<K> keyCodec, Codec<V> valueCodec) {
-        return Codec.unboundedMap(keyCodec, valueCodec).xmap(Maps::newHashMap, Function.identity());
+        return new HashMapCodec<>(keyCodec, valueCodec);
+    }
+
+    public static DataResult<Integer> parseIntString(String string) {
+        try {
+            var value = Integer.decode(string);
+            return DataResult.success(value);
+        } catch (Exception e) {
+            return DataResult.error(e::getMessage);
+        }
+    }
+
+    private record HashMapCodec<K, V>(Codec<K> keyCodec, Codec<V> elementCodec) implements Codec<Map<K, V>> {
+        @Override
+        public <T> DataResult<Pair<Map<K, V>, T>> decode(DynamicOps<T> ops, T input) {
+            return ops.getMapValues(input).setLifecycle(Lifecycle.stable()).flatMap(entries -> {
+                Map<K, V> read = new HashMap<>();
+                Stream.Builder<Pair<T, T>> failed = Stream.builder();
+
+                DataResult<Unit> result = entries.reduce(
+                        DataResult.success(Unit.INSTANCE, Lifecycle.stable()),
+                        (r, pair) -> {
+                            DataResult<K> key = keyCodec.parse(ops, pair.getFirst());
+                            DataResult<V> value = elementCodec.parse(ops, pair.getSecond());
+                            DataResult<Pair<K, V>> entryResult = key.apply2stable(Pair::of, value);
+                            Optional<Pair<K, V>> entry = entryResult.resultOrPartial();
+
+                            if (entry.isPresent()) {
+                                K decodedKey = entry.get().getFirst();
+                                if (read.containsKey(decodedKey)) {
+                                    failed.add(pair);
+                                    return r.apply2stable((u, p) -> u, DataResult.<Pair<K, V>>error(() -> "Duplicate entry for key: '" + decodedKey + "'"));
+                                }
+
+                                read.put(decodedKey, entry.get().getSecond());
+                            }
+
+                            if (entryResult.isError()) {
+                                failed.add(pair);
+                            }
+
+                            return r.apply2stable((u, p) -> u, entryResult);
+                        },
+                        (r1, r2) -> r1.apply2stable((u1, u2) -> u1, r2)
+                );
+
+                T errors = ops.createMap(failed.build());
+                return result.map(unit -> read).setPartial(read).mapError(error -> error + " missed input: " + errors);
+            }).map(map -> Pair.of(map, input));
+        }
+
+        @Override
+        public <T> DataResult<T> encode(Map<K, V> input, DynamicOps<T> ops, T prefix) {
+            RecordBuilder<T> builder = ops.mapBuilder();
+            for (Map.Entry<K, V> entry : input.entrySet()) {
+                builder.add(keyCodec.encodeStart(ops, entry.getKey()), elementCodec.encodeStart(ops, entry.getValue()));
+            }
+
+            return builder.build(prefix);
+        }
+
+        @Override
+        public String toString() {
+            return "HashMapCodec[" + keyCodec + " -> " + elementCodec + ']';
+        }
     }
 
     public static final class TagOrElementLocation<T> {

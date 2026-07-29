@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.dimdev.dimdoors.DimensionalDoors;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.addon.AddonProvider;
 import org.dimdev.dimdoors.world.pocket.type.addon.DyeableAddon;
@@ -53,7 +53,7 @@ public abstract class Pocket<T extends Pocket<T, V>, V extends Pocket.PocketBuil
 
     public Pocket(int id, ResourceKey<Level> world, int x, int z) {
         super(id, world);
-        int gridSize = DimensionalRegistry.getPocketDirectory(world).getGridSize() * 16;
+        int gridSize = PocketRegistry.getInstance().getPocketDirectory(world).getGridSize() * 16;
         this.box = BoundingBox.fromCorners(new Vec3i(x * gridSize, 0, z * gridSize), new Vec3i((x + 1) * gridSize, 0, (z + 1) * gridSize));
         this.virtualLocation = new VirtualLocation(world, x, z, 0);
     }

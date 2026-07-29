@@ -16,6 +16,16 @@ java {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = "Central Portal Snapshots"
+        url = "https://central.sonatype.com/repository/maven-snapshots"
+        mavenContent {
+            snapshotsOnly()
+        }
+        content {
+            includeGroup("org.jgrapht")
+        }
+    }
 
     maven {
         name = "RyanHCode Maven"

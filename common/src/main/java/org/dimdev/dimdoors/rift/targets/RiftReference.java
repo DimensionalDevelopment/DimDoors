@@ -7,7 +7,7 @@ import org.dimdev.dimdoors.api.rift.target.Target;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 
 import java.util.Set;
 
@@ -78,13 +78,13 @@ public class RiftReference extends VirtualTarget<RiftReference> implements Locat
 
     @Override
     public void register() {
-        DimensionalRegistry.getRiftRegistry().addLink(this.location, this.target);
+        RiftRegistry.getInstance().addLink(this.location, this.target);
     }
 
     @Override
     public void unregister() {
         if (this.location != null)
-            DimensionalRegistry.getRiftRegistry().removeLink(this.location, this.target);
+            RiftRegistry.getInstance().removeLink(this.location, this.target);
     }
 
     @Override
@@ -95,8 +95,8 @@ public class RiftReference extends VirtualTarget<RiftReference> implements Locat
 
     @Override
     public RGBA getColor() {
-        if (target != null && DimensionalRegistry.getRiftRegistry().isRiftAt(target)) {
-            Set<Location> otherRiftTargets = DimensionalRegistry.getRiftRegistry().getTargets(target);
+        if (target != null && RiftRegistry.getInstance().isRiftAt(target)) {
+            Set<Location> otherRiftTargets = RiftRegistry.getInstance().getTargets(target);
             if (otherRiftTargets.size() == 1 && otherRiftTargets.contains(this.location)) {
                 return new RGBA(0, 1, 0, 1);
             }

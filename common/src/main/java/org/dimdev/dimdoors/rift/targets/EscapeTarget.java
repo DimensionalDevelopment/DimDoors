@@ -60,7 +60,6 @@ public class EscapeTarget extends VirtualTarget<EscapeTarget> implements EntityT
         if (entity.level().isClientSide)
             return false;
         if (entity instanceof ServerPlayer player) { //TODO: Determine what other entity types should do when escaping.
-//        Location destLoc = DimensionalRegistry.getRiftRegistry().get.getOverworldRift(uuid);
 
             ServerLevel destLevel = null;
             BlockPos destPos = null;

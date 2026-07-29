@@ -14,8 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import static net.minecraft.world.level.Level.OVERWORLD;
@@ -64,7 +64,7 @@ public class VirtualLocation {
     VirtualLocation virtualLocation = null;
 
     if (ModDimensions.isPocketDimension(location.world)) {
-        Pocket pocket = DimensionalRegistry.getPocketDirectory(location.world).getPocketAt(location.pos);
+        Pocket pocket = PocketRegistry.getInstance().getPocketDirectory(location.world).getPocketAt(location.pos);
         if (pocket != null) {
         virtualLocation = pocket.virtualLocation; // TODO: pockets-relative coordinates
         } else {

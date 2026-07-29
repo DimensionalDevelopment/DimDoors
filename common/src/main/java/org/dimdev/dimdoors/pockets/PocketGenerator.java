@@ -22,6 +22,7 @@ public final class PocketGenerator {
     public static final ResourceKey<VirtualPocket> ALL_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("dungeon"));
     public static final ResourceKey<VirtualPocket> PUBLIC = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("public"));
     public static final ResourceKey<VirtualPocket> PRIVATE = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("private"));
+    public static final ResourceKey<VirtualPocket> DIALING = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("dialing"));
     public static final ResourceKey<VirtualPocket> NETHER_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("nether"));
     public static final ResourceKey<VirtualPocket> MYTH_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("myth"));
     public static final ResourceKey<VirtualPocket> RUINS_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("ruins"));
@@ -31,6 +32,9 @@ public final class PocketGenerator {
     public static final ResourceKey<VirtualPocket> PYRAMID_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("pyramid"));
     public static final ResourceKey<VirtualPocket> END_DUNGEONS = ResourceKey.create(ModRegistryKeys.POCKET_GROUPS, DimensionalDoors.id("end"));
 
+    public static Pocket<?,?> generateDialingPocket(VirtualLocation virtualLocation) {
+        return generateFromPocketGroupV2(DimensionalDoors.getWorld(ModDimensions.PUBLIC), DIALING, virtualLocation, null, null);
+    }
 
 
     public static Pocket<?, ?> generatePrivatePocketV2(VirtualLocation virtualLocation) {

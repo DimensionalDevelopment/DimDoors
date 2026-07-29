@@ -2,47 +2,78 @@ package org.dimdev.dimdoors.world.pocket;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.core.registries.Registries;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.api.util.Location;
+import org.dimdev.dimdoors.api.util.NbtUtil;
+import org.dimdev.dimdoors.rift.registry.PlayerTrackingSubSystem;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
+import org.dimdev.dimdoors.rift.registry.SubsystemTypes;
+import org.dimdev.dimdoors.util.CodecUtils;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.BiFunction;
 
-public class PrivateRegistry {
+public class PrivateRegistry extends PlayerTrackingSubSystem<PrivateRegistry> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected record PocketInfo(ResourceKey<Level> world, int id) {
-        public static CompoundTag toNbt(PocketInfo info) {
-            CompoundTag nbt = new CompoundTag();
-            nbt.putString("world", info.world.location().toString());
-            nbt.putInt("id", info.id);
-            return nbt;
-        }
+    public static final MapCodec<PrivateRegistry> CODEC = RecordCodecBuilder.mapCodec(instance -> commonFields(instance)
+            .and(CodecUtils.unboundedMap(UUIDUtil.STRING_CODEC, PocketInfo.CODEC, HashBiMap::create)
+                    .fieldOf("private_pockets").forGetter(a -> a.privatePockets))
+            .apply(instance, PrivateRegistry::new));
 
-        public static PocketInfo fromNbt(CompoundTag nbt) {
-            return new PocketInfo(
-                    ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(nbt.getString("world"))),
-                    nbt.getInt("id")
-            );
-        }
-    }
-
-    protected BiMap<UUID, PocketInfo> privatePocketMap = HashBiMap.create();
+    protected HashBiMap<UUID, PocketInfo> privatePockets;
 
     public PrivateRegistry() {
+        this(new HashMap<>(), HashBiMap.create());
+    }
+
+    public PrivateRegistry(Map<UUID, PlayerRiftConnection> locations, HashBiMap<UUID, PocketInfo> privatePockets) {
+        super(locations);
+        this.privatePockets = privatePockets;
+    }
+
+    @Override
+    public void setEntrance(UUID uuid, Location entrance) {
+        LOGGER.debug("Setting private pocket entrance for {} to {}.", uuid, entrance);
+        super.setEntrance(uuid, entrance);
+    }
+
+    @Override
+    public void setExit(UUID uuid, Location exit) {
+        LOGGER.debug("Setting private pocket exit for {} to {}.", uuid, exit);
+        super.setExit(uuid, exit);
+    }
+
+    public Location resolveEntrance(UUID playerUUID) {
+        Objects.requireNonNull(playerUUID, "playerUUID");
+
+        PrivatePocket pocket = this.getPrivatePocket(playerUUID);
+        if (pocket == null) return null;
+
+        Location entrance = this.getEntranceLocation(playerUUID);
+        if (entrance != null && PocketRegistry.getInstance().getPocketEntrances(pocket).contains(entrance)) {
+            return entrance;
+        }
+
+        return PocketRegistry.getInstance().getPocketEntrance(pocket);
+    }
+
+    @Override
+    public Type<PrivateRegistry> type() {
+        return SubsystemTypes.PRIVATE;
     }
 
     public void fromNbt(CompoundTag nbt) {
-        this.privatePocketMap.clear();
+        this.privatePockets.clear();
 
         CompoundTag privatePocketMapNbt = nbt.getCompound("private_pocket_map");
 
@@ -50,20 +81,20 @@ public class PrivateRegistry {
             try {
                 CompoundTag pocketInfoNbt = privatePocketMapNbt.getCompound(key);
                 UUID uuidKey = UUID.fromString(key);
-                PocketInfo pocketInfo = PocketInfo.fromNbt(pocketInfoNbt);
+                PocketInfo pocketInfo = NbtUtil.deserialize(pocketInfoNbt, PocketInfo.CODEC);
 
-                if (this.privatePocketMap.containsKey(uuidKey)) {
+                if (this.privatePockets.containsKey(uuidKey)) {
                     LOGGER.warn("Skipping duplicate private pocket owner mapping for {}.", uuidKey);
                     continue;
                 }
 
-                if (this.privatePocketMap.containsValue(pocketInfo)) {
+                if (this.privatePockets.containsValue(pocketInfo)) {
                     LOGGER.warn("Skipping duplicate private pocket assignment {}:{} for {}.",
                             pocketInfo.world().location(), pocketInfo.id(), uuidKey);
                     continue;
                 }
 
-                this.privatePocketMap.put(uuidKey, pocketInfo);
+                this.privatePockets.put(uuidKey, pocketInfo);
             } catch (RuntimeException e) {
                 LOGGER.warn("Skipping invalid private pocket mapping for {}.", key, e);
             }
@@ -73,8 +104,8 @@ public class PrivateRegistry {
     public CompoundTag toNbt(CompoundTag nbt) {
         CompoundTag pocketMapNbt = new CompoundTag();
 
-        for (Map.Entry<UUID, PocketInfo> pair : this.privatePocketMap.entrySet()) {
-            pocketMapNbt.put(pair.getKey().toString(), PocketInfo.toNbt(pair.getValue()));
+        for (Map.Entry<UUID, PocketInfo> pair : this.privatePockets.entrySet()) {
+            pocketMapNbt.put(pair.getKey().toString(), NbtUtil.serialize(pair.getValue(), PocketInfo.CODEC));
         }
 
         nbt.put("private_pocket_map", pocketMapNbt);
@@ -84,13 +115,10 @@ public class PrivateRegistry {
     public PrivatePocket getPrivatePocket(UUID playerUUID) {
         Objects.requireNonNull(playerUUID, "playerUUID");
 
-        PocketInfo pocket = this.privatePocketMap.get(playerUUID);
+        PocketInfo pocket = this.privatePockets.get(playerUUID);
         if (pocket == null) return null;
 
-        PocketDirectory directory = DimensionalRegistry.peekPocketDirectory(pocket.world);
-        if (directory == null) return null;
-
-        return directory.getPocket(pocket.id, PrivatePocket.class);
+        return PocketRegistry.getInstance().getPocket(pocket, PrivatePocket.class);
     }
 
     public void setPrivatePocketID(UUID playerUUID, PrivatePocket pocket) {
@@ -99,20 +127,20 @@ public class PrivateRegistry {
 
         PocketInfo info = new PocketInfo(pocket.getWorld(), pocket.getId());
 
-        UUID existingOwner = this.privatePocketMap.inverse().get(info);
+        UUID existingOwner = this.privatePockets.inverse().get(info);
         if (existingOwner != null && !existingOwner.equals(playerUUID)) {
             throw new IllegalStateException("Private pocket " + info.world().location() + ":" + info.id()
                     + " is already assigned to " + existingOwner
                     + ", cannot assign to " + playerUUID);
         }
 
-        PocketInfo previous = this.privatePocketMap.put(playerUUID, info);
+        PocketInfo previous = this.privatePockets.put(playerUUID, info);
         if (!info.equals(previous)) {
-            DimensionalRegistry.setIsDirty();
+            this.setDirty();
         }
     }
 
-    public void setPrivatePocketID(UUID playerUUID, Pocket pocket) {
+    public void setPrivatePocketID(UUID playerUUID, Pocket<?,?> pocket) {
         Objects.requireNonNull(pocket, "pocket");
 
         if (!(pocket instanceof PrivatePocket privatePocket)) {
@@ -130,9 +158,9 @@ public class PrivateRegistry {
     public boolean removePrivatePocket(ResourceKey<Level> world, int id) {
         Objects.requireNonNull(world, "world");
 
-        UUID removedOwner = this.privatePocketMap.inverse().remove(new PocketInfo(world, id));
+        UUID removedOwner = this.privatePockets.inverse().remove(new PocketInfo(world, id));
         if (removedOwner != null) {
-            DimensionalRegistry.setIsDirty();
+            this.setDirty();
             return true;
         }
 
@@ -141,14 +169,14 @@ public class PrivateRegistry {
 
     public UUID getPrivatePocketOwner(Pocket pocket) {
         Objects.requireNonNull(pocket, "pocket");
-        return this.privatePocketMap.inverse().get(new PocketInfo(pocket.getWorld(), pocket.getId()));
+        return this.privatePockets.inverse().get(new PocketInfo(pocket.getWorld(), pocket.getId()));
     }
 
     public boolean removePrivatePocketOwner(UUID playerUUID) {
         Objects.requireNonNull(playerUUID, "playerUUID");
 
-        if (this.privatePocketMap.remove(playerUUID) != null) {
-            DimensionalRegistry.setIsDirty();
+        if (this.privatePockets.remove(playerUUID) != null) {
+            this.setDirty();
             return true;
         }
 
@@ -158,18 +186,18 @@ public class PrivateRegistry {
     public boolean removeStalePrivatePocketMapping(UUID playerUUID) {
         Objects.requireNonNull(playerUUID, "playerUUID");
 
-        PocketInfo pocket = this.privatePocketMap.get(playerUUID);
+        PocketInfo pocket = this.privatePockets.get(playerUUID);
         if (pocket == null) return false;
 
-        PocketDirectory directory = DimensionalRegistry.peekPocketDirectory(pocket.world);
-        if (directory != null && directory.getPocket(pocket.id, PrivatePocket.class) != null) {
-            return false;
-        }
+        if (PocketRegistry.getInstance().getPocket(pocket, PrivatePocket.class) != null) return false;
 
-        this.privatePocketMap.remove(playerUUID);
-        LOGGER.warn("Removed stale private pocket mapping {} -> {}:{}",
-                playerUUID, pocket.world().location(), pocket.id());
-        DimensionalRegistry.setIsDirty();
+        this.privatePockets.remove(playerUUID);
+        this.setDirty();
+        LOGGER.warn("Removed stale private pocket mapping {} -> {}:{}", playerUUID, pocket.world().location(), pocket.id());
         return true;
+    }
+
+    public static PrivateRegistry getInstance() {
+        return getInstance(SubsystemTypes.PRIVATE);
     }
 }

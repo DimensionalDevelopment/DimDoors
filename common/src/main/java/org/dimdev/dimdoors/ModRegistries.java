@@ -9,6 +9,7 @@ import org.dimdev.dimdoors.pockets.generator.PocketGenerator;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
 import org.dimdev.dimdoors.pockets.virtual.ImplementedVirtualPocket;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.rift.registry.SubSystem;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
@@ -20,6 +21,8 @@ public class ModRegistries {
     public static final Registry<VirtualTarget.VirtualTargetType<?>> VIRTUAL_TYPE = DimensionalDoors.getSided().createRegistry(ModRegistryKeys.VIRTUAL_TYPE);
     public static final Registry<Modifier.ModifierType<?>> MODIFIER_TYPE = DimensionalDoors.getSided().createRegistry(ModRegistryKeys.MODIFIER_TYPE);
     public static final Registry<Condition.ConditionType<?>> CONDITION_TYPE = DimensionalDoors.getSided().createRegistry(ModRegistryKeys.CONDITION_TYPE);
+    public static final Registry<SubSystem.Type<?>> SUBSYTEM_TYPE = DimensionalDoors.getSided().createRegistry(ModRegistryKeys.SUBSYSTEM_TYPE);
+
 
     public static void register() {
         DimensionalDoors.getSided().createDynamicRegistry(ModRegistryKeys.POCKET_GENERATOR, PocketGenerator.CODEC);

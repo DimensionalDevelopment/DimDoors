@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 
 public class RiftSchemas {
     public static final DSL.TypeReference RIFT_DATA_TYPE_REF = () -> "rift_data";
-    public static final int RIFT_DATA_VERSION = DimensionalRegistry.RIFT_DATA_VERSION;
+    public static final int RIFT_DATA_VERSION = 1;
     public static final BiFunction<Integer, Schema, Schema> EMPTY = Schema::new;
     public static final DataFixer DATA_FIXER = Util.make(new DataFixerBuilder(RIFT_DATA_VERSION), builder -> {
         builder.addSchema(1, Schema1::new);

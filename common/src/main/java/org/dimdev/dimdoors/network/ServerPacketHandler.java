@@ -16,8 +16,8 @@ import org.dimdev.dimdoors.api.item.ExtendedItem;
 import org.dimdev.dimdoors.network.packet.c2s.HitBlockWithItemC2SPacket;
 import org.dimdev.dimdoors.network.packet.s2c.PlayerInventorySlotUpdateS2CPacket;
 import org.dimdev.dimdoors.network.packet.s2c.SyncPocketAddonsS2CPacket;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.jetbrains.annotations.Nullable;
@@ -80,7 +80,7 @@ public class ServerPacketHandler {
 
         public SyncPocketAddonsS2CPacket syncPocketAddonsIfNeeded(ServerPlayer player, Level world, BlockPos pos) {
             if (!ModDimensions.isPocketDimension(world)) return null;
-            PocketDirectory directory = DimensionalRegistry.getPocketDirectory(world.dimension());
+            PocketDirectory directory = PocketRegistry.getInstance().getPocketDirectory(world.dimension());
             Pocket<?, ?> pocket = directory.getPocketAt(pos);
             if (pocket == null) return null;
             if ((pocketSyncDirty || pocket.getId() != lastSyncedPocketId || !world.dimension().location().equals(lastSyncedPocketWorld.location()))) {

@@ -5,8 +5,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.dimdev.dimdoors.DimensionalDoors;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.util.ChunkBounds;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.ForceLoadedPocketAddon;
@@ -20,7 +20,7 @@ public final class PocketChunkLoadingManager {
     }
 
     public static void reconcileAll(MinecraftServer server) {
-        DimensionalRegistry.forEachPocketDirectory((worldKey, directory) -> {
+        PocketRegistry.getInstance().forEachPocketDirectory((worldKey, directory) -> {
             ServerLevel level = server.getLevel(worldKey);
             if (level == null) return;
 
@@ -40,10 +40,10 @@ public final class PocketChunkLoadingManager {
         boolean wasForceLoaded = isForceLoaded(pocket);
         if (forceLoaded && !wasForceLoaded) {
             pocket.addAddon(ForceLoadedPocketAddon.instance());
-            DimensionalRegistry.setIsDirty();
+            PocketRegistry.getInstance().setDirty();
         } else if (!forceLoaded && wasForceLoaded) {
             pocket.removeAddon(PocketAddon.PocketAddonType.FORCE_LOADED_ADDON);
-            DimensionalRegistry.setIsDirty();
+            PocketRegistry.getInstance().setDirty();
         } else if (!forceLoaded) {
             return 0;
         }
@@ -87,7 +87,7 @@ public final class PocketChunkLoadingManager {
     }
 
     private static boolean isChunkForceLoadedByOtherPocket(ResourceKey<Level> world, int excludedPocketId, int chunkX, int chunkZ) {
-        PocketDirectory directory = DimensionalRegistry.peekPocketDirectory(world);
+        PocketDirectory directory = PocketRegistry.getInstance().peekPocketDirectory(world);
         if (directory == null) return false;
 
         for (Pocket<?, ?> pocket : getCanonicalPockets(directory)) {

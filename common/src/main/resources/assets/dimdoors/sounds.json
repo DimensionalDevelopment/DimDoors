@@ -1,27 +1,97 @@
 {
-  "crack" : {"sounds" : [ "dimdoors:crack"] },
-  "creepy" : { "sounds" : ["dimdoors:creepy_faded" ] },
-  "door_locked": { "sounds": [ "dimdoors:door_locked" ] },
-  "door_lock_removed": { "sounds": [ "dimdoors:door_lock_removed" ] },
-  "key_lock" : { "sounds" : [ "dimdoors:key_lock" ] },
-  "key_unlock" : { "sounds": [ "dimdoors:key_unlock" ] },
-  "monk" : { "sounds" : [ "dimdoors:monk" ] },
-  "rift" : { "sounds" : [ "dimdoors:rift" ] },
-  "rift_close" : { "sounds" : [ "dimdoors:rift_close" ] },
-  "rift_door": { "sounds" : [ "dimdoors:rift_door" ] },
-  "rift_end": { "sounds" : [ "dimdoors:rift_end" ] },
-  "rift_start": { "sounds" : [ "dimdoors:rift_start" ] },
-  "tearing": { "sounds" : [ "dimdoors:tearing"] },
-  "white_void": { "sounds" : [ "dimdoors:white_void"] },
-  "bloop": { "sounds" :  [ "dimdoors:bloop"]},
-  "tesselating_weave": { "sounds" :  [ "dimdoors:tesselating_weave"]},
-  "they_stare_back": { "sounds" :  [ "dimdoors:they_stare_back"]},
-  "equip_thread": { "sounds" :  [
-    "dimdoors:equip_thread_1",
-    "dimdoors:equip_thread_2",
-    "dimdoors:equip_thread_3",
-    "dimdoors:equip_thread_4",
-    "dimdoors:equip_thread_5",
-    "dimdoors:equip_thread_6"
-  ]}
+  "crack": {
+    "sounds": [
+      "dimdoors:crack"
+    ]
+  },
+  "creepy": {
+    "sounds": [
+      "dimdoors:creepy_faded"
+    ]
+  },
+  "door_locked": {
+    "sounds": [
+      "dimdoors:door_locked"
+    ]
+  },
+  "door_lock_removed": {
+    "sounds": [
+      "dimdoors:door_lock_removed"
+    ]
+  },
+  "key_lock": {
+    "sounds": [
+      "dimdoors:key_lock"
+    ]
+  },
+  "key_unlock": {
+    "sounds": [
+      "dimdoors:key_unlock"
+    ]
+  },
+  "monk": {
+    "sounds": [
+      "dimdoors:monk"
+    ]
+  },
+  "rift": {
+    "sounds": [
+      "dimdoors:rift"
+    ]
+  },
+  "rift_close": {
+    "sounds": [
+      "dimdoors:rift_close"
+    ]
+  },
+  "rift_door": {
+    "sounds": [
+      "dimdoors:rift_door"
+    ]
+  },
+  "rift_end": {
+    "sounds": [
+      "dimdoors:rift_end"
+    ]
+  },
+  "rift_start": {
+    "sounds": [
+      "dimdoors:rift_start"
+    ]
+  },
+  "tearing": {
+    "sounds": [
+      "dimdoors:tearing"
+    ]
+  },
+  "white_void": {
+    "sounds": [
+      "dimdoors:white_void"
+    ]
+  },
+  "bloop": {
+    "sounds": [
+      "dimdoors:bloop"
+    ]
+  },
+  "tesselating_weave": {
+    "sounds": [
+      "dimdoors:tesselating_weave"
+    ]
+  },
+  "they_stare_back": {
+    "sounds": [
+      "dimdoors:they_stare_back"
+    ]
+  },
+  "equip_thread": {
+    "sounds": [
+      "dimdoors:equip_thread_1",
+      "dimdoors:equip_thread_2",
+      "dimdoors:equip_thread_3",
+      "dimdoors:equip_thread_4",
+      "dimdoors:equip_thread_5",
+      "dimdoors:equip_thread_6"
+    ]
+  }
 }

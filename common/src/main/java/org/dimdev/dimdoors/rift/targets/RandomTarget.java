@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.rift.targets;
 
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
@@ -20,7 +22,7 @@ import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -150,7 +152,7 @@ public abstract class RandomTarget<T extends RandomTarget<T>> extends VirtualTar
                     return null;
                 }
 
-                var entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+                var entrance = PocketRegistry.getInstance().getPocketEntrance(pocket);
                 if (!this.noLink) TemplateUtils.linkRifts(this.location, entrance);
                 var beEntrance = entrance != null ? entrance.getBlockEntity() : null;
                 return beEntrance != null ? (Target) beEntrance : null;
@@ -171,7 +173,7 @@ public abstract class RandomTarget<T extends RandomTarget<T>> extends VirtualTar
         var weights = new HashMap<Location, Float>();
         if (this.newRiftWeight > 0) weights.put(null, this.newRiftWeight);
 
-        for (org.dimdev.dimdoors.rift.registry.Rift otherRift : DimensionalRegistry.getRiftRegistry().getRifts()) {
+        for (org.dimdev.dimdoors.rift.registry.Rift otherRift : RiftRegistry.getInstance().getRifts()) {
             VirtualLocation otherVirtualLocation = VirtualLocation.fromLocation(otherRift.getLocation());
             if (otherRift.getProperties() == null) continue;
             double otherWeight = otherRift.isDetached() ? otherRift.getProperties().floatingWeight : otherRift.getProperties().getEntranceWeight();

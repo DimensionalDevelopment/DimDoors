@@ -5,7 +5,6 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
 import org.dimdev.dimdoors.rift.registry.Rift;
 import org.dimdev.dimdoors.rift.registry.RiftRegistry;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,7 +30,7 @@ public class RiftRegistrySableTrackingMixin {
             return;
         }
 
-        var registry = DimensionalRegistry.getRiftRegistry();
+        var registry = RiftRegistry.getInstance();
         if (!registry.isRiftAt(location)) {
             return;
         }
@@ -46,7 +45,7 @@ public class RiftRegistrySableTrackingMixin {
             return;
         }
 
-        Rift rift = DimensionalRegistry.getRiftRegistry().getRift(location);
+        Rift rift = RiftRegistry.getInstance().getRift(location);
         SableHelper.INSTANCE.updateRiftTrackingPoint(level, rift);
     }
 }

@@ -14,11 +14,11 @@ import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.entity.ModEntityTypes;
 import org.dimdev.dimdoors.entity.MonolithEntity;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.rift.targets.PocketEntranceMarker;
 import org.dimdev.dimdoors.rift.targets.PocketExitMarker;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
 import org.dimdev.dimdoors.world.ModLootTables;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
 import java.util.HashMap;
@@ -103,7 +103,7 @@ public class TemplateUtils {
 
                     // FIX: Use 'world' instead of rift.getLevel()
                     Location entranceLocation = Location.ofWorld(world, rift.getBlockPos());
-                    DimensionalRegistry.getRiftRegistry().addPocketEntrance(pocket, entranceLocation);
+                    PocketRegistry.getInstance().addPocketEntrance(pocket, entranceLocation);
                     LOGGER.info("Registered pocket entrance at {} {}", entranceLocation.getWorldId().location(), entranceLocation.getBlockPos());
                 } else {
                     rift.setDestination(((PocketEntranceMarker) dest).getOtherwiseDestination());

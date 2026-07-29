@@ -23,7 +23,7 @@ dependencies {
         exclude group: "net.fabricmc", module: "fabric-loader"
     }
 
-    includeCompile "org.jgrapht:jgrapht-core:1.1.0"
+    includeCompile "org.jgrapht:jgrapht-core:${jgrapht_version}"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
     includeCompile "com.github.Chocohead:Fabric-ASM:v2.3"
 

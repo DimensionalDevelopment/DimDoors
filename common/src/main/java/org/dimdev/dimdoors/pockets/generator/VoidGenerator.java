@@ -7,7 +7,7 @@ import net.minecraft.core.Vec3i;
 import org.dimdev.dimdoors.api.util.math.Equation;
 import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -37,7 +37,7 @@ public class VoidGenerator extends PocketGenerator<VoidGenerator> {
 
     @Override
     public Pocket<?, ?> prepareAndPlacePocket(PocketGenerationContext parameters, Pocket.PocketBuilder<?, ?> builder) {
-        Pocket<?, ?> pocket = DimensionalRegistry.createPocket(parameters.world().dimension(), builder);
+        Pocket<?, ?> pocket = PocketRegistry.getInstance().createPocket(parameters.world().dimension(), builder);
         Map<String, Double> variableMap = parameters.toVariableMap(new HashMap<>());
         pocket.setSize((int) width.apply(variableMap), (int) height.apply(variableMap), (int) length.apply(variableMap));
 

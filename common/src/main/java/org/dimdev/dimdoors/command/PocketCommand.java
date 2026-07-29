@@ -38,9 +38,9 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.TemplateUtils;
 import org.dimdev.dimdoors.rift.registry.LinkProperties;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.rift.targets.RiftReference;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketChunkLoadingManager;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
@@ -159,7 +159,7 @@ public class PocketCommand {
             return null;
         }
 
-        PocketDirectory directory = DimensionalRegistry.getPocketDirectory(level.dimension());
+        PocketDirectory directory = PocketRegistry.getInstance().getPocketDirectory(level.dimension());
         Pocket<?, ?> pocket = pocketId == null
                 ? directory.getPocketAt(BlockPos.containing(source.getPosition()))
                 : directory.getPocket(pocketId);
@@ -229,7 +229,7 @@ public class PocketCommand {
             return 0;
         }
 
-        Location entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+        Location entrance = PocketRegistry.getInstance().getPocketEntrance(pocket);
         if (entrance == null) {
             source.sendFailure(Component.literal("Pocket " + id + " generated without a registered entrance."));
             return 0;

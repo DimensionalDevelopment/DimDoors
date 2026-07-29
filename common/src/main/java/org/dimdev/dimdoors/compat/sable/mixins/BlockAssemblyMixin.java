@@ -1,5 +1,7 @@
 package org.dimdev.dimdoors.compat.sable.mixins;
 
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
+
 import dev.ryanhcode.sable.api.block.BlockSubLevelAssemblyListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -11,7 +13,6 @@ import org.dimdev.dimdoors.block.door.DimensionalDoorBlock;
 import org.dimdev.dimdoors.block.door.DimensionalTrapDoorBlock;
 import org.dimdev.dimdoors.block.entity.Rift;
 import org.dimdev.dimdoors.compat.sable.SableHelper;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 
 
@@ -25,8 +26,8 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
         var blockEntity = originLevel.getBlockEntity(oldPos);
 
         if(blockEntity instanceof Rift rift) {
-            if (DimensionalRegistry.getRiftRegistry().isRiftAt(oldLocation)) {
-                    DimensionalRegistry.getRiftRegistry().moveRift(oldLocation, newLocation);
+            if (RiftRegistry.getInstance().isRiftAt(oldLocation)) {
+                    RiftRegistry.getInstance().moveRift(oldLocation, newLocation);
                     rift.setDeleteRift(false);
             }
         }
@@ -39,7 +40,7 @@ public abstract class BlockAssemblyMixin implements BlockSubLevelAssemblyListene
         if(blockEntity instanceof Rift rift) {
             rift.setDeleteRift(false);
             var newLocation = Location.ofWorld(resultingLevel, newPos);
-            var registry = DimensionalRegistry.getRiftRegistry();
+            var registry = RiftRegistry.getInstance();
             if (registry.isRiftAt(newLocation)) {
                 SableHelper.INSTANCE.updateRiftTrackingPoint(resultingLevel, registry.getRift(newLocation));
             }

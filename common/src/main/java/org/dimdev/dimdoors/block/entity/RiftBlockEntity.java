@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.rift.target.Target;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
@@ -34,7 +35,6 @@ import org.dimdev.dimdoors.rift.targets.LocationProvider;
 import org.dimdev.dimdoors.rift.targets.MessageTarget;
 import org.dimdev.dimdoors.rift.targets.Targets;
 import org.dimdev.dimdoors.rift.targets.VirtualTarget;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -161,7 +161,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Rift, Targe
     }
 
     public boolean isRegistered() { // TODO: do we need to implement this for v2?
-        return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.level != null && DimensionalRegistry.getRiftRegistry().isRiftAt(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
+        return /*!PocketTemplate.isReplacingPlaceholders() &&*/ this.level != null && RiftRegistry.getInstance().isRiftAt(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
     }
 
     public void register() {
@@ -170,7 +170,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Rift, Targe
         }
 
         Location loc = Location.ofWorld((ServerLevel) this.level, this.worldPosition);
-        DimensionalRegistry.getRiftRegistry().addRift(loc);
+        RiftRegistry.getInstance().addRift(loc);
         if (this.data.getDestination() != VirtualTarget.NoneTarget.INSTANCE) {
             this.data.getDestination().setLocation(loc);
             this.data.getDestination().register();
@@ -181,19 +181,19 @@ public abstract class RiftBlockEntity extends BlockEntity implements Rift, Targe
 
     public void updateProperties() {
         if (this.isRegistered())
-            DimensionalRegistry.getRiftRegistry().setProperties(Location.ofWorld((ServerLevel) this.level, this.worldPosition), this.data.getProperties());
+            RiftRegistry.getInstance().setProperties(Location.ofWorld((ServerLevel) this.level, this.worldPosition), this.data.getProperties());
         this.setChanged();
     }
 
     public void unregister() {
         if (deleteRift && this.isRegistered()) {
-            DimensionalRegistry.getRiftRegistry().removeRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
+            RiftRegistry.getInstance().removeRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
         }
     }
 
     public void updateType() {
         if (!this.isRegistered()) return;
-        org.dimdev.dimdoors.rift.registry.Rift rift = DimensionalRegistry.getRiftRegistry().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
+        org.dimdev.dimdoors.rift.registry.Rift rift = RiftRegistry.getInstance().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
         rift.setDetached(this.isDetached());
         rift.markDirty();
     }
@@ -341,7 +341,7 @@ public abstract class RiftBlockEntity extends BlockEntity implements Rift, Targe
     }
 
     public org.dimdev.dimdoors.rift.registry.Rift asRift() {
-        return DimensionalRegistry.getRiftRegistry().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
+        return RiftRegistry.getInstance().getRift(Location.ofWorld((ServerLevel) this.level, this.worldPosition));
     }
 
     public void tick(Level level, BlockPos pos, BlockState blockState) {

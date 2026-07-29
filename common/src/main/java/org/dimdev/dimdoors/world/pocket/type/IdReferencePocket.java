@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.PocketDirectory;
 
 public class IdReferencePocket extends AbstractPocket<IdReferencePocket, IdReferencePocket.IdReferencePocketBuilder> {
@@ -31,7 +31,7 @@ public class IdReferencePocket extends AbstractPocket<IdReferencePocket, IdRefer
 
     @Override
     public Pocket<?, ?> getReferencedPocket() {
-        return getReferencedPocket(DimensionalRegistry.getPocketDirectory(getWorld()));
+        return getReferencedPocket(PocketRegistry.getInstance().getPocketDirectory(getWorld()));
     }
 
     @Override

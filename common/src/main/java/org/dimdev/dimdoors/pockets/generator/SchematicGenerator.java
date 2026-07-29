@@ -14,8 +14,8 @@ import org.dimdev.dimdoors.pockets.PocketGenerationContext;
 import org.dimdev.dimdoors.pockets.PocketLoader;
 import org.dimdev.dimdoors.pockets.PocketTemplate;
 import org.dimdev.dimdoors.pockets.modifier.Modifier;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.util.schematic.Schematic;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.type.AbstractPocket;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -55,7 +55,7 @@ public class SchematicGenerator extends PocketGenerator<SchematicGenerator> {
 
         if (template == null) throw new RuntimeException("Pocket template of id " + templateID + " not found!");
 
-        Pocket<?, ?> pocket = DimensionalRegistry.createPocket(world.dimension(), builder);
+        Pocket<?, ?> pocket = PocketRegistry.getInstance().createPocket(world.dimension(), builder);
         BlockPos origin = pocket.getOrigin();
         LOGGER.info("Generating pocket from template {} at location {}", templateID, origin);
 //        PocketCommand.logSetting.values().forEach(commandSource ->

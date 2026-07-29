@@ -1,31 +1,28 @@
 package org.dimdev.dimdoors.rift.targets;
 
-import dev.eriksonn.aeronautics.index.AeroTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Rotations;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.limlib.api.util.EntityUtils;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.api.util.RGBA;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.world.pocket.PrivateRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 import org.dimdev.dimdoors.world.pocket.type.PocketColor;
 import org.dimdev.dimdoors.world.pocket.type.PrivatePocket;
 import org.dimdev.dimdoors.world.pocket.type.addon.PocketAddon;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 //TODO: add the ability to do addon spefific EntityTarget stuff and use it seperate dyeable from PrivatePocket
@@ -46,7 +43,7 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
         }
 
         VirtualLocation virtualLocation = VirtualLocation.fromLocation(this.location);
-        PrivatePocket pocket = DimensionalRegistry.getPrivateRegistry().getPrivatePocket(uuid);
+        PrivatePocket pocket = PrivateRegistry.getInstance().getPrivatePocket(uuid);
         if (pocket == null) {
             pocket = this.generatePrivatePocket(uuid, virtualLocation);
             if (pocket == null) {
@@ -54,17 +51,14 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
             }
         }
 
-        Location destLoc = DimensionalRegistry.getRiftRegistry().getPrivatePocketEntrance(uuid);
-        if (destLoc == null) {
-            destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
-        }
+        Location destLoc = PrivateRegistry.getInstance().resolveEntrance(uuid);
         if (destLoc == null) {
             LOGGER.info("All entrances are gone, creating a new private pocket!");
             pocket = this.generatePrivatePocket(uuid, virtualLocation);
             if (pocket == null) {
                 return false;
             }
-            destLoc = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+            destLoc = PocketRegistry.getInstance().getPocketEntrance(pocket);
         }
 
         return this.processEntity(pocket, destLoc, entity, uuid, relativePos, relativeAngle, relativeVelocity);
@@ -103,7 +97,7 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
         } else {
             boolean received = target.receiveEntity(entity, relativePos, relativeAngle, relativeVelocity, null);
             if (received) {
-                DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, this.location);
+                PrivateRegistry.getInstance().setExit(uuid, this.location);
             }
             return received;
         }
@@ -123,15 +117,15 @@ public class PrivatePocketTarget extends VirtualTarget<PrivatePocketTarget> impl
         Pocket<?, ?> generatedPocket = PocketGenerator.generatePrivatePocketV2(new VirtualLocation(virtualLocation.getWorld(), virtualLocation.getX(), virtualLocation.getZ(), -1));
 
         if (generatedPocket instanceof PrivatePocket pocket) {
-            Location entrance = DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+            Location entrance = PocketRegistry.getInstance().getPocketEntrance(pocket);
             if (entrance == null) {
                 LOGGER.error("Could not create private pocket {} for {} because no entrance was registered.", pocket.getId(), uuid);
                 return null;
             }
 
-            DimensionalRegistry.getRiftRegistry().setLastPrivatePocketEntrance(uuid, null);
-            DimensionalRegistry.getRiftRegistry().setLastPrivatePocketExit(uuid, null);
-            DimensionalRegistry.getPrivateRegistry().setPrivatePocketID(uuid, pocket);
+            PrivateRegistry.getInstance().setEntrance(uuid, null);
+            PrivateRegistry.getInstance().setExit(uuid, null);
+            PrivateRegistry.getInstance().setPrivatePocketID(uuid, pocket);
             return pocket;
         } else {
             LOGGER.error("Could not create private pocket for {} because generation returned {}.", uuid, generatedPocket == null ? "null" : generatedPocket.getClass().getSimpleName());

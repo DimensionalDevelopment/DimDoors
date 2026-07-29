@@ -33,8 +33,8 @@ import org.dimdev.dimdoors.api.util.math.TransformationMatrix3d;
 import org.dimdev.dimdoors.compat.sable.mixins.SubLevelHoldingChunkAccessor;
 import org.dimdev.dimdoors.compat.sable.mixins.SubLevelHoldingChunkMapAccessor;
 import org.dimdev.dimdoors.rift.registry.Rift;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.dimdev.dimdoors.util.RotationUtil;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.joml.Vector3d;
 
 import java.io.IOException;
@@ -316,7 +316,7 @@ public class ActiveSableHelper extends SableHelper {
         Location location = rift.getLocation();
         if (location == null || !location.world.equals(level.dimension())) {
             if (previousTrackingPoint != null) {
-                DimensionalRegistry.setIsDirty();
+                RiftRegistry.getInstance().setDirty();
             }
             return;
         }
@@ -325,14 +325,14 @@ public class ActiveSableHelper extends SableHelper {
         var subLevel = SableCompanion.INSTANCE.getContaining(level, localPos);
         if (!(subLevel instanceof ServerSubLevel serverSubLevel)) {
             if (previousTrackingPoint != null) {
-                DimensionalRegistry.setIsDirty();
+                RiftRegistry.getInstance().setDirty();
             }
             return;
         }
 
         UUID trackingPoint = trackingData.generateTrackingPoint(localPos, serverSubLevel);
         sableRift.dimdoors$setSableTrackingPoint(trackingPoint);
-        DimensionalRegistry.setIsDirty();
+        RiftRegistry.getInstance().setDirty();
     }
 
     /**
@@ -353,7 +353,7 @@ public class ActiveSableHelper extends SableHelper {
 
         SubLevelTrackingPointSavedData.getOrLoad(level).removeTrackingPoint(previousTrackingPoint);
         sableRift.dimdoors$setSableTrackingPoint(null);
-        DimensionalRegistry.setIsDirty();
+        RiftRegistry.getInstance().setDirty();
     }
 
     /**
@@ -424,7 +424,7 @@ public class ActiveSableHelper extends SableHelper {
 
         Location location = findRiftLocation(level, targetLocation, pos);
         if (location != null) {
-            Rift rift = DimensionalRegistry.getRiftRegistry().getRift(location);
+            Rift rift = RiftRegistry.getInstance().getRift(location);
 
             if (rift instanceof SableRiftData sableRift) {
                 UUID trackingPointId = sableRift.dimdoors$getSableTrackingPoint();
@@ -455,7 +455,7 @@ public class ActiveSableHelper extends SableHelper {
      * position are checked to tolerate small vertical or fractional offsets around the rift block.</p>
      */
     private Location findRiftLocation(ServerLevel level, Location targetLocation, Vec3 pos) {
-        var registry = DimensionalRegistry.getRiftRegistry();
+        var registry = RiftRegistry.getInstance();
 
         if (targetLocation != null && targetLocation.world.equals(level.dimension()) && registry.isRiftAt(targetLocation)) {
             return targetLocation;
@@ -569,7 +569,7 @@ public class ActiveSableHelper extends SableHelper {
 
         UUID trackingPoint = SubLevelTrackingPointSavedData.getOrLoad(level).generateTrackingPoint(localRiftPos, serverSubLevel);
         sableRift.dimdoors$setSableTrackingPoint(trackingPoint);
-        DimensionalRegistry.setIsDirty();
+        RiftRegistry.getInstance().setDirty();
 
         return serverSubLevel.logicalPose();
     }

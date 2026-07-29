@@ -3,7 +3,7 @@ package org.dimdev.dimdoors.rift.targets;
 import com.mojang.serialization.MapCodec;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -22,7 +22,7 @@ public class PublicPocketTarget extends RestoringTarget<PublicPocketTarget> {
         newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
         Pocket<?, ?> pocket = PocketGenerator.generatePublicPocketV2(newVirtualLocation, new RiftReference(this.location), null);
 
-        return DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+        return PocketRegistry.getInstance().getPocketEntrance(pocket);
     }
 
     @Override

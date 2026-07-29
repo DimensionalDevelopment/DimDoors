@@ -16,7 +16,7 @@ import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
 import org.dimdev.dimdoors.compat.create.CreateRiftMovement;
 import org.dimdev.dimdoors.compat.create.DimDoorsCreateContraption;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -55,7 +55,7 @@ public abstract class ContraptionMixin implements DimDoorsCreateContraption {
         }
 
         Location source = Location.ofWorld(serverLevel, pos);
-        if (DimensionalRegistry.getRiftRegistry().isRiftAt(source)) {
+        if (RiftRegistry.getInstance().isRiftAt(source)) {
             this.dimdoors$trackedRifts.put(pos.subtract(this.anchor), source);
         }
     }
@@ -69,7 +69,7 @@ public abstract class ContraptionMixin implements DimDoorsCreateContraption {
         for (Map.Entry<BlockPos, Location> entry : Map.copyOf(this.dimdoors$trackedRifts).entrySet()) {
             BlockPos sourcePos = entry.getKey().offset(this.anchor).offset(offset);
             Location actualSource = Location.ofWorld(serverLevel, sourcePos);
-            if (!entry.getValue().equals(actualSource) && DimensionalRegistry.getRiftRegistry().isRiftAt(actualSource)) {
+            if (!entry.getValue().equals(actualSource) && RiftRegistry.getInstance().isRiftAt(actualSource)) {
                 this.dimdoors$trackedRifts.put(entry.getKey(), actualSource);
             }
 

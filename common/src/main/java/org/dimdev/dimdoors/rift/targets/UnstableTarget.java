@@ -6,7 +6,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.Location;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 
 import java.util.Collections;
 

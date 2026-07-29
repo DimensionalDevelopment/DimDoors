@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.dimdev.dimdoors.DimensionalDoors;
 import org.dimdev.dimdoors.api.rift.target.EntityTarget;
 import org.dimdev.dimdoors.api.util.math.MathUtil;
 import org.dimdev.dimdoors.entity.limbo.LimboExitReason;
@@ -34,7 +35,7 @@ public class EternalFluidBlock extends LiquidBlock {
                 }
             }
         } catch (Throwable e) {
-            e.printStackTrace();
+            DimensionalDoors.LOGGER.error("Error when entering eternal fluid:", e);
         }
     }
 }

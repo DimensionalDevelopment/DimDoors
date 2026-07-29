@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.block.RiftProvider;
 import org.dimdev.dimdoors.block.entity.RiftBlockEntity;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
+import org.dimdev.dimdoors.rift.registry.RiftRegistry;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +25,7 @@ public final class CreateRiftMovement {
         }
 
         Set<Location> movingSources = new HashSet<>(trackedRifts.values());
-        var registry = DimensionalRegistry.getRiftRegistry();
+        var registry = RiftRegistry.getInstance();
 
         for (Map.Entry<BlockPos, Location> entry : trackedRifts.entrySet()) {
             Location source = entry.getValue();
@@ -53,7 +53,7 @@ public final class CreateRiftMovement {
             return;
         }
 
-        var registry = DimensionalRegistry.getRiftRegistry();
+        var registry = RiftRegistry.getInstance();
         Map<Location, Location> registryMoves = new HashMap<>();
 
         for (Map.Entry<BlockPos, Location> entry : trackedRifts.entrySet()) {

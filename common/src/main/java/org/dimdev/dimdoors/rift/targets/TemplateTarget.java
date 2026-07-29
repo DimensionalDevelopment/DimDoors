@@ -9,8 +9,8 @@ import org.dimdev.dimdoors.ModRegistryKeys;
 import org.dimdev.dimdoors.api.util.Location;
 import org.dimdev.dimdoors.pockets.PocketGenerator;
 import org.dimdev.dimdoors.pockets.virtual.VirtualPocket;
+import org.dimdev.dimdoors.rift.registry.PocketRegistry;
 import org.dimdev.dimdoors.world.ModDimensions;
-import org.dimdev.dimdoors.world.level.registry.DimensionalRegistry;
 import org.dimdev.dimdoors.world.pocket.VirtualLocation;
 import org.dimdev.dimdoors.world.pocket.type.Pocket;
 
@@ -32,7 +32,7 @@ public class TemplateTarget extends RestoringTarget<TemplateTarget> {
         newVirtualLocation = new VirtualLocation(riftVirtualLocation.getWorld(), riftVirtualLocation.getX(), riftVirtualLocation.getZ(), depth);
         Pocket<?, ?> pocket = PocketGenerator.generateFromVirtualPocket(DimensionalDoors.getWorld(ModDimensions.DUNGEON), template, newVirtualLocation, this.location.asTarget(), null);
 
-        return DimensionalRegistry.getRiftRegistry().getPocketEntrance(pocket);
+        return PocketRegistry.getInstance().getPocketEntrance(pocket);
     }
 
     @Override
