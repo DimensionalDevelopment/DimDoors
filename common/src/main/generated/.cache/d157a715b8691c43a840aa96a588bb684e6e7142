@@ -1,4 +1,4 @@
-// 1.21.1	2026-07-29T23:02:45.6710703	DimensionalDoors/Dimdoors: Dynamic Registries
+// 1.21.1	2026-07-30T06:04:49.9309094	DimensionalDoors/Dimdoors: Dynamic Registries
 b805d2d1b2b9c75f5eee2d31f3d7b44664ec3c33 data\dimdoors\enchantment\string_theory.json
 20b4f6119127e7339a9d6a140ceff6d098157b37 data\dimdoors\worldgen\structure\enclosed_red_sandstone_gateway.json
 c2a8717f15c055af0414946cd217c2a06a530bb7 data\dimdoors\dimension_type\limbo.json
@@ -21,7 +21,7 @@ f6af981f4d424d67234d5bbcd6f8f4fd1e4b9704 data\dimdoors\worldgen\template_pool\en
 710bddfec348f13f4acdeab059728e24f76d3ada data\dimdoors\worldgen\configured_feature\solid_static_ore.json
 b124795d136b337af9bdefd29b678322a10eb978 data\dimdoors\worldgen\density_function\limbo\x_shift.json
 ac47053f951a6d69d6be1c45f9c374de97fe8ea3 data\dimdoors\worldgen\structure\enclosed_prismarine_gateway.json
-9d563555c6cc79be3aa84c55ab057026b9acfd67 data\dimdoors\door\data\stone_door.json
+a0ebb5647fc77661045a9be7dd08ef30d1f4cede data\dimdoors\door\data\stone_door.json
 cf61fc186e0e380674be20e39a8b646611aec78b data\dimdoors\worldgen\biome\black_void.json
 5d5cb8e71861d47c0e438557c2687f9a059f4655 data\minecraft\door\data\iron_door.json
 e74d671228d637ce6277b4a3d730b9e48fe1f270 data\dimdoors\worldgen\structure\enclosed_endstone_gateway.json
@@ -32,9 +32,9 @@ e74d671228d637ce6277b4a3d730b9e48fe1f270 data\dimdoors\worldgen\structure\enclos
 e499d743604d369c23b3f89728ce5d60f676d5ea data\dimdoors\worldgen\structure\enclosed_gateway.json
 e07940fc692014ccec52244d390491f4eea44305 data\dimdoors\enchantment\rending.json
 8905661e6138336d56262289f32d25059e231252 data\dimdoors\worldgen\density_function\limbo\terrain.json
-936a1ef5a0c074c75e3beb25cbb580d408aced0b data\dimdoors\door\data\gold_door.json
+797c520370d4ea8be6068291799f364e782bf670 data\dimdoors\door\data\gold_door.json
 9a4f22c78c01f172a925144f6a0fbf65f4bb6b93 data\dimdoors\worldgen\density_function\limbo\strand.json
-eeaeddbdde8458cc0c394d1bdec9ad9a8db579a4 data\minecraft\door\data\crimson_door.json
+e6259a91cc6abcaef94a03fc472c7a2a13af63d6 data\minecraft\door\data\crimson_door.json
 4ce33d779673cc53ac0c1c82eb532b638b10ae16 data\dimdoors\worldgen\template_pool\enclosed_gateway.json
 8b253d4eb9d698e6b1208caa32bb7d2a858040dd data\dimdoors\enchantment\transcendent.json
 49c5505be627ea145ced620d04a2ce13fc53b627 data\dimdoors\worldgen\configured_feature\eternal_fluid_spring.json
@@ -52,7 +52,7 @@ fb6a1517852f31ca30d7fd0bd36713fd7f00aeaa data\dimdoors\enchantment\trepidation.j
 0938f183255268b3de63895951c23b39dcb735df data\minecraft\door\data\oak_door.json
 121abed43731ccfb3d576d471d588b6efc81f558 data\dimdoors\worldgen\configured_carver\limbo.json
 323cbc2ad51db6e8fafc88e0764fd70616882d53 data\dimdoors\worldgen\structure\enclosed_quartz_gateway.json
-5c4c8bedc500843bfea8808fac7d0b59bc78d06e data\dimdoors\door\data\amalgam_door.json
+e22985bc3ef698825517fb9bc6cc5e5517031dd3 data\dimdoors\door\data\amalgam_door.json
 68cc4778185581ac074e5f8df9e0e27d03ff9f31 data\dimdoors\worldgen\placed_feature\decayed_block_ore.json
 c2b2190b67fce19286933732f8fa1a90c14dfe9b data\dimdoors\worldgen\configured_feature\driftwood_tree.json
 c319423fe619e6a774958e904a7c99a232cd4b05 data\dimdoors\worldgen\noise\limbo\y_shift.json
