@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
 
 import static net.minecraft.world.level.block.Blocks.*;
 import static net.minecraft.world.level.block.Blocks.CLAY;
@@ -182,14 +183,14 @@ public final class ModBlocks {
     ) {
         public static final List<DecayGroupSet> SETS = new ArrayList<>();
 
-        public static DecayGroupSet create(String name, Block block, BlockBehaviour.Properties properites) {
+        public static DecayGroupSet create(String name, Block block, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
             var set = new DecayGroupSet(
-                    registerDecay(name + "_fence", new FenceBlock(properites)),
-                    registerDecay(name + "_gate", new FenceGateBlock(WoodType.OAK, properites)),
-                    registerDecay(name + "_button", new ModButtonBlock(BlockSetType.STONE, 20, properites.noCollission().strength(0.5F))),
-                    registerDecay(name + "_slab", new SlabBlock(properites)),
-                    registerDecay(name + "_stairs", new ModStairBlock(block.defaultBlockState(), properites)),
-                    registerDecay(name + "_wall", new WallBlock(properites))
+                    registerDecay(name + "_fence", new FenceBlock(propertiesModifier.apply(of(block)))),
+                    registerDecay(name + "_gate", new FenceGateBlock(WoodType.OAK, propertiesModifier.apply(of(block)))),
+                    registerDecay(name + "_button", new ModButtonBlock(BlockSetType.STONE, 20, propertiesModifier.apply(of(block)).noCollission().strength(0.5F))),
+                    registerDecay(name + "_slab", new SlabBlock(propertiesModifier.apply(of(block)))),
+                    registerDecay(name + "_stairs", new ModStairBlock(block.defaultBlockState(), propertiesModifier.apply(of(block)))),
+                    registerDecay(name + "_wall", new WallBlock(propertiesModifier.apply(of(block))))
             );
 
             SETS.add(set);
@@ -198,7 +199,7 @@ public final class ModBlocks {
         }
 
         public static DecayGroupSet create(String name, Block block) {
-            return create(name, block, of(block));
+            return create(name, block, UnaryOperator.identity());
         }
     }
 
@@ -243,7 +244,7 @@ public final class ModBlocks {
     public static final DecayGroupSet BLACK_TERRACOTTA_SET = DecayGroupSet.create("black_terracotta", Blocks.BLACK_TERRACOTTA);
     public static final DecayGroupSet BLACK_GLAZED_TERRACOTTA_SET = DecayGroupSet.create("black_glazed_terracotta", Blocks.BLACK_GLAZED_TERRACOTTA);
 
-    public static final DecayGroupSet MUD_SET = DecayGroupSet.create("mud", MUD, of(MUD).isViewBlocking((blockState, blockGetter, blockPos) -> false).isSuffocating((blockState, blockGetter, blockPos) -> false));
+    public static final DecayGroupSet MUD_SET = DecayGroupSet.create("mud", MUD, properties -> properties.isViewBlocking((blockState, blockGetter, blockPos) -> false).isSuffocating((blockState, blockGetter, blockPos) -> false));
     public static final DecayGroupSet UNRAVELED_SET = DecayGroupSet.create("unraveled", UNRAVELLED_FABRIC);
     public static final DecayGroupSet DEEPSLATE_SET = DecayGroupSet.create("deepslate", Blocks.DEEPSLATE);
     public static final DecayGroupSet RED_SAND_SET = DecayGroupSet.create("red_sand", Blocks.RED_SAND);

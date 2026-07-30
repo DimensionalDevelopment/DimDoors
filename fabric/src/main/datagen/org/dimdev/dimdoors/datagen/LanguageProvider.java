@@ -460,9 +460,9 @@ public class LanguageProvider extends AbstractLanguageProvider {
 
                 scope("decay", () -> {
                     addCategory("Decay Settings");
-                    addOption("decaySpreadChance", "Decay Spread Chance", "To be filled out.");
+                    addOption("decaySpreadChance", "Decay Spread Chance", "Chance for Unravelled Fabric random ticks to attempt decay spread.");
                     addOption("decayDelay", "Decay Delay", "In minecraft ticks (20 per second on a healthy server or game), the delay between when a queued decay is scheduled and it fired.");
-                    addOption("decaysIntoAir", "dimdoors.config.option.decay.decaysIntoAir.tooltip", "To be filled out.");
+                    addOption("decaysIntoAir", "dimdoors.config.option.decay.decaysIntoAir.tooltip", "When true, rifts will turn blocks into air instead of decay and has a chanece of dropping world thread.");
                 });
             });
         });
