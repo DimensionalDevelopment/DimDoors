@@ -25,6 +25,8 @@ dependencies {
         exclude group: "foundry.veil"
     }
 
+    includeCompile "org.apfloat:apfloat:${apfloat_version}"
+    includeCompile "org.jheaps:jheaps:${jheaps_version}"
     includeCompile "org.jgrapht:jgrapht-core:${jgrapht_version}"
     includeCompile "com.github.DimensionalDevelopment:poly2tri.java:0.1.1"
 

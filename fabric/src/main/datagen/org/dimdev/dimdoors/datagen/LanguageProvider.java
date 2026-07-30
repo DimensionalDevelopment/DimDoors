@@ -342,9 +342,9 @@ public class LanguageProvider extends AbstractLanguageProvider {
 
 
         scope("tools", () -> {
-            add("rift_miss", "You can only use this item on a rift's core");
-            add("signature_blocked", "Usage of the signature was block");
-            add("target_became_block", "Failed, there is now a block at the stored location");
+            add("rift_miss", "You can only use this item on a rift's core.");
+            add("signature_blocked", "Usage of the signature was blocked.");
+            add("target_became_block", "Failed, there is now a block at the stored location.");
         });
 
         add(VirtualTarget.VirtualTargetType.AVAILABLE_LINK, "Random");
